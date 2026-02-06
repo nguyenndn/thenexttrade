@@ -1,0 +1,220 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { PremiumCard } from "@/components/ui/PremiumCard";
+import { PremiumInput } from "@/components/ui/PremiumInput";
+import { Button } from "@/components/ui/Button";
+// import { Input } from "@/components/ui/Input";
+import PreviewPanel from "./PreviewPanel";
+import { QuizGenerationResponse } from "@/lib/ai/types";
+import { toast } from "sonner";
+
+export default function QuizGenerator() {
+    const [formData, setFormData] = useState({
+        topic: "",
+        numQuestions: 5,
+        difficulty: "medium" as "easy" | "medium" | "hard",
+        lessonContext: "", // Optional context
+    });
+
+    const [generating, setGenerating] = useState(false);
+    const [result, setResult] = useState<QuizGenerationResponse | null>(null);
+
+    // Module selection for saving
+    const [modules, setModules] = useState<{ id: string; title: string, level: { title: string } }[]>([]);
+    const [selectedModule, setSelectedModule] = useState("");
+
+    useEffect(() => {
+        const fetchModules = async () => {
+            try {
+                const { getModulesForSelect } = await import("@/app/actions/ai");
+                const res = await getModulesForSelect();
+                if (res.success && res.data) {
+                    setModules(res.data);
+                }
+            } catch (e) {
+                console.error("Failed to fetch modules", e);
+            }
+        };
+        fetchModules();
+    }, []);
+
+    const handleGenerate = async () => {
+        if (!formData.topic) return toast.error("Please enter a topic");
+
+        setGenerating(true);
+        setResult(null);
+
+        try {
+            const res = await fetch("/api/ai/generate-quiz", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error?.message || "Generation failed");
+
+            setResult(data.data);
+            toast.success("Quiz generated!");
+        } catch (error: any) {
+            toast.error(error.message);
+        } finally {
+            setGenerating(false);
+        }
+    };
+
+    const handleSave = async () => {
+        if (!result) return;
+        if (!selectedModule) return toast.error("Please select a Module to attach this quiz to");
+
+        const toastId = toast.loading("Saving quiz...");
+        try {
+            const { saveQuiz } = await import("@/app/actions/ai");
+            const res = await saveQuiz(result, selectedModule, formData.topic);
+
+            if (res.success) {
+                toast.success("Quiz saved to database!", { id: toastId });
+            } else {
+                toast.error(`Save failed: ${res.error}`, { id: toastId });
+            }
+        } catch (error) {
+            toast.error("An unexpected error occurred", { id: toastId });
+        }
+    };
+
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[700px]">
+            {/* Left: Input Form */}
+            <PremiumCard className="p-8 space-y-8 h-full overflow-y-auto custom-scrollbar" variant="glass">
+                <div>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Quiz Configuration</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Generate assessment questions for your students.</p>
+                </div>
+
+                <div className="space-y-6">
+                    <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Save to Module</label>
+                        <div className="relative">
+                            <select
+                                className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-[#00C888] outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+                                value={selectedModule}
+                                onChange={(e) => setSelectedModule(e.target.value)}
+                            >
+                                <option value="">-- Select a Module --</option>
+                                {modules.map(m => (
+                                    <option key={m.id} value={m.id}>
+                                        {m.level?.title} - {m.title}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none border-l border-gray-300 dark:border-gray-700 pl-3">
+                                <span className="text-gray-400 text-[10px]">▼</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <PremiumInput
+                        label="Topic"
+                        placeholder="Support and Resistance Levels"
+                        value={formData.topic}
+                        onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+                    />
+
+                    <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Context (Optional Lesson Content)</label>
+                        <textarea
+                            className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg p-3 focus:border-[#00C888] outline-none min-h-[100px] transition-all hover:bg-gray-100 dark:hover:bg-white/10 resize-none"
+                            placeholder="Paste lesson content here to generate relevant questions..."
+                            value={formData.lessonContext}
+                            onChange={(e) => setFormData({ ...formData, lessonContext: e.target.value })}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Difficulty</label>
+                            <div className="relative">
+                                <select
+                                    className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-[#00C888] outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+                                    value={formData.difficulty}
+                                    onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as any })}
+                                >
+                                    <option value="easy">Easy</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="hard">Hard</option>
+                                </select>
+                            </div>
+                        </div>
+                        <PremiumInput
+                            label="Num Questions"
+                            type="number"
+                            min={1}
+                            max={10}
+                            value={formData.numQuestions}
+                            onChange={(e) => setFormData({ ...formData, numQuestions: parseInt(e.target.value) || 5 })}
+                        />
+                    </div>
+
+                    <Button
+                        className="w-full py-3 bg-[#00C888] hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl shadow-lg shadow-[#00C888]/30 hover:-translate-y-1 active:scale-95 transition-all mt-4"
+                        onClick={handleGenerate}
+                        isLoading={generating}
+                    >
+                        Generate Quiz
+                    </Button>
+                </div>
+            </PremiumCard>
+
+            {/* Right: Preview */}
+            <PreviewPanel
+                title="2. Preview Questions"
+                onSave={result ? handleSave : undefined}
+                isLoading={generating}
+            >
+                {result ? (
+                    <div className="space-y-6">
+                        {result.questions.map((q, idx) => (
+                            <div key={idx} className="bg-[#0F1117] p-4 rounded-lg border border-gray-800">
+                                <div className="flex space-x-3 mb-3">
+                                    <span className="bg-gray-800 text-gray-300 h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">
+                                        {idx + 1}
+                                    </span>
+                                    <p className="font-medium text-white">{q.text}</p>
+                                </div>
+
+                                <div className="space-y-2 pl-9">
+                                    {q.options.map((opt, optIdx) => (
+                                        <div
+                                            key={optIdx}
+                                            className={`p-2 rounded text-sm flex items-center ${opt.isCorrect
+                                                ? "bg-[#00C888]/10 border border-[#00C888]/30 text-[#00C888]"
+                                                : "bg-gray-800/50 border border-transparent text-gray-400"
+                                                }`}
+                                        >
+                                            <span className={`w-4 h-4 rounded-full border mr-3 flex items-center justify-center ${opt.isCorrect ? "border-[#00C888] bg-[#00C888]" : "border-gray-600"
+                                                }`}>
+                                                {opt.isCorrect && <span className="text-black text-[10px]">✓</span>}
+                                            </span>
+                                            {opt.text}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="mt-3 pl-9 text-xs text-gray-500 italic border-l-2 border-gray-700 pl-2">
+                                    Explanation: {q.explanation}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center text-gray-500 mt-20">
+                        <p>Ready to generate quiz questions.</p>
+                        <p className="text-xs">Fill out the form and click Generate.</p>
+                    </div>
+                )}
+            </PreviewPanel>
+        </div>
+    );
+}

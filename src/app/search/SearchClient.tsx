@@ -1,0 +1,133 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { SearchBar } from "@/components/search/SearchBar";
+import { Loader2, FileText, BookOpen, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { formatDistanceToNow } from "date-fns";
+
+interface SearchResult {
+    id: string;
+    type: "article" | "lesson";
+    title: string;
+    slug: string;
+    description: string;
+    image: string | null;
+    date: string;
+    meta: any;
+}
+
+export default function SearchClient() {
+    const searchParams = useSearchParams();
+    const query = searchParams.get("q");
+
+    const [results, setResults] = useState<SearchResult[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [hasSearched, setHasSearched] = useState(false);
+
+    useEffect(() => {
+        const fetchResults = async () => {
+            if (!query) {
+                setResults([]);
+                return;
+            }
+
+            setIsLoading(true);
+            setHasSearched(true);
+            try {
+                const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                setResults(data.data || []);
+            } catch (error) {
+                console.error("Search error", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        const timeout = setTimeout(fetchResults, 300); // Debounce slightly on initial load if needed, or just run
+        return () => clearTimeout(timeout);
+    }, [query]);
+
+    return (
+        <div className="min-h-screen bg-gray-50/50 dark:bg-black py-12 px-4 sm:px-6">
+            <div className="max-w-3xl mx-auto space-y-8">
+                {/* Header */}
+                <div className="text-center space-y-6">
+                    <h1 className="text-3xl font-black text-gray-900 dark:text-white">
+                        Search Results
+                    </h1>
+                    <div className="max-w-md mx-auto">
+                        <SearchBar />
+                    </div>
+                </div>
+
+                {/* Results Area */}
+                <div className="space-y-4">
+                    {isLoading ? (
+                        <div className="flex justify-center py-12">
+                            <Loader2 className="animate-spin text-[#00C888]" size={32} />
+                        </div>
+                    ) : (hasSearched && query) ? (
+                        <>
+                            <p className="text-sm font-bold text-gray-500 mb-4">
+                                Found {results.length} results for "<span className="text-gray-900 dark:text-white">{query}</span>"
+                            </p>
+
+                            {results.length > 0 ? (
+                                <div className="grid gap-4">
+                                    {results.map((result) => (
+                                        <Link
+                                            key={`${result.type}-${result.id}`}
+                                            href={result.slug}
+                                            className="block bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-[#00C888] dark:hover:border-[#00C888] transition-colors group shadow-sm"
+                                        >
+                                            <div className="flex items-start gap-4">
+                                                <div className={`p-3 rounded-xl shrink-0 ${result.type === 'article'
+                                                    ? 'bg-blue-50 text-blue-500 dark:bg-blue-500/10'
+                                                    : 'bg-purple-50 text-purple-500 dark:bg-purple-500/10'
+                                                    }`}>
+                                                    {result.type === 'article' ? <FileText size={24} /> : <BookOpen size={24} />}
+                                                </div>
+                                                <div className="flex-1 space-y-2">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full ${result.type === 'article'
+                                                            ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300'
+                                                            : 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300'
+                                                            }`}>
+                                                            {result.type}
+                                                        </span>
+                                                        <span className="text-xs text-gray-400 font-medium">
+                                                            {result.date && formatDistanceToNow(new Date(result.date), { addSuffix: true })}
+                                                        </span>
+                                                    </div>
+                                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-[#00C888] transition-colors line-clamp-1">
+                                                        {result.title}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                                                        {result.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-12 bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-100 dark:border-white/5">
+                                    <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
+                                    <p className="text-gray-500">Try adjusting your search terms or check for typos.</p>
+                                </div>
+                            )}
+                        </>
+                    ) : !query && (
+                        <div className="text-center py-20 opacity-50">
+                            Type something to start searching...
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -1,0 +1,724 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Save, Loader2, AlertCircle, Plus, Brain, Check, X } from "lucide-react";
+import { EmotionSelector } from "@/components/psychology/EmotionSelector";
+import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
+import { ImageUploader } from "@/components/ui/ImageUploader";
+import Link from "next/link";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { Button, buttonVariants } from "@/components/ui/Button";
+import { StrategyModal } from "@/components/strategies/StrategyModal";
+import { calculateProfitLoss } from "@/lib/calculators";
+
+interface JournalFormProps {
+    initialData?: any;
+    isEditMode?: boolean;
+    onSuccess?: () => void;
+    onCancel?: () => void;
+}
+
+export default function JournalForm({ initialData, isEditMode = false, onSuccess, onCancel }: JournalFormProps) {
+    const router = useRouter();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [strategies, setStrategies] = useState<any[]>([]);
+    const [accounts, setAccounts] = useState<any[]>([]);
+    const [showStrategyModal, setShowStrategyModal] = useState(false);
+
+    const [formData, setFormData] = useState({
+        symbol: initialData?.symbol || "",
+        type: initialData?.type || "BUY",
+        entryPrice: initialData?.entryPrice || "",
+        exitPrice: initialData?.exitPrice || "",
+        stopLoss: initialData?.stopLoss || "",
+        takeProfit: initialData?.takeProfit || "",
+        lotSize: initialData?.lotSize || "",
+        entryDate: initialData?.entryDate ? new Date(initialData.entryDate).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
+        status: initialData?.status || "OPEN",
+        result: initialData?.result || "",
+        pnl: initialData?.pnl || "",
+        notes: initialData?.notes || "",
+        entryReason: initialData?.entryReason || "",
+        exitReason: initialData?.exitReason || "",
+        accountId: initialData?.accountId || "",
+        strategy: initialData?.strategy || "",
+        tags: initialData?.tags || [], // Custom Tags
+        // Psychology (Phase 44)
+        emotionBefore: initialData?.emotionBefore || null,
+        emotionAfter: initialData?.emotionAfter || null,
+        confidenceLevel: initialData?.confidenceLevel || null,
+        followedPlan: initialData?.followedPlan === undefined ? null : initialData?.followedPlan,
+        notesPsychology: initialData?.notesPsychology || "",
+        // Mistakes (Phase 45)
+        mistakes: initialData?.mistakes || [],
+        // Screenshots (Phase 53)
+        images: initialData?.images || []
+    });
+
+    const [customTagInput, setCustomTagInput] = useState("");
+
+    const addCustomTag = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!customTagInput.trim()) return;
+        if (!formData.tags.includes(customTagInput.trim())) {
+            setFormData(prev => ({ ...prev, tags: [...prev.tags, customTagInput.trim()] }));
+        }
+        setCustomTagInput("");
+    };
+
+    const removeCustomTag = (tag: string) => {
+        setFormData(prev => ({ ...prev, tags: prev.tags.filter((t: string) => t !== tag) }));
+    };
+
+    const fetchStrategies = async () => {
+        try {
+            const res = await fetch("/api/strategies");
+            const data = await res.json();
+            setStrategies(data.strategies || []);
+        } catch (error) {
+            console.error("Failed to load strategies", error);
+        }
+    };
+
+    const fetchAccounts = async () => {
+        try {
+            const res = await fetch("/api/accounts");
+            const data = await res.json();
+            setAccounts(data.accounts || []);
+
+            // Set default account if creating new and none selected
+            if (!isEditMode && !formData.accountId) {
+                const defaultAccount = data.accounts?.find((a: any) => a.isDefault);
+                if (defaultAccount) {
+                    setFormData(prev => ({ ...prev, accountId: defaultAccount.id }));
+                }
+            }
+        } catch (error) {
+            console.error("Failed to load accounts", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchStrategies();
+        fetchAccounts();
+    }, []);
+
+    // Auto-Calculate PnL
+    useEffect(() => {
+        const { entryPrice, exitPrice, lotSize, type, symbol } = formData;
+
+        if (entryPrice && exitPrice && lotSize && symbol) {
+            const entry = parseFloat(entryPrice);
+            const exit = parseFloat(exitPrice);
+            const lots = parseFloat(lotSize);
+
+            if (!isNaN(entry) && !isNaN(exit) && !isNaN(lots)) {
+                const result = calculateProfitLoss({
+                    entryPrice: entry,
+                    exitPrice: exit,
+                    lotSize: lots,
+                    direction: type === "BUY" ? "LONG" : "SHORT",
+                    pair: symbol
+                });
+                setFormData(prev => ({ ...prev, pnl: result.profitLoss.toString() }));
+            }
+        }
+    }, [formData.entryPrice, formData.exitPrice, formData.lotSize, formData.type, formData.symbol]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            // Convert numbers
+            const payload = {
+                ...formData,
+                entryPrice: parseFloat(formData.entryPrice),
+                exitPrice: formData.exitPrice ? parseFloat(formData.exitPrice) : null,
+                stopLoss: formData.stopLoss ? parseFloat(formData.stopLoss) : null,
+                takeProfit: formData.takeProfit ? parseFloat(formData.takeProfit) : null,
+                lotSize: parseFloat(formData.lotSize),
+                pnl: formData.pnl ? parseFloat(formData.pnl) : null,
+                result: formData.result || null,
+                strategy: formData.strategy || null,
+                accountId: formData.accountId || null,
+                tags: formData.tags || [],
+                // Psychology
+                emotionBefore: formData.emotionBefore || null,
+                emotionAfter: formData.emotionAfter || null,
+                confidenceLevel: formData.confidenceLevel ? parseInt(formData.confidenceLevel.toString()) : null,
+                followedPlan: formData.followedPlan,
+                notesPsychology: formData.notesPsychology || null,
+                // Mistakes (Phase 45)
+                mistakes: formData.mistakes || [],
+                // Screenshots (Phase 53)
+                images: formData.images || []
+            };
+
+            const url = isEditMode ? `/api/journal-entries/${initialData.id}` : "/api/journal-entries";
+            const method = isEditMode ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error.error || "Failed using API");
+            }
+
+            toast.success(isEditMode ? "Trade updated successfully" : "Trade logged successfully");
+
+            if (onSuccess) {
+                onSuccess();
+            } else {
+                router.push("/dashboard/journal");
+                router.refresh();
+            }
+        } catch (error: any) {
+            toast.error(error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // Check for Synced Trade
+    const isSynced = !!initialData?.externalTicket;
+
+    return (
+        <div className="w-full mx-auto space-y-6">
+            {/* Header - Only show if not in modal (i.e. if onCancel is not provided, or explicit prop) 
+                For now, if onCancel is provided, we assume it's a modal and hide the main header 
+            */}
+            {!onCancel && (
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                        <Link href="/dashboard/journal" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
+                            <ArrowLeft size={20} className="text-gray-500" />
+                        </Link>
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                            {isEditMode ? "Edit Trade" : "Log New Trade"}
+                        </h1>
+                    </div>
+                </div>
+            )}
+
+            {isSynced && (
+                <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-100 dark:border-blue-500/20 text-sm font-medium">
+                    <AlertCircle size={16} />
+                    This trade was synced from MT5. Core data is locked. You can edit notes and psychology.
+                </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Main Info Card */}
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <div className="w-1.5 h-6 bg-[#00C888] rounded-full"></div>
+                        Trade Details
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Account Selection */}
+                        <div className="col-span-1 md:col-span-2 space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Trading Account</label>
+                            <select
+                                name="accountId"
+                                value={formData.accountId}
+                                onChange={handleChange}
+                                disabled={isSynced || isEditMode}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-medium ${isSynced || isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            >
+                                <option value="">Select Account (Optional)</option>
+                                {accounts.map((acc: any) => (
+                                    <option key={acc.id} value={acc.id}>
+                                        {acc.name} ({acc.broker} - {acc.currency})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Pair / Symbol</label>
+                            <input
+                                name="symbol"
+                                value={formData.symbol}
+                                onChange={handleChange}
+                                placeholder="EURUSD"
+                                disabled={isSynced}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none uppercase font-bold ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Date & Time</label>
+                            <input
+                                type="datetime-local"
+                                name="entryDate"
+                                value={formData.entryDate}
+                                onChange={handleChange}
+                                disabled={isSynced}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Type</label>
+                            <div className={`flex bg-gray-50 dark:bg-black/20 p-1 rounded-xl border border-gray-200 dark:border-white/10 ${isSynced ? 'opacity-60 pointer-events-none' : ''}`}>
+                                {["BUY", "SELL"].map(type => (
+                                    <button
+                                        key={type}
+                                        type="button"
+                                        onClick={() => setFormData(p => ({ ...p, type }))}
+                                        className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${formData.type === type
+                                            ? type === 'BUY' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'bg-red-500 text-white shadow-lg shadow-red-500/30'
+                                            : 'text-gray-500 hover:bg-white dark:hover:bg-white/5'
+                                            }`}
+                                    >
+                                        {type}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Status</label>
+                            <select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                disabled={isSynced}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            >
+                                <option value="OPEN">OPEN - Running</option>
+                                <option value="CLOSED">CLOSED - Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Price & Risk */}
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
+                        Pricing & Risk
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Entry Price</label>
+                            <input
+                                type="number" step="any"
+                                name="entryPrice"
+                                value={formData.entryPrice}
+                                onChange={handleChange}
+                                disabled={isSynced}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Lot Size</label>
+                            <input
+                                type="number" step="any"
+                                name="lotSize"
+                                value={formData.lotSize}
+                                onChange={handleChange}
+                                disabled={isSynced}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Exit Price</label>
+                            <input
+                                type="number" step="any"
+                                name="exitPrice"
+                                value={formData.exitPrice}
+                                onChange={handleChange}
+                                disabled={isSynced}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-red-500">Stop Loss</label>
+                            <input
+                                type="number" step="any"
+                                name="stopLoss"
+                                value={formData.stopLoss}
+                                onChange={handleChange}
+                                disabled={isSynced}
+                                className={`w-full p-3 rounded-xl bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 focus:border-red-500 focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-[#00C888]">Take Profit</label>
+                            <input
+                                type="number" step="any"
+                                name="takeProfit"
+                                value={formData.takeProfit}
+                                onChange={handleChange}
+                                disabled={isSynced}
+                                className={`w-full p-3 rounded-xl bg-green-50 dark:bg-green-500/5 border border-green-100 dark:border-green-500/20 focus:border-[#00C888] focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Profit / Loss (Cash)</label>
+                            <input
+                                type="number" step="any"
+                                name="pnl"
+                                value={formData.pnl}
+                                onChange={handleChange}
+                                placeholder="Auto or Manual"
+                                disabled={isSynced}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-mono font-bold ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Analysis */}
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
+                        Analysis & Result
+                    </h3>
+
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 gap-6">
+
+                            {/* Strategy Selection */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Strategy</label>
+                                <div className="flex gap-2">
+                                    <select
+                                        name="strategy"
+                                        value={formData.strategy}
+                                        onChange={handleChange}
+                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none"
+                                    >
+                                        <option value="">No Strategy</option>
+                                        {strategies.map((s: any) => (
+                                            <option key={s.id} value={s.name}>
+                                                {s.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowStrategyModal(true)}
+                                        className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-500"
+                                        title="Create new strategy"
+                                    >
+                                        <Plus size={20} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Custom Tags */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Custom Tags</label>
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                    {(formData.tags || []).map((tag: string, idx: number) => (
+                                        <span key={idx} className="px-2 py-1 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold border border-gray-200 dark:border-white/10 flex items-center gap-1">
+                                            {tag}
+                                            <button type="button" onClick={() => removeCustomTag(tag)} className="hover:text-red-500">
+                                                <X size={12} />
+                                            </button>
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={customTagInput}
+                                        onChange={(e) => setCustomTagInput(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                addCustomTag(e as any);
+                                            }
+                                        }}
+                                        placeholder="Add custom tag (e.g. NFP, Test)..."
+                                        className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={(e) => addCustomTag(e as any)}
+                                        className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-[#00C888]"
+                                    >
+                                        <Plus size={20} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Entry Reason</label>
+                                <textarea
+                                    name="entryReason"
+                                    value={formData.entryReason}
+                                    onChange={handleChange}
+                                    className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none resize-none"
+                                    rows={3}
+                                    placeholder="Why did you take this trade?"
+                                />
+                            </div>
+
+                            {/* Mistakes */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Mistakes</label>
+                                <MistakeSelector
+                                    value={formData.mistakes}
+                                    onChange={(val) => setFormData(prev => ({ ...prev, mistakes: val }))}
+                                    label=""
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Exit Reason / Result</label>
+                                <div className="space-y-3">
+                                    <div className="flex gap-2">
+                                        {["WIN", "LOSS", "BREAK_EVEN"].map(res => (
+                                            <button
+                                                key={res}
+                                                type="button"
+                                                onClick={() => setFormData(p => ({ ...p, result: res }))}
+                                                className={`flex-1 py-1.5 rounded-lg text-xs font-bold border transition-all ${formData.result === res
+                                                    ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-black dark:border-white'
+                                                    : 'border-gray-200 text-gray-500 hover:border-gray-300 dark:border-white/10'
+                                                    }`}
+                                            >
+                                                {res}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <textarea
+                                        name="exitReason"
+                                        value={formData.exitReason}
+                                        onChange={handleChange}
+                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none resize-none"
+                                        rows={2}
+                                        placeholder="What happened?"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Psychology Tracking (Phase 44) */}
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <div className="p-1.5 bg-purple-500/10 text-purple-500 rounded-lg">
+                            <Brain size={20} />
+                        </div>
+                        Psychology Tracking
+                        <span className="text-xs font-normal text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-full ml-2">Optional</span>
+                    </h3>
+
+                    <div className="space-y-8">
+                        {/* Emotion Before Entry */}
+                        <div className="space-y-2">
+                            <EmotionSelector
+                                value={formData.emotionBefore}
+                                onChange={(value) => setFormData({ ...formData, emotionBefore: value })}
+                                label="How did you feel BEFORE entering this trade?"
+                                phase="before"
+                            />
+                        </div>
+
+                        {/* Emotion After Exit */}
+                        {formData.status === "CLOSED" && (
+                            <div className="space-y-2 pt-4 border-t border-gray-100 dark:border-white/5">
+                                <EmotionSelector
+                                    value={formData.emotionAfter}
+                                    onChange={(value) => setFormData({ ...formData, emotionAfter: value })}
+                                    label="How did you feel AFTER closing this trade?"
+                                    phase="after"
+                                />
+                            </div>
+                        )}
+
+                        <div className="grid md:grid-cols-2 gap-8 pt-4 border-t border-gray-100 dark:border-white/5">
+                            {/* Confidence Level */}
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                    Confidence Level (Pre-Entry)
+                                </label>
+                                <div className="flex gap-2">
+                                    {[1, 2, 3, 4, 5].map((level) => (
+                                        <button
+                                            key={level}
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, confidenceLevel: level })}
+                                            className={`
+                                              w-12 h-12 rounded-xl font-bold text-lg transition-all
+                                              ${formData.confidenceLevel === level
+                                                    ? "bg-purple-500 text-white ring-2 ring-purple-300 ring-offset-2 dark:ring-offset-gray-900 shadow-lg shadow-purple-500/20"
+                                                    : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5 border border-gray-200 dark:border-white/10"
+                                                }
+                                            `}
+                                        >
+                                            {level}
+                                        </button>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-gray-400">
+                                    1 = Uncertain, 5 = Very Confident
+                                </p>
+                            </div>
+
+                            {/* Plan Adherence */}
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                    Did you follow your plan?
+                                </label>
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, followedPlan: true })}
+                                        className={`
+                                            flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
+                                            ${formData.followedPlan === true
+                                                ? "bg-green-500 text-white border-green-500 shadow-lg shadow-green-500/20"
+                                                : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/5"
+                                            }
+                                          `}
+                                    >
+                                        <Check size={18} />
+                                        Yes
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, followedPlan: false })}
+                                        className={`
+                                            flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
+                                            ${formData.followedPlan === false
+                                                ? "bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20"
+                                                : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/5"
+                                            }
+                                          `}
+                                    >
+                                        <X size={18} />
+                                        No
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Psychology Notes */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Psychology Notes</label>
+                            <textarea
+                                name="notesPsychology"
+                                value={formData.notesPsychology}
+                                onChange={handleChange}
+                                className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none resize-none"
+                                rows={3}
+                                placeholder="What thoughts influenced your decision? Any emotional triggers?"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Strategy Modal */}
+                {showStrategyModal && (
+                    <StrategyModal
+                        onClose={() => setShowStrategyModal(false)}
+                        onSave={() => {
+                            setShowStrategyModal(false);
+                            fetchStrategies();
+                        }}
+                    />
+                )}
+
+                {/* Screenshots Section (Phase 53) */}
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <div className="w-1.5 h-6 bg-pink-500 rounded-full"></div>
+                        Trade Screenshots
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        {/* Existing Images */}
+                        {(formData.images || []).map((img: string, idx: number) => (
+                            <div key={idx} className="relative aspect-video rounded-xl overflow-hidden group border border-gray-200 dark:border-white/10">
+                                <img
+                                    src={img}
+                                    alt={`Screenshot ${idx + 1}`}
+                                    className="w-full h-full object-cover"
+                                    referrerPolicy="no-referrer"
+                                />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const newImages = [...(formData.images || [])];
+                                            newImages.splice(idx, 1);
+                                            setFormData(prev => ({ ...prev, images: newImages }));
+                                        }}
+                                        className="p-2 bg-red-500 rounded-full text-white hover:scale-110 transition-transform"
+                                    >
+                                        <X size={20} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Upload Button */}
+                        <ImageUploader
+                            onChange={(url) => {
+                                if (url) {
+                                    setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
+                                }
+                            }}
+                        />
+                    </div>
+                </div>
+
+                <div className="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                    {onCancel ? (
+                        <Button
+                            type="button"
+                            onClick={onCancel}
+                            variant="ghost"
+                            className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                        >
+                            Cancel
+                        </Button>
+                    ) : (
+                        <Link
+                            href="/dashboard/journal"
+                            className={buttonVariants({ variant: 'ghost', className: "px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" })}
+                        >
+                            Cancel
+                        </Link>
+                    )}
+                    <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-8 py-3 text-base"
+                    >
+                        {isSubmitting ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
+                        Save Trade
+                    </Button>
+                </div>
+            </form>
+        </div>
+    );
+}

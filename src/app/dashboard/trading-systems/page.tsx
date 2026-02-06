@@ -1,0 +1,47 @@
+import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
+import { AccountStatus } from "@prisma/client";
+import { TradingSystemsClient } from "@/components/dashboard/trading-systems/TradingSystemsClient";
+
+export const metadata: Metadata = {
+    title: "Trading Systems | GSN CRM",
+    description: "Download professional trading indicators and EAs",
+};
+
+export default async function TradingSystemsPage() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        redirect("/auth/login");
+    }
+
+    // OPTIMIZED: Fetch licenses and products in parallel
+    const [licenses, products] = await Promise.all([
+        prisma.eALicense.findMany({
+            where: { userId: user.id },
+            orderBy: { createdAt: "desc" },
+        }),
+        prisma.eAProduct.findMany({
+            where: { isActive: true },
+            orderBy: { createdAt: "desc" },
+        })
+    ]);
+
+    // Check for Approved License
+    const hasApprovedLicense = licenses.some(
+        (l) => l.status === AccountStatus.APPROVED && (!l.expiryDate || l.expiryDate >= new Date())
+    );
+
+    return (
+        <div className="space-y-6">
+            <TradingSystemsClient
+                licenses={licenses}
+                products={products}
+                hasApprovedLicense={hasApprovedLicense}
+            />
+        </div>
+    );
+}

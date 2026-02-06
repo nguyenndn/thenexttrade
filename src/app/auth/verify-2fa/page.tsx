@@ -1,0 +1,70 @@
+"use client";
+
+import { useState } from "react";
+import { verifyLogin2FA } from "@/app/auth/actions";
+import { Shield, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+export default function Verify2FAPage() {
+    const [code, setCode] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleVerify = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (code.length < 6) return;
+
+        setLoading(true);
+        const res = await verifyLogin2FA(code);
+
+        if (res?.error) {
+            toast.error(res.error);
+            setLoading(false);
+        }
+        // Success will redirect automatically by server action
+    };
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-[#0B0E14] relative overflow-hidden">
+            {/* Background Effects */}
+            <div className="absolute inset-0 bg-[radial-gradient(#00C888_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.1] pointer-events-none"></div>
+
+            <div className="w-full max-w-[400px] p-8 rounded-2xl border border-white/10 bg-[#ffffff0d] backdrop-blur-sm relative z-10 mx-4">
+                <div className="text-center mb-8">
+                    <div className="w-16 h-16 rounded-2xl bg-[#00C888]/10 flex items-center justify-center mx-auto mb-6 ring-1 ring-[#00C888]/30">
+                        <Shield size={32} className="text-[#00C888]" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-white mb-2">Two-Factor Authentication</h1>
+                    <p className="text-gray-400 text-sm">
+                        Enter the 6-digit code from your authenticator app to continue.
+                    </p>
+                </div>
+
+                <form onSubmit={handleVerify} className="space-y-6">
+                    <div>
+                        <input
+                            type="text"
+                            value={code}
+                            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                            maxLength={6}
+                            autoFocus
+                            placeholder="000000"
+                            className="w-full h-16 text-center text-3xl font-bold tracking-[0.5em] bg-[#0B0E14] border border-white/10 rounded-xl focus:border-[#00C888] focus:ring-1 focus:ring-[#00C888] text-white placeholder:text-gray-700 transition-all outline-none"
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading || code.length < 6}
+                        className="w-full h-12 bg-[#00C888] hover:bg-[#00B078] text-black font-bold text-lg rounded-xl transition-all shadow-lg shadow-[#00C888]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                        {loading ? <Loader2 size={24} className="animate-spin" /> : "Verify Identity"}
+                    </button>
+                </form>
+
+                <button onClick={() => window.location.href = '/auth/login'} className="w-full text-center mt-6 text-sm text-gray-500 hover:text-white transition-colors">
+                    Back to Login
+                </button>
+            </div>
+        </div>
+    );
+}

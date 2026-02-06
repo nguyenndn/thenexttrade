@@ -1,0 +1,178 @@
+{
+    "before": {
+        "positive": [
+            {
+                "label": "Confident",
+                "icon": "😎",
+                "color": "bg-green-100 text-green-700"
+            },
+            {
+                "label": "Calm",
+                "icon": "😌",
+                "color": "bg-green-100 text-green-700"
+            },
+            {
+                "label": "Focused",
+                "icon": "🎯",
+                "color": "bg-green-100 text-green-700"
+            },
+            {
+                "label": "Patient",
+                "icon": "⏳",
+                "color": "bg-green-100 text-green-700"
+            },
+            {
+                "label": "Excited",
+                "icon": "🤩",
+                "color": "bg-green-100 text-green-700"
+            }
+        ],
+        "neutral": [
+            {
+                "label": "Neutral",
+                "icon": "😐",
+                "color": "bg-gray-100 text-gray-700"
+            },
+            {
+                "label": "Tired",
+                "icon": "😴",
+                "color": "bg-gray-100 text-gray-700"
+            },
+            {
+                "label": "Uncertain",
+                "icon": "🤷",
+                "color": "bg-gray-100 text-gray-700"
+            }
+        ],
+        "negative": [
+            {
+                "label": "Anxious",
+                "icon": "😰",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Fearful",
+                "icon": "😨",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Greedy",
+                "icon": "🤑",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Frustrated",
+                "icon": "😤",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Impatient",
+                "icon": "⏰",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Revenge",
+                "icon": "😡",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "FOMO",
+                "icon": "🏃",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Overconfident",
+                "icon": "🧸",
+                "color": "bg-red-100 text-red-700"
+            }
+        ]
+    },
+    "after": {
+        "positive": [
+            {
+                "label": "Confident",
+                "icon": "😎",
+                "color": "bg-green-100 text-green-700"
+            },
+            {
+                "label": "Calm",
+                "icon": "😌",
+                "color": "bg-green-100 text-green-700"
+            },
+            {
+                "label": "Focused",
+                "icon": "🎯",
+                "color": "bg-green-100 text-green-700"
+            },
+            {
+                "label": "Patient",
+                "icon": "⏳",
+                "color": "bg-green-100 text-green-700"
+            },
+            {
+                "label": "Excited",
+                "icon": "🤩",
+                "color": "bg-green-100 text-green-700"
+            }
+        ],
+        "neutral": [
+            {
+                "label": "Neutral",
+                "icon": "😐",
+                "color": "bg-gray-100 text-gray-700"
+            },
+            {
+                "label": "Tired",
+                "icon": "😴",
+                "color": "bg-gray-100 text-gray-700"
+            },
+            {
+                "label": "Uncertain",
+                "icon": "🤷",
+                "color": "bg-gray-100 text-gray-700"
+            }
+        ],
+        "negative": [
+            {
+                "label": "Anxious",
+                "icon": "😰",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Fearful",
+                "icon": "😨",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Greedy",
+                "icon": "🤑",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Frustrated",
+                "icon": "😤",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Impatient",
+                "icon": "⏰",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Revenge",
+                "icon": "😡",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "FOMO",
+                "icon": "🏃",
+                "color": "bg-red-100 text-red-700"
+            },
+            {
+                "label": "Overconfident",
+                "icon": "🧸",
+                "color": "bg-red-100 text-red-700"
+            }
+        ]
+    }
+}

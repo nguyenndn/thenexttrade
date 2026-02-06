@@ -1,0 +1,1046 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================================
+// AUTHENTICATION (NextAuth.js Standard Schema)
+// ============================================================================
+
+// ============================================================================
+// AUTHENTICATION (Supabase Auth Integration)
+// ============================================================================
+
+// Note: We use Supabase Auth (managed in 'auth.users' table).
+// This 'User' table is a public mirror/extension of 'auth.users'.
+// We will use Database Triggers to keep them in sync.
+
+model User {
+  id            String    @id @db.Uuid // Must match auth.users.id (UUID)
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @db.Timestamptz
+  image         String?
+  
+  // Custom Relations
+  profile       Profile?
+  
+  // Content Relations
+  articles      Article[]
+  
+  // Tools Relations
+  journalEntries JournalEntry[]
+  strategies     Strategy[]
+
+  comments       Comment[] // Added
+  media          Media[]   // Added
+  tradingAccounts TradingAccount[] // Added
+  
+  // Academy Relations
+  progress       UserProgress[]
+  quizAttempts   UserQuizAttempt[]
+  
+  settings      Json?     // Added for user preferences (UI, filters, etc.)
+  
+  // Streak System
+  streak        Int       @default(0)
+  lastCheckIn   DateTime? @db.Timestamptz
+  checkInHistory Json?
+  
+  // Security
+  sessions      UserSession[]
+
+  createdAt     DateTime  @default(now()) @db.Timestamptz
+  updatedAt     DateTime  @updatedAt @db.Timestamptz
+  
+  importHistory ImportHistory[] // Added to satisfy relation
+
+
+  // Gamification (Sprint 5)
+  xp            Int       @default(0) // @deprecated
+  level         Int       @default(1) // @deprecated
+  badges        UserBadge[] // @deprecated Relation to UserBadge
+
+  // EA License Management (Sprint 6/V2)
+  EALicenses    EALicense[]
+  eaDownloads   EADownload[]
+
+  // ============================================
+  // NOTIFICATION SYSTEM RELATIONS
+  // ============================================
+  notifications      Notification[]
+  accountNotifications AccountNotification[] // Added for Spec 1.1
+  eaCommands         EaCommand[] // Added for Spec 14
+  broadcastsCreated  AdminBroadcast[]  @relation("BroadcastCreator")
+  
+  // ============================================
+  // AUDIT LOG RELATIONS
+  // ============================================
+  auditLogs          AuditLog[]        @relation("AdminAuditLogs")
+
+  @@index([createdAt])
+  @@index([email])
+}
+
+// Removed NextAuth tables (Account, Session, VerificationToken) as they are not needed with Supabase SSR.
+
+// ============================================================================
+// USER PROFILE & ROLES
+// ============================================================================
+
+enum UserRole {
+  USER
+  EDITOR
+  ADMIN
+}
+
+model Profile {
+  id          String    @id @default(cuid())
+  userId      String    @unique @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  username    String?   @unique
+  bio         String?   @db.Text
+  role        UserRole  @default(USER)
+  
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @db.Timestamptz
+
+  @@index([userId])
+  @@index([role])
+}
+
+// ============================================================================
+// ACADEMY (LMS)
+// ============================================================================
+
+model Level {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  order       Int      @unique // 1, 2, 3
+  modules     Module[]
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  levelId     String
+  level       Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  order       Int
+  lessons     Lesson[]
+  quiz        Quiz?
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+
+  @@index([levelId])
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String   @db.Text // Markdown or HTML
+  videoUrl    String?
+  duration    Int?     // Minutes
+  moduleId    String
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  order       Int
+  
+  progress    UserProgress[]
+  comments    Comment[] // Added
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+  
+  @@index([moduleId, order])
+}
+
+model UserProgress {
+  id          String   @id @default(cuid())
+  userId      String   @db.Uuid
+  lessonId    String
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  isCompleted Boolean  @default(false)
+  completedAt DateTime? @db.Timestamptz
+  
+  @@unique([userId, lessonId])
+  @@index([userId, isCompleted])
+  @@index([lessonId])
+}
+
+// ============================================================================
+// CMS (NEWS & ARTICLES)
+// ============================================================================
+
+enum ArticleStatus {
+  DRAFT
+  PENDING
+  PUBLISHED
+  ARCHIVED
+}
+
+model Article {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?   @db.Text
+  content     String    @db.Text
+  thumbnail   String?
+  status      ArticleStatus @default(DRAFT)
+  
+  authorId    String    @db.Uuid
+  author      User      @relation(fields: [authorId], references: [id])
+  
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  
+  tags        ArticleTag[]
+  comments    Comment[] // Added
+  
+  views       Int       @default(0)
+  isFeatured  Boolean   @default(false)
+  publishedAt DateTime? @db.Timestamptz
+  
+  metaTitle       String?
+  metaDescription String?
+  focusKeyword    String?
+  
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @db.Timestamptz
+
+  @@index([status])
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([views])
+  @@index([createdAt])
+
+  // Performance Indexes (New - Enhanced)
+  @@index([status, createdAt], name: "article_status_created_idx")
+  @@index([isFeatured, status, createdAt]) // Perfect for Homepage Featured
+  @@index([status, views]) // Perfect for Homepage Popular
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  
+  articles    Article[]
+  
+  parentId    String?
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @db.Timestamptz
+}
+
+model Tag {
+  id          String       @id @default(cuid())
+  name        String
+  slug        String       @unique
+  articles    ArticleTag[]
+}
+
+model ArticleTag {
+  articleId   String
+  tagId       String
+  article     Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag         Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@id([articleId, tagId])
+}
+
+// ============================================================================
+// TRADING TOOLS
+// ============================================================================
+
+enum TradeType {
+  BUY
+  SELL
+}
+
+enum TradeStatus {
+  OPEN
+  CLOSED
+}
+
+model JournalEntry {
+  id          String    @id @default(cuid())
+  userId      String    @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  symbol      String    // EURUSD, XAUUSD
+  type        TradeType // BUY, SELL
+  entryPrice  Float
+  exitPrice   Float?
+  stopLoss    Float?
+  takeProfit  Float?
+  lotSize     Float
+  pnl         Float?    // Profit/Loss amount
+  commission  Float?    @default(0)
+  swap        Float?    @default(0)
+  status      TradeStatus @default(OPEN)
+  result      TradeResult? // WIN, LOSS, BREAK_EVEN
+  entryReason String?   @db.Text
+  exitReason  String?   @db.Text
+  
+  entryDate   DateTime  @db.Timestamptz
+  exitDate    DateTime? @db.Timestamptz
+  notes       String?   @db.Text
+  images      String[]  // URLs stored as array
+  
+  // Psychology Tracking (Phase 44)
+  emotionBefore   String?   @db.VarChar(50)
+  emotionAfter    String?   @db.VarChar(50)
+  confidenceLevel Int?      // 1-5
+  followedPlan    Boolean?
+  notesPsychology String?   @db.Text
+
+  // Mistake Tracking  // Analysis Fields
+  mistakes      Json?     @db.JsonB // Array of mistake IDs
+  tags          String[]  @default([])
+  tradingSession String?  @map("trading_session") @db.VarChar(20) // Sydney, Tokyo, London, New Yorkcodes
+
+  // Strategy Tracking (Phase 46)
+  strategy      String?   @db.VarChar(100) // Keep as string for loose coupling, or relation?
+  // We'll keep the string for now as per plan, but also add a helper relation if we want to enforce it later.
+  // Actually, the plan says "JournalEntry already has a strategy string field". 
+  // But we want to add the Strategy model and User relation.
+
+  accountId   String?
+  account     TradingAccount? @relation(fields: [accountId], references: [id])
+  
+  // Import Tracking (Merged with EA Sync)
+  importId       String?  @map("import_id") @db.Uuid
+  externalTicket String?  @map("external_ticket") @db.VarChar(100)
+  externalHash   String?  @map("external_hash") @db.VarChar(64)
+  
+  import         ImportHistory? @relation(fields: [importId], references: [id], onDelete: SetNull)
+
+  // EA Sync Fields (Merged above)
+  syncSource       String    @default("MANUAL") @map("sync_source") @db.VarChar(20) // MANUAL, EA_SYNC
+  syncedAt         DateTime? @map("synced_at")
+
+  // Ensure unique external ticket per account to prevent duplicates
+  @@unique([accountId, externalTicket])
+  
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @db.Timestamptz
+
+  @@index([userId, status])
+  @@index([entryDate])
+  @@index([strategy])
+  @@unique([userId, accountId, externalTicket])
+}
+
+// Strategy Tracking (Phase 46)
+model Strategy {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+  rules       String?  @db.Text
+  color       String   @default("#6366F1") @db.VarChar(7)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("strategies")
+}
+
+model TradingAccount {
+  id          String   @id @default(cuid())
+  userId      String   @db.Uuid
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String
+  color       String   @default("#00C888") @db.VarChar(20) // Custom UI color
+  broker      String?
+  server      String?  @db.VarChar(100)
+  accountNumber String?  @map("account_number") @db.VarChar(50)
+  balance     Float    @default(0)
+  currency    String   @default("USD")
+  platform    String?  @default("MetaTrader 4") // MT4, MT5, cTrader
+  isDefault   Boolean  @default(false)
+  
+  journalEntries JournalEntry[]
+  
+  // EA API Authentication
+  apiKey          String?   @unique @map("api_key") @db.VarChar(64)
+  apiKeyCreatedAt DateTime  @default(now()) @map("api_key_created_at")
+  
+  // EA Connection Status
+  status          String    @default("PENDING") @db.VarChar(20) // PENDING, CONNECTED, DISCONNECTED
+  lastHeartbeat   DateTime? @map("last_heartbeat")
+  lastSync        DateTime? @map("last_sync")
+  eaVersion       String?   @map("ea_version") @db.VarChar(20)
+  
+  // Stats & Settings
+  totalTrades     Int       @default(0) @map("total_trades")
+  autoSync        Boolean   @default(true) @map("auto_sync")
+  syncOpenTrades  Boolean   @default(false) @map("sync_open_trades")
+
+  // Spec 1.1 & Enhanced Features
+  equity          Float?   @default(0)
+  leverage        String?  @db.VarChar(10)
+  accountType     String   @default("PERSONAL") @map("account_type") @db.VarChar(30)
+  tags            String[] @default([])
+  
+  notifyDisconnect Boolean  @default(true) @map("notify_disconnect")
+  disconnectThresholdHours Int @default(24) @map("disconnect_threshold_hours")
+  
+  apiKeyExpiresAt DateTime? @map("api_key_expires_at")
+  ipWhitelist     String[]  @default([]) @map("ip_whitelist")
+
+  syncHistory     SyncHistory[]
+  importHistory   ImportHistory[]
+  notifications   AccountNotification[]
+  commands        EaCommand[]
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+
+  @@index([userId])
+  @@map("trading_accounts")
+}
+
+model AccountNotification {
+  id                String   @id @default(uuid())
+  tradingAccountId  String   @map("trading_account_id") // Remove @db.Uuid to match TradingAccount ID type (cuid/string)
+  userId            String   @map("user_id") @db.Uuid
+  
+  type              String   @db.VarChar(30)
+  title             String   @db.VarChar(200)
+  message           String?  @db.Text
+  
+  isRead            Boolean  @default(false) @map("is_read")
+  sentEmail         Boolean  @default(false) @map("sent_email")
+  
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  tradingAccount    TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("account_notifications")
+}
+
+model EaCommand {
+  id                String          @id @default(uuid())
+  tradingAccountId  String          @map("trading_account_id")
+  userId            String          @map("user_id") @db.Uuid
+  
+  type              String
+  params            Json            @default("{}")
+  
+  status            String          @default("PENDING")
+  
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  startedAt         DateTime?       @map("started_at") @db.Timestamptz
+  completedAt       DateTime?       @map("completed_at") @db.Timestamptz
+  expiresAt         DateTime?       @map("expires_at") @db.Timestamptz
+  
+  result            Json?
+  errorMessage      String?         @map("error_message")
+  
+  source            String          @default("WEB")
+  ipAddress         String?         @map("ip_address")
+  
+  tradingAccount    TradingAccount  @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([tradingAccountId, status, createdAt])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("ea_commands")
+}
+
+enum TradeResult {
+  WIN
+  LOSS
+  BREAK_EVEN
+}
+
+// ============================================
+// DATA IMPORT
+// ============================================
+
+model ImportHistory {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  accountId     String?   @map("account_id")
+  
+  source        String    @db.VarChar(50) // MT4, MT5, CSV
+  filename      String?   @db.VarChar(255)
+  fileSize      Int?      @map("file_size")
+  
+  totalRows     Int       @default(0) @map("total_rows")
+  importedCount Int       @default(0) @map("imported_count")
+  skippedCount  Int       @default(0) @map("skipped_count")
+  errorCount    Int       @default(0) @map("error_count")
+  
+  status        String    @default("PENDING") @db.VarChar(20)
+  errorMessage  String?   @map("error_message")
+  
+  startedAt     DateTime  @default(now()) @map("started_at") @db.Timestamptz
+  completedAt   DateTime? @map("completed_at") @db.Timestamptz
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account       TradingAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  trades        JournalEntry[]
+
+  @@index([userId])
+  @@map("import_history")
+}
+
+// ============================================
+// EA SYNC HISTORY
+// ============================================
+
+model SyncHistory {
+  id                String   @id @default(uuid()) @db.Uuid
+  tradingAccountId  String   @map("trading_account_id")
+  
+  tradesReceived    Int      @default(0) @map("trades_received")
+  tradesImported    Int      @default(0) @map("trades_imported")
+  tradesSkipped     Int      @default(0) @map("trades_skipped")
+  
+  eaVersion         String?  @map("ea_version") @db.VarChar(20)
+  clientTime        DateTime? @map("client_time")
+  
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  tradingAccount    TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+
+  @@index([tradingAccountId])
+  @@map("sync_history")
+}
+
+enum ImpactLevel {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+model EconomicEvent {
+  id          String   @id @default(cuid())
+  title       String
+  currency    String   // USD, EUR
+  impact      ImpactLevel // HIGH, MEDIUM, LOW
+  date        DateTime  @db.Timestamptz
+  forecast    String?
+  previous    String?
+  actual      String?
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+
+  @@unique([title, currency, date])
+}
+
+// ============================================================================
+// QUIZ ENGINE
+// ============================================================================
+
+model Quiz {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  moduleId    String?  @unique // Optional: Link to a module (End of module quiz)
+  module      Module?  @relation(fields: [moduleId], references: [id])
+  
+  questions   Question[]
+  attempts    UserQuizAttempt[]
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  quizId      String
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  text        String
+  order       Int
+  options     Option[]
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+
+  @@index([quizId])
+}
+
+model Option {
+  id          String   @id @default(cuid())
+  questionId  String
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text        String
+  isCorrect   Boolean  @default(false)
+
+  @@index([questionId])
+}
+
+model UserQuizAttempt {
+  id          String   @id @default(cuid())
+  userId      String   @db.Uuid
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizId      String
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  
+  score       Int      // Percentage or raw score
+  passed      Boolean  @default(false)
+  completedAt DateTime @default(now()) @db.Timestamptz
+}
+
+
+enum PlanStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+
+
+// ============================================================================
+// SOCIAL & INTERACTION
+// ============================================================================
+
+model Comment {
+  id          String    @id @default(cuid())
+  content     String    @db.Text
+  
+  userId      String    @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Polymorphic-like associations (Optional relations)
+  articleId   String?
+  article     Article?  @relation(fields: [articleId], references: [id])
+  
+  lessonId    String?
+  lesson      Lesson?   @relation(fields: [lessonId], references: [id])
+  
+  parentId    String?
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[] @relation("CommentReplies")
+  
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @db.Timestamptz
+
+  @@index([articleId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([lessonId])
+  @@index([parentId])
+}
+
+// ============================================================================
+// SYSTEM HEALTH
+// ============================================================================
+
+model ErrorLog {
+  id          String    @id @default(cuid())
+  message     String    @db.Text
+  stack       String?   @db.Text
+  context     String?   // JSON string of context (url, user, etc)
+  severity    String    @default("ERROR") // ERROR, WARN, INFO
+  
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+}
+
+// ============================================================================
+// MEDIA LIBRARY
+// ============================================================================
+
+model Media {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  type      String   // mimetype: image/jpeg, image/png, etc.
+  size      Int      // bytes
+  width     Int?
+  height    Int?
+  alt       String?
+  caption   String?
+  thumbnailUrl String? // Path to 300px thumbnail
+  
+  userId    String?  @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id])
+  
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  @@index([userId])
+}
+
+// ============================================================================
+// SYSTEM SETTINGS
+// ============================================================================
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique // e.g., 'site_config', 'maintenance_mode'
+  value     Json     // Flexible JSON storage
+  
+  updatedAt DateTime @updatedAt @db.Timestamptz
+}
+
+// ============================================================================
+// GAMIFICATION
+// ============================================================================
+
+model Badge { // @deprecated
+  id          String   @id @default(cuid())
+  code        String   @unique // e.g. "FIRST_TRADE", "LESSON_MASTER"
+  name        String
+  description String
+  icon        String   // Path to icon or lucide name
+  xpReward    Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  
+  users       UserBadge[]
+}
+
+model UserBadge { // @deprecated
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @db.Uuid
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  badgeId   String
+  earnedAt  DateTime @default(now()) @db.Timestamptz
+
+  @@unique([userId, badgeId])
+}
+
+// ============================================================================
+// BROKER MANAGEMENT (ADDED IN SPRINT 3)
+// ============================================================================
+
+model Broker {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  logo        String   // URL
+  rating      Float    @default(0) // 0-5
+  summary     String?  @db.Text    // Short description
+  
+  features    String[] // List of key features (Unlimited Leverage, etc)
+  
+  affiliateUrl String? // "Open Account" Link
+  reviewUrl    String? // Internal Review Link
+  website      String? // Official Site
+  
+  minDeposit   Float?
+  maxLeverage  String?
+  regulation   String?
+  
+  isRecommended Boolean @default(false)
+  isVisible     Boolean @default(true)
+  
+  order       Int      @default(0) // Custom ordering
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+}
+
+// ============================================================================
+// EA LICENSE MANAGEMENT (NEW - V2.0)
+// ============================================================================
+
+enum AccountStatus {
+  PENDING    // Waiting for admin review
+  APPROVED   // Can use EA
+  REJECTED   // Denied
+  EXPIRED    // Past expiry date
+  SUSPENDED  // Temporarily disabled
+}
+
+enum BrokerName {
+  EXNESS
+  VANTAGE
+  VTMARKETS
+}
+
+// EA License Request & Status
+model EALicense {
+  id              String        @id @default(uuid())
+  
+  // Owner
+  userId          String        @db.Uuid
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Account Info
+  broker          BrokerName
+  accountNumber   String
+  
+  // Status
+  status          AccountStatus @default(PENDING)
+  
+  // Dates
+  startDate       DateTime?     @db.Timestamptz // When approved
+  expiryDate      DateTime?     @db.Timestamptz // Null = lifetime
+  
+  // Admin Actions
+  note            String?       @db.Text       // Admin notes
+  approvedBy      String?       // Admin user ID
+  approvedAt      DateTime?     @db.Timestamptz
+  rejectedBy      String?
+  rejectedAt      DateTime?     @db.Timestamptz
+  rejectReason    String?       @db.Text
+  
+  // Exness API verification (optional)
+  isVerified      Boolean       @default(false)
+  verifiedAt      DateTime?     @db.Timestamptz
+  
+  createdAt       DateTime      @default(now()) @db.Timestamptz
+  updatedAt       DateTime      @updatedAt @db.Timestamptz
+  
+  @@unique([broker, accountNumber])
+  @@index([userId])
+  @@index([status])
+  @@index([accountNumber])
+  @@index([createdAt])
+}
+
+// ============================================================================
+// EA PRODUCT MANAGEMENT
+// ============================================================================
+
+enum EAType {
+  AUTO_TRADE      // Fully automated trading
+  MANUAL_ASSIST   // Manual trading helper
+  INDICATOR       // Custom indicator
+}
+
+enum PlatformType {
+  MT4
+  MT5
+  BOTH
+}
+
+model EAProduct {
+  id              String        @id @default(uuid())
+  
+  // Basic Info
+  name            String        // "GSN Auto Trader"
+  slug            String        @unique
+  description     String?       @db.Text
+  
+  // Type
+  type            EAType
+  platform        PlatformType  @default(BOTH)
+  
+  // Files (Supabase Storage URLs)
+  fileMT4         String?
+  fileMT5         String?
+  thumbnail       String?
+  
+  // Version
+  version         String        @default("1.0.0")
+  changelog       String?       @db.Text
+  
+  // Settings
+  isActive        Boolean       @default(true)
+  isFree          Boolean       @default(false)
+  
+  // Stats
+  totalDownloads  Int           @default(0)
+  
+  createdAt       DateTime      @default(now()) @db.Timestamptz
+  updatedAt       DateTime      @updatedAt @db.Timestamptz
+  
+  // Relations
+  downloads       EADownload[]
+  
+  @@index([isActive])
+  @@index([type])
+}
+
+// Download History
+model EADownload {
+  id              String        @id @default(uuid())
+  
+  productId       String
+  product         EAProduct     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  userId          String        @db.Uuid
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  platform        PlatformType  // Which file downloaded
+  version         String
+  
+  ipAddress       String?
+  userAgent       String?
+  
+  createdAt       DateTime      @default(now()) @db.Timestamptz
+  
+  @@index([productId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+
+// ============================================
+// NOTIFICATION SYSTEM
+// ============================================
+
+enum NotificationType {
+  // System Notifications (Auto-generated)
+  LICENSE_APPROVED      // EA license approved
+  LICENSE_REJECTED      // EA license rejected
+  LICENSE_EXPIRED       // EA license expired
+  NEW_EA_VERSION        // New EA version available
+  
+  // Admin Broadcast
+  ANNOUNCEMENT          // General announcement
+  MAINTENANCE           // Scheduled maintenance
+  PROMOTION             // Promotional message
+  FEATURE_UPDATE        // New feature announcement
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+// Individual Notification (per user)
+model Notification {
+  id              String              @id @default(uuid())
+  
+  // Recipient
+  userId          String              @db.Uuid
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Content
+  type            NotificationType
+  title           String
+  message         String              @db.Text
+  link            String?             // URL to navigate
+  
+  // Display
+  icon            String?             // Icon name or emoji
+  priority        NotificationPriority @default(NORMAL)
+  
+  // Status
+  isRead          Boolean             @default(false)
+  readAt          DateTime?           @db.Timestamptz
+  
+  // For broadcast notifications
+  broadcastId     String?             // Link to AdminBroadcast
+  broadcast       AdminBroadcast?     @relation(fields: [broadcastId], references: [id])
+  
+  createdAt       DateTime            @default(now()) @db.Timestamptz
+  
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@index([broadcastId])
+}
+
+// Admin Broadcast Template
+model AdminBroadcast {
+  id              String              @id @default(uuid())
+  
+  // Content
+  type            NotificationType
+  title           String
+  message         String              @db.Text
+  link            String?
+  icon            String?
+  priority        NotificationPriority @default(NORMAL)
+  
+  // Targeting
+  targetAll       Boolean             @default(true)     // All users
+  targetRoles     String[]            @default([])       // Specific roles: ["USER", "ADMIN"]
+  targetUserIds   String[]            @default([])       // Specific user IDs
+  
+  // Schedule
+  scheduledAt     DateTime?           @db.Timestamptz    // Null = send immediately
+  sentAt          DateTime?           @db.Timestamptz    // When actually sent
+  
+  // Stats
+  totalRecipients Int                 @default(0)
+  readCount       Int                 @default(0)
+  
+  // Audit
+  createdBy       String              @db.Uuid
+  creator         User                @relation("BroadcastCreator", fields: [createdBy], references: [id])
+  
+  createdAt       DateTime            @default(now()) @db.Timestamptz
+  updatedAt       DateTime            @updatedAt @db.Timestamptz
+  
+  // Relations
+  notifications   Notification[]
+  
+  @@index([createdAt])
+  @@index([sentAt])
+}
+
+// ============================================
+// AUDIT LOG SYSTEM
+// ============================================
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  
+  // Who
+  adminId     String   @db.Uuid
+  admin       User     @relation("AdminAuditLogs", fields: [adminId], references: [id])
+  
+  // What
+  action      String   // "LICENSE_APPROVED", "LICENSE_REJECTED", "PRODUCT_CREATED", etc.
+  targetType  String   // "EALicense", "EAProduct"
+  targetId    String?  // ID of affected record
+  
+  // Details
+  details     Json?    // Additional context (old values, new values, etc.)
+  
+  // When
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  
+  @@index([adminId])
+  @@index([action])
+  @@index([targetType])
+  @@index([createdAt])
+}
+
+// ============================================
+// SECURITY & SESSIONS
+// ============================================
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  device    String?
+  ip        String?
+  userAgent String?
+  
+  lastActive DateTime @default(now()) @db.Timestamptz
+  
+  createdAt DateTime @default(now()) @db.Timestamptz
+  
+  @@unique([userId, userAgent, ip], name: "unique_session")
+  @@index([userId])
+}
