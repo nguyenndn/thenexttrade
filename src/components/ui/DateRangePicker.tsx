@@ -4,7 +4,7 @@ import * as React from "react"
 import { useState, useEffect } from "react"
 import { format, addDays, startOfDay, endOfDay, startOfWeek, endOfWeek, subDays, startOfMonth, endOfMonth, addMonths, subMonths } from "date-fns"
 import { Calendar as CalendarIcon, ChevronDown, ChevronsUpDown } from "lucide-react"
-import { DateRangePicker as ReactDateRangePicker, RangeKeyDict, Range, createStaticRanges, defaultStaticRanges, defaultInputRanges } from "react-date-range"
+import { DateRangePicker as ReactDateRangePicker, RangeKeyDict, Range, createStaticRanges } from "react-date-range"
 import "react-date-range/dist/styles.css"
 import "react-date-range/dist/theme/default.css"
 
@@ -68,36 +68,14 @@ const customStaticRanges = createStaticRanges([
             endDate: endOfMonth(addMonths(new Date(), -1)),
         }),
     },
-]);
-
-const customInputRanges = [
     {
-        label: 'days up to today',
-        range: (value: any) => ({
-            startDate: addDays(startOfDay(new Date()), (Math.max(Number(value), 1) - 1) * -1),
+        label: "All Time",
+        range: () => ({
+            startDate: new Date(2000, 0, 1),
             endDate: endOfDay(new Date()),
         }),
-        getCurrentValue(range: any) {
-            if (!range.startDate || !range.endDate) return '-';
-            if (format(range.endDate, 'yyyy-MM-dd') !== format(new Date(), 'yyyy-MM-dd')) return '-';
-            const diff = Math.round(Math.abs((range.endDate.getTime() - range.startDate.getTime()) / (24 * 60 * 60 * 1000)));
-            return diff + 1;
-        },
     },
-    {
-        label: 'days starting today',
-        range: (value: any) => ({
-            startDate: startOfDay(new Date()),
-            endDate: addDays(startOfDay(new Date()), Math.max(Number(value), 1) - 1),
-        }),
-        getCurrentValue(range: any) {
-            if (!range.startDate || !range.endDate) return '-';
-            if (format(range.startDate, 'yyyy-MM-dd') !== format(new Date(), 'yyyy-MM-dd')) return '-';
-            const diff = Math.round(Math.abs((range.endDate.getTime() - range.startDate.getTime()) / (24 * 60 * 60 * 1000)));
-            return diff + 1;
-        },
-    },
-];
+]);
 
 export function DateRangePicker({
     value,
@@ -156,6 +134,7 @@ export function DateRangePicker({
     // Format display text
     const getDisplayText = () => {
         if (!value?.start) return "Select date range"
+        if (value.start.getFullYear() === 2000) return "All Time" // Custom display for All Time
         if (value.end) {
             return `${format(value.start, "MMM dd, yyyy")} - ${format(value.end, "MMM dd, yyyy")}`
         }
@@ -181,20 +160,7 @@ export function DateRangePicker({
                     color: #3b82f6 !important;
                 }
                 .rdrInputRanges {
-                    padding-top: 10px;
-                }
-                .rdrInputRange {
-                    padding: 4px 10px !important;
-                }
-                .rdrInputRangeInput {
-                    border: 1px solid #e5e7eb !important;
-                    border-radius: 6px !important;
-                    line-height: normal !important;
-                    height: 28px !important;
-                }
-                .rdrInputRangeLabel {
-                    color: #4b5563 !important;
-                    font-size: 13px !important;
+                    display: none; 
                 }
                 .rdrMonthName {
                     font-weight: 600 !important;

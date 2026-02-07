@@ -51,18 +51,45 @@ export const menuItems = [
 ];
 
 export const dashboardMenuItems = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Journal", href: "/dashboard/journal", icon: BookOpen },
-    { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-    { name: "Sessions", href: "/dashboard/sessions", icon: Activity },
-    { name: "Psychology", href: "/dashboard/psychology", icon: Sparkles },
-    { name: "Mistakes", href: "/dashboard/mistakes", icon: AlertTriangle },
-    { name: "Strategies", href: "/dashboard/strategies", icon: Target },
-    { name: "Playbook", href: "/dashboard/playbook", icon: BookOpen }, // Reused Icon
-    { name: "Trading Accounts", href: "/dashboard/accounts", icon: Wallet },
-    { name: "Trading Systems", href: "/dashboard/trading-systems", icon: Bot },
-    { name: "Academy", href: "/dashboard/academy", icon: GraduationCap },
-    { name: "Reports", href: "/dashboard/reports", icon: FileText },
+    {
+        name: "Dashboard",
+        href: "/dashboard",
+        icon: LayoutDashboard,
+        items: [
+            { name: "Journal", href: "/dashboard/journal" },
+            { name: "Sessions", href: "/dashboard/sessions" },
+            { name: "Trading Accounts", href: "/dashboard/accounts" },
+        ]
+    },
+    {
+        name: "Analysis",
+        href: "#",
+        icon: BarChart3,
+        items: [
+            { name: "Analytics", href: "/dashboard/analytics" },
+            { name: "Reports", href: "/dashboard/reports" },
+            { name: "Mistakes", href: "/dashboard/mistakes" },
+        ]
+    },
+    {
+        name: "Strategy",
+        href: "#",
+        icon: Target,
+        items: [
+            { name: "Playbook", href: "/dashboard/playbook" },
+            { name: "Strategies", href: "/dashboard/strategies" },
+            { name: "Psychology", href: "/dashboard/psychology" },
+            { name: "Trading Systems", href: "/dashboard/trading-systems" },
+        ]
+    },
+    {
+        name: "Resources",
+        href: "#",
+        icon: BookOpen,
+        items: [
+            { name: "Academy", href: "/dashboard/academy" },
+        ]
+    }
 ];
 
 export const adminMenuItems = [

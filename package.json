@@ -97,7 +97,7 @@
     "react-dom": "19.2.1",
     "react-hook-form": "^7.71.0",
     "react-markdown": "^10.1.0",
-    "recharts": "^3.6.0",
+    "recharts": "^3.7.0",
     "rss": "^1.2.2",
     "schema-dts": "^1.1.5",
     "sharp": "^0.34.5",

@@ -30,65 +30,100 @@ interface SidebarItemComponentProps {
     pathname: string | null;
     collapsed: boolean;
     setCollapsed: (value: boolean) => void;
+    isExpanded: boolean;
+    onToggle: () => void;
 }
 
 // Extracted component to follow Rules of Hooks
-function SidebarItemComponent({ item, pathname, collapsed, setCollapsed }: SidebarItemComponentProps) {
+function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpanded, onToggle }: SidebarItemComponentProps) {
     const Icon = item.icon;
-    const isRoot = item.href === '/admin' || item.href === '/dashboard';
-    const isActive = pathname === item.href ||
-        (item.items && pathname?.startsWith(item.href)) ||
-        (!isRoot && pathname?.startsWith(`${item.href}/`));
     const hasSubItems = item.items && item.items.length > 0;
+    const isGroupLink = hasSubItems && item.href !== "#"; // e.g. Dashboard
 
-    // Hooks are now at the top level of this component - correct!
-    const [isExpanded, setIsExpanded] = useState(isActive);
+    // Active Logic
+    // Exact match for the item itself
+    const isSelfActive = item.href !== "#" && pathname === item.href;
 
-    // Sync expansion with active path
-    useEffect(() => {
-        if (isActive && !collapsed) {
-            setIsExpanded(true);
+    // Check if any child is active
+    const isChildActive = item.items && item.items.some(sub =>
+        pathname === sub.href || pathname?.startsWith(`${sub.href}/`)
+    );
+
+    const isBranchActive = isSelfActive || isChildActive;
+
+    // Handle Main Click
+    const handleMainClick = (e: React.MouseEvent) => {
+        if (hasSubItems) {
+            if (isGroupLink) {
+                // If it's a link (e.g. Dashboard), we navigate AND toggle if not already open
+                // Actually if strict accordion, clicking Dashboard should open it.
+                if (!isExpanded) {
+                    onToggle();
+                }
+            } else {
+                // Pure Folder: Toggle
+                e.preventDefault();
+                onToggle();
+            }
+            if (collapsed) setCollapsed(false);
         }
-    }, [isActive, collapsed]);
+    };
+
+    // Handle Chevron Click (Always Toggle)
+    const handleChevronClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation(); // Stop bubbling to Link
+        onToggle();
+        if (collapsed) setCollapsed(false);
+    };
+
+    const isActiveStyle = isBranchActive;
 
     return (
         <div>
             <div
-                onClick={() => {
-                    if (hasSubItems) {
-                        setIsExpanded(!isExpanded);
-                        if (collapsed) setCollapsed(false);
-                    }
-                }}
                 className={cn(
                     "flex items-center gap-4 px-4 py-3 rounded-2xl cursor-pointer transition-all duration-200 group relative select-none",
                     collapsed ? "justify-center px-2" : "",
-                    isActive && !hasSubItems
+                    isActiveStyle
                         ? "bg-[#00C888]/10 text-[#00C888]"
                         : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
                 )}
+                onClick={handleMainClick}
             >
                 <Link
-                    href={hasSubItems ? "#" : item.href}
+                    href={item.href === "#" ? "" : item.href} // Empty href if # to prevent navigation logic confusion, handled by onClick
                     className="absolute inset-0 z-0"
                     onClick={(e) => {
-                        if (hasSubItems) e.preventDefault();
+                        if (item.href === "#") e.preventDefault();
                     }}
                 />
 
                 <Icon size={22} className={cn(
                     "transition-colors relative z-10 pointer-events-none min-w-[22px]",
-                    isActive ? "text-[#00C888]" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+                    isActiveStyle ? "text-[#00C888]" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"
                 )} />
 
                 {!collapsed && (
                     <>
                         <span className="flex-1 font-medium text-sm relative z-10 pointer-events-none">{item.name}</span>
                         {hasSubItems && (
-                            <ChevronDown size={18} className={cn(
-                                "transition-transform relative z-10 pointer-events-none",
-                                isExpanded ? "rotate-180" : ""
-                            )} />
+                            <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={handleChevronClick}
+                                className={cn(
+                                    "relative z-20 p-1 -mr-2 rounded-lg transition-colors",
+                                    isBranchActive
+                                        ? "text-[#00C888] hover:bg-[#00C888]/20"
+                                        : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
+                                )}
+                            >
+                                <ChevronDown size={18} className={cn(
+                                    "transition-transform duration-200",
+                                    isExpanded ? "rotate-180" : ""
+                                )} />
+                            </div>
                         )}
                     </>
                 )}
@@ -104,7 +139,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed }: Sideb
             {!collapsed && hasSubItems && isExpanded && (
                 <div className="ml-9 mt-1 space-y-1 animate-in slide-in-from-top-2 fade-in duration-200">
                     {item.items?.map((subItem) => {
-                        const isSubActive = pathname === subItem.href;
+                        const isSubActive = pathname === subItem.href || pathname?.startsWith(`${subItem.href}/`);
                         return (
                             <Link
                                 key={subItem.href}
@@ -129,6 +164,29 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed }: Sideb
 export function Sidebar({ items = dashboardMenuItems, className }: SidebarProps) {
     const pathname = usePathname();
     const [collapsed, setCollapsed] = useState(false);
+
+    // Accordion State: Track the name of the expanded group
+    const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+
+    // Sync expansion with active path on mount and navigation
+    useEffect(() => {
+        if (!pathname) return;
+
+        // Find which group should be open based on active path
+        const activeGroup = items.find((item: any) => {
+            // Check self (for group links)
+            if (item.href !== "#" && pathname === item.href) return true;
+            // Check children
+            if (item.items) {
+                return item.items.some((sub: any) => pathname === sub.href || pathname.startsWith(`${sub.href}/`));
+            }
+            return false;
+        });
+
+        if (activeGroup) {
+            setExpandedGroup(activeGroup.name);
+        }
+    }, [pathname, items]);
 
     return (
         <aside className={cn(
@@ -160,6 +218,11 @@ export function Sidebar({ items = dashboardMenuItems, className }: SidebarProps)
                         pathname={pathname}
                         collapsed={collapsed}
                         setCollapsed={setCollapsed}
+                        isExpanded={expandedGroup === item.name}
+                        onToggle={() => {
+                            // Toggle logic: If clicking already open group, close it. Else open it (closing others).
+                            setExpandedGroup(prev => prev === item.name ? null : item.name);
+                        }}
                     />
                 ))}
             </div>

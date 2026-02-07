@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { format, subDays } from "date-fns";
 import { Button } from "@/components/ui/Button";
 import {
     Dialog,
@@ -21,6 +22,8 @@ interface RemoteSyncButtonProps {
 }
 
 type CommandStatus = "idle" | "pending" | "processing" | "completed" | "failed";
+
+const BROKER_OFFSET_HOURS = 2; // UTC+2
 
 export function RemoteSyncButton({
     tradingAccountId,
@@ -65,13 +68,31 @@ export function RemoteSyncButton({
             setStatus("pending");
             setResult(null);
 
+            let params = {};
+            const isAll = syncPeriod === "all";
+
+            if (!isAll) {
+                const days = parseInt(syncPeriod);
+
+                // Calculate Broker Time (UTC+2) to send specific date range
+                // This forces EA to use SyncDateRange (Deal Ticket) instead of SyncRecentTrades
+                const now = new Date();
+                const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+                const brokerNow = new Date(utcMs + (BROKER_OFFSET_HOURS * 60 * 60 * 1000));
+
+                const toDate = format(brokerNow, "yyyy.MM.dd");
+                const fromDate = format(subDays(brokerNow, days - 1), "yyyy.MM.dd");
+
+                params = { fromDate, toDate };
+            }
+
             const res = await fetch("/api/ea/commands", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     tradingAccountId,
-                    type: syncPeriod === "all" ? "SYNC_ALL" : "SYNC_TRADES",
-                    params: syncPeriod !== "all" ? { days: parseInt(syncPeriod) } : {},
+                    type: isAll ? "SYNC_ALL" : "SYNC_TRADES",
+                    params,
                 }),
             });
 

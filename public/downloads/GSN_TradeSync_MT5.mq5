@@ -9,8 +9,10 @@
 #property description "Auto sync closed trades to GSN Trading Journal"
 
 //--- Input parameters
-input string InpApiKey = ""; // API Key from GSN Dashboard
-input string InpApiUrl = "https://gsn-crm.vercel.app"; // Server URL
+input string InpApiKey =
+    "7f354055-b66a637f-2cdb0a8d-79a21638-df7d11c9-2e2f6269"; // API Key from GSN
+                                                             // Dashboard
+input string InpApiUrl = "http://127.0.0.1:3000";            // Server URL
 input int InpHeartbeatInterval = 300; // Heartbeat interval (seconds)
 input int InpSyncDelay = 5;           // Delay after trade close (seconds)
 input bool InpShowPanel = true;       // Show Status Panel
@@ -66,25 +68,25 @@ int g_RateLimitSeconds = 60;    // Default cooldown (seconds)
 #define BTN_SYNC_CUSTOM "GSN_BtnSyncCustom"
 
 //--- Colors - Premium Modern Dark Theme
-#define CLR_PANEL_BG C'18,18,24'       // Deep dark background
-#define CLR_PANEL_BG2 C'24,24,32'      // Card background
-#define CLR_PANEL_BORDER C'45,45,55'   // Subtle border
-#define CLR_HEADER_BG C'24,24,32'      // Dark header (no green bar)
-#define CLR_HEADER_TEXT C'255,255,255' // White header text
-#define CLR_ACCENT C'0,212,140'        // GSN Emerald Green
-#define CLR_ACCENT_DIM C'0,170,112'    // Hover state
-#define CLR_LABEL C'140,140,155'       // Muted labels
-#define CLR_VALUE C'240,240,245'       // Bright values
-#define CLR_CONNECTED C'46,204,113'    // Success green
-#define CLR_DISCONNECTED C'231,76,60'  // Error red
-#define CLR_WARNING C'241,196,15'      // Warning amber
-#define CLR_BTN_BG C'32,32,42'         // Button background
-#define CLR_BTN_BORDER C'55,55,70'     // Button border
-#define CLR_BTN_TEXT C'220,220,230'    // Button text
-#define CLR_BTN_PRIMARY C'0,200,130'   // Primary action
-#define CLR_POPUP_BG C'22,22,30'       // Popup background
-#define CLR_EDIT_BG C'16,16,22'        // Input background
-#define CLR_DIVIDER C'45,45,58'        // Subtle divider
+#define CLR_PANEL_BG C '18,18,24'       // Deep dark background
+#define CLR_PANEL_BG2 C '24,24,32'      // Card background
+#define CLR_PANEL_BORDER C '45,45,55'   // Subtle border
+#define CLR_HEADER_BG C '24,24,32'      // Dark header (no green bar)
+#define CLR_HEADER_TEXT C '255,255,255' // White header text
+#define CLR_ACCENT C '0,212,140'        // GSN Emerald Green
+#define CLR_ACCENT_DIM C '0,170,112'    // Hover state
+#define CLR_LABEL C '140,140,155'       // Muted labels
+#define CLR_VALUE C '240,240,245'       // Bright values
+#define CLR_CONNECTED C '46,204,113'    // Success green
+#define CLR_DISCONNECTED C '231,76,60'  // Error red
+#define CLR_WARNING C '241,196,15'      // Warning amber
+#define CLR_BTN_BG C '32,32,42'         // Button background
+#define CLR_BTN_BORDER C '55,55,70'     // Button border
+#define CLR_BTN_TEXT C '220,220,230'    // Button text
+#define CLR_BTN_PRIMARY C '0,200,130'   // Primary action
+#define CLR_POPUP_BG C '22,22,30'       // Popup background
+#define CLR_EDIT_BG C '16,16,22'        // Input background
+#define CLR_DIVIDER C '45,45,58'        // Subtle divider
 
 //--- Additional panel objects for premium look
 #define PANEL_HEADER_BG "GSN_HeaderBG"
@@ -203,8 +205,9 @@ void CheckRemoteCommands() {
 
       if (type == "SYNC_TRADES" || type == "SYNC_ALL") {
         // Parse params from JSON
-        // Format: {"params":{"days":30}} or {"params":{"fromDate":"2025.01.01","toDate":"2025.01.31"}}
-        
+        // Format: {"params":{"days":30}} or
+        // {"params":{"fromDate":"2025.01.01","toDate":"2025.01.31"}}
+
         if (type == "SYNC_ALL") {
           Print("Remote: Syncing entire history...");
           syncedCount = SyncAllHistory();
@@ -212,11 +215,12 @@ void CheckRemoteCommands() {
           // Check for custom date range first
           string fromDate = ExtractJsonValue(json, "fromDate");
           string toDate = ExtractJsonValue(json, "toDate");
-          
+
           if (fromDate != "" && toDate != "") {
             // Custom date range sync
             datetime dtFrom = StringToTime(fromDate);
-            datetime dtTo = StringToTime(toDate) + 24 * 60 * 60; // Include end date
+            datetime dtTo =
+                StringToTime(toDate) + 24 * 60 * 60; // Include end date
             Print("Remote: Syncing date range ", fromDate, " to ", toDate);
             syncedCount = SyncDateRange(dtFrom, dtTo);
           } else {
@@ -303,11 +307,11 @@ int ExtractJsonInt(string json, string key, int defaultVal) {
     return defaultVal;
 
   start += StringLen(pattern);
-  
+
   // Skip whitespace
   while (start < StringLen(json) && StringSubstr(json, start, 1) == " ")
     start++;
-  
+
   // Extract number
   string numStr = "";
   for (int i = start; i < StringLen(json); i++) {
@@ -317,16 +321,16 @@ int ExtractJsonInt(string json, string key, int defaultVal) {
     else
       break;
   }
-  
+
   if (numStr == "")
     return defaultVal;
-    
+
   return (int)StringToInteger(numStr);
 }
 
 void CreatePanel() {
   int panelWidth = 280;
-  int panelHeight = 310;  // Increased for rate limit text
+  int panelHeight = 310; // Increased for rate limit text
   int x = InpPanelX;
   int y = InpPanelY;
   int padding = 16;
@@ -415,8 +419,8 @@ void CreatePanel() {
   contentY += 16;
 
   //--- Error Row (hidden by default)
-  CreateLabel(PANEL_ERROR_VALUE, x + padding, contentY, " ", CLR_DISCONNECTED, 9,
-              false);
+  CreateLabel(PANEL_ERROR_VALUE, x + padding, contentY, " ", CLR_DISCONNECTED,
+              9, false);
 
   //--- Buttons section
   int btnY = contentY + 4;
@@ -482,7 +486,7 @@ void CreatePremiumButton(string name, int x, int y, int width, int height,
 
   if (isPrimary) {
     ObjectSetInteger(0, name, OBJPROP_BGCOLOR, CLR_ACCENT);
-    ObjectSetInteger(0, name, OBJPROP_COLOR, C'10,10,15');
+    ObjectSetInteger(0, name, OBJPROP_COLOR, C '10,10,15');
     ObjectSetInteger(0, name, OBJPROP_BORDER_COLOR, CLR_ACCENT);
   } else {
     ObjectSetInteger(0, name, OBJPROP_BGCOLOR, CLR_BTN_BG);
@@ -573,9 +577,9 @@ void CreatePeriodPopup() {
   //--- Entire History (warning style)
   CreatePopupButton(BTN_ALL, x + padding, btnY, btnWidth, btnHeight,
                     "Entire History");
-  ObjectSetInteger(0, BTN_ALL, OBJPROP_BGCOLOR, C'45,28,28');
-  ObjectSetInteger(0, BTN_ALL, OBJPROP_BORDER_COLOR, C'80,45,45');
-  ObjectSetInteger(0, BTN_ALL, OBJPROP_COLOR, C'255,180,180');
+  ObjectSetInteger(0, BTN_ALL, OBJPROP_BGCOLOR, C '45,28,28');
+  ObjectSetInteger(0, BTN_ALL, OBJPROP_BORDER_COLOR, C '80,45,45');
+  ObjectSetInteger(0, BTN_ALL, OBJPROP_COLOR, C '255,180,180');
   btnY += btnSpacing + 6;
 
   //--- Divider
@@ -952,7 +956,9 @@ void SyncPeriodAndNotify(int days, string periodName) {
   //--- Check rate limit before syncing
   if (g_RateLimitUntil > TimeCurrent()) {
     int remaining = (int)(g_RateLimitUntil - TimeCurrent());
-    MessageBox("Please wait " + IntegerToString(remaining) + " seconds before syncing again.\n\nRate limit protection is active.",
+    MessageBox("Please wait " + IntegerToString(remaining) +
+                   " seconds before syncing again.\n\nRate limit protection is "
+                   "active.",
                "GSN Trade Sync", MB_ICONWARNING);
     return;
   }
@@ -960,7 +966,18 @@ void SyncPeriodAndNotify(int days, string periodName) {
   Print("Syncing ", periodName, " (", days, " days)...");
   g_LastError = "";
 
-  int syncedCount = SyncRecentTrades(days);
+  int syncedCount = 0;
+  if (periodName == "Today") {
+    // Broker's today: 00:00:00 to 23:59:59
+    datetime now = TimeCurrent();
+    datetime todayStart = StringToTime(TimeToString(now, TIME_DATE));
+    datetime todayEnd = todayStart + 24 * 60 * 60 - 1;
+    Print("Syncing today (broker time): ", TimeToString(todayStart), " -> ",
+          TimeToString(todayEnd));
+    syncedCount = SyncDateRange(todayStart, todayEnd);
+  } else {
+    syncedCount = SyncRecentTrades(days);
+  }
   UpdatePanel();
 
   if (syncedCount >= 0)
@@ -988,73 +1005,146 @@ int SyncDateRange(datetime fromDate, datetime toDate) {
   int total = HistoryDealsTotal();
   Print("Found ", total, " total deals in date range");
 
-  int syncedCount = 0;
-  string tradesJson = "[";
-  bool first = true;
+  //--- PASS 1: Collect all closing deal tickets and their data FIRST
+  //--- (before FindOpeningDealWithSLTP resets the history cache)
+  ulong closingTickets[];
+  string closingSymbols[];
+  int closingDealTypes[];
+  double closingVolumes[];
+  double closingPrices[];
+  datetime closingTimes[];
+  double closingProfits[];
+  double closingCommissions[];
+  double closingSwaps[];
+  long closingPositionIds[];
+
+  int entryInCount = 0;
+  int entryOutCount = 0;
+  int entryInOutCount = 0;
+  int entryOtherCount = 0;
+
+  ArrayResize(closingTickets, 0);
+  ArrayResize(closingSymbols, 0);
+  ArrayResize(closingDealTypes, 0);
+  ArrayResize(closingVolumes, 0);
+  ArrayResize(closingPrices, 0);
+  ArrayResize(closingTimes, 0);
+  ArrayResize(closingProfits, 0);
+  ArrayResize(closingCommissions, 0);
+  ArrayResize(closingSwaps, 0);
+  ArrayResize(closingPositionIds, 0);
 
   for (int i = 0; i < total; i++) {
     ulong ticket = HistoryDealGetTicket(i);
     if (ticket > 0) {
       ENUM_DEAL_ENTRY entry =
           (ENUM_DEAL_ENTRY)HistoryDealGetInteger(ticket, DEAL_ENTRY);
+
+      // Count entry types for debugging
+      if (entry == DEAL_ENTRY_IN)
+        entryInCount++;
+      else if (entry == DEAL_ENTRY_OUT)
+        entryOutCount++;
+      else if (entry == DEAL_ENTRY_INOUT)
+        entryInOutCount++;
+      else
+        entryOtherCount++;
+
       if (entry == DEAL_ENTRY_OUT || entry == DEAL_ENTRY_INOUT) {
-        string symbol = HistoryDealGetString(ticket, DEAL_SYMBOL);
+        int idx = ArraySize(closingTickets);
+        ArrayResize(closingTickets, idx + 1);
+        ArrayResize(closingSymbols, idx + 1);
+        ArrayResize(closingDealTypes, idx + 1);
+        ArrayResize(closingVolumes, idx + 1);
+        ArrayResize(closingPrices, idx + 1);
+        ArrayResize(closingTimes, idx + 1);
+        ArrayResize(closingProfits, idx + 1);
+        ArrayResize(closingCommissions, idx + 1);
+        ArrayResize(closingSwaps, idx + 1);
+        ArrayResize(closingPositionIds, idx + 1);
+
+        closingTickets[idx] = ticket;
+        closingSymbols[idx] = HistoryDealGetString(ticket, DEAL_SYMBOL);
         ENUM_DEAL_TYPE dealType =
             (ENUM_DEAL_TYPE)HistoryDealGetInteger(ticket, DEAL_TYPE);
-        double volume = HistoryDealGetDouble(ticket, DEAL_VOLUME);
-        double closePrice = HistoryDealGetDouble(ticket, DEAL_PRICE);
-        datetime closeTime = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
-        double profit = HistoryDealGetDouble(ticket, DEAL_PROFIT);
-        double commission = HistoryDealGetDouble(ticket, DEAL_COMMISSION);
-        double swap = HistoryDealGetDouble(ticket, DEAL_SWAP);
-        long positionId = HistoryDealGetInteger(ticket, DEAL_POSITION_ID);
-
-        double openPrice = 0;
-        datetime openTime = 0;
-        int tradeType = 0;
-        double stopLoss = 0;
-        double takeProfit = 0;
-
-        if (!FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType, stopLoss, takeProfit)) {
-          openPrice = closePrice;
-          openTime = closeTime;
-          tradeType = (dealType == DEAL_TYPE_SELL) ? 0 : 1;
-        }
-
-        if (!first)
-          tradesJson += ",";
-        first = false;
-
-        tradesJson += StringFormat("{"
-                                   "\"ticket\":\"%d\","
-                                   "\"symbol\":\"%s\","
-                                   "\"type\":%d,"
-                                   "\"volume\":%.2f,"
-                                   "\"openPrice\":%.5f,"
-                                   "\"openTime\":%d,"
-                                   "\"closePrice\":%.5f,"
-                                   "\"closeTime\":%d,"
-                                   "\"stopLoss\":%.5f,"
-                                   "\"takeProfit\":%.5f,"
-                                   "\"profit\":%.2f,"
-                                   "\"commission\":%.2f,"
-                                   "\"swap\":%.2f"
-                                   "}",
-                                   ticket, symbol, tradeType, volume, openPrice,
-                                   (long)openTime, closePrice, (long)closeTime,
-                                   stopLoss, takeProfit, profit, commission, swap);
-
-        syncedCount++;
+        closingDealTypes[idx] = (dealType == DEAL_TYPE_SELL) ? 1 : 0;
+        closingVolumes[idx] = HistoryDealGetDouble(ticket, DEAL_VOLUME);
+        closingPrices[idx] = HistoryDealGetDouble(ticket, DEAL_PRICE);
+        closingTimes[idx] = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
+        closingProfits[idx] = HistoryDealGetDouble(ticket, DEAL_PROFIT);
+        closingCommissions[idx] = HistoryDealGetDouble(ticket, DEAL_COMMISSION);
+        closingSwaps[idx] = HistoryDealGetDouble(ticket, DEAL_SWAP);
+        closingPositionIds[idx] =
+            HistoryDealGetInteger(ticket, DEAL_POSITION_ID);
       }
     }
   }
 
-  tradesJson += "]";
+  // Debug: Show entry type distribution
+  Print("Entry type breakdown: IN=", entryInCount, " OUT=", entryOutCount,
+        " INOUT=", entryInOutCount, " OTHER=", entryOtherCount);
 
-  if (syncedCount == 0) {
+  int closingCount = ArraySize(closingTickets);
+  Print("Collected ", closingCount, " closing trades for processing");
+
+  if (closingCount == 0) {
     Print("No closing trades found in date range");
     return 0;
   }
+
+  //--- PASS 2: Now process each closing deal (FindOpeningDealWithSLTP can reset
+  // cache safely)
+  string tradesJson = "[";
+  bool first = true;
+  int syncedCount = 0;
+
+  for (int i = 0; i < closingCount; i++) {
+    long positionId = closingPositionIds[i];
+    double closePrice = closingPrices[i];
+    datetime closeTime = closingTimes[i];
+    int fallbackType = closingDealTypes[i];
+
+    double openPrice = 0;
+    datetime openTime = 0;
+    int tradeType = 0;
+    double stopLoss = 0;
+    double takeProfit = 0;
+
+    if (!FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType,
+                                 stopLoss, takeProfit)) {
+      openPrice = closePrice;
+      openTime = closeTime;
+      tradeType = fallbackType;
+    }
+
+    if (!first)
+      tradesJson += ",";
+    first = false;
+
+    tradesJson += StringFormat(
+        "{"
+        "\"ticket\":\"%d\","
+        "\"symbol\":\"%s\","
+        "\"type\":%d,"
+        "\"volume\":%.2f,"
+        "\"openPrice\":%.5f,"
+        "\"openTime\":%d,"
+        "\"closePrice\":%.5f,"
+        "\"closeTime\":%d,"
+        "\"stopLoss\":%.5f,"
+        "\"takeProfit\":%.5f,"
+        "\"profit\":%.2f,"
+        "\"commission\":%.2f,"
+        "\"swap\":%.2f"
+        "}",
+        positionId, closingSymbols[i], tradeType, closingVolumes[i], openPrice,
+        (long)openTime, closePrice, (long)closeTime, stopLoss, takeProfit,
+        closingProfits[i], closingCommissions[i], closingSwaps[i]);
+
+    syncedCount++;
+  }
+
+  tradesJson += "]";
 
   Print("Found ", syncedCount, " closing trades to sync");
 
@@ -1251,10 +1341,11 @@ bool SyncSingleTrade(ulong dealTicket) {
   double stopLoss = 0;
   double takeProfit = 0;
 
-  if (FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType, stopLoss, takeProfit)) {
+  if (FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType,
+                              stopLoss, takeProfit)) {
     Print("Found opening deal - Price: ", openPrice,
-          " Time: ", TimeToString(openTime),
-          " SL: ", stopLoss, " TP: ", takeProfit);
+          " Time: ", TimeToString(openTime), " SL: ", stopLoss,
+          " TP: ", takeProfit);
   } else {
     //--- Fallback: use close price as open price
     openPrice = closePrice;
@@ -1287,9 +1378,10 @@ bool SyncSingleTrade(ulong dealTicket) {
       "\"clientTime\":\"%s\","
       "\"accountNumber\":\"%s\""
       "}",
-      dealTicket, symbol, tradeType, volume, openPrice, (long)openTime,
-      closePrice, (long)closeTime, stopLoss, takeProfit, profit, commission, swap,
-      TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS), g_AccountNumber);
+      positionId, symbol, tradeType, volume, openPrice, (long)openTime,
+      closePrice, (long)closeTime, stopLoss, takeProfit, profit, commission,
+      swap, TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS),
+      g_AccountNumber);
 
   //--- Send to server
   return SendTradesToServer(json, 1);
@@ -1301,15 +1393,17 @@ bool SyncSingleTrade(ulong dealTicket) {
 bool FindOpeningDeal(long positionId, double &openPrice, datetime &openTime,
                      int &tradeType) {
   double sl = 0, tp = 0;
-  return FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType, sl, tp);
+  return FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType, sl,
+                                 tp);
 }
 
 //+------------------------------------------------------------------+
 //| Find opening deal with SL/TP for a position                      |
 //| SL/TP is taken from the LAST order that modified the position    |
 //+------------------------------------------------------------------+
-bool FindOpeningDealWithSLTP(long positionId, double &openPrice, datetime &openTime,
-                              int &tradeType, double &stopLoss, double &takeProfit) {
+bool FindOpeningDealWithSLTP(long positionId, double &openPrice,
+                             datetime &openTime, int &tradeType,
+                             double &stopLoss, double &takeProfit) {
   //--- Select all history for this position
   if (!HistorySelectByPosition(positionId)) {
     //--- Fallback to full history
@@ -1324,42 +1418,50 @@ bool FindOpeningDealWithSLTP(long positionId, double &openPrice, datetime &openT
   int totalDeals = HistoryDealsTotal();
   for (int i = 0; i < totalDeals; i++) {
     ulong ticket = HistoryDealGetTicket(i);
-    if (ticket == 0) continue;
+    if (ticket == 0)
+      continue;
 
     long dealPosId = HistoryDealGetInteger(ticket, DEAL_POSITION_ID);
-    if (dealPosId != positionId) continue;
+    if (dealPosId != positionId)
+      continue;
 
-    ENUM_DEAL_ENTRY entry = (ENUM_DEAL_ENTRY)HistoryDealGetInteger(ticket, DEAL_ENTRY);
-    
+    ENUM_DEAL_ENTRY entry =
+        (ENUM_DEAL_ENTRY)HistoryDealGetInteger(ticket, DEAL_ENTRY);
+
     //--- Found opening deal
     if (entry == DEAL_ENTRY_IN) {
       openPrice = HistoryDealGetDouble(ticket, DEAL_PRICE);
       openTime = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
-      ENUM_DEAL_TYPE type = (ENUM_DEAL_TYPE)HistoryDealGetInteger(ticket, DEAL_TYPE);
+      ENUM_DEAL_TYPE type =
+          (ENUM_DEAL_TYPE)HistoryDealGetInteger(ticket, DEAL_TYPE);
       tradeType = (type == DEAL_TYPE_BUY) ? 0 : 1;
       foundOpening = true;
       break;
     }
   }
 
-  if (!foundOpening) return false;
+  if (!foundOpening)
+    return false;
 
   //--- PASS 2: Find the LAST SL/TP values from order history
   //--- This includes: opening order + any modify orders
   int totalOrders = HistoryOrdersTotal();
   datetime lastOrderTime = 0;
-  
+
   for (int i = 0; i < totalOrders; i++) {
     ulong orderTicket = HistoryOrderGetTicket(i);
-    if (orderTicket == 0) continue;
+    if (orderTicket == 0)
+      continue;
 
     long orderPosId = HistoryOrderGetInteger(orderTicket, ORDER_POSITION_ID);
-    if (orderPosId != positionId) continue;
+    if (orderPosId != positionId)
+      continue;
 
     //--- Get this order's SL/TP (could be modify order)
     double orderSL = HistoryOrderGetDouble(orderTicket, ORDER_SL);
     double orderTP = HistoryOrderGetDouble(orderTicket, ORDER_TP);
-    datetime orderTime = (datetime)HistoryOrderGetInteger(orderTicket, ORDER_TIME_DONE);
+    datetime orderTime =
+        (datetime)HistoryOrderGetInteger(orderTicket, ORDER_TIME_DONE);
 
     //--- Keep the latest order's SL/TP
     if (orderTime >= lastOrderTime) {
@@ -1402,7 +1504,7 @@ bool SendTradesToServer(string json, int tradeCount) {
           " | Response: ", response);
     g_LastError = "";
     //--- Set cooldown 60s after successful sync
-    g_RateLimitUntil = TimeCurrent() + 60;
+    g_RateLimitUntil = TimeCurrent() + 10;
     return true;
   } else if (res == 403) {
     string response = CharArrayToString(resultData, 0, WHOLE_ARRAY, CP_UTF8);
@@ -1422,13 +1524,17 @@ bool SendTradesToServer(string json, int tradeCount) {
       string numStr = "";
       for (int i = start; i < StringLen(resultHeaders) && i < start + 5; i++) {
         string ch = StringSubstr(resultHeaders, i, 1);
-        if (ch >= "0" && ch <= "9") numStr += ch;
-        else if (ch == "\r" || ch == "\n") break;
+        if (ch >= "0" && ch <= "9")
+          numStr += ch;
+        else if (ch == "\r" || ch == "\n")
+          break;
       }
-      if (numStr != "") retryAfter = (int)StringToInteger(numStr);
+      if (numStr != "")
+        retryAfter = (int)StringToInteger(numStr);
     }
     g_RateLimitUntil = TimeCurrent() + retryAfter;
-    Print("ERROR 429: Rate limited. Retry after ", retryAfter, " seconds. Cooldown until: ", TimeToString(g_RateLimitUntil));
+    Print("ERROR 429: Rate limited. Retry after ", retryAfter,
+          " seconds. Cooldown until: ", TimeToString(g_RateLimitUntil));
     g_LastError = "Rate limited (" + IntegerToString(retryAfter) + "s)";
     UpdatePanel(); // Force update panel immediately
     return false;
@@ -1448,187 +1554,27 @@ bool SendTradesToServer(string json, int tradeCount) {
 //+------------------------------------------------------------------+
 //| Sync Recent Trades (Manual trigger)                              |
 //+------------------------------------------------------------------+
+//+------------------------------------------------------------------+
+//| Sync Recent Trades (Manual trigger)                              |
+//+------------------------------------------------------------------+
 int SyncRecentTrades(int days) {
-  datetime endTime = TimeCurrent();
-  datetime startTime = endTime - days * 24 * 60 * 60;
+  if (days < 1)
+    days = 1;
 
-  //--- DEBUG: Show calculation details
-  Print("=== SYNC DEBUG INFO ===");
-  Print("Days requested: ", days);
-  Print("Current Time: ", TimeToString(endTime, TIME_DATE | TIME_SECONDS));
-  Print("Start Time: ", TimeToString(startTime, TIME_DATE | TIME_SECONDS));
+  // Calculate start of today (Broker time 00:00:00)
+  datetime now = TimeCurrent();
+  datetime todayStart = StringToTime(TimeToString(now, TIME_DATE));
 
-  //--- Load ALL history
-  Print("Loading full history...");
-  if (!HistorySelect(0, endTime)) {
-    g_LastError = "Failed to load history";
-    Print("ERROR: HistorySelect failed!");
-    return -1;
-  }
-  
-  int totalDeals = HistoryDealsTotal();
-  Print("Total deals in account: ", totalDeals);
+  // Calculate start date (N days ago, inclusive)
+  datetime startTime = todayStart - (days - 1) * 24 * 60 * 60;
+  datetime endTime = TimeCurrent(); // Up to now
 
-  //--- FIRST PASS: Collect all closing deal tickets and their position IDs
-  ulong closingTickets[];
-  long closingPositionIds[];
-  datetime closingTimes[];
-  ArrayResize(closingTickets, 0);
-  ArrayResize(closingPositionIds, 0);
-  ArrayResize(closingTimes, 0);
-  
-  int skippedByDate = 0;
-  int openingDeals = 0;
+  Print("Syncing recent trades (Last ", days, " days) from ",
+        TimeToString(startTime), " to ", TimeToString(endTime));
 
-  Print("=== PASS 1: Collecting closing deals ===");
-
-  for (int i = 0; i < totalDeals; i++) {
-    ulong ticket = HistoryDealGetTicket(i);
-    if (ticket == 0) continue;
-
-    ENUM_DEAL_ENTRY entry = (ENUM_DEAL_ENTRY)HistoryDealGetInteger(ticket, DEAL_ENTRY);
-    
-    //--- Skip opening deals
-    if (entry == DEAL_ENTRY_IN) {
-      openingDeals++;
-      continue;
-    }
-    
-    //--- Only process closing deals
-    if (entry != DEAL_ENTRY_OUT && entry != DEAL_ENTRY_INOUT) {
-      continue;
-    }
-    
-    datetime closeTime = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
-    
-    //--- Filter by close time
-    if (closeTime < startTime || closeTime > endTime) {
-      skippedByDate++;
-      continue;
-    }
-    
-    //--- Check for duplicate position ID
-    long posId = HistoryDealGetInteger(ticket, DEAL_POSITION_ID);
-    bool duplicate = false;
-    for (int j = 0; j < ArraySize(closingPositionIds); j++) {
-      if (closingPositionIds[j] == posId) {
-        duplicate = true;
-        break;
-      }
-    }
-    if (duplicate) continue;
-    
-    //--- Store this closing deal
-    int idx = ArraySize(closingTickets);
-    ArrayResize(closingTickets, idx + 1);
-    ArrayResize(closingPositionIds, idx + 1);
-    ArrayResize(closingTimes, idx + 1);
-    closingTickets[idx] = ticket;
-    closingPositionIds[idx] = posId;
-    closingTimes[idx] = closeTime;
-    
-    string symbol = HistoryDealGetString(ticket, DEAL_SYMBOL);
-    double profit = HistoryDealGetDouble(ticket, DEAL_PROFIT);
-    Print("  Found: Ticket=", ticket, " Pos#", posId, " ", symbol, 
-          " Close=", TimeToString(closeTime, TIME_DATE | TIME_SECONDS),
-          " P/L=", DoubleToString(profit, 2));
-  }
-
-  int closedPositions = ArraySize(closingTickets);
-  Print("=== PASS 1 SUMMARY ===");
-  Print("Opening deals: ", openingDeals);
-  Print("Closed outside range: ", skippedByDate);
-  Print("Closed positions found: ", closedPositions);
-
-  if (closedPositions == 0) {
-    Print("No closed positions found in date range");
-    return 0;
-  }
-
-  //--- SECOND PASS: Build JSON with full trade info
-  Print("=== PASS 2: Building trade data ===");
-  string tradesJson = "[";
-  bool first = true;
-
-  for (int i = 0; i < closedPositions; i++) {
-    ulong ticket = closingTickets[i];
-    long positionId = closingPositionIds[i];
-    
-    //--- MUST reload full history before accessing deal data
-    HistorySelect(0, endTime);
-    
-    //--- Select the specific deal
-    if (!HistoryDealSelect(ticket)) {
-      Print("  Warning: Cannot select ticket ", ticket);
-      continue;
-    }
-    
-    string symbol = HistoryDealGetString(ticket, DEAL_SYMBOL);
-    ENUM_DEAL_TYPE dealType = (ENUM_DEAL_TYPE)HistoryDealGetInteger(ticket, DEAL_TYPE);
-    double volume = HistoryDealGetDouble(ticket, DEAL_VOLUME);
-    double closePrice = HistoryDealGetDouble(ticket, DEAL_PRICE);
-    datetime closeTime = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
-    double profit = HistoryDealGetDouble(ticket, DEAL_PROFIT);
-    double commission = HistoryDealGetDouble(ticket, DEAL_COMMISSION);
-    double swap = HistoryDealGetDouble(ticket, DEAL_SWAP);
-
-    //--- Find opening deal with SL/TP (this changes history cache)
-    double openPrice = 0;
-    datetime openTime = 0;
-    int tradeType = 0;
-    double stopLoss = 0;
-    double takeProfit = 0;
-
-    if (!FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType, stopLoss, takeProfit)) {
-      openPrice = closePrice;
-      openTime = closeTime;
-      tradeType = (dealType == DEAL_TYPE_SELL) ? 0 : 1;
-    }
-
-    if (!first) tradesJson += ",";
-    first = false;
-
-    tradesJson += StringFormat("{"
-                               "\"ticket\":\"%d\","
-                               "\"symbol\":\"%s\","
-                               "\"type\":%d,"
-                               "\"volume\":%.2f,"
-                               "\"openPrice\":%.5f,"
-                               "\"openTime\":%d,"
-                               "\"closePrice\":%.5f,"
-                               "\"closeTime\":%d,"
-                               "\"stopLoss\":%.5f,"
-                               "\"takeProfit\":%.5f,"
-                               "\"profit\":%.2f,"
-                               "\"commission\":%.2f,"
-                               "\"swap\":%.2f"
-                               "}",
-                               ticket, symbol, tradeType, volume, openPrice,
-                               (long)openTime, closePrice, (long)closeTime,
-                               stopLoss, takeProfit, profit, commission, swap);
-    
-    Print("  Added: ", symbol, " #", ticket, " SL=", stopLoss, " TP=", takeProfit);
-  }
-
-  tradesJson += "]";
-  Print("=== PASS 2 COMPLETE ===");
-  Print("Total positions to sync: ", closedPositions);
-
-  //--- Build full JSON
-  string json = StringFormat(
-      "{\"trades\":%s,\"eaVersion\":\"1.05\",\"clientTime\":\"%s\","
-      "\"accountNumber\":\"%s\"}",
-      tradesJson, TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS),
-      g_AccountNumber);
-
-  //--- Send to server
-  if (SendTradesToServer(json, closedPositions)) {
-    g_TotalSynced += closedPositions;
-    g_LastSyncTime = TimeCurrent();
-    return closedPositions;
-  }
-
-  return -1;
+  // Use generic sync function which handles all closing deals (Deal Ticket)
+  // properly without Position ID deduplication
+  return SyncDateRange(startTime, endTime);
 }
 
 //+------------------------------------------------------------------+
@@ -1642,13 +1588,30 @@ int SyncAllHistory() {
   }
 
   int total = HistoryDealsTotal();
-  int syncedCount = 0;
-  string tradesJson = "[";
-  bool first = true;
-  int batchCount = 0;
-  int maxBatch = 100; // Send in batches of 100
-
   Print("Scanning ", total, " total deals...");
+
+  //--- PASS 1: Collect all closing deal data FIRST
+  ulong closingTickets[];
+  string closingSymbols[];
+  int closingDealTypes[];
+  double closingVolumes[];
+  double closingPrices[];
+  datetime closingTimes[];
+  double closingProfits[];
+  double closingCommissions[];
+  double closingSwaps[];
+  long closingPositionIds[];
+
+  ArrayResize(closingTickets, 0);
+  ArrayResize(closingSymbols, 0);
+  ArrayResize(closingDealTypes, 0);
+  ArrayResize(closingVolumes, 0);
+  ArrayResize(closingPrices, 0);
+  ArrayResize(closingTimes, 0);
+  ArrayResize(closingProfits, 0);
+  ArrayResize(closingCommissions, 0);
+  ArrayResize(closingSwaps, 0);
+  ArrayResize(closingPositionIds, 0);
 
   for (int i = 0; i < total; i++) {
     ulong ticket = HistoryDealGetTicket(i);
@@ -1657,77 +1620,116 @@ int SyncAllHistory() {
       ENUM_DEAL_ENTRY entry =
           (ENUM_DEAL_ENTRY)HistoryDealGetInteger(ticket, DEAL_ENTRY);
 
-      //--- Only process closing deals
+      //--- Only collect closing deals
       if (entry == DEAL_ENTRY_OUT || entry == DEAL_ENTRY_INOUT) {
-        string symbol = HistoryDealGetString(ticket, DEAL_SYMBOL);
+        int idx = ArraySize(closingTickets);
+        ArrayResize(closingTickets, idx + 1);
+        ArrayResize(closingSymbols, idx + 1);
+        ArrayResize(closingDealTypes, idx + 1);
+        ArrayResize(closingVolumes, idx + 1);
+        ArrayResize(closingPrices, idx + 1);
+        ArrayResize(closingTimes, idx + 1);
+        ArrayResize(closingProfits, idx + 1);
+        ArrayResize(closingCommissions, idx + 1);
+        ArrayResize(closingSwaps, idx + 1);
+        ArrayResize(closingPositionIds, idx + 1);
+
+        closingTickets[idx] = ticket;
+        closingSymbols[idx] = HistoryDealGetString(ticket, DEAL_SYMBOL);
         ENUM_DEAL_TYPE dealType =
             (ENUM_DEAL_TYPE)HistoryDealGetInteger(ticket, DEAL_TYPE);
-        double volume = HistoryDealGetDouble(ticket, DEAL_VOLUME);
-        double closePrice = HistoryDealGetDouble(ticket, DEAL_PRICE);
-        datetime closeTime = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
-        double profit = HistoryDealGetDouble(ticket, DEAL_PROFIT);
-        double commission = HistoryDealGetDouble(ticket, DEAL_COMMISSION);
-        double swap = HistoryDealGetDouble(ticket, DEAL_SWAP);
-        long positionId = HistoryDealGetInteger(ticket, DEAL_POSITION_ID);
-
-        double openPrice = 0;
-        datetime openTime = 0;
-        int tradeType = 0;
-        double stopLoss = 0;
-        double takeProfit = 0;
-
-        if (!FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType, stopLoss, takeProfit)) {
-          openPrice = closePrice;
-          openTime = closeTime;
-          tradeType = (dealType == DEAL_TYPE_SELL) ? 0 : 1;
-        }
-
-        if (!first)
-          tradesJson += ",";
-        first = false;
-
-        tradesJson += StringFormat("{"
-                                   "\"ticket\":\"%d\","
-                                   "\"symbol\":\"%s\","
-                                   "\"type\":%d,"
-                                   "\"volume\":%.2f,"
-                                   "\"openPrice\":%.5f,"
-                                   "\"openTime\":%d,"
-                                   "\"closePrice\":%.5f,"
-                                   "\"closeTime\":%d,"
-                                   "\"stopLoss\":%.5f,"
-                                   "\"takeProfit\":%.5f,"
-                                   "\"profit\":%.2f,"
-                                   "\"commission\":%.2f,"
-                                   "\"swap\":%.2f"
-                                   "}",
-                                   ticket, symbol, tradeType, volume, openPrice,
-                                   (long)openTime, closePrice, (long)closeTime,
-                                   stopLoss, takeProfit, profit, commission, swap);
-
-        syncedCount++;
-        batchCount++;
-
-        //--- Send batch if reached limit
-        if (batchCount >= maxBatch) {
-          tradesJson += "]";
-          string json = StringFormat(
-              "{\"trades\":%s,\"eaVersion\":\"1.05\",\"clientTime\":\"%s\","
-              "\"accountNumber\":\"%s\"}",
-              tradesJson, TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS),
-              g_AccountNumber);
-
-          if (!SendTradesToServer(json, batchCount)) {
-            return -1;
-          }
-
-          Print("Batch synced: ", batchCount, " trades");
-          tradesJson = "[";
-          first = true;
-          batchCount = 0;
-          Sleep(20000); // 20 second delay between batches
-        }
+        closingDealTypes[idx] = (dealType == DEAL_TYPE_SELL) ? 1 : 0;
+        closingVolumes[idx] = HistoryDealGetDouble(ticket, DEAL_VOLUME);
+        closingPrices[idx] = HistoryDealGetDouble(ticket, DEAL_PRICE);
+        closingTimes[idx] = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
+        closingProfits[idx] = HistoryDealGetDouble(ticket, DEAL_PROFIT);
+        closingCommissions[idx] = HistoryDealGetDouble(ticket, DEAL_COMMISSION);
+        closingSwaps[idx] = HistoryDealGetDouble(ticket, DEAL_SWAP);
+        closingPositionIds[idx] =
+            HistoryDealGetInteger(ticket, DEAL_POSITION_ID);
       }
+    }
+  }
+
+  int closingCount = ArraySize(closingTickets);
+  Print("Collected ", closingCount, " closing trades for processing");
+
+  if (closingCount == 0) {
+    Print("No closing trades found");
+    return 0;
+  }
+
+  //--- PASS 2: Process and send in batches
+  int syncedCount = 0;
+  string tradesJson = "[";
+  bool first = true;
+  int batchCount = 0;
+  int maxBatch = 100;
+
+  for (int i = 0; i < closingCount; i++) {
+    long positionId = closingPositionIds[i];
+    double closePrice = closingPrices[i];
+    datetime closeTime = closingTimes[i];
+    int fallbackType = closingDealTypes[i];
+
+    double openPrice = 0;
+    datetime openTime = 0;
+    int tradeType = 0;
+    double stopLoss = 0;
+    double takeProfit = 0;
+
+    if (!FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType,
+                                 stopLoss, takeProfit)) {
+      openPrice = closePrice;
+      openTime = closeTime;
+      tradeType = fallbackType;
+    }
+
+    if (!first)
+      tradesJson += ",";
+    first = false;
+
+    tradesJson += StringFormat(
+        "{"
+        "\"ticket\":\"%d\","
+        "\"symbol\":\"%s\","
+        "\"type\":%d,"
+        "\"volume\":%.2f,"
+        "\"openPrice\":%.5f,"
+        "\"openTime\":%d,"
+        "\"closePrice\":%.5f,"
+        "\"closeTime\":%d,"
+        "\"stopLoss\":%.5f,"
+        "\"takeProfit\":%.5f,"
+        "\"profit\":%.2f,"
+        "\"commission\":%.2f,"
+        "\"swap\":%.2f"
+        "}",
+        positionId, closingSymbols[i], tradeType, closingVolumes[i], openPrice,
+        (long)openTime, closePrice, (long)closeTime, stopLoss, takeProfit,
+        closingProfits[i], closingCommissions[i], closingSwaps[i]);
+
+    syncedCount++;
+    batchCount++;
+
+    //--- Send batch if reached limit
+    if (batchCount >= maxBatch) {
+      tradesJson += "]";
+      string json = StringFormat(
+          "{\"trades\":%s,\"eaVersion\":\"1.05\",\"clientTime\":\"%s\","
+          "\"accountNumber\":\"%s\"}",
+          tradesJson, TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS),
+          g_AccountNumber);
+
+      if (!SendTradesToServer(json, batchCount)) {
+        return -1;
+      }
+
+      Print("Batch synced: ", batchCount, " trades");
+      tradesJson = "[";
+      first = true;
+      batchCount = 0;
+      Sleep(20000); // 20 second delay between batches
     }
   }
 

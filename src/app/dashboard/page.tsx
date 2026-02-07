@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { BADGES } from "@/lib/gamification";
 import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
+import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
+import { startOfMonth, endOfMonth, startOfDay, endOfDay, subDays, format, addHours, subHours, parseISO } from "date-fns";
 
 export const dynamic = "force-dynamic";
 
@@ -23,177 +25,202 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         redirect("/auth/signin");
     }
 
-    // 1. Determine Effective Account ID Logic for Persistence
+    // 1. Account Config
     const cookieStore = await cookies();
     const lastAccountId = cookieStore.get("last_account_id")?.value;
     const accountId = typeof searchParams?.accountId === 'string' ? searchParams.accountId : lastAccountId;
     const accountFilter = accountId ? { userId: user.id, id: accountId } : { userId: user.id };
+
+    // 2. Date Filter Config
+    // Match logic with /api/analytics/route.ts
+    const now = new Date();
+    const paramFrom = typeof searchParams?.from === 'string' ? searchParams.from : null;
+    const paramTo = typeof searchParams?.to === 'string' ? searchParams.to : null;
+
+    const BROKER_OFFSET_HOURS = 2; // Fixed broker offset (For Charting/Grouping Only)
+
+    // Default to All Time if no params
+    // We filter by UTC Date Range corresponding to the selected string.
+    // Explicitly construct UTC ISO string to ignore Server/Local Timezone.
+    // e.g. "2026-02-06" -> 2026-02-06T00:00:00.000Z to 2026-02-06T23:59:59.999Z
+    const startDate = paramFrom ? new Date(`${paramFrom}T00:00:00.000Z`) : new Date("2000-01-01T00:00:00.000Z");
+    const endDate = paramTo ? new Date(`${paramTo}T23:59:59.999Z`) : endOfDay(now);
+
     const entryFilter = {
         userId: user.id,
         ...(accountId ? { tradingAccountId: accountId } : {}),
+        exitDate: {
+            gte: startDate,
+            lte: endDate
+        }
     };
 
-    // Date calculations
-    const now = new Date();
-    const BROKER_OFFSET_HOURS = 2;
-    const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-    const utcMidnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    const startOfToday = new Date(utcMidnight.getTime() - (BROKER_OFFSET_HOURS * 60 * 60 * 1000));
-    const sevenDaysAgo = new Date(now);
-    sevenDaysAgo.setDate(now.getDate() - 7);
-
     // ============================================
-    // OPTIMIZED: Parallel fetch with Promise.all()
+    // Data Fetching
     // ============================================
-    const [userData, accounts, recentEntries, currentMonthStats, lastMonthStats] = await Promise.all([
-        // 1. User Gamification Data
+    const [userData, accounts, filteredEntries, allHistoryEntries] = await Promise.all([
+        // 1. User
         prisma.user.findUnique({
             where: { id: user.id },
             select: { xp: true, level: true, badges: true, streak: true }
         }),
 
-        // 2. Trading Accounts
+        // 2. Accounts (Total Balance is ALWAYS Current)
         prisma.tradingAccount.findMany({
             where: accountFilter,
             select: { balance: true }
         }),
 
-        // 3. Recent Journal Entries (last 7 days + buffer)
+        // 3. Entries in Range (For Stats, Charts, Lists)
         prisma.journalEntry.findMany({
-            where: {
-                ...entryFilter,
-                exitDate: { gte: new Date(sevenDaysAgo.getTime() - (24 * 60 * 60 * 1000)) }
-            },
+            where: entryFilter,
             orderBy: { exitDate: 'desc' }
         }),
 
-        // 4. Current Month Stats
+        // 4. All History (For Monthly Analytics)
         prisma.journalEntry.findMany({
             where: {
-                ...entryFilter,
-                exitDate: { gte: startOfCurrentMonth },
-                result: { in: ['WIN', 'LOSS'] }
+                userId: user.id,
+                ...(accountId ? { tradingAccountId: accountId } : {}),
+                exitDate: { not: null }
             },
-            select: { result: true, pnl: true, symbol: true }
-        }),
-
-        // 5. Last Month Stats
-        prisma.journalEntry.groupBy({
-            by: ['result'],
-            where: {
-                ...entryFilter,
-                exitDate: { gte: startOfLastMonth, lte: endOfLastMonth },
-                result: { in: ['WIN', 'LOSS'] }
-            },
-            _count: { result: true }
+            select: { exitDate: true, pnl: true },
+            orderBy: { exitDate: 'asc' }
         })
     ]);
 
-    // Total Balance
+    // --- Calculations ---
+
     const totalBalance = accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
 
-    // Today's P/L
-    const todayEntries = recentEntries.filter(e => e.exitDate && e.exitDate >= startOfToday);
-    const todayPnL = todayEntries.reduce((sum, e) => sum + (e.pnl || 0), 0);
+    // Monthly Analytics Data (All Time)
+    const monthlyStatsMap = new Map<string, number>();
+    allHistoryEntries.forEach(e => {
+        if (!e.exitDate) return;
+        // Group by YYYY-MM
+        const monthKey = format(e.exitDate, "yyyy-MM-01");
+        // Sum PnL ($)
+        monthlyStatsMap.set(monthKey, (monthlyStatsMap.get(monthKey) || 0) + (e.pnl || 0));
+    });
 
-    // Win Rate Calculation
-    const calculateWinRate = (stats: any[]) => {
-        if (stats.length > 0 && 'result' in stats[0] && '_count' in stats[0]) {
-            const wins = stats.find(s => s.result === 'WIN')?._count.result || 0;
-            const losses = stats.find(s => s.result === 'LOSS')?._count.result || 0;
-            const total = wins + losses;
-            return total > 0 ? (wins / total) * 100 : 0;
-        } else {
-            const wins = stats.filter(s => s.result === 'WIN').length;
-            const total = stats.length;
-            return total > 0 ? (wins / total) * 100 : 0;
-        }
-    };
+    // Convert to % Gain approx or just $ Gain?
+    // Let's go with $ Gain for accuracy as requested by logic constraints.
+    // If user REALLY wants %, we need a base. Let's assume CurrentBalance is the end state.
+    // We can reconstruct approximate Start Balance for each month.
+    // let runningBalance = totalBalance;
+    // We iterate BACKWARDS from now? No, we have the map.
+    // Let's just stick to $ Gain for V1 to avoid confusing math errors.
+    const monthlyAnalyticsData = Array.from(monthlyStatsMap.entries()).map(([date, value]) => ({
+        date,
+        value // This is $
+    }));
 
-    const winRate = calculateWinRate(currentMonthStats);
-    const lastMonthWinRate = calculateWinRate(lastMonthStats);
-    const winRateChange = winRate - lastMonthWinRate;
-
-    // Pro Metrics (Current Month)
-    const wins = currentMonthStats.filter(t => t.result === 'WIN');
-    const losses = currentMonthStats.filter(t => t.result === 'LOSS');
+    // Stats based on Filtered Range
+    const wins = filteredEntries.filter(t => t.result === 'WIN');
+    const losses = filteredEntries.filter(t => t.result === 'LOSS');
     const grossProfit = wins.reduce((sum, t) => sum + (t.pnl || 0), 0);
     const grossLoss = Math.abs(losses.reduce((sum, t) => sum + (t.pnl || 0), 0));
+
+    const totalTrades = wins.length + losses.length;
+    const winRate = totalTrades > 0 ? (wins.length / totalTrades) * 100 : 0;
+
+    // Profit Factor
     const profitFactor = grossLoss > 0 ? grossProfit / grossLoss : (grossProfit > 0 ? 999 : 0);
+
+    // Averages
     const avgWin = wins.length > 0 ? grossProfit / wins.length : 0;
     const avgLoss = losses.length > 0 ? grossLoss / losses.length : 0;
 
-    // Symbol Performance for Pie Chart
+    // Today's PnL (Calculated relative to Real Today, regardless of filter, OR relative to filter?)
+    // "Today's PnL" usually means literally Today.
+    // 6. Period PnL (Net Profit for selected range)
+    const periodPnL = filteredEntries.reduce((sum, e) => sum + (e.pnl || 0), 0);
+
+    // 7. Today's PnL (Strictly Today, for reference or if filter includes today)
+    const startOfRealToday = startOfDay(new Date());
+    const todayEntries = filteredEntries.filter(e => e.exitDate && e.exitDate >= startOfRealToday);
+    const todayPnL = todayEntries.reduce((sum, e) => sum + (e.pnl || 0), 0);
+
+    // Symbol Performance for Pie Chart (Gross Profit Distribution)
     const symbolMap = new Map<string, number>();
-    currentMonthStats.forEach(t => {
-        symbolMap.set(t.symbol, (symbolMap.get(t.symbol) || 0) + 1);
+    filteredEntries.forEach(t => {
+        if (t.pnl && t.pnl > 0) {
+            symbolMap.set(t.symbol, (symbolMap.get(t.symbol) || 0) + t.pnl);
+        }
     });
+
     const symbolPerformance = Array.from(symbolMap.entries())
-        .sort((a, b) => b[1] - a[1])
+        .sort((a, b) => b[1] - a[1]) // Sort by profit descending
         .slice(0, 5)
         .map(([name, value]) => ({ name, value }));
 
-    // Recent Activity
-    const recentActivity = recentEntries.slice(0, 5).map(e => {
+    // Recent Activity (List)
+    // Just map the filtered entries
+    const recentActivity = filteredEntries.slice(0, 5).map(e => {
         let type = "CLOSE";
         if (e.result === 'WIN') type = "TP";
         if (e.result === 'LOSS') type = "SL";
 
-        const rawDate = e.exitDate || new Date();
-        const adjustedDate = new Date(rawDate.getTime() - (BROKER_OFFSET_HOURS * 60 * 60 * 1000));
-        const diffMs = now.getTime() - adjustedDate.getTime();
-
-        if (diffMs < 0) {
-            return {
-                id: e.id, symbol: e.symbol, type,
-                title: `${type === 'TP' ? 'Take Profit' : type === 'SL' ? 'Stop Loss' : 'Trade Closed'} on ${e.symbol}`,
-                timeAgo: "Just now"
-            };
-        }
-
-        const diffMins = Math.floor(diffMs / (1000 * 60));
-        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        // Calc time ago
+        const exitDate = e.exitDate || new Date();
+        const diffMs = now.getTime() - exitDate.getTime();
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHrs = Math.floor(diffMins / 60);
         const diffDays = Math.floor(diffHrs / 24);
 
         let timeAgo = "Just now";
-        if (diffDays > 0) timeAgo = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-        else if (diffHrs > 0) timeAgo = `${diffHrs} hour${diffHrs > 1 ? 's' : ''} ago`;
-        else if (diffMins > 0) timeAgo = `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+        if (diffDays > 0) timeAgo = `${diffDays}d ago`;
+        else if (diffHrs > 0) timeAgo = `${diffHrs}h ago`;
+        else timeAgo = `${diffMins}m ago`;
 
         return {
             id: e.id, symbol: e.symbol, type,
-            title: `${type === 'TP' ? 'Take Profit' : type === 'SL' ? 'Stop Loss' : 'Trade Closed'} on ${e.symbol}`,
+            title: `${type === 'TP' ? 'Take Profit' : type === 'SL' ? 'Stop Loss' : 'Closed'} ${e.symbol}`,
             timeAgo
         };
     });
 
-    // Equity Curve (Last 7 Days)
-    const dailyPnLs = new Map<string, number>();
-    recentEntries.forEach(e => {
+    // Chart Data (Balance History in Range)
+    // Daily PnL Map (Broker Time Adjusted)
+    const dailyPnLMap = new Map<string, number>();
+    filteredEntries.forEach(e => {
         if (!e.exitDate) return;
-        const dayStr = e.exitDate.toLocaleDateString('en-US', { weekday: 'short' });
-        dailyPnLs.set(dayStr, (dailyPnLs.get(dayStr) || 0) + (e.pnl || 0));
+        const brokerDate = addHours(e.exitDate, BROKER_OFFSET_HOURS);
+        // Use ISO String splits to get YYYY-MM-DD in UTC (which represents our Shifted Broker Date)
+        // This avoids any Local Timezone interference from format()
+        const dayStr = brokerDate.toISOString().split('T')[0];
+        dailyPnLMap.set(dayStr, (dailyPnLMap.get(dayStr) || 0) + (e.pnl || 0));
     });
 
-    const chartDataReversed = [];
-    let currentCalcBalance = totalBalance;
-    for (let i = 0; i < 7; i++) {
-        const d = new Date(now);
-        d.setDate(now.getDate() - i);
-        const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
-        chartDataReversed.push({ name: dayName, balance: currentCalcBalance });
-        currentCalcBalance -= dailyPnLs.get(dayName) || 0;
-    }
-    const chartData = chartDataReversed.reverse();
+    // Create chart points from startDate to endDate
+    const chartPoints = [];
+    let cumulativePnL = 0;
 
+    // Loop days
+    const dayIterator = new Date(startDate);
+    const stopDate = (endDate > now) ? now : endDate; // Don't project into future
+
+    while (dayIterator <= stopDate) {
+        const dayStr = format(dayIterator, "yyyy-MM-dd");
+        const daysPnL = dailyPnLMap.get(dayStr) || 0;
+        cumulativePnL += daysPnL;
+
+        chartPoints.push({
+            date: dayIterator.toISOString(), // Component handles formatting
+            balance: Number(cumulativePnL.toFixed(2)) // We chart Cumulative PnL
+        });
+
+        dayIterator.setDate(dayIterator.getDate() + 1);
+    }
+
+    // Dashboard Data Object
     const dashboardData = {
-        totalBalance,
+        totalBalance, // Current Real Balance
         winRate,
-        winRateChange,
+        winRateChange: 0,
         streak: userData?.streak || 0,
-        todayPnL,
+        periodPnL, // Replaces todayPnL in importance
+        todayPnL,  // Keep for legacy or specific "Today" display if needed
         profitFactor,
         avgWin,
         avgLoss
@@ -209,11 +236,12 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
             allBadges={allBadges}
             userName={user.name || "Trader"}
             dashboardData={dashboardData}
-            chartData={chartData}
-            recentActivity={recentActivity}
-            recentTrades={recentEntries}
+            chartData={chartPoints}
+            recentActivity={[]} // Deprecated
+            recentTrades={filteredEntries}
             symbolPerformance={symbolPerformance}
             currentAccountId={accountId}
+            monthlyAnalytics={monthlyAnalyticsData}
         />
     );
 }
