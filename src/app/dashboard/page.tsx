@@ -146,7 +146,28 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     const bestTrades = [...wins].sort((a, b) => (b.pnl || 0) - (a.pnl || 0)).slice(0, 3);
     const worstTrades = [...losses].sort((a, b) => (a.pnl || 0) - (b.pnl || 0)).slice(0, 3);
 
+    // Symbol Analytics for List (Net Profit & Count)
+    const symbolStatsMap = new Map<string, { trades: number; pnl: number }>();
+    filteredEntries.forEach(t => {
+        const current = symbolStatsMap.get(t.symbol) || { trades: 0, pnl: 0 };
+        symbolStatsMap.set(t.symbol, {
+            trades: current.trades + 1,
+            pnl: current.pnl + (t.pnl || 0)
+        });
+    });
+
+    const symbolAnalytics = Array.from(symbolStatsMap.entries())
+        .map(([symbol, stats]) => ({
+            symbol,
+            trades: stats.trades,
+            pnl: stats.pnl
+        }))
+        .sort((a, b) => b.pnl - a.pnl); // Sort by PnL desc
+
     // Symbol Performance for Pie Chart (Gross Profit Distribution)
+    // Keep existing logic for Pie Chart as it might be specific to Gains? 
+    // Actually the Pie Chart usually shows where the Profit comes from, so Gross Profit makes sense.
+    // Let's keep symbolPerformance for the Pie Chart as is (Gross Profit only).
     const symbolMap = new Map<string, number>();
     filteredEntries.forEach(t => {
         if (t.pnl && t.pnl > 0) {
@@ -163,25 +184,16 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     // Just map the filtered entries
     const recentActivity = filteredEntries.slice(0, 5).map(e => {
         let type = "CLOSE";
-        if (e.result === 'WIN') type = "TP";
-        if (e.result === 'LOSS') type = "SL";
-
-        // Calc time ago
-        const exitDate = e.exitDate || new Date();
-        const diffMs = now.getTime() - exitDate.getTime();
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffHrs = Math.floor(diffMins / 60);
-        const diffDays = Math.floor(diffHrs / 24);
-
-        let timeAgo = "Just now";
-        if (diffDays > 0) timeAgo = `${diffDays}d ago`;
-        else if (diffHrs > 0) timeAgo = `${diffHrs}h ago`;
-        else timeAgo = `${diffMins}m ago`;
+        if (e.result === "WIN") type = "WIN";
+        if (e.result === "LOSS") type = "LOSS";
 
         return {
-            id: e.id, symbol: e.symbol, type,
-            title: `${type === 'TP' ? 'Take Profit' : type === 'SL' ? 'Stop Loss' : 'Closed'} ${e.symbol}`,
-            timeAgo
+            id: e.id,
+            symbol: e.symbol,
+            type,
+            amount: e.pnl,
+            date: e.exitDate ? format(e.exitDate, "HH:mm") : "",
+            fullDate: e.exitDate
         };
     });
 
@@ -279,6 +291,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
             dailyWinRates={dailyWinRates}
             bestTrades={bestTrades}
             worstTrades={worstTrades}
+            symbolAnalytics={symbolAnalytics}
         />
     );
 }

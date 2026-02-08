@@ -13,6 +13,7 @@ import { ProfitDistributionChart } from "@/components/dashboard/ProfitDistributi
 import { LotDistributionChart } from "@/components/dashboard/LotDistributionChart";
 import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";
 import { TopTradesList } from "@/components/dashboard/TopTradesList";
+import { SymbolPerformanceList } from "@/components/dashboard/SymbolPerformanceList";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from "recharts";
 
@@ -45,6 +46,7 @@ interface DashboardClientProps {
     dailyWinRates: { date: string; winRate: number; trades: number; wins: number }[];
     bestTrades: any[];
     worstTrades: any[];
+    symbolAnalytics: any[];
 }
 
 export default function DashboardClient({
@@ -60,7 +62,8 @@ export default function DashboardClient({
     monthlyAnalytics,
     dailyWinRates,
     bestTrades,
-    worstTrades
+    worstTrades,
+    symbolAnalytics
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -201,7 +204,7 @@ export default function DashboardClient({
                     }} />
 
                     {/* Balance Growth Chart */}
-                    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-[#00C888]">
+                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-[#00C888]">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-[#00C888]/10 rounded-lg text-[#00C888]">
@@ -260,7 +263,7 @@ export default function DashboardClient({
 
                 <DashboardSide>
                     {/* Charts Row: Profit & Lot Distribution */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4 md:col-span-2 xl:col-span-1">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 md:col-span-2 xl:col-span-1">
                         {/* Profit Distribution */}
                         <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-blue-500 h-[324px] flex flex-col justify-between">
                             <div className="flex items-center gap-3 mb-3">
@@ -285,7 +288,7 @@ export default function DashboardClient({
                     </div>
 
                     {/* Monthly Analytics */}
-                    <div className="md:col-span-2 xl:col-span-1 bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-purple-500">
+                    <div className="md:col-span-2 xl:col-span-1 bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-purple-500">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
                                 <CalendarRange size={20} />
@@ -331,6 +334,11 @@ export default function DashboardClient({
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
+                    </div>
+
+                    {/* Symbol Performance List */}
+                    <div className="md:col-span-2 xl:col-span-1">
+                        <SymbolPerformanceList data={symbolAnalytics} />
                     </div>
                 </DashboardSide>
             </DashboardGrid>
