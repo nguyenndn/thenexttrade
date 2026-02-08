@@ -1,0 +1,199 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - link "TheNextTrade" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img [ref=e7]
+          - generic [ref=e10]: TheNextTrade
+        - button [ref=e11] [cursor=pointer]:
+          - img [ref=e12]
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15] [cursor=pointer]:
+            - link [ref=e16]:
+              - /url: /dashboard
+            - img
+            - generic: Dashboard
+            - button [ref=e17]:
+              - img [ref=e18]
+          - generic [ref=e20]:
+            - link "Journal" [ref=e21] [cursor=pointer]:
+              - /url: /dashboard/journal
+            - link "Sessions" [ref=e22] [cursor=pointer]:
+              - /url: /dashboard/sessions
+            - link "Trading Accounts" [ref=e23] [cursor=pointer]:
+              - /url: /dashboard/accounts
+        - generic [ref=e25] [cursor=pointer]:
+          - link [ref=e26]:
+            - /url: ""
+          - img
+          - generic: Analysis
+          - button [ref=e27]:
+            - img [ref=e28]
+        - generic [ref=e31] [cursor=pointer]:
+          - link [ref=e32]:
+            - /url: ""
+          - img
+          - generic: Strategy
+          - button [ref=e33]:
+            - img [ref=e34]
+        - generic [ref=e37] [cursor=pointer]:
+          - link [ref=e38]:
+            - /url: ""
+          - img
+          - generic: Resources
+          - button [ref=e39]:
+            - img [ref=e40]
+      - button "Logout" [ref=e43] [cursor=pointer]:
+        - img [ref=e44]
+        - generic [ref=e47]: Logout
+    - generic [ref=e48]:
+      - banner [ref=e49]:
+        - generic [ref=e53]:
+          - img [ref=e54]
+          - textbox "Search..." [ref=e57]
+        - generic [ref=e58]:
+          - button [ref=e59] [cursor=pointer]
+          - button [ref=e61] [cursor=pointer]:
+            - img [ref=e62]
+          - button "User menu" [ref=e67] [cursor=pointer]:
+            - img "NGUYEN NGUYEN" [ref=e69]
+            - img [ref=e70]
+      - main [ref=e73]:
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - generic [ref=e76]:
+              - generic [ref=e77]:
+                - img [ref=e78]
+                - heading "Good afternoon, NGUYEN NGUYEN" [level=1] [ref=e83]
+              - paragraph [ref=e84]: "\"The goal of a successful trader is to make the best trades. Money is secondary.\""
+            - generic [ref=e86]:
+              - combobox [ref=e87] [cursor=pointer]:
+                - img [ref=e89]
+                - generic [ref=e92]: Vantage Account (600000212)
+                - img [ref=e93]
+              - button "All Time" [ref=e97] [cursor=pointer]:
+                - img [ref=e99]
+                - generic [ref=e101]: All Time
+                - img [ref=e102]
+          - generic [ref=e105]:
+            - generic [ref=e106]:
+              - generic [ref=e107]:
+                - generic [ref=e108]:
+                  - generic [ref=e109]:
+                    - img [ref=e111]
+                    - generic [ref=e113]: +0.0%
+                  - heading "Total Balance" [level=3] [ref=e114]
+                  - paragraph [ref=e115]: $47,590.85
+                - generic [ref=e116]:
+                  - img [ref=e119]
+                  - heading "Winrate (Range)" [level=3] [ref=e125]
+                  - paragraph [ref=e126]: 48.6%
+                - generic [ref=e127]:
+                  - generic [ref=e128]:
+                    - img [ref=e130]
+                    - generic [ref=e132]: Filtered
+                  - heading "Net Profit (Range)" [level=3] [ref=e133]
+                  - paragraph [ref=e134]: +$5,358.76
+              - generic [ref=e135]:
+                - generic [ref=e136]:
+                  - generic [ref=e137]:
+                    - img [ref=e139]
+                    - button [ref=e142] [cursor=pointer]:
+                      - img [ref=e144]
+                  - heading "Profit Factor" [level=3] [ref=e146]
+                  - paragraph [ref=e147]: "1.41"
+                - generic [ref=e148]:
+                  - generic [ref=e149]:
+                    - img [ref=e151]
+                    - button [ref=e155] [cursor=pointer]:
+                      - img [ref=e157]
+                  - heading "Avg Win" [level=3] [ref=e159]
+                  - paragraph [ref=e160]: $41.44
+                - generic [ref=e161]:
+                  - generic [ref=e162]:
+                    - img [ref=e164]
+                    - button [ref=e166] [cursor=pointer]:
+                      - img [ref=e168]
+                  - heading "Avg Loss" [level=3] [ref=e170]
+                  - paragraph [ref=e171]: $27.92
+              - generic [ref=e172]:
+                - generic [ref=e173]:
+                  - generic [ref=e174]:
+                    - img [ref=e176]
+                    - generic [ref=e179]:
+                      - heading "Period Growth" [level=3] [ref=e180]
+                      - paragraph [ref=e181]: Cumulative Net Profit
+                  - generic [ref=e182]:
+                    - paragraph [ref=e183]: Net Profit
+                    - paragraph [ref=e184]: +$5,358.76
+                - application [ref=e188]:
+                  - generic [ref=e197]:
+                    - generic [ref=e198]:
+                      - generic [ref=e200]: Jan 01
+                      - generic [ref=e202]: Dec 03
+                      - generic [ref=e204]: Nov 05
+                      - generic [ref=e206]: Feb 08
+                    - generic [ref=e207]:
+                      - generic [ref=e209]: $0
+                      - generic [ref=e211]: $1500
+                      - generic [ref=e213]: $3000
+                      - generic [ref=e215]: $4500
+                      - generic [ref=e217]: $6000
+            - generic [ref=e218]:
+              - generic [ref=e219]:
+                - generic [ref=e220]:
+                  - generic [ref=e221]:
+                    - img [ref=e223]
+                    - generic [ref=e226]:
+                      - heading "Profit Distribution" [level=3] [ref=e227]
+                      - paragraph [ref=e228]: By Symbol
+                  - generic [ref=e231]:
+                    - list [ref=e233]:
+                      - listitem [ref=e234]:
+                        - img "[object Object] legend icon" [ref=e235]
+                        - generic [ref=e237]: BTCUSD
+                      - listitem [ref=e238]:
+                        - img "[object Object] legend icon" [ref=e239]
+                        - generic [ref=e241]: XAUUSD
+                    - application [ref=e242]
+                - generic [ref=e250]:
+                  - generic [ref=e251]:
+                    - img [ref=e253]
+                    - generic [ref=e257]:
+                      - heading "Lot Distribution" [level=3] [ref=e258]
+                      - paragraph [ref=e259]: By Volume
+                  - generic [ref=e262]:
+                    - list [ref=e264]:
+                      - listitem [ref=e265]:
+                        - img "[object Object] legend icon" [ref=e266]
+                        - generic [ref=e268]: BTCUSD
+                      - listitem [ref=e269]:
+                        - img "[object Object] legend icon" [ref=e270]
+                        - generic [ref=e272]: XAUUSD
+                    - application [ref=e273]
+              - generic [ref=e281]:
+                - generic [ref=e282]:
+                  - img [ref=e284]
+                  - generic [ref=e286]:
+                    - heading "Monthly Analytics" [level=3] [ref=e287]
+                    - paragraph [ref=e288]: Net Profit by Month
+                - application [ref=e292]:
+                  - generic [ref=e302]:
+                    - generic [ref=e305]: 2026-02-01
+                    - generic [ref=e306]:
+                      - generic [ref=e308]: $0
+                      - generic [ref=e310]: $1500
+                      - generic [ref=e312]: $3000
+                      - generic [ref=e314]: $4500
+                      - generic [ref=e316]: $6000
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e322] [cursor=pointer]:
+    - img [ref=e323]
+  - alert [ref=e326]
+  - generic [ref=e327]: 2026-02-01
+```

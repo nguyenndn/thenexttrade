@@ -9,6 +9,7 @@ import { EmotionPerformanceChart } from "./EmotionPerformanceChart";
 import { ConfidenceCorrelation } from "./ConfidenceCorrelation";
 import { PlanAdherence } from "./PlanAdherence";
 import { TiltIndicators } from "./TiltIndicators";
+import { DateRangePicker } from "@/components/ui/DateRangePicker";
 
 interface PsychologyData {
     emotionBeforeStats: Array<{
@@ -108,15 +109,20 @@ export function PsychologyDashboard() {
 
         <>
             {/* Header */}
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
-                <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Psychology Analysis
                         </h1>
                     </div>
-                    {/* Date picker would go here */}
+                    <div className="w-full md:w-auto">
+                        <DateRangePicker
+                            value={dateRange}
+                            onChange={setDateRange}
+                        />
+                    </div>
                 </div>
                 <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
                     Understand how emotions affect your trading

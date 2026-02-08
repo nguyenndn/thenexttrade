@@ -213,7 +213,7 @@ export function Sidebar({ items = dashboardMenuItems, className }: SidebarProps)
             <div className="flex-1 overflow-y-auto py-6 flex flex-col gap-2 px-4">
                 {items.map((item: any) => (
                     <SidebarItemComponent
-                        key={item.href}
+                        key={item.name}
                         item={item}
                         pathname={pathname}
                         collapsed={collapsed}

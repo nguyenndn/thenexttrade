@@ -110,9 +110,10 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     // let runningBalance = totalBalance;
     // We iterate BACKWARDS from now? No, we have the map.
     // Let's just stick to $ Gain for V1 to avoid confusing math errors.
+    // Let's just stick to $ Gain for V1 to avoid confusing math errors.
     const monthlyAnalyticsData = Array.from(monthlyStatsMap.entries()).map(([date, value]) => ({
         date,
-        value // This is $
+        value: Number(value.toFixed(2)) // This is $
     }));
 
     // Stats based on Filtered Range
@@ -140,6 +141,10 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     const startOfRealToday = startOfDay(new Date());
     const todayEntries = filteredEntries.filter(e => e.exitDate && e.exitDate >= startOfRealToday);
     const todayPnL = todayEntries.reduce((sum, e) => sum + (e.pnl || 0), 0);
+
+    // Top Trades (Best 3 & Worst 3)
+    const bestTrades = [...wins].sort((a, b) => (b.pnl || 0) - (a.pnl || 0)).slice(0, 3);
+    const worstTrades = [...losses].sort((a, b) => (a.pnl || 0) - (b.pnl || 0)).slice(0, 3);
 
     // Symbol Performance for Pie Chart (Gross Profit Distribution)
     const symbolMap = new Map<string, number>();
@@ -196,6 +201,23 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     const chartPoints = [];
     let cumulativePnL = 0;
 
+    // Daily Win Rate Data
+    // We already have dailyPnLMap, but we need Win Rate.
+    // Let's create a dailyStatsMap for Win Rate
+    const dailyStatsMap = new Map<string, { wins: number; total: number }>();
+    filteredEntries.forEach(e => {
+        if (!e.exitDate) return;
+        const brokerDate = addHours(e.exitDate, BROKER_OFFSET_HOURS);
+        const dayStr = brokerDate.toISOString().split('T')[0];
+
+        const current = dailyStatsMap.get(dayStr) || { wins: 0, total: 0 };
+        current.total += 1;
+        if (e.result === 'WIN') current.wins += 1;
+        dailyStatsMap.set(dayStr, current);
+    });
+
+    const dailyWinRates = [];
+
     // Loop days
     const dayIterator = new Date(startDate);
     const stopDate = (endDate > now) ? now : endDate; // Don't project into future
@@ -205,9 +227,21 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         const daysPnL = dailyPnLMap.get(dayStr) || 0;
         cumulativePnL += daysPnL;
 
+        // Balance Chart Point
         chartPoints.push({
             date: dayIterator.toISOString(), // Component handles formatting
             balance: Number(cumulativePnL.toFixed(2)) // We chart Cumulative PnL
+        });
+
+        // Win Rate Chart Point
+        const dayStats = dailyStatsMap.get(dayStr) || { wins: 0, total: 0 };
+        const dayWinRate = dayStats.total > 0 ? (dayStats.wins / dayStats.total) * 100 : 0;
+
+        dailyWinRates.push({
+            date: dayIterator.toISOString(),
+            winRate: Number(dayWinRate.toFixed(1)),
+            trades: dayStats.total,
+            wins: dayStats.wins
         });
 
         dayIterator.setDate(dayIterator.getDate() + 1);
@@ -242,6 +276,9 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
             symbolPerformance={symbolPerformance}
             currentAccountId={accountId}
             monthlyAnalytics={monthlyAnalyticsData}
+            dailyWinRates={dailyWinRates}
+            bestTrades={bestTrades}
+            worstTrades={worstTrades}
         />
     );
 }

@@ -25,17 +25,17 @@ export function PlaybookFilters({ search, setSearch, filter, setFilter }: Playbo
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex p-1 bg-gray-100 dark:bg-[#1E2028] border border-gray-200 dark:border-white/5 rounded-xl">
+            <div className="grid grid-cols-3 p-1 bg-gray-100 dark:bg-[#1E2028] border border-gray-200 dark:border-white/5 rounded-xl w-full md:w-auto">
                 {(["ALL", "WIN", "LOSS"] as const).map((f) => (
                     <button
                         key={f}
                         onClick={() => setFilter(f)}
-                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${filter === f
-                                ? "bg-white dark:bg-[#2A2D36] text-gray-900 dark:text-white shadow-sm"
-                                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                        className={`px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all text-center ${filter === f
+                            ? "bg-white dark:bg-[#2A2D36] text-gray-900 dark:text-white shadow-sm"
+                            : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                             }`}
                     >
-                        {f === "ALL" ? "All Trades" : f === "WIN" ? "Wins Only" : "Losses Only"}
+                        {f === "ALL" ? "All" : f === "WIN" ? "Wins" : "Losses"}
                     </button>
                 ))}
             </div>

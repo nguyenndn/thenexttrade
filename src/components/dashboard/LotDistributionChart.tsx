@@ -10,12 +10,14 @@ interface LotDistributionChartProps {
     value: number; // Volume in Standard Lots
   }[];
   height?: number | string;
+  innerRadius?: number;
+  outerRadius?: number;
 }
 
 // Match colors with ProfitDistributionChart
 const COLORS = ['#00C888', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899', '#EF4444'];
 
-export function LotDistributionChart({ data, height = 300 }: LotDistributionChartProps) {
+export function LotDistributionChart({ data, height = 300, innerRadius = 60, outerRadius = 80 }: LotDistributionChartProps) {
   if (!data || data.length === 0) {
     return (
       <div className={`w-full flex items-center justify-center text-gray-400`} style={{ height }}>
@@ -35,8 +37,8 @@ export function LotDistributionChart({ data, height = 300 }: LotDistributionChar
             data={chartData}
             cx="50%"
             cy="50%"
-            innerRadius={60}
-            outerRadius={80}
+            innerRadius={innerRadius}
+            outerRadius={outerRadius}
             paddingAngle={5}
             dataKey="value"
           >

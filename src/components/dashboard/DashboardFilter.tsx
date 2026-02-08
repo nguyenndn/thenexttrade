@@ -13,7 +13,7 @@ export function DashboardFilter({ currentAccountId }: { currentAccountId?: strin
     const startStr = searchParams.get("from");
     const endStr = searchParams.get("to");
 
-    const defaultStart = new Date(2000, 0, 1);
+    const defaultStart = new Date(2025, 0, 1);
     const defaultEnd = endOfDay(new Date());
 
     const dateRange = {
@@ -29,13 +29,13 @@ export function DashboardFilter({ currentAccountId }: { currentAccountId?: strin
     };
 
     return (
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-            <AccountSelector currentAccountId={currentAccountId} />
-            <div className="h-8 w-[1px] bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 2xl:flex 2xl:flex-row items-center gap-3 w-full 2xl:w-auto">
+            <AccountSelector currentAccountId={currentAccountId} className="w-full" />
+            <div className="h-8 w-[1px] bg-gray-200 dark:bg-white/10 hidden 2xl:block"></div>
             <DateRangePicker
                 value={dateRange}
                 onChange={handleDateChange}
-                className="w-full sm:w-auto"
+                className="w-full 2xl:w-auto"
             />
         </div>
     );

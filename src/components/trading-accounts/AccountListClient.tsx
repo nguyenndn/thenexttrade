@@ -105,10 +105,10 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                             </h1>
                         </div>
                         {/* Actions */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 sm:mt-0">
                             <button
                                 onClick={fetchAccounts}
-                                className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mr-2"
+                                className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors sm:mr-2 py-2 sm:py-0"
                             >
                                 <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
                                 Refresh Status

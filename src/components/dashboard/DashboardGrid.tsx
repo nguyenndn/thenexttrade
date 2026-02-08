@@ -31,7 +31,7 @@ export function DashboardMain({ children, className }: DashboardGridProps) {
 export function DashboardSide({ children, className }: DashboardGridProps) {
     return (
         <div className={cn(
-            "xl:col-span-5 flex flex-col gap-6",
+            "xl:col-span-5 grid grid-cols-1 md:grid-cols-2 xl:flex xl:flex-col gap-6",
             className
         )}>
             {children}

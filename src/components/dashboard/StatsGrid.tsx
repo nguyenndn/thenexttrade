@@ -40,31 +40,21 @@ export function StatsGrid({ data }: StatsGridProps) {
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {stats.map((stat, i) => {
                 const Icon = stat.icon;
                 const borderColor = i === 0 ? "border-t-blue-500" : i === 1 ? "border-t-green-500" : "border-t-red-500";
                 return (
                     <div key={i} className={`bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 ${borderColor}`}>
-                        <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-3 mb-3">
                             <div className={`p-3 rounded-xl ${stat.bg}`}>
                                 <Icon size={20} className={stat.color} />
                             </div>
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger>
-                                        <div className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
-                                            <Info size={16} className="text-gray-300 hover:text-gray-500" />
-                                        </div>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>{stat.desc}</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider">{stat.label}</h3>
+
                         </div>
-                        <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">{stat.label}</h3>
-                        <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
+                        <p className={`text-lg font-black ${stat.color}`}>{stat.value}</p>
+                        <p className="text-xs text-gray-400 font-medium mt-1">{stat.desc}</p>
                     </div>
                 );
             })}

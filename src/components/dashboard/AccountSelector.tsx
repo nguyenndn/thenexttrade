@@ -33,9 +33,10 @@ type TradingAccount = {
 
 interface AccountSelectorProps {
     currentAccountId?: string;
+    className?: string;
 }
 
-export function AccountSelector({ currentAccountId }: AccountSelectorProps) {
+export function AccountSelector({ currentAccountId, className }: AccountSelectorProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [open, setOpen] = useState(false);
@@ -109,7 +110,10 @@ export function AccountSelector({ currentAccountId }: AccountSelectorProps) {
                 <button
                     role="combobox"
                     aria-expanded={open}
-                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-[360px]"
+                    className={cn(
+                        "flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
+                        className
+                    )}
                 >
                     <div className="p-1.5 bg-blue-500/10 text-blue-500 rounded-lg">
                         <Wallet size={16} />
@@ -120,7 +124,7 @@ export function AccountSelector({ currentAccountId }: AccountSelectorProps) {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </button>
             </PopoverTrigger>
-            <PopoverContent className="w-[360px] p-0" align="end">
+            <PopoverContent className="w-[300px] sm:w-[360px] p-0" align="end">
                 <Command>
                     <CommandInput placeholder="Search account..." />
                     <CommandList>

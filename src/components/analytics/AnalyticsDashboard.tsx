@@ -89,15 +89,15 @@ export function AnalyticsDashboard() {
 
         <>
             {/* Header with filters */}
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
-                <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Analytics
                         </h1>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
                         <DateRangePicker
                             value={dateRange}
                             onChange={setDateRange}

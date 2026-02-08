@@ -172,7 +172,7 @@ export function ReportsDashboard() {
             </div>
 
             {/* Controls Container */}
-            <div className="bg-white dark:bg-[#1E2028] p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] p-4 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm">
                 <h3 className="font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3 text-lg">
                     <Calendar size={20} className="text-[#00C888]" />
                     Configure Report Range

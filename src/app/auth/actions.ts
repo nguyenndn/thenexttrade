@@ -59,7 +59,7 @@ export async function login(formData: FormData) {
     }
 
     revalidatePath('/', 'layout')
-    redirect('/academy')
+    redirect('/dashboard')
 }
 
 export async function verifyLogin2FA(code: string) {

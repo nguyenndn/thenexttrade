@@ -71,7 +71,7 @@ const customStaticRanges = createStaticRanges([
     {
         label: "All Time",
         range: () => ({
-            startDate: new Date(2000, 0, 1),
+            startDate: new Date(2025, 0, 1),
             endDate: endOfDay(new Date()),
         }),
     },
@@ -100,7 +100,24 @@ export function DateRangePicker({
                 key: "selection",
             },
         ])
-    }, [value.start, value.end])
+    }, [value?.start, value?.end])
+
+    const [months, setMonths] = useState(2);
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 1024) {
+                setMonths(1);
+            } else {
+                setMonths(2);
+            }
+        };
+
+        // Initial check
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleSelect = (ranges: RangeKeyDict) => {
         const selection = ranges.selection
@@ -134,7 +151,7 @@ export function DateRangePicker({
     // Format display text
     const getDisplayText = () => {
         if (!value?.start) return "Select date range"
-        if (value.start.getFullYear() === 2000) return "All Time" // Custom display for All Time
+        if (value.start.getFullYear() === 2025) return "All Time" // Custom display for All Time
         if (value.end) {
             return `${format(value.start, "MMM dd, yyyy")} - ${format(value.end, "MMM dd, yyyy")}`
         }
@@ -149,8 +166,15 @@ export function DateRangePicker({
                     border-radius: 12px;
                 }
                 .rdrStaticRange {
-                    border-bottom: 1px solid #f3f4f6;
-                    background-color: #fff !important;
+                    background-color: transparent !important;
+                    border-bottom: 1px solid #f3f4f6 !important;
+                    height: 51px !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    transition: background-color 0.2s;
+                }
+                .rdrStaticRange:hover, .rdrStaticRangeSelected {
+                    background-color: #eff6ff !important;
                 }
                 .rdrStaticRangeLabel {
                     color: #374151 !important;
@@ -166,13 +190,16 @@ export function DateRangePicker({
                     font-weight: 600 !important;
                     color: #1f2937 !important;
                 }
+                .rdrDefinedRangesWrapper {
+                    width: 140px !important;
+                }
             `}</style>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
                         id="date"
                         className={cn(
-                            "flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-[280px]",
+                            "flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
                             !value && "text-gray-500"
                         )}
                     >
@@ -191,7 +218,7 @@ export function DateRangePicker({
                     <ReactDateRangePicker
                         onChange={handleSelect}
                         moveRangeOnFirstSelection={false}
-                        months={2}
+                        months={months}
                         ranges={tempRange}
                         direction="horizontal"
                         rangeColors={["#3b82f6"]}

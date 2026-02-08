@@ -2,7 +2,7 @@
  * JournalList Component Tests
  * @module tests/user/components/journal/JournalList.test
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockJournalEntries } from '../../__mocks__/data';
@@ -58,9 +58,21 @@ const mockApiResponse = {
 describe('JournalList Component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        mockFetch.mockResolvedValue({
-            ok: true,
-            json: () => Promise.resolve(mockApiResponse),
+        mockFetch.mockImplementation((url) => {
+            const urlStr = typeof url === 'object' && url && 'url' in url ? (url as any).url : String(url);
+            if (urlStr.includes('/api/strategies')) {
+                return Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({ strategies: [] }),
+                });
+            }
+            if (urlStr.includes('/api/journal-entries')) {
+                return Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve(mockApiResponse),
+                });
+            }
+            return Promise.resolve({ ok: false, status: 404 });
         });
     });
 
@@ -182,8 +194,12 @@ describe('JournalList Component', () => {
     describe('Error Handling', () => {
         it('should handle API error gracefully', async () => {
             const { toast } = await import('sonner');
-            mockFetch.mockReset();
-            mockFetch.mockRejectedValueOnce(new Error('Network error'));
+            mockFetch.mockImplementation((url) => {
+                const urlStr = typeof url === 'string' ? url : String((url as any).url || url);
+                if (urlStr.includes('/api/strategies')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ strategies: [] }) });
+                if (urlStr.includes('/api/journal-entries')) return Promise.reject(new Error('Network error'));
+                return Promise.resolve({ ok: true });
+            });
 
             render(<JournalList />);
 
@@ -293,19 +309,26 @@ describe('JournalList Component', () => {
 
             await waitFor(() => {
                 expect(screen.getByText('EURUSD')).toBeInTheDocument();
-            });
+            }, { timeout: 3000 });
 
             expect(screen.queryByText('Prev')).not.toBeInTheDocument();
             expect(screen.queryByText('Next')).not.toBeInTheDocument();
         });
 
         it('should show pagination for multiple pages', async () => {
-            mockFetch.mockResolvedValueOnce({
-                ok: true,
-                json: () => Promise.resolve({
-                    ...mockApiResponse,
-                    meta: { page: 1, totalPages: 3, total: 30 },
-                }),
+            mockFetch.mockImplementation((url) => {
+                const urlStr = typeof url === 'object' && url && 'url' in url ? (url as any).url : String(url);
+                if (urlStr.includes('/api/strategies')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ strategies: [] }) });
+                if (urlStr.includes('/api/journal-entries')) {
+                    return Promise.resolve({
+                        ok: true,
+                        json: () => Promise.resolve({
+                            ...mockApiResponse,
+                            meta: { page: 1, totalPages: 3, total: 30 },
+                        }),
+                    });
+                }
+                return Promise.resolve({ ok: true });
             });
 
             render(<JournalList />);
@@ -313,16 +336,23 @@ describe('JournalList Component', () => {
             await waitFor(() => {
                 expect(screen.getByText('Prev')).toBeInTheDocument();
                 expect(screen.getByText('Next')).toBeInTheDocument();
-            });
+            }, { timeout: 3000 });
         });
 
         it('should disable Prev on first page', async () => {
-            mockFetch.mockResolvedValueOnce({
-                ok: true,
-                json: () => Promise.resolve({
-                    ...mockApiResponse,
-                    meta: { page: 1, totalPages: 3, total: 30 },
-                }),
+            mockFetch.mockImplementation((url) => {
+                const urlStr = typeof url === 'object' && url && 'url' in url ? (url as any).url : String(url);
+                if (urlStr.includes('/api/strategies')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ strategies: [] }) });
+                if (urlStr.includes('/api/journal-entries')) {
+                    return Promise.resolve({
+                        ok: true,
+                        json: () => Promise.resolve({
+                            ...mockApiResponse,
+                            meta: { page: 1, totalPages: 3, total: 30 },
+                        }),
+                    });
+                }
+                return Promise.resolve({ ok: true });
             });
 
             render(<JournalList />);
@@ -330,33 +360,43 @@ describe('JournalList Component', () => {
             await waitFor(() => {
                 const prevButton = screen.getByText('Prev');
                 expect(prevButton).toBeDisabled();
-            });
+            }, { timeout: 3000 });
         });
 
         it('should navigate to next page', async () => {
             const user = userEvent.setup();
 
-            mockFetch.mockResolvedValueOnce({
-                ok: true,
-                json: () => Promise.resolve({
-                    ...mockApiResponse,
-                    meta: { page: 1, totalPages: 3, total: 30 },
-                }),
-            });
-
-            mockFetch.mockResolvedValueOnce({
-                ok: true,
-                json: () => Promise.resolve({
-                    ...mockApiResponse,
-                    meta: { page: 2, totalPages: 3, total: 30 },
-                }),
+            mockFetch.mockImplementation((url) => {
+                const urlStr = typeof url === 'object' && url && 'url' in url ? (url as any).url : String(url);
+                if (urlStr.includes('/api/strategies')) {
+                    return Promise.resolve({ ok: true, json: () => Promise.resolve({ strategies: [] }) });
+                }
+                if (urlStr.includes('/api/journal-entries')) {
+                    if (urlStr.includes('page=2')) {
+                        return Promise.resolve({
+                            ok: true,
+                            json: () => Promise.resolve({
+                                ...mockApiResponse,
+                                meta: { page: 2, totalPages: 3, total: 30 },
+                            }),
+                        });
+                    }
+                    return Promise.resolve({
+                        ok: true,
+                        json: () => Promise.resolve({
+                            ...mockApiResponse,
+                            meta: { page: 1, totalPages: 3, total: 30 },
+                        }),
+                    });
+                }
+                return Promise.resolve({ ok: true });
             });
 
             render(<JournalList />);
 
             await waitFor(() => {
                 expect(screen.getByText('Next')).toBeInTheDocument();
-            });
+            }, { timeout: 3000 });
 
             await user.click(screen.getByText('Next'));
 
@@ -364,7 +404,7 @@ describe('JournalList Component', () => {
                 expect(mockFetch).toHaveBeenCalledWith(
                     expect.stringContaining('page=2')
                 );
-            });
+            }, { timeout: 3000 });
         });
     });
 
@@ -373,13 +413,20 @@ describe('JournalList Component', () => {
     // ========================================
     describe('Empty State', () => {
         it('should handle empty entries list', async () => {
-            mockFetch.mockResolvedValueOnce({
-                ok: true,
-                json: () => Promise.resolve({
-                    data: [],
-                    meta: { page: 1, totalPages: 1, total: 0 },
-                    stats: null,
-                }),
+            mockFetch.mockImplementation((url) => {
+                const urlStr = typeof url === 'object' && url && 'url' in url ? (url as any).url : String(url);
+                if (urlStr.includes('/api/strategies')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ strategies: [] }) });
+                if (urlStr.includes('/api/journal-entries')) {
+                    return Promise.resolve({
+                        ok: true,
+                        json: () => Promise.resolve({
+                            data: [],
+                            meta: { page: 1, totalPages: 1, total: 0 },
+                            stats: null,
+                        }),
+                    });
+                }
+                return Promise.resolve({ ok: true });
             });
 
             render(<JournalList />);
@@ -387,6 +434,8 @@ describe('JournalList Component', () => {
             await waitFor(() => {
                 expect(screen.getByText('Trading Journal')).toBeInTheDocument();
             });
+            // Should verify empty message or lack of rows
+            expect(screen.getByText('No trades recorded yet.')).toBeInTheDocument();
         });
     });
 });

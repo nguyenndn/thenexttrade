@@ -8,11 +8,13 @@ interface ProfitDistributionChartProps {
         value: number; // Profit value (absolute or percentage)
     }[];
     height?: number | string;
+    innerRadius?: number;
+    outerRadius?: number;
 }
 
 const COLORS = ['#00C888', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899', '#EF4444'];
 
-export function ProfitDistributionChart({ data, height = 300 }: ProfitDistributionChartProps) {
+export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, outerRadius = 80 }: ProfitDistributionChartProps) {
     if (!data || data.length === 0) {
         return (
             <div className={`w-full flex items-center justify-center text-gray-400`} style={{ height }}>
@@ -33,8 +35,8 @@ export function ProfitDistributionChart({ data, height = 300 }: ProfitDistributi
                         data={validData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
+                        innerRadius={innerRadius}
+                        outerRadius={outerRadius}
                         paddingAngle={5}
                         dataKey="value"
                     >

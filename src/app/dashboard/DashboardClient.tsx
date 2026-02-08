@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@/components/providers/ThemeProvider";
-import { TrendingUp, TrendingDown, DollarSign, Trophy, Flame, Activity, Sun, Moon, CloudSun, ArrowRight, PieChart, Layers, CalendarRange } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign, Trophy, Flame, Activity, Sun, Moon, CloudSun, ArrowRight, PieChart, Layers, CalendarRange, Target } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
@@ -11,7 +11,10 @@ import { DashboardGrid, DashboardMain, DashboardSide } from "@/components/dashbo
 import { BalanceGrowthChart } from "@/components/dashboard/BalanceGrowthChart";
 import { ProfitDistributionChart } from "@/components/dashboard/ProfitDistributionChart";
 import { LotDistributionChart } from "@/components/dashboard/LotDistributionChart";
+import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";
+import { TopTradesList } from "@/components/dashboard/TopTradesList";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
+import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from "recharts";
 
 interface DashboardClientProps {
     userData?: {
@@ -39,6 +42,9 @@ interface DashboardClientProps {
     symbolPerformance: { name: string; value: number }[];
     currentAccountId?: string;
     monthlyAnalytics: { date: string; value: number }[];
+    dailyWinRates: { date: string; winRate: number; trades: number; wins: number }[];
+    bestTrades: any[];
+    worstTrades: any[];
 }
 
 export default function DashboardClient({
@@ -51,7 +57,10 @@ export default function DashboardClient({
     recentTrades,
     symbolPerformance,
     currentAccountId,
-    monthlyAnalytics
+    monthlyAnalytics,
+    dailyWinRates,
+    bestTrades,
+    worstTrades
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -102,7 +111,7 @@ export default function DashboardClient({
         {
             title: "Total Balance",
             value: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(dashboardData.totalBalance),
-            change: "+0.0%", // Todo: Calculate change
+            description: "Live + Funded",
             isPositive: true,
             icon: DollarSign,
             color: "text-[#00C888]",
@@ -111,25 +120,16 @@ export default function DashboardClient({
         {
             title: "Winrate (Range)",
             value: `${dashboardData.winRate.toFixed(1)}%`,
-            change: "", // Removed negative indicator as requested
+            description: "Winning trades / Total",
             isPositive: true,
             icon: Trophy,
             color: "text-amber-500",
             bg: "bg-amber-50 dark:bg-amber-500/10"
         },
         {
-            title: "Win Streak",
-            value: `${dashboardData.streak}`,
-            change: "Consecutive",
-            isPositive: true,
-            icon: Flame,
-            color: "text-orange-500",
-            bg: "bg-orange-50 dark:bg-orange-500/10"
-        },
-        {
             title: "Net Profit (Range)",
             value: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', signDisplay: 'always' }).format(dashboardData.periodPnL),
-            change: "Filtered",
+            description: "Realized P&L",
             isPositive: dashboardData.periodPnL >= 0,
             icon: Activity,
             color: dashboardData.periodPnL >= 0 ? "text-[#00C888]" : "text-red-500",
@@ -146,7 +146,7 @@ export default function DashboardClient({
             />
 
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
                         {greeting.icon}
@@ -167,7 +167,7 @@ export default function DashboardClient({
             <DashboardGrid>
                 <DashboardMain>
                     {/* KPI Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {kpiCards.map((card, index) => {
                             const Icon = card.icon;
                             // Map colors for top border
@@ -176,20 +176,18 @@ export default function DashboardClient({
                                     index === 2 ? "border-t-orange-500" :
                                         card.isPositive ? "border-t-[#00C888]" : "border-t-red-500";
 
+                            const colSpanClass = index === 2 ? "sm:col-span-2 lg:col-span-1" : "";
+
                             return (
-                                <div key={index} className={`bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 ${borderColor}`}>
-                                    <div className="flex justify-between items-start mb-4">
+                                <div key={index} className={`bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 ${borderColor} ${colSpanClass}`}>
+                                    <div className="flex items-center gap-3 mb-3">
                                         <div className={`p-3 rounded-xl ${card.bg}`}>
                                             <Icon size={20} className={card.color} />
                                         </div>
-                                        {card.change && (
-                                            <span className={`text-xs font-bold px-2 py-1 rounded-full ${card.isPositive ? 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400' : 'bg-red-100 text-red-700'}`}>
-                                                {card.change}
-                                            </span>
-                                        )}
+                                        <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider">{card.title}</h3>
                                     </div>
-                                    <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">{card.title}</h3>
-                                    <p className={`text-2xl font-black ${card.color}`}>{card.value}</p>
+                                    <p className={`text-lg font-black ${card.color}`}>{card.value}</p>
+                                    <p className="text-xs text-gray-400 font-medium mt-1">{card.description}</p>
                                 </div>
                             );
                         })}
@@ -223,55 +221,115 @@ export default function DashboardClient({
                         </div>
                         <BalanceGrowthChart data={chartData} />
                     </div>
+
+                    {/* Bottom Row: Daily Win Rate & Top Trades */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Daily Win Rate Chart */}
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-green-500">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-green-500/10 rounded-lg text-green-500">
+                                        <Trophy size={20} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 dark:text-white">Daily Win Rate</h3>
+                                        <p className="text-xs text-gray-500">Win % by Day</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <DailyWinRateChart data={dailyWinRates} height={250} />
+                        </div>
+
+                        {/* Top Trades */}
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-cyan-500">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-cyan-500/10 rounded-lg text-cyan-500">
+                                        <Target size={20} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 dark:text-white">Top Trades</h3>
+                                        <p className="text-xs text-gray-500">Best & Worst Performance</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <TopTradesList bestTrades={bestTrades} worstTrades={worstTrades} />
+                        </div>
+                    </div>
                 </DashboardMain>
 
                 <DashboardSide>
                     {/* Charts Row: Profit & Lot Distribution */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4 md:col-span-2 xl:col-span-1">
                         {/* Profit Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-blue-500">
-                            <div className="mb-4 flex items-center gap-3">
-                                <div className="p-2 bg-blue-500/10 rounded-lg text-blue-500">
-                                    <PieChart size={18} />
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-blue-500 h-[324px] flex flex-col justify-between">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
+                                    <PieChart size={20} />
                                 </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-900 dark:text-white">Profit Distribution</h3>
-                                    <p className="text-xs text-gray-500">By Symbol</p>
-                                </div>
+                                <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider">Profit Distribution</h3>
                             </div>
-                            <ProfitDistributionChart data={symbolPerformance} height={235} />
+                            <ProfitDistributionChart data={symbolPerformance} height={210} innerRadius={60} outerRadius={80} />
                         </div>
 
                         {/* Lot Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-orange-500">
-                            <div className="mb-4 flex items-center gap-3">
-                                <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500">
-                                    <Layers size={18} />
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-orange-500 h-[324px] flex flex-col justify-between">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="p-3 bg-orange-500/10 rounded-xl text-orange-500">
+                                    <Layers size={20} />
                                 </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-900 dark:text-white">Lot Distribution</h3>
-                                    <p className="text-xs text-gray-500">By Volume</p>
-                                </div>
+                                <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider">Lot Distribution</h3>
                             </div>
-                            <LotDistributionChart data={lotDistributionData} height={235} />
+                            <LotDistributionChart data={lotDistributionData} height={210} innerRadius={60} outerRadius={80} />
                         </div>
                     </div>
 
-                    {/* Recent Activity -> Monthly Analytics */}
-                    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm flex-1 border-t-4 border-t-purple-500">
-                        <div className="flex justify-between items-center mb-6">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
-                                    <CalendarRange size={20} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-900 dark:text-white">Monthly Analytics</h3>
-                                    <p className="text-xs text-gray-500">Net Profit by Month</p>
-                                </div>
+                    {/* Monthly Analytics */}
+                    <div className="md:col-span-2 xl:col-span-1 bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-purple-500">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
+                                <CalendarRange size={20} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-gray-900 dark:text-white">Monthly Analytics</h3>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">Net Profit by Month</p>
                             </div>
                         </div>
-                        <div className="h-[300px]">
-                            <MonthlyAnalyticsChart data={monthlyAnalytics} />
+                        <div className="h-[300px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={monthlyAnalytics}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" opacity={0.2} />
+                                    <XAxis
+                                        dataKey="date"
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                                        dy={10}
+                                    />
+                                    <YAxis
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                                        tickFormatter={(value) => `$${value}`}
+                                    />
+                                    <Tooltip
+                                        cursor={{ fill: 'transparent' }}
+                                        contentStyle={{
+                                            backgroundColor: '#1F2937',
+                                            border: 'none',
+                                            borderRadius: '8px',
+                                            color: '#F9FAFB'
+                                        }}
+                                        formatter={(value?: number) => [`$${value || 0}`, 'Net Profit']}
+                                    />
+                                    <Bar
+                                        dataKey="value"
+                                        fill="#00C888"
+                                        radius={[4, 4, 0, 0]}
+                                        barSize={20}
+                                    />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
                 </DashboardSide>

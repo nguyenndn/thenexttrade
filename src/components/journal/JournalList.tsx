@@ -286,7 +286,7 @@ export default function JournalList() {
             {stats && <JournalStats stats={stats} />}
 
             {/* Filters & Controls */}
-            <div className="flex items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5">
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-[#00C888] transition-colors w-full md:w-64">
                     <Search size={18} className="text-gray-400" />
                     <input
@@ -323,7 +323,7 @@ export default function JournalList() {
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-[2.5rem] p-8 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl md:rounded-[2.5rem] p-4 md:p-8 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm whitespace-nowrap">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
