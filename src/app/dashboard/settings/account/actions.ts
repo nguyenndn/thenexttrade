@@ -3,6 +3,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
+import DOMPurify from "isomorphic-dompurify";
+
 export async function updateSettings(formData: FormData) {
     const supabase = await createClient();
 
@@ -15,13 +17,22 @@ export async function updateSettings(formData: FormData) {
         return { error: "Unauthorized" };
     }
 
-    const username = formData.get("username") as string;
-    const bio = formData.get("bio") as string;
+    const usernameRaw = formData.get("username") as string;
+    const bioRaw = formData.get("bio") as string;
+
+    // Sanitize inputs
+    const username = DOMPurify.sanitize(usernameRaw);
+    const bio = DOMPurify.sanitize(bioRaw);
+
     const avatarFile = formData.get("avatar") as File;
 
     let avatarUrl = null;
 
     // 2. Handle Image Upload
+    if (avatarFile && avatarFile.size === 0 && avatarFile.name && avatarFile.name !== "undefined") {
+        return { error: "File cannot be empty." };
+    }
+
     if (avatarFile && avatarFile.size > 0) {
         const fileExt = avatarFile.name.split(".").pop();
         const fileName = `${Date.now()}.${fileExt}`;

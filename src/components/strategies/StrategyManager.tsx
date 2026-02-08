@@ -241,6 +241,16 @@ function StrategyCard({
                 )}
             </div>
 
+            {/* Rules */}
+            {strategy.rules && (
+                <div className="mb-4">
+                    <p className="text-xs font-bold text-gray-400 uppercase mb-1">Rules</p>
+                    <div className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-100 dark:border-white/5 whitespace-pre-line">
+                        {strategy.rules}
+                    </div>
+                </div>
+            )}
+
             {/* Stats */}
             {performance ? (
                 <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-50 dark:border-white/5">

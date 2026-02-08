@@ -18,6 +18,9 @@ export const getAuthUser = cache(async (): Promise<AuthUser | null> => {
             email: true,
             image: true,
             createdAt: true, // Useful for new user checks
+            streak: true,
+            level: true,
+            xp: true,
             profile: {
                 select: {
                     role: true,
@@ -33,7 +36,19 @@ export const getAuthUser = cache(async (): Promise<AuthUser | null> => {
         }
     });
 
-    return userData;
+    if (!userData) return null;
+
+    // Transform to match AuthUser interface
+    // spread userData but override profile to include flattened fields
+    return {
+        ...userData,
+        profile: userData.profile ? {
+            ...userData.profile,
+            streak: userData.streak,
+            level: userData.level,
+            xp: userData.xp
+        } : null
+    };
 });
 
 export const getUserProfile = cache(async (userId: string) => {

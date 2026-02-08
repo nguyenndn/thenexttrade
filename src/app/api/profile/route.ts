@@ -10,7 +10,7 @@ const updateProfileSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     bio: z.string().optional(),
     image: z.string().optional(), // In MVP this might be a URL or handled separately
-});
+}).strict();
 
 export async function GET() {
     const supabase = await createClient();

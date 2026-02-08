@@ -11,6 +11,9 @@ export interface AuthUser {
         role: UserRole;
         bio: string | null;
         username: string | null;
+        streak: number;
+        level: number;
+        xp: number;
     } | null;
     _count?: {
         progress: number;

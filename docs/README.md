@@ -1,18 +1,27 @@
 # Documentation Structure
 
-## 📁 Root Level Files
-- **README.md** - Project overview & getting started
-- **PROJECT_STATUS.md** - Current project status
-- **OPTIMIZATION_PLAN.md** - Overall optimization strategy
-- **VERCEL_DEPLOYMENT.md** - Deployment guide
+# TheNextTrade - Documentation
 
-## 📁 docs/ - Main Documentation
+Welcome to the official documentation for **TheNextTrade**.
 
-### Quick Reference
-- **[QUICK_START.md](QUICK_START.md)** - ⭐ Start here! Daily workflow
-- **[SERVER_STARTUP_GUIDE.md](SERVER_STARTUP_GUIDE.md)** - 🚀 Server deployment guide
-- **[ENVIRONMENT_SETUP.md](ENVIRONMENT_SETUP.md)** - Environment configuration guide
-- **[LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md)** - Local dev setup options
+## 📚 Documentation Structure
+
+### 🏗️ [Architecture](docs/architecture/overview.md)
+Understand the high-level design and technology choices.
+- [Project Overview](docs/architecture/overview.md)
+- [Database Schema](docs/architecture/database.md)
+
+### 🚀 [Features](docs/features/analytics.md)
+Detailed guides on core functionalities.
+- [Analytics Dashboard](docs/features/analytics.md)
+- [Trader Tools](docs/features/trader-tools.md) (Journal, Calculators, Strategies)
+
+### 🔌 [API Reference](docs/api/endpoints.md)
+If you're a developer integrating with our platform.
+- [API Endpoints](docs/api/endpoints.md)
+
+## 📂 Archives
+- [Legacy Specifications](docs/archive) - Original project specs (for historical reference).
 
 ### Performance Documentation
 - **[performance/PERFORMANCE_AUDIT_REPORT.md](performance/PERFORMANCE_AUDIT_REPORT.md)** - Performance analysis results

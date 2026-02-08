@@ -12,16 +12,17 @@ const updateSchema = z.object({
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const user = await getAuthUser();
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const strategy = await prisma.strategy.findFirst({
-            where: { id: params.id, userId: user.id },
+            where: { id, userId: user.id },
         });
 
         if (!strategy) {
@@ -36,9 +37,10 @@ export async function GET(
 
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const user = await getAuthUser();
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -55,7 +57,7 @@ export async function PATCH(
         }
 
         const existing = await prisma.strategy.findFirst({
-            where: { id: params.id, userId: user.id },
+            where: { id, userId: user.id },
         });
 
         if (!existing) {
@@ -63,7 +65,7 @@ export async function PATCH(
         }
 
         const strategy = await prisma.strategy.update({
-            where: { id: params.id },
+            where: { id },
             data: validation.data,
         });
 
@@ -75,16 +77,17 @@ export async function PATCH(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const user = await getAuthUser();
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const existing = await prisma.strategy.findFirst({
-            where: { id: params.id, userId: user.id },
+            where: { id, userId: user.id },
         });
 
         if (!existing) {
@@ -98,7 +101,7 @@ export async function DELETE(
         });
 
         await prisma.strategy.delete({
-            where: { id: params.id },
+            where: { id },
         });
 
         return NextResponse.json({ success: true });

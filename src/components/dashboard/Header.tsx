@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search, Menu, Settings, LogOut } from 'lucide-react';
+import { Bell, Search, Menu, Settings, LogOut, Flame } from 'lucide-react';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { AuthUser } from "@/lib/auth-types";
 import Image from 'next/image';
@@ -61,6 +61,36 @@ export function Header({
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4">
+                {/* Gamification Stats (Hidden on mobile) */}
+                {user && (
+                    <div className="hidden lg:flex items-center gap-3 mr-2">
+                        {/* Streak Badge */}
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 text-orange-600 dark:text-orange-400">
+                            <Flame size={16} className="fill-current" />
+                            <span className="text-xs font-bold">{user.profile?.streak || 0}</span>
+                        </div>
+
+                        {/* Level & XP */}
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20">
+                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
+                                {user.profile?.level || 1}
+                            </div>
+                            <div className="flex flex-col w-16 gap-0.5">
+                                <span className="text-[10px] font-bold text-blue-700 dark:text-blue-300 leading-none">
+                                    {user.profile?.xp || 0} XP
+                                </span>
+                                <div className="h-1 w-full bg-blue-200 dark:bg-blue-500/30 rounded-full overflow-hidden">
+                                    {/* Simple progress bar mock: (XP % 1000) / 10 */}
+                                    <div
+                                        className="h-full bg-blue-500 rounded-full"
+                                        style={{ width: `${((user.profile?.xp || 0) % 1000) / 10}%` }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {showAccountSelector && (
                     <div className="hidden md:block">
                         <AccountSelector />

@@ -23,7 +23,12 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
             // Validate File Size (1MB)
             if (file.size > 1 * 1024 * 1024) {
                 setMessage({ type: 'error', text: 'File size must be less than 1MB.' });
-                // Reset file input value if possible, or just don't set preview
+                return;
+            }
+
+            // Validate Empty File
+            if (file.size === 0) {
+                setMessage({ type: 'error', text: 'File cannot be empty.' });
                 return;
             }
 
