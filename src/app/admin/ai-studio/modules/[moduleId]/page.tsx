@@ -27,11 +27,11 @@ export default async function ModuleDetailPage(props: { params: Promise<{ module
         <div className="space-y-8">
             {/* Breadcrumb */}
             <div className="flex items-center text-sm text-gray-500">
-                <Link href="/admin/ai-studio" className="hover:text-[#00C888] transition-colors">AI Studio</Link>
+                <Link href="/admin/ai-studio" className="hover:text-primary transition-colors">AI Studio</Link>
                 <ChevronRight size={14} className="mx-2" />
-                <Link href="/admin/ai-studio/levels" className="hover:text-[#00C888] transition-colors">Levels</Link>
+                <Link href="/admin/ai-studio/levels" className="hover:text-primary transition-colors">Levels</Link>
                 <ChevronRight size={14} className="mx-2" />
-                <Link href={`/admin/ai-studio/levels/${moduleData.level.id}`} className="hover:text-[#00C888] transition-colors">{moduleData.level.title}</Link>
+                <Link href={`/admin/ai-studio/levels/${moduleData.level.id}`} className="hover:text-primary transition-colors">{moduleData.level.title}</Link>
                 <ChevronRight size={14} className="mx-2" />
                 <span className="text-gray-900 dark:text-white font-medium">{moduleData.title}</span>
             </div>

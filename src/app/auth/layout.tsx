@@ -32,7 +32,7 @@ export default function AuthLayout({
         <div className="hidden lg:flex flex-col flex-1 max-w-lg">
           <h2 className="text-5xl font-bold mb-6 leading-tight">
             Build Your Trading<br />
-            <span className="text-[#00C888]">Edge</span>
+            <span className="text-primary">Edge</span>
           </h2>
           <p className="text-lg text-gray-400 mb-10 leading-relaxed">
             Stop guessing and start improving. Gain deep insights into your habits, master your psychology, and refine your strategy with data-driven journaling.
@@ -41,11 +41,11 @@ export default function AuthLayout({
           <div className="flex flex-col gap-4">
             {/* Card 1 */}
             <div className="bg-[#151925] p-5 rounded-2xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-[#00C888]/10 flex items-center justify-center text-[#00C888]">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="m19 9-5 5-4-4-3 3" /></svg>
               </div>
               <div>
-                <h3 className="font-bold text-lg text-[#00C888]">Data-Driven Insights</h3>
+                <h3 className="font-bold text-lg text-primary">Data-Driven Insights</h3>
                 <p className="text-sm text-gray-500">Identify patterns and optimize your win rate</p>
               </div>
             </div>
@@ -75,7 +75,7 @@ export default function AuthLayout({
 
           <div className="flex gap-8 mt-10 text-xs text-gray-600 font-semibold">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#00C888]"></div> Bank-level security
+              <div className="w-2 h-2 rounded-full bg-primary"></div> Bank-level security
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-gray-600"></div> 24/7 support

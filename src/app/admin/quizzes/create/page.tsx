@@ -131,7 +131,7 @@ export default function CreateQuizPage() {
                     onClick={handleSubmit}
                     disabled={isSubmitting}
                     isLoading={isSubmitting}
-                    className="bg-[#00C888] hover:bg-[#00a872] text-white shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all px-8 py-3 h-auto text-base font-bold rounded-xl"
+                    className="bg-primary hover:bg-[#00a872] text-white shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all px-8 py-3 h-auto text-base font-bold rounded-xl"
                 >
                     {!isSubmitting && <Save size={20} />}
                     Save Quiz
@@ -188,7 +188,7 @@ export default function CreateQuizPage() {
                                             <div key={oIndex} className="flex items-center gap-3">
                                                 <button
                                                     onClick={() => toggleCorrect(qIndex, oIndex)}
-                                                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${opt.isCorrect ? 'border-[#00C888] bg-[#00C888] text-white' : 'border-gray-200 dark:border-white/20'}`}
+                                                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${opt.isCorrect ? 'border-primary bg-primary text-white' : 'border-gray-200 dark:border-white/20'}`}
                                                 >
                                                     {opt.isCorrect && <CheckCircle size={14} />}
                                                 </button>

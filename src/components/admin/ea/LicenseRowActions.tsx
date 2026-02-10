@@ -36,7 +36,7 @@ export function LicenseRowActions({ license, adminId }: LicenseRowActionsProps) 
                 href={getIBLink(license.broker)}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-[#00C888] px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
+                className="flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-primary px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
             >
                 <ExternalLink size={14} />
                 Check IB
@@ -54,7 +54,7 @@ export function LicenseRowActions({ license, adminId }: LicenseRowActionsProps) 
             <Button
                 size="sm"
                 onClick={() => setIsApproveOpen(true)}
-                className="bg-[#00C888] hover:bg-[#00B078] text-white border-none shadow-sm shadow-[#00C888]/20 hover:shadow-[#00C888]/40 hover:-translate-y-0.5 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all"
+                className="bg-primary hover:bg-[#00B078] text-white border-none shadow-sm shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all"
             >
                 <Check size={14} className="mr-1.5" />
                 Approve

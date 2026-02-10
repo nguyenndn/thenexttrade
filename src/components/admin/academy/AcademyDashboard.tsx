@@ -57,14 +57,14 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Academy Management
                         </h1>
                     </div>
                     <Button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-[#00C888] hover:bg-[#00a872] text-white border-none shadow-lg shadow-[#00C888]/30 rounded-2xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95"
+                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-2xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         Add New
@@ -127,7 +127,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                             </div>
                             <Link
                                 href={`/admin/academy/${level.id}`}
-                                className="text-sm font-bold text-[#00C888] hover:underline"
+                                className="text-sm font-bold text-primary hover:underline"
                             >
                                 Manage Content →
                             </Link>
@@ -139,12 +139,12 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                 {initialLevels.length === 0 && (
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="flex flex-col items-center justify-center gap-4 h-[250px] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl hover:border-[#00C888] hover:bg-[#00C888]/5 transition-all group"
+                        className="flex flex-col items-center justify-center gap-4 h-[250px] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl hover:border-primary hover:bg-primary/5 transition-all group"
                     >
                         <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <Plus size={32} className="text-gray-400 group-hover:text-[#00C888]" />
+                            <Plus size={32} className="text-gray-400 group-hover:text-primary" />
                         </div>
-                        <span className="font-bold text-gray-500 group-hover:text-[#00C888]">Create your first course</span>
+                        <span className="font-bold text-gray-500 group-hover:text-primary">Create your first course</span>
                     </button>
                 )}
             </div>

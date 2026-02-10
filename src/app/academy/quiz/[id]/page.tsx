@@ -85,7 +85,7 @@ export default function QuizRunnerPage() {
                     particleCount: 100,
                     spread: 70,
                     origin: { y: 0.6 },
-                    colors: ['#00C888', '#009664', '#ffffff']
+                    colors: ['hsl(var(--primary))', '#009664', '#ffffff']
                 });
             }
 

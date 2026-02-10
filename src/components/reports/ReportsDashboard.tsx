@@ -131,8 +131,8 @@ export function ReportsDashboard() {
                         className={`
               relative text-left p-6 rounded-[1.5rem] border-2 transition-all duration-300 group
               ${selectedType === report.id
-                                ? "border-[#00C888] bg-[#00C888]/5 shadow-xl shadow-[#00C888]/10 -translate-y-1"
-                                : "border-gray-200 dark:border-white/5 bg-white dark:bg-[#1E2028] hover:border-[#00C888]/50 hover:-translate-y-1 hover:shadow-lg"
+                                ? "border-primary bg-primary/5 shadow-xl shadow-primary/10 -translate-y-1"
+                                : "border-gray-200 dark:border-white/5 bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:-translate-y-1 hover:shadow-lg"
                             }
             `}
                     >
@@ -141,8 +141,8 @@ export function ReportsDashboard() {
                                 className={`
                   p-3 rounded-xl transition-colors
                   ${selectedType === report.id
-                                        ? "bg-[#00C888] text-white"
-                                        : "bg-gray-100 dark:bg-white/5 text-gray-500 group-hover:bg-[#00C888]/10 group-hover:text-[#00C888]"
+                                        ? "bg-primary text-white"
+                                        : "bg-gray-100 dark:bg-white/5 text-gray-500 group-hover:bg-primary/10 group-hover:text-primary"
                                     }
                 `}
                             >
@@ -174,7 +174,7 @@ export function ReportsDashboard() {
             {/* Controls Container */}
             <div className="bg-white dark:bg-[#1E2028] p-4 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm">
                 <h3 className="font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3 text-lg">
-                    <Calendar size={20} className="text-[#00C888]" />
+                    <Calendar size={20} className="text-primary" />
                     Configure Report Range
                 </h3>
 
@@ -188,7 +188,7 @@ export function ReportsDashboard() {
                                 onChange={(e) =>
                                     setDateRange({ ...dateRange, start: new Date(e.target.value) })
                                 }
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#151925] rounded-xl border-2 border-transparent focus:border-[#00C888] focus:bg-white dark:focus:bg-[#0B0E14] outline-none transition-all font-medium text-gray-900 dark:text-white"
+                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#151925] rounded-xl border-2 border-transparent focus:border-primary focus:bg-white dark:focus:bg-[#0B0E14] outline-none transition-all font-medium text-gray-900 dark:text-white"
                             />
                         </div>
                         <div>
@@ -199,7 +199,7 @@ export function ReportsDashboard() {
                                 onChange={(e) =>
                                     setDateRange({ ...dateRange, end: new Date(e.target.value) })
                                 }
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#151925] rounded-xl border-2 border-transparent focus:border-[#00C888] focus:bg-white dark:focus:bg-[#0B0E14] outline-none transition-all font-medium text-gray-900 dark:text-white"
+                                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#151925] rounded-xl border-2 border-transparent focus:border-primary focus:bg-white dark:focus:bg-[#0B0E14] outline-none transition-all font-medium text-gray-900 dark:text-white"
                             />
                         </div>
                     </div>
@@ -208,7 +208,7 @@ export function ReportsDashboard() {
                         <button
                             onClick={handleGenerate}
                             disabled={isGenerating}
-                            className="w-full md:w-auto px-8 py-3.5 bg-[#00C888] text-white font-bold rounded-xl hover:bg-[#00B377] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-[#00C888]/20 transition-all hover:-translate-y-0.5"
+                            className="w-full md:w-auto px-8 py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-[#00B377] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
                         >
                             {isGenerating ? (
                                 <>
@@ -237,7 +237,7 @@ export function ReportsDashboard() {
                         <button
                             key={preset.label}
                             onClick={() => setDateRange(preset.fn())}
-                            className="px-4 py-1.5 text-xs font-bold bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-[#00C888]/10 hover:text-[#00C888] transition-colors"
+                            className="px-4 py-1.5 text-xs font-bold bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors"
                         >
                             {preset.label}
                         </button>

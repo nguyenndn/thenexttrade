@@ -50,14 +50,14 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
     // Input Mode
     if (isInputVisible) {
         return (
-            <div className={`aspect-video rounded-xl border-2 border-dashed border-[#00C888] bg-gray-50 dark:bg-black/20 flex flex-col items-center justify-center p-4 gap-2 ${className}`}>
+            <div className={`aspect-video rounded-xl border-2 border-dashed border-primary bg-gray-50 dark:bg-black/20 flex flex-col items-center justify-center p-4 gap-2 ${className}`}>
                 <p className="text-sm font-bold text-gray-700 dark:text-gray-300">Paste Chart Link</p>
                 <input
                     type="text"
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
                     placeholder="https://imgur.com/..."
-                    className="w-full text-xs p-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 outline-none focus:border-[#00C888]"
+                    className="w-full text-xs p-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 outline-none focus:border-primary"
                     autoFocus
                     onKeyDown={(e) => e.key === 'Enter' && handleUrlSubmit()}
                 />
@@ -72,7 +72,7 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
                     <button
                         type="button"
                         onClick={handleUrlSubmit}
-                        className="flex-1 py-1.5 text-xs font-bold bg-[#00C888] text-white rounded-lg hover:bg-[#00a872]"
+                        className="flex-1 py-1.5 text-xs font-bold bg-primary text-white rounded-lg hover:bg-[#00a872]"
                     >
                         Add Link
                     </button>
@@ -89,7 +89,7 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
                 relative aspect-video rounded-xl border-2 border-dashed 
                 flex flex-col items-center justify-center cursor-pointer 
                 transition-all group overflow-hidden
-                ${value ? 'border-transparent' : 'border-gray-200 dark:border-white/10 hover:border-[#00C888] bg-gray-50 dark:bg-black/20'}
+                ${value ? 'border-transparent' : 'border-gray-200 dark:border-white/10 hover:border-primary bg-gray-50 dark:bg-black/20'}
                 ${className}
             `}
         >
@@ -122,10 +122,10 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
                 </>
             ) : (
                 <div className="flex flex-col items-center gap-1 group/link w-full p-2 rounded-lg transition-colors">
-                    <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-1 text-gray-400 group-hover:text-[#00C888]">
+                    <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-1 text-gray-400 group-hover:text-primary">
                         <LinkIcon size={24} />
                     </div>
-                    <p className="text-xs font-bold text-gray-500 group-hover:text-[#00C888] transition-colors">Paste Chart Link</p>
+                    <p className="text-xs font-bold text-gray-500 group-hover:text-primary transition-colors">Paste Chart Link</p>
 
                     <div className="text-[10px] text-gray-400 text-center mt-1">
                         <p>Recommended Free Hosting:</p>
@@ -134,13 +134,13 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
                                 href="https://imgur.com/upload"
                                 target="_blank"
                                 rel="noreferrer"
-                                className="hover:text-[#00C888] underline decoration-dotted"
+                                className="hover:text-primary underline decoration-dotted"
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 Imgur
                             </a>
                             <span>•</span>
-                            <span className="hover:text-[#00C888] cursor-help" title="Right Click on Chart -> Copy Image Address">TradingView</span>
+                            <span className="hover:text-primary cursor-help" title="Right Click on Chart -> Copy Image Address">TradingView</span>
                         </div>
                     </div>
                 </div>

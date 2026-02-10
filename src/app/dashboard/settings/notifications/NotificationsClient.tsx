@@ -82,7 +82,7 @@ export default function NotificationsClient() {
                 </div>
 
                 <div className="mt-8 flex justify-end">
-                    <button className="px-6 py-2 bg-[#00C888] hover:bg-[#00b078] text-white font-bold rounded-xl transition-all shadow-lg active:scale-95">
+                    <button className="px-6 py-2 bg-primary hover:bg-[#00b078] text-white font-bold rounded-xl transition-all shadow-lg active:scale-95">
                         Save Preferences
                     </button>
                 </div>
@@ -98,7 +98,7 @@ function ToggleItem({ title, description, isOn, onToggle }: { title: string, des
                 <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-[#2F80ED] transition-colors">{title}</h4>
                 <p className="text-sm text-gray-500">{description}</p>
             </div>
-            <div className={`w-12 h-7 rounded-full transition-colors relative ${isOn ? 'bg-[#00C888]' : 'bg-gray-200 dark:bg-white/10'}`}>
+            <div className={`w-12 h-7 rounded-full transition-colors relative ${isOn ? 'bg-primary' : 'bg-gray-200 dark:bg-white/10'}`}>
                 <div className={`w-5 h-5 bg-white rounded-full absolute top-1 transition-all shadow-sm ${isOn ? 'left-6' : 'left-1'}`}></div>
             </div>
         </div>

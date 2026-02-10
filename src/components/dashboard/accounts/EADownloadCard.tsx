@@ -52,7 +52,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                     {product.thumbnail ? (
                         <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover rounded-2xl" />
                     ) : (
-                        <Bot className="text-[#00C888]" size={32} />
+                        <Bot className="text-primary" size={32} />
                     )}
                 </div>
 
@@ -77,14 +77,14 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                 {(product.platform === "MT4" || product.platform === "BOTH") && (
                     <Button
                         variant="ghost"
-                        className="flex items-center justify-center gap-2 border border-gray-200 dark:border-white/10 hover:border-[#00C888] hover:bg-[#00C888]/5 bg-white dark:bg-white/5"
+                        className="flex items-center justify-center gap-2 border border-gray-200 dark:border-white/10 hover:border-primary hover:bg-primary/5 bg-white dark:bg-white/5"
                         onClick={() => handleDownload("MT4")}
                         disabled={!!isDownloading}
                     >
                         {isDownloading === "MT4" ? (
-                            <span className="w-4 h-4 border-2 border-[#00C888] border-t-transparent rounded-full animate-spin" />
+                            <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                         ) : (
-                            <Download size={18} className="text-[#00C888]" />
+                            <Download size={18} className="text-primary" />
                         )}
                         <span className="font-bold">MT4</span>
                     </Button>

@@ -34,7 +34,7 @@ export function SortableQuestion({ question, onEdit, onDelete }: QuestionProps) 
             style={style}
             className={clsx(
                 "bg-white dark:bg-[#1C212E] border rounded-xl p-4 shadow-sm transition-colors",
-                isDragging ? "border-[#00C888]" : "border-gray-200 dark:border-white/5"
+                isDragging ? "border-primary" : "border-gray-200 dark:border-white/5"
             )}
         >
             <div className="flex items-start gap-4">
@@ -55,7 +55,7 @@ export function SortableQuestion({ question, onEdit, onDelete }: QuestionProps) 
                         {question.options.map((opt: any) => (
                             <div key={opt.id} className={clsx(
                                 "text-sm flex items-center gap-2",
-                                opt.isCorrect ? "text-[#00C888] font-medium" : "text-gray-500"
+                                opt.isCorrect ? "text-primary font-medium" : "text-gray-500"
                             )}>
                                 {opt.isCorrect && <CheckCircle2 size={14} />}
                                 <span>{opt.text}</span>

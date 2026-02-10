@@ -24,7 +24,7 @@ export default memo(function QuoteDisplay({ isDark }: { isDark: boolean }) {
     return (
         <div className="relative max-w-4xl mx-auto py-2">
             {/* Premium Decorative Line */}
-            <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-[#00C888] to-transparent mx-auto mb-8 opacity-70"></div>
+            <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto mb-8 opacity-70"></div>
 
             <div className="flex flex-col items-center justify-center text-center">
 
@@ -32,17 +32,17 @@ export default memo(function QuoteDisplay({ isDark }: { isDark: boolean }) {
                     {/* Left Quote Icon */}
                     <Quote
                         size={24}
-                        className="text-[#00C888] flex-shrink-0 fill-[#00C888] stroke-none rotate-180 -mt-2 md:mt-0 opacity-80"
+                        className="text-primary flex-shrink-0 fill-primary stroke-none rotate-180 -mt-2 md:mt-0 opacity-80"
                     />
 
-                    <p className="text-xl md:text-2xl font-medium font-heading text-[#00C888] leading-relaxed max-w-2xl">
+                    <p className="text-xl md:text-2xl font-medium font-heading text-primary leading-relaxed max-w-2xl">
                         {quote.text}
                     </p>
 
                     {/* Right Quote Icon */}
                     <Quote
                         size={24}
-                        className="text-[#00C888] flex-shrink-0 fill-[#00C888] stroke-none -mt-2 md:mt-0 opacity-80"
+                        className="text-primary flex-shrink-0 fill-primary stroke-none -mt-2 md:mt-0 opacity-80"
                     />
                 </div>
 

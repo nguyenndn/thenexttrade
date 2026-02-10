@@ -69,7 +69,7 @@ export default async function UserDetailPage(props: UserDetailPageProps) {
                     <div className="flex items-center gap-6">
                         <Avatar className="w-24 h-24 border-4 border-white dark:border-[#1E2028] shadow-lg">
                             <AvatarImage src={user.image || ""} alt={user.name || "User"} />
-                            <AvatarFallback className="text-2xl font-bold bg-[#00C888]/10 text-[#00C888]">
+                            <AvatarFallback className="text-2xl font-bold bg-primary/10 text-primary">
                                 {(user.name || user.email || "U").charAt(0).toUpperCase()}
                             </AvatarFallback>
                         </Avatar>
@@ -169,7 +169,7 @@ export default async function UserDetailPage(props: UserDetailPageProps) {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                    <Activity className="text-[#00C888]" />
+                                    <Activity className="text-primary" />
                                     EA Licenses
                                     <span className="text-gray-400 font-medium text-lg ml-1">
                                         ({user._count.EALicenses})
@@ -180,7 +180,7 @@ export default async function UserDetailPage(props: UserDetailPageProps) {
                             {user.EALicenses.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                                     {user.EALicenses.map((license) => (
-                                        <div key={license.id} className="bg-white dark:bg-[#1E2028] p-2 rounded-xl border border-gray-100 dark:border-white/5 hover:border-[#00C888]/50 dark:hover:border-[#00C888]/50 transition-all shadow-sm group flex items-center gap-3 relative overflow-hidden">
+                                        <div key={license.id} className="bg-white dark:bg-[#1E2028] p-2 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary/50 dark:hover:border-primary/50 transition-all shadow-sm group flex items-center gap-3 relative overflow-hidden">
                                             <div className="shrink-0">
                                                 <BrokerLogo broker={license.broker} size={60} />
                                             </div>

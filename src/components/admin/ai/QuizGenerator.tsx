@@ -98,7 +98,7 @@ export default function QuizGenerator() {
                         <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Save to Module</label>
                         <div className="relative">
                             <select
-                                className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-[#00C888] outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+                                className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
                                 value={selectedModule}
                                 onChange={(e) => setSelectedModule(e.target.value)}
                             >
@@ -125,7 +125,7 @@ export default function QuizGenerator() {
                     <div>
                         <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Context (Optional Lesson Content)</label>
                         <textarea
-                            className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg p-3 focus:border-[#00C888] outline-none min-h-[100px] transition-all hover:bg-gray-100 dark:hover:bg-white/10 resize-none"
+                            className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg p-3 focus:border-primary outline-none min-h-[100px] transition-all hover:bg-gray-100 dark:hover:bg-white/10 resize-none"
                             placeholder="Paste lesson content here to generate relevant questions..."
                             value={formData.lessonContext}
                             onChange={(e) => setFormData({ ...formData, lessonContext: e.target.value })}
@@ -137,7 +137,7 @@ export default function QuizGenerator() {
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Difficulty</label>
                             <div className="relative">
                                 <select
-                                    className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-[#00C888] outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+                                    className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
                                     value={formData.difficulty}
                                     onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as any })}
                                 >
@@ -158,7 +158,7 @@ export default function QuizGenerator() {
                     </div>
 
                     <Button
-                        className="w-full py-3 bg-[#00C888] hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl shadow-lg shadow-[#00C888]/30 hover:-translate-y-1 active:scale-95 transition-all mt-4"
+                        className="w-full py-3 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all mt-4"
                         onClick={handleGenerate}
                         isLoading={generating}
                     >
@@ -189,11 +189,11 @@ export default function QuizGenerator() {
                                         <div
                                             key={optIdx}
                                             className={`p-2 rounded text-sm flex items-center ${opt.isCorrect
-                                                ? "bg-[#00C888]/10 border border-[#00C888]/30 text-[#00C888]"
+                                                ? "bg-primary/10 border border-primary/30 text-primary"
                                                 : "bg-gray-800/50 border border-transparent text-gray-400"
                                                 }`}
                                         >
-                                            <span className={`w-4 h-4 rounded-full border mr-3 flex items-center justify-center ${opt.isCorrect ? "border-[#00C888] bg-[#00C888]" : "border-gray-600"
+                                            <span className={`w-4 h-4 rounded-full border mr-3 flex items-center justify-center ${opt.isCorrect ? "border-primary bg-primary" : "border-gray-600"
                                                 }`}>
                                                 {opt.isCorrect && <span className="text-black text-[10px]">✓</span>}
                                             </span>

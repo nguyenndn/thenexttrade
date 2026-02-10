@@ -92,14 +92,14 @@ export default function LevelSettingsTab({ level }: LevelSettingsTabProps) {
                             Description
                         </label>
                         <div className="relative group">
-                            <div className="absolute left-3 top-3 text-gray-500 group-focus-within:text-[#00C888] transition-colors">
+                            <div className="absolute left-3 top-3 text-gray-500 group-focus-within:text-primary transition-colors">
                                 <FileText size={18} />
                             </div>
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={4}
-                                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00C888]/20 focus:border-[#00C888] transition-all resize-none"
+                                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                                 placeholder="Describe expectations for students in this level..."
                             />
                         </div>
@@ -110,7 +110,7 @@ export default function LevelSettingsTab({ level }: LevelSettingsTabProps) {
                     <Button
                         onClick={handleSave}
                         isLoading={isSaving}
-                        className="bg-[#00C888] hover:bg-[#00a872] text-white px-6"
+                        className="bg-primary hover:bg-[#00a872] text-white px-6"
                     >
                         {!isSaving && <Save size={16} className="mr-2" />}
                         Save Changes

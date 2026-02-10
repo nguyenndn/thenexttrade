@@ -86,7 +86,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                     "flex items-center gap-4 px-4 py-3 rounded-2xl cursor-pointer transition-all duration-200 group relative select-none",
                     collapsed ? "justify-center px-2" : "",
                     isActiveStyle
-                        ? "bg-[#00C888]/10 text-[#00C888]"
+                        ? "bg-primary/10 text-primary"
                         : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
                 )}
                 onClick={handleMainClick}
@@ -101,7 +101,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
 
                 <Icon size={22} className={cn(
                     "transition-colors relative z-10 pointer-events-none min-w-[22px]",
-                    isActiveStyle ? "text-[#00C888]" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+                    isActiveStyle ? "text-primary" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"
                 )} />
 
                 {!collapsed && (
@@ -115,7 +115,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                                 className={cn(
                                     "relative z-20 p-1 -mr-2 rounded-lg transition-colors",
                                     isBranchActive
-                                        ? "text-[#00C888] hover:bg-[#00C888]/20"
+                                        ? "text-primary hover:bg-primary/20"
                                         : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
                                 )}
                             >
@@ -147,7 +147,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                                 className={cn(
                                     "block px-3 py-2 rounded-lg text-sm transition-colors",
                                     isSubActive
-                                        ? "text-[#00C888] bg-[#00C888]/10 font-medium"
+                                        ? "text-primary bg-primary/10 font-medium"
                                         : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
                                 )}
                             >

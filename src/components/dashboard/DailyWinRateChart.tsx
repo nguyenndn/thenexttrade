@@ -29,7 +29,7 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
           <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-1">
             {format(new Date(label), "MMM dd, yyyy")}
           </p>
-          <p className="text-sm font-semibold text-[#00C888]">
+          <p className="text-sm font-semibold text-primary">
             Win Rate: {payload[0].value}%
           </p>
           <p className="text-xs text-gray-500 mt-1">
@@ -72,7 +72,7 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
                 // 0% with trades = Red?
                 // Let's keep it simple green for now, or maybe gradient?
                 // User said "Daily Win Rate", usually expected to be Green.
-                fill={entry.trades === 0 ? 'transparent' : entry.winRate >= 50 ? '#00C888' : '#F59E0B'}
+                fill={entry.trades === 0 ? 'transparent' : entry.winRate >= 50 ? 'hsl(var(--primary))' : '#F59E0B'}
               />
             ))}
           </Bar>

@@ -46,7 +46,7 @@ export default function JournalStats({ stats }: StatsProps) {
                     </div>
                     <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Net Profit</span>
                 </div>
-                <div className={`text-2xl font-black pl-1 ${stats.totalPnL >= 0 ? "text-[#00C888]" : "text-red-500"}`}>
+                <div className={`text-2xl font-black pl-1 ${stats.totalPnL >= 0 ? "text-primary" : "text-red-500"}`}>
                     ${stats.totalPnL.toLocaleString()}
                 </div>
             </div>

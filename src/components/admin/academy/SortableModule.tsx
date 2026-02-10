@@ -52,7 +52,7 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
         <div ref={setNodeRef} style={style} className="mb-4">
             <div className={clsx(
                 "bg-white dark:bg-[#1C212E] border rounded-xl overflow-hidden shadow-sm transition-colors",
-                isDragging ? "border-[#00C888]" : "border-gray-200 dark:border-white/5"
+                isDragging ? "border-primary" : "border-gray-200 dark:border-white/5"
             )}>
                 {/* Module Header */}
                 <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 border-b border-gray-100 dark:border-white/5">
@@ -106,7 +106,7 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
 
                         <button
                             onClick={() => onAddLesson(module.id)}
-                            className="mt-4 w-full py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-gray-500 border border-dashed border-gray-300 dark:border-white/10 rounded-xl hover:border-[#00C888] hover:text-[#00C888] hover:bg-[#00C888]/5 transition-all group"
+                            className="mt-4 w-full py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-gray-500 border border-dashed border-gray-300 dark:border-white/10 rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group"
                         >
                             <Plus size={16} className="group-hover:scale-110 transition-transform" />
                             Add Lesson

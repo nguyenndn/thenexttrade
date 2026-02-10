@@ -77,11 +77,11 @@ describe("ImportQuestionsModal Design Compliance", () => {
         // Check for 'rounded-xl' and 'text-gray-500'
         expect(backBtn.className).toContain("rounded-xl");
         expect(backBtn.className).toContain("text-gray-500");
-        expect(backBtn.className).not.toContain("bg-[#00C888]");
+        expect(backBtn.className).not.toContain("bg-primary");
 
         // 2. Verify Import Button (Primary Style)
-        // Check for 'bg-[#00C888]', 'rounded-xl', 'shadow-lg'
-        expect(importBtn?.className).toContain("bg-[#00C888]");
+        // Check for 'bg-primary', 'rounded-xl', 'shadow-lg'
+        expect(importBtn?.className).toContain("bg-primary");
         expect(importBtn?.className).toContain("rounded-xl");
         expect(importBtn?.className).toContain("shadow-lg");
         expect(importBtn?.className).toContain("font-bold");

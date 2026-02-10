@@ -85,15 +85,15 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
             {/* Header Steps / Breadcrumb */}
             {/* Header Steps / Breadcrumb */}
             <div className="flex items-center flex-wrap text-sm text-gray-500">
-                <Link href="/admin/ai-studio" className="hover:text-[#00C888] transition-colors">AI Studio</Link>
+                <Link href="/admin/ai-studio" className="hover:text-primary transition-colors">AI Studio</Link>
                 <ChevronRight size={14} className="mx-2" />
-                <Link href="/admin/ai-studio/levels" className="hover:text-[#00C888] transition-colors">Levels</Link>
+                <Link href="/admin/ai-studio/levels" className="hover:text-primary transition-colors">Levels</Link>
                 <ChevronRight size={14} className="mx-2" />
-                <Link href={`/admin/ai-studio/levels/${lesson.module.levelId}`} className="hover:text-[#00C888] transition-colors">
+                <Link href={`/admin/ai-studio/levels/${lesson.module.levelId}`} className="hover:text-primary transition-colors">
                     {lesson.module.level?.title || `Level ${lesson.module.level?.order}`}
                 </Link>
                 <ChevronRight size={14} className="mx-2" />
-                <Link href={`/admin/ai-studio/modules/${lesson.moduleId}`} className="hover:text-[#00C888] transition-colors">
+                <Link href={`/admin/ai-studio/modules/${lesson.moduleId}`} className="hover:text-primary transition-colors">
                     {lesson.module?.title || "Module"}
                 </Link>
                 <ChevronRight size={14} className="mx-2" />
@@ -179,7 +179,7 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
                             </Button>
 
                             <Button
-                                className="flex-1 bg-[#00C888] hover:bg-[#00b078] text-white shadow-lg shadow-[#00C888]/20 rounded-xl font-bold"
+                                className="flex-1 bg-primary hover:bg-[#00b078] text-white shadow-lg shadow-primary/20 rounded-xl font-bold"
                                 onClick={handleSave}
                                 isLoading={isLoading}
                             >

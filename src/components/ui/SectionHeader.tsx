@@ -25,12 +25,12 @@ export const SectionHeader = memo(function SectionHeader({
         return (
             <div className={`text-center mb-12 ${className}`}>
                 {subtitle && (
-                    <span className="text-[#00C888] font-bold tracking-widest uppercase text-xs mb-3 block">
+                    <span className="text-primary font-bold tracking-widest uppercase text-xs mb-3 block">
                         {subtitle}
                     </span>
                 )}
                 <h2 className="text-3xl md:text-4xl font-bold font-heading text-gray-900 dark:text-white tracking-tight flex items-center justify-center gap-3">
-                    <span className="w-1.5 h-8 bg-[#00C888] rounded-full block"></span>
+                    <span className="w-1.5 h-8 bg-primary rounded-full block"></span>
                     {title}
                 </h2>
             </div>
@@ -41,7 +41,7 @@ export const SectionHeader = memo(function SectionHeader({
         <div className={`flex items-end justify-between mb-8 ${className}`}>
             <div>
                 <h2 className="text-2xl md:text-3xl font-bold font-heading text-gray-900 dark:text-white flex items-center gap-3">
-                    <span className="w-1.5 h-8 bg-[#00C888] rounded-full block"></span>
+                    <span className="w-1.5 h-8 bg-primary rounded-full block"></span>
                     {title}
                 </h2>
                 {subtitle && (
@@ -54,7 +54,7 @@ export const SectionHeader = memo(function SectionHeader({
             {linkHref && (
                 <Link
                     href={linkHref}
-                    className="flex items-center gap-1 text-sm font-bold text-[#00C888] hover:gap-2 transition-all"
+                    className="flex items-center gap-1 text-sm font-bold text-primary hover:gap-2 transition-all"
                 >
                     {linkText} <ArrowRight size={16} />
                 </Link>

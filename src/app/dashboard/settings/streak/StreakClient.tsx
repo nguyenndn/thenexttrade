@@ -106,7 +106,7 @@ export default function StreakClient() {
     if (isLoading) {
         return (
             <div className="flex h-[400px] items-center justify-center">
-                <Loader2 className="animate-spin text-[#00C888]" size={32} />
+                <Loader2 className="animate-spin text-primary" size={32} />
             </div>
         );
     }
@@ -134,7 +134,7 @@ export default function StreakClient() {
             <div className="xl:col-span-2 h-full">
                 {/* 1. Hero Section: Current Streak & Check-in */}
                 <div className="bg-white dark:bg-[#0B0E14] p-8 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm flex flex-col relative overflow-hidden h-full">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00C888] to-transparent opacity-50"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
 
                     {/* TOP PART: Stats & Action */}
                     <div className="flex-1 flex flex-col items-center justify-center w-full min-h-[300px]"> {/* Added min-h to ensure space */}
@@ -155,8 +155,8 @@ export default function StreakClient() {
                             className={cn(
                                 "h-12 px-8 rounded-xl font-bold text-white transition-all flex items-center gap-2 text-base w-auto",
                                 isCheckedInToday
-                                    ? "bg-[#00C888]/10 text-[#00C888] cursor-not-allowed border border-[#00C888]/20"
-                                    : "bg-[#00C888] hover:bg-[#00B078] shadow-lg shadow-[#00C888]/20 active:scale-95"
+                                    ? "bg-primary/10 text-primary cursor-not-allowed border border-primary/20"
+                                    : "bg-primary hover:bg-[#00B078] shadow-lg shadow-primary/20 active:scale-95"
                             )}
                         >
                             {isCheckingIn ? (
@@ -196,7 +196,7 @@ export default function StreakClient() {
                                     <div key={milestone.days} className={cn(
                                         "flex items-center gap-3 p-3 rounded-xl border transition-all",
                                         isAchieved
-                                            ? "bg-[#00C888]/10 border-[#00C888]/20"
+                                            ? "bg-primary/10 border-primary/20"
                                             : isNext
                                                 ? "bg-white dark:bg-white/5 border-orange-200 dark:border-orange-500/30 shadow-sm"
                                                 : "bg-transparent border-transparent opacity-50"
@@ -204,7 +204,7 @@ export default function StreakClient() {
                                         <div className={cn(
                                             "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
                                             isAchieved
-                                                ? "bg-[#00C888] text-white"
+                                                ? "bg-primary text-white"
                                                 : isNext
                                                     ? "bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400"
                                                     : "bg-gray-100 dark:bg-white/10 text-gray-400"
@@ -216,7 +216,7 @@ export default function StreakClient() {
                                             <div className="flex items-center justify-between mb-0.5">
                                                 <span className={cn(
                                                     "text-sm font-bold truncate",
-                                                    isAchieved ? "text-[#00C888]" : isNext ? "text-gray-900 dark:text-white" : "text-gray-500"
+                                                    isAchieved ? "text-primary" : isNext ? "text-gray-900 dark:text-white" : "text-gray-500"
                                                 )}>
                                                     {milestone.days} Day Streak
                                                 </span>
@@ -279,7 +279,7 @@ export default function StreakClient() {
 
                                     {isCheckedIn && (
                                         <div className="mt-1.5">
-                                            <div className="w-3 h-3 rounded-full bg-[#00C888] shadow-sm shadow-[#00C888]/50" />
+                                            <div className="w-3 h-3 rounded-full bg-primary shadow-sm shadow-primary/50" />
                                         </div>
                                     )}
 

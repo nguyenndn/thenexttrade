@@ -81,7 +81,7 @@ export default function AdminSearchPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Admin Search
                         </h1>
@@ -96,7 +96,7 @@ export default function AdminSearchPage() {
             <div className="space-y-4">
                 {isLoading ? (
                     <div className="flex justify-center py-12">
-                        <Loader2 className="animate-spin text-[#00C888]" size={32} />
+                        <Loader2 className="animate-spin text-primary" size={32} />
                     </div>
                 ) : (hasSearched && query) ? (
                     <>
@@ -110,7 +110,7 @@ export default function AdminSearchPage() {
                                     <Link
                                         key={`${result.type}-${result.id}`}
                                         href={result.slug}
-                                        className="flex bg-white dark:bg-[#151925] p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-[#00C888] dark:hover:border-[#00C888] transition-all group shadow-sm"
+                                        className="flex bg-white dark:bg-[#151925] p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-all group shadow-sm"
                                     >
                                         <div className={`p-3 rounded-lg shrink-0 mr-4 h-fit ${result.type === 'article'
                                             ? 'bg-blue-50 text-blue-500 dark:bg-blue-500/10'
@@ -138,7 +138,7 @@ export default function AdminSearchPage() {
                                                     {result.date && formatDistanceToNow(new Date(result.date), { addSuffix: true })}
                                                 </span>
                                             </div>
-                                            <h3 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-[#00C888] transition-colors truncate">
+                                            <h3 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors truncate">
                                                 <HighlightText text={result.title} highlight={query || ""} />
                                             </h3>
                                             <p className="text-sm text-gray-500 dark:text-gray-400 truncate">

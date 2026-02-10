@@ -77,14 +77,14 @@ export default function AccountsClient() {
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Trading Accounts
                         </h1>
                     </div>
                     <button
                         onClick={openNewAccountModal}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-[#00C888] hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#00C888]/25 active:scale-95"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/25 active:scale-95"
                     >
                         <Plus size={18} />
                         Add Account
@@ -113,7 +113,7 @@ export default function AccountsClient() {
                         </p>
                         <button
                             onClick={openNewAccountModal}
-                            className="text-[#00C888] font-bold hover:underline"
+                            className="text-primary font-bold hover:underline"
                         >
                             Add your first account
                         </button>
@@ -138,7 +138,7 @@ export default function AccountsClient() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {account.isDefault && (
-                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#00C888]/10 text-[#00C888] border border-[#00C888]/20">
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
                                             DEFAULT
                                         </span>
                                     )}

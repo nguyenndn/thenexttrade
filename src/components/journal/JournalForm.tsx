@@ -223,7 +223,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 {/* Main Info Card */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <div className="w-1.5 h-6 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-6 bg-primary rounded-full"></div>
                         Trade Details
                     </h3>
 
@@ -236,7 +236,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 value={formData.accountId}
                                 onChange={handleChange}
                                 disabled={isSynced || isEditMode}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-medium ${isSynced || isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none font-medium ${isSynced || isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
                                 <option value="">Select Account (Optional)</option>
                                 {accounts.map((acc: any) => (
@@ -255,7 +255,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 onChange={handleChange}
                                 placeholder="EURUSD"
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none uppercase font-bold ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none uppercase font-bold ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                                 required
                             />
                         </div>
@@ -268,7 +268,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 value={formData.entryDate}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                                 required
                             />
                         </div>
@@ -299,7 +299,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 value={formData.status}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
                                 <option value="OPEN">OPEN - Running</option>
                                 <option value="CLOSED">CLOSED - Completed</option>
@@ -324,7 +324,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 value={formData.entryPrice}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                                 required
                             />
                         </div>
@@ -337,7 +337,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 value={formData.lotSize}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                                 required
                             />
                         </div>
@@ -350,7 +350,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 value={formData.exitPrice}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                             />
                         </div>
 
@@ -367,14 +367,14 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-[#00C888]">Take Profit</label>
+                            <label className="text-sm font-bold text-primary">Take Profit</label>
                             <input
                                 type="number" step="any"
                                 name="takeProfit"
                                 value={formData.takeProfit}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-green-50 dark:bg-green-500/5 border border-green-100 dark:border-green-500/20 focus:border-[#00C888] focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full p-3 rounded-xl bg-green-50 dark:bg-green-500/5 border border-green-100 dark:border-green-500/20 focus:border-primary focus:outline-none font-mono ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                             />
                         </div>
 
@@ -387,7 +387,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 onChange={handleChange}
                                 placeholder="Auto or Manual"
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none font-mono font-bold ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none font-mono font-bold ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                             />
                         </div>
                     </div>
@@ -411,7 +411,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         name="strategy"
                                         value={formData.strategy}
                                         onChange={handleChange}
-                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none"
+                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none"
                                     >
                                         <option value="">No Strategy</option>
                                         {strategies.map((s: any) => (
@@ -456,12 +456,12 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                             }
                                         }}
                                         placeholder="Add custom tag (e.g. NFP, Test)..."
-                                        className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none"
+                                        className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none"
                                     />
                                     <button
                                         type="button"
                                         onClick={(e) => addCustomTag(e as any)}
-                                        className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-[#00C888]"
+                                        className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-primary"
                                     >
                                         <Plus size={20} />
                                     </button>
@@ -474,7 +474,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                     name="entryReason"
                                     value={formData.entryReason}
                                     onChange={handleChange}
-                                    className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none resize-none"
+                                    className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none resize-none"
                                     rows={3}
                                     placeholder="Why did you take this trade?"
                                 />
@@ -512,7 +512,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         name="exitReason"
                                         value={formData.exitReason}
                                         onChange={handleChange}
-                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none resize-none"
+                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none resize-none"
                                         rows={2}
                                         placeholder="What happened?"
                                     />
@@ -629,7 +629,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 name="notesPsychology"
                                 value={formData.notesPsychology}
                                 onChange={handleChange}
-                                className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:outline-none resize-none"
+                                className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none resize-none"
                                 rows={3}
                                 placeholder="What thoughts influenced your decision? Any emotional triggers?"
                             />

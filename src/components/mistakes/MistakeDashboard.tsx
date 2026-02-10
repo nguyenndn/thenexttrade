@@ -68,7 +68,7 @@ export function MistakeDashboard() {
     if (isLoading) {
         return (
             <div className="flex h-96 items-center justify-center">
-                <Loader2 className="animate-spin text-[#00C888]" size={32} />
+                <Loader2 className="animate-spin text-primary" size={32} />
             </div>
         );
     }

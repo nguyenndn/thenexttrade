@@ -50,7 +50,7 @@ export function PositionSizeCalc() {
                                 type="number"
                                 value={inputs.accountBalance}
                                 onChange={(e) => setInputs({ ...inputs, accountBalance: parseFloat(e.target.value) || 0 })}
-                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#00C888] outline-none font-bold text-lg"
+                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
                             />
                             <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         </div>
@@ -64,7 +64,7 @@ export function PositionSizeCalc() {
                                 step="0.1"
                                 value={inputs.riskPercent}
                                 onChange={(e) => setInputs({ ...inputs, riskPercent: parseFloat(e.target.value) || 0 })}
-                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#00C888] outline-none font-bold text-lg"
+                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
                             />
                             <PercentIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         </div>
@@ -77,7 +77,7 @@ export function PositionSizeCalc() {
                                 type="number"
                                 value={inputs.stopLossPips}
                                 onChange={(e) => setInputs({ ...inputs, stopLossPips: parseFloat(e.target.value) || 0 })}
-                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#00C888] outline-none font-bold text-lg"
+                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
                             />
                             <TrendingUp className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         </div>
@@ -97,7 +97,7 @@ export function PositionSizeCalc() {
             <div className="lg:col-span-5">
                 <div className="bg-[#1E2028] dark:bg-[#0B0E14] text-white p-6 rounded-[2rem] relative overflow-hidden shadow-2xl h-full flex flex-col justify-center">
                     {/* Background Gradients */}
-                    <div className="absolute top-0 right-0 w-48 h-48 bg-[#00C888]/20 rounded-full blur-[60px] -mr-12 -mt-12 pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-primary/20 rounded-full blur-[60px] -mr-12 -mt-12 pointer-events-none" />
                     <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/20 rounded-full blur-[40px] -ml-8 -mb-8 pointer-events-none" />
 
                     <div className="relative z-10 space-y-6">
@@ -107,7 +107,7 @@ export function PositionSizeCalc() {
                                 <span className="text-5xl font-black text-white tracking-tighter">
                                     {result ? result.lotSize.toFixed(2) : "0.00"}
                                 </span>
-                                <span className="text-lg font-medium text-[#00C888]">Lots</span>
+                                <span className="text-lg font-medium text-primary">Lots</span>
                             </div>
                         </div>
 

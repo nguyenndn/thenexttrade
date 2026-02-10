@@ -106,7 +106,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{quiz.title}</h1>
                             <button
                                 onClick={() => setIsSettingsModalOpen(true)}
-                                className="p-1.5 text-gray-400 hover:text-[#00C888] hover:bg-[#00C888]/10 rounded-lg transition-all"
+                                className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" /></svg>
                             </button>
@@ -121,7 +121,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                     <div className="flex items-center gap-3">
                         <Button
                             onClick={() => setIsImportModalOpen(true)}
-                            className="bg-[#00C888] hover:bg-[#00B078] text-white border-none shadow-lg shadow-[#00C888]/40 rounded-xl px-4 flex items-center gap-2"
+                            className="bg-primary hover:bg-[#00B078] text-white border-none shadow-lg shadow-primary/40 rounded-xl px-4 flex items-center gap-2"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m16 6 4 14" /><path d="M12 6v14" /><path d="M8 8v12" /><path d="M4 4v16" /></svg>
                             Select from Bank
@@ -166,7 +166,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                     <div className="flex justify-center gap-3">
                         <Button
                             onClick={() => setIsImportModalOpen(true)}
-                            className="bg-[#00C888] hover:bg-[#00B078] text-white border-none shadow-lg shadow-[#00C888]/40 rounded-xl px-4"
+                            className="bg-primary hover:bg-[#00B078] text-white border-none shadow-lg shadow-primary/40 rounded-xl px-4"
                         >
                             Select from Bank
                         </Button>

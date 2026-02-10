@@ -67,14 +67,14 @@ export default function CreateBrokerPage() {
 
     return (
         <div className="w-full space-y-6">
-            <Link href="/admin/brokers" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-[#00C888] transition-colors">
+            <Link href="/admin/brokers" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary transition-colors">
                 <ArrowLeft size={16} />
                 Back to Brokers
             </Link>
 
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm">
                 <h1 className="text-2xl font-bold dark:text-white mb-6 flex items-center gap-2">
-                    <Briefcase className="text-[#00C888]" />
+                    <Briefcase className="text-primary" />
                     Add New Broker
                 </h1>
 
@@ -119,7 +119,7 @@ export default function CreateBrokerPage() {
                             rows={3}
                             value={summary}
                             onChange={(e) => setSummary(e.target.value)}
-                            className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[#00C888]/50 focus-visible:border-[#00C888] transition-all placeholder:text-gray-400 text-gray-900 dark:text-white"
+                            className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary transition-all placeholder:text-gray-400 text-gray-900 dark:text-white"
                             placeholder="Short description (e.g. Instant withdrawals...)"
                         />
                     </div>
@@ -146,7 +146,7 @@ export default function CreateBrokerPage() {
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {features.map((feat, idx) => (
-                                <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-[#00C888]/10 text-[#00C888] rounded-full text-sm font-medium border border-[#00C888]/20">
+                                <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/20">
                                     {feat}
                                     <Button
                                         type="button"
@@ -175,7 +175,7 @@ export default function CreateBrokerPage() {
                             type="submit"
                             disabled={loading}
                             isLoading={loading}
-                            className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-xl bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all"
+                            className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-xl bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all"
                         >
                             {!loading && <Briefcase size={20} />}
                             Create Broker

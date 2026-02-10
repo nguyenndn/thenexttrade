@@ -89,7 +89,7 @@ export default function LevelCard({ level }: LevelCardProps) {
                     </div>
                     <Link
                         href={`/admin/ai-studio/levels/${level.id}`}
-                        className="text-sm font-bold text-[#00C888] hover:underline flex items-center gap-1"
+                        className="text-sm font-bold text-primary hover:underline flex items-center gap-1"
                     >
                         Manage Level →
                     </Link>

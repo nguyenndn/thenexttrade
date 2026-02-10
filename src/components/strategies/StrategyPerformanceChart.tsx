@@ -71,7 +71,7 @@ export function StrategyPerformanceChart({ data }: Props) {
                                             <div className="space-y-1 text-sm">
                                                 <div className="flex justify-between gap-8">
                                                     <span className="text-gray-500">Total P&L:</span>
-                                                    <span className={`font-mono font-bold ${item.totalPnL >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                                                    <span className={`font-mono font-bold ${item.totalPnL >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                                         ${(item.totalPnL ?? 0).toFixed(2)}
                                                     </span>
                                                 </div>

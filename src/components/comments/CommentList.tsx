@@ -124,7 +124,7 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
                 <div className="flex items-center gap-4 text-sm">
                     <button
                         onClick={() => setIsReplying(!isReplying)}
-                        className="flex items-center gap-1.5 text-gray-500 hover:text-[#00C888] transition-colors font-medium"
+                        className="flex items-center gap-1.5 text-gray-500 hover:text-primary transition-colors font-medium"
                     >
                         <Reply size={14} />
                         Reply
@@ -143,7 +143,7 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
                 </div>
 
                 {isReplying && (
-                    <div className="mt-4 pl-4 border-l-2 border-[#00C888]/20 animate-in slide-in-from-top-2 fade-in duration-200">
+                    <div className="mt-4 pl-4 border-l-2 border-primary/20 animate-in slide-in-from-top-2 fade-in duration-200">
                         <CommentForm
                             articleId={articleId}
                             parentId={comment.id}

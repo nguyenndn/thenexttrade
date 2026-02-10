@@ -82,7 +82,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                 {/* Avatar Section */}
                 <div className="pb-8 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row items-center gap-8">
                     <div className="relative group cursor-pointer shrink-0">
-                        <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-[#0B0E14] border-2 border-dashed border-gray-300 dark:border-[#2F80ED]/30 flex items-center justify-center overflow-hidden group-hover:border-[#00C888] transition-colors relative">
+                        <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-[#0B0E14] border-2 border-dashed border-gray-300 dark:border-[#2F80ED]/30 flex items-center justify-center overflow-hidden group-hover:border-primary transition-colors relative">
                             {avatarPreview ? (
                                 <Image
                                     src={avatarPreview}
@@ -91,7 +91,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                                     className="object-cover"
                                 />
                             ) : (
-                                <Camera className="text-gray-400 group-hover:text-[#00C888] transition-colors" size={32} />
+                                <Camera className="text-gray-400 group-hover:text-primary transition-colors" size={32} />
                             )}
 
                             {/* Overlay */}
@@ -129,7 +129,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                                 required
                                 defaultValue={profile?.username || user?.user_metadata?.name || ""}
                                 placeholder="username"
-                                className="w-full h-11 pl-9 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-[#00C888] focus:ring-1 focus:ring-[#00C888] dark:text-white placeholder:text-gray-500 transition-all font-medium"
+                                className="w-full h-11 pl-9 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white placeholder:text-gray-500 transition-all font-medium"
                             />
                         </div>
                         <p className="text-xs text-gray-500">This will be your unique handle on the platform.</p>
@@ -144,7 +144,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                             rows={4}
                             defaultValue={profile?.bio || ""}
                             placeholder="Tell us about your trading journey..."
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-[#00C888] focus:ring-1 focus:ring-[#00C888] dark:text-white placeholder:text-gray-500 resize-none transition-all"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white placeholder:text-gray-500 resize-none transition-all"
                         />
                         <p className="text-xs text-gray-500">Brief description for your profile. URLs are hyperlinked.</p>
                     </div>
@@ -155,7 +155,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="px-8 h-12 bg-[#00C888] hover:bg-[#00b078] text-white font-bold rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-[#00C888]/20"
+                        className="px-8 h-12 bg-primary hover:bg-[#00b078] text-white font-bold rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-primary/20"
                     >
                         {isLoading ? (
                             <>

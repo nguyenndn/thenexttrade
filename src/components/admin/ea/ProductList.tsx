@@ -79,9 +79,9 @@ export function ProductList({ products }: ProductListProps) {
     const SortIcon = ({ field }: { field: SortField }) => {
         if (sortField !== field) return <ArrowUpDown size={14} className="ml-1 text-gray-400 opacity-50" />;
         return sortDirection === "asc" ? (
-            <ChevronUp size={14} className="ml-1 text-[#00C888]" />
+            <ChevronUp size={14} className="ml-1 text-primary" />
         ) : (
-            <ChevronDown size={14} className="ml-1 text-[#00C888]" />
+            <ChevronDown size={14} className="ml-1 text-primary" />
         );
     };
 
@@ -91,12 +91,12 @@ export function ProductList({ products }: ProductListProps) {
             <Card className="p-5 mb-8 bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-[1.5rem] shadow-xl shadow-gray-100/50 dark:shadow-none flex flex-col md:flex-row gap-6 items-center justify-between relative z-10">
                 {/* Search */}
                 <div className="relative w-full md:w-96 group">
-                    <div className="absolute inset-x-0 -bottom-2 h-2 bg-[#00C888]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#00C888] transition-colors" size={20} />
+                    <div className="absolute inset-x-0 -bottom-2 h-2 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" size={20} />
                     <input
                         type="text"
                         placeholder="Search products..."
-                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-black/20 border-transparent focus:bg-white dark:focus:bg-[#1E2028] border focus:border-[#00C888]/50 rounded-2xl shadow-inner focus:shadow-lg focus:ring-0 outline-none transition-all placeholder:text-gray-400 text-gray-700 dark:text-gray-200"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-black/20 border-transparent focus:bg-white dark:focus:bg-[#1E2028] border focus:border-primary/50 rounded-2xl shadow-inner focus:shadow-lg focus:ring-0 outline-none transition-all placeholder:text-gray-400 text-gray-700 dark:text-gray-200"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -105,9 +105,9 @@ export function ProductList({ products }: ProductListProps) {
                 {/* Filters */}
                 <div className="flex gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
                     <div className="relative group">
-                        <div className="absolute inset-0 bg-[#00C888]/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
+                        <div className="absolute inset-0 bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
                         <select
-                            className="relative w-full md:w-48 px-5 py-3 bg-gray-50 dark:bg-black/20 hover:bg-white dark:hover:bg-[#1E2028] border border-transparent hover:border-gray-100 dark:hover:border-white/5 rounded-2xl text-sm font-medium text-gray-700 dark:text-gray-200 outline-none cursor-pointer focus:border-[#00C888]/50 shadow-sm transition-all appearance-none"
+                            className="relative w-full md:w-48 px-5 py-3 bg-gray-50 dark:bg-black/20 hover:bg-white dark:hover:bg-[#1E2028] border border-transparent hover:border-gray-100 dark:hover:border-white/5 rounded-2xl text-sm font-medium text-gray-700 dark:text-gray-200 outline-none cursor-pointer focus:border-primary/50 shadow-sm transition-all appearance-none"
                             value={filterType}
                             onChange={(e) => setFilterType(e.target.value as any)}
                         >
@@ -142,19 +142,19 @@ export function ProductList({ products }: ProductListProps) {
                             <table className="w-full text-left text-sm">
                                 <thead className="bg-gray-50/50 dark:bg-white/5 text-xs uppercase text-gray-500 dark:text-gray-400 font-bold tracking-wider backdrop-blur-sm">
                                     <tr>
-                                        <th className="px-8 py-5 cursor-pointer hover:text-[#00C888] transition-colors group" onClick={() => handleSort("name")}>
+                                        <th className="px-8 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("name")}>
                                             <div className="flex items-center">Product <SortIcon field="name" /></div>
                                         </th>
-                                        <th className="px-6 py-5 cursor-pointer hover:text-[#00C888] transition-colors group" onClick={() => handleSort("type")}>
+                                        <th className="px-6 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("type")}>
                                             <div className="flex items-center">Type <SortIcon field="type" /></div>
                                         </th>
-                                        <th className="px-6 py-5 cursor-pointer hover:text-[#00C888] transition-colors group" onClick={() => handleSort("version")}>
+                                        <th className="px-6 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("version")}>
                                             <div className="flex items-center">Version <SortIcon field="version" /></div>
                                         </th>
-                                        <th className="px-6 py-5 cursor-pointer hover:text-[#00C888] transition-colors group" onClick={() => handleSort("totalDownloads")}>
+                                        <th className="px-6 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("totalDownloads")}>
                                             <div className="flex items-center">Downloads <SortIcon field="totalDownloads" /></div>
                                         </th>
-                                        <th className="px-6 py-5 cursor-pointer hover:text-[#00C888] transition-colors group" onClick={() => handleSort("isActive")}>
+                                        <th className="px-6 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("isActive")}>
                                             <div className="flex items-center">Status <SortIcon field="isActive" /></div>
                                         </th>
                                         <th className="px-6 py-5 text-right w-24">Actions</th>
@@ -173,7 +173,7 @@ export function ProductList({ products }: ProductListProps) {
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white text-base group-hover:text-[#00C888] transition-colors">{product.name}</p>
+                                                        <p className="font-bold text-gray-900 dark:text-white text-base group-hover:text-primary transition-colors">{product.name}</p>
                                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{format(new Date(product.createdAt), "dd MMM yyyy")}</p>
                                                     </div>
                                                 </div>
@@ -198,7 +198,7 @@ export function ProductList({ products }: ProductListProps) {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
-                                                    <div className={`w-2 h-2 rounded-full ${product.isActive ? "bg-[#00C888] shadow-[0_0_10px_#00C888]" : "bg-gray-300 dark:bg-gray-600"}`} />
+                                                    <div className={`w-2 h-2 rounded-full ${product.isActive ? "bg-primary shadow-[0_0_10px_hsl(var(--primary))]" : "bg-gray-300 dark:bg-gray-600"}`} />
                                                     <span className={`text-sm font-medium ${product.isActive ? "text-gray-900 dark:text-white" : "text-gray-500"}`}>
                                                         {product.isActive ? "Active" : "Disabled"}
                                                     </span>

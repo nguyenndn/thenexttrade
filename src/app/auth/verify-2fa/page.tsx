@@ -26,12 +26,12 @@ export default function Verify2FAPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#0B0E14] relative overflow-hidden">
             {/* Background Effects */}
-            <div className="absolute inset-0 bg-[radial-gradient(#00C888_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.1] pointer-events-none"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.3] pointer-events-none"></div>
 
             <div className="w-full max-w-[400px] p-8 rounded-2xl border border-white/10 bg-[#ffffff0d] backdrop-blur-sm relative z-10 mx-4">
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 rounded-2xl bg-[#00C888]/10 flex items-center justify-center mx-auto mb-6 ring-1 ring-[#00C888]/30">
-                        <Shield size={32} className="text-[#00C888]" />
+                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 ring-1 ring-primary/30">
+                        <Shield size={32} className="text-primary" />
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">Two-Factor Authentication</h1>
                     <p className="text-gray-400 text-sm">
@@ -48,14 +48,14 @@ export default function Verify2FAPage() {
                             maxLength={6}
                             autoFocus
                             placeholder="000000"
-                            className="w-full h-16 text-center text-3xl font-bold tracking-[0.5em] bg-[#0B0E14] border border-white/10 rounded-xl focus:border-[#00C888] focus:ring-1 focus:ring-[#00C888] text-white placeholder:text-gray-700 transition-all outline-none"
+                            className="w-full h-16 text-center text-3xl font-bold tracking-[0.5em] bg-[#0B0E14] border border-white/10 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary text-white placeholder:text-gray-700 transition-all outline-none"
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading || code.length < 6}
-                        className="w-full h-12 bg-[#00C888] hover:bg-[#00B078] text-black font-bold text-lg rounded-xl transition-all shadow-lg shadow-[#00C888]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full h-12 bg-primary hover:bg-[#00B078] text-black font-bold text-lg rounded-xl transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {loading ? <Loader2 size={24} className="animate-spin" /> : "Verify Identity"}
                     </button>

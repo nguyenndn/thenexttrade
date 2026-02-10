@@ -51,7 +51,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
     return (
         <section id="comments" className="py-12 border-t border-gray-100 dark:border-white/5">
             <div className="flex items-center gap-3 mb-8">
-                <div className="p-2 bg-[#00C888]/10 rounded-xl text-[#00C888]">
+                <div className="p-2 bg-primary/10 rounded-xl text-primary">
                     <MessageSquare size={24} />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -86,7 +86,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
                         <p className="text-gray-500 mb-4">Log in to join the discussion</p>
                         <a
                             href={`/auth/login?next=/articles/${articleId}`}
-                            className="inline-flex items-center justify-center px-6 py-2.5 bg-[#00C888] hover:bg-[#00B078] text-white rounded-xl font-medium transition-all shadow-lg shadow-[#00C888]/20"
+                            className="inline-flex items-center justify-center px-6 py-2.5 bg-primary hover:bg-[#00B078] text-white rounded-xl font-medium transition-all shadow-lg shadow-primary/20"
                         >
                             Log In
                         </a>
@@ -97,7 +97,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
             {/* Comments List */}
             {isLoading ? (
                 <div className="flex justify-center py-10">
-                    <Loader2 className="animate-spin text-[#00C888]" />
+                    <Loader2 className="animate-spin text-primary" />
                 </div>
             ) : (
                 <CommentList

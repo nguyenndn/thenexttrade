@@ -65,7 +65,7 @@ export default function SettingsClient() {
     if (isLoading) {
         return (
             <div className="flex h-[400px] items-center justify-center">
-                <Loader2 className="animate-spin text-[#00C888]" size={32} />
+                <Loader2 className="animate-spin text-primary" size={32} />
             </div>
         );
     }
@@ -121,7 +121,7 @@ export default function SettingsClient() {
                 {/* General Info Section */}
                 <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <User size={20} className="text-[#00C888]" />
+                        <User size={20} className="text-primary" />
                         Personal Information
                     </h3>
 
@@ -132,7 +132,7 @@ export default function SettingsClient() {
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                className="w-full px-4 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-[#00C888]"
+                                className="w-full px-4 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary"
                                 placeholder="Your full name"
                             />
                         </div>
@@ -141,7 +141,7 @@ export default function SettingsClient() {
                             <textarea
                                 value={formData.bio}
                                 onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                                className="w-full h-24 px-4 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-[#00C888] resize-none"
+                                className="w-full h-24 px-4 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary resize-none"
                                 placeholder="Tell us a bit about yourself..."
                             ></textarea>
                         </div>
@@ -173,7 +173,7 @@ export default function SettingsClient() {
                     <button
                         type="submit"
                         disabled={isSaving}
-                        className="px-8 py-3 bg-[#00C888] hover:bg-[#00b078] text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 active:scale-95 disabled:opacity-70 flex items-center gap-2"
+                        className="px-8 py-3 bg-primary hover:bg-[#00b078] text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 active:scale-95 disabled:opacity-70 flex items-center gap-2"
                     >
                         {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                         Save Changes

@@ -91,20 +91,20 @@ export function CommentForm({
             <div className="relative">
                 <textarea
                     {...register("content")}
-                    className="w-full min-h-[100px] p-4 pr-12 rounded-xl bg-gray-50 dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 focus:ring-2 focus:ring-[#00C888] focus:border-transparent transition-all resize-none outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
+                    className="w-full min-h-[100px] p-4 pr-12 rounded-xl bg-gray-50 dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
                     placeholder={placeholder}
                     autoFocus={autoFocus}
                     disabled={isLoading}
                 />
 
                 {isLoading ? (
-                    <div className="absolute right-3 bottom-3 text-[#00C888]">
+                    <div className="absolute right-3 bottom-3 text-primary">
                         <Loader2 className="animate-spin" size={20} />
                     </div>
                 ) : (
                     <button
                         type="submit"
-                        className="absolute right-3 bottom-3 p-2 bg-[#00C888] hover:bg-[#00B078] text-white rounded-lg shadow-lg shadow-[#00C888]/30 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                        className="absolute right-3 bottom-3 p-2 bg-primary hover:bg-[#00B078] text-white rounded-lg shadow-lg shadow-primary/30 transition-all hover:-translate-y-0.5 active:translate-y-0"
                     >
                         <Send size={16} />
                     </button>

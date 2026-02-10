@@ -99,7 +99,7 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                 <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                            <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                            <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                             <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                                 Trading Accounts
                             </h1>
@@ -115,7 +115,7 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                             </button>
                             <button
                                 onClick={() => setShowAddModal(true)}
-                                className="flex items-center gap-2 px-4 py-2 bg-[#00C888] text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors shadow-lg shadow-[#00C888]/20"
+                                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors shadow-lg shadow-primary/20"
                             >
                                 <Plus size={18} />
                                 Add Account
@@ -140,8 +140,8 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                 </div>
             ) : accounts.length === 0 ? (
                 <div className="text-center py-16 bg-gray-50 dark:bg-[#1E2028] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-[#00C888]/10 rounded-full flex items-center justify-center">
-                        <Plus size={32} className="text-[#00C888]" />
+                    <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
+                        <Plus size={32} className="text-primary" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                         No Trading Accounts
@@ -151,7 +151,7 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                     </p>
                     <button
                         onClick={() => setShowAddModal(true)}
-                        className="px-6 py-2.5 bg-[#00C888] text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors"
+                        className="px-6 py-2.5 bg-primary text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors"
                     >
                         Connect Account
                     </button>
@@ -214,7 +214,7 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                             <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5">
                                 <p className="text-xs font-bold text-gray-500 mb-2 uppercase">New API Key</p>
                                 <div className="flex gap-2">
-                                    <code className="flex-1 font-mono text-sm text-[#00C888] break-all">{newKey}</code>
+                                    <code className="flex-1 font-mono text-sm text-primary break-all">{newKey}</code>
                                     <button onClick={copyNewKey} className="text-sm font-medium text-gray-500 hover:text-gray-700">
                                         {copied ? "Copied" : "Copy"}
                                     </button>

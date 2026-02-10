@@ -63,13 +63,13 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                         <label className="text-sm font-medium text-gray-900 dark:text-white">Select Broker</label>
                         <div className="grid grid-cols-1 gap-2">
                             {["EXNESS", "VANTAGE", "VTMARKETS"].map((b) => (
-                                <label key={b} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${broker === b ? 'border-[#00C888] bg-[#00C888]/5' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}>
+                                <label key={b} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${broker === b ? 'border-primary bg-primary/5' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}>
                                     <input
                                         type="radio"
                                         name="broker"
                                         checked={broker === b}
                                         onChange={() => setBroker(b as BrokerName)}
-                                        className="w-4 h-4 text-[#00C888] focus:ring-[#00C888]"
+                                        className="w-4 h-4 text-primary focus:ring-primary"
                                     />
                                     <span className="font-bold text-gray-700 dark:text-gray-200">{b}</span>
                                 </label>
@@ -98,7 +98,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                         variant="primary"
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="px-6 py-3 rounded-xl bg-[#00C888] hover:bg-[#00B078] text-white font-bold shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all"
+                        className="px-6 py-3 rounded-xl bg-primary hover:bg-[#00B078] text-white font-bold shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all"
                     >
                         {isLoading ? "Submitting..." : "Submit Request"}
                     </Button>

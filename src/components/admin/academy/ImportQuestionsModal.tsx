@@ -119,7 +119,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                 <div className="relative">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                     <input
-                                        className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border-none focus:ring-2 focus:ring-[#00C888]/20 outline-none"
+                                        className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border-none focus:ring-2 focus:ring-primary/20 outline-none"
                                         placeholder="Search quizzes..."
                                         value={searchQuiz}
                                         onChange={e => setSearchQuiz(e.target.value)}
@@ -130,7 +130,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
 
                             <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-2">
                                 {isLoading ? (
-                                    <div className="py-10 flex justify-center"><Loader2 className="animate-spin text-[#00C888]" /></div>
+                                    <div className="py-10 flex justify-center"><Loader2 className="animate-spin text-primary" /></div>
                                 ) : filteredQuizzes.length === 0 ? (
                                     <p className="text-center text-gray-500 py-8">No quizzes found.</p>
                                 ) : (
@@ -138,13 +138,13 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                         <button
                                             key={quiz.id}
                                             onClick={() => handleQuizSelect(quiz)}
-                                            className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-[#00C888] hover:bg-[#00C888]/5 transition-all group text-left"
+                                            className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary hover:bg-primary/5 transition-all group text-left"
                                         >
                                             <div>
                                                 <h4 className="font-bold text-gray-900 dark:text-white">{quiz.title}</h4>
                                                 <p className="text-xs text-gray-500 mt-1">{quiz._count?.questions || 0} Questions</p>
                                             </div>
-                                            <ChevronRight className="text-gray-300 group-hover:text-[#00C888]" size={20} />
+                                            <ChevronRight className="text-gray-300 group-hover:text-primary" size={20} />
                                         </button>
                                     ))
                                 )}
@@ -158,7 +158,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                 </div>
                                 <button
                                     onClick={() => setStep("quiz-select")}
-                                    className="px-4 py-2 rounded-xl text-sm font-bold text-[#00C888] hover:bg-[#00C888]/10 transition-all"
+                                    className="px-4 py-2 rounded-xl text-sm font-bold text-primary hover:bg-primary/10 transition-all"
                                 >
                                     Change Quiz
                                 </button>
@@ -166,7 +166,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
 
                             <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-3">
                                 {isLoading ? (
-                                    <div className="py-10 flex justify-center"><Loader2 className="animate-spin text-[#00C888]" /></div>
+                                    <div className="py-10 flex justify-center"><Loader2 className="animate-spin text-primary" /></div>
                                 ) : sourceQuestions.length === 0 ? (
                                     <p className="text-center text-gray-500 py-8">This quiz has no questions.</p>
                                 ) : (
@@ -179,13 +179,13 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                                 className={cn(
                                                     "cursor-pointer p-5 rounded-2xl border transition-all flex gap-4 text-left group",
                                                     isSelected
-                                                        ? "border-[#00C888] bg-[#00C888]/5"
-                                                        : "border-gray-100 dark:border-white/5 hover:border-[#00C888]/50 hover:shadow-md"
+                                                        ? "border-primary bg-primary/5"
+                                                        : "border-gray-100 dark:border-white/5 hover:border-primary/50 hover:shadow-md"
                                                 )}
                                             >
                                                 <div className={cn(
                                                     "w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors",
-                                                    isSelected ? "bg-[#00C888] border-[#00C888]" : "border-gray-300 dark:border-gray-600 group-hover:border-[#00C888]"
+                                                    isSelected ? "bg-primary border-primary" : "border-gray-300 dark:border-gray-600 group-hover:border-primary"
                                                 )}>
                                                     {isSelected && <Check size={14} className="text-white" />}
                                                 </div>
@@ -197,7 +197,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                                         {q.options.map((opt: any) => (
                                                             <div key={opt.id} className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-gray-400">
                                                                 {opt.isCorrect ? (
-                                                                    <CheckCircle2 size={16} className="text-[#00C888] shrink-0" />
+                                                                    <CheckCircle2 size={16} className="text-primary shrink-0" />
                                                                 ) : (
                                                                     <Circle size={16} className="text-gray-300 dark:text-gray-700 shrink-0" />
                                                                 )}
@@ -222,7 +222,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                 <button
                                     onClick={handleImport}
                                     disabled={selectedQuestionIds.size === 0 || isLoading}
-                                    className="px-6 py-3 rounded-xl font-bold bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-6 py-3 rounded-xl font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isLoading && <Loader2 className="animate-spin" size={20} />}
                                     <span>Import {selectedQuestionIds.size} Questions</span>

@@ -15,7 +15,7 @@ interface AccountSettingsModalProps {
 }
 
 const COLORS = [
-    "#00C888", // Primary Green
+    "hsl(var(--primary))", // Primary Green
     "#10B981", // Emerald
     "#3B82F6", // Blue
     "#0EA5E9", // Sky
@@ -46,7 +46,7 @@ export function AccountSettingsModal({
     onRegenerateKey,
 }: AccountSettingsModalProps) {
     const [name, setName] = useState(account.name);
-    const [color, setColor] = useState(account.color || "#00C888");
+    const [color, setColor] = useState(account.color || "hsl(var(--primary))");
     const [autoSync, setAutoSync] = useState(account.autoSync);
 
     const [isSaving, setIsSaving] = useState(false);
@@ -195,7 +195,7 @@ export function AccountSettingsModal({
                                 {showApiKey && apiKey && (
                                     <button
                                         onClick={() => copyToClipboard(apiKey)}
-                                        className="w-10 h-10 flex items-center justify-center text-[#00C888] bg-[#00C888]/10 border border-[#00C888]/20 rounded-xl hover:bg-[#00C888]/20 transition-colors"
+                                        className="w-10 h-10 flex items-center justify-center text-primary bg-primary/10 border border-primary/20 rounded-xl hover:bg-primary/20 transition-colors"
                                     >
                                         <Copy size={18} />
                                     </button>
@@ -230,7 +230,7 @@ export function AccountSettingsModal({
                     <button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="flex-1 py-3 bg-[#00C888] hover:bg-[#00B078] text-white font-bold rounded-xl shadow-lg shadow-[#00C888]/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 py-3 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
                     >
                         {isSaving ? "Saving..." : "Save Changes"}
                     </button>

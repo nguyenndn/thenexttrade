@@ -128,7 +128,7 @@ export function TagInput({ value, onChange }: TagInputProps) {
                         }
                     }}
                     placeholder="Add a tag..."
-                    className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888]"
+                    className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                 />
 
                 {(isLoading || isCreating) && (

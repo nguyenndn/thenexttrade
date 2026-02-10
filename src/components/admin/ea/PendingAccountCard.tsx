@@ -42,7 +42,7 @@ export function PendingAccountCard({ license, onApprove, onReject }: PendingAcco
                 <div className="flex flex-col items-center">
                     <Link
                         href={`/admin/users/${license.userId}?from=/admin/ea/accounts/pending`}
-                        className="text-sm font-bold text-gray-400 uppercase tracking-widest hover:text-[#00C888] hover:underline transition-all"
+                        className="text-sm font-bold text-gray-400 uppercase tracking-widest hover:text-primary hover:underline transition-all"
                     >
                         {license.user.name || license.user.email}
                     </Link>
@@ -77,7 +77,7 @@ export function PendingAccountCard({ license, onApprove, onReject }: PendingAcco
                 <Button
                     variant="primary"
                     size="sm"
-                    className="col-span-2 h-11 bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg shadow-[#00C888]/20 rounded-xl text-sm font-bold uppercase tracking-wide"
+                    className="col-span-2 h-11 bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/20 rounded-xl text-sm font-bold uppercase tracking-wide"
                     onClick={() => onApprove(license)}
                 >
                     <Check size={18} className="mr-2" />

@@ -63,7 +63,7 @@ export function AddAccountModal() {
             <DialogTrigger asChild>
                 <Button
                     variant="primary"
-                    className="bg-[#00C888] hover:bg-[#00B078] shadow-lg shadow-[#00C888]/25 text-white font-bold rounded-xl"
+                    className="bg-primary hover:bg-[#00B078] shadow-lg shadow-primary/25 text-white font-bold rounded-xl"
                 >
                     <Plus size={20} className="mr-2" />
                     <span>Add Account</span>
@@ -93,14 +93,14 @@ export function AddAccountModal() {
                                     className={cn(
                                         "cursor-pointer rounded-2xl border p-4 flex flex-col items-center gap-2 transition-all duration-200",
                                         selectedBroker === brokerKey
-                                            ? "border-[#00C888] bg-[#00C888]/5 ring-2 ring-[#00C888]/20"
-                                            : "border-gray-200 dark:border-white/10 hover:border-[#00C888]/50 bg-white dark:bg-white/5"
+                                            ? "border-primary bg-primary/5 ring-2 ring-primary/20"
+                                            : "border-gray-200 dark:border-white/10 hover:border-primary/50 bg-white dark:bg-white/5"
                                     )}
                                 >
                                     <BrokerLogo broker={brokerKey} size={80} />
                                     <span className={cn(
                                         "text-xs font-bold",
-                                        selectedBroker === brokerKey ? "text-[#00C888]" : "text-gray-500 dark:text-gray-400"
+                                        selectedBroker === brokerKey ? "text-primary" : "text-gray-500 dark:text-gray-400"
                                     )}>
                                         {BROKERS[brokerKey].name}
                                     </span>
@@ -141,7 +141,7 @@ export function AddAccountModal() {
                         <Button
                             type="submit"
                             variant="primary"
-                            className="bg-[#00C888] hover:bg-[#00B078] text-white"
+                            className="bg-primary hover:bg-[#00B078] text-white"
                             disabled={isSubmitting}
                         >
                             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

@@ -231,7 +231,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                         <span className="font-bold text-gray-900 dark:text-white">{article.author.name || "Jonathan Doe"}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <Calendar size={16} className="text-[#00C888]" />
+                                        <Calendar size={16} className="text-primary" />
                                         <span>{formattedDate}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -265,7 +265,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                         className="prose dark:prose-invert prose-lg max-w-none 
                                         prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white 
                                         prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-8
-                                        prose-a:text-[#00C888] dark:prose-a:text-[#00C888] prose-img:rounded-2xl prose-blockquote:border-l-[#00C888]"
+                                        prose-a:text-primary dark:prose-a:text-primary prose-img:rounded-2xl prose-blockquote:border-l-primary"
                                         dangerouslySetInnerHTML={{ __html: processedContent }}
                                     />
 
@@ -276,7 +276,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                                 <Link
                                                     key={tag.id}
                                                     href={`/articles/tags/${tag.slug}`}
-                                                    className="px-4 py-2 bg-gray-100 dark:bg-white/5 rounded-full text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-[#00C888] hover:text-white transition-colors"
+                                                    className="px-4 py-2 bg-gray-100 dark:bg-white/5 rounded-full text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white transition-colors"
                                                 >
                                                     #{tag.name}
                                                 </Link>

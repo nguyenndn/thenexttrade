@@ -58,12 +58,12 @@ export function CalculatorHub() {
                             className={`
                 flex items-center justify-center gap-2 px-2 py-2.5 rounded-xl font-bold text-sm transition-all
                 ${activeCalc === calc.id
-                                    ? "bg-white dark:bg-[#1E2028] text-[#00C888] shadow-[0_2px_10px_-2px_rgba(0,0,0,0.1)] dark:shadow-none scale-100"
+                                    ? "bg-white dark:bg-[#1E2028] text-primary shadow-[0_2px_10px_-2px_rgba(0,0,0,0.1)] dark:shadow-none scale-100"
                                     : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 scale-95 hover:scale-100"
                                 }
               `}
                         >
-                            <Icon size={18} className={activeCalc === calc.id ? "text-[#00C888]" : "opacity-70"} />
+                            <Icon size={18} className={activeCalc === calc.id ? "text-primary" : "opacity-70"} />
                             <span className="truncate">{calc.name}</span>
                         </button>
                     );

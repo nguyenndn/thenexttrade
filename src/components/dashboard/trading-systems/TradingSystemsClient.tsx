@@ -42,7 +42,7 @@ function FilterTab({ label, icon: Icon, active, onClick }: any) {
                     : "text-gray-500 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-black/5 dark:hover:bg-white/5 active:scale-95"
             )}
         >
-            <Icon size={18} className={cn("transition-colors duration-300", active ? "text-[#00C888] scale-110" : "opacity-60 group-hover:opacity-100")} />
+            <Icon size={18} className={cn("transition-colors duration-300", active ? "text-primary scale-110" : "opacity-60 group-hover:opacity-100")} />
             {label}
         </button>
     );
@@ -90,7 +90,7 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense }:
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Trading Systems
                         </h1>
@@ -115,13 +115,13 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense }:
                                         <button
                                             onClick={() => setActiveTab(item.id as Tab)}
                                             className={`w-full flex flex-col xl:flex-row items-center xl:gap-3 px-4 py-3 xl:px-3 xl:py-2.5 rounded-xl transition-all font-medium text-xs xl:text-sm group flex-shrink-0 border xl:border-transparent ${isActive
-                                                ? "bg-[#00C888]/10 text-[#00C888] border-[#00C888]/20 dark:bg-[#00C888]/20 dark:text-[#00C888] xl:bg-[#00C888]/10 xl:dark:bg-[#00C888]/20"
+                                                ? "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary xl:bg-primary/10 xl:dark:bg-primary/20"
                                                 : "bg-white dark:bg-transparent border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
                                                 }`}
                                         >
-                                            <Icon size={20} className={`mb-2 xl:mb-0 ${isActive ? "text-[#00C888]" : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"}`} />
+                                            <Icon size={20} className={`mb-2 xl:mb-0 ${isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"}`} />
                                             <span className="text-center xl:text-left whitespace-nowrap">{item.title}</span>
-                                            {isActive && <div className="hidden xl:block w-1 h-4 bg-[#00C888] rounded-full ml-auto" />}
+                                            {isActive && <div className="hidden xl:block w-1 h-4 bg-primary rounded-full ml-auto" />}
                                         </button>
                                     </div>
                                 );

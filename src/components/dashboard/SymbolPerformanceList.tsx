@@ -57,7 +57,7 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
                 <div className="col-span-3 text-right text-gray-500 font-medium">
                   {item.trades}
                 </div>
-                <div className={`col-span-4 text-right font-bold ${item.pnl >= 0 ? "text-[#00C888]" : "text-red-500"}`}>
+                <div className={`col-span-4 text-right font-bold ${item.pnl >= 0 ? "text-primary" : "text-red-500"}`}>
                   {item.pnl >= 0 ? "+" : "-"}{formatCurrency(item.pnl)}
                 </div>
               </div>

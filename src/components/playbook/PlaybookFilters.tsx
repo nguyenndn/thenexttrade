@@ -20,7 +20,7 @@ export function PlaybookFilters({ search, setSearch, filter, setFilter }: Playbo
                     placeholder="Search symbol..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#00C888]/20 transition-all text-gray-900 dark:text-white placeholder-gray-400"
+                    className="w-full bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all text-gray-900 dark:text-white placeholder-gray-400"
                 />
             </div>
 

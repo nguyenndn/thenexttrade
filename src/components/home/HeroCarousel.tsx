@@ -63,10 +63,10 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                     {/* Content */}
                     <div className="absolute bottom-0 left-0 p-6 md:p-12 w-full max-w-4xl">
                         <Link href={`/articles/${article.slug}`} className="block group/text">
-                            <span className="inline-block px-3 py-1 mb-3 md:mb-4 rounded-full bg-[#00C888] text-white text-[10px] md:text-xs font-bold uppercase tracking-wider shadow-lg">
+                            <span className="inline-block px-3 py-1 mb-3 md:mb-4 rounded-full bg-primary text-white text-[10px] md:text-xs font-bold uppercase tracking-wider shadow-lg">
                                 {article.category.name}
                             </span>
-                            <h2 className="text-2xl md:text-5xl font-bold text-white mb-2 md:mb-4 leading-tight group-hover/text:underline decoration-[#00C888] underline-offset-4 transition-all">
+                            <h2 className="text-2xl md:text-5xl font-bold text-white mb-2 md:mb-4 leading-tight group-hover/text:underline decoration-primary underline-offset-4 transition-all">
                                 {article.title}
                             </h2>
                             <p className="text-gray-200 text-sm md:text-xl line-clamp-2 mb-4 md:mb-6 max-w-2xl hidden sm:block">
@@ -74,7 +74,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                             </p>
                             <div className="flex items-center gap-4 text-xs md:text-sm text-gray-300 font-medium">
                                 <span className="flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#00C888] to-blue-500 flex items-center justify-center text-xs text-white font-bold">
+                                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-xs text-white font-bold">
                                         {article.author.name?.charAt(0) || "G"}
                                     </div>
                                     {article.author.name || "GSN Team"}
@@ -110,7 +110,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                     <button
                         key={idx}
                         onClick={() => setCurrent(idx)}
-                        className={`transition-all duration-300 rounded-full ${idx === current ? "w-8 h-2 bg-[#00C888]" : "w-2 h-2 bg-white/50 hover:bg-white"
+                        className={`transition-all duration-300 rounded-full ${idx === current ? "w-8 h-2 bg-primary" : "w-2 h-2 bg-white/50 hover:bg-white"
                             }`}
                     />
                 ))}

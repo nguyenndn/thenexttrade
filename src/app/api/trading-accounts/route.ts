@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
                 userId: user.id,
                 name: name || `${platform} Account`,
                 // Default color if not provided
-                color: color || "#00C888",
+                color: color || "hsl(var(--primary))",
                 platform,
                 broker,
                 accountNumber,

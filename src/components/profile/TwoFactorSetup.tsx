@@ -162,7 +162,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                     <button
                         onClick={handleStart}
                         disabled={loading}
-                        className="px-6 py-2 bg-[#00C888] hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-70 flex items-center gap-2"
+                        className="px-6 py-2 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-70 flex items-center gap-2"
                     >
                         {loading && <Loader2 size={16} className="animate-spin" />}
                         Setup 2FA
@@ -218,12 +218,12 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                         onChange={(e) => setCode(e.target.value)}
                                         placeholder="123456"
                                         maxLength={6}
-                                        className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-[#00C888] font-mono text-center tracking-widest text-lg"
+                                        className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary font-mono text-center tracking-widest text-lg"
                                     />
                                     <button
                                         onClick={handleVerify}
                                         disabled={loading || code.length < 6}
-                                        className="px-6 py-2 bg-[#00C888] hover:bg-[#00B078] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg active:scale-95"
+                                        className="px-6 py-2 bg-primary hover:bg-[#00B078] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg active:scale-95"
                                     >
                                         {loading ? <Loader2 size={20} className="animate-spin" /> : "Verify"}
                                     </button>

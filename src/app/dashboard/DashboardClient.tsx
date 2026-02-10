@@ -117,8 +117,8 @@ export default function DashboardClient({
             description: "Live + Funded",
             isPositive: true,
             icon: DollarSign,
-            color: "text-[#00C888]",
-            bg: "bg-[#00C888]/10"
+            color: "text-primary",
+            bg: "bg-primary/10"
         },
         {
             title: "Winrate (Range)",
@@ -135,8 +135,8 @@ export default function DashboardClient({
             description: "Realized P&L",
             isPositive: dashboardData.periodPnL >= 0,
             icon: Activity,
-            color: dashboardData.periodPnL >= 0 ? "text-[#00C888]" : "text-red-500",
-            bg: dashboardData.periodPnL >= 0 ? "bg-[#00C888]/10" : "bg-red-50 dark:bg-red-500/10"
+            color: dashboardData.periodPnL >= 0 ? "text-primary" : "text-red-500",
+            bg: dashboardData.periodPnL >= 0 ? "bg-primary/10" : "bg-red-50 dark:bg-red-500/10"
         }
     ];
 
@@ -154,10 +154,10 @@ export default function DashboardClient({
                     <div className="flex items-center gap-2 mb-1">
                         {greeting.icon}
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                            {greeting.text}, <span className="text-[#00C888] uppercase">{userName}</span>
+                            {greeting.text}, <span className="text-primary uppercase">{userName}</span>
                         </h1>
                     </div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium italic border-l-2 border-[#00C888] pl-3">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium italic border-l-2 border-primary pl-3">
                         "The goal of a successful trader is to make the best trades. Money is secondary."
                     </p>
                 </div>
@@ -174,10 +174,10 @@ export default function DashboardClient({
                         {kpiCards.map((card, index) => {
                             const Icon = card.icon;
                             // Map colors for top border
-                            const borderColor = index === 0 ? "border-t-[#00C888]" :
+                            const borderColor = index === 0 ? "border-t-primary" :
                                 index === 1 ? "border-t-amber-500" :
                                     index === 2 ? "border-t-orange-500" :
-                                        card.isPositive ? "border-t-[#00C888]" : "border-t-red-500";
+                                        card.isPositive ? "border-t-primary" : "border-t-red-500";
 
                             const colSpanClass = index === 2 ? "sm:col-span-2 lg:col-span-1" : "";
 
@@ -204,10 +204,10 @@ export default function DashboardClient({
                     }} />
 
                     {/* Balance Growth Chart */}
-                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-[#00C888]">
+                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-primary">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-[#00C888]/10 rounded-lg text-[#00C888]">
+                                <div className="p-2 bg-primary/10 rounded-lg text-primary">
                                     <TrendingUp size={20} />
                                 </div>
                                 <div>
@@ -217,7 +217,7 @@ export default function DashboardClient({
                             </div>
                             <div className="text-right">
                                 <p className="text-xs text-gray-500">Net Profit</p>
-                                <p className={`text-sm font-bold ${(chartData[chartData.length - 1]?.balance || 0) >= 0 ? "text-[#00C888]" : "text-red-500"}`}>
+                                <p className={`text-sm font-bold ${(chartData[chartData.length - 1]?.balance || 0) >= 0 ? "text-primary" : "text-red-500"}`}>
                                     {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', signDisplay: 'always' }).format(chartData[chartData.length - 1]?.balance || 0)}
                                 </p>
                             </div>
@@ -327,7 +327,7 @@ export default function DashboardClient({
                                     />
                                     <Bar
                                         dataKey="value"
-                                        fill="#00C888"
+                                        fill="hsl(var(--primary))"
                                         radius={[4, 4, 0, 0]}
                                         barSize={20}
                                     />

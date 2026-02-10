@@ -27,8 +27,8 @@ export function StatsOverview({ stats }: StatsProps) {
             title: "Net Profit",
             value: stats.netProfit.toLocaleString("en-US", { style: "currency", currency: "USD" }),
             icon: DollarSign,
-            color: stats.netProfit >= 0 ? "text-[#00C888]" : "text-red-500",
-            bg: stats.netProfit >= 0 ? "bg-[#00C888]/10" : "bg-red-500/10"
+            color: stats.netProfit >= 0 ? "text-primary" : "text-red-500",
+            bg: stats.netProfit >= 0 ? "bg-primary/10" : "bg-red-500/10"
         },
         {
             title: "Win Rate",
@@ -83,11 +83,11 @@ export function DetailedStats({ stats }: StatsProps) {
             <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 flex justify-between items-center group">
                 <div>
                     <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Avg Win</p>
-                    <p className="text-xl font-bold text-[#00C888] group-hover:scale-105 transition-transform">
+                    <p className="text-xl font-bold text-primary group-hover:scale-105 transition-transform">
                         +${stats.avgWin.toFixed(2)}
                     </p>
                 </div>
-                <div className="p-2 bg-[#00C888]/10 text-[#00C888] rounded-lg">
+                <div className="p-2 bg-primary/10 text-primary rounded-lg">
                     <TrendingUp size={18} />
                 </div>
             </div>

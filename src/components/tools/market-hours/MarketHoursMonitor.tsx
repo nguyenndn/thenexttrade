@@ -95,7 +95,7 @@ export function MarketHoursMonitor() {
         const closeTimeString = `${closeTime.h.toString().padStart(2, '0')}:${closeTime.m.toString().padStart(2, '0')}`;
 
         return (
-            <div className="relative h-14 mb-4 bg-gray-100 dark:bg-white/5 rounded-xl w-full overflow-hidden border border-gray-200 dark:border-white/5 group hover:border-[#00C888]/50 transition-colors">
+            <div className="relative h-14 mb-4 bg-gray-100 dark:bg-white/5 rounded-xl w-full overflow-hidden border border-gray-200 dark:border-white/5 group hover:border-primary/50 transition-colors">
                 <div className="absolute left-4 top-0 bottom-0 flex items-center z-10 pointer-events-none">
                     <div className="flex flex-col">
                         <span className="font-bold text-sm text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
@@ -132,7 +132,7 @@ export function MarketHoursMonitor() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-gray-100 dark:border-white/5 pb-6">
                 <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <Clock className="text-[#00C888]" />
+                        <Clock className="text-primary" />
                         Forex Market Hours
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">

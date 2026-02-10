@@ -25,8 +25,8 @@ We do not use standard `gray-900`. Use these specific hex codes:
 ### 1.2 Brand Colors
 | Color | Class | Hex | Usage |
 |:---|:---|:---|:---|
-| **Primary Green** | `bg-[#00C888]` | `#00C888` | Call-to-Action buttons, Success states |
-| **Primary Hover** | `hover:bg-[#00B078]` | `#00B078` | Hover state for Primary Green |
+| **Primary Green** | `bg-primary` | Varies (Theme) | Call-to-Action buttons, Success states |
+| **Primary Hover** | `hover:bg-primary/90` | Varies (Theme) | Hover state for Primary Green |
 | **Info/Accent** | `text-cyan-500` | `#06B6D4` | Icons, Highlights, Links |
 | **Blue Action** | `bg-[#2F80ED]` | `#2F80ED` | Secondary actions, Save buttons |
 | **Danger** | `text-red-500` | `#EF4444` | Errors, negative PnL |

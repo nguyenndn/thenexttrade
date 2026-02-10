@@ -93,13 +93,13 @@ export default function LessonGenerator() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-100 dark:border-white/5 pb-8 mb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Lesson Generator
                         </h1>
                     </div>
                     <div className="flex items-center text-sm text-gray-500 pl-4.5">
-                        <Link href="/admin/ai-studio" className="hover:text-[#00C888] transition-colors">AI Studio</Link>
+                        <Link href="/admin/ai-studio" className="hover:text-primary transition-colors">AI Studio</Link>
                         <ChevronRight size={14} className="mx-2" />
                         <span className="text-gray-900 dark:text-white font-medium">Lesson Generator</span>
                     </div>
@@ -119,7 +119,7 @@ export default function LessonGenerator() {
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Save to Module</label>
                             <div className="relative">
                                 <select
-                                    className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-[#00C888] outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+                                    className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
                                     value={selectedModule}
                                     onChange={(e) => setSelectedModule(e.target.value)}
                                 >
@@ -146,7 +146,7 @@ export default function LessonGenerator() {
                         <div>
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Topic / Context</label>
                             <textarea
-                                className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg p-3 focus:border-[#00C888] outline-none min-h-[100px] transition-all hover:bg-gray-100 dark:hover:bg-white/10 resize-none"
+                                className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg p-3 focus:border-primary outline-none min-h-[100px] transition-all hover:bg-gray-100 dark:hover:bg-white/10 resize-none"
                                 placeholder="Describe what this lesson should cover..."
                                 value={formData.topic}
                                 onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
@@ -158,7 +158,7 @@ export default function LessonGenerator() {
                                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Level</label>
                                 <div className="relative">
                                     <select
-                                        className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-[#00C888] outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+                                        className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
                                         value={formData.level}
                                         onChange={(e) => setFormData({ ...formData, level: e.target.value as any })}
                                     >
@@ -172,7 +172,7 @@ export default function LessonGenerator() {
                                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Length</label>
                                 <div className="relative">
                                     <select
-                                        className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-[#00C888] outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+                                        className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
                                         value={formData.length}
                                         onChange={(e) => setFormData({ ...formData, length: e.target.value as any })}
                                     >
@@ -189,7 +189,7 @@ export default function LessonGenerator() {
                                 type="checkbox"
                                 checked={formData.includeExamples}
                                 onChange={(e) => setFormData({ ...formData, includeExamples: e.target.checked })}
-                                className="w-5 h-5 accent-[#00C888] rounded cursor-pointer"
+                                className="w-5 h-5 accent-primary rounded cursor-pointer"
                             />
                             <label className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer select-none" onClick={() => setFormData({ ...formData, includeExamples: !formData.includeExamples })}>
                                 Include real-world examples
@@ -197,7 +197,7 @@ export default function LessonGenerator() {
                         </div>
 
                         <Button
-                            className="w-full py-3 bg-[#00C888] hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl shadow-lg shadow-[#00C888]/30 hover:-translate-y-1 active:scale-95 transition-all mt-4"
+                            className="w-full py-3 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all mt-4"
                             onClick={handleGenerate}
                             isLoading={generating}
                         >
@@ -217,7 +217,7 @@ export default function LessonGenerator() {
                     ) : result ? (
                         <div className="space-y-4 text-gray-300">
                             <div className="border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">
-                                <h2 className="text-2xl font-bold text-[#00C888]">{result.title}</h2>
+                                <h2 className="text-2xl font-bold text-primary">{result.title}</h2>
                                 <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
                                     <span>⏱️ {result.duration} min read</span>
                                 </div>

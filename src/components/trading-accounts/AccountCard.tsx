@@ -51,7 +51,7 @@ export function AccountCard({
     };
 
     return (
-        <div className="group bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-[#00C888] dark:hover:border-[#00C888] transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-[#00C888]/5 flex flex-col justify-between h-full">
+        <div className="group bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 flex flex-col justify-between h-full">
 
             <div className="p-6">
                 {/* Header Row */}
@@ -105,8 +105,8 @@ export function AccountCard({
                     {/* Connection Status Pulse */}
                     <div className="pt-2 pl-2">
                         <div className="relative flex items-center justify-center w-3 h-3" title={account.isConnected ? "Connected" : "Disconnected"}>
-                            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${account.isConnected ? "bg-[#00C888]" : "bg-red-500"}`}></span>
-                            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${account.isConnected ? "bg-[#00C888]" : "bg-red-500"}`}></span>
+                            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${account.isConnected ? "bg-primary" : "bg-red-500"}`}></span>
+                            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${account.isConnected ? "bg-primary" : "bg-red-500"}`}></span>
                         </div>
                     </div>
                 </div>
@@ -115,13 +115,13 @@ export function AccountCard({
                 <div className="flex items-center gap-8 mb-4">
                     <div>
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Balance</p>
-                        <p className="text-2xl font-bold text-[#00C888] tracking-tight">
+                        <p className="text-2xl font-bold text-primary tracking-tight">
                             ${(account.balance || 0).toLocaleString()}
                         </p>
                     </div>
                     <div>
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Equity</p>
-                        <p className="text-2xl font-bold text-[#00C888] tracking-tight">
+                        <p className="text-2xl font-bold text-primary tracking-tight">
                             ${(account.equity || account.balance || 0).toLocaleString()}
                         </p>
                     </div>
@@ -132,7 +132,7 @@ export function AccountCard({
             <div className="px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-t border-gray-100 dark:border-white/5 rounded-b-2xl flex items-center justify-between mt-auto gap-4">
                 <Link
                     href={`/dashboard?accountId=${account.id}`}
-                    className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-[#00C888] dark:hover:text-[#00C888] transition-colors group/link shrink-0"
+                    className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors group/link shrink-0"
                 >
                     <span className="whitespace-nowrap">View Dashboard</span>
                     <ExternalLink size={16} className="opacity-50 group-hover/link:opacity-100 transition-opacity" />
@@ -152,7 +152,7 @@ export function AccountCard({
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <button className="p-2 text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#00C888]/20">
+                                <button className="p-2 text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-primary/20">
                                     <MoreVertical size={18} />
                                 </button>
                             </DropdownMenuTrigger>

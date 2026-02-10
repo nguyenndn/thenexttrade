@@ -32,7 +32,7 @@ export default async function AdminNotificationsPage() {
                     </p>
                 </div>
                 <Link href="/admin/notifications/create">
-                    <Button variant="primary" className="bg-[#00C888] hover:bg-[#00B078] text-white">
+                    <Button variant="primary" className="bg-primary hover:bg-[#00B078] text-white">
                         <Plus size={18} className="mr-2" />
                         New Broadcast
                     </Button>

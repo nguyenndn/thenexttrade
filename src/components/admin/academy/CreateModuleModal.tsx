@@ -92,7 +92,7 @@ export function CreateModuleModal({ isOpen, onClose, levelId, onSuccess }: Creat
                     </label>
                     <textarea
                         {...register("description")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[100px] resize-none font-medium"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[100px] resize-none font-medium"
                         placeholder="Describe the key concepts covered in this module..."
                     />
                 </div>
@@ -110,7 +110,7 @@ export function CreateModuleModal({ isOpen, onClose, levelId, onSuccess }: Creat
                     <Button
                         type="submit"
                         isLoading={isLoading}
-                        className="bg-[#00C888] hover:bg-[#00b078] text-white border-none shadow-lg shadow-[#00C888]/30 rounded-xl px-6 font-bold hover:-translate-y-0.5 transition-all"
+                        className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold hover:-translate-y-0.5 transition-all"
                     >
                         Create Module
                     </Button>

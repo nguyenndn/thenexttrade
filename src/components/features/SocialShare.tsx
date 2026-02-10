@@ -58,7 +58,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                 </a>
                 <button
                     onClick={copyToClipboard}
-                    className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-800 text-gray-500 hover:text-[#00C888] shadow-lg shadow-gray-200 dark:shadow-none rounded-full transition-all border border-gray-100 dark:border-white/5"
+                    className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-800 text-gray-500 hover:text-primary shadow-lg shadow-gray-200 dark:shadow-none rounded-full transition-all border border-gray-100 dark:border-white/5"
                     title="Copy Link"
                 >
                     {copied ? <Check size={18} /> : <LinkIcon size={18} />}

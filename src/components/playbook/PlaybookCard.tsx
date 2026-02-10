@@ -65,7 +65,7 @@ export function PlaybookCard({ trade, onClick }: PlaybookCardProps) {
                     </div>
 
                     <div className="text-right">
-                        <div className={`flex items-center gap-1 font-mono font-bold text-lg ${isWin ? "text-[#00C888]" : isLoss ? "text-red-500" : "text-gray-400"
+                        <div className={`flex items-center gap-1 font-mono font-bold text-lg ${isWin ? "text-primary" : isLoss ? "text-red-500" : "text-gray-400"
                             }`}>
                             {isWin ? <TrendingUp size={16} /> : isLoss ? <TrendingDown size={16} /> : null}
                             ${Math.abs(trade.pnl || 0).toLocaleString()}

@@ -11,7 +11,7 @@ export function SymbolPieChart({ data }: SymbolPieChartProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
-    const COLORS = ['#00C888', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
+    const COLORS = ['hsl(var(--primary))', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
 
     if (!data || data.length === 0) {
         return (

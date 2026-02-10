@@ -82,7 +82,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
             {/* Wrapper for Content that needs Firefly Background */}
             <div className="relative overflow-hidden">
                 {/* Background Effects */}
-                <div className="absolute inset-0 bg-[radial-gradient(#00C888_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.2] dark:opacity-[0.1] pointer-events-none"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none"></div>
                 <FireflyBackground />
 
                 <PublicHeader user={user} />
@@ -92,12 +92,12 @@ export default async function LibraryPage(props: LibraryPageProps) {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
                             <div className="flex-1 text-center md:text-left">
-                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 text-[#00C888] font-bold text-xs uppercase tracking-wider mb-6 shadow-lg">
+                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 text-primary font-bold text-xs uppercase tracking-wider mb-6 shadow-lg">
                                     <BookOpen size={16} />
                                     <span>Knowledge Base</span>
                                 </div>
                                 <h1 className="text-4xl md:text-6xl font-bold font-heading text-gray-900 dark:text-white mb-6 leading-tight">
-                                    Trading <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00C888] to-teal-400">Library</span>
+                                    Trading <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">Library</span>
                                 </h1>
                                 <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed mb-8">
                                     Deep dive into our premium collection of trading strategies, market analysis, and psychological insights.
@@ -113,7 +113,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={cat.id}
                                         href={`/knowledge?category=${cat.slug}`}
-                                        className="px-5 py-2.5 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/20 hover:border-[#00C888] hover:bg-white/60 dark:hover:bg-white/10 transition-all cursor-pointer text-sm font-bold text-gray-700 dark:text-gray-200 hover:-translate-y-0.5"
+                                        className="px-5 py-2.5 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/20 hover:border-primary hover:bg-white/60 dark:hover:bg-white/10 transition-all cursor-pointer text-sm font-bold text-gray-700 dark:text-gray-200 hover:-translate-y-0.5"
                                     >
                                         {cat.name}
                                     </Link>
@@ -176,14 +176,14 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                         {/* Content */}
                                         <div className="flex-1 p-6 flex flex-col relative">
                                             {/* Decorative gradient glow behind text */}
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00C888]/10 rounded-full blur-3xl -z-10 group-hover:bg-[#00C888]/20 transition-colors"></div>
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -z-10 group-hover:bg-primary/20 transition-colors"></div>
 
-                                            <div className="flex items-center gap-2 text-xs font-medium text-[#00C888] mb-3">
+                                            <div className="flex items-center gap-2 text-xs font-medium text-primary mb-3">
                                                 <Clock size={14} />
                                                 <span>{new Date(article.createdAt).toLocaleDateString()}</span>
                                             </div>
 
-                                            <h3 className="text-xl font-bold font-heading text-gray-900 dark:text-white mb-3 line-clamp-2 leading-tight group-hover:text-[#00C888] transition-colors">
+                                            <h3 className="text-xl font-bold font-heading text-gray-900 dark:text-white mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
                                                 {article.title}
                                             </h3>
 
@@ -209,7 +209,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                                     <span className="text-[10px] text-gray-500 uppercase tracking-wide">Author</span>
                                                 </div>
 
-                                                <div className="ml-auto w-8 h-8 rounded-full bg-white/50 dark:bg-white/10 flex items-center justify-center group-hover:bg-[#00C888] group-hover:text-white transition-all">
+                                                <div className="ml-auto w-8 h-8 rounded-full bg-white/50 dark:bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
                                                     <TrendingUp size={14} />
                                                 </div>
                                             </div>

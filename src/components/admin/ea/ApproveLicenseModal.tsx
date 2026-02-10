@@ -91,7 +91,7 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
                                     type="radio"
                                     checked={isLifetime}
                                     onChange={() => setIsLifetime(true)}
-                                    className="w-4 h-4 text-[#00C888] focus:ring-[#00C888]"
+                                    className="w-4 h-4 text-primary focus:ring-primary"
                                 />
                                 <span className="text-sm text-gray-700 dark:text-gray-300">No Expiry (Lifetime)</span>
                             </label>
@@ -101,7 +101,7 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
                                     type="radio"
                                     checked={!isLifetime}
                                     onChange={() => setIsLifetime(false)}
-                                    className="w-4 h-4 text-[#00C888] focus:ring-[#00C888]"
+                                    className="w-4 h-4 text-primary focus:ring-primary"
                                 />
                                 <span className="text-sm text-gray-700 dark:text-gray-300">Set expiry date</span>
                             </label>
@@ -125,7 +125,7 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
                     <Button
                         onClick={handleApprove}
                         disabled={isLoading}
-                        className="px-8 py-3 h-auto text-base font-bold rounded-xl bg-[#00C888] hover:bg-[#00B078] text-white border-none shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed dark:disabled:bg-gray-800 dark:disabled:text-gray-500"
+                        className="px-8 py-3 h-auto text-base font-bold rounded-xl bg-primary hover:bg-[#00B078] text-white border-none shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed dark:disabled:bg-gray-800 dark:disabled:text-gray-500"
                     >
                         {isLoading ? "Approving..." : "Confirm Approval"}
                     </Button>

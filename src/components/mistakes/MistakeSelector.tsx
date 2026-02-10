@@ -83,7 +83,7 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
                     ) : (
                         <button
                             type="button"
-                            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10 text-left hover:border-[#00C888] transition-colors focus:border-[#00C888] focus:outline-none"
+                            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10 text-left hover:border-primary transition-colors focus:border-primary focus:outline-none"
                         >
                             <span className="text-sm font-medium text-gray-500">
                                 {value.length === 0 ? "Select mistakes..." : `${value.length} mistake(s) logged`}
@@ -118,7 +118,7 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
                                                 className={`
                                                     w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors group
                                                     ${value.includes(mistake.code)
-                                                        ? "bg-[#00C888]/10 text-[#00C888]"
+                                                        ? "bg-primary/10 text-primary"
                                                         : "hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300"
                                                     }
                                                 `}

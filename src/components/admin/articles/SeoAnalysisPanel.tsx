@@ -130,26 +130,26 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
         <div className="bg-white dark:bg-[#151925] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
             <div className="flex items-center justify-between">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <Search size={20} className="text-[#00C888]" />
+                    <Search size={20} className="text-primary" />
                     Yoast SEO (Pro)
                 </h3>
                 {/* Tabs */}
                 <div className="flex bg-gray-100 dark:bg-white/5 rounded-lg p-1">
                     <button
                         onClick={() => setActiveTab('seo')}
-                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-white text-[#00C888] shadow-sm' : 'text-gray-500'}`}
+                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-white text-primary shadow-sm' : 'text-gray-500'}`}
                     >
                         SEO
                     </button>
                     <button
                         onClick={() => setActiveTab('readability')}
-                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'readability' ? 'bg-white text-[#00C888] shadow-sm' : 'text-gray-500'}`}
+                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'readability' ? 'bg-white text-primary shadow-sm' : 'text-gray-500'}`}
                     >
                         Readability
                     </button>
                     <button
                         onClick={() => setActiveTab('social')}
-                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'social' ? 'bg-white text-[#00C888] shadow-sm' : 'text-gray-500'}`}
+                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'social' ? 'bg-white text-primary shadow-sm' : 'text-gray-500'}`}
                     >
                         Social
                     </button>
@@ -166,7 +166,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                             value={focusKeyword}
                             onChange={e => setFocusKeyword(e.target.value)}
                             placeholder="forex trading"
-                            className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888]"
+                            className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                         />
                     </div>
                     {/* Google Preview */}

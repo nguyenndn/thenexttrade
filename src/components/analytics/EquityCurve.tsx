@@ -52,8 +52,8 @@ export function EquityCurve({ data }: EquityCurveProps) {
                     <ComposedChart data={chartData}>
                         <defs>
                             <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#00C888" stopOpacity={0.3} />
-                                <stop offset="95%" stopColor="#00C888" stopOpacity={0} />
+                                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid
@@ -95,7 +95,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
                         <Area
                             type="monotone"
                             dataKey="balance"
-                            stroke="#00C888"
+                            stroke="hsl(var(--primary))"
                             strokeWidth={2}
                             fill="url(#colorBalance)"
                         />

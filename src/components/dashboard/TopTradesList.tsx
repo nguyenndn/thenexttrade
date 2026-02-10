@@ -36,7 +36,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
 
       {/* Best Trades */}
       <div>
-        <h4 className="text-sm font-bold text-[#00C888] mb-3 flex items-center gap-2">
+        <h4 className="text-sm font-bold text-primary mb-3 flex items-center gap-2">
           <TrendingUp size={16} /> Best Trades
         </h4>
         <div className="space-y-3">
@@ -46,7 +46,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
             bestTrades.map((trade) => (
               <div key={trade.id} className="flex items-center justify-between text-sm group cursor-default">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-700 dark:text-gray-300 group-hover:text-[#00C888] transition-colors">
+                  <span className="font-bold text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors">
                     {trade.symbol}
                   </span>
                   <span className="text-xs text-gray-500 font-medium">
@@ -56,7 +56,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
                     {formatDate(trade.exitDate)}
                   </span>
                 </div>
-                <span className="font-bold text-[#00C888]">
+                <span className="font-bold text-primary">
                   +{formatCurrency(trade.pnl)}
                 </span>
               </div>

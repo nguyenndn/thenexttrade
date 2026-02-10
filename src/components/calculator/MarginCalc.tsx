@@ -32,7 +32,7 @@ export function MarginCalc() {
                             type="number"
                             value={inputs.lotSize}
                             onChange={(e) => setInputs({ ...inputs, lotSize: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#00C888] outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
                         />
                     </div>
 
@@ -41,7 +41,7 @@ export function MarginCalc() {
                         <select
                             value={inputs.leverage}
                             onChange={(e) => setInputs({ ...inputs, leverage: parseInt(e.target.value) })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#00C888] outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
                         >
                             {leverageOptions.map(lev => (
                                 <option key={lev} value={lev}>1:{lev}</option>
@@ -55,7 +55,7 @@ export function MarginCalc() {
                             type="number"
                             value={inputs.currentPrice}
                             onChange={(e) => setInputs({ ...inputs, currentPrice: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#00C888] outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
                         />
                     </div>
                 </div>

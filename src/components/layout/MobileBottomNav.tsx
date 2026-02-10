@@ -41,7 +41,7 @@ export default function MobileBottomNav({
     return (
         <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#1E2028] border-t border-gray-100 dark:border-white/5 px-6 py-3 transition-transform duration-300 transform lg:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] ${isVisible ? 'translate-y-0' : 'translate-y-full'}`}>
             <div className="flex justify-between items-center max-w-md mx-auto">
-                <button onClick={onOpenTOC} className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 active:text-[#00C888] active:scale-95 transition-all">
+                <button onClick={onOpenTOC} className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 active:text-primary active:scale-95 transition-all">
                     <List size={20} />
                     <span className="text-[10px] font-bold uppercase">Contents</span>
                 </button>
@@ -54,17 +54,17 @@ export default function MobileBottomNav({
                         // Fallback or just ignore
                         alert("Use desktop or browser menu to share!");
                     }
-                }} className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 active:text-[#00C888] active:scale-95 transition-all">
+                }} className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 active:text-primary active:scale-95 transition-all">
                     <Share2 size={20} />
                     <span className="text-[10px] font-bold uppercase">Share</span>
                 </button>
 
-                <button onClick={scrollToComments} className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 active:text-[#00C888] active:scale-95 transition-all">
+                <button onClick={scrollToComments} className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 active:text-primary active:scale-95 transition-all">
                     <MessageSquare size={20} />
                     <span className="text-[10px] font-bold uppercase">Discuss</span>
                 </button>
 
-                <button onClick={scrollToTop} className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 active:text-[#00C888] active:scale-95 transition-all">
+                <button onClick={scrollToTop} className="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400 active:text-primary active:scale-95 transition-all">
                     <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center">
                         <ArrowUp size={16} />
                     </div>

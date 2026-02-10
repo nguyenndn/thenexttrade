@@ -118,7 +118,7 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
                         </label>
                         <textarea
                             {...register("changelog")}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-[#00C888]/50 focus:border-[#00C888] transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[80px]"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[80px]"
                             placeholder="What's new in this version?"
                         />
                     </div>
@@ -131,7 +131,7 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
                                     <input
                                         type="file"
                                         accept=".ex4"
-                                        className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#00C888] file:text-white hover:file:bg-[#00B078] cursor-pointer"
+                                        className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-[#00B078] cursor-pointer"
                                         onChange={(e) => setFileMT4(e.target.files?.[0] || null)}
                                     />
                                 </div>
@@ -145,7 +145,7 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
                                     <input
                                         type="file"
                                         accept=".ex5"
-                                        className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#00C888] file:text-white hover:file:bg-[#00B078] cursor-pointer"
+                                        className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-[#00B078] cursor-pointer"
                                         onChange={(e) => setFileMT5(e.target.files?.[0] || null)}
                                     />
                                 </div>
@@ -159,7 +159,7 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
                         </Button>
                         <Button
                             type="submit"
-                            className="bg-[#00C888] hover:bg-[#00B078] text-white"
+                            className="bg-primary hover:bg-[#00B078] text-white"
                             disabled={isSubmitting}
                         >
                             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

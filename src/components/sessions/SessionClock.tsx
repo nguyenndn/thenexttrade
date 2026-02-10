@@ -63,7 +63,7 @@ export function SessionClock({ data }: SessionClockProps) {
 
                     return (
                         <div key={session.id} className={`p-4 rounded-xl border transition-all ${isActive
-                            ? "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 ring-1 ring-[#00C888]/20"
+                            ? "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 ring-1 ring-primary/20"
                             : "border-transparent hover:bg-gray-50 dark:hover:bg-white/5"
                             }`}>
                             <div className="flex justify-between items-center mb-2">
@@ -73,7 +73,7 @@ export function SessionClock({ data }: SessionClockProps) {
                                         {session.label}
                                     </span>
                                     {isActive && (
-                                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[#00C888]/10 text-[#00C888] rounded">
+                                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-primary/10 text-primary rounded">
                                             LIVE
                                         </span>
                                     )}

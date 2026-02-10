@@ -102,7 +102,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                     <div className="p-5 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5">
                         <div className="mb-4">
                             <h4 className="font-bold text-xl text-gray-900 dark:text-white leading-tight">
-                                Hello, <span className="text-[#00C888]">{userData.name}</span>
+                                Hello, <span className="text-primary">{userData.name}</span>
                             </h4>
                         </div>
 
@@ -121,7 +121,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                     <div className="p-2 space-y-1">
                         {variant !== 'dashboard' ? (
                             <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                                <LayoutDashboard size={18} className="text-gray-400 group-hover:text-[#00C888] transition-colors" />
+                                <LayoutDashboard size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
                                 <div>
                                     <span className="block text-gray-900 dark:text-white">Dashboard</span>
                                     <span className="text-xs text-gray-500 font-normal">Overview & Learning Path</span>

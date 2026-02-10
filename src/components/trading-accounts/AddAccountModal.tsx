@@ -21,7 +21,7 @@ export function AddAccountModal({
     const [step, setStep] = useState<Step>("select-platform");
     const [platform, setPlatform] = useState<string>("");
     const [name, setName] = useState("");
-    const [color, setColor] = useState("#00C888");
+    const [color, setColor] = useState("hsl(var(--primary))");
 
     // Broker is auto-detected by EA, removed manual input
     const [isCreating, setIsCreating] = useState(false);
@@ -111,17 +111,17 @@ export function AddAccountModal({
                     w-full flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group
                     ${p.disabled
                                             ? "opacity-50 cursor-not-allowed border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5"
-                                            : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] hover:border-[#00C888] hover:shadow-lg dark:hover:shadow-[#00C888]/10 hover:-translate-y-0.5"
+                                            : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] hover:border-primary hover:shadow-lg dark:hover:shadow-primary/10 hover:-translate-y-0.5"
                                         }
                   `}
                                 >
                                     <div className="flex-1">
-                                        <p className="font-bold text-gray-900 dark:text-white text-lg group-hover:text-[#00C888] transition-colors">
+                                        <p className="font-bold text-gray-900 dark:text-white text-lg group-hover:text-primary transition-colors">
                                             {p.name}
                                         </p>
                                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{p.description}</p>
                                     </div>
-                                    {!p.disabled && <ArrowRight size={20} className="text-gray-300 group-hover:text-[#00C888] transition-colors" />}
+                                    {!p.disabled && <ArrowRight size={20} className="text-gray-300 group-hover:text-primary transition-colors" />}
                                 </button>
                             ))}
                         </div>
@@ -143,7 +143,7 @@ export function AddAccountModal({
                                 </label>
                                 <div className="flex flex-wrap gap-2">
                                     {[
-                                        "#00C888", "#10B981", "#3B82F6", "#0EA5E9", "#6366F1",
+                                        "hsl(var(--primary))", "#10B981", "#3B82F6", "#0EA5E9", "#6366F1",
                                         "#8B5CF6", "#A855F7", "#D946EF", "#EC4899", "#F43F5E",
                                         "#EF4444", "#F97316", "#F59E0B", "#EAB308", "#84CC16",
                                         "#14B8A6", "#06B6D4", "#64748B", "#475569", "#1E293B"
@@ -171,7 +171,7 @@ export function AddAccountModal({
                                 <button
                                     onClick={handleCreate}
                                     disabled={isCreating}
-                                    className="flex-1 py-3 bg-[#00C888] text-white rounded-xl font-bold hover:bg-[#00B078] shadow-lg shadow-[#00C888]/20 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                                    className="flex-1 py-3 bg-primary text-white rounded-xl font-bold hover:bg-[#00B078] shadow-lg shadow-primary/20 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
                                 >
                                     {isCreating ? (
                                         <>
@@ -195,12 +195,12 @@ export function AddAccountModal({
                                     Your API Key (Shown Once)
                                 </p>
                                 <div className="flex items-center gap-2">
-                                    <code className="flex-1 p-3 bg-white dark:bg-[#1E2028] rounded-lg text-sm font-mono text-[#00C888] break-all border border-gray-200 dark:border-white/10">
+                                    <code className="flex-1 p-3 bg-white dark:bg-[#1E2028] rounded-lg text-sm font-mono text-primary break-all border border-gray-200 dark:border-white/10">
                                         {createdAccount.apiKey}
                                     </code>
                                     <button
                                         onClick={copyApiKey}
-                                        className="p-3 bg-[#00C888] text-white rounded-lg hover:bg-[#00B377] transition-colors"
+                                        className="p-3 bg-primary text-white rounded-lg hover:bg-[#00B377] transition-colors"
                                     >
                                         {copied ? <Check size={18} /> : <Copy size={18} />}
                                     </button>
@@ -214,7 +214,7 @@ export function AddAccountModal({
                                 </h3>
                                 <ol className="space-y-4 text-sm text-gray-600 dark:text-gray-400">
                                     <li className="flex gap-3 items-start">
-                                        <span className="w-6 h-6 bg-[#00C888]/10 text-[#00C888] rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                        <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                                             1
                                         </span>
                                         <span>
@@ -222,7 +222,7 @@ export function AddAccountModal({
                                         </span>
                                     </li>
                                     <li className="flex gap-3 items-start">
-                                        <span className="w-6 h-6 bg-[#00C888]/10 text-[#00C888] rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                        <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                                             2
                                         </span>
                                         <span className="break-all">
@@ -230,13 +230,13 @@ export function AddAccountModal({
                                         </span>
                                     </li>
                                     <li className="flex gap-3 items-start">
-                                        <span className="w-6 h-6 bg-[#00C888]/10 text-[#00C888] rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                        <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                                             3
                                         </span>
                                         <span>Restart {platform} and attach EA to any chart.</span>
                                     </li>
                                     <li className="flex gap-3 items-start">
-                                        <span className="w-6 h-6 bg-[#00C888]/10 text-[#00C888] rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                        <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                                             4
                                         </span>
                                         <span>Paste the API Key above into EA settings input.</span>
@@ -247,7 +247,7 @@ export function AddAccountModal({
                             {/* Download Button */}
                             <a
                                 href={`/downloads/GSN_TradeSync_${platform}.ex${platform === "MT5" ? "5" : "4"}`}
-                                className="flex items-center justify-center gap-2 w-full py-3 bg-[#00C888] text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors shadow-lg shadow-[#00C888]/20"
+                                className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors shadow-lg shadow-primary/20"
                             >
                                 <Download size={18} />
                                 Download EA for {platform}

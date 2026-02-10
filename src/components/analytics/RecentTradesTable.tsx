@@ -48,7 +48,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                 </h3>
                 <Link
                     href="/dashboard/journal"
-                    className="text-sm text-[#00C888] hover:underline font-medium"
+                    className="text-sm text-primary hover:underline font-medium"
                 >
                     View all →
                 </Link>

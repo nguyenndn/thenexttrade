@@ -12,7 +12,7 @@ export default function ReportsPage() {
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8 mb-8">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Export Reports
                         </h1>

@@ -95,7 +95,7 @@ export default function CreateLevelModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="flex items-center gap-2 px-6 py-2.5 bg-[#00C888] hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-[#00C888]/30 hover:-translate-y-1 active:scale-95 active:translate-y-0">
+                <Button className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 active:translate-y-0">
                     <Plus size={18} strokeWidth={2.5} />
                     New Level
                 </Button>
@@ -137,7 +137,7 @@ export default function CreateLevelModal() {
                                                 key={type}
                                                 onClick={() => setFormData({ ...formData, targetAudience: type })}
                                                 className={`cursor-pointer rounded-xl p-3 border-2 text-center transition-all ${formData.targetAudience === type
-                                                    ? "border-[#00C888] bg-[#00C888]/5 text-[#00C888]"
+                                                    ? "border-primary bg-primary/5 text-primary"
                                                     : "border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 text-gray-500 hover:border-gray-200"
                                                     }`}
                                             >
@@ -159,13 +159,13 @@ export default function CreateLevelModal() {
 
                                 <div className="pt-4 flex items-center justify-between">
                                     <div className="text-xs text-gray-400 flex items-center">
-                                        <span className="w-2 h-2 bg-[#00C888] rounded-full mr-2"></span>
+                                        <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
                                         AI Provider: GitHub Models (Free)
                                     </div>
                                     <div className="flex space-x-3">
                                         <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
                                         <Button
-                                            className="bg-[#00C888] hover:bg-[#00a872] text-white font-bold"
+                                            className="bg-primary hover:bg-[#00a872] text-white font-bold"
                                             onClick={handleGenerate}
                                         >
                                             Generate Level
@@ -190,8 +190,8 @@ export default function CreateLevelModal() {
                             ) : result ? (
                                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                     {/* Level Info */}
-                                    <div className="bg-[#00C888]/10 p-4 rounded-xl border border-[#00C888]/20">
-                                        <h3 className="text-xl font-bold text-[#00C888] mb-1">{result.title}</h3>
+                                    <div className="bg-primary/10 p-4 rounded-xl border border-primary/20">
+                                        <h3 className="text-xl font-bold text-primary mb-1">{result.title}</h3>
                                         <p className="text-gray-600 dark:text-gray-300 text-sm">{result.description}</p>
                                     </div>
 

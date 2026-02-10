@@ -18,7 +18,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                 </h3>
                 <button
                     onClick={onDownload}
-                    className="px-4 py-2 bg-[#00C888] text-white font-bold rounded-xl hover:bg-[#00B377] flex items-center gap-2 transition-all shadow-lg shadow-[#00C888]/20 hover:-translate-y-0.5"
+                    className="px-4 py-2 bg-primary text-white font-bold rounded-xl hover:bg-[#00B377] flex items-center gap-2 transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5"
                 >
                     <Download size={18} />
                     Download PDF
@@ -26,16 +26,16 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
             </div>
 
             {/* Summary Card */}
-            <div className="bg-gradient-to-br from-[#00C888]/10 to-blue-500/10 p-6 rounded-2xl mb-8 border border-[#00C888]/10">
+            <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 p-6 rounded-2xl mb-8 border border-primary/10">
                 <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-                    <span className="w-1 h-6 bg-[#00C888] rounded-full"></span>
+                    <span className="w-1 h-6 bg-primary rounded-full"></span>
                     Performance Summary: {data.period}
                 </h4>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div>
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Net P/L</p>
-                        <p className={`text-2xl font-black ${data.summary.netPnL >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                        <p className={`text-2xl font-black ${data.summary.netPnL >= 0 ? 'text-primary' : 'text-red-500'}`}>
                             {data.summary.netPnL >= 0 ? '+' : ''}${data.summary.netPnL.toFixed(2)}
                         </p>
                     </div>
@@ -77,7 +77,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                     <span className="text-xs text-gray-500">{strat.trades} trades</span>
                                 </div>
                                 <div className="text-right">
-                                    <div className={`font-bold ${strat.pnl >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                                    <div className={`font-bold ${strat.pnl >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                         {strat.pnl >= 0 ? '+' : ''}${strat.pnl.toFixed(0)}
                                     </div>
                                     <div className="text-xs text-gray-500">{strat.winRate.toFixed(0)}% WR</div>
@@ -101,7 +101,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                 </span>
                                 <div className="flex items-center gap-4 text-sm">
                                     <span className="text-gray-500">{pair.trades} trades</span>
-                                    <span className={`font-bold ${pair.pnl >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                                    <span className={`font-bold ${pair.pnl >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                         {pair.pnl >= 0 ? '+' : ''}${pair.pnl.toFixed(0)}
                                     </span>
                                 </div>
@@ -142,7 +142,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                                 {trade.result}
                                             </span>
                                         </td>
-                                        <td className={`px-4 py-3 text-right font-bold ${trade.pnl >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                                        <td className={`px-4 py-3 text-right font-bold ${trade.pnl >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                             {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
                                         </td>
                                     </tr>

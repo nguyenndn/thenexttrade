@@ -27,7 +27,7 @@ export const FireflyBackground = () => {
             {fireflies.map((fly) => (
                 <div
                     key={fly.id}
-                    className={`absolute w-1.5 h-1.5 bg-[#00C888] rounded-full blur-[1px] opacity-0 ${fly.animationClass}`}
+                    className={`absolute w-1.5 h-1.5 bg-primary rounded-full blur-[1px] opacity-0 ${fly.animationClass}`}
                     style={fly.style}
                 />
             ))}

@@ -112,7 +112,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                 {/* ... Header Content ... */}
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Article Management
                         </h1>
@@ -124,7 +124,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                 <div className="flex items-center gap-3">
                     <Link
                         href="/admin/articles/create"
-                        className="flex items-center gap-2 px-6 py-2.5 bg-[#00C888] hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-[#00C888]/30 hover:-translate-y-1 active:scale-95 active:translate-y-0"
+                        className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 active:translate-y-0"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         Add New

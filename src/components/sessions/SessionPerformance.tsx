@@ -60,7 +60,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                                             <div className="space-y-1">
                                                 <div className="flex justify-between gap-4">
                                                     <span className="text-gray-400">P&L:</span>
-                                                    <span className={`font-mono font-bold ${data.totalPnL >= 0 ? "text-[#00C888]" : "text-red-400"}`}>
+                                                    <span className={`font-mono font-bold ${data.totalPnL >= 0 ? "text-primary" : "text-red-400"}`}>
                                                         ${(data.totalPnL ?? 0).toLocaleString()}
                                                     </span>
                                                 </div>
@@ -88,7 +88,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                             {data.map((entry, index) => (
                                 <Cell
                                     key={`cell-${index}`}
-                                    fill={entry.totalPnL >= 0 ? "#00C888" : "#EF4444"}
+                                    fill={entry.totalPnL >= 0 ? "hsl(var(--primary))" : "#EF4444"}
                                 />
                             ))}
                         </Bar>

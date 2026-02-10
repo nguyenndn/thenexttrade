@@ -126,13 +126,13 @@ function FilterTab({ label, icon: Icon, count, active, onClick }: any) {
                     : "text-gray-500 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-black/5 dark:hover:bg-white/5 active:scale-95"
             )}
         >
-            <Icon size={18} className={cn("transition-colors duration-300", active ? "text-[#00C888] scale-110" : "opacity-60 group-hover:opacity-100")} />
+            <Icon size={18} className={cn("transition-colors duration-300", active ? "text-primary scale-110" : "opacity-60 group-hover:opacity-100")} />
             {label}
             {count > 0 && (
                 <span className={cn(
                     "ml-1 flex items-center justify-center min-w-[20px] h-5 rounded-full text-[10px] font-extrabold px-1.5 transition-all duration-300",
                     active
-                        ? "bg-[#00C888]/10 text-[#00C888]"
+                        ? "bg-primary/10 text-primary"
                         : "bg-gray-200 dark:bg-white/10 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"
                 )}>
                     {count}
@@ -183,7 +183,7 @@ function SystemDetailCard({ product, onNavigateToGuide }: { product: EAProduct, 
                             {/* Version Badge - Compact */}
                             <div className="absolute top-3 left-3">
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/70 backdrop-blur-xl text-white text-xs font-bold rounded-lg border border-white/20">
-                                    <span className="w-1 h-1 rounded-full bg-[#00C888] animate-pulse" />
+                                    <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
                                     {product.version}
                                 </span>
                             </div>
@@ -195,7 +195,7 @@ function SystemDetailCard({ product, onNavigateToGuide }: { product: EAProduct, 
                         {/* Header with Title & Actions */}
                         <div>
                             <div className="flex items-start justify-between gap-4 mb-3">
-                                <h1 className="text-xl md:text-2xl font-extrabold uppercase tracking-tight leading-tight text-gray-900 dark:text-white group-hover:text-[#00C888] transition-colors duration-300">
+                                <h1 className="text-xl md:text-2xl font-extrabold uppercase tracking-tight leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors duration-300">
                                     {product.name}
                                 </h1>
                             </div>
@@ -203,11 +203,11 @@ function SystemDetailCard({ product, onNavigateToGuide }: { product: EAProduct, 
                             {/* Badge System */}
                             <div className="flex flex-wrap gap-2 mb-6">
                                 {(product as any).isFree ? (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#00C888]/10 text-[#00C888] rounded-lg text-xs font-bold border border-[#00C888]/20">
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-xs font-bold border border-primary/20">
                                         FREE
                                     </span>
                                 ) : (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#00C888]/10 text-[#00C888] rounded-lg text-xs font-bold border border-[#00C888]/20">
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-xs font-bold border border-primary/20">
                                         <Shield size={12} />
                                         MT5 VERIFICATION ACCOUNT
                                     </span>
@@ -223,7 +223,7 @@ function SystemDetailCard({ product, onNavigateToGuide }: { product: EAProduct, 
                         {/* Footer Actions */}
                         <div className="flex items-center justify-between gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
                             <button
-                                className="flex items-center gap-1.5 text-xs text-[#00C888] hover:text-[#00A870] font-semibold transition-colors"
+                                className="flex items-center gap-1.5 text-xs text-primary hover:text-[#00A870] font-semibold transition-colors"
                                 onClick={() => onNavigateToGuide(product.type === "INDICATOR" ? "MT5_INDICATOR" : "MT5_EA")}
                             >
                                 <Info size={14} />

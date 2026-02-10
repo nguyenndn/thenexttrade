@@ -3,7 +3,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 export function ArticleCategoryChart({ data }: { data: { name: string; value: number }[] }) {
-    const COLORS = ['#00C888', '#2F80ED', '#9B51E0', '#F2994A', '#EB5757'];
+    const COLORS = ['hsl(var(--primary))', '#2F80ED', '#9B51E0', '#F2994A', '#EB5757'];
 
     return (
         <ResponsiveContainer width="100%" height="100%">

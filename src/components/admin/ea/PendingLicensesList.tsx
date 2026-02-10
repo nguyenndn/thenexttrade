@@ -73,7 +73,7 @@ export function PendingLicensesList({ licenses, adminId }: PendingLicensesListPr
                                 href={getIBLink(req.broker)}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="hidden md:flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-[#00C888] px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
+                                className="hidden md:flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-primary px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
                             >
                                 <ExternalLink size={14} />
                                 Check IB
@@ -89,7 +89,7 @@ export function PendingLicensesList({ licenses, adminId }: PendingLicensesListPr
                                 </Button>
                                 <Button
                                     onClick={() => handleAction(req, "APPROVE")}
-                                    className="flex-1 md:flex-none bg-[#00C888] hover:bg-[#00B078] text-white font-bold shadow-lg shadow-[#00C888]/30 hover:shadow-[#00C888]/40 hover:-translate-y-0.5 px-6 rounded-xl transition-all border-none"
+                                    className="flex-1 md:flex-none bg-primary hover:bg-[#00B078] text-white font-bold shadow-lg shadow-primary/30 hover:shadow-primary/40 hover:-translate-y-0.5 px-6 rounded-xl transition-all border-none"
                                 >
                                     <Check size={18} className="mr-2" />
                                     Approve

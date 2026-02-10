@@ -101,7 +101,7 @@ export default async function AdminUsersPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Users Management
                         </h1>
@@ -191,7 +191,7 @@ export default async function AdminUsersPage() {
                                             <div className="flex flex-col">
                                                 <Link
                                                     href={`/admin/users/${user.id}`}
-                                                    className="font-bold text-gray-900 dark:text-white text-sm line-clamp-1 hover:text-[#00C888] hover:underline"
+                                                    className="font-bold text-gray-900 dark:text-white text-sm line-clamp-1 hover:text-primary hover:underline"
                                                 >
                                                     {user.name || "Unnamed User"}
                                                 </Link>
@@ -233,7 +233,7 @@ export default async function AdminUsersPage() {
                                     </td>
                                     <td className="px-6 py-5 text-right">
                                         <Link href={`/admin/users/${user.id}`}>
-                                            <Button variant="ghost" className="p-2 text-gray-400 hover:text-[#00C888] dark:hover:text-[#00C888] transition-colors h-auto w-auto">
+                                            <Button variant="ghost" className="p-2 text-gray-400 hover:text-primary dark:hover:text-primary transition-colors h-auto w-auto">
                                                 <ExternalLink size={20} />
                                             </Button>
                                         </Link>

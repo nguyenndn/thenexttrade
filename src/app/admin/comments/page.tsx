@@ -92,7 +92,7 @@ export default function AdminCommentsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Comments
                         </h1>
@@ -118,7 +118,7 @@ export default function AdminCommentsPage() {
             {/* List */}
             {isLoading ? (
                 <div className="flex justify-center py-20">
-                    <Loader2 className="animate-spin text-[#00C888]" size={32} />
+                    <Loader2 className="animate-spin text-primary" size={32} />
                 </div>
             ) : filteredComments.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#0B0E14] rounded-3xl border border-dashed border-gray-200 dark:border-white/10">

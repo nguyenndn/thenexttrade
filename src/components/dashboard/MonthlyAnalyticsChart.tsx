@@ -129,7 +129,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
                         />
                         <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={40}>
                             {chartData.map((entry: any, index: number) => (
-                                <Cell key={`cell-${index}`} fill={entry.value >= 0 ? '#00C888' : '#F87171'} />
+                                <Cell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--primary))' : '#F87171'} />
                             ))}
                         </Bar>
                     </BarChart>

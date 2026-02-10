@@ -56,7 +56,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
                         <input
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all font-bold"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold"
                             placeholder="Forex Basics Final Exam"
                         />
                     </div>
@@ -68,7 +68,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all h-24 resize-none"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all h-24 resize-none"
                             placeholder="Brief description of this quiz..."
                         />
                     </div>
@@ -83,7 +83,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
                         <button
                             onClick={handleSave}
                             disabled={isLoading}
-                            className="px-6 py-3 rounded-xl font-bold bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50"
+                            className="px-6 py-3 rounded-xl font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50"
                         >
                             {isLoading && <Loader2 className="animate-spin" size={18} />}
                             Save Changes

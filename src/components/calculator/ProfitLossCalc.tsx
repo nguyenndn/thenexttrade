@@ -53,7 +53,7 @@ export function ProfitLossCalc() {
                             type="number"
                             value={inputs.entryPrice}
                             onChange={(e) => setInputs({ ...inputs, entryPrice: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#00C888] outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
                         />
                     </div>
 
@@ -63,7 +63,7 @@ export function ProfitLossCalc() {
                             type="number"
                             value={inputs.exitPrice}
                             onChange={(e) => setInputs({ ...inputs, exitPrice: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#00C888] outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
                         />
                     </div>
 
@@ -73,7 +73,7 @@ export function ProfitLossCalc() {
                             type="number"
                             value={inputs.lotSize}
                             onChange={(e) => setInputs({ ...inputs, lotSize: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#00C888] outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
                         />
                     </div>
 

@@ -26,7 +26,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps & { startIcon?: Reac
                         id={id}
                         type={type}
                         className={cn(
-                            "w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm outline-none focus:ring-2 focus:ring-[#00C888]/50 focus:border-[#00C888] transition-all",
+                            "w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all",
                             "placeholder:text-gray-400 dark:placeholder:text-gray-500 placeholder:font-normal",
                             "text-gray-900 dark:text-white font-medium",
                             startIcon ? "pl-10" : "",

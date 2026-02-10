@@ -78,7 +78,7 @@ export default function TableOfContents() {
                         }}
                         className={`block text-sm py-1.5 pl-4 border-l-2 transition-all duration-200 
                             ${activeId === heading.id
-                                ? "border-[#00C888] text-[#00C888] font-medium"
+                                ? "border-primary text-primary font-medium"
                                 : "border-transparent text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-300"
                             }
                             ${heading.level === 3 ? "ml-4 text-xs" : ""}

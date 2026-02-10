@@ -7,8 +7,8 @@ export function SiteFooter() {
     return (
         <footer id="site-footer" className="relative bg-slate-50 dark:bg-[#0d1117] text-gray-900 dark:text-white border-t border-gray-200 dark:border-transparent overflow-hidden transition-colors duration-300">
             {/* Background Effects */}
-            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00C888]/50 to-transparent" />
-            <div className="absolute -top-[200px] -left-[200px] w-[500px] h-[500px] bg-[#00C888]/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            <div className="absolute -top-[200px] -left-[200px] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute top-[20%] right-[-100px] w-[300px] h-[300px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="w-full lg-plus:w-4/5 mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 relative z-10">
@@ -17,12 +17,12 @@ export function SiteFooter() {
                     {/* Brand Column */}
                     <div className="lg:col-span-3 space-y-4">
                         <Link href="/" className="inline-block">
-                            <h4 className="text-2xl font-bold text-gray-900 dark:text-white">The Next <span className="text-[#00C888]">Trade</span></h4>
+                            <h4 className="text-2xl font-bold text-gray-900 dark:text-white">The Next <span className="text-primary">Trade</span></h4>
                         </Link>
                         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
                             Empowering global traders with institutional-grade data, expert education, and advanced analysis tools.
                              <br />
-                                <span className="text-[#00C888] font-medium mt-2 block">Built for consistent profitability.</span>
+                                <span className="text-primary font-medium mt-2 block">Built for consistent profitability.</span>
                         </p>
 
                         <div className="flex gap-3 pt-2">
@@ -35,7 +35,7 @@ export function SiteFooter() {
                                 <a
                                     key={i}
                                     href={social.href}
-                                    className="w-9 h-9 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all hover:text-[#00C888] hover:border-[#00C888]/50 hover:-translate-y-1"
+                                    className="w-9 h-9 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all hover:text-primary hover:border-primary/50 hover:-translate-y-1"
                                 >
                                     <social.icon size={16} />
                                 </a>
@@ -46,45 +46,45 @@ export function SiteFooter() {
                     {/* Quick Links */}
                     <div className="lg:col-span-2">
                         <h4 className="flex items-center gap-2 font-bold text-gray-900 dark:text-white mb-4">
-                            <LinkIcon size={16} className="text-[#00C888]" />
+                            <LinkIcon size={16} className="text-primary" />
                             Quick Links
                         </h4>
                         <ul className="space-y-2.5">
-                            <li><Link href="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Home</Link></li>
-                            <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">All Trading Systems</Link></li>
-                            <li><Link href="/brokers" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Trusted Brokers</Link></li>
-                            <li><Link href="/about" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">About Us</Link></li>
-                            <li><Link href="/contact" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Contact</Link></li>
+                            <li><Link href="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Home</Link></li>
+                            <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">All Trading Systems</Link></li>
+                            <li><Link href="/brokers" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Trusted Brokers</Link></li>
+                            <li><Link href="/about" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">About Us</Link></li>
+                            <li><Link href="/contact" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Contact</Link></li>
                         </ul>
                     </div>
 
                     {/* Popular Topics */}
                     <div className="lg:col-span-2">
                         <h4 className="flex items-center gap-2 font-bold text-gray-900 dark:text-white mb-4">
-                            <TrendingUp size={16} className="text-[#00C888]" />
+                            <TrendingUp size={16} className="text-primary" />
                             Popular Topics
                         </h4>
                         <ul className="space-y-2.5">
-                            <li><Link href="/knowledge?tag=forex" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Forex Trading</Link></li>
-                            <li><Link href="/knowledge?tag=gold" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Gold Trading</Link></li>
-                            <li><Link href="/knowledge?tag=scalping" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Scalping Strategies</Link></li>
-                            <li><Link href="/knowledge?tag=risk-management" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Risk Management</Link></li>
-                            <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Trading Psychology</Link></li>
+                            <li><Link href="/knowledge?tag=forex" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Forex Trading</Link></li>
+                            <li><Link href="/knowledge?tag=gold" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Gold Trading</Link></li>
+                            <li><Link href="/knowledge?tag=scalping" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Scalping Strategies</Link></li>
+                            <li><Link href="/knowledge?tag=risk-management" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Risk Management</Link></li>
+                            <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Trading Psychology</Link></li>
                         </ul>
                     </div>
 
                     {/* Resources */}
                     <div className="lg:col-span-2">
                         <h4 className="flex items-center gap-2 font-bold text-gray-900 dark:text-white mb-4">
-                            <FolderOpen size={16} className="text-[#00C888]" />
+                            <FolderOpen size={16} className="text-primary" />
                             Resources
                         </h4>
                         <ul className="space-y-2.5">
-                            <li><Link href="/academy" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Trading Academy</Link></li>
-                            <li><Link href="/knowledge" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Knowledge Base</Link></li>
-                            <li><Link href="/analysis" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Market Analysis</Link></li>
-                            <li><Link href="/economic-calendar" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Economic Calendar</Link></li>
-                            <li><Link href="/tools/market-hours" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00C888] transition-colors">Market Hours</Link></li>
+                            <li><Link href="/academy" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Trading Academy</Link></li>
+                            <li><Link href="/knowledge" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Knowledge Base</Link></li>
+                            <li><Link href="/analysis" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Market Analysis</Link></li>
+                            <li><Link href="/economic-calendar" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Economic Calendar</Link></li>
+                            <li><Link href="/tools/market-hours" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">Market Hours</Link></li>
                         </ul>
                     </div>
 
@@ -92,7 +92,7 @@ export function SiteFooter() {
                     <div className="lg:col-span-3">
                         <div className="bg-gray-50 dark:bg-[#161b22] rounded-2xl p-5 border border-gray-200 dark:border-white/10 h-full">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#00C888] to-cyan-400 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-cyan-400 flex items-center justify-center">
                                     <Mail size={18} className="text-white" />
                                 </div>
                                 <div>
@@ -105,14 +105,14 @@ export function SiteFooter() {
                                 <input
                                     type="text"
                                     placeholder="Your name"
-                                    className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#00C888]/50"
+                                    className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary/50"
                                 />
                                 <input
                                     type="email"
                                     placeholder="your@email.com"
-                                    className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#00C888]/50"
+                                    className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary/50"
                                 />
-                                <button className="w-full py-2.5 rounded-lg font-bold text-white bg-gradient-to-r from-[#00C888] via-cyan-500 to-purple-500 hover:opacity-90 transition-opacity">
+                                <button className="w-full py-2.5 rounded-lg font-bold text-white bg-gradient-to-r from-primary via-cyan-500 to-purple-500 hover:opacity-90 transition-opacity">
                                     Subscribe
                                 </button>
                             </div>
@@ -141,9 +141,9 @@ export function SiteFooter() {
                         &copy; 2026 The Next Trade. All rights reserved.
                     </p>
                     <div className="flex gap-6">
-                        <Link href="/legal/privacy-policy" className="text-xs text-gray-500 hover:text-[#00C888] transition-colors">Privacy</Link>
-                        <Link href="/legal/terms-of-service" className="text-xs text-gray-500 hover:text-[#00C888] transition-colors">Terms</Link>
-                        <Link href="/legal/cookie-policy" className="text-xs text-gray-500 hover:text-[#00C888] transition-colors">Cookies</Link>
+                        <Link href="/legal/privacy-policy" className="text-xs text-gray-500 hover:text-primary transition-colors">Privacy</Link>
+                        <Link href="/legal/terms-of-service" className="text-xs text-gray-500 hover:text-primary transition-colors">Terms</Link>
+                        <Link href="/legal/cookie-policy" className="text-xs text-gray-500 hover:text-primary transition-colors">Cookies</Link>
                     </div>
                 </div>
             </div>

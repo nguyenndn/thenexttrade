@@ -80,10 +80,10 @@ export default function RootLayout({
     <html lang="en" className="dark" style={{ colorScheme: 'dark' }}>
       <body className={`${inter.variable} ${outfit.variable} font-sans`}>
         <NextTopLoader
-          color="#00C888"
+          color="hsl(var(--primary))"
           height={3}
           showSpinner={false}
-          shadow="0 0 10px #00C888,0 0 5px #00C888"
+          shadow="0 0 10px hsl(var(--primary)),0 0 5px hsl(var(--primary))"
         />
         <ThemeProvider>
           <JsonLd

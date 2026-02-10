@@ -49,10 +49,10 @@ const ArticleRow = memo(function ArticleRow({
             <td className="px-6 py-4 whitespace-nowrap">
                 <button
                     onClick={() => onToggle(article.id)}
-                    className="text-gray-400 hover:text-[#00C888] transition-colors"
+                    className="text-gray-400 hover:text-primary transition-colors"
                 >
                     {isSelected ? (
-                        <CheckSquare className="w-5 h-5 text-[#00C888]" />
+                        <CheckSquare className="w-5 h-5 text-primary" />
                     ) : (
                         <Square className="w-5 h-5" />
                     )}
@@ -75,7 +75,7 @@ const ArticleRow = memo(function ArticleRow({
                     <div>
                         <Link
                             href={`/admin/articles/${article.id}/edit`}
-                            className="font-medium text-gray-900 dark:text-white hover:text-[#00C888] transition-colors line-clamp-1"
+                            className="font-medium text-gray-900 dark:text-white hover:text-primary transition-colors line-clamp-1"
                         >
                             {article.title}
                         </Link>
@@ -263,7 +263,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                         <input
                             type="text"
                             placeholder="Search articles..."
-                            className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-[#00C888] transition-colors"
+                            className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary transition-colors"
                             defaultValue={searchParams.get("q")?.toString()}
                             onChange={e => handleSearch(e.target.value)}
                         />
@@ -293,13 +293,13 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
 
                 {/* Bulk Actions (Visible when selected) */}
                 {selectedIds.size > 0 && (
-                    <div className="flex items-center gap-2 bg-[#00C888]/10 px-4 py-2 rounded-xl animate-in fade-in slide-in-from-right-5 text-sm">
-                        <span className="font-bold text-[#00C888] mr-2">{selectedIds.size} selected</span>
+                    <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-xl animate-in fade-in slide-in-from-right-5 text-sm">
+                        <span className="font-bold text-primary mr-2">{selectedIds.size} selected</span>
 
                         <button
                             onClick={() => handleBulkAction("updateStatus", "PUBLISHED")}
                             disabled={isBulkLoading}
-                            className="p-2 hover:bg-[#00C888]/20 text-[#00C888] rounded-lg transition-colors disabled:opacity-50"
+                            className="p-2 hover:bg-primary/20 text-primary rounded-lg transition-colors disabled:opacity-50"
                             title="Set as Published"
                         >
                             {isBulkLoading ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle size={18} />}
@@ -308,7 +308,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                         <button
                             onClick={() => handleBulkAction("updateStatus", "DRAFT")}
                             disabled={isBulkLoading}
-                            className="p-2 hover:bg-[#00C888]/20 text-orange-500 rounded-lg transition-colors disabled:opacity-50"
+                            className="p-2 hover:bg-primary/20 text-orange-500 rounded-lg transition-colors disabled:opacity-50"
                             title="Set as Draft"
                         >
                             {isBulkLoading ? <Loader2 size={18} className="animate-spin" /> : <FileText size={18} />}
@@ -393,7 +393,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                                                     <button
                                                         onClick={saveQuickEdit}
                                                         disabled={isSavingQuickEdit}
-                                                        className="px-3 py-2 bg-[#00C888] text-white rounded hover:bg-[#00a872]"
+                                                        className="px-3 py-2 bg-primary text-white rounded hover:bg-[#00a872]"
                                                     >
                                                         {isSavingQuickEdit ? <Loader2 size={16} className="animate-spin" /> : "Save"}
                                                     </button>
@@ -420,7 +420,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-[#00C888] transition-colors">{article.title}</p>
+                                                        <p className="font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">{article.title}</p>
                                                         <div className="flex items-center gap-2 mt-1">
                                                             <span className="text-xs text-gray-400 font-mono">/{article.slug}</span>
                                                             <button
@@ -466,7 +466,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                                             </td>
                                             <td className="px-6 py-5 text-right">
                                                 <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <Link href={`/articles/${article.slug}`} target="_blank" className="p-2 text-gray-400 hover:text-[#00C888] hover:bg-green-50 dark:hover:bg-green-500/10 rounded-lg transition-colors" title="View Article">
+                                                    <Link href={`/articles/${article.slug}`} target="_blank" className="p-2 text-gray-400 hover:text-primary hover:bg-green-50 dark:hover:bg-green-500/10 rounded-lg transition-colors" title="View Article">
                                                         <ArrowUpRight size={18} />
                                                     </Link>
                                                     <Link href={`/admin/articles/${article.id}/edit`} className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors" title="Edit">

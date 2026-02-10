@@ -27,7 +27,7 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Settings
                         </h1>
@@ -92,7 +92,7 @@ function NavButton({ icon: Icon, label, active, onClick }: any) {
         <button
             onClick={onClick}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm ${active
-                ? "bg-[#00C888] text-white shadow-lg shadow-emerald-500/20"
+                ? "bg-primary text-white shadow-lg shadow-emerald-500/20"
                 : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                 }`}
         >
@@ -151,7 +151,7 @@ function ProfileSettings({ user }: { user: any }) {
 
             <div className="flex flex-col sm:flex-row items-center gap-8">
                 <div className="relative group cursor-pointer shrink-0">
-                    <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-[#0B0E14] border-2 border-dashed border-gray-300 dark:border-[#2F80ED]/30 flex items-center justify-center overflow-hidden group-hover:border-[#00C888] transition-colors relative">
+                    <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-[#0B0E14] border-2 border-dashed border-gray-300 dark:border-[#2F80ED]/30 flex items-center justify-center overflow-hidden group-hover:border-primary transition-colors relative">
                         {avatarPreview ? (
                             <img
                                 src={avatarPreview}
@@ -271,7 +271,7 @@ function SystemSettings({ initialConfig }: { initialConfig: any }) {
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                         <input name="maintenanceMode" type="checkbox" className="sr-only peer" defaultChecked={initialConfig.maintenanceMode} />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#00C888]"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
                     </label>
                 </div>
 
@@ -282,7 +282,7 @@ function SystemSettings({ initialConfig }: { initialConfig: any }) {
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                         <input name="userRegistration" type="checkbox" className="sr-only peer" defaultChecked={initialConfig.userRegistration} />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#00C888]"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
                     </label>
                 </div>
 

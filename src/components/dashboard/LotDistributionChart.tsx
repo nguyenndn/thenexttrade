@@ -15,7 +15,7 @@ interface LotDistributionChartProps {
 }
 
 // Match colors with ProfitDistributionChart
-const COLORS = ['#00C888', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899', '#EF4444'];
+const COLORS = ['hsl(var(--primary))', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899', '#EF4444'];
 
 export function LotDistributionChart({ data, height = 300, innerRadius = 60, outerRadius = 80 }: LotDistributionChartProps) {
   if (!data || data.length === 0) {

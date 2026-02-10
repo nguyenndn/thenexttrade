@@ -67,7 +67,7 @@ export default function SearchClient() {
                 <div className="space-y-4">
                     {isLoading ? (
                         <div className="flex justify-center py-12">
-                            <Loader2 className="animate-spin text-[#00C888]" size={32} />
+                            <Loader2 className="animate-spin text-primary" size={32} />
                         </div>
                     ) : (hasSearched && query) ? (
                         <>
@@ -81,7 +81,7 @@ export default function SearchClient() {
                                         <Link
                                             key={`${result.type}-${result.id}`}
                                             href={result.slug}
-                                            className="block bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-[#00C888] dark:hover:border-[#00C888] transition-colors group shadow-sm"
+                                            className="block bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-colors group shadow-sm"
                                         >
                                             <div className="flex items-start gap-4">
                                                 <div className={`p-3 rounded-xl shrink-0 ${result.type === 'article'
@@ -102,7 +102,7 @@ export default function SearchClient() {
                                                             {result.date && formatDistanceToNow(new Date(result.date), { addSuffix: true })}
                                                         </span>
                                                     </div>
-                                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-[#00C888] transition-colors line-clamp-1">
+                                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-1">
                                                         {result.title}
                                                     </h3>
                                                     <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">

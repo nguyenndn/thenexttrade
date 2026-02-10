@@ -75,7 +75,7 @@ function LessonForm() {
                     onClick={handleSubmit}
                     disabled={isSubmitting}
                     isLoading={isSubmitting}
-                    className="bg-[#00C888] hover:bg-[#00a872] text-white shadow-lg shadow-emerald-500/20"
+                    className="bg-primary hover:bg-[#00a872] text-white shadow-lg shadow-emerald-500/20"
                 >
                     {!isSubmitting && <Save size={18} className="mr-2" />}
                     Save Lesson

@@ -72,14 +72,14 @@ export default function TagList() {
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Tag Management
                         </h1>
                     </div>
                     <Button
                         onClick={handleCreate}
-                        className="bg-[#00C888] hover:bg-[#00a872] text-white border-none shadow-lg shadow-[#00C888]/30 rounded-2xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95"
+                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-2xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         Add New
@@ -120,7 +120,7 @@ export default function TagList() {
                                             <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => handleEdit(tag)}
-                                                    className="p-2 text-gray-400 hover:text-[#00C888] hover:bg-[#00C888]/10 rounded-lg transition-colors"
+                                                    className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                                                 >
                                                     <Edit2 size={18} />
                                                 </button>

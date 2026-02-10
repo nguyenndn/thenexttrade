@@ -106,7 +106,7 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
                         </Button>
                         <Button
                             type="submit"
-                            className="bg-[#00C888] hover:bg-[#00B078] text-white"
+                            className="bg-primary hover:bg-[#00B078] text-white"
                             disabled={isSubmitting}
                         >
                             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

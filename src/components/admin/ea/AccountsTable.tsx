@@ -90,7 +90,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                                     <td className="px-6 py-4">
                                         <Link href={`/admin/users/${license.userId}?from=/admin/ea/accounts`} className="block hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg -m-2 p-2 transition-colors">
                                             <div>
-                                                <p className="font-medium text-gray-900 dark:text-white text-xs hover:text-[#00C888] transition-colors">{license.user.name}</p>
+                                                <p className="font-medium text-gray-900 dark:text-white text-xs hover:text-primary transition-colors">{license.user.name}</p>
                                                 <p className="text-gray-500 dark:text-gray-400 text-xs">{license.user.email}</p>
                                             </div>
                                         </Link>

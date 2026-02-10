@@ -3,7 +3,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 export function UserRoleChart({ data }: { data: { name: string; value: number }[] }) {
-    const COLORS = ['#00C888', '#2F80ED', '#F2994A'];
+    const COLORS = ['hsl(var(--primary))', '#2F80ED', '#F2994A'];
 
     return (
         <ResponsiveContainer width="100%" height="100%">

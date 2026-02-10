@@ -78,8 +78,8 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                 >
                     <defs>
                         <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#00C888" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="#00C888" stopOpacity={0} />
+                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" className="dark:stroke-white/5" />
@@ -109,7 +109,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                             borderRadius: '12px',
                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                         }}
-                        itemStyle={{ color: '#00C888', fontWeight: 'bold' }}
+                        itemStyle={{ color: 'hsl(var(--primary))', fontWeight: 'bold' }}
                         labelStyle={{ color: '#6B7280', marginBottom: '4px' }}
                         labelFormatter={(value) => format(new Date(value), "MMM dd, HH:mm")}
                         formatter={(value: any) => [`$${Number(value).toFixed(2)}`, "Balance"]}
@@ -117,7 +117,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                     <Area
                         type="monotone"
                         dataKey="balance"
-                        stroke="#00C888"
+                        stroke="hsl(var(--primary))"
                         strokeWidth={3}
                         fillOpacity={1}
                         fill="url(#colorBalance)"

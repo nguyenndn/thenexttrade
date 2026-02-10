@@ -250,7 +250,7 @@ function ToolbarButton({ onClick, isActive, icon: Icon, title, disabled }: any) 
             disabled={disabled}
             className={`p-1.5 rounded-lg transition-all group flex items-center justify-center
                 ${isActive
-                    ? 'bg-[#00C888]/10 text-[#00C888] ring-1 ring-[#00C888]/20'
+                    ? 'bg-primary/10 text-primary ring-1 ring-primary/20'
                     : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white'
                 }
                 ${disabled ? 'opacity-30 cursor-not-allowed' : ''}

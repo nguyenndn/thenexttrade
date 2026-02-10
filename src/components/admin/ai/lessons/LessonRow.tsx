@@ -45,13 +45,13 @@ export default function LessonRow({ lesson, index }: LessonRowProps) {
 
     return (
         <Link href={`/admin/ai-studio/lessons/${lesson.id}`}>
-            <div className="group flex items-center justify-between p-4 bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl hover:border-[#00C888] hover:shadow-sm transition-all cursor-pointer">
+            <div className="group flex items-center justify-between p-4 bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl hover:border-primary hover:shadow-sm transition-all cursor-pointer">
                 <div className="flex items-center gap-4">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 text-xs font-bold text-gray-500 group-hover:bg-[#00C888]/10 group-hover:text-[#00C888] transition-colors">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 text-xs font-bold text-gray-500 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                         {index}
                     </span>
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-[#00C888] transition-colors">
+                        <h3 className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-primary transition-colors">
                             {lesson.title}
                         </h3>
                         <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
@@ -74,7 +74,7 @@ export default function LessonRow({ lesson, index }: LessonRowProps) {
                         <Trash2 size={14} />
                     </Button>
                     <div className="h-4 w-[1px] bg-gray-200 dark:bg-white/10 mx-1"></div>
-                    <ChevronRight size={16} className="text-gray-300 group-hover:text-[#00C888]" />
+                    <ChevronRight size={16} className="text-gray-300 group-hover:text-primary" />
                 </div>
             </div>
         </Link>

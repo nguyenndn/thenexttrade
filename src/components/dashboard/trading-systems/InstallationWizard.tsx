@@ -134,13 +134,13 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                     <span className="text-sm font-bold text-gray-500 dark:text-gray-400">
                         Step {currentStep + 1} of {steps.length}
                     </span>
-                    <span className="text-xs font-bold text-[#00C888]">
+                    <span className="text-xs font-bold text-primary">
                         {Math.round(progress)}% Complete
                     </span>
                 </div>
                 <div className="w-full h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                     <div
-                        className="h-full bg-[#00C888] transition-all duration-500 ease-out rounded-full"
+                        className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -154,7 +154,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                 </div>
 
                 <div className="flex-1 relative z-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#00C888]/10 text-[#00C888] rounded-lg text-xs font-bold uppercase tracking-wider mb-6">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold uppercase tracking-wider mb-6">
                         STEP {currentStep + 1}
                     </div>
 
@@ -194,7 +194,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                             "flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg",
                             currentStep === steps.length - 1
                                 ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 cursor-default"
-                                : "bg-[#00C888] hover:bg-[#00A870] text-white shadow-[#00C888]/20 hover:scale-105 active:scale-95"
+                                : "bg-primary hover:bg-[#00A870] text-white shadow-primary/20 hover:scale-105 active:scale-95"
                         )}
                     >
                         {currentStep === steps.length - 1 ? (
@@ -214,9 +214,9 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         className={cn(
                             "w-2.5 h-2.5 rounded-full transition-all duration-300",
                             idx === currentStep
-                                ? "bg-[#00C888] scale-125"
+                                ? "bg-primary scale-125"
                                 : idx < currentStep
-                                    ? "bg-[#00C888]"
+                                    ? "bg-primary"
                                     : "bg-gray-200 dark:bg-white/10"
                         )}
                     />

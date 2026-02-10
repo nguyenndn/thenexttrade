@@ -97,7 +97,7 @@ export default function ModuleCard({ module, levelId }: ModuleCardProps) {
                     </div>
                     <Link
                         href={`/admin/ai-studio/modules/${module.id}`}
-                        className="text-sm font-bold text-[#00C888] hover:underline flex items-center gap-1"
+                        className="text-sm font-bold text-primary hover:underline flex items-center gap-1"
                     >
                         View Lessons →
                     </Link>

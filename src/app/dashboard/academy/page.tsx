@@ -91,7 +91,7 @@ export default async function UserAcademyDashboard() {
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Academy Cockpit
                         </h1>
@@ -102,7 +102,7 @@ export default async function UserAcademyDashboard() {
                         Your professional trading journey tracker.
                     </p>
                     <div className="flex items-center gap-2 mt-2 text-sm font-medium">
-                        <div className="flex items-center gap-1.5 text-[#00C888] bg-[#00C888]/10 px-2 py-0.5 rounded-md">
+                        <div className="flex items-center gap-1.5 text-primary bg-primary/10 px-2 py-0.5 rounded-md">
                             <GraduationCap size={14} />
                             <span>{Math.round(overallProgress)}% Complete</span>
                         </div>
@@ -130,13 +130,13 @@ export default async function UserAcademyDashboard() {
                                 </div>
                                 <Link
                                     href={`/dashboard/academy/lessons/${nextLesson.slug}`}
-                                    className="px-6 py-3 bg-[#00C888] hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#00C888]/20 flex items-center gap-2 group whitespace-nowrap"
+                                    className="px-6 py-3 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center gap-2 group whitespace-nowrap"
                                 >
                                     Continue Learning <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             </div>
                             {/* Decor */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#00C888]/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                         </div>
                     ) : (
                         <div className="p-6 rounded-2xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
@@ -165,7 +165,7 @@ export default async function UserAcademyDashboard() {
                 {/* Sidebar Stats */}
                 <div className="space-y-6">
                     {/* Daily Streak */}
-                    <div className="bg-gradient-to-br from-[#00C888] to-teal-600 p-6 rounded-2xl text-white shadow-lg shadow-[#00C888]/20 relative overflow-hidden">
+                    <div className="bg-gradient-to-br from-primary to-teal-600 p-6 rounded-2xl text-white shadow-lg shadow-primary/20 relative overflow-hidden">
                         <div className="relative z-10">
                             <Zap size={32} className="mb-4 text-yellow-300 fill-yellow-300" />
                             <h3 className="font-bold text-lg">Daily Streak</h3>

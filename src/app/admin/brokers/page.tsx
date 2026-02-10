@@ -11,7 +11,7 @@ export default async function AdminBrokersPage() {
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold dark:text-white flex items-center gap-2">
-                        <Briefcase className="text-[#00C888]" />
+                        <Briefcase className="text-primary" />
                         Brokers Management
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400">Manage verified partners and broker reviews.</p>
@@ -67,7 +67,7 @@ export default async function AdminBrokersPage() {
                                 </td>
                                 <td className="p-4">
                                     {broker.isRecommended && (
-                                        <span className="text-xs font-bold text-[#00C888] bg-[#00C888]/10 px-2 py-1 rounded inline-block mr-2">
+                                        <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded inline-block mr-2">
                                             Recommended
                                         </span>
                                     )}

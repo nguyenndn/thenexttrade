@@ -102,7 +102,7 @@ export function NotificationBell() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="text-xs h-auto py-1 px-2 text-[#00C888]"
+                            className="text-xs h-auto py-1 px-2 text-primary"
                             onClick={() => markAsRead()}
                         >
                             Mark all read

@@ -54,7 +54,7 @@ export default function PreviewPanel({
                     )}
                     {onSave && (
                         <Button
-                            className="bg-[#00C888] hover:bg-[#00a872] text-white font-bold text-sm rounded-lg shadow-lg shadow-[#00C888]/30 hover:-translate-y-0.5 active:scale-95 transition-all px-4 py-2"
+                            className="bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-lg shadow-lg shadow-primary/30 hover:-translate-y-0.5 active:scale-95 transition-all px-4 py-2"
                             onClick={onSave}
                             isLoading={isSaving}
                             disabled={isLoading}
@@ -70,7 +70,7 @@ export default function PreviewPanel({
             <div className="flex-1 overflow-auto p-6 custom-scrollbar relative">
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-4">
-                        <div className="w-16 h-16 border-4 border-[#00C888] border-t-transparent rounded-full animate-spin" />
+                        <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
                         <p className="animate-pulse font-medium">Generating magic...</p>
                     </div>
                 ) : (

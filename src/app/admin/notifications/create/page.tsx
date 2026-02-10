@@ -88,7 +88,7 @@ export default function CreateBroadcastPage() {
                         <textarea
                             {...register("message")}
                             rows={4}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-[#00C888]/50 focus:border-[#00C888] transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
                             placeholder="We will be performing scheduled maintenance on..."
                         />
                         {errors.message && <p className="text-xs text-red-500">Required</p>}
@@ -98,7 +98,7 @@ export default function CreateBroadcastPage() {
                         <div className="space-y-2">
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">Type</label>
                             <div className="relative">
-                                <select {...register("type")} className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 text-sm outline-none focus:ring-2 focus:ring-[#00C888]/50 focus:border-[#00C888] transition-all text-gray-900 dark:text-white font-medium appearance-none">
+                                <select {...register("type")} className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-gray-900 dark:text-white font-medium appearance-none">
                                     {Object.values(NotificationType).map((t: string) => (
                                         <option key={t} value={t}>{t}</option>
                                     ))}
@@ -111,7 +111,7 @@ export default function CreateBroadcastPage() {
                         <div className="space-y-2">
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">Priority</label>
                             <div className="relative">
-                                <select {...register("priority")} className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 text-sm outline-none focus:ring-2 focus:ring-[#00C888]/50 focus:border-[#00C888] transition-all text-gray-900 dark:text-white font-medium appearance-none">
+                                <select {...register("priority")} className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-gray-900 dark:text-white font-medium appearance-none">
                                     {Object.values(NotificationPriority).map((p: string) => (
                                         <option key={p} value={p}>{p}</option>
                                     ))}
@@ -143,7 +143,7 @@ export default function CreateBroadcastPage() {
 
                     <div className="flex justify-end gap-3 pt-4">
                         <Button variant="ghost" type="button" onClick={() => router.back()}>Cancel</Button>
-                        <Button type="submit" variant="primary" className="bg-[#00C888] hover:bg-[#00B078] text-white" disabled={isSubmitting}>
+                        <Button type="submit" variant="primary" className="bg-primary hover:bg-[#00B078] text-white" disabled={isSubmitting}>
                             {isSubmitting ? <Loader2 className="animate-spin mr-2" size={18} /> : <Send className="mr-2" size={18} />}
                             {isSubmitting ? "Sending..." : "Send Broadcast"}
                         </Button>

@@ -228,7 +228,7 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                     </Button>
                     <Button
                         onClick={() => onApply(filters)}
-                        className="rounded-lg font-bold text-sm bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg shadow-[#00C888]/20 hover:shadow-[#00C888]/30 transition-all hover:scale-105 active:scale-95"
+                        className="rounded-lg font-bold text-sm bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95"
                     >
                         Apply Filters
                     </Button>

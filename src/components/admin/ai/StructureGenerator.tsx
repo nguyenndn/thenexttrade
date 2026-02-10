@@ -92,8 +92,8 @@ export default function StructureGenerator() {
                                     checked={formData.type === "level"}
                                     onChange={() => setFormData({ ...formData, type: "level" })}
                                 />
-                                <div className="p-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] peer-checked:border-[#00C888] peer-checked:bg-[#00C888]/5 transition-all text-center">
-                                    <span className="font-bold text-gray-700 dark:text-white peer-checked:text-[#00C888]">Level</span>
+                                <div className="p-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
+                                    <span className="font-bold text-gray-700 dark:text-white peer-checked:text-primary">Level</span>
                                     <span className="block text-xs text-gray-400 mt-1">Generates Modules</span>
                                 </div>
                             </label>
@@ -105,8 +105,8 @@ export default function StructureGenerator() {
                                     checked={formData.type === "module"}
                                     onChange={() => setFormData({ ...formData, type: "module" })}
                                 />
-                                <div className="p-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] peer-checked:border-[#00C888] peer-checked:bg-[#00C888]/5 transition-all text-center">
-                                    <span className="font-bold text-gray-700 dark:text-white peer-checked:text-[#00C888]">Module</span>
+                                <div className="p-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
+                                    <span className="font-bold text-gray-700 dark:text-white peer-checked:text-primary">Module</span>
                                     <span className="block text-xs text-gray-400 mt-1">Generates Lessons</span>
                                 </div>
                             </label>
@@ -126,7 +126,7 @@ export default function StructureGenerator() {
                         <div className="relative">
                             <Users size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                             <select
-                                className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2.5 focus:border-[#00C888] outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+                                className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
                                 value={formData.targetAudience}
                                 onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value as any })}
                             >
@@ -151,7 +151,7 @@ export default function StructureGenerator() {
                     />
 
                     <Button
-                        className="w-full py-3 bg-[#00C888] hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl shadow-lg shadow-[#00C888]/30 hover:-translate-y-1 active:scale-95 transition-all"
+                        className="w-full py-3 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all"
                         onClick={handleGenerate}
                         isLoading={generating}
                     >
@@ -169,7 +169,7 @@ export default function StructureGenerator() {
                 {result ? (
                     <div className="space-y-4">
                         <div className="border-b border-gray-200 dark:border-gray-700 pb-2">
-                            <h2 className="text-xl font-bold text-[#00C888]">{result.title}</h2>
+                            <h2 className="text-xl font-bold text-primary">{result.title}</h2>
                             <p className="text-gray-600 dark:text-gray-400 text-sm">{result.description}</p>
                         </div>
                         <div className="space-y-3">

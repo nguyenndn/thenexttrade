@@ -50,7 +50,7 @@ export default function LoginPage() {
           label="Email"
           required
           startIcon={<Mail size={20} className="text-gray-400" />}
-          className="bg-[#0B0E14] border-white/10 text-white text-base py-3 placeholder:text-gray-500 focus:bg-[#0B0E14] focus:border-[#00C888]/50 focus:text-white h-12"
+          className="bg-[#0B0E14] border-white/10 text-white text-base py-3 placeholder:text-gray-500 focus:bg-[#0B0E14] focus:border-primary/50 focus:text-white h-12"
         />
 
         <div>
@@ -66,7 +66,7 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             }
-            className="bg-[#0B0E14] border-white/10 text-white text-base py-3 placeholder:text-gray-500 focus:bg-[#0B0E14] focus:border-[#00C888]/50 focus:text-white h-12"
+            className="bg-[#0B0E14] border-white/10 text-white text-base py-3 placeholder:text-gray-500 focus:bg-[#0B0E14] focus:border-primary/50 focus:text-white h-12"
           />
         </div>
 
@@ -75,11 +75,11 @@ export default function LoginPage() {
             <input
               type="checkbox"
               id="remember"
-              className="appearance-none h-5 w-5 rounded bg-[#0B0E14] border border-white/20 checked:bg-[#00C888] checked:border-transparent checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
+              className="appearance-none h-5 w-5 rounded bg-[#0B0E14] border border-white/20 checked:bg-primary checked:border-transparent checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
             />
             <label htmlFor="remember" className="text-sm text-gray-400 cursor-pointer select-none">Stay signed in</label>
           </div>
-          <Link href="/auth/forgot-password" className="text-sm text-[#00C888] hover:underline font-medium">
+          <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline font-medium">
             Forgot your password?
           </Link>
         </div>
@@ -88,7 +88,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             className="w-full h-14 text-black font-bold text-base hover:opacity-90 border-none rounded-xl"
-            style={{ backgroundColor: '#00C888', backgroundImage: 'none' }}
+            style={{ backgroundColor: 'hsl(var(--primary))', backgroundImage: 'none' }}
             isLoading={loading}
           >
             Login
@@ -117,7 +117,7 @@ export default function LoginPage() {
 
       <p className="text-center text-sm text-gray-400 mt-8">
         Don't have an account?{" "}
-        <Link href="/auth/signup" className="font-semibold text-[#00C888] hover:underline">
+        <Link href="/auth/signup" className="font-semibold text-primary hover:underline">
           Sign up
         </Link>
       </p>

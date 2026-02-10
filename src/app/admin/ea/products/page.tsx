@@ -43,7 +43,7 @@ export default async function EAProductsPage() {
                     </div>
                 </div>
                 <Link href="/admin/ea/products/create">
-                    <Button variant="primary" className="bg-[#00C888] hover:bg-[#00B078] text-white">
+                    <Button variant="primary" className="bg-primary hover:bg-[#00B078] text-white">
                         <Plus size={18} className="mr-2" />
                         Create Product
                     </Button>

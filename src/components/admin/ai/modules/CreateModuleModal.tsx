@@ -100,7 +100,7 @@ export default function CreateModuleModal({ levelId, levelTitle }: CreateModuleM
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="flex items-center gap-2 px-6 py-2.5 bg-[#00C888] hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-[#00C888]/30 hover:-translate-y-1 active:scale-95 active:translate-y-0">
+                <Button className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 active:translate-y-0">
                     <Plus size={18} strokeWidth={2.5} />
                     Add Module
                 </Button>
@@ -119,7 +119,7 @@ export default function CreateModuleModal({ levelId, levelTitle }: CreateModuleM
                             <div className="mb-8">
                                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">✨ Generate New Module</h2>
                                 <p className="text-gray-500 dark:text-gray-400 mt-1">
-                                    Adding to Level: <span className="font-bold text-[#00C888]">{levelTitle}</span>
+                                    Adding to Level: <span className="font-bold text-primary">{levelTitle}</span>
                                 </p>
                             </div>
 
@@ -145,13 +145,13 @@ export default function CreateModuleModal({ levelId, levelTitle }: CreateModuleM
 
                                 <div className="pt-4 flex items-center justify-between">
                                     <div className="text-xs text-gray-400 flex items-center">
-                                        <span className="w-2 h-2 bg-[#00C888] rounded-full mr-2"></span>
+                                        <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
                                         AI Provider: GitHub Models
                                     </div>
                                     <div className="flex space-x-3">
                                         <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
                                         <Button
-                                            className="bg-[#00C888] hover:bg-[#00a872] text-white font-bold"
+                                            className="bg-primary hover:bg-[#00a872] text-white font-bold"
                                             onClick={handleGenerate}
                                         >
                                             Generate Module
@@ -175,8 +175,8 @@ export default function CreateModuleModal({ levelId, levelTitle }: CreateModuleM
                                 <AIGenerationStatus isGenerating={true} estimatedTime="5 seconds" />
                             ) : result ? (
                                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <div className="bg-[#00C888]/10 p-4 rounded-xl border border-[#00C888]/20">
-                                        <h3 className="text-xl font-bold text-[#00C888] mb-1">{result.title}</h3>
+                                    <div className="bg-primary/10 p-4 rounded-xl border border-primary/20">
+                                        <h3 className="text-xl font-bold text-primary mb-1">{result.title}</h3>
                                         <p className="text-gray-600 dark:text-gray-300 text-sm">{result.description}</p>
                                     </div>
 

@@ -39,13 +39,13 @@ async function RecentPostsWidget() {
 
     return (
         <div className="mb-8">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-[#00C888] before:rounded-full">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-primary before:rounded-full">
                 Recent Posts
             </h3>
             <div className="space-y-4">
                 {articles.map(article => (
                     <Link key={article.id} href={`/articles/${article.slug}`} className="flex gap-4 group items-center">
-                        <div className="relative w-16 h-16 flex-shrink-0 overflow-hidden rounded-full border-2 border-transparent group-hover:border-[#00C888] transition-all">
+                        <div className="relative w-16 h-16 flex-shrink-0 overflow-hidden rounded-full border-2 border-transparent group-hover:border-primary transition-all">
                             {article.thumbnail ? (
                                 <Image src={article.thumbnail} alt={article.title} fill className="object-cover" />
                             ) : (
@@ -53,7 +53,7 @@ async function RecentPostsWidget() {
                             )}
                         </div>
                         <div className="flex-1">
-                            <h4 className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-[#00C888] transition-colors line-clamp-2">
+                            <h4 className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors line-clamp-2">
                                 {article.title}
                             </h4>
                             <span className="text-xs text-gray-400 mt-1 block">
@@ -84,7 +84,7 @@ async function TagCloudWidget() {
                         href={`/articles/tag/${tag.slug}`}
                         className={`text-xs font-bold px-3 py-1.5 rounded-full text-white transition-transform hover:-translate-y-1 block
                             ${i % 3 === 0 ? 'bg-[#FF2E5B] shadow-[#FF2E5B]/20' :
-                                i % 3 === 1 ? 'bg-[#00C888] shadow-[#00C888]/20' :
+                                i % 3 === 1 ? 'bg-primary shadow-primary/20' :
                                     'bg-[#673AB7] shadow-[#673AB7]/20'} shadow-lg`}
                     >
                         #{tag.name}
@@ -107,10 +107,10 @@ async function CategoriesWidget() {
                 {categories.map(cat => (
                     <li key={cat.id}>
                         <Link href={`/articles/category/${cat.slug}`} className="flex justify-between items-center group">
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-[#00C888] transition-colors">
+                            <span className="text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors">
                                 {cat.name}
                             </span>
-                            <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-500 px-2 py-0.5 rounded-full group-hover:bg-[#00C888] group-hover:text-white transition-colors">
+                            <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-500 px-2 py-0.5 rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
                                 {cat._count.articles}
                             </span>
                         </Link>
@@ -144,7 +144,7 @@ function TrustedBrokersWidget() {
 
                 <h3 className="text-xl font-bold mb-2 leading-tight">
                     Find the Best <br />
-                    <span className="text-[#00C888]">Forex Broker</span>
+                    <span className="text-primary">Forex Broker</span>
                 </h3>
 
                 <p className="text-sm text-gray-300 mb-6 font-medium">
@@ -153,7 +153,7 @@ function TrustedBrokersWidget() {
 
                 <Link
                     href="/brokers"
-                    className="inline-block w-full text-center py-3 bg-[#00C888] hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#00C888]/25 hover:shadow-[#00C888]/40 transform group-hover:-translate-y-0.5"
+                    className="inline-block w-full text-center py-3 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/25 hover:shadow-primary/40 transform group-hover:-translate-y-0.5"
                 >
                     Compare Now
                 </Link>

@@ -162,7 +162,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         <Link href="/admin/articles" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
                             <ArrowLeft size={20} className="text-gray-500" />
                         </Link>
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter flex items-center gap-2">
                             {isEditMode ? "Edit Article" : "Create Article"}
                         </h1>
@@ -198,7 +198,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         <button
                             onClick={() => handleSubmit()}
                             disabled={isSubmitting}
-                            className="flex items-center gap-2 px-6 py-2 bg-[#00C888] hover:bg-[#00a872] text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 active:scale-95 disabled:opacity-50"
+                            className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 active:scale-95 disabled:opacity-50"
                         >
                             {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                             {isEditMode ? "Update" : "Publish"}
@@ -239,7 +239,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                     type="text"
                                     value={formData.slug}
                                     onChange={e => setFormData({ ...formData, slug: e.target.value })}
-                                    className="bg-transparent border-b border-transparent hover:border-gray-300 focus:border-[#00C888] focus:outline-none text-gray-700 dark:text-gray-300 transition-colors"
+                                    className="bg-transparent border-b border-transparent hover:border-gray-300 focus:border-primary focus:outline-none text-gray-700 dark:text-gray-300 transition-colors"
                                 />
                             </div>
                         </div>
@@ -281,7 +281,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                     type="text"
                                     value={formData.metaTitle}
                                     onChange={e => setFormData({ ...formData, metaTitle: e.target.value })}
-                                    className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888]"
+                                    className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                                     placeholder="SEO Title (defaults to article title)"
                                 />
                             </div>
@@ -290,7 +290,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                 <textarea
                                     value={formData.metaDescription}
                                     onChange={e => setFormData({ ...formData, metaDescription: e.target.value })}
-                                    className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888] resize-none"
+                                    className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary resize-none"
                                     rows={3}
                                     placeholder="Brief description for search engines..."
                                 />
@@ -322,7 +322,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                 id="isFeatured"
                                 checked={formData.isFeatured}
                                 onChange={e => setFormData({ ...formData, isFeatured: e.target.checked })}
-                                className="w-4 h-4 text-[#00C888] bg-gray-100 border-gray-300 rounded focus:ring-[#00C888] dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+                                className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
                             />
                             <label htmlFor="isFeatured" className="text-sm font-medium text-gray-900 dark:text-gray-300">Featured Article</label>
                         </div>
@@ -330,7 +330,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Author</label>
                             <select
-                                className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888]"
+                                className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                                 value={formData.authorId}
                                 onChange={e => setFormData({ ...formData, authorId: e.target.value })}
                             >
@@ -344,7 +344,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Status</label>
                             <select
-                                className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888]"
+                                className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                                 value={formData.status}
                                 onChange={e => setFormData({ ...formData, status: e.target.value })}
                             >
@@ -359,7 +359,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                             <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Publish Date</label>
                             <input
                                 type="datetime-local"
-                                className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888]"
+                                className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                                 value={formData.publishedAt}
                                 onChange={e => setFormData({ ...formData, publishedAt: e.target.value })}
                             />
@@ -380,7 +380,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Category</label>
                             <select
-                                className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888]"
+                                className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                                 value={formData.categoryId}
                                 onChange={e => setFormData({ ...formData, categoryId: e.target.value })}
                             >
@@ -404,7 +404,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     <div className="bg-white dark:bg-[#151925] rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
                         <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Excerpt</label>
                         <textarea
-                            className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888] resize-none"
+                            className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary resize-none"
                             rows={4}
                             placeholder="Short summary..."
                             value={formData.excerpt}

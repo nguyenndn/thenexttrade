@@ -28,7 +28,7 @@ export default function AIStudioPage() {
             {/* Header */}
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                    <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                     <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                         AI Content Studio
                     </h1>
@@ -48,18 +48,18 @@ export default function AIStudioPage() {
                 {/* Manage Levels */}
                 <motion.div variants={item} className="h-full">
                     <Link href="/admin/ai-studio/levels" className="block h-full group">
-                        <PremiumCard className="h-full p-6 relative overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00C888]/10 group-hover:border-[#00C888]/30">
+                        <PremiumCard className="h-full p-6 relative overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 group-hover:border-primary/30">
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <BookOpen size={64} className="text-[#00C888]" />
+                                <BookOpen size={64} className="text-primary" />
                             </div>
-                            <div className="w-12 h-12 rounded-xl bg-[#00C888]/10 flex items-center justify-center text-[#00C888] mb-4 group-hover:bg-[#00C888] group-hover:text-white transition-colors">
+                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                                 <BookOpen size={24} />
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Manage Levels</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                                 Create and organize course structures. Generate modules outlines with AI.
                             </p>
-                            <div className="flex items-center text-[#00C888] font-semibold text-sm">
+                            <div className="flex items-center text-primary font-semibold text-sm">
                                 Go to Levels <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
                             </div>
                         </PremiumCard>

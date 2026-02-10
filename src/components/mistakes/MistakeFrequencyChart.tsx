@@ -6,7 +6,7 @@ interface MistakeFrequencyChartProps {
     data: Record<string, number>;
 }
 
-const COLORS = ['#00C888', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
+const COLORS = ['hsl(var(--primary))', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 
 export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
     const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
@@ -44,7 +44,7 @@ export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
                                         <p className="font-bold text-gray-900 dark:text-white">
                                             {data.name}
                                         </p>
-                                        <p className="text-[#00C888] font-bold">
+                                        <p className="text-primary font-bold">
                                             {data.value} mistakes
                                         </p>
                                         <p className="text-xs text-gray-500">

@@ -98,7 +98,7 @@ export function SecuritySettings() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="px-6 py-2 bg-[#00C888] hover:bg-[#00B078] disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                            className="px-6 py-2 bg-primary hover:bg-[#00B078] disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
                         >
                             {isLoading ? "Updating..." : "Update Password"}
                         </button>

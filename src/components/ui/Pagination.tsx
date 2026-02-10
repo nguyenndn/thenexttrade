@@ -44,7 +44,7 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
                             key={page}
                             href={createPageURL(page)}
                             className={`w-10 h-10 flex items-center justify-center rounded-xl font-bold text-sm transition-all ${page === currentPage
-                                    ? 'bg-[#00C888] text-white shadow-lg shadow-[#00C888]/30'
+                                    ? 'bg-primary text-white shadow-lg shadow-primary/30'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-white/10'
                                 }`}
                         >

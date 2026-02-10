@@ -34,7 +34,7 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
             <DialogContent className="max-w-md bg-white dark:bg-[#1E2028] border-gray-100 dark:border-white/5">
                 <DialogHeader>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-full bg-[#00C888]/10 flex items-center justify-center text-[#00C888]">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                             <RotateCwIcon className="animate-spin-slow" />
                         </div>
                         <DialogTitle>Connect MetaTrader 5</DialogTitle>
@@ -55,7 +55,7 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
                             </code>
                             <button
                                 onClick={() => copyToClipboard(apiUrl, "URL")}
-                                className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md transition-colors text-gray-400 hover:text-[#00C888]"
+                                className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md transition-colors text-gray-400 hover:text-primary"
                             >
                                 {copiedField === "URL" ? <Check size={14} /> : <Copy size={14} />}
                             </button>
@@ -72,7 +72,7 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
                             </code>
                             <button
                                 onClick={() => copyToClipboard(account.id, "ID")}
-                                className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md transition-colors text-gray-400 hover:text-[#00C888]"
+                                className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md transition-colors text-gray-400 hover:text-primary"
                             >
                                 {copiedField === "ID" ? <Check size={14} /> : <Copy size={14} />}
                             </button>
@@ -86,7 +86,7 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
                 <div className="border-t border-gray-100 dark:border-white/5 pt-4">
                     <button
                         onClick={onClose}
-                        className="w-full py-2.5 bg-[#00C888] hover:bg-[#00B377] text-white font-bold rounded-xl transition-all"
+                        className="w-full py-2.5 bg-primary hover:bg-[#00B377] text-white font-bold rounded-xl transition-all"
                     >
                         Done
                     </button>

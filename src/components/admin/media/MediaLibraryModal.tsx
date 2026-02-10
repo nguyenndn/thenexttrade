@@ -122,7 +122,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <ImageIcon size={20} className="text-[#00C888]" /> Media Library
+                        <ImageIcon size={20} className="text-primary" /> Media Library
                     </h3>
                     <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors">
                         <X size={20} />
@@ -133,13 +133,13 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                 <div className="px-4 pt-4 flex gap-4 border-b border-gray-100 dark:border-white/10 text-sm font-bold">
                     <button
                         onClick={() => setActiveTab('upload')}
-                        className={`pb-3 border-b-2 transition-colors ${activeTab === 'upload' ? 'border-[#00C888] text-[#00C888]' : 'border-transparent text-gray-500'}`}
+                        className={`pb-3 border-b-2 transition-colors ${activeTab === 'upload' ? 'border-primary text-primary' : 'border-transparent text-gray-500'}`}
                     >
                         Upload Files
                     </button>
                     <button
                         onClick={() => setActiveTab('library')}
-                        className={`pb-3 border-b-2 transition-colors ${activeTab === 'library' ? 'border-[#00C888] text-[#00C888]' : 'border-transparent text-gray-500'}`}
+                        className={`pb-3 border-b-2 transition-colors ${activeTab === 'library' ? 'border-primary text-primary' : 'border-transparent text-gray-500'}`}
                     >
                         Media Library
                     </button>
@@ -159,7 +159,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                         <h4 className="text-lg font-bold text-gray-900 dark:text-white">Drop files to upload</h4>
                                         <p className="text-gray-500 text-sm">or click to browse</p>
                                     </div>
-                                    <label className="inline-flex items-center gap-2 px-6 py-2 bg-[#00C888] hover:bg-[#00a872] text-white font-bold rounded-xl cursor-pointer transition-all">
+                                    <label className="inline-flex items-center gap-2 px-6 py-2 bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl cursor-pointer transition-all">
                                         {isUploading ? <Loader2 size={18} className="animate-spin" /> : "Select Files"}
                                         <input type="file" className="hidden" accept="image/*" onChange={handleUpload} disabled={isUploading} />
                                     </label>
@@ -179,7 +179,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                             placeholder="Search by filename..."
                                             value={search}
                                             onChange={(e) => setSearch(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                                            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                         />
                                     </div>
                                 </div>
@@ -193,11 +193,11 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                             <div
                                                 key={item.id}
                                                 onClick={() => setSelectedMedia(item)}
-                                                className={`group relative aspect-square bg-gray-100 dark:bg-white/5 rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${selectedMedia?.id === item.id ? 'border-[#00C888] ring-2 ring-[#00C888]/20' : 'border-transparent hover:border-gray-200'}`}
+                                                className={`group relative aspect-square bg-gray-100 dark:bg-white/5 rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${selectedMedia?.id === item.id ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-200'}`}
                                             >
                                                 <img src={item.thumbnailUrl || item.url} alt={item.alt || ""} className="w-full h-full object-cover" />
                                                 {selectedMedia?.id === item.id && (
-                                                    <div className="absolute top-2 right-2 bg-[#00C888] text-white p-1 rounded-full shadow-md">
+                                                    <div className="absolute top-2 right-2 bg-primary text-white p-1 rounded-full shadow-md">
                                                         <Check size={12} strokeWidth={4} />
                                                     </div>
                                                 )}
@@ -222,7 +222,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                     <div className="font-bold text-gray-700 dark:text-gray-300 line-clamp-1">{selectedMedia.filename}</div>
                                     <div>{(selectedMedia.createdAt).substring(0, 10)}</div>
                                     <div>{(selectedMedia.size / 1024).toFixed(1)} KB</div>
-                                    <a href={selectedMedia.url} target="_blank" className="text-[#00C888] hover:underline flex items-center gap-1">View Full URL <ExternalLink size={10} /></a>
+                                    <a href={selectedMedia.url} target="_blank" className="text-primary hover:underline flex items-center gap-1">View Full URL <ExternalLink size={10} /></a>
                                 </div>
                             </div>
 
@@ -233,7 +233,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                         type="text"
                                         value={selectedMedia.alt || ""}
                                         onChange={(e) => handleUpdate('alt', e.target.value)}
-                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400"
+                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400"
                                         placeholder="Describe this image..."
                                     />
                                     <p className="text-[10px] text-gray-400 mt-1">Describe these images for better SEO and accessibility.</p>
@@ -244,7 +244,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                         rows={3}
                                         value={selectedMedia.caption || ""}
                                         onChange={(e) => handleUpdate('caption', e.target.value)}
-                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 resize-none"
+                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 resize-none"
                                         placeholder="Add a caption for this image..."
                                     />
                                 </div>
@@ -253,7 +253,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                             <div className="pt-4 border-t border-gray-200 dark:border-white/10 flex flex-col gap-2">
                                 <button
                                     onClick={() => onSelect(selectedMedia.url, selectedMedia)}
-                                    className="w-full py-2 bg-[#00C888] hover:bg-[#00a872] text-white font-bold rounded-xl text-sm transition-all"
+                                    className="w-full py-2 bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl text-sm transition-all"
                                 >
                                     Insert Media
                                 </button>

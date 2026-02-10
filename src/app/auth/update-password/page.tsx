@@ -78,7 +78,7 @@ export default function UpdatePasswordPage() {
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-[#00C888] hover:bg-[#00b078] text-black font-bold py-3.5 rounded-xl transition-all hover:shadow-lg hover:shadow-[#00C888]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full bg-primary hover:bg-[#00b078] text-black font-bold py-3.5 rounded-xl transition-all hover:shadow-lg hover:shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                     {isLoading ? (
                         <Loader2 className="animate-spin" />

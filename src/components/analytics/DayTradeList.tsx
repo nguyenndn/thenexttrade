@@ -27,7 +27,7 @@ export function DayTradeList({ date, trades, onClose }: DayTradeListProps) {
                         <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                             Trades on {date}
                         </h3>
-                        <p className={`text-sm font-bold ${totalPnL >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                        <p className={`text-sm font-bold ${totalPnL >= 0 ? 'text-primary' : 'text-red-500'}`}>
                             Day Total: {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)}
                         </p>
                     </div>
@@ -48,10 +48,10 @@ export function DayTradeList({ date, trades, onClose }: DayTradeListProps) {
                         trades.map((trade: any) => (
                             <div
                                 key={trade.id}
-                                className="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 hover:border-[#00C888]/30 transition-all"
+                                className="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 hover:border-primary/30 transition-all"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className={`w-1 h-8 rounded-full ${trade.pnl >= 0 ? 'bg-[#00C888]' : 'bg-red-500'}`}></div>
+                                    <div className={`w-1 h-8 rounded-full ${trade.pnl >= 0 ? 'bg-primary' : 'bg-red-500'}`}></div>
                                     <div>
                                         <div className="font-bold text-gray-900 dark:text-white text-sm">
                                             {trade.symbol}
@@ -63,7 +63,7 @@ export function DayTradeList({ date, trades, onClose }: DayTradeListProps) {
                                 </div>
 
                                 <div className="text-right">
-                                    <div className={`font-bold text-sm ${trade.pnl >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                                    <div className={`font-bold text-sm ${trade.pnl >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                         {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
                                     </div>
                                     <div className="text-xs text-gray-500 uppercase font-bold tracking-wider">

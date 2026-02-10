@@ -34,7 +34,7 @@ export default function AdminQuizzesPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Quiz Management
                         </h1>
@@ -45,7 +45,7 @@ export default function AdminQuizzesPage() {
                 </div>
                 <Link
                     href="/admin/quizzes/create"
-                    className="flex items-center gap-2 px-6 py-2.5 bg-[#00C888] hover:bg-[#00a872] text-white rounded-2xl text-sm font-bold transition-all shadow-lg shadow-[#00C888]/30 hover:-translate-y-1 active:scale-95 active:translate-y-0"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white rounded-2xl text-sm font-bold transition-all shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 active:translate-y-0"
                 >
                     <Plus size={18} strokeWidth={2.5} />
                     Add New
@@ -59,7 +59,7 @@ export default function AdminQuizzesPage() {
                     <ListChecks size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">No Quizzes Found</h3>
                     <p className="text-gray-500 text-sm mb-6">Create your first quiz to test student knowledge.</p>
-                    <Link href="/admin/quizzes/create" className="text-[#00C888] font-bold hover:underline">
+                    <Link href="/admin/quizzes/create" className="text-primary font-bold hover:underline">
                         Create Quiz Pattern
                     </Link>
                 </div>

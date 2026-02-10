@@ -13,7 +13,7 @@ interface ContentDistributionChartProps {
     data?: DataPoint[];
 }
 
-const COLORS = ["#00C888", "#3B82F6", "#8B5CF6", "#F59E0B", "#EF4444"];
+const COLORS = ["hsl(var(--primary))", "#3B82F6", "#8B5CF6", "#F59E0B", "#EF4444"];
 
 export function ContentDistributionChart({ data = [] }: ContentDistributionChartProps) {
     if (!data || data.length === 0) {

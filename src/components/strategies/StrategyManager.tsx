@@ -117,14 +117,14 @@ export function StrategyManager() {
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Strategies
                         </h1>
                     </div>
                     <Button
                         onClick={() => setShowModal(true)}
-                        className="bg-[#00C888] hover:bg-[#00b078] text-white rounded-xl shadow-lg shadow-[#00C888]/20 w-full md:w-auto"
+                        className="bg-primary hover:bg-[#00b078] text-white rounded-xl shadow-lg shadow-primary/20 w-full md:w-auto"
                     >
                         <Plus size={18} className="mr-2" strokeWidth={2.5} />
                         New Strategy
@@ -198,7 +198,7 @@ function StrategyCard({
     onDelete: () => void;
 }) {
     return (
-        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-2xl border shadow-sm group hover:border-[#00C888]/30 transition-all ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-100 dark:border-white/5'
+        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-2xl border shadow-sm group hover:border-primary/30 transition-all ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-100 dark:border-white/5'
             }`}>
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
@@ -300,7 +300,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
                 Create strategies to track which setups work best for you.
                 Tag your trades and analyze their performance.
             </p>
-            <Button onClick={onAdd} className="bg-[#00C888] hover:bg-[#00b078] text-white">
+            <Button onClick={onAdd} className="bg-primary hover:bg-[#00b078] text-white">
                 <Plus size={18} className="mr-2" />
                 Create First Strategy
             </Button>

@@ -43,7 +43,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
     if (!entry) return null;
 
     const isWin = entry.pnl && entry.pnl > 0;
-    const pnlColor = entry.pnl && entry.pnl > 0 ? "text-[#00C888]" : entry.pnl && entry.pnl < 0 ? "text-red-500" : "text-gray-500";
+    const pnlColor = entry.pnl && entry.pnl > 0 ? "text-primary" : entry.pnl && entry.pnl < 0 ? "text-red-500" : "text-gray-500";
     const typeColor = entry.type === "BUY" ? "bg-blue-500" : "bg-red-500";
     const statusColor = entry.status === "OPEN" ? "bg-yellow-500/20 text-yellow-500" : "bg-gray-500/20 text-gray-500";
 
@@ -100,7 +100,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                     <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 font-mono text-sm md:text-base font-bold">
                                         <span>{entry.entryPrice.toFixed(5)}</span>
                                         <span className="text-gray-300 dark:text-white/20">➜</span>
-                                        <span className={isWin ? "text-[#00C888]" : entry.pnl && entry.pnl < 0 ? "text-red-500" : ""}>
+                                        <span className={isWin ? "text-primary" : entry.pnl && entry.pnl < 0 ? "text-red-500" : ""}>
                                             {entry.exitPrice?.toFixed(5) || "???"}
                                         </span>
                                     </div>
@@ -235,7 +235,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                                     <p className={cn("text-xl font-black font-mono", pnlColor)}>
                                                         {entry.pnl?.toFixed(2) || "0.00"}
                                                     </p>
-                                                    {isWin && <span className="bg-[#00C888]/10 text-[#00C888] p-1 rounded-full"><TrendingUp size={12} /></span>}
+                                                    {isWin && <span className="bg-primary/10 text-primary p-1 rounded-full"><TrendingUp size={12} /></span>}
                                                 </div>
                                             </div>
                                             <div>
@@ -329,7 +329,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                                     </span>
                                                 )
                                             }) : <p className="text-sm text-gray-400 font-medium italic flex items-center gap-2">
-                                                <span className="w-2 h-2 rounded-full bg-[#00C888]"></span>
+                                                <span className="w-2 h-2 rounded-full bg-primary"></span>
                                                 Clean trade! No mistakes recorded.
                                             </p>}
                                         </div>

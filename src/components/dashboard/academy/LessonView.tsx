@@ -61,7 +61,7 @@ export default function LessonView({
             particleCount: 100,
             spread: 70,
             origin: { y: 0.6 },
-            colors: ['#00C888', '#ffffff', '#fbbf24']
+            colors: ['hsl(var(--primary))', '#ffffff', '#fbbf24']
         });
 
         try {
@@ -99,7 +99,7 @@ export default function LessonView({
             {/* Header / Breadcrumbs */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-xs font-bold text-[#00C888] uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-widest">
                         <Link href="/dashboard/academy" className="hover:underline flex items-center gap-1">
                             <GraduationCap size={14} />
                             Academy
@@ -131,7 +131,7 @@ export default function LessonView({
                             prose-headings:text-gray-900 dark:prose-headings:text-white 
                             prose-headings:font-bold
                             prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
-                            prose-a:text-[#00C888] prose-a:no-underline hover:prose-a:underline
+                            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
                             prose-strong:text-gray-900 dark:prose-strong:text-white
                             prose-img:rounded-2xl prose-img:shadow-xl
                             prose-pre:bg-gray-900 prose-pre:text-white prose-pre:p-4 prose-pre:rounded-xl">
@@ -143,7 +143,7 @@ export default function LessonView({
                             <div className="flex items-center gap-4">
                                 {prevLesson ? (
                                     <Link href={`/dashboard/academy/lessons/${prevLesson.slug}`}>
-                                        <Button variant="ghost" className="text-gray-500 hover:text-[#00C888] hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
+                                        <Button variant="ghost" className="text-gray-500 hover:text-primary hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
                                             <ChevronLeft size={16} className="mr-1" />
                                             Previous
                                         </Button>
@@ -158,7 +158,7 @@ export default function LessonView({
                                     "px-10 py-6 rounded-2xl font-bold text-lg transition-all shadow-lg",
                                     isCompleted
                                         ? "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 cursor-pointer hover:bg-gray-200 dark:hover:bg-white/10"
-                                        : "bg-[#00C888] hover:bg-[#00B078] text-white shadow-[#00C888]/20 hover:-translate-y-1 active:scale-95"
+                                        : "bg-primary hover:bg-[#00B078] text-white shadow-primary/20 hover:-translate-y-1 active:scale-95"
                                 )}
                             >
                                 {isCompleted ? (
@@ -174,7 +174,7 @@ export default function LessonView({
                             <div className="flex items-center gap-4">
                                 {nextLesson ? (
                                     <Link href={`/dashboard/academy/lessons/${nextLesson.slug}`}>
-                                        <Button variant="ghost" className="text-gray-500 hover:text-[#00C888] hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
+                                        <Button variant="ghost" className="text-gray-500 hover:text-primary hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
                                             Next <ChevronRight size={16} className="ml-1" />
                                         </Button>
                                     </Link>
@@ -215,7 +215,7 @@ export default function LessonView({
                                             className={cn(
                                                 "flex items-center gap-4 p-3 rounded-2xl transition-all relative group",
                                                 isActive
-                                                    ? "bg-[#00C888]/10 text-[#00C888]"
+                                                    ? "bg-primary/10 text-primary"
                                                     : "text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"
                                             )}
                                         >
@@ -223,9 +223,9 @@ export default function LessonView({
                                             <div className={cn(
                                                 "w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 z-10 transition-colors border-2",
                                                 isActive
-                                                    ? "bg-[#00C888] border-[#00C888] text-white"
+                                                    ? "bg-primary border-primary text-white"
                                                     : itemCompleted
-                                                        ? "bg-white dark:bg-[#151925] border-[#00C888] text-[#00C888]"
+                                                        ? "bg-white dark:bg-[#151925] border-primary text-primary"
                                                         : "bg-white dark:bg-[#151925] border-gray-200 dark:border-white/10 text-gray-300"
                                             )}>
                                                 {itemCompleted ? <CheckCircle size={12} /> : <span className="text-[10px] font-bold">{idx + 1}</span>}
@@ -233,14 +233,14 @@ export default function LessonView({
 
                                             <span className={cn(
                                                 "text-sm font-semibold truncate",
-                                                isActive ? "text-[#00C888]" : itemCompleted ? "text-gray-700 dark:text-gray-300" : ""
+                                                isActive ? "text-primary" : itemCompleted ? "text-gray-700 dark:text-gray-300" : ""
                                             )}>
                                                 {l.title}
                                             </span>
 
                                             {isActive && (
                                                 <div className="ml-auto">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-[#00C888] animate-pulse" />
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                                                 </div>
                                             )}
                                         </Link>
@@ -250,7 +250,7 @@ export default function LessonView({
                         </div>
 
                         {/* Background Decor */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#00C888]/5 rounded-full blur-3xl pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
                     </div>
                 </div>
             </div>

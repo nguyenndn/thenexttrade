@@ -110,7 +110,7 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
                                     {format(new Date(trade.entryDate), "MMM d, yyyy • HH:mm")}
                                 </div>
                             </div>
-                            <div className={`text-2xl font-mono font-bold ${isWin ? 'text-[#00C888]' : isLoss ? 'text-red-500' : 'text-gray-400'}`}>
+                            <div className={`text-2xl font-mono font-bold ${isWin ? 'text-primary' : isLoss ? 'text-red-500' : 'text-gray-400'}`}>
                                 {isWin ? '+' : ''}${Math.abs(trade.pnl || 0).toLocaleString()}
                             </div>
                         </div>
@@ -152,7 +152,7 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
                         {trade.notes && (
                             <div className="space-y-2">
                                 <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                    <Activity size={16} className="text-[#00C888]" />
+                                    <Activity size={16} className="text-primary" />
                                     Analysis Notes
                                 </h4>
                                 <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-100 dark:border-white/5">

@@ -124,7 +124,7 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
                             <div className="relative group">
                                 <select
                                     id="platform"
-                                    className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm outline-none focus:ring-2 focus:ring-[#00C888]/50 focus:border-[#00C888] transition-all text-gray-900 dark:text-white font-medium appearance-none"
+                                    className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-gray-900 dark:text-white font-medium appearance-none"
                                     value={formData.platform}
                                     onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
                                 >
@@ -158,7 +158,7 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
                             <div className="relative group">
                                 <select
                                     id="currency"
-                                    className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm outline-none focus:ring-2 focus:ring-[#00C888]/50 focus:border-[#00C888] transition-all text-gray-900 dark:text-white font-medium appearance-none"
+                                    className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-gray-900 dark:text-white font-medium appearance-none"
                                     value={formData.currency}
                                     onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                                 >
@@ -181,7 +181,7 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
                             id="isDefault"
                             checked={formData.isDefault}
                             onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                            className="w-4 h-4 rounded text-[#00C888] focus:ring-[#00C888]"
+                            className="w-4 h-4 rounded text-primary focus:ring-primary"
                         />
                         <label htmlFor="isDefault" className="text-sm text-gray-700 dark:text-gray-300">
                             Set as default account
@@ -192,7 +192,7 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
                         <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading} className="bg-[#00C888] hover:bg-[#00B078] text-white">
+                        <Button type="submit" disabled={isLoading} className="bg-primary hover:bg-[#00B078] text-white">
                             {isLoading ? "Saving..." : "Save Account"}
                         </Button>
                     </div>

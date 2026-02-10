@@ -48,13 +48,13 @@ export default function SignupPage() {
     if (message) {
         return (
             <div className="w-full max-w-[480px] mx-auto bg-[#ffffff0d] p-8 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm text-center">
-                <div className="w-16 h-16 bg-[#00C888]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Mail className="text-[#00C888]" size={32} />
+                <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Mail className="text-primary" size={32} />
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-2">Check your email</h2>
                 <p className="text-gray-400 mb-6">{message}</p>
                 <Link href="/auth/login">
-                    <Button className="w-full h-12 bg-[#00C888] hover:bg-[#00b078] text-black font-bold">
+                    <Button className="w-full h-12 bg-primary hover:bg-[#00b078] text-black font-bold">
                         Back to Login
                     </Button>
                 </Link>
@@ -152,7 +152,7 @@ export default function SignupPage() {
                     <div className="flex items-center gap-2">
                         <input
                             type="checkbox"
-                            className="appearance-none h-5 w-5 rounded bg-[#0B0E14] border border-white/20 checked:bg-[#00C888] checked:border-transparent checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
+                            className="appearance-none h-5 w-5 rounded bg-[#0B0E14] border border-white/20 checked:bg-primary checked:border-transparent checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
                             id="notify"
                             name="notify"
                         />
@@ -163,7 +163,7 @@ export default function SignupPage() {
                     <div className="flex items-center gap-2">
                         <input
                             type="checkbox"
-                            className="appearance-none h-5 w-5 rounded bg-[#0B0E14] border border-white/20 checked:bg-[#00C888] checked:border-transparent checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
+                            className="appearance-none h-5 w-5 rounded bg-[#0B0E14] border border-white/20 checked:bg-primary checked:border-transparent checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
                             id="terms"
                             required
                         />
@@ -177,7 +177,7 @@ export default function SignupPage() {
                     <Button
                         type="submit"
                         className="w-full h-14 text-black font-bold text-base hover:opacity-90 border-none rounded-xl"
-                        style={{ backgroundColor: '#00C888', backgroundImage: 'none' }}
+                        style={{ backgroundColor: 'hsl(var(--primary))', backgroundImage: 'none' }}
                         isLoading={loading}
                     >
                         Create My Account

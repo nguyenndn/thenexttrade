@@ -145,7 +145,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                         <Link href="/admin/ea/products" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-500 transition-colors">
                             <ArrowLeft size={20} />
                         </Link>
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             {initialData ? `Edit ${initialData.name}` : "New EA Product"}
                         </h1>
@@ -157,7 +157,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="bg-[#00C888] hover:bg-[#00B078] text-white border-none shadow-lg shadow-[#00C888]/40 rounded-xl px-6 font-bold"
+                            className="bg-primary hover:bg-[#00B078] text-white border-none shadow-lg shadow-primary/40 rounded-xl px-6 font-bold"
                         >
                             {isLoading ? (
                                 <span className="flex items-center gap-2">Processing...</span>
@@ -204,7 +204,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Type</label>
                             <select
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#00C888] outline-none transition-all"
+                                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
                                 {...form.register("type")}
                             >
                                 <option value="AUTO_TRADE">Auto Trade (Robot)</option>
@@ -217,7 +217,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Access Tier</label>
                             <select
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#00C888] outline-none transition-all"
+                                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
                                 value={form.watch("isFree") ? "FREE" : "VERIFY"}
                                 onChange={(e) => {
                                     form.setValue("isFree", e.target.value === "FREE", { shouldValidate: true });
@@ -232,7 +232,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                         <textarea
-                            className="w-full min-h-[150px] px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#00C888] outline-none transition-all resize-y"
+                            className="w-full min-h-[150px] px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all resize-y"
                             placeholder="Describe what this EA does..."
                             {...form.register("description")}
                         />

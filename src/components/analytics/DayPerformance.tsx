@@ -86,7 +86,7 @@ export function DayPerformance({ data }: DayPerformanceProps) {
                             {chartData.map((entry, index) => (
                                 <Cell
                                     key={`cell-${index}`}
-                                    fill={entry.pnl >= 0 ? "#00C888" : "#EF4444"}
+                                    fill={entry.pnl >= 0 ? "hsl(var(--primary))" : "#EF4444"}
                                 />
                             ))}
                         </Bar>

@@ -124,7 +124,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                     <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Question Text</label>
                     <textarea
                         {...register("text")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[80px] resize-none"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[80px] resize-none"
                         placeholder="What is the maximum leverage in forex trading?"
                     />
                     {errors.text && <p className="text-red-500 text-xs">{errors.text.message}</p>}
@@ -145,8 +145,8 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                                     className={clsx(
                                         "w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all shrink-0",
                                         options[index]?.isCorrect
-                                            ? "bg-[#00C888] border-[#00C888] text-white"
-                                            : "border-gray-300 hover:border-[#00C888] text-gray-300"
+                                            ? "bg-primary border-primary text-white"
+                                            : "border-gray-300 hover:border-primary text-gray-300"
                                     )}
                                 >
                                     <Check size={14} />
@@ -155,7 +155,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                                 <div className="flex-1">
                                     <input
                                         {...register(`options.${index}.text` as const)}
-                                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                         placeholder={`Option ${index + 1}`}
                                     />
                                     {errors.options?.[index]?.text && (
@@ -180,7 +180,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                         type="button"
                         variant="ghost"
                         onClick={() => append({ text: "", isCorrect: false })}
-                        className="w-full border border-dashed border-gray-300 dark:border-white/10 hover:border-[#00C888] hover:text-[#00C888] hover:bg-[#00C888]/5 transition-colors"
+                        className="w-full border border-dashed border-gray-300 dark:border-white/10 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
                     >
                         <Plus size={16} className="mr-2" />
                         Add Option
@@ -200,7 +200,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                     <Button
                         type="submit"
                         isLoading={isLoading}
-                        className="bg-[#00C888] hover:bg-[#00b078] text-white border-none shadow-lg shadow-[#00C888]/30 rounded-xl px-6 font-bold"
+                        className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold"
                     >
                         Save Question
                     </Button>

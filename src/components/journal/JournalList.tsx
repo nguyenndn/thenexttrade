@@ -191,7 +191,7 @@ export default function JournalList() {
 
     const renderSortIcon = (colId: string) => {
         if (sort.col === colId) {
-            return sort.dir === "asc" ? <TrendingUp size={14} className="text-[#00C888]" /> : <TrendingDown size={14} className="text-[#00C888]" />;
+            return sort.dir === "asc" ? <TrendingUp size={14} className="text-primary" /> : <TrendingDown size={14} className="text-primary" />;
         }
         return <ArrowUpDown size={14} className="text-gray-300" />;
     };
@@ -265,14 +265,14 @@ export default function JournalList() {
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Trading Journal
                         </h1>
                     </div>
                     <button
                         onClick={handleCreate}
-                        className="bg-[#00C888] hover:bg-[#00a872] text-white border-none shadow-lg shadow-[#00C888]/30 rounded-2xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95"
+                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-2xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         Log Trade
@@ -287,7 +287,7 @@ export default function JournalList() {
 
             {/* Filters & Controls */}
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5">
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-[#00C888] transition-colors w-full md:w-64">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-primary transition-colors w-full md:w-64">
                     <Search size={18} className="text-gray-400" />
                     <input
                         type="text"
@@ -387,7 +387,7 @@ export default function JournalList() {
                                                             {entry.pnl ? entry.pnl.toFixed(2) : "-"}
                                                         </span>
                                                     )}
-                                                    {col.id === "tp" && <span className="font-mono text-[#00C888] font-medium">{(entry as any).takeProfit || "-"}</span>}
+                                                    {col.id === "tp" && <span className="font-mono text-primary font-medium">{(entry as any).takeProfit || "-"}</span>}
                                                     {col.id === "sl" && <span className="font-mono text-red-500 font-medium">{(entry as any).stopLoss || "-"}</span>}
                                                     {col.id === "strategy" && (
                                                         <StrategyCell entry={entry} strategies={strategies} onUpdate={handleEntryUpdate} />
@@ -406,7 +406,7 @@ export default function JournalList() {
                                         ))}
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button onClick={() => handleEdit(entry)} className="p-2 text-gray-400 hover:text-[#00C888] hover:bg-[#00C888]/10 rounded-lg transition-colors">
+                                                <button onClick={() => handleEdit(entry)} className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
                                                     <Edit2 size={16} />
                                                 </button>
                                             </div>
@@ -459,7 +459,7 @@ export default function JournalList() {
                                                 key={idx}
                                                 onClick={() => fetchEntries(p)}
                                                 className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-xs transition-all ${p === pagination.page
-                                                    ? 'bg-[#00C888] text-white shadow-md shadow-[#00C888]/20'
+                                                    ? 'bg-primary text-white shadow-md shadow-primary/20'
                                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
                                                     }`}
                                             >

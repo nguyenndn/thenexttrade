@@ -71,7 +71,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                 {fireflies.map((firefly) => (
                     <motion.div
                         key={firefly.id}
-                        className="absolute w-1 h-1 bg-[#00C888] rounded-full shadow-[0_0_8px_#00C888]"
+                        className="absolute w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_hsl(var(--primary))]"
                         style={{ top: firefly.top, left: firefly.left }}
                         animate={{
                             y: [0, -30, 0],
@@ -162,16 +162,16 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                                 className={cn("block group w-full max-w-sm", !module.lessons[0] && "pointer-events-none opacity-50")}
                                             >
                                                 <div className={cn(
-                                                    "inline-flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 hover:border-[#00C888] dark:hover:border-white/20 transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
+                                                    "inline-flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
                                                     index % 2 !== 0 && "md:flex-row-reverse"
                                                 )}>
-                                                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-black/50 flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:bg-[#00C888] group-hover:text-white transition-colors flex-shrink-0">
+                                                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-black/50 flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:bg-primary group-hover:text-white transition-colors flex-shrink-0">
                                                         {module.title.charAt(0)}
                                                     </div>
                                                     <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors truncate">
                                                         {module.title}
                                                     </span>
-                                                    <ChevronRight size={14} className={cn("text-gray-400 group-hover:text-[#00C888] dark:group-hover:text-white transition-colors ml-auto", index % 2 !== 0 && "rotate-180 mr-auto ml-0")} />
+                                                    <ChevronRight size={14} className={cn("text-gray-400 group-hover:text-primary dark:group-hover:text-white transition-colors ml-auto", index % 2 !== 0 && "rotate-180 mr-auto ml-0")} />
                                                 </div>
                                             </Link>
                                         ))}

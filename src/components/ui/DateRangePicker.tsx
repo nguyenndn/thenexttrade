@@ -240,7 +240,7 @@ export function DateRangePicker({
                         <Button
                             size="sm"
                             onClick={handleApply}
-                            className="bg-[#00C888] hover:bg-[#00A872] text-white border-none"
+                            className="bg-primary hover:bg-[#00A872] text-white border-none"
                         >
                             Apply
                         </Button>

@@ -75,7 +75,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
             <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#0B0E14]/80 backdrop-blur border-b border-gray-100 dark:border-white/5 h-14 flex items-center px-4">
                 <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Link href="/dashboard/academy" className="text-gray-400 hover:text-[#00C888] transition-colors">
+                        <Link href="/dashboard/academy" className="text-gray-400 hover:text-primary transition-colors">
                             <Home size={18} />
                         </Link>
                         <span className="text-gray-200 dark:text-gray-800">/</span>
@@ -97,7 +97,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
 
                     {/* Title Area */}
                     <div className="text-center lg:text-left space-y-3 py-2">
-                        <div className="flex items-center justify-center lg:justify-start gap-2 text-xs font-bold text-[#00C888] mb-1 font-sans uppercase tracking-widest">
+                        <div className="flex items-center justify-center lg:justify-start gap-2 text-xs font-bold text-primary mb-1 font-sans uppercase tracking-widest">
                             <Link href="/academy" className="hover:underline flex items-center gap-1">
                                 <GraduationCap size={14} />
                                 Academy
@@ -114,7 +114,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     <article className="prose prose-base dark:prose-invert max-w-none 
                         prose-headings:font-bold prose-headings:tracking-tight 
                         prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300
-                        prose-a:text-[#00C888] prose-a:no-underline hover:prose-a:underline
+                        prose-a:text-primary prose-a:no-underline hover:prose-a:underline
                         prose-img:rounded-xl prose-img:shadow-md">
                         <Markdown>{lesson.content}</Markdown>
                     </article>
@@ -128,7 +128,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                 "group relative px-8 py-3 rounded-full font-bold text-base flex items-center gap-2 transition-all",
                                 isCompleted
                                     ? "bg-green-50 dark:bg-green-900/10 text-green-600 cursor-default"
-                                    : "bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg shadow-[#00C888]/20 hover:-translate-y-0.5"
+                                    : "bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/20 hover:-translate-y-0.5"
                             )}
                         >
                             {isCompleted ? (
@@ -143,13 +143,13 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
 
                         <div className="flex items-center justify-between w-full max-w-md text-xs font-bold text-gray-400 uppercase tracking-wider">
                             {prevLesson ? (
-                                <Link href={`/academy/lesson/${prevLesson.slug}`} className="hover:text-[#00C888] flex items-center gap-2 transition-colors">
+                                <Link href={`/academy/lesson/${prevLesson.slug}`} className="hover:text-primary flex items-center gap-2 transition-colors">
                                     <ChevronLeft size={14} /> Previous
                                 </Link>
                             ) : <span></span>}
 
                             {nextLesson && (
-                                <Link href={`/academy/lesson/${nextLesson.slug}`} className="hover:text-[#00C888] flex items-center gap-2 transition-colors">
+                                <Link href={`/academy/lesson/${nextLesson.slug}`} className="hover:text-primary flex items-center gap-2 transition-colors">
                                     Next Lesson <ChevronRight size={14} />
                                 </Link>
                             )}
@@ -179,19 +179,19 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                     <div key={l.id} className="relative py-1">
                                         {/* Active Dot */}
                                         {isActive && (
-                                            <div className="absolute -left-[21px] top-2.5 w-2.5 h-2.5 rounded-full bg-[#00C888] ring-4 ring-white dark:ring-[#0B0E14]" />
+                                            <div className="absolute -left-[21px] top-2.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-white dark:ring-[#0B0E14]" />
                                         )}
 
                                         <Link
                                             href={`/academy/lesson/${l.slug}`}
                                             className={cn(
                                                 "block text-sm transition-colors duration-200 py-1",
-                                                isActive ? "font-bold text-[#00C888]" : "font-medium text-gray-500 hover:text-gray-800 dark:hover:text-gray-300"
+                                                isActive ? "font-bold text-primary" : "font-medium text-gray-500 hover:text-gray-800 dark:hover:text-gray-300"
                                             )}
                                         >
                                             <span className="mr-2 text-[10px] opacity-40 tabular-nums">{idx + 1}.</span>
                                             {l.title}
-                                            {isCompleted && isActive && <CheckCircle size={10} className="inline ml-2 align-middle text-[#00C888]" />}
+                                            {isCompleted && isActive && <CheckCircle size={10} className="inline ml-2 align-middle text-primary" />}
                                         </Link>
                                     </div>
                                 )

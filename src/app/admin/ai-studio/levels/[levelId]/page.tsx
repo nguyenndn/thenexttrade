@@ -29,9 +29,9 @@ export default async function LevelDetailPage(props: { params: Promise<{ levelId
         <div className="space-y-8">
             {/* Breadcrumb */}
             <div className="flex items-center text-sm text-gray-500">
-                <Link href="/admin/ai-studio" className="hover:text-[#00C888] transition-colors">AI Studio</Link>
+                <Link href="/admin/ai-studio" className="hover:text-primary transition-colors">AI Studio</Link>
                 <ChevronRight size={14} className="mx-2" />
-                <Link href="/admin/ai-studio/levels" className="hover:text-[#00C888] transition-colors">Levels</Link>
+                <Link href="/admin/ai-studio/levels" className="hover:text-primary transition-colors">Levels</Link>
                 <ChevronRight size={14} className="mx-2" />
                 <span className="text-gray-900 dark:text-white font-medium">{level.title}</span>
             </div>
@@ -53,7 +53,7 @@ export default async function LevelDetailPage(props: { params: Promise<{ levelId
 
                 <div className="relative z-10 pr-16">
                     <div className="flex items-center space-x-3 mb-2">
-                        <span className="px-3 py-1 bg-[#00C888]/10 text-[#00C888] text-xs font-bold rounded-full uppercase tracking-wider">
+                        <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">
                             Level {level.order}
                         </span>
                         <span className="text-gray-400 text-sm">Created {new Date(level.createdAt).toLocaleDateString()}</span>

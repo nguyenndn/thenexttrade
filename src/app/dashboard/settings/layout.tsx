@@ -61,13 +61,13 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                                     key={item.href}
                                     href={item.href}
                                     className={`flex flex-col xl:flex-row items-center xl:gap-3 px-4 py-3 xl:px-3 xl:py-2.5 rounded-xl transition-all font-medium text-xs xl:text-sm group flex-shrink-0 border xl:border-transparent ${isActive
-                                        ? "bg-[#00C888]/10 text-[#00C888] border-[#00C888]/20 dark:bg-[#00C888]/20 dark:text-[#00C888] xl:bg-[#00C888]/10 xl:dark:bg-[#00C888]/20"
+                                        ? "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary xl:bg-primary/10 xl:dark:bg-primary/20"
                                         : "bg-white dark:bg-transparent border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
                                         }`}
                                 >
-                                    <Icon size={20} className={`mb-2 xl:mb-0 ${isActive ? "text-[#00C888]" : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"}`} />
+                                    <Icon size={20} className={`mb-2 xl:mb-0 ${isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"}`} />
                                     <span className="text-center xl:text-left whitespace-nowrap">{item.title}</span>
-                                    {isActive && <div className="hidden xl:block w-1 h-4 bg-[#00C888] rounded-full ml-auto" />}
+                                    {isActive && <div className="hidden xl:block w-1 h-4 bg-primary rounded-full ml-auto" />}
                                 </Link>
                             )
                         })}

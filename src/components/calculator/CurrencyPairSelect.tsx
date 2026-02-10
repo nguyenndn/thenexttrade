@@ -17,7 +17,7 @@ export function CurrencyPairSelect({ value, onChange, className }: CurrencyPairS
             <select
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className={`block w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 focus:border-[#00C888] focus:bg-white dark:focus:bg-[#1E2028] transition-all font-medium outline-none appearance-none cursor-pointer text-gray-900 dark:text-white ${className}`}
+                className={`block w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 focus:border-primary focus:bg-white dark:focus:bg-[#1E2028] transition-all font-medium outline-none appearance-none cursor-pointer text-gray-900 dark:text-white ${className}`}
             >
                 {pairs.map((pair) => (
                     <option key={pair} value={pair}>

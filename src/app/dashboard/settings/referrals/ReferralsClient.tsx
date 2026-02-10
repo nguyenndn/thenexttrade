@@ -25,7 +25,7 @@ export default function ReferralsClient() {
                     <div className="text-4xl font-black">12</div>
                     <p className="text-white/80 text-xs mt-1">Friends joined via your link</p>
                 </div>
-                <div className="bg-gradient-to-br from-[#00C888] to-[#009E6C] rounded-2xl p-6 text-white shadow-lg shadow-green-500/20">
+                <div className="bg-gradient-to-br from-primary to-[#009E6C] rounded-2xl p-6 text-white shadow-lg shadow-green-500/20">
                     <div className="flex items-center gap-3 mb-2 opacity-90">
                         <DollarSign size={20} />
                         <span className="font-semibold text-sm">Total Earnings</span>
@@ -92,7 +92,7 @@ export default function ReferralsClient() {
                                             Active
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-right font-bold text-[#00C888]">+ $20.00</td>
+                                    <td className="px-6 py-4 text-right font-bold text-primary">+ $20.00</td>
                                 </tr>
                             ))}
                         </tbody>

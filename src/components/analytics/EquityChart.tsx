@@ -25,10 +25,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         return (
             <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/10 p-4 rounded-xl shadow-xl">
                 <p className="text-sm font-bold text-gray-500 mb-2">{format(new Date(label), "MMM dd, yyyy")}</p>
-                <p className="text-[#00C888] font-bold text-lg">
+                <p className="text-primary font-bold text-lg">
                     ${payload[0].value.toFixed(2)}
                 </p>
-                <p className={`text-xs font-bold ${payload[0].payload.pnl >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                <p className={`text-xs font-bold ${payload[0].payload.pnl >= 0 ? 'text-primary' : 'text-red-500'}`}>
                     ({payload[0].payload.pnl >= 0 ? '+' : ''}{payload[0].payload.pnl.toFixed(2)})
                 </p>
             </div>
@@ -57,8 +57,8 @@ export function EquityChart({ data }: EquityChartProps) {
                 <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                         <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#00C888" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="#00C888" stopOpacity={0} />
+                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" className="dark:stroke-white/5" />
@@ -83,7 +83,7 @@ export function EquityChart({ data }: EquityChartProps) {
                     <Area
                         type="monotone"
                         dataKey="balance"
-                        stroke="#00C888"
+                        stroke="hsl(var(--primary))"
                         strokeWidth={3}
                         fillOpacity={1}
                         fill="url(#colorBalance)"

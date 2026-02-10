@@ -13,7 +13,7 @@ interface EALicenseCardProps {
 export function EALicenseCard({ license, onClick }: EALicenseCardProps) {
     const statusConfig: Record<string, { className: string; label: string }> = {
         [AccountStatus.APPROVED]: {
-            className: "bg-[#00C888]/10 text-[#00C888] border-[#00C888]/20 shadow-[0_0_15px_rgba(0,200,136,0.3)]",
+            className: "bg-primary/10 text-primary border-primary/20 shadow-[0_0_15px_rgba(0,200,136,0.3)]",
             label: "Active"
         },
         [AccountStatus.PENDING]: {
@@ -42,7 +42,7 @@ export function EALicenseCard({ license, onClick }: EALicenseCardProps) {
             className={cn(
                 "relative rounded-3xl p-6 transition-all duration-300 border group",
                 "border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028]",
-                onClick ? "cursor-pointer hover:shadow-2xl hover:shadow-[#00C888]/5 hover:-translate-y-1 hover:border-[#00C888]/30" : ""
+                onClick ? "cursor-pointer hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30" : ""
             )}
         >
             {/* Status Badge (Absolute) */}
@@ -62,7 +62,7 @@ export function EALicenseCard({ license, onClick }: EALicenseCardProps) {
 
             {/* Content: Centered Info */}
             <div className="text-center space-y-1">
-                <p className="text-2xl font-black text-gray-900 dark:text-white font-mono tracking-tight group-hover:text-[#00C888] transition-colors">
+                <p className="text-2xl font-black text-gray-900 dark:text-white font-mono tracking-tight group-hover:text-primary transition-colors">
                     {license.accountNumber}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wide">

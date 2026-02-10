@@ -70,7 +70,7 @@ export default async function EADashboardPage() {
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             EA Management
                         </h1>
@@ -90,7 +90,7 @@ export default async function EADashboardPage() {
                         </Button>
                     </Link>
                     <Link href="/admin/ea/accounts/pending">
-                        <Button variant="primary" className="bg-[#00C888] hover:bg-[#00B078]">
+                        <Button variant="primary" className="bg-primary hover:bg-[#00B078]">
                             Manage Requests
                         </Button>
                     </Link>
@@ -140,7 +140,7 @@ export default async function EADashboardPage() {
                         </h2>
                         <Link
                             href="/admin/ea/accounts/pending"
-                            className="text-sm font-bold text-[#00C888] hover:text-[#00B078] flex items-center gap-1"
+                            className="text-sm font-bold text-primary hover:text-[#00B078] flex items-center gap-1"
                         >
                             View All <ArrowRight size={16} />
                         </Link>

@@ -195,10 +195,10 @@ export default async function Home() {
                       )}
                     </div>
                     <div className="flex-1 flex flex-col justify-center">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#00C888] mb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-primary mb-1">
                         {article.category.name}
                       </span>
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2 leading-snug group-hover:text-[#00C888] transition-colors">
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                         {article.title}
                       </h4>
                       <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -217,7 +217,7 @@ export default async function Home() {
       {/* Trending Topics */}
       <section className="py-16 relative bg-gray-50/50 dark:bg-[#0F1117] border-t border-gray-100 dark:border-white/5 overflow-hidden">
         {/* Dot Pattern Background - Increased Visibility */}
-        <div className="absolute inset-0 bg-[radial-gradient(#00C888_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
 
         {/* Fireflies Effect */}
         <FireflyBackground />
@@ -233,9 +233,9 @@ export default async function Home() {
               <Link
                 key={idx}
                 href={topic.href}
-                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-lg hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/20 hover:-translate-y-1 hover:border-[#00C888] dark:hover:border-[#00C888] transition-all duration-300"
+                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-lg hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/20 hover:-translate-y-1 hover:border-primary dark:hover:border-primary transition-all duration-300"
               >
-                <span className="text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-[#00C888] transition-colors">
+                <span className="text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors">
                   # {topic.name}
                 </span>
                 {topic.change === 'Up' && <TrendingUp size={16} className="text-green-500" />}
@@ -307,7 +307,7 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="mb-16 text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
-              Your Journey to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00C888] to-blue-500">Pro Trader</span> status
+              Your Journey to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Pro Trader</span> status
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
               Master the markets with our structured learning path. From basics to advanced strategies, we guide you every step of the way.
@@ -316,16 +316,16 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 md:flex md:flex-wrap md:justify-center lg:grid lg:grid-cols-5 gap-6 mb-16 relative">
             {/* Connecting Line (Desktop Only) */}
-            <div className="hidden lg:block absolute top-12 left-6 right-6 h-0.5 bg-gradient-to-r from-[#00C888]/20 via-blue-500/20 to-[#00C888]/20 -z-10"></div>
+            <div className="hidden lg:block absolute top-12 left-6 right-6 h-0.5 bg-gradient-to-r from-primary/20 via-blue-500/20 to-primary/20 -z-10"></div>
 
             {[
               { icon: BookOpen, title: "1. Initiate", desc: "Forex fundamentals.", color: "text-blue-500", bg: "bg-blue-500/10" },
-              { icon: TrendingUp, title: "2. Novice", desc: "Master Analysis.", color: "text-[#00C888]", bg: "bg-[#00C888]/10" },
+              { icon: TrendingUp, title: "2. Novice", desc: "Master Analysis.", color: "text-primary", bg: "bg-primary/10" },
               { icon: Clock, title: "3. Apprentice", desc: "Build Strategy.", color: "text-purple-500", bg: "bg-purple-500/10" },
               { icon: Zap, title: "4. Trader", desc: "Risk & Psych.", color: "text-pink-500", bg: "bg-pink-500/10" },
               { icon: Calendar, title: "5. Pro", desc: "Consistency.", color: "text-orange-500", bg: "bg-orange-500/10" },
             ].map((step, idx) => (
-              <div key={idx} className="relative group bg-white dark:bg-[#1E2028] p-4 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-[#00C888] dark:hover:border-[#00C888] transition-all duration-300 hover:-translate-y-2 hover:shadow-xl md:w-[30%] lg:w-auto">
+              <div key={idx} className="relative group bg-white dark:bg-[#1E2028] p-4 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-all duration-300 hover:-translate-y-2 hover:shadow-xl md:w-[30%] lg:w-auto">
                 <div className={`w-12 h-12 rounded-2xl ${step.bg} ${step.color} flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform`}>
                   <step.icon size={24} strokeWidth={2.5} />
                 </div>
@@ -340,7 +340,7 @@ export default async function Home() {
           <div className="flex justify-center">
             <Link
               href="/academy"
-              className="inline-flex items-center justify-center px-10 py-5 rounded-full text-lg font-bold text-white shadow-xl shadow-[#00C888]/20 bg-gradient-to-r from-[#00C888] to-blue-600 hover:from-[#00B078] hover:to-blue-700 transform hover:scale-105 transition-all duration-300"
+              className="inline-flex items-center justify-center px-10 py-5 rounded-full text-lg font-bold text-white shadow-xl shadow-primary/20 bg-gradient-to-r from-primary to-blue-600 hover:from-[#00B078] hover:to-blue-700 transform hover:scale-105 transition-all duration-300"
             >
               Start Learning Now
             </Link>
@@ -351,7 +351,7 @@ export default async function Home() {
       {/* Daily Quote */}
       <section className="py-16 relative overflow-hidden border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-[#0F1117]">
         {/* Background Effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(#00C888_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
         <FireflyBackground />
 
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">

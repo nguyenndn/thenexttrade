@@ -63,13 +63,13 @@ export default async function AcademyPage() {
             {/* Hero Section */}
             <section className="pt-32 sm:pt-40 pb-10 px-6 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto text-center relative z-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00C888]/10 text-[#00C888] font-bold text-xs uppercase tracking-wider mb-6">
-                        <span className="w-2 h-2 rounded-full bg-[#00C888] animate-pulse"></span>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-6">
+                        <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
                         <span>Professional Career Path</span>
                     </div>
 
                     <h1 className="text-4xl md:text-7xl font-black mb-6 leading-tight text-gray-900 dark:text-white tracking-tight">
-                        The Trader's <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00C888] to-cyan-500">Ascent</span>
+                        The Trader's <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-500">Ascent</span>
                     </h1>
                     <p className="text-lg md:text-xl mb-8 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
                         Master the markets through 5 distinct career phases. From your first trade to institutional mastery.
