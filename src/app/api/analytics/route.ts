@@ -7,7 +7,8 @@ import {
     parseISO,
     format,
     getDay,
-    addHours
+    addHours,
+    endOfDay
 } from "date-fns";
 
 export async function GET(request: NextRequest) {
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest) {
             ? parseISO(startDateParam)
             : startOfMonth(now);
         const endDate = endDateParam
-            ? parseISO(endDateParam)
+            ? endOfDay(parseISO(endDateParam))
             : endOfMonth(now);
 
         // 3. Build where clause

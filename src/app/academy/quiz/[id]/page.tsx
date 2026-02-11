@@ -161,7 +161,7 @@ export default function QuizRunnerPage() {
                                 <button
                                     key={opt.id}
                                     onClick={() => handleSelectOption(opt.id)}
-                                    className={`w-full text-left p-6 rounded-2xl border-2 transition-all flex items-center justify-between ${isActive
+                                    className={`w-full text-left p-6 rounded-xl border-2 transition-all flex items-center justify-between ${isActive
                                         ? 'border-cyan-500 bg-cyan-500/5 shadow-lg shadow-cyan-500/10'
                                         : 'border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] hover:border-gray-200 dark:hover:border-white/10'}`}
                                 >
@@ -177,7 +177,7 @@ export default function QuizRunnerPage() {
                     <button
                         onClick={handleNext}
                         disabled={!isSelected || submitting}
-                        className="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-bold rounded-2xl flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all shadow-xl"
+                        className="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-bold rounded-xl flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all shadow-xl"
                     >
                         {submitting ? <Loader2 className="animate-spin" /> : (
                             <>

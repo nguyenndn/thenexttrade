@@ -104,7 +104,7 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense }:
             <div className="flex flex-col xl:flex-row gap-6">
                 {/* Sidebar / Navigation Tabs */}
                 <aside className="w-full xl:w-64 flex-shrink-0 z-20">
-                    <div className="sticky top-[10px] bg-white dark:bg-[#0B0E14] rounded-2xl border border-gray-100 dark:border-white/5 p-2 xl:p-4 shadow-sm">
+                    <div className="sticky top-[10px] bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 p-2 xl:p-4 shadow-sm">
                         <nav className="flex xl:flex-col gap-2 overflow-x-auto scrollbar-hide pb-2 xl:pb-0">
                             {navItems.map((item) => {
                                 const isActive = activeTab === item.id;

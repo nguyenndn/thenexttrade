@@ -42,6 +42,8 @@ interface JournalEntry {
 
 
 
+import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
+
 export default function JournalList() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -56,6 +58,14 @@ export default function JournalList() {
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set([
         "symbol", "type", "volume", "pnl", "strategy", "mindset", "customTags", "mistakes"
     ]));
+    
+    // Date Filter (From URL - Global Header)
+    const paramFrom = searchParams.get("from");
+    const paramTo = searchParams.get("to");
+    const dateRange = {
+        start: paramFrom ? new Date(paramFrom) : undefined,
+        end: paramTo ? new Date(paramTo) : undefined
+    };
 
     // Fetch Strategies on mount
     useEffect(() => {
@@ -157,8 +167,13 @@ export default function JournalList() {
                 page: page.toString(),
                 limit: "10",
                 ...(filter.symbol && { symbol: filter.symbol }),
-                ...(accountId && { accountId })
+                ...(accountId && { accountId }),
+                // Add Date Filtering
+                ...(dateRange?.start && { startDate: dateRange.start.toISOString() }),
+                ...(dateRange?.end && { endDate: dateRange.end.toISOString() })
             });
+
+            console.log("Journal Fetch Query:", query.toString()); // DEBUG LOG
 
             const res = await fetch(`/api/journal-entries?${query}`);
             const data = await res.json();
@@ -180,7 +195,7 @@ export default function JournalList() {
             fetchEntries(1);
         }, 500);
         return () => clearTimeout(timeout);
-    }, [filter, accountId]); // Removed sort dependency
+    }, [filter, accountId, paramFrom, paramTo]); // Re-fetch when URL Date/Account changes
 
     const handleSort = (colId: string) => {
         setSort(prev => ({
@@ -270,13 +285,17 @@ export default function JournalList() {
                             Trading Journal
                         </h1>
                     </div>
-                    <button
-                        onClick={handleCreate}
-                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-2xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95"
-                    >
-                        <Plus size={18} strokeWidth={2.5} />
-                        Log Trade
-                    </button>
+                    {/* Filter (Account + Date) - Matched to Dashboard Layout */}
+                    <div className="flex items-center gap-3">
+                        <DashboardFilter currentAccountId={accountId || undefined} />
+                        <button
+                            onClick={handleCreate}
+                            className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-4 py-2 h-10 text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95 whitespace-nowrap"
+                        >
+                            <Plus size={18} strokeWidth={2.5} />
+                            Log Trade
+                        </button>
+                    </div>
                 </div>
                 <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
                     Track your trades and analyze your performance.
@@ -286,7 +305,7 @@ export default function JournalList() {
             {stats && <JournalStats stats={stats} />}
 
             {/* Filters & Controls */}
-            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-xl shadow-sm border border-gray-100 dark:border-white/5">
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-primary transition-colors w-full md:w-64">
                     <Search size={18} className="text-gray-400" />
                     <input
@@ -297,6 +316,11 @@ export default function JournalList() {
                         onChange={(e) => setFilter({ symbol: e.target.value })}
                     />
                 </div>
+
+                {/* Reusable Filter Component moved to Header */}
+                
+                {/* Log Trade Button */}
+                {/* Reusable Filter Component moved to Header */}
 
                 {/* Column Toggle */}
                 <DropdownMenu open={isColumnMenuOpen} onOpenChange={setIsColumnMenuOpen}>

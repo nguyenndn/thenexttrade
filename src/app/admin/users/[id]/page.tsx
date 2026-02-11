@@ -101,7 +101,7 @@ export default async function UserDetailPage(props: UserDetailPageProps) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Column: Profile Details */}
                 <div className="space-y-6">
-                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
+                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-white/5 pb-2">
                             Profile Details
                         </h3>
@@ -140,7 +140,7 @@ export default async function UserDetailPage(props: UserDetailPageProps) {
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-white/5 pb-2 mb-4">
                             Gamification
                         </h3>

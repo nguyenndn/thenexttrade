@@ -91,7 +91,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
     return (
         <div className="grid gap-8">
             {levels.map((level) => (
-                <div key={level.id} className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-2xl overflow-hidden shadow-sm">
+                <div key={level.id} className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden shadow-sm">
                     {/* Level Headers are static for now, or could be draggable if we add a wrapper */}
                     <div className="p-4 bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                         <div className="flex items-center gap-3">

@@ -17,7 +17,7 @@ export function DayTradeList({ date, trades, onClose }: DayTradeListProps) {
             onClick={onClose}
         >
             <div
-                className="bg-white dark:bg-[#151925] w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden animate-in zoom-in-95 duration-200"
+                className="bg-white dark:bg-[#151925] w-full max-w-md rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden animate-in zoom-in-95 duration-200"
                 onClick={(e) => e.stopPropagation()}
             >
 

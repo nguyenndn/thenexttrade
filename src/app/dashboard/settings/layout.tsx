@@ -41,7 +41,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
         <div className="flex flex-col xl:flex-row gap-6 p-4 xl:p-[10px] min-h-screen bg-gray-50/50 dark:bg-black/20">
             {/* Sidebar / Navigation Tabs */}
             <aside className="w-full xl:w-64 flex-shrink-0 z-20">
-                <div className="sticky top-[10px] bg-white dark:bg-[#0B0E14] rounded-2xl border border-gray-100 dark:border-white/5 p-2 xl:p-4 shadow-sm">
+                <div className="sticky top-[10px] bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 p-2 xl:p-4 shadow-sm">
                     <div className="mb-4 px-2 hidden xl:block">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white">Settings</h2>
                         <p className="text-xs text-gray-500">Manage your account settings</p>

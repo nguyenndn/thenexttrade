@@ -17,7 +17,7 @@ trigger: always_on
 - **Strict Prohibition**: You are FORBIDDEN from using generic Tailwind utility classes (e.g., `rounded`, `bg-blue-500`, `shadow`) unless they match `ui-guide.md`.
 - **Mandatory Workflow**:
     1. Before writing ANY UI code, you MUST read `design/ui-guide.md` to get the exact class strings.
-    2. If a specific component is not in the guide, use the "Breek Pattern": `rounded-2xl` + `border-white/5` + `bg-[#00C888]` (for primary).
+    2. If a specific component is not in the guide, use the "Breek Pattern": `rounded-xl` + `border-white/5` + `bg-[#00C888]` (for primary).
     3. NEVER invent new styles. If unsure, stop and check the guide file first.
 
 ## 3. Project Structure & Content Strategy

@@ -83,7 +83,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
         <div>
             <div
                 className={cn(
-                    "flex items-center gap-4 px-4 py-3 rounded-2xl cursor-pointer transition-all duration-200 group relative select-none",
+                    "flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 group relative select-none",
                     collapsed ? "justify-center px-2" : "",
                     isActiveStyle
                         ? "bg-primary/10 text-primary"

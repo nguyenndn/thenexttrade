@@ -9,7 +9,7 @@ export default function Loading() {
                         <div className="h-8 w-32 bg-gray-200 dark:bg-white/10 rounded-lg" />
                     </div>
                 </div>
-                <div className="h-10 w-32 bg-gray-200 dark:bg-white/10 rounded-2xl" />
+                <div className="h-10 w-32 bg-gray-200 dark:bg-white/10 rounded-xl" />
             </div>
 
             {/* Table Skeleton */}

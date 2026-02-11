@@ -47,6 +47,7 @@ interface DashboardClientProps {
     bestTrades: any[];
     worstTrades: any[];
     symbolAnalytics: any[];
+    lotDistribution: { name: string; value: number }[];
 }
 
 export default function DashboardClient({
@@ -63,7 +64,8 @@ export default function DashboardClient({
     dailyWinRates,
     bestTrades,
     worstTrades,
-    symbolAnalytics
+    symbolAnalytics,
+    lotDistribution
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -96,19 +98,7 @@ export default function DashboardClient({
         }
     }, []);
 
-    // Calculate Lot Distribution
-    const lotStats = recentTrades.reduce((acc: { [key: string]: number }, trade: any) => {
-        const symbol = trade.symbol || "Unknown";
-        const volume = Number(trade.lotSize) || 0;
-        if (!acc[symbol]) acc[symbol] = 0;
-        acc[symbol] += volume;
-        return acc;
-    }, {});
 
-    const lotDistributionData = Object.entries(lotStats)
-        .map(([name, value]) => ({ name, value: Number(value) }))
-        .sort((a, b) => b.value - a.value)
-        .slice(0, 5); // Top 5
 
     const kpiCards = [
         {
@@ -182,7 +172,7 @@ export default function DashboardClient({
                             const colSpanClass = index === 2 ? "sm:col-span-2 lg:col-span-1" : "";
 
                             return (
-                                <div key={index} className={`bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 ${borderColor} ${colSpanClass}`}>
+                                <div key={index} className={`bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 ${borderColor} ${colSpanClass}`}>
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className={`p-3 rounded-xl ${card.bg}`}>
                                             <Icon size={20} className={card.color} />
@@ -204,7 +194,7 @@ export default function DashboardClient({
                     }} />
 
                     {/* Balance Growth Chart */}
-                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-primary">
+                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-primary">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -228,7 +218,7 @@ export default function DashboardClient({
                     {/* Bottom Row: Daily Win Rate & Top Trades */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Daily Win Rate Chart */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-green-500">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-green-500">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-green-500/10 rounded-lg text-green-500">
@@ -244,7 +234,7 @@ export default function DashboardClient({
                         </div>
 
                         {/* Top Trades */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-cyan-500">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-cyan-500">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-cyan-500/10 rounded-lg text-cyan-500">
@@ -265,7 +255,7 @@ export default function DashboardClient({
                     {/* Charts Row: Profit & Lot Distribution */}
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 md:col-span-2 xl:col-span-1">
                         {/* Profit Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-blue-500 h-[324px] flex flex-col justify-between">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-blue-500 h-[324px] flex flex-col justify-between">
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
                                     <PieChart size={20} />
@@ -276,19 +266,19 @@ export default function DashboardClient({
                         </div>
 
                         {/* Lot Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-orange-500 h-[324px] flex flex-col justify-between">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-orange-500 h-[324px] flex flex-col justify-between">
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="p-3 bg-orange-500/10 rounded-xl text-orange-500">
                                     <Layers size={20} />
                                 </div>
                                 <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider">Lot Distribution</h3>
                             </div>
-                            <LotDistributionChart data={lotDistributionData} height={210} innerRadius={60} outerRadius={80} />
+                            <LotDistributionChart data={lotDistribution} height={210} innerRadius={60} outerRadius={80} />
                         </div>
                     </div>
 
                     {/* Monthly Analytics */}
-                    <div className="md:col-span-2 xl:col-span-1 bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-purple-500">
+                    <div className="md:col-span-2 xl:col-span-1 bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-purple-500">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
                                 <CalendarRange size={20} />
@@ -313,7 +303,7 @@ export default function DashboardClient({
                                         axisLine={false}
                                         tickLine={false}
                                         tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                                        tickFormatter={(value) => `$${value}`}
+                                        tickFormatter={(value) => `$${Number(value).toFixed(2)}`}
                                     />
                                     <Tooltip
                                         cursor={{ fill: 'transparent' }}
@@ -323,7 +313,7 @@ export default function DashboardClient({
                                             borderRadius: '8px',
                                             color: '#F9FAFB'
                                         }}
-                                        formatter={(value?: number) => [`$${value || 0}`, 'Net Profit']}
+                                        formatter={(value?: number) => [`$${(value || 0).toFixed(2)}`, 'Net Profit']}
                                     />
                                     <Bar
                                         dataKey="value"

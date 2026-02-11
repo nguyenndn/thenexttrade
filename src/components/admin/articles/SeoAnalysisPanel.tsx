@@ -127,7 +127,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
 
 
     return (
-        <div className="bg-white dark:bg-[#151925] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+        <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
             <div className="flex items-center justify-between">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                     <Search size={20} className="text-primary" />

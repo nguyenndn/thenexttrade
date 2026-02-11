@@ -28,7 +28,7 @@ export const SearchInput = () => {
             </div>
             <input
                 type="text"
-                className="block w-full pl-11 pr-4 py-4 rounded-2xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all shadow-lg text-base"
+                className="block w-full pl-11 pr-4 py-4 rounded-xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all shadow-lg text-base"
                 placeholder="Search for articles, guides..."
                 onChange={(e) => handleSearch(e.target.value)}
                 defaultValue={searchParams.get('q')?.toString()}

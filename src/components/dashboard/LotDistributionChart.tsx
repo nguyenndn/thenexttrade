@@ -32,7 +32,7 @@ export function LotDistributionChart({ data, height = 300, innerRadius = 60, out
   return (
     <div className="w-full" style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
+        <PieChart key={JSON.stringify(chartData)}>
           <Pie
             data={chartData}
             cx="50%"
@@ -41,6 +41,8 @@ export function LotDistributionChart({ data, height = 300, innerRadius = 60, out
             outerRadius={outerRadius}
             paddingAngle={5}
             dataKey="value"
+            animationDuration={1000}
+            animationBegin={0}
           >
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} strokeWidth={0} />

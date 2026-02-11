@@ -66,7 +66,7 @@ export function ProfitCalendar({ data }: ProfitCalendarProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-gray-900 dark:text-white">

@@ -33,7 +33,7 @@ export default function DashboardCharts({ data }: DashboardChartsProps) {
                     <Tooltip
                         contentStyle={{ backgroundColor: isDark ? '#151925' : '#fff', border: 'none', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                         itemStyle={{ color: isDark ? '#fff' : '#000' }}
-                        formatter={(value: number) => [`$${value.toFixed(2)}`, "Balance"]}
+                        formatter={(value: any) => [`$${Number(value).toFixed(2)}`, "Balance"]}
                     />
                     <Area type="monotone" dataKey="balance" stroke="hsl(var(--primary))" strokeWidth={3} fillOpacity={1} fill="url(#colorPnL)" />
                 </AreaChart>

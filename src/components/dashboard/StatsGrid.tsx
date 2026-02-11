@@ -45,7 +45,7 @@ export function StatsGrid({ data }: StatsGridProps) {
                 const Icon = stat.icon;
                 const borderColor = i === 0 ? "border-t-blue-500" : i === 1 ? "border-t-green-500" : "border-t-red-500";
                 return (
-                    <div key={i} className={`bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 ${borderColor}`}>
+                    <div key={i} className={`bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 ${borderColor}`}>
                         <div className="flex items-center gap-3 mb-3">
                             <div className={`p-3 rounded-xl ${stat.bg}`}>
                                 <Icon size={20} className={stat.color} />

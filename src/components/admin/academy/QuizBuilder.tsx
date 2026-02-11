@@ -161,7 +161,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
             </DndContext>
 
             {questions.length === 0 && (
-                <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashed border-gray-200 dark:border-white/10 w-full mx-auto">
+                <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 w-full mx-auto">
                     <p className="text-gray-500 mb-4">No questions added yet.</p>
                     <div className="flex justify-center gap-3">
                         <Button

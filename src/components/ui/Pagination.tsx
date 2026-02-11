@@ -23,7 +23,7 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
 
     return (
         <div className="flex justify-center mt-12">
-            <div className="flex items-center gap-2 p-2 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10">
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10">
 
                 {/* Previous Button */}
                 <Link

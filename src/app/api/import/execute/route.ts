@@ -112,8 +112,8 @@ export async function POST(request: NextRequest) {
                         exitPrice: trade.exitPrice,
                         lotSize: trade.size || 0, // Map size to lotSize
                         pnl: trade.pnl,
-                        status: trade.status || "CLOSED", // OPEN/CLOSED
-                        result: trade.result, // WIN/LOSS/BREAK_EVEN
+                        status: (trade.status as any) || "CLOSED", // OPEN/CLOSED
+                        result: (trade.result as any), // WIN/LOSS/BREAK_EVEN
 
                         // Required fields handling
                         // entryReason?

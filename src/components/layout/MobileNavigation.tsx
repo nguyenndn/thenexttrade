@@ -29,7 +29,7 @@ export function MobileNavigation({ isOpen, onClose }: MobileNavigationProps) {
 
     return (
         <div className="lg:hidden px-2 pb-4 absolute top-full left-0 w-full z-40">
-            <div className={`max-w-7xl mx-auto rounded-2xl border shadow-lg ${isDark ? 'bg-slate-900/95 border-slate-700' : 'bg-white border-gray-200'
+            <div className={`max-w-7xl mx-auto rounded-xl border shadow-lg ${isDark ? 'bg-slate-900/95 border-slate-700' : 'bg-white border-gray-200'
                 }`}>
                 <nav className="p-4 space-y-2">
                     {menuItems.map((item) => {

@@ -100,7 +100,7 @@ export default function AccountsClient() {
                 {isLoading ? (
                     // Skeleton
                     [1, 2].map((i) => (
-                        <div key={i} className="h-64 rounded-2xl bg-gray-100 dark:bg-white/5 animate-pulse" />
+                        <div key={i} className="h-64 rounded-xl bg-gray-100 dark:bg-white/5 animate-pulse" />
                     ))
                 ) : accounts.length === 0 ? (
                     <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
@@ -120,7 +120,7 @@ export default function AccountsClient() {
                     </div>
                 ) : (
                     accounts.map((account) => (
-                        <div key={account.id} className="relative group bg-white dark:bg-[#0B0E14] rounded-2xl border border-gray-100 dark:border-white/5 p-6 shadow-sm hover:shadow-md transition-all">
+                        <div key={account.id} className="relative group bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm hover:shadow-md transition-all">
                             {/* Broker Badge */}
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export default function AccountsClient() {
                 {accounts.length > 0 && (
                     <button
                         onClick={openNewAccountModal}
-                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#2F80ED] dark:hover:border-[#2F80ED] group transition-all text-gray-400 hover:text-[#2F80ED] bg-transparent hover:bg-blue-50/50 dark:hover:bg-blue-500/5 min-h-[220px]"
+                        className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#2F80ED] dark:hover:border-[#2F80ED] group transition-all text-gray-400 hover:text-[#2F80ED] bg-transparent hover:bg-blue-50/50 dark:hover:bg-blue-500/5 min-h-[220px]"
                     >
                         <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <Plus size={24} />

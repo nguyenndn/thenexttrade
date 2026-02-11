@@ -40,7 +40,7 @@ async function SettingsLoader() {
                 </p>
             </div>
 
-            <div className="bg-white dark:bg-[#0B0E14] rounded-2xl border border-gray-100 dark:border-white/5 p-6 md:p-8 shadow-sm">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 p-6 md:p-8 shadow-sm">
                 <AccountSettingsTabs user={user} profile={profile} />
             </div>
         </div>

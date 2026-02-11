@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
     return (
         <>
             <div className="flex flex-col items-center justify-center mb-8">
-                <div className="p-3 bg-cyan-500/10 text-cyan-500 rounded-2xl mb-4">
+                <div className="p-3 bg-cyan-500/10 text-cyan-500 rounded-xl mb-4">
                     <Shield size={40} />
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-center m-0 mb-2">Privacy Policy</h1>

@@ -60,7 +60,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
             </div>
 
             {/* Main Comment Form */}
-            <div className="mb-10 bg-gray-50/50 dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5">
+            <div className="mb-10 bg-gray-50/50 dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5">
                 {currentUser ? (
                     <div className="flex gap-4">
                         <div className="flex-shrink-0">

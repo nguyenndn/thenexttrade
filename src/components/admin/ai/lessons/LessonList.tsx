@@ -10,7 +10,7 @@ interface LessonListProps {
 export default function LessonList({ lessons }: LessonListProps) {
     if (lessons.length === 0) {
         return (
-            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                 <p className="text-gray-500 dark:text-gray-400 mb-4">No lessons found in this module.</p>
                 <p className="text-sm text-gray-400">Generate lessons using AI to fill this module.</p>
             </div>

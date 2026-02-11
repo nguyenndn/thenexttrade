@@ -413,7 +413,7 @@ export function CalculatorHub() {
       </div>
 
       {/* Calculator Content */}
-      <div className="bg-white dark:bg-[#0B0E14] rounded-2xl border border-gray-100 dark:border-white/5 p-6 shadow-sm">
+      <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm">
         {activeCalc === "position-size" && <PositionSizeCalc />}
         {activeCalc === "risk-reward" && <RiskRewardCalc />}
         {activeCalc === "pip-value" && <PipValueCalc />}
@@ -575,7 +575,7 @@ export function PositionSizeCalc() {
           {result && (
             <div className="space-y-4">
               {/* Main Result */}
-              <div className="bg-gradient-to-br from-[#00C888]/10 to-[#00C888]/5 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-br from-[#00C888]/10 to-[#00C888]/5 rounded-xl p-6 text-center">
                 <p className="text-sm text-gray-500 mb-1">Lot Size</p>
                 <p className="text-4xl font-black text-[#00C888]">
                   {result.lotSize.toFixed(2)}
@@ -784,7 +784,7 @@ export function RiskRewardCalc() {
           {result && (
             <div className="space-y-4">
               {/* Main Result */}
-              <div className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl p-6 text-center">
                 <p className="text-sm text-gray-500 mb-1">Risk : Reward</p>
                 <p className="text-4xl font-black text-purple-500">
                   {result.rrString}

@@ -1071,12 +1071,12 @@ export function AccountList() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-48 bg-gray-100 dark:bg-gray-800 rounded-2xl animate-pulse"
+              className="h-48 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"
             />
           ))}
         </div>
       ) : accounts.length === 0 ? (
-        <div className="text-center py-16 bg-gray-50 dark:bg-gray-800/50 rounded-2xl">
+        <div className="text-center py-16 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
           <div className="w-16 h-16 mx-auto mb-4 bg-[#00C888]/10 rounded-full flex items-center justify-center">
             <Plus size={32} className="text-[#00C888]" />
           </div>
@@ -1164,7 +1164,7 @@ export function AccountCard({ account, onUpdate }: AccountCardProps) {
   };
 
   return (
-    <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
+    <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
       {/* Status indicator */}
       <div className="absolute top-4 right-4 flex items-center gap-2">
         <span
@@ -1329,7 +1329,7 @@ export function AddAccountModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -2079,7 +2079,7 @@ export function AccountsSummary({ className }: AccountsSummaryProps) {
   }, []);
 
   if (isLoading) {
-    return <div className="animate-pulse h-32 bg-gray-100 dark:bg-gray-800 rounded-2xl" />;
+    return <div className="animate-pulse h-32 bg-gray-100 dark:bg-gray-800 rounded-xl" />;
   }
 
   const { totals } = data || { totals: {} };
@@ -2087,7 +2087,7 @@ export function AccountsSummary({ className }: AccountsSummaryProps) {
   return (
     <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 ${className}`}>
       {/* Total P&L */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-3 mb-2">
           {totals.totalPnl >= 0 ? (
             <TrendingUp className="text-[#00C888]" size={20} />
@@ -2106,7 +2106,7 @@ export function AccountsSummary({ className }: AccountsSummaryProps) {
       </div>
 
       {/* Total Trades */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-3 mb-2">
           <Activity className="text-blue-500" size={20} />
           <span className="text-sm text-gray-500">Total Trades</span>
@@ -2117,7 +2117,7 @@ export function AccountsSummary({ className }: AccountsSummaryProps) {
       </div>
 
       {/* Connected Accounts */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-2 h-2 rounded-full bg-[#00C888] animate-pulse" />
           <span className="text-sm text-gray-500">Connected</span>
@@ -2128,7 +2128,7 @@ export function AccountsSummary({ className }: AccountsSummaryProps) {
       </div>
 
       {/* Accounts */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-3 mb-2">
           <Wallet className="text-purple-500" size={20} />
           <span className="text-sm text-gray-500">Accounts</span>

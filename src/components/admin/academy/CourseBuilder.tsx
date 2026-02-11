@@ -307,7 +307,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
             </DndContext>
 
             {modules.length === 0 && (
-                <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                     <p className="text-gray-500 mb-4">This course has no content yet.</p>
                     <Button
                         onClick={() => setIsModuleModalOpen(true)}

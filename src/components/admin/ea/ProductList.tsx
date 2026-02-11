@@ -96,7 +96,7 @@ export function ProductList({ products }: ProductListProps) {
                     <input
                         type="text"
                         placeholder="Search products..."
-                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-black/20 border-transparent focus:bg-white dark:focus:bg-[#1E2028] border focus:border-primary/50 rounded-2xl shadow-inner focus:shadow-lg focus:ring-0 outline-none transition-all placeholder:text-gray-400 text-gray-700 dark:text-gray-200"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-black/20 border-transparent focus:bg-white dark:focus:bg-[#1E2028] border focus:border-primary/50 rounded-xl shadow-inner focus:shadow-lg focus:ring-0 outline-none transition-all placeholder:text-gray-400 text-gray-700 dark:text-gray-200"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -105,9 +105,9 @@ export function ProductList({ products }: ProductListProps) {
                 {/* Filters */}
                 <div className="flex gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
                     <div className="relative group">
-                        <div className="absolute inset-0 bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
+                        <div className="absolute inset-0 bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
                         <select
-                            className="relative w-full md:w-48 px-5 py-3 bg-gray-50 dark:bg-black/20 hover:bg-white dark:hover:bg-[#1E2028] border border-transparent hover:border-gray-100 dark:hover:border-white/5 rounded-2xl text-sm font-medium text-gray-700 dark:text-gray-200 outline-none cursor-pointer focus:border-primary/50 shadow-sm transition-all appearance-none"
+                            className="relative w-full md:w-48 px-5 py-3 bg-gray-50 dark:bg-black/20 hover:bg-white dark:hover:bg-[#1E2028] border border-transparent hover:border-gray-100 dark:hover:border-white/5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 outline-none cursor-pointer focus:border-primary/50 shadow-sm transition-all appearance-none"
                             value={filterType}
                             onChange={(e) => setFilterType(e.target.value as any)}
                         >
@@ -165,7 +165,7 @@ export function ProductList({ products }: ProductListProps) {
                                         <tr key={product.id} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
                                             <td className="px-8 py-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 group-hover:shadow-md transition-all duration-300">
+                                                    <div className="w-16 h-16 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 group-hover:shadow-md transition-all duration-300">
                                                         {product.thumbnail ? (
                                                             <img src={product.thumbnail} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                                         ) : (

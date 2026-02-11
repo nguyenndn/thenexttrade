@@ -215,7 +215,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main Content */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white dark:bg-[#151925] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
                         <div className="space-y-2">
                             <input
                                 type="text"
@@ -272,7 +272,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     />
 
                     {/* SEO Settings */}
-                    <div className="bg-white dark:bg-[#151925] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
                         <h3 className="font-bold text-gray-900 dark:text-white">SEO Settings</h3>
                         <div className="grid grid-cols-1 gap-4">
                             <div>
@@ -303,7 +303,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                 <div className="space-y-6">
 
                     {/* Publish Action */}
-                    <div className="bg-white dark:bg-[#151925] rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
                         <div className="flex justify-between items-center">
                             <h3 className="font-bold text-gray-900 dark:text-white text-sm">Publish</h3>
                             <button
@@ -367,7 +367,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     </div>
 
                     {/* Thumbnail */}
-                    <div className="bg-white dark:bg-[#151925] rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-3 text-sm">Featured Image</h3>
                         <ImageUploader
                             value={formData.thumbnail}
@@ -376,7 +376,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     </div>
 
                     {/* Taxonomies */}
-                    <div className="bg-white dark:bg-[#151925] rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Category</label>
                             <select
@@ -401,7 +401,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     </div>
 
                     {/* Excerpt */}
-                    <div className="bg-white dark:bg-[#151925] rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
                         <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Excerpt</label>
                         <textarea
                             className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary resize-none"

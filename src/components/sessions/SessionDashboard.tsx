@@ -153,7 +153,7 @@ function QuickStatCard({
     color: string;
 }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
                 <div className={`p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 ${color}`}>
                     <Icon size={16} />
@@ -172,15 +172,15 @@ function QuickStatCard({
 function SessionLoadingSkeleton() {
     return (
         <div className="space-y-6 animate-pulse">
-            <div className="h-24 bg-gray-100 dark:bg-white/5 rounded-2xl w-full" />
+            <div className="h-24 bg-gray-100 dark:bg-white/5 rounded-xl w-full" />
             <div className="grid grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="h-24 bg-gray-100 dark:bg-white/5 rounded-2xl" />
+                    <div key={i} className="h-24 bg-gray-100 dark:bg-white/5 rounded-xl" />
                 ))}
             </div>
             <div className="grid grid-cols-3 gap-6">
-                <div className="col-span-2 h-80 bg-gray-100 dark:bg-white/5 rounded-2xl" />
-                <div className="col-span-1 h-80 bg-gray-100 dark:bg-white/5 rounded-2xl" />
+                <div className="col-span-2 h-80 bg-gray-100 dark:bg-white/5 rounded-xl" />
+                <div className="col-span-1 h-80 bg-gray-100 dark:bg-white/5 rounded-xl" />
             </div>
         </div>
     );

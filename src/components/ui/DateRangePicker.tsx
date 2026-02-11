@@ -23,6 +23,7 @@ interface DateRangePickerProps {
     };
     onChange: (value: { start: Date; end: Date }) => void;
     className?: string;
+    maxDate?: Date;
 }
 
 const customStaticRanges = createStaticRanges([
@@ -81,6 +82,7 @@ export function DateRangePicker({
     value,
     onChange,
     className,
+    maxDate,
 }: DateRangePickerProps) {
     const [open, setOpen] = useState(false)
     const [tempRange, setTempRange] = useState<Range[]>([
@@ -225,6 +227,7 @@ export function DateRangePicker({
                         color="#3b82f6"
                         staticRanges={customStaticRanges}
                         inputRanges={[]}
+                        maxDate={maxDate}
                     />
 
                     {/* Footer with Cancel/Apply */}

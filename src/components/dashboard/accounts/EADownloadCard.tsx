@@ -48,9 +48,9 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
         <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-start gap-4 mb-6">
                 {/* Icon/Thumbnail */}
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-green-500/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500/10 to-green-500/10 flex items-center justify-center flex-shrink-0">
                     {product.thumbnail ? (
-                        <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover rounded-2xl" />
+                        <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover rounded-xl" />
                     ) : (
                         <Bot className="text-primary" size={32} />
                     )}

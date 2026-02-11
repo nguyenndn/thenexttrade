@@ -676,7 +676,7 @@ function StrategyCard({
   onDelete: () => void;
 }) {
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -771,7 +771,7 @@ function StrategiesLoadingSkeleton() {
       <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48" />
       <div className="grid grid-cols-3 gap-4">
         {[1, 2, 3].map(i => (
-          <div key={i} className="h-48 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+          <div key={i} className="h-48 bg-gray-200 dark:bg-gray-700 rounded-xl" />
         ))}
       </div>
     </div>
@@ -874,7 +874,7 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
       />
       
       {/* Modal */}
-      <div className="relative bg-white dark:bg-[#0B0E14] rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+      <div className="relative bg-white dark:bg-[#0B0E14] rounded-xl p-6 w-full max-w-md mx-4 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">

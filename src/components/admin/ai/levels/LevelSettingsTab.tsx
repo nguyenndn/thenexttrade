@@ -70,7 +70,7 @@ export default function LevelSettingsTab({ level }: LevelSettingsTabProps) {
     return (
         <div className="space-y-8 max-w-2xl">
             {/* General Settings */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-2xl p-6 space-y-6">
+            <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 space-y-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                     <div className="p-1.5 bg-blue-500/10 text-blue-500 rounded-lg">
                         <FileText size={18} />
@@ -119,7 +119,7 @@ export default function LevelSettingsTab({ level }: LevelSettingsTabProps) {
             </div>
 
             {/* Danger Zone */}
-            <div className="bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/10 rounded-2xl p-6">
+            <div className="bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/10 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-red-600 dark:text-red-400 flex items-center gap-2 mb-4">
                     <AlertTriangle size={20} />
                     Danger Zone

@@ -43,7 +43,7 @@ export function SessionClock({ data }: SessionClockProps) {
     ];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm h-full">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm h-full">
             <div className="flex justify-between items-start mb-6">
                 <div>
                     <h3 className="font-bold text-gray-900 dark:text-white mb-2">

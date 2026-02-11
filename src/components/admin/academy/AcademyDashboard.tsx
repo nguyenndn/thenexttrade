@@ -64,7 +64,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                     </div>
                     <Button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-2xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95"
+                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         Add New
@@ -139,7 +139,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                 {initialLevels.length === 0 && (
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="flex flex-col items-center justify-center gap-4 h-[250px] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl hover:border-primary hover:bg-primary/5 transition-all group"
+                        className="flex flex-col items-center justify-center gap-4 h-[250px] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl hover:border-primary hover:bg-primary/5 transition-all group"
                     >
                         <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <Plus size={32} className="text-gray-400 group-hover:text-primary" />

@@ -149,7 +149,7 @@ export default function AdminSearchPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-100 dark:border-white/5">
+                            <div className="text-center py-12 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5">
                                 <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
                             </div>

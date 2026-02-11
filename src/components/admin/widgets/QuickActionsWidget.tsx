@@ -38,7 +38,7 @@ export function QuickActionsWidget() {
     ];
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
             <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Quick Actions</h3>
             <div className="grid grid-cols-1 gap-4">
                 {actions.map((action, idx) => (

@@ -118,7 +118,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -150,7 +150,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                     <div className="flex-1 flex flex-col p-4 overflow-y-auto">
 
                         {activeTab === 'upload' && (
-                            <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl m-4 bg-gray-50 dark:bg-black/20">
+                            <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl m-4 bg-gray-50 dark:bg-black/20">
                                 <div className="text-center space-y-4">
                                     <div className="w-16 h-16 bg-gray-200 dark:bg-white/10 rounded-full flex items-center justify-center mx-auto text-gray-400">
                                         <Upload size={32} />

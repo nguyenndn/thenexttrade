@@ -84,7 +84,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                             {/* Left: Symbol & Type */}
                             <div className="flex items-center gap-6">
-                                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400">
+                                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400">
                                     <ChevronLeft size={24} />
                                 </Button>
 
@@ -119,7 +119,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                     </div>
                                 </div>
 
-                                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400">
+                                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400">
                                     <ChevronRight size={24} />
                                 </Button>
                             </div>
@@ -127,7 +127,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                     </div>
 
                     <Tabs defaultValue="metrics" className="w-full">
-                        <TabsList className="bg-gray-200/50 dark:bg-[#151925] p-1.5 rounded-2xl w-full sm:w-auto inline-flex h-auto mb-8">
+                        <TabsList className="bg-gray-200/50 dark:bg-[#151925] p-1.5 rounded-xl w-full sm:w-auto inline-flex h-auto mb-8">
                             <TabsTrigger
                                 value="metrics"
                                 className="rounded-xl px-6 py-3 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#2F80ED] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-lg shadow-blue-500/20 transition-all text-gray-500 dark:text-gray-400"

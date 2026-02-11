@@ -111,7 +111,7 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
                                 <input
                                     type="text"
                                     placeholder="Introduction to Trading"
-                                    className="w-full text-3xl font-bold text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 bg-gray-50 dark:bg-[#151925] border-2 border-transparent focus:border-cyan-500 focus:bg-white dark:focus:bg-[#0B0E14] rounded-2xl px-6 py-4 outline-none transition-all"
+                                    className="w-full text-3xl font-bold text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 bg-gray-50 dark:bg-[#151925] border-2 border-transparent focus:border-cyan-500 focus:bg-white dark:focus:bg-[#0B0E14] rounded-xl px-6 py-4 outline-none transition-all"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 />
@@ -122,7 +122,7 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
                             <RichTextEditor
                                 content={formData.content}
                                 onChange={(content) => setFormData(prev => ({ ...prev, content }))}
-                                className="flex-1 border-none shadow-none rounded-2xl"
+                                className="flex-1 border-none shadow-none rounded-xl"
                                 editorClassName="min-h-[500px]"
                             />
                         </div>
@@ -140,7 +140,7 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 mb-2">Duration (Auto-calculated)</label>
                                     <div className="relative group">
-                                        <div className="w-full bg-gray-50 dark:bg-[#151925] text-gray-900 dark:text-white font-bold text-sm border-2 border-transparent group-hover:border-cyan-500/50 rounded-2xl px-4 py-4 pl-10 transition-all">
+                                        <div className="w-full bg-gray-50 dark:bg-[#151925] text-gray-900 dark:text-white font-bold text-sm border-2 border-transparent group-hover:border-cyan-500/50 rounded-xl px-4 py-4 pl-10 transition-all">
                                             {formData.duration} mins
                                         </div>
                                         <Clock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-cyan-500 transition-colors" />
@@ -153,7 +153,7 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
                         </div>
 
                         <div className="pt-6 border-t border-gray-100 dark:border-white/5">
-                            <div className="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-500/10">
+                            <div className="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-500/10">
                                 <h4 className="text-blue-600 dark:text-blue-400 font-bold text-sm mb-2 flex items-center gap-2">
                                     <FileText size={16} />
                                     Editor Tips

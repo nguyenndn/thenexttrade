@@ -39,7 +39,7 @@ export async function PATCH(
         const validated = UpdateCommandSchema.safeParse(body);
 
         if (!validated.success) {
-            return NextResponse.json({ error: "Invalid request", details: validated.error.errors }, { status: 400 });
+            return NextResponse.json({ error: "Invalid request", details: (validated.error as any).errors } as any, { status: 400 });
         }
 
         // Update command (only if belongs to this account and is PROCESSING)
@@ -91,7 +91,7 @@ export async function GET(
         });
 
         if (!command) {
-            return NextResponse.json({ error: "Command not found" }, { status: 404 });
+            return NextResponse.json({ error: "Command not found" } as any, { status: 404 });
         }
 
         // Check ownership

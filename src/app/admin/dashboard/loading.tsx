@@ -13,7 +13,7 @@ export default function DashboardLoading() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-32 rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6 shadow-sm">
+                    <div key={i} className="h-32 rounded-xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6 shadow-sm">
                         <div className="flex justify-between items-start mb-4">
                             <div className="h-10 w-10 rounded-xl bg-gray-100 dark:bg-white/5" />
                             <div className="h-6 w-16 rounded-full bg-gray-100 dark:bg-white/5" />
@@ -30,17 +30,17 @@ export default function DashboardLoading() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 {/* Left Column */}
                 <div className="xl:col-span-2 space-y-6">
-                    <div className="h-[400px] rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
+                    <div className="h-[400px] rounded-xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[400px]">
-                        <div className="rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
-                        <div className="rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
+                        <div className="rounded-xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
+                        <div className="rounded-xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
                     </div>
                 </div>
 
                 {/* Right Column */}
                 <div className="space-y-6">
-                    <div className="h-[400px] rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
-                    <div className="h-[400px] rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
+                    <div className="h-[400px] rounded-xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
+                    <div className="h-[400px] rounded-xl bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 p-6" />
                 </div>
             </div>
         </div>

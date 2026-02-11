@@ -198,7 +198,7 @@ function StrategyCard({
     onDelete: () => void;
 }) {
     return (
-        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-2xl border shadow-sm group hover:border-primary/30 transition-all ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-100 dark:border-white/5'
+        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-primary/30 transition-all ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-100 dark:border-white/5'
             }`}>
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
@@ -315,7 +315,7 @@ function StrategiesLoadingSkeleton() {
             <div className="h-80 bg-gray-200 dark:bg-white/10 rounded-3xl mb-8" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map(i => (
-                    <div key={i} className="h-64 bg-gray-200 dark:bg-white/10 rounded-2xl" />
+                    <div key={i} className="h-64 bg-gray-200 dark:bg-white/10 rounded-xl" />
                 ))}
             </div>
         </div>

@@ -88,7 +88,7 @@ export default async function BrokersPage() {
                         {brokers.map((broker: any, index: number) => (
                             <div key={broker.id || index} className="bg-white/80 dark:bg-[#1E2028]/80 backdrop-blur-sm rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-white/5 hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-xl">
                                 <div className="flex items-center justify-between mb-6">
-                                    <div className="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-white/5 p-2 flex items-center justify-center">
+                                    <div className="w-16 h-16 rounded-xl bg-gray-50 dark:bg-white/5 p-2 flex items-center justify-center">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img src={broker.logo} alt={broker.name} className="w-full h-full object-contain" />
                                     </div>

@@ -59,7 +59,7 @@ export default function OnboardingPage() {
                 <Logo textClassName="text-white" />
             </div>
 
-            <div className="w-full max-w-md bg-[#151925] border border-white/5 rounded-2xl p-8 shadow-2xl">
+            <div className="w-full max-w-md bg-[#151925] border border-white/5 rounded-xl p-8 shadow-2xl">
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-bold mb-2">Complete Your Profile</h1>
                     <p className="text-gray-400 text-sm">Tell us a bit more about yourself to get started.</p>

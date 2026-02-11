@@ -95,7 +95,7 @@ export default function CreateLevelModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 active:translate-y-0">
+                <Button className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 active:translate-y-0">
                     <Plus size={18} strokeWidth={2.5} />
                     New Level
                 </Button>

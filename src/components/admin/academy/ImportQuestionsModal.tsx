@@ -177,7 +177,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                                 key={q.id}
                                                 onClick={() => toggleQuestion(q.id)}
                                                 className={cn(
-                                                    "cursor-pointer p-5 rounded-2xl border transition-all flex gap-4 text-left group",
+                                                    "cursor-pointer p-5 rounded-xl border transition-all flex gap-4 text-left group",
                                                     isSelected
                                                         ? "border-primary bg-primary/5"
                                                         : "border-gray-100 dark:border-white/5 hover:border-primary/50 hover:shadow-md"

@@ -137,7 +137,7 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
                     <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
                         {/* Price Action */}
-                        <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5">
+                        <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
                             <div>
                                 <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Entry</label>
                                 <div className="font-mono text-lg font-bold text-gray-900 dark:text-white">{trade.entryPrice}</div>

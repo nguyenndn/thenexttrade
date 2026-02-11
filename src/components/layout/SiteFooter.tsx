@@ -90,7 +90,7 @@ export function SiteFooter() {
 
                     {/* Newsletter Box */}
                     <div className="lg:col-span-3">
-                        <div className="bg-gray-50 dark:bg-[#161b22] rounded-2xl p-5 border border-gray-200 dark:border-white/10 h-full">
+                        <div className="bg-gray-50 dark:bg-[#161b22] rounded-xl p-5 border border-gray-200 dark:border-white/10 h-full">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-cyan-400 flex items-center justify-center">
                                     <Mail size={18} className="text-white" />

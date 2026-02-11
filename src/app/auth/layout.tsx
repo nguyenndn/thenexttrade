@@ -40,7 +40,7 @@ export default function AuthLayout({
 
           <div className="flex flex-col gap-4">
             {/* Card 1 */}
-            <div className="bg-[#151925] p-5 rounded-2xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors">
+            <div className="bg-[#151925] p-5 rounded-xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="m19 9-5 5-4-4-3 3" /></svg>
               </div>
@@ -51,7 +51,7 @@ export default function AuthLayout({
             </div>
 
             {/* Card 2 */}
-            <div className="bg-[#151925] p-5 rounded-2xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors">
+            <div className="bg-[#151925] p-5 rounded-xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors">
               <div className="w-12 h-12 rounded-xl bg-[#2F80ED]/10 flex items-center justify-center text-[#2F80ED]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5" /><path d="M8.5 8.5v.01" /><path d="M16 12v.01" /><path d="M12 16v.01" /></svg>
               </div>
@@ -62,7 +62,7 @@ export default function AuthLayout({
             </div>
 
             {/* Card 3 */}
-            <div className="bg-[#151925] p-5 rounded-2xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors">
+            <div className="bg-[#151925] p-5 rounded-xl flex items-center gap-5 border border-white/5 hover:border-white/10 transition-colors">
               <div className="w-12 h-12 rounded-xl bg-[#A855F7]/10 flex items-center justify-center text-[#A855F7]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
               </div>

@@ -92,7 +92,7 @@ export default function StructureGenerator() {
                                     checked={formData.type === "level"}
                                     onChange={() => setFormData({ ...formData, type: "level" })}
                                 />
-                                <div className="p-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
+                                <div className="p-4 rounded-xl border-2 border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
                                     <span className="font-bold text-gray-700 dark:text-white peer-checked:text-primary">Level</span>
                                     <span className="block text-xs text-gray-400 mt-1">Generates Modules</span>
                                 </div>
@@ -105,7 +105,7 @@ export default function StructureGenerator() {
                                     checked={formData.type === "module"}
                                     onChange={() => setFormData({ ...formData, type: "module" })}
                                 />
-                                <div className="p-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
+                                <div className="p-4 rounded-xl border-2 border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
                                     <span className="font-bold text-gray-700 dark:text-white peer-checked:text-primary">Module</span>
                                     <span className="block text-xs text-gray-400 mt-1">Generates Lessons</span>
                                 </div>
@@ -151,7 +151,7 @@ export default function StructureGenerator() {
                     />
 
                     <Button
-                        className="w-full py-3 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all"
+                        className="w-full py-3 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all"
                         onClick={handleGenerate}
                         isLoading={generating}
                     >

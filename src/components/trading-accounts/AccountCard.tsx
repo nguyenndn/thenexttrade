@@ -51,14 +51,14 @@ export function AccountCard({
     };
 
     return (
-        <div className="group bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 flex flex-col justify-between h-full">
+        <div className="group bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 flex flex-col justify-between h-full">
 
             <div className="p-6">
                 {/* Header Row */}
                 <div className="flex justify-between items-start mb-6">
                     <div className="flex gap-4 items-start w-full">
                         {/* Platform Icon Box */}
-                        <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center shrink-0 border border-gray-100 dark:border-white/5 overflow-hidden relative">
+                        <div className="w-14 h-14 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center shrink-0 border border-gray-100 dark:border-white/5 overflow-hidden relative">
                             {getPlatformIcon(account.platform) ? (
                                 <NextImage
                                     src={getPlatformIcon(account.platform)!}

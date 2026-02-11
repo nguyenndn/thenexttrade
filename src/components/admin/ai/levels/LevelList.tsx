@@ -10,7 +10,7 @@ interface LevelListProps {
 export default function LevelList({ levels }: LevelListProps) {
     if (levels.length === 0) {
         return (
-            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                 <p className="text-gray-500 dark:text-gray-400 mb-4">No levels found.</p>
                 <p className="text-sm text-gray-400">Creates a new level to get started with your course.</p>
             </div>

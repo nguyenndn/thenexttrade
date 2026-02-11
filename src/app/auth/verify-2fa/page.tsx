@@ -28,9 +28,9 @@ export default function Verify2FAPage() {
             {/* Background Effects */}
             <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.3] pointer-events-none"></div>
 
-            <div className="w-full max-w-[400px] p-8 rounded-2xl border border-white/10 bg-[#ffffff0d] backdrop-blur-sm relative z-10 mx-4">
+            <div className="w-full max-w-[400px] p-8 rounded-xl border border-white/10 bg-[#ffffff0d] backdrop-blur-sm relative z-10 mx-4">
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 ring-1 ring-primary/30">
+                    <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-6 ring-1 ring-primary/30">
                         <Shield size={32} className="text-primary" />
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">Two-Factor Authentication</h1>

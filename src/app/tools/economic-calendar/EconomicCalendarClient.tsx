@@ -168,7 +168,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                     {/* Toolbar with Week View */}
                     <div className="mb-6 space-y-4">
                         {/* Week Navigation Bar */}
-                        <div className={`rounded-2xl border shadow-sm p-2 flex items-center justify-between gap-2 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
+                        <div className={`rounded-xl border shadow-sm p-2 flex items-center justify-between gap-2 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
 
                             <div className="flex-1 grid grid-cols-7 gap-1 md:gap-2 text-center">
                                 {weekDays.map((day) => {

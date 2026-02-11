@@ -663,12 +663,12 @@ function AnalyticsLoadingSkeleton() {
       <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48" />
       <div className="grid grid-cols-5 gap-4">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-28 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+          <div key={i} className="h-28 bg-gray-200 dark:bg-gray-700 rounded-xl" />
         ))}
       </div>
       <div className="grid grid-cols-2 gap-6">
-        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
-        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
       </div>
     </div>
   );
@@ -776,7 +776,7 @@ export function KPICards({ summary }: KPICardsProps) {
         return (
           <div
             key={index}
-            className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-center gap-3 mb-3">
               <div className={`p-2.5 rounded-xl ${card.bg}`}>
@@ -841,7 +841,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
   const maxBalance = Math.max(...balances) * 1.02;
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <h3 className="font-bold text-gray-900 dark:text-white mb-4">
         Equity Curve
       </h3>
@@ -964,7 +964,7 @@ export function ProfitCalendar({ data }: ProfitCalendarProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-gray-900 dark:text-white">
@@ -1088,7 +1088,7 @@ export function PairPerformance({ data }: PairPerformanceProps) {
     .slice(0, 8);
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <h3 className="font-bold text-gray-900 dark:text-white mb-4">
         Performance by Pair
       </h3>
@@ -1211,7 +1211,7 @@ export function DayPerformance({ data }: DayPerformanceProps) {
   const bestDay = [...chartData].sort((a, b) => b.pnl - a.pnl)[0];
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <h3 className="font-bold text-gray-900 dark:text-white mb-4">
         Performance by Day
       </h3>
@@ -1324,7 +1324,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-gray-900 dark:text-white">
           Recent Trades

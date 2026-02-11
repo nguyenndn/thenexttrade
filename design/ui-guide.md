@@ -4,7 +4,7 @@ This document is the **single source of truth** for the "Breek Premium" aestheti
 
 **Core Philosophy:**
 - **Premium Fintech:** Clean, modern, trustworthy.
-- **Glass & Depth:** Use subtle borders (`white/5`), soft shadows, and large border radius (`rounded-2xl/3xl`).
+- **Glass & Depth:** Use subtle borders (`white/5`), soft shadows, and large border radius (`rounded-xl/3xl`).
 - **Vibrant Accents:** Use specific shades of Green `#00C888` and Cyan for highlights, against deep dark backgrounds.
 
 ---
@@ -105,7 +105,7 @@ We use large border radius for a "friendly but premium" feel.
   {/* Content */}
 </div>
 ```
-*Note: Use `rounded-[2.5rem]` for main feature cards, `rounded-2xl` or `rounded-3xl` for smaller widgets.*
+*Note: Use `rounded-[2.5rem]` for main feature cards, `rounded-xl` or `rounded-3xl` for smaller widgets.*
 
 **Glass Panel (Results/Highlights)**
 ```tsx
@@ -152,11 +152,11 @@ For high-impact areas requiring extra visual weight.
     </div>
     <input
       type="text"
-      className="block w-full pl-10 pr-4 py-4 rounded-2xl bg-gray-50 dark:bg-[#151925] border-2 border-transparent focus:border-[#00C888] focus:bg-white dark:focus:bg-[#1E2028] transition-all font-bold text-lg outline-none"
+      className="block w-full pl-10 pr-4 py-4 rounded-xl bg-gray-50 dark:bg-[#151925] border-2 border-transparent focus:border-[#00C888] focus:bg-white dark:focus:bg-[#1E2028] transition-all font-bold text-lg outline-none"
     />
 </div>
 ```
-*Key features: Tall inputs (`py-4`), `rounded-2xl`, `border-transparent` -> `focus:border-[#00C888]`.*
+*Key features: Tall inputs (`py-4`), `rounded-xl`, `border-transparent` -> `focus:border-[#00C888]`.*
 
 ### 2.4 Tables
 Clean, spacious tables with "transparent" headers.
@@ -265,7 +265,7 @@ All admin pages must follow the "AI Studio" header style to ensure consistency:
 ### 4.5 Decorative Icons
 Used in headers or empty states.
 ```tsx
-<div className="inline-flex items-center justify-center p-3 rounded-2xl bg-cyan-500/10 text-cyan-500 mb-6 ring-4 ring-cyan-500/5">
+<div className="inline-flex items-center justify-center p-3 rounded-xl bg-cyan-500/10 text-cyan-500 mb-6 ring-4 ring-cyan-500/5">
     <Icon size={32} />
 </div>
 ```
@@ -279,7 +279,7 @@ Used in headers or empty states.
 
 ---
 
-> **Rule of Thumb:** If it looks like a default Tailwind component, it's wrong. Add `rounded-2xl`, add `dark:border-white/5`, and increase padding. Make it feel "Premium".
+> **Rule of Thumb:** If it looks like a default Tailwind component, it's wrong. Add `rounded-xl`, add `dark:border-white/5`, and increase padding. Make it feel "Premium".
 
 ---
 
@@ -289,7 +289,7 @@ Used in headers or empty states.
 Used for dashboard widgets, academy levels, and any clickable card.
 - **Shadow:** `shadow-sm` -> `hover:shadow-xl`
 - **Lift:** `hover:-translate-y-1`
-- **Rounding:** `rounded-3xl` (preferred for widgets) or `rounded-2xl`
+- **Rounding:** `rounded-3xl` (preferred for widgets) or `rounded-xl`
 - **Transition:** `transition-all duration-300`
 
 ```tsx

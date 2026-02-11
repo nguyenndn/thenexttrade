@@ -85,6 +85,9 @@ model User {
 
   @@index([createdAt])
   @@index([email])
+  
+  // Performance Indexes
+  @@index([xp(sort: Desc)]) // Fast Leaderboard Sorting
 }
 
 // Removed NextAuth tables (Account, Session, VerificationToken) as they are not needed with Supabase SSR.
@@ -347,6 +350,11 @@ model JournalEntry {
   @@index([entryDate])
   @@index([strategy])
   @@unique([userId, accountId, externalTicket])
+  
+  // Performance Indexes (Launch Optimization)
+  @@index([userId, exitDate]) // Filter by Date Range (All Accounts)
+  @@index([userId, accountId, exitDate]) // Filter by Date Range (Specific Account)
+  @@index([userId, symbol]) // Symbol Performance Analysis
 }
 
 // Strategy Tracking (Phase 46)

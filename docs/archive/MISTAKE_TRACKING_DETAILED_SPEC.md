@@ -801,7 +801,7 @@ export function MistakeDashboard() {
 
       {/* Cost of Mistakes Banner */}
       {data.costOfMistakes < 0 && (
-        <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-2xl p-6">
+        <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl p-6">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-red-500/20 rounded-xl">
               <TrendingDown size={24} className="text-red-500" />
@@ -855,7 +855,7 @@ export function MistakeDashboard() {
 
       {/* Win Rate Comparison */}
       {data.cleanTradeWinRate > data.mistakeTradeWinRate && (
-        <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-2xl p-4 border border-green-200 dark:border-green-500/20">
+        <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl p-4 border border-green-200 dark:border-green-500/20">
           <p className="text-sm text-gray-700 dark:text-gray-300">
             💡 <span className="font-bold">Insight:</span> Your win rate drops by{" "}
             <span className="font-bold text-red-500">
@@ -882,7 +882,7 @@ export function MistakeDashboard() {
       />
 
       {/* Detailed Mistake List */}
-      <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+      <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
         <h3 className="font-bold text-gray-900 dark:text-white mb-4">
           All Mistakes (Sorted by Cost)
         </h3>
@@ -932,7 +932,7 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-4 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
         <Icon size={14} className={color} />
         <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">
@@ -951,10 +951,10 @@ function MistakeLoadingSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
       <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64" />
-      <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+      <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-xl" />
       <div className="grid grid-cols-4 gap-4">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="h-24 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+          <div key={i} className="h-24 bg-gray-200 dark:bg-gray-700 rounded-xl" />
         ))}
       </div>
     </div>
@@ -1015,7 +1015,7 @@ export function MistakeCostChart({ data }: MistakeCostChartProps) {
     }));
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <h3 className="font-bold text-gray-900 dark:text-white mb-2">
         Cost by Mistake Type
       </h3>

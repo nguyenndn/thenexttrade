@@ -148,7 +148,7 @@ function SystemDetailCard({ product, onNavigateToGuide }: { product: EAProduct, 
 
     return (
         <>
-            <div className="relative bg-white dark:bg-[#0B0E14] rounded-2xl overflow-hidden border border-gray-100 dark:border-white/5 min-h-[340px]">
+            <div className="relative bg-white dark:bg-[#0B0E14] rounded-xl overflow-hidden border border-gray-100 dark:border-white/5 min-h-[340px]">
                 <div className="flex flex-col md:flex-row gap-8 p-6">
                     {/* Image Section - Larger preview */}
                     <div className="relative w-full md:w-[420px] flex-shrink-0">
@@ -262,7 +262,7 @@ function SystemDetailCard({ product, onNavigateToGuide }: { product: EAProduct, 
                     </button>
 
                     {/* Zoom Controls - Bottom Center */}
-                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000] flex items-center gap-2 bg-black/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 shadow-2xl" onClick={e => e.stopPropagation()}>
+                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000] flex items-center gap-2 bg-black/50 backdrop-blur-md p-1.5 rounded-xl border border-white/10 shadow-2xl" onClick={e => e.stopPropagation()}>
                         <button
                             className="p-2.5 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
                             onClick={() => setZoomLevel(prev => Math.max(25, prev - 25))}

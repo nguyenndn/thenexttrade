@@ -846,7 +846,7 @@ export function ScreenshotUploader({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       className={`
-        relative border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer
+        relative border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer
         ${isDragging
           ? "border-[#00C888] bg-[#00C888]/5"
           : "border-gray-200 dark:border-gray-700 hover:border-[#00C888]"

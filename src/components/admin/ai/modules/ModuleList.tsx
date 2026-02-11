@@ -11,7 +11,7 @@ interface ModuleListProps {
 export default function ModuleList({ modules, levelId }: ModuleListProps) {
     if (modules.length === 0) {
         return (
-            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                 <p className="text-gray-500 dark:text-gray-400 mb-4">No modules found in this level.</p>
                 <p className="text-sm text-gray-400">Generate modules using AI to structure your course.</p>
             </div>

@@ -133,12 +133,12 @@ export function AccountList() {
                     {[1, 2, 3].map((i) => (
                         <div
                             key={i}
-                            className="h-64 bg-gray-100 dark:bg-gray-800 rounded-2xl animate-pulse"
+                            className="h-64 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"
                         />
                     ))}
                 </div>
             ) : accounts.length === 0 ? (
-                <div className="text-center py-16 bg-gray-50 dark:bg-[#1E2028] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                <div className="text-center py-16 bg-gray-50 dark:bg-[#1E2028] rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                     <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
                         <Plus size={32} className="text-primary" />
                     </div>

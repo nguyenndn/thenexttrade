@@ -137,12 +137,12 @@ function AnalyticsLoadingSkeleton() {
             <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48" />
             <div className="grid grid-cols-5 gap-4">
                 {[...Array(5)].map((_, i) => (
-                    <div key={i} className="h-28 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+                    <div key={i} className="h-28 bg-gray-200 dark:bg-gray-700 rounded-xl" />
                 ))}
             </div>
             <div className="grid grid-cols-2 gap-6">
-                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
-                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
             </div>
         </div>
     );

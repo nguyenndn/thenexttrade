@@ -10,14 +10,14 @@ export default function Loading() {
                     </div>
                     <div className="h-5 w-80 bg-gray-100 dark:bg-white/5 rounded-lg ml-4" />
                 </div>
-                <div className="h-10 w-40 bg-gray-200 dark:bg-white/10 rounded-2xl" />
+                <div className="h-10 w-40 bg-gray-200 dark:bg-white/10 rounded-xl" />
             </div>
 
             {/* Quick Actions Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(3)].map((_, i) => (
                     <div key={i} className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl p-6 shadow-sm flex flex-col items-center text-center space-y-4">
-                        <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/5" />
+                        <div className="w-16 h-16 rounded-xl bg-gray-100 dark:bg-white/5" />
                         <div className="space-y-2 w-full flex flex-col items-center">
                             <div className="h-6 w-32 bg-gray-200 dark:bg-white/10 rounded" />
                             <div className="h-4 w-48 bg-gray-100 dark:bg-white/5 rounded" />

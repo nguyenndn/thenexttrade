@@ -221,7 +221,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Main Info Card */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-primary rounded-full"></div>
                         Trade Details
@@ -309,7 +309,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 </div>
 
                 {/* Price & Risk */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
                         Pricing & Risk
@@ -394,7 +394,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 </div>
 
                 {/* Analysis */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
                         Analysis & Result
@@ -523,7 +523,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 </div>
 
                 {/* Psychology Tracking (Phase 44) */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="p-1.5 bg-purple-500/10 text-purple-500 rounded-lg">
                             <Brain size={20} />
@@ -649,7 +649,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 )}
 
                 {/* Screenshots Section (Phase 53) */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-pink-500 rounded-full"></div>
                         Trade Screenshots

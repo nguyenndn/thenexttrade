@@ -47,7 +47,7 @@ export default function SignupPage() {
 
     if (message) {
         return (
-            <div className="w-full max-w-[480px] mx-auto bg-[#ffffff0d] p-8 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm text-center">
+            <div className="w-full max-w-[480px] mx-auto bg-[#ffffff0d] p-8 rounded-xl border border-white/10 shadow-2xl backdrop-blur-sm text-center">
                 <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Mail className="text-primary" size={32} />
                 </div>
@@ -63,7 +63,7 @@ export default function SignupPage() {
     }
 
     return (
-        <div className="w-full max-w-[480px] mx-auto bg-[#ffffff0d] p-8 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm">
+        <div className="w-full max-w-[480px] mx-auto bg-[#ffffff0d] p-8 rounded-xl border border-white/10 shadow-2xl backdrop-blur-sm">
             <div className="text-left mb-6">
                 <h1 className="text-3xl font-bold text-[#2F80ED]">Sign up</h1>
                 <p className="text-gray-400 mt-2 text-base">The process is simple and fast</p>

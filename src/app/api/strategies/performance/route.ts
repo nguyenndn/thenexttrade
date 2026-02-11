@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import { startOfMonth, endOfMonth, parseISO } from "date-fns";
+import { startOfMonth, endOfMonth, parseISO, endOfDay } from "date-fns";
 
 interface StrategyPerformance {
     strategy: string;
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
         const now = new Date();
         const startDate = startDateParam ? parseISO(startDateParam) : startOfMonth(now);
-        const endDate = endDateParam ? parseISO(endDateParam) : endOfMonth(now);
+        const endDate = endDateParam ? endOfDay(parseISO(endDateParam)) : endOfMonth(now);
 
         // Get user's strategies with colors
         const strategies = await prisma.strategy.findMany({

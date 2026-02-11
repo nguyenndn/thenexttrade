@@ -16,7 +16,7 @@ interface TiltIndicatorsProps {
 
 export function TiltIndicators({ data }: TiltIndicatorsProps) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
             <h3 className="font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                 <AlertTriangle size={18} className="text-orange-500" />
                 Tilt Indicators

@@ -30,7 +30,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full max-w-[480px] mx-auto bg-[#ffffff0d] p-8 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm">
+    <div className="w-full max-w-[480px] mx-auto bg-[#ffffff0d] p-8 rounded-xl border border-white/10 shadow-2xl backdrop-blur-sm">
       <div className="text-left mb-8">
         <p className="text-base font-medium text-gray-400">Welcome back</p>
         <h1 className="text-3xl font-bold text-white mt-2">Login to your account</h1>

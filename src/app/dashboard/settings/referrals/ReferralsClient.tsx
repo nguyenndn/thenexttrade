@@ -17,7 +17,7 @@ export default function ReferralsClient() {
         <div className="space-y-6">
             {/* Hero / Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-[#2F80ED] to-[#1CB5E0] rounded-2xl p-6 text-white shadow-lg shadow-blue-500/20">
+                <div className="bg-gradient-to-br from-[#2F80ED] to-[#1CB5E0] rounded-xl p-6 text-white shadow-lg shadow-blue-500/20">
                     <div className="flex items-center gap-3 mb-2 opacity-90">
                         <Users size={20} />
                         <span className="font-semibold text-sm">Total Referrals</span>
@@ -25,7 +25,7 @@ export default function ReferralsClient() {
                     <div className="text-4xl font-black">12</div>
                     <p className="text-white/80 text-xs mt-1">Friends joined via your link</p>
                 </div>
-                <div className="bg-gradient-to-br from-primary to-[#009E6C] rounded-2xl p-6 text-white shadow-lg shadow-green-500/20">
+                <div className="bg-gradient-to-br from-primary to-[#009E6C] rounded-xl p-6 text-white shadow-lg shadow-green-500/20">
                     <div className="flex items-center gap-3 mb-2 opacity-90">
                         <DollarSign size={20} />
                         <span className="font-semibold text-sm">Total Earnings</span>
@@ -33,7 +33,7 @@ export default function ReferralsClient() {
                     <div className="text-4xl font-black">$240.00</div>
                     <p className="text-white/80 text-xs mt-1">Commission earned so far</p>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm flex flex-col justify-center items-center text-center">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm flex flex-col justify-center items-center text-center">
                     <div className="w-12 h-12 bg-orange-100 dark:bg-orange-500/10 rounded-full flex items-center justify-center mb-2">
                         <Gift size={24} className="text-orange-500" />
                     </div>
@@ -43,7 +43,7 @@ export default function ReferralsClient() {
             </div>
 
             {/* Referral Link */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-2xl p-8 border border-gray-100 dark:border-white/5 shadow-sm text-center">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-8 border border-gray-100 dark:border-white/5 shadow-sm text-center">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Share your unique link</h3>
                 <p className="text-gray-500 mb-6 max-w-md mx-auto">Copy your unique referral link and share it with your friends. When they sign up and subscribe, you'll earn commission.</p>
 
@@ -61,7 +61,7 @@ export default function ReferralsClient() {
             </div>
 
             {/* Referral History */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-gray-100 dark:border-white/5">
                     <h3 className="font-bold text-gray-900 dark:text-white">Recent Referrals</h3>
                 </div>

@@ -124,7 +124,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                 <div className="flex items-center gap-3">
                     <Link
                         href="/admin/articles/create"
-                        className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 active:translate-y-0"
+                        className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 active:translate-y-0"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         Add New
@@ -140,7 +140,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                             <p className="text-sm font-bold text-indigo-500 uppercase tracking-wider">Total Views</p>
                             <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.totalViews.toLocaleString()}</h3>
                         </div>
-                        <div className="p-3.5 rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 ring-1 ring-indigo-500/20">
+                        <div className="p-3.5 rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 ring-1 ring-indigo-500/20">
                             <Eye size={24} strokeWidth={2.5} />
                         </div>
                     </div>
@@ -151,7 +151,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                             <p className="text-sm font-bold text-orange-500 uppercase tracking-wider">Avg. Read</p>
                             <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.avgViews.toLocaleString()}</h3>
                         </div>
-                        <div className="p-3.5 rounded-2xl bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400 ring-1 ring-orange-500/20">
+                        <div className="p-3.5 rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400 ring-1 ring-orange-500/20">
                             <BarChart2 size={24} strokeWidth={2.5} />
                         </div>
                     </div>
@@ -162,7 +162,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                             <p className="text-sm font-bold text-emerald-500 uppercase tracking-wider">Published</p>
                             <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.publishedArticles} <span className="text-lg text-gray-400 font-medium">/ {stats.totalArticles}</span></h3>
                         </div>
-                        <div className="p-3.5 rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 ring-1 ring-emerald-500/20">
+                        <div className="p-3.5 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 ring-1 ring-emerald-500/20">
                             <Globe size={24} strokeWidth={2.5} />
                         </div>
                     </div>
@@ -173,7 +173,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                             <p className="text-sm font-bold text-amber-500 uppercase tracking-wider">Pending</p>
                             <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.pendingArticles}</h3>
                         </div>
-                        <div className="p-3.5 rounded-2xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 ring-1 ring-amber-500/20">
+                        <div className="p-3.5 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 ring-1 ring-amber-500/20">
                             <Clock size={24} strokeWidth={2.5} />
                         </div>
                     </div>

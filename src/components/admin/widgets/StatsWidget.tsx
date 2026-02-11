@@ -22,7 +22,7 @@ export function StatsWidget({ title, value, icon: Icon, trend, color = "blue" }:
     };
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
                 <div className={cn("p-3 rounded-xl", colorStyles[color])}>
                     <Icon className="w-6 h-6" />

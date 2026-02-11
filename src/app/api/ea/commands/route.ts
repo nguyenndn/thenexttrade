@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         const validated = CreateCommandSchema.safeParse(body);
 
         if (!validated.success) {
-            return NextResponse.json({ error: "Invalid request", details: validated.error.errors }, { status: 400 });
+            return NextResponse.json({ error: "Invalid request", details: (validated.error as any).errors } as any, { status: 400 });
         }
 
         const { tradingAccountId, type, params } = validated.data;
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!account) {
-            return NextResponse.json({ error: "Trading account not found" }, { status: 404 });
+            return NextResponse.json({ error: "Trading account not found" } as any, { status: 404 });
         }
 
         // Check if EA is connected (last heartbeat within 60 seconds)

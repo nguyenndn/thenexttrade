@@ -5,7 +5,7 @@ import { Mail, ArrowRight } from "lucide-react";
 
 export default function NewsletterWidget() {
     return (
-        <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
+        <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-6 text-white shadow-xl">
             <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                     <Mail size={24} className="text-white" />

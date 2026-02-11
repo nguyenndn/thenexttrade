@@ -8,6 +8,7 @@ import {
     endOfMonth,
     eachDayOfInterval,
     isSameDay,
+    endOfDay,
 } from "date-fns";
 
 export async function GET(request: NextRequest) {
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
 
         const now = new Date();
         const startDate = startDateParam ? parseISO(startDateParam) : startOfMonth(now);
-        const endDate = endDateParam ? parseISO(endDateParam) : endOfMonth(now);
+        const endDate = endDateParam ? endOfDay(parseISO(endDateParam)) : endOfMonth(now);
 
         // Fetch trades
         const trades = await prisma.journalEntry.findMany({

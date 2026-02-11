@@ -58,7 +58,7 @@ export function StatsOverview({ stats }: StatsProps) {
             {cards.map((card, idx) => {
                 const Icon = card.icon;
                 return (
-                    <div key={idx} className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                    <div key={idx} className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-start justify-between">
                             <div>
                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{card.title}</p>
@@ -80,7 +80,7 @@ export function StatsOverview({ stats }: StatsProps) {
 export function DetailedStats({ stats }: StatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 flex justify-between items-center group">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 flex justify-between items-center group">
                 <div>
                     <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Avg Win</p>
                     <p className="text-xl font-bold text-primary group-hover:scale-105 transition-transform">
@@ -92,7 +92,7 @@ export function DetailedStats({ stats }: StatsProps) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 flex justify-between items-center group">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 flex justify-between items-center group">
                 <div>
                     <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Avg Loss</p>
                     <p className="text-xl font-bold text-red-500 group-hover:scale-105 transition-transform">
@@ -104,7 +104,7 @@ export function DetailedStats({ stats }: StatsProps) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 flex justify-between items-center">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 flex justify-between items-center">
                 <div>
                     <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Best Pair</p>
                     <p className="text-xl font-bold text-gray-900 dark:text-white">
@@ -113,7 +113,7 @@ export function DetailedStats({ stats }: StatsProps) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 flex justify-between items-center">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 flex justify-between items-center">
                 <div>
                     <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Worst Pair</p>
                     <p className="text-xl font-bold text-gray-900 dark:text-white">

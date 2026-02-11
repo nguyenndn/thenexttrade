@@ -11,7 +11,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
     if (!data) return null;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center mb-6">
                 <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                     Report Preview
@@ -26,7 +26,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
             </div>
 
             {/* Summary Card */}
-            <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 p-6 rounded-2xl mb-8 border border-primary/10">
+            <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 p-6 rounded-xl mb-8 border border-primary/10">
                 <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                     <span className="w-1 h-6 bg-primary rounded-full"></span>
                     Performance Summary: {data.period}

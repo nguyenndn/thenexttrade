@@ -63,7 +63,7 @@ export const dashboardMenuItems = [
     },
     {
         name: "Analysis",
-        href: "#",
+        href: "/dashboard/analytics",
         icon: BarChart3,
         items: [
             { name: "Analytics", href: "/dashboard/analytics" },
@@ -73,18 +73,18 @@ export const dashboardMenuItems = [
     },
     {
         name: "Strategy",
-        href: "#",
+        href: "/dashboard/strategies",
         icon: Target,
         items: [
-            { name: "Playbook", href: "/dashboard/playbook" },
             { name: "Strategies", href: "/dashboard/strategies" },
+            { name: "Playbook", href: "/dashboard/playbook" },
             { name: "Psychology", href: "/dashboard/psychology" },
             { name: "Trading Systems", href: "/dashboard/trading-systems" },
         ]
     },
     {
         name: "Resources",
-        href: "#",
+        href: "/dashboard/academy",
         icon: BookOpen,
         items: [
             { name: "Academy", href: "/dashboard/academy" },

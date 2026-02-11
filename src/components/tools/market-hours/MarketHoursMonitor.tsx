@@ -128,7 +128,7 @@ export function MarketHoursMonitor() {
     };
 
     return (
-        <div className="w-full bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-2xl p-6 shadow-xl shadow-gray-200/50 dark:shadow-none">
+        <div className="w-full bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-xl shadow-gray-200/50 dark:shadow-none">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-gray-100 dark:border-white/5 pb-6">
                 <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -195,7 +195,7 @@ export function MarketHoursMonitor() {
             </div>
 
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-orange-500/30 transition-colors">
+                <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 hover:border-orange-500/30 transition-colors">
                     <h3 className="font-bold text-orange-500 mb-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-orange-500"></span>
                         Tokyo Session
@@ -206,7 +206,7 @@ export function MarketHoursMonitor() {
                     </p>
                 </div>
 
-                <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-red-500/30 transition-colors">
+                <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 hover:border-red-500/30 transition-colors">
                     <h3 className="font-bold text-red-500 mb-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-red-500"></span>
                         London Session
@@ -217,7 +217,7 @@ export function MarketHoursMonitor() {
                     </p>
                 </div>
 
-                <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-green-500/30 transition-colors">
+                <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 hover:border-green-500/30 transition-colors">
                     <h3 className="font-bold text-green-500 mb-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-green-500"></span>
                         New York Session

@@ -28,7 +28,7 @@ export function EmotionPerformanceChart({ data, title }: EmotionPerformanceChart
     const sortedData = [...data].sort((a, b) => b.winRate - a.winRate);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
                 {title}
             </h3>
@@ -55,8 +55,8 @@ export function EmotionPerformanceChart({ data, title }: EmotionPerformanceChart
                                 borderRadius: "8px",
                                 color: "#F3F4F6",
                             }}
-                            formatter={(value: number, name: string) => {
-                                if (name === "Win Rate") return [`${value.toFixed(1)}%`, name];
+                            formatter={(value: any, name: any) => {
+                                if (name === "Win Rate") return [`${Number(value).toFixed(1)}%`, name];
                                 return [value, name];
                             }}
                         />

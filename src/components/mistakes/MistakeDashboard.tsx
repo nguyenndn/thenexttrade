@@ -95,7 +95,7 @@ export function MistakeDashboard() {
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Cost of Mistakes */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-red-100 dark:bg-red-500/10 text-red-500 rounded-lg">
                             <DollarSign size={20} />
@@ -111,7 +111,7 @@ export function MistakeDashboard() {
                 </div>
 
                 {/* Win Rate Gap */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-blue-100 dark:bg-blue-500/10 text-blue-500 rounded-lg">
                             <TrendingDown size={20} />
@@ -132,7 +132,7 @@ export function MistakeDashboard() {
                 </div>
 
                 {/* Most Frequent */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-yellow-100 dark:bg-yellow-500/10 text-yellow-500 rounded-lg">
                             <AlertTriangle size={20} />
@@ -152,7 +152,7 @@ export function MistakeDashboard() {
                 </div>
 
                 {/* Deadliest Mistake */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-purple-100 dark:bg-purple-500/10 text-purple-500 rounded-lg">
                             <XCircle size={20} />

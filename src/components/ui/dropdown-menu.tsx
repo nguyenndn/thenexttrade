@@ -70,7 +70,7 @@ export function DropdownMenuTrigger({ asChild, children }: DropdownMenuTriggerPr
         return React.cloneElement(children as React.ReactElement<any>, {
             onClick: (e: React.MouseEvent) => {
                 e.stopPropagation();
-                children.props.onClick?.(e);
+                (children as React.ReactElement<any>).props.onClick?.(e);
                 toggle();
             }
         });
@@ -83,13 +83,12 @@ export function DropdownMenuTrigger({ asChild, children }: DropdownMenuTriggerPr
     );
 }
 
-interface DropdownMenuContentProps {
+interface DropdownMenuContentProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
     align?: "start" | "end" | "center";
-    className?: string;
 }
 
-export function DropdownMenuContent({ children, align = "center", className }: DropdownMenuContentProps) {
+export function DropdownMenuContent({ children, align = "center", className, ...props }: DropdownMenuContentProps) {
     const { isOpen } = React.useContext(DropdownMenuContext);
 
     if (!isOpen) return null;
@@ -107,6 +106,7 @@ export function DropdownMenuContent({ children, align = "center", className }: D
                 alignmentClasses[align],
                 className
             )}
+            {...props}
         >
             {children}
         </div>

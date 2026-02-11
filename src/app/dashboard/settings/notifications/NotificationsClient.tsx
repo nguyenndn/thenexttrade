@@ -18,7 +18,7 @@ export default function NotificationsClient() {
 
     return (
         <div className="space-y-6">
-            <div className="bg-white dark:bg-[#0B0E14] rounded-2xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
                 <div className="flex items-center gap-4 mb-6">
                     <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center">
                         <Bell size={24} className="text-purple-500" />

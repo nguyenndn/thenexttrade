@@ -40,7 +40,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
                 onClick={onClose}
             />
-            <div className="relative w-full max-w-4xl max-h-[90vh] flex flex-col transform rounded-2xl bg-white dark:bg-[#151925] shadow-xl transition-all border border-gray-100 dark:border-white/5">
+            <div className="relative w-full max-w-4xl max-h-[90vh] flex flex-col transform rounded-xl bg-white dark:bg-[#151925] shadow-xl transition-all border border-gray-100 dark:border-white/5">
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5 flex-shrink-0">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                         {title}

@@ -22,7 +22,7 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-cyan-500">
+    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-cyan-500">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-cyan-500/10 rounded-lg text-cyan-500">
           <BarChart3 size={20} />
@@ -42,7 +42,7 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
         </div>
 
         {/* List */}
-        <div className="space-y-1 max-h-[260px] overflow-y-auto pr-1 custom-scrollbar">
+        <div className="space-y-1 h-[224px] overflow-y-auto pr-1 custom-scrollbar">
           {data.length === 0 ? (
             <p className="text-sm text-gray-500 text-center py-4 italic">No trades found.</p>
           ) : (

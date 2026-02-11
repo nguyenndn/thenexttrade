@@ -23,14 +23,15 @@ export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, 
         );
     }
 
-    // Filter out zero or negative values if only showing distribution of profitable trades
-    // Or we might want to show absolute volume. For now, let's assume valid positive values for distribution.
-    const validData = data.filter(d => d.value > 0);
+    // Filter valid data (non-zero) and use absolute values for Pie slices
+    const validData = data
+        .filter(d => d.value !== 0)
+        .map(d => ({ ...d, absValue: Math.abs(d.value) })); // Use absValue for slice size
 
     return (
         <div className="w-full" style={{ height }}>
             <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+                <PieChart key={JSON.stringify(validData)}>
                     <Pie
                         data={validData}
                         cx="50%"
@@ -38,7 +39,9 @@ export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, 
                         innerRadius={innerRadius}
                         outerRadius={outerRadius}
                         paddingAngle={5}
-                        dataKey="value"
+                        dataKey="absValue" // Use absolute value for drawing
+                        animationDuration={1000}
+                        animationBegin={0}
                     >
                         {validData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} strokeWidth={0} />
@@ -52,7 +55,11 @@ export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, 
                             boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
                         }}
                         itemStyle={{ color: '#111827', fontWeight: 600 }}
-                        formatter={(value: any) => [`$${Number(value).toFixed(2)}`, "Profit"]}
+                        formatter={(value: any, name: any, props: any) => {
+                             // Find original value from payload
+                             const originalValue = props.payload.value;
+                             return [`$${Number(originalValue).toFixed(2)}`, "Profit/Loss"];
+                        }}
                     />
                     <Legend
                         verticalAlign="bottom"

@@ -78,7 +78,7 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white dark:bg-[#1E2028] w-full max-w-lg rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-white/5 animate-in fade-in zoom-in-95 duration-200">
+            <div className="bg-white dark:bg-[#1E2028] w-full max-w-lg rounded-xl shadow-xl overflow-hidden border border-gray-100 dark:border-white/5 animate-in fade-in zoom-in-95 duration-200">
 
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">

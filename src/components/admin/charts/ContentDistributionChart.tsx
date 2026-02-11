@@ -18,7 +18,7 @@ const COLORS = ["hsl(var(--primary))", "#3B82F6", "#8B5CF6", "#F59E0B", "#EF4444
 export function ContentDistributionChart({ data = [] }: ContentDistributionChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="bg-white dark:bg-[#151925] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm h-[350px] flex items-center justify-center">
+            <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm h-[350px] flex items-center justify-center">
                 <p className="text-gray-400">No content data available</p>
             </div>
         );
@@ -31,7 +31,7 @@ export function ContentDistributionChart({ data = [] }: ContentDistributionChart
     }));
 
     return (
-        <div className="bg-white dark:bg-[#151925] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm h-[350px]">
+        <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm h-[350px]">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Content Distribution</h3>
             <div className="w-full h-[280px]">
                 <ResponsiveContainer width="100%" height="100%">

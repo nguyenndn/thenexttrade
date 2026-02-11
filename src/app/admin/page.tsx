@@ -37,7 +37,7 @@ function StatCard({ title, value, change, icon: Icon, trend, color = "blue" }: S
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{title}</p>
                     <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{value}</h3>
                 </div>
-                <div className={`p-3.5 rounded-2xl ${colorStyles[color]} transition-colors`}>
+                <div className={`p-3.5 rounded-xl ${colorStyles[color]} transition-colors`}>
                     <Icon size={24} strokeWidth={2.5} />
                 </div>
             </div>

@@ -133,7 +133,7 @@ export default function StreakClient() {
             {/* Left Column: Login Info (40%) */}
             <div className="xl:col-span-2 h-full">
                 {/* 1. Hero Section: Current Streak & Check-in */}
-                <div className="bg-white dark:bg-[#0B0E14] p-8 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm flex flex-col relative overflow-hidden h-full">
+                <div className="bg-white dark:bg-[#0B0E14] p-8 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm flex flex-col relative overflow-hidden h-full">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
 
                     {/* TOP PART: Stats & Action */}
@@ -237,7 +237,7 @@ export default function StreakClient() {
             </div>
 
             {/* Right Column: Calendar Wrapper (60%) */}
-            <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm h-full flex flex-col xl:col-span-3">
+            <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm h-full flex flex-col xl:col-span-3">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="font-bold text-gray-900 dark:text-white">Monthly History</h3>
                     <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-medium text-gray-500">

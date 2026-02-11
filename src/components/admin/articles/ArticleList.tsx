@@ -255,7 +255,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
     return (
         <div className="space-y-6">
             {/* Unified Toolbar: Search + Filters + Pagination Info */}
-            <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 rounded-2xl p-4 shadow-sm flex flex-col xl:flex-row gap-4 justify-between">
+            <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 rounded-xl p-4 shadow-sm flex flex-col xl:flex-row gap-4 justify-between">
                 <div className="flex flex-1 gap-4 flex-col md:flex-row">
                     {/* Search */}
                     <div className="relative flex-1">

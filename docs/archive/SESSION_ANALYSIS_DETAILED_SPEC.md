@@ -543,7 +543,7 @@ function QuickStatCard({
   color: string;
 }) {
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-4 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
         <Icon size={16} className={color} />
         <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">
@@ -563,12 +563,12 @@ function SessionLoadingSkeleton() {
       <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64" />
       <div className="grid grid-cols-4 gap-4">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="h-24 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+          <div key={i} className="h-24 bg-gray-200 dark:bg-gray-700 rounded-xl" />
         ))}
       </div>
       <div className="grid grid-cols-2 gap-6">
-        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
-        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
       </div>
     </div>
   );
@@ -621,7 +621,7 @@ interface SessionPerformanceProps {
 
 export function SessionPerformance({ data }: SessionPerformanceProps) {
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <h3 className="font-bold text-gray-900 dark:text-white mb-2">
         P&L by Session
       </h3>
@@ -757,7 +757,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
   ];
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <h3 className="font-bold text-gray-900 dark:text-white mb-2">
         24-Hour Trading Heatmap
       </h3>
@@ -853,7 +853,7 @@ interface SessionRecommendationsProps {
 
 export function SessionRecommendations({ recommendations }: SessionRecommendationsProps) {
   return (
-    <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl p-6 border border-blue-200 dark:border-blue-500/20">
+    <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl p-6 border border-blue-200 dark:border-blue-500/20">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 bg-blue-500/20 rounded-xl">
           <Lightbulb size={20} className="text-blue-500" />

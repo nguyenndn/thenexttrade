@@ -586,7 +586,7 @@ export function ReportsDashboard() {
               setPreviewData(null);
             }}
             className={`
-              text-left p-5 rounded-2xl border-2 transition-all
+              text-left p-5 rounded-xl border-2 transition-all
               ${selectedType === report.id
                 ? "border-[#00C888] bg-[#00C888]/5"
                 : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
@@ -628,7 +628,7 @@ export function ReportsDashboard() {
       </div>
 
       {/* Date Range */}
-      <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+      <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
         <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
           <Calendar size={18} className="text-[#00C888]" />
           Select Date Range
@@ -682,7 +682,7 @@ export function ReportsDashboard() {
       <button
         onClick={handleGenerate}
         disabled={isGenerating}
-        className="w-full py-4 bg-[#00C888] text-white font-bold rounded-2xl hover:bg-[#00B377] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full py-4 bg-[#00C888] text-white font-bold rounded-xl hover:bg-[#00B377] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {isGenerating ? (
           <>
@@ -708,7 +708,7 @@ export function ReportsDashboard() {
 // Preview Component
 function ReportPreview({ data, onDownload }: { data: any; onDownload: () => void }) {
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <div className="flex justify-between items-center mb-6">
         <h3 className="font-bold text-gray-900 dark:text-white">
           Report Preview

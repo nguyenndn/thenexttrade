@@ -104,7 +104,7 @@ export default function AdminCommentsPage() {
             </div>
 
             {/* Controls */}
-            <div className="flex items-center gap-4 bg-white dark:bg-[#0B0E14] p-4 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+            <div className="flex items-center gap-4 bg-white dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                 <div className="relative flex-1 max-w-md">
                     <PremiumInput
                         icon={Search}

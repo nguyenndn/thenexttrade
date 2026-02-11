@@ -84,7 +84,7 @@ export function AccountDetailModal({ license, isOpen, onClose }: AccountDetailMo
 
                 <div className="py-2 space-y-6">
                     {/* Header Info */}
-                    <div className="flex items-center gap-4 bg-gray-50 dark:bg-white/5 p-4 rounded-2xl">
+                    <div className="flex items-center gap-4 bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
                         <BrokerLogo broker={license.broker} size={96} />
                         <div>
                             <p className="text-xl font-bold text-gray-900 dark:text-white font-mono">

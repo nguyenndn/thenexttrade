@@ -10,7 +10,7 @@ export function SessionRecommendations({ recommendations }: SessionRecommendatio
     if (recommendations.length === 0) return null;
 
     return (
-        <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-500/10 dark:to-blue-500/10 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-500/20">
+        <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-500/10 dark:to-blue-500/10 p-6 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
             <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                     <Lightbulb size={20} />

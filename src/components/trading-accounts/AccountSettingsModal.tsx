@@ -160,7 +160,7 @@ export function AccountSettingsModal({
                             <span className="text-[10px] bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full">Sensitive</span>
                         </h3>
 
-                        <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-2xl border border-gray-100 dark:border-white/5">
+                        <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5">
                             <div className="flex items-center justify-between mb-2">
                                 <label className="text-xs font-semibold text-gray-500">API Key</label>
                                 <div className="flex gap-2">

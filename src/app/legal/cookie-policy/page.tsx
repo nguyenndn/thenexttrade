@@ -10,7 +10,7 @@ export default function CookiePolicyPage() {
     return (
         <>
             <div className="flex flex-col items-center justify-center mb-8">
-                <div className="p-3 bg-orange-500/10 text-orange-500 rounded-2xl mb-4">
+                <div className="p-3 bg-orange-500/10 text-orange-500 rounded-xl mb-4">
                     <Cookie size={40} />
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-center m-0 mb-2">Cookie Policy</h1>

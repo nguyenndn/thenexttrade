@@ -22,7 +22,7 @@ interface ConfidenceCorrelationProps {
 
 export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                 Confidence vs. Performance
             </h3>

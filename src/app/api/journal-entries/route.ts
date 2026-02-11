@@ -85,11 +85,24 @@ export async function GET(request: Request) {
     if (symbol) where.symbol = { contains: symbol.toUpperCase() };
     if (status) where.status = status;
     if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        // Ensure end date covers the full day (23:59:59.999)
+        end.setHours(23, 59, 59, 999);
+
         where.entryDate = {
-            gte: new Date(startDate),
-            lte: new Date(endDate),
+            gte: start,
+            lte: end,
         };
     }
+
+    // DEBUG LOGGING
+    console.log("Journal API Request:", {
+        url: request.url,
+        params: Object.fromEntries(searchParams.entries()),
+        generatedWhere: JSON.stringify(where, null, 2)
+    });
 
     try {
         const [entries, total, pnlStat, winCount, lossCount, breakEvenCount] = await Promise.all([

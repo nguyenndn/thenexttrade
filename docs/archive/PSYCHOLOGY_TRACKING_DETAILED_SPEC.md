@@ -695,7 +695,7 @@ export function PsychologyDashboard() {
 
       {/* Tilt Warning Banner */}
       {hasTiltWarning && (
-        <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-2xl p-4 flex items-start gap-3">
+        <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl p-4 flex items-start gap-3">
           <AlertTriangle className="text-red-500 flex-shrink-0 mt-0.5" size={20} />
           <div>
             <h4 className="font-bold text-red-700 dark:text-red-400">
@@ -715,7 +715,7 @@ export function PsychologyDashboard() {
 
       {/* Key Insight Card */}
       {bestEmotion && (
-        <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-200 dark:border-purple-500/20 rounded-2xl p-6">
+        <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-200 dark:border-purple-500/20 rounded-xl p-6">
           <h3 className="text-sm uppercase tracking-wider text-purple-500 font-bold mb-2">
             Key Insight
           </h3>
@@ -747,10 +747,10 @@ function PsychologyLoadingSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
       <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64" />
-      <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+      <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-xl" />
       <div className="grid grid-cols-2 gap-6">
-        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
-        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+        <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
       </div>
     </div>
   );
@@ -805,7 +805,7 @@ export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
   }));
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <h3 className="font-bold text-gray-900 dark:text-white mb-2">
         Confidence vs Win Rate
       </h3>
@@ -900,7 +900,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
     : 0;
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+    <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <h3 className="font-bold text-gray-900 dark:text-white mb-2">
         Trading Plan Adherence
       </h3>

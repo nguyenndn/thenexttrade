@@ -265,7 +265,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                         className="prose dark:prose-invert prose-lg max-w-none 
                                         prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white 
                                         prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-8
-                                        prose-a:text-primary dark:prose-a:text-primary prose-img:rounded-2xl prose-blockquote:border-l-primary"
+                                        prose-a:text-primary dark:prose-a:text-primary prose-img:rounded-xl prose-blockquote:border-l-primary"
                                         dangerouslySetInnerHTML={{ __html: processedContent }}
                                     />
 
@@ -285,7 +285,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                     )}
 
                                     {/* Related Articles Bottom Grid (Suspended) */}
-                                    <Suspense fallback={<div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-2xl mt-16" />}>
+                                    <Suspense fallback={<div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl mt-16" />}>
                                         <RelatedArticlesBottom categoryId={article.categoryId} currentArticleId={article.id} initialArticles={relatedArticles} />
                                     </Suspense>
 
@@ -317,7 +317,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
                                 {/* Right Sidebar (3 cols) - Suspended */}
                                 <aside className="lg:col-span-3">
-                                    <Suspense fallback={<div className="space-y-8 sticky top-24"><div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-2xl"></div><div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-2xl"></div></div>}>
+                                    <Suspense fallback={<div className="space-y-8 sticky top-24"><div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl"></div><div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl"></div></div>}>
                                         <SidebarWidgets />
                                     </Suspense>
                                 </aside>

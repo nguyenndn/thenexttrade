@@ -133,7 +133,7 @@ export default function LessonView({
                             prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
                             prose-a:text-primary prose-a:no-underline hover:prose-a:underline
                             prose-strong:text-gray-900 dark:prose-strong:text-white
-                            prose-img:rounded-2xl prose-img:shadow-xl
+                            prose-img:rounded-xl prose-img:shadow-xl
                             prose-pre:bg-gray-900 prose-pre:text-white prose-pre:p-4 prose-pre:rounded-xl">
                             <Markdown>{lesson.content}</Markdown>
                         </div>
@@ -155,7 +155,7 @@ export default function LessonView({
                                 onClick={handleComplete}
                                 disabled={completing}
                                 className={cn(
-                                    "px-10 py-6 rounded-2xl font-bold text-lg transition-all shadow-lg",
+                                    "px-10 py-6 rounded-xl font-bold text-lg transition-all shadow-lg",
                                     isCompleted
                                         ? "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 cursor-pointer hover:bg-gray-200 dark:hover:bg-white/10"
                                         : "bg-primary hover:bg-[#00B078] text-white shadow-primary/20 hover:-translate-y-1 active:scale-95"
@@ -213,7 +213,7 @@ export default function LessonView({
                                             key={l.id}
                                             href={`/dashboard/academy/lessons/${l.slug}`}
                                             className={cn(
-                                                "flex items-center gap-4 p-3 rounded-2xl transition-all relative group",
+                                                "flex items-center gap-4 p-3 rounded-xl transition-all relative group",
                                                 isActive
                                                     ? "bg-primary/10 text-primary"
                                                     : "text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"

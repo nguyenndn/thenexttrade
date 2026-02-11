@@ -40,7 +40,7 @@ export default function Loading() {
             </div>
 
             {/* Empty State Skeleton (optional visual fill) */}
-            <div className="h-20 w-full bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashed border-gray-200 dark:border-white/10 animate-pulse" />
+            <div className="h-20 w-full bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 animate-pulse" />
         </div>
     )
 }

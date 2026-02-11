@@ -17,7 +17,7 @@ interface Trade {
 
 export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
     return (
-        <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 rounded-2xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-blue-500" />
                 Recent Trading Activity

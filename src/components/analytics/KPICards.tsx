@@ -81,7 +81,7 @@ export function KPICards({ summary }: KPICardsProps) {
                 return (
                     <div
                         key={index}
-                        className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow"
+                        className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow"
                     >
                         <div className="flex items-center gap-3 mb-3">
                             <div className={`p-2.5 rounded-xl ${card.bg}`}>

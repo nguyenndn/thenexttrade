@@ -156,7 +156,7 @@ export default async function EADashboardPage() {
                             recentPending.map((license) => (
                                 <div
                                     key={license.id}
-                                    className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5"
+                                    className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5"
                                 >
                                     <div className="flex items-center gap-4">
                                         <BrokerLogo broker={license.broker} size={64} />
@@ -188,14 +188,14 @@ export default async function EADashboardPage() {
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Quick Navigation</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Link href="/admin/ea/accounts" className="block">
-                                <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-100 dark:border-white/5">
+                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-100 dark:border-white/5">
                                     <Users className="mb-3 text-blue-500" size={24} />
                                     <h3 className="font-bold text-gray-900 dark:text-white">All Licenses</h3>
                                     <p className="text-sm text-gray-500 mt-1">Manage user licenses</p>
                                 </div>
                             </Link>
                             <Link href="/admin/ea/products" className="block">
-                                <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-100 dark:border-white/5">
+                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-100 dark:border-white/5">
                                     <Bot className="mb-3 text-cyan-500" size={24} />
                                     <h3 className="font-bold text-gray-900 dark:text-white">EA Products</h3>
                                     <p className="text-sm text-gray-500 mt-1">Manage files and versions</p>
@@ -226,7 +226,7 @@ function StatsCard({ title, value, icon: Icon, color, bg }: any) {
     return (
         <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] p-6 border border-gray-100 dark:border-white/5 shadow-sm">
             <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-2xl ${bg} flex items-center justify-center`}>
+                <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center`}>
                     <Icon className={color} size={24} />
                 </div>
                 <div>

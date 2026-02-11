@@ -181,7 +181,7 @@ export default async function Home() {
 
               <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
                 {latestArticles.map((article, idx) => (
-                  <Link key={article.id} href={`/articles/${article.slug}`} className="group flex gap-3 p-2 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                  <Link key={article.id} href={`/articles/${article.slug}`} className="group flex gap-3 p-2 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
                     <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gray-200">
                       {article.thumbnail && (
                         <Image
@@ -257,7 +257,7 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {popularArticles.map((article, idx) => (
-              <Link key={article.id} href={`/articles/${article.slug}`} className="group relative bg-white dark:bg-[#1E2028] rounded-2xl p-2 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-white/5">
+              <Link key={article.id} href={`/articles/${article.slug}`} className="group relative bg-white dark:bg-[#1E2028] rounded-xl p-2 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-white/5">
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
                   {article.thumbnail ? (
                     <Image
@@ -325,8 +325,8 @@ export default async function Home() {
               { icon: Zap, title: "4. Trader", desc: "Risk & Psych.", color: "text-pink-500", bg: "bg-pink-500/10" },
               { icon: Calendar, title: "5. Pro", desc: "Consistency.", color: "text-orange-500", bg: "bg-orange-500/10" },
             ].map((step, idx) => (
-              <div key={idx} className="relative group bg-white dark:bg-[#1E2028] p-4 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-all duration-300 hover:-translate-y-2 hover:shadow-xl md:w-[30%] lg:w-auto">
-                <div className={`w-12 h-12 rounded-2xl ${step.bg} ${step.color} flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform`}>
+              <div key={idx} className="relative group bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-all duration-300 hover:-translate-y-2 hover:shadow-xl md:w-[30%] lg:w-auto">
+                <div className={`w-12 h-12 rounded-xl ${step.bg} ${step.color} flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform`}>
                   <step.icon size={24} strokeWidth={2.5} />
                 </div>
                 <div className="text-center">

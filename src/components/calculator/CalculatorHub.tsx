@@ -48,7 +48,7 @@ export function CalculatorHub() {
         <div className="space-y-8">
             {/* Tabs */}
             {/* Tabs */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-gray-100 dark:bg-white/5 p-1.5 rounded-2xl w-full">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-gray-100 dark:bg-white/5 p-1.5 rounded-xl w-full">
                 {CALCULATORS.map((calc) => {
                     const Icon = calc.icon;
                     return (

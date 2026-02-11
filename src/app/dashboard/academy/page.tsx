@@ -118,7 +118,7 @@ export default async function UserAcademyDashboard() {
 
                     {/* Focus Banner (Next Lesson) */}
                     {nextLesson ? (
-                        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-[#1E2028] dark:to-[#151925] border border-gray-200 dark:border-white/5 p-6 shadow-xl">
+                        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-[#1E2028] dark:to-[#151925] border border-gray-200 dark:border-white/5 p-6 shadow-xl">
                             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                                 <div>
                                     <div className="flex items-center gap-2 mb-2">
@@ -139,7 +139,7 @@ export default async function UserAcademyDashboard() {
                             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                         </div>
                     ) : (
-                        <div className="p-6 rounded-2xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
+                        <div className="p-6 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
                             <Trophy size={24} />
                             <div>
                                 <h3 className="font-bold">Mission Complete!</h3>
@@ -165,7 +165,7 @@ export default async function UserAcademyDashboard() {
                 {/* Sidebar Stats */}
                 <div className="space-y-6">
                     {/* Daily Streak */}
-                    <div className="bg-gradient-to-br from-primary to-teal-600 p-6 rounded-2xl text-white shadow-lg shadow-primary/20 relative overflow-hidden">
+                    <div className="bg-gradient-to-br from-primary to-teal-600 p-6 rounded-xl text-white shadow-lg shadow-primary/20 relative overflow-hidden">
                         <div className="relative z-10">
                             <Zap size={32} className="mb-4 text-yellow-300 fill-yellow-300" />
                             <h3 className="font-bold text-lg">Daily Streak</h3>
@@ -181,7 +181,7 @@ export default async function UserAcademyDashboard() {
                     </div>
 
                     {/* Quiz Performance */}
-                    <div className="bg-white dark:bg-[#151925] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                             <Trophy size={18} className="text-yellow-500" /> Quiz Performance
                         </h3>

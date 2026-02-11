@@ -129,7 +129,7 @@ const brokers = [
 
 function TrustedBrokersWidget() {
     return (
-        <div className="relative group overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 shadow-lg mb-8">
+        <div className="relative group overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 shadow-lg mb-8">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />

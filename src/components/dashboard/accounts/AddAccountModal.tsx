@@ -91,7 +91,7 @@ export function AddAccountModal() {
                                     key={brokerKey}
                                     onClick={() => setValue("broker", brokerKey, { shouldValidate: true })}
                                     className={cn(
-                                        "cursor-pointer rounded-2xl border p-4 flex flex-col items-center gap-2 transition-all duration-200",
+                                        "cursor-pointer rounded-xl border p-4 flex flex-col items-center gap-2 transition-all duration-200",
                                         selectedBroker === brokerKey
                                             ? "border-primary bg-primary/5 ring-2 ring-primary/20"
                                             : "border-gray-200 dark:border-white/10 hover:border-primary/50 bg-white dark:bg-white/5"

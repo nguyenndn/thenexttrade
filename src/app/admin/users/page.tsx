@@ -126,7 +126,7 @@ export default async function AdminUsersPage() {
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Users</p>
                             <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.totalUsers.toLocaleString()}</h3>
                         </div>
-                        <div className="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 ring-1 ring-blue-500/20">
+                        <div className="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 ring-1 ring-blue-500/20">
                             <Users size={24} strokeWidth={2.5} />
                         </div>
                     </div>
@@ -137,7 +137,7 @@ export default async function AdminUsersPage() {
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">New (Last 7 Days)</p>
                             <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">+{stats.newUsers}</h3>
                         </div>
-                        <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20">
+                        <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20">
                             <UserPlus size={24} strokeWidth={2.5} />
                         </div>
                     </div>
@@ -148,7 +148,7 @@ export default async function AdminUsersPage() {
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Active Learners</p>
                             <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.activeUsersCount}</h3>
                         </div>
-                        <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
+                        <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
                             <Zap size={24} strokeWidth={2.5} />
                         </div>
                     </div>
