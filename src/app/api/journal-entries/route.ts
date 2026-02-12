@@ -74,6 +74,9 @@ export async function GET(request: Request) {
     const sortBy = searchParams.get("sortBy") || "entryDate";
     const sortOrder = (searchParams.get("sortOrder") === "asc" ? "asc" : "desc");
 
+    const type = searchParams.get("type");
+    const result = searchParams.get("result");
+
     const skip = (page - 1) * limit;
 
     const where: any = { userId: user.id };
@@ -83,7 +86,9 @@ export async function GET(request: Request) {
     }
 
     if (symbol) where.symbol = { contains: symbol.toUpperCase() };
-    if (status) where.status = status;
+    if (status && status !== "ALL") where.status = status;
+    if (type && type !== "ALL") where.type = type;
+    if (result && result !== "ALL") where.result = result;
     if (startDate && endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);

@@ -62,7 +62,7 @@ export function MarginCalc() {
             </div>
 
             <div className="lg:col-span-5">
-                <div className="bg-[#151925] border border-white/5 p-6 rounded-[2rem] h-full flex flex-col justify-center text-center shadow-lg">
+                <div className="bg-[#151925] border border-white/5 p-6 rounded-xl h-full flex flex-col justify-center text-center shadow-lg">
                     <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-2">Required Margin</p>
                     <p className="text-5xl font-black text-white mb-2">${requiredMargin.toFixed(2)}</p>
 

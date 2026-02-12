@@ -129,7 +129,7 @@ export function ReportsDashboard() {
                             setPreviewData(null);
                         }}
                         className={`
-              relative text-left p-6 rounded-[1.5rem] border-2 transition-all duration-300 group
+              relative text-left p-6 rounded-xl border-2 transition-all duration-300 group
               ${selectedType === report.id
                                 ? "border-primary bg-primary/5 shadow-xl shadow-primary/10 -translate-y-1"
                                 : "border-gray-200 dark:border-white/5 bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:-translate-y-1 hover:shadow-lg"
@@ -172,7 +172,7 @@ export function ReportsDashboard() {
             </div>
 
             {/* Controls Container */}
-            <div className="bg-white dark:bg-[#1E2028] p-4 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] p-4 md:p-8 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                 <h3 className="font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3 text-lg">
                     <Calendar size={20} className="text-primary" />
                     Configure Report Range

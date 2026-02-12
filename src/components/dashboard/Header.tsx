@@ -1,6 +1,7 @@
 "use client";
 
 import { Bell, Search, Menu, Settings, LogOut, Flame } from 'lucide-react';
+import { useSearchParams } from "next/navigation";
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { AuthUser } from "@/lib/auth-types";
 import Image from 'next/image';
@@ -26,6 +27,9 @@ export function Header({
     user?: AuthUser | null,
     bell?: React.ReactNode
 }) {
+    const searchParams = useSearchParams();
+    const accountId = searchParams.get("accountId");
+
     const { theme, toggleTheme } = useTheme();
     const isDark = theme === "dark";
 
@@ -93,7 +97,7 @@ export function Header({
 
                 {showAccountSelector && (
                     <div className="hidden md:block">
-                        <AccountSelector />
+                        <AccountSelector currentAccountId={accountId ?? undefined} />
                     </div>
                 )}
                 {/* Theme Toggle */}

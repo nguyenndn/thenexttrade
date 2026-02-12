@@ -25,7 +25,7 @@ interface SessionPerformanceProps {
 
 export function SessionPerformance({ data }: SessionPerformanceProps) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm h-full flex flex-col">
             <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                 P&L by Session
             </h3>
@@ -33,7 +33,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                 Total profit/loss for each trading session
             </p>
 
-            <div className="h-[280px]">
+            <div className="flex-1 min-h-[280px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={data} layout="vertical">
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.1} />

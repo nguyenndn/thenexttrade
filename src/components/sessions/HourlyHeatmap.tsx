@@ -25,7 +25,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
             totalTrades,
             winRate,
             totalPnL,
-            title: `${hourLabel} UTC\nTrades: ${totalTrades}\nWin Rate: ${winRate.toFixed(0)}%\nP&L: $${totalPnL.toFixed(0)}`
+            title: `${hourLabel} UTC\nTrades: ${totalTrades}\nWin Rate: ${winRate.toFixed(0)}%\nP&L: $${totalPnL.toFixed(2)}`
         };
     });
 
@@ -95,7 +95,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                                     <div className="flex justify-between">
                                         <span className="text-gray-400">P&L:</span>
                                         <span className={hour.totalPnL > 0 ? "text-green-400" : hour.totalPnL < 0 ? "text-red-400" : "text-gray-300"}>
-                                            {hour.totalPnL > 0 ? '+' : ''}{hour.totalPnL}
+                                            {hour.totalPnL > 0 ? '+' : ''}{hour.totalPnL.toFixed(2)}
                                         </span>
                                     </div>
                                 </div>
@@ -103,7 +103,6 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                         </div>
                     ))}
                 </div>
-
                 {/* Hour labels (simplified for small screens logic addressed via grid above) */}
                 <div className="grid grid-cols-6 sm:grid-cols-12 md:grid-cols-12 lg:grid-cols-24 gap-1">
                     {fullHours.map((hour) => (

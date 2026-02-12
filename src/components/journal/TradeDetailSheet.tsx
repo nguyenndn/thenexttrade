@@ -70,12 +70,10 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                         </div>
                         <div className="flex items-center gap-2">
                             <Button 
-                                variant="outline" 
-                                size="sm" 
                                 onClick={() => setShowShareModal(true)}
-                                className="rounded-xl border-gray-200 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 dark:text-white gap-2 h-10 px-4"
+                                className="bg-primary hover:bg-[#00a872] text-white shadow-lg shadow-primary/30 rounded-xl px-5 font-bold flex items-center gap-2 hover:-translate-y-0.5 transition-all border-none h-10"
                             >
-                                <Share2 size={16} />
+                                <Share2 size={18} strokeWidth={2.5} />
                                 Share
                             </Button>
                             <SheetClose className="rounded-xl h-10 w-10 p-0 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-500 dark:text-white transition-colors">

@@ -72,7 +72,7 @@ export default function CreateBroadcastPage() {
                 </p>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-100 dark:border-white/5 shadow-sm">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-2">
                         <PremiumInput

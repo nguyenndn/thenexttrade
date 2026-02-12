@@ -19,9 +19,8 @@ export function DashboardFilter({ currentAccountId, className }: DashboardFilter
     const startStr = searchParams.get("from");
     const endStr = searchParams.get("to");
 
-    // Default to "All Time" (Start Year 2025) marker that DateRangePicker recognizes
-    // This isn't perfect but matches the UI component's expectation for "All Time" display.
-    const defaultStart = new Date(2025, 0, 1);
+    // Default to "Today" as requested
+    const defaultStart = startOfDay(new Date());
     const defaultEnd = endOfDay(new Date());
 
     const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>({
@@ -41,33 +40,20 @@ export function DashboardFilter({ currentAccountId, className }: DashboardFilter
         }
     }, [searchParams]);
 
-    // Restore from LocalStorage on mount if URL is empty
+    // Default to Today on mount if URL is empty
     useEffect(() => {
         const start = searchParams.get("from");
         const end = searchParams.get("to");
 
         if (!start && !end) {
-            const saved = localStorage.getItem("gsn_date_range");
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    // Check if parsed dates are valid
-                    if (parsed.start && parsed.end) {
-                         const s = new Date(parsed.start);
-                         const e = new Date(parsed.end);
-                         
-                         setDateRange({ start: s, end: e });
-
-                         // Update URL to match
-                         const params = new URLSearchParams(searchParams.toString());
-                         params.set("from", format(s, "yyyy-MM-dd"));
-                         params.set("to", format(e, "yyyy-MM-dd"));
-                         router.replace(`?${params.toString()}`);
-                    }
-                } catch (e) {
-                    console.error("Failed to parse saved date range", e);
-                }
-            }
+             // Enforce "Today" in URL if missing
+             const todayStart = startOfDay(new Date());
+             const todayEnd = endOfDay(new Date());
+             
+             const params = new URLSearchParams(searchParams.toString());
+             params.set("from", format(todayStart, "yyyy-MM-dd"));
+             params.set("to", format(todayEnd, "yyyy-MM-dd"));
+             router.replace(`?${params.toString()}`);
         }
     }, []);
 

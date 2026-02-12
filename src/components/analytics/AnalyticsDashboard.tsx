@@ -98,11 +98,11 @@ export function AnalyticsDashboard() {
                         </h1>
                     </div>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                        <AccountSelector currentAccountId={accountId ?? undefined} />
                         <DateRangePicker
                             value={dateRange}
                             onChange={setDateRange}
                         />
-                        <AccountSelector />
                     </div>
                 </div>
                 <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">

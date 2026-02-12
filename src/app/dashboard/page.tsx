@@ -29,7 +29,34 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     // 1. Config & Filters
     const cookieStore = await cookies();
     const lastAccountId = cookieStore.get("last_account_id")?.value;
-    const accountId = typeof searchParams?.accountId === 'string' ? searchParams.accountId : lastAccountId;
+
+    // Server-Side Redirect to enforce accountId in URL (Prevent Double Load)
+    if (!searchParams?.accountId) {
+        let targetId = lastAccountId;
+
+        if (!targetId) {
+            const defaultAccount = await prisma.tradingAccount.findFirst({
+                where: { userId: user.id },
+                orderBy: { createdAt: 'desc' },
+                select: { id: true }
+            });
+            targetId = defaultAccount?.id;
+        }
+
+        if (targetId) {
+            // Reconstruct params to preserve filters like date range
+            const newParams = new URLSearchParams();
+            if (searchParams) {
+                Object.entries(searchParams).forEach(([key, value]) => {
+                    if (typeof value === 'string') newParams.set(key, value);
+                });
+            }
+            newParams.set("accountId", targetId);
+            redirect(`/dashboard?${newParams.toString()}`);
+        }
+    }
+
+    const accountId = searchParams?.accountId as string; // Guaranteed to be set or empty if no accounts
     const accountFilter = accountId ? { userId: user.id, id: accountId } : { userId: user.id };
 
     const fromParam = typeof searchParams?.from === 'string' ? searchParams.from : undefined;
@@ -66,7 +93,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         prisma.journalEntry.findMany({
             where: {
                 userId: user.id,
-                ...(accountId ? { tradingAccountId: accountId } : {}),
+                ...(accountId ? { accountId: accountId } : {}),
                 status: 'CLOSED'
             },
             orderBy: { exitDate: 'desc' },

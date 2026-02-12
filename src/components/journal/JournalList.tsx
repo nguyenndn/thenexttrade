@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, TrendingUp, TrendingDown, Calendar, Search, Settings2, ArrowUpDown, ChevronLeft, ChevronRight, ScrollText } from "lucide-react";
+import { Plus, Edit2, Trash2, TrendingUp, TrendingDown, Calendar, Search, Settings2, ArrowUpDown, ChevronLeft, ChevronRight, ScrollText, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import JournalForm from "@/components/journal/JournalForm";
@@ -17,6 +17,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { MISTAKES, getMistakeSeverityColor } from "@/lib/mistakes";
 import psychologyData from "@/data/psychology.json";
 import { TradeDetailSheet } from "./TradeDetailSheet";
+import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 
 // Types
 interface JournalEntry {
@@ -40,10 +41,6 @@ interface JournalEntry {
     accountId: string | null;
 }
 
-
-
-import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
-
 export default function JournalList() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -54,6 +51,8 @@ export default function JournalList() {
     const [stats, setStats] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
+    const [pageSize, setPageSize] = useState(10); // Added Page Size State
+
     // Column Visibility State
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set([
         "symbol", "type", "volume", "pnl", "strategy", "mindset", "customTags", "mistakes"
@@ -124,10 +123,11 @@ export default function JournalList() {
 
     // Filter State
     const [filter, setFilter] = useState({ symbol: "" });
+    const [filterType, setFilterType] = useState<string>("ALL");
+
     // Sort State
     const [sort, setSort] = useState<{ col: string; dir: "asc" | "desc" }>({ col: "entryDate", dir: "desc" });
 
-    // Modal State
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isColumnMenuOpen, setIsColumnMenuOpen] = useState(false);
@@ -139,6 +139,7 @@ export default function JournalList() {
 
     // Client-side Sorting Logic
     const sortedEntries = entries.slice().sort((a, b) => {
+        // ... (sorting logic unchanged used by client sort if needed, but we fetch new data) ...
         const { col, dir } = sort;
         const multiplier = dir === "asc" ? 1 : -1;
 
@@ -165,8 +166,9 @@ export default function JournalList() {
             setIsLoading(true);
             const query = new URLSearchParams({
                 page: page.toString(),
-                limit: "10",
+                limit: pageSize.toString(),
                 ...(filter.symbol && { symbol: filter.symbol }),
+                ...(filterType !== "ALL" && { type: filterType }),
                 ...(accountId && { accountId }),
                 // Add Date Filtering
                 ...(dateRange?.start && { startDate: dateRange.start.toISOString() }),
@@ -195,7 +197,7 @@ export default function JournalList() {
             fetchEntries(1);
         }, 500);
         return () => clearTimeout(timeout);
-    }, [filter, accountId, paramFrom, paramTo]); // Re-fetch when URL Date/Account changes
+    }, [filter, accountId, paramFrom, paramTo, pageSize, filterType]); 
 
     const handleSort = (colId: string) => {
         setSort(prev => ({
@@ -263,8 +265,6 @@ export default function JournalList() {
 
             if (!res.ok) throw new Error("Failed to update");
 
-            // Success: No need to reload or toast, it's instant.
-            // fetchEntries(pagination.page); // Removed to prevent reload
         } catch (error) {
             // 3. Revert on failure
             console.error("Update failed", error);
@@ -274,7 +274,6 @@ export default function JournalList() {
     };
 
     return (
-
         <>
             {/* Header */}
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
@@ -301,26 +300,44 @@ export default function JournalList() {
                     Track your trades and analyze your performance.
                 </p>
             </div>
-
+            
             {stats && <JournalStats stats={stats} />}
 
             {/* Filters & Controls */}
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-xl shadow-sm border border-gray-100 dark:border-white/5">
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-primary transition-colors w-full md:w-64">
-                    <Search size={18} className="text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Filter by Pair (e.g. XAUUSD)"
-                        className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
-                        value={filter.symbol}
-                        onChange={(e) => setFilter({ symbol: e.target.value })}
-                    />
-                </div>
+                <div className="flex flex-col md:flex-row items-center gap-4 flex-1">
+                    {/* Search */}
+                    <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-primary transition-colors w-full md:w-64">
+                        <Search size={18} className="text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Filter by Pair (e.g. XAUUSD)"
+                            className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
+                            value={filter.symbol}
+                            onChange={(e) => setFilter({ symbol: e.target.value })}
+                        />
+                    </div>
 
-                {/* Reusable Filter Component moved to Header */}
-                
-                {/* Log Trade Button */}
-                {/* Reusable Filter Component moved to Header */}
+                   {/* Filters Group */}
+                   <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
+                        {/* Type Filter */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl text-xs font-medium text-gray-700 dark:text-gray-300 transition-colors whitespace-nowrap">
+                                    Type: <span className="text-primary">{filterType === "ALL" ? "All" : filterType}</span>
+                                    <ChevronDown size={14} />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start">
+                                {["ALL", "BUY", "SELL"].map((s) => (
+                                    <DropdownMenuItem key={s} onClick={() => setFilterType(s)}>
+                                        {s === "ALL" ? "All Types" : s}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                   </div>
+                </div>
 
                 {/* Column Toggle */}
                 <DropdownMenu open={isColumnMenuOpen} onOpenChange={setIsColumnMenuOpen}>
@@ -347,8 +364,8 @@ export default function JournalList() {
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-4 md:p-8 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
-                <div className="overflow-x-auto">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-4 md:p-8 shadow-sm border border-gray-100 dark:border-white/5">
+                <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-white/5">
                     <table className="w-full text-left text-sm whitespace-nowrap">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
                             <tr>
@@ -443,8 +460,35 @@ export default function JournalList() {
                 </div>
 
                 {/* Pagination */}
-                {pagination.totalPages > 1 && (
-                    <div className="flex justify-end mt-4">
+                {pagination.totalPages > 0 && (
+                    <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4">
+                        
+                        {/* Rows Per Page Selector */}
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <span>Rows per page:</span>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="flex items-center gap-1 font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">
+                                        {pageSize}
+                                        <ChevronDown size={14} />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    {[10, 20, 50, 100].map((size) => (
+                                        <DropdownMenuItem 
+                                            key={size} 
+                                            onClick={() => {
+                                                setPageSize(size);
+                                            }}
+                                            className={pageSize === size ? "bg-primary/10 text-primary font-bold" : ""}
+                                        >
+                                            {size}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+
                         <div className="flex items-center gap-1 p-1 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 shadow-sm">
                             <button
                                 disabled={pagination.page <= 1}

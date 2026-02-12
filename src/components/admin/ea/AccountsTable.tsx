@@ -62,7 +62,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
 
     return (
         <>
-            <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">

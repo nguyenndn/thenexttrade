@@ -40,7 +40,7 @@ export function PipValueCalc() {
             </div>
 
             <div>
-                <div className="bg-gradient-to-br from-blue-600 to-cyan-500 text-white p-8 rounded-[2rem] text-center shadow-xl shadow-cyan-500/20 relative overflow-hidden">
+                <div className="bg-gradient-to-br from-blue-600 to-cyan-500 text-white p-8 rounded-xl text-center shadow-xl shadow-cyan-500/20 relative overflow-hidden">
                     <div className="relative z-10">
                         <p className="text-blue-100 font-bold uppercase tracking-wider mb-2">Pip Value (USD)</p>
                         <p className="text-6xl font-black tracking-tight">${totalValue.toFixed(2)}</p>

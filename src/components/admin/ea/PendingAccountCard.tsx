@@ -20,7 +20,7 @@ export function PendingAccountCard({ license, onApprove, onReject }: PendingAcco
     const brokerConfig = BROKERS[license.broker];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] p-6 border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all flex flex-col items-center text-center group h-full relative">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all flex flex-col items-center text-center group h-full relative">
 
             {/* Time Absolute */}
             <div className="absolute top-5 right-5">

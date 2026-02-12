@@ -95,7 +95,7 @@ export function PositionSizeCalc() {
 
             {/* Result Section */}
             <div className="lg:col-span-5">
-                <div className="bg-[#1E2028] dark:bg-[#0B0E14] text-white p-6 rounded-[2rem] relative overflow-hidden shadow-2xl h-full flex flex-col justify-center">
+                <div className="bg-[#1E2028] dark:bg-[#0B0E14] text-white p-6 rounded-xl relative overflow-hidden shadow-2xl h-full flex flex-col justify-center">
                     {/* Background Gradients */}
                     <div className="absolute top-0 right-0 w-48 h-48 bg-primary/20 rounded-full blur-[60px] -mr-12 -mt-12 pointer-events-none" />
                     <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/20 rounded-full blur-[40px] -ml-8 -mb-8 pointer-events-none" />

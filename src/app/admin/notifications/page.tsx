@@ -39,7 +39,7 @@ export default async function AdminNotificationsPage() {
                 </Link>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
                 {broadcasts.length === 0 ? (
                     <div className="p-12 text-center text-gray-500">
                         <Megaphone size={48} className="mx-auto mb-4 opacity-30" />

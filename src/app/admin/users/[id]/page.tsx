@@ -201,7 +201,7 @@ export default async function UserDetailPage(props: UserDetailPageProps) {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] border border-gray-100 dark:border-white/5 p-8 text-center text-gray-500 dark:text-gray-400 font-medium">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 p-8 text-center text-gray-500 dark:text-gray-400 font-medium">
                                     No EA licenses found.
                                 </div>
                             )}
@@ -215,7 +215,7 @@ export default async function UserDetailPage(props: UserDetailPageProps) {
                                     ({user._count.tradingAccounts})
                                 </span>
                             </h2>
-                            <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm p-8 text-center text-gray-500 dark:text-gray-400">
+                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm p-8 text-center text-gray-500 dark:text-gray-400">
                                 No connected trading accounts.
                             </div>
                         </div>

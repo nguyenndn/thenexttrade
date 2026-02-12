@@ -102,7 +102,7 @@ export function RiskRewardCalc() {
             </div>
 
             <div className="lg:col-span-5">
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/5 p-6 rounded-[2rem] h-full flex flex-col justify-center text-center shadow-lg relative overflow-hidden">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/5 p-6 rounded-xl h-full flex flex-col justify-center text-center shadow-lg relative overflow-hidden">
 
                     {result && (
                         <div className="relative z-10">

@@ -132,7 +132,7 @@ export default async function EADashboardPage() {
             {/* Recent Pending Requests */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Pending Requests */}
-                <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-100 dark:border-white/5 shadow-sm">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Clock className="text-yellow-500" size={24} />
@@ -184,7 +184,7 @@ export default async function EADashboardPage() {
                 {/* Quick Links / Info */}
                 <div className="space-y-6">
                     {/* Navigation Card */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-100 dark:border-white/5 shadow-sm">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Quick Navigation</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Link href="/admin/ea/accounts" className="block">
@@ -205,7 +205,7 @@ export default async function EADashboardPage() {
                     </div>
 
                     {/* Alert/Maintenance (Placeholder) */}
-                    <div className="bg-blue-50 dark:bg-blue-900/10 rounded-[2rem] p-8 border border-blue-100 dark:border-blue-900/20">
+                    <div className="bg-blue-50 dark:bg-blue-900/10 rounded-xl p-8 border border-blue-100 dark:border-blue-900/20">
                         <div className="flex items-start gap-4">
                             <AlertCircle className="text-blue-500 shrink-0" size={24} />
                             <div>
@@ -224,7 +224,7 @@ export default async function EADashboardPage() {
 
 function StatsCard({ title, value, icon: Icon, color, bg }: any) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-[2rem] p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm">
             <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center`}>
                     <Icon className={color} size={24} />

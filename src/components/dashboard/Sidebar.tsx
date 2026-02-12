@@ -141,18 +141,22 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                     {item.items?.map((subItem) => {
                         const isSubActive = pathname === subItem.href || pathname?.startsWith(`${subItem.href}/`);
                         return (
-                            <Link
-                                key={subItem.href}
-                                href={subItem.href}
-                                className={cn(
-                                    "block px-3 py-2 rounded-lg text-sm transition-colors",
-                                    isSubActive
-                                        ? "text-primary bg-primary/10 font-medium"
-                                        : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
-                                )}
-                            >
-                                {subItem.name}
-                            </Link>
+                                <Link
+                                    key={subItem.href}
+                                    href={subItem.href}
+                                    className={cn(
+                                        "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors",
+                                        isSubActive
+                                            ? "text-primary font-medium"
+                                            : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "w-1.5 h-1.5 rounded-full shrink-0",
+                                        isSubActive ? "bg-primary" : "bg-transparent"
+                                    )} />
+                                    <span>{subItem.name}</span>
+                                </Link>
                         );
                     })}
                 </div>

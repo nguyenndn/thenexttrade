@@ -88,7 +88,7 @@ export function ProductList({ products }: ProductListProps) {
     return (
         <div className="flex flex-col h-full">
             {/* Premium Filters Card - Completely Separated */}
-            <Card className="p-5 mb-8 bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-[1.5rem] shadow-xl shadow-gray-100/50 dark:shadow-none flex flex-col md:flex-row gap-6 items-center justify-between relative z-10">
+            <Card className="p-5 mb-8 bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-xl shadow-xl shadow-gray-100/50 dark:shadow-none flex flex-col md:flex-row gap-6 items-center justify-between relative z-10">
                 {/* Search */}
                 <div className="relative w-full md:w-96 group">
                     <div className="absolute inset-x-0 -bottom-2 h-2 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
@@ -125,7 +125,7 @@ export function ProductList({ products }: ProductListProps) {
             <div className="flex-1 relative">
                 {/* Empty State */}
                 {sortedProducts.length === 0 ? (
-                    <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <div className="w-20 h-20 mx-auto bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6">
                             <Bot size={40} className="text-gray-300 dark:text-gray-600" />
                         </div>
@@ -137,7 +137,7 @@ export function ProductList({ products }: ProductListProps) {
                         </p>
                     </div>
                 ) : (
-                    <div className="overflow-hidden rounded-[2rem] border border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028] shadow-xl shadow-gray-100/50 dark:shadow-none">
+                    <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028] shadow-xl shadow-gray-100/50 dark:shadow-none">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
                                 <thead className="bg-gray-50/50 dark:bg-white/5 text-xs uppercase text-gray-500 dark:text-gray-400 font-bold tracking-wider backdrop-blur-sm">

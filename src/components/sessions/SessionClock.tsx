@@ -87,7 +87,7 @@ export function SessionClock({ data }: SessionClockProps) {
                                 <div className="flex items-center justify-between text-xs pl-4 border-l-2 border-gray-100 dark:border-white/5 ml-1">
                                     <span className="text-gray-500">Your PnL:</span>
                                     <span className={`font-bold ${stats.totalPnL > 0 ? "text-green-500" : stats.totalPnL < 0 ? "text-red-500" : "text-gray-400"}`}>
-                                        {stats.totalPnL > 0 ? "+" : ""}{stats.totalPnL}
+                                        {stats.totalPnL > 0 ? "+" : ""}{stats.totalPnL.toFixed(2)}
                                     </span>
                                 </div>
                             )}

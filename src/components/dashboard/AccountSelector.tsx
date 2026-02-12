@@ -44,7 +44,7 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
     const [selectedAccount, setSelectedAccount] = useState<TradingAccount | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Fetch accounts
+    // Fetch accounts - Run Once
     useEffect(() => {
         const fetchAccounts = async () => {
             try {
@@ -53,30 +53,6 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                     const data = await res.json();
                     const accs = Array.isArray(data) ? data : [];
                     setAccounts(accs);
-
-                    // Logic to set selected account from Props -> URL -> Default
-                    // Priority: currentAccountId (from Server/Cookie/URL) -> Default Account -> First Account
-
-                    let active: TradingAccount | undefined;
-
-                    if (currentAccountId) {
-                        active = accs.find((a: TradingAccount) => a.id === currentAccountId);
-                    }
-
-                    // Fallback to default if no currentAccountId matched
-                    if (!active) {
-                        active = accs.find((a: TradingAccount) => a.isDefault);
-                    }
-
-                    if (!active && accs.length > 0) {
-                        active = accs[0];
-                    }
-
-                    if (active) {
-                        setSelectedAccount(active);
-                        // We do NOT redirect here anymore. The server handles the data fetching based on Cookie/URL.
-                        // If we are on a clean URL but have an active account, that's fine.
-                    }
                 }
             } catch (error) {
                 console.error("Failed to load accounts", error);
@@ -87,7 +63,35 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
         };
 
         fetchAccounts();
-    }, [currentAccountId]);
+    }, []);
+
+    // Effect to Sync Selection
+    useEffect(() => {
+        if (accounts.length === 0) return;
+
+        let active: TradingAccount | undefined;
+
+        if (currentAccountId && currentAccountId !== "all") {
+            active = accounts.find((a) => a.id === currentAccountId);
+        }
+
+        // Fallback to Newest Account (First in list because API sorts by createdAt desc)
+        if (!active && accounts.length > 0) {
+            active = accounts[0];
+        }
+
+        if (active) {
+            setSelectedAccount(active);
+            
+            // Auto-select ONLY if URL param is completely missing
+            if (!currentAccountId) {
+                const params = new URLSearchParams(searchParams?.toString());
+                params.set("accountId", active.id);
+                // Use replace to avoid history stack pollution for default redirect
+                router.replace(`?${params.toString()}`);
+            }
+        }
+    }, [currentAccountId, accounts, router, searchParams]);
 
     const handleSelect = useCallback((account: TradingAccount) => {
         setSelectedAccount(account);
@@ -96,10 +100,10 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
         // 1. Set Cookie for persistence
         document.cookie = `last_account_id=${account.id}; path=/; max-age=31536000; SameSite=Lax`;
 
-        // 2. Update URL & Trigger Server Refresh
-        // Using replace to change URL params. Server Page likely listens to searchParams.
+        // 2. Update URL
         const params = new URLSearchParams(searchParams?.toString());
         params.set("accountId", account.id);
+        
         router.push(`?${params.toString()}`);
 
     }, [router, searchParams]);
@@ -119,7 +123,7 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                         <Wallet size={16} />
                     </div>
                     <span className="flex-1 truncate text-left">
-                        {selectedAccount ? `${selectedAccount.name} (${selectedAccount.accountNumber})` : "Select Account"}
+                        {selectedAccount ? `${selectedAccount.name} (${selectedAccount.accountNumber})` : (isLoading ? "Loading..." : "Select Account")}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </button>
@@ -131,10 +135,14 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                         <CommandEmpty>No account found.</CommandEmpty>
                         <CommandGroup heading="My Accounts">
                             {accounts.map((account) => (
+
                                 <CommandItem
                                     key={account.id}
+                                    value={`${account.name} ${account.accountNumber} ${account.broker || ""} ${account.id}`.toLowerCase()}
                                     onSelect={() => handleSelect(account)}
-                                    className="cursor-pointer"
+                                    // FORCE CLICK: Sometimes cmdk onSelect fails for mouse in Popovers
+                                    onClick={() => handleSelect(account)}
+                                    className="cursor-pointer data-[disabled]:pointer-events-auto data-[disabled]:opacity-100"
                                 >
                                     <Check
                                         className={cn(
