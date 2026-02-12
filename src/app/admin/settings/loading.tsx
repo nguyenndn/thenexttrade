@@ -18,7 +18,7 @@ export default function Loading() {
 
                 {/* Form Area */}
                 <div className="lg:col-span-3 space-y-6">
-                    <div className="bg-white dark:bg-[#151925] rounded-[2.5rem] border border-gray-100 dark:border-white/5 p-8 space-y-6">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 p-8 space-y-6">
                         <div className="h-6 w-48 bg-gray-200 dark:bg-white/10 rounded mb-6" />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

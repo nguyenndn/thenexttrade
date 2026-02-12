@@ -40,7 +40,7 @@ export function EALicenseCard({ license, onClick }: EALicenseCardProps) {
         <div
             onClick={() => onClick?.(license)}
             className={cn(
-                "relative rounded-3xl p-6 transition-all duration-300 border group",
+                "relative rounded-xl p-6 transition-all duration-300 border group",
                 "border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028]",
                 onClick ? "cursor-pointer hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30" : ""
             )}

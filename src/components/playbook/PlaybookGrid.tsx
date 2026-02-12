@@ -22,7 +22,7 @@ export function PlaybookGrid({ trades, isLoading, onTradeClick }: PlaybookGridPr
 
     if (trades.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 bg-white dark:bg-[#1E2028] rounded-3xl border border-dashed border-gray-200 dark:border-white/10">
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 bg-white dark:bg-[#1E2028] rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                 <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-4 text-gray-400">
                     <ImageOff size={32} />
                 </div>

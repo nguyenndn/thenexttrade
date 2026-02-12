@@ -55,7 +55,7 @@ export default function AdminQuizzesPage() {
             {isLoading ? (
                 <div className="text-center py-20 text-gray-500">Loading quizzes...</div>
             ) : quizzes.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-[#151925] rounded-3xl border border-gray-100 dark:border-white/5">
+                <div className="text-center py-20 bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5">
                     <ListChecks size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">No Quizzes Found</h3>
                     <p className="text-gray-500 text-sm mb-6">Create your first quiz to test student knowledge.</p>

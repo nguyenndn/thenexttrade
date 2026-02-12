@@ -149,7 +149,7 @@ export default async function UserAcademyDashboard() {
                     )}
 
                     {/* The Galaxy Map (Synced) */}
-                    <div className="bg-white dark:bg-[#151925] rounded-3xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
                         <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
                             <h2 className="font-bold text-lg text-gray-900 dark:text-white">Your Flight Path</h2>
                             <span className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-white/5 rounded text-gray-500">Interactive Map</span>

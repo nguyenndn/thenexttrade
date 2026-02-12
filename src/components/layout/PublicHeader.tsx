@@ -42,7 +42,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
         >
             <div className="px-0 lg-plus:px-4 py-2 flex justify-center">
                 <div
-                    className={`flex w-full lg-plus:w-4/5 items-center justify-between gap-2 sm:gap-4 md:gap-6 rounded-3xl border px-3 sm:px-4 md:px-6 py-1.5 shadow-lg ${isDark ? 'bg-slate-900/90 border-slate-700' : 'bg-white border-gray-200'
+                    className={`flex w-full lg-plus:w-4/5 items-center justify-between gap-2 sm:gap-4 md:gap-6 rounded-xl border px-3 sm:px-4 md:px-6 py-1.5 shadow-lg ${isDark ? 'bg-slate-900/90 border-slate-700' : 'bg-white border-gray-200'
                         }`}
                 >
                     {/* Logo */}

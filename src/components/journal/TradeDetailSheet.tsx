@@ -1,13 +1,16 @@
 "use client"
 
 import * as React from "react"
+import { useState } from "react"
 import { format } from "date-fns"
+import { ShareTradeModal } from "./ShareTradeModal"
 import { Share2, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Clock, Info, DollarSign, Tag, Brain, BarChart3, MessageSquare, AlertTriangle, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/Sheet"
 import { Button } from "@/components/ui/Button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs"
 import { getMistakeByCode } from "@/lib/mistakes"
+
 
 interface JournalEntry {
     id: string;
@@ -40,6 +43,8 @@ interface TradeDetailSheetProps {
 }
 
 export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: TradeDetailSheetProps) {
+    const [showShareModal, setShowShareModal] = useState(false);
+
     if (!entry) return null;
 
     const isWin = entry.pnl && entry.pnl > 0;
@@ -64,7 +69,12 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                             </h2>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm" className="rounded-xl border-gray-200 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 dark:text-white gap-2 h-10 px-4">
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => setShowShareModal(true)}
+                                className="rounded-xl border-gray-200 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 dark:text-white gap-2 h-10 px-4"
+                            >
                                 <Share2 size={16} />
                                 Share
                             </Button>
@@ -77,7 +87,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
 
                 <div className="p-8 space-y-8">
                     {/* Hero Card - Premium Glass/Glow Effect */}
-                    <div className="relative bg-white dark:bg-[#1E2028] rounded-[2.5rem] p-8 md:p-10 shadow-xl border border-gray-100 dark:border-white/5 overflow-hidden group">
+                    <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-8 md:p-10 shadow-xl border border-gray-100 dark:border-white/5 overflow-hidden group">
                         {/* Decorative Glow */}
                         <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-blue-500/20 transition-all duration-700"></div>
 
@@ -98,10 +108,10 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 font-mono text-sm md:text-base font-bold">
-                                        <span>{entry.entryPrice.toFixed(5)}</span>
+                                        <span>{entry.entryPrice}</span>
                                         <span className="text-gray-300 dark:text-white/20">➜</span>
                                         <span className={isWin ? "text-primary" : entry.pnl && entry.pnl < 0 ? "text-red-500" : ""}>
-                                            {entry.exitPrice?.toFixed(5) || "???"}
+                                            {entry.exitPrice || "???"}
                                         </span>
                                     </div>
                                 </div>
@@ -154,7 +164,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
 
                                 <div className="space-y-12">
                                     {/* Group 1: Trade Information */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5">
+                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
                                         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 border-b border-gray-100 dark:border-white/5 pb-2">
                                             Trade Information
                                         </h4>
@@ -179,24 +189,24 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                     </div>
 
                                     {/* Group 2: Price Summary */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5">
+                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
                                         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 border-b border-gray-100 dark:border-white/5 pb-2">
                                             Price Summary
                                         </h4>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div>
                                                 <p className="text-xs text-gray-400 font-bold mb-1">Open Price</p>
-                                                <p className="text-base font-black text-gray-900 dark:text-white font-mono">{entry.entryPrice.toFixed(5)}</p>
+                                                <p className="text-base font-black text-gray-900 dark:text-white font-mono">{entry.entryPrice}</p>
                                             </div>
                                             <div>
                                                 <p className="text-xs text-gray-400 font-bold mb-1">Close Price</p>
-                                                <p className="text-base font-black text-gray-900 dark:text-white font-mono">{entry.exitPrice?.toFixed(5) || "???"}</p>
+                                                <p className="text-base font-black text-gray-900 dark:text-white font-mono">{entry.exitPrice || "???"}</p>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Group 3: Transaction Costs */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5">
+                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
                                         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 border-b border-gray-100 dark:border-white/5 pb-2">
                                             Transaction Costs
                                         </h4>
@@ -217,7 +227,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                     </div>
 
                                     {/* Group 4: Trade Results */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5 relative overflow-hidden">
+                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 relative overflow-hidden">
                                         <div className={cn("absolute top-0 right-0 w-32 h-32 rounded-full blur-[60px] opacity-10 pointer-events-none", isWin ? "bg-green-500" : "bg-red-500")}></div>
                                         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 border-b border-gray-100 dark:border-white/5 pb-2 relative z-10">
                                             Trade Results
@@ -261,7 +271,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                 <div className="space-y-6">
                                     {/* Strategy & Psychology */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5">
+                                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
                                             <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                                                 <TrendingUp size={12} /> Strategy
                                             </h4>
@@ -280,7 +290,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                                 ) : <p className="text-sm text-gray-400 font-medium italic">No strategy selected</p>}
                                             </div>
                                         </div>
-                                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5">
+                                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
                                             <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                                                 <Brain size={12} /> Psychology
                                             </h4>
@@ -295,7 +305,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                     </div>
 
                                     {/* Custom Tags */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5">
+                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
                                         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                                             <Tag size={12} /> Custom Tags
                                         </h4>
@@ -309,7 +319,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                     </div>
 
                                     {/* Mistakes */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5">
+                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
                                         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                                             <AlertTriangle size={12} /> Mistakes & Errors
                                         </h4>
@@ -340,6 +350,12 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                     </Tabs>
                 </div>
             </SheetContent>
+
+            <ShareTradeModal 
+                open={showShareModal} 
+                onClose={() => setShowShareModal(false)} 
+                entry={entry} 
+            />
         </Sheet>
     )
 }

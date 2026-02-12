@@ -69,7 +69,7 @@ export function AddAccountModal() {
                     <span>Add Account</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-3xl border-0 dark:border dark:border-white/5 max-w-md">
+            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border dark:border-white/5 max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-gray-900 dark:text-white">
                         Add New Account

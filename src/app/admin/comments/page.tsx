@@ -121,7 +121,7 @@ export default function AdminCommentsPage() {
                     <Loader2 className="animate-spin text-primary" size={32} />
                 </div>
             ) : filteredComments.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-[#0B0E14] rounded-3xl border border-dashed border-gray-200 dark:border-white/10">
+                <div className="text-center py-20 bg-white dark:bg-[#0B0E14] rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                     <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
                         <MessageSquare size={32} />
                     </div>
@@ -129,7 +129,7 @@ export default function AdminCommentsPage() {
                     <p className="text-gray-500 dark:text-gray-400">Try adjusting your search or check back later.</p>
                 </div>
             ) : (
-                <div className="bg-white dark:bg-[#0B0E14] rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>

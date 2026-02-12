@@ -102,7 +102,7 @@ export default function QuizRunnerPage() {
     if (results) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-[#0B0E14] flex items-center justify-center p-4">
-                <div className="bg-white dark:bg-[#151925] rounded-3xl p-8 max-w-md w-full text-center shadow-xl border border-gray-100 dark:border-white/5 space-y-6">
+                <div className="bg-white dark:bg-[#151925] rounded-xl p-8 max-w-md w-full text-center shadow-xl border border-gray-100 dark:border-white/5 space-y-6">
                     <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto ${results.passed ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}>
                         {results.passed ? <Trophy size={40} /> : <XCircle size={40} />}
                     </div>

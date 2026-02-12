@@ -94,7 +94,7 @@ export default function CategoryList() {
                 </p>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-[2.5rem] p-8 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">

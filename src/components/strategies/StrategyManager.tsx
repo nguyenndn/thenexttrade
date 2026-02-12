@@ -289,7 +289,7 @@ function StrategyCard({
 
 function EmptyState({ onAdd }: { onAdd: () => void }) {
     return (
-        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-3xl border-2 border-dashed border-gray-200 dark:border-white/10">
+        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Target size={32} className="text-gray-400" />
             </div>
@@ -312,7 +312,7 @@ function StrategiesLoadingSkeleton() {
     return (
         <div className="space-y-6 animate-pulse">
             <div className="h-10 bg-gray-200 dark:bg-white/10 rounded w-48 mb-8" />
-            <div className="h-80 bg-gray-200 dark:bg-white/10 rounded-3xl mb-8" />
+            <div className="h-80 bg-gray-200 dark:bg-white/10 rounded-xl mb-8" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map(i => (
                     <div key={i} className="h-64 bg-gray-200 dark:bg-white/10 rounded-xl" />

@@ -188,18 +188,34 @@ export async function getTopTrades(userId: string, accountId?: string, startDate
         ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
         : Prisma.empty;
 
-    const result = await prisma.$queryRaw`
-        SELECT 
-            "id", "symbol", "type", "pnl", "entryDate", "exitDate", "result", "lotSize"
-        FROM "JournalEntry"
-        WHERE "userId" = ${userId}::uuid
-        AND "status" = 'CLOSED'
-        AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
-        ${dateFilter}
-        ORDER BY "pnl" DESC
-    `;
+    const [bestResult, worstResult] = await Promise.all([
+        // Best Trades: Highest Positive PnL
+        prisma.$queryRaw`
+            SELECT "id", "symbol", "type", "pnl", "entryDate", "exitDate", "result", "lotSize"
+            FROM "JournalEntry"
+            WHERE "userId" = ${userId}::uuid
+            AND "status" = 'CLOSED'
+            AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
+            ${dateFilter}
+            AND "pnl" > 0
+            ORDER BY "pnl" DESC
+            LIMIT 3
+        `,
+        // Worst Trades: Lowest Negative PnL (Biggest Loss)
+        prisma.$queryRaw`
+            SELECT "id", "symbol", "type", "pnl", "entryDate", "exitDate", "result", "lotSize"
+            FROM "JournalEntry"
+            WHERE "userId" = ${userId}::uuid
+            AND "status" = 'CLOSED'
+            AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
+            ${dateFilter}
+            AND "pnl" < 0
+            ORDER BY "pnl" ASC
+            LIMIT 3
+        `
+    ]);
 
-    const trades = (result as any[]).map(t => ({
+    const mapTrade = (t: any) => ({
         id: t.id,
         symbol: t.symbol,
         type: t.type,
@@ -207,12 +223,11 @@ export async function getTopTrades(userId: string, accountId?: string, startDate
         lotSize: Number(t.lotSize || 0),
         date: t.exitDate,
         result: t.result
-    }));
+    });
 
-    // Return Top 3 Best and Top 3 Worst
     return {
-        best: trades.slice(0, 3),
-        worst: trades.slice(-3).reverse()
+        best: (bestResult as any[]).map(mapTrade),
+        worst: (worstResult as any[]).map(mapTrade)
     };
 }
 

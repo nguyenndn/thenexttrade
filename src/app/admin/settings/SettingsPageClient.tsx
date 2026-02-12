@@ -70,7 +70,7 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
 
                 {/* Content Area */}
                 <div className="lg:col-span-3">
-                    <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-sm min-h-[500px]">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-8 shadow-sm min-h-[500px]">
                         {activeTab === "profile" && <ProfileSettings user={user} />}
                         {activeTab === "security" && <SecuritySettings />}
                         {activeTab === "system" && <SystemSettings initialConfig={initialConfig} />}

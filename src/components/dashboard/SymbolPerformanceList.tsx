@@ -42,14 +42,14 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
         </div>
 
         {/* List */}
-        <div className="space-y-1 h-[224px] overflow-y-auto pr-1 custom-scrollbar">
+        <div className="space-y-1 h-[217px] overflow-y-auto pr-1 custom-scrollbar">
           {data.length === 0 ? (
             <p className="text-sm text-gray-500 text-center py-4 italic">No trades found.</p>
           ) : (
             data.map((item, index) => (
               <div
                 key={item.symbol}
-                className="grid grid-cols-12 gap-4 items-center py-3 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-sm border-b border-gray-50 dark:border-white/5 last:border-0"
+                className="grid grid-cols-12 gap-4 items-center py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-sm border-b border-gray-50 dark:border-white/5 last:border-0"
               >
                 <div className="col-span-5 font-bold text-gray-700 dark:text-gray-200">
                   {item.symbol}

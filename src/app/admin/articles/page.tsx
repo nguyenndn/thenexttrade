@@ -134,7 +134,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
 
             {/* Stats Grid - Premium Style */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-indigo-500 uppercase tracking-wider">Total Views</p>
@@ -145,7 +145,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-orange-500 uppercase tracking-wider">Avg. Read</p>
@@ -156,7 +156,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-emerald-500 uppercase tracking-wider">Published</p>
@@ -167,7 +167,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-amber-500 uppercase tracking-wider">Pending</p>

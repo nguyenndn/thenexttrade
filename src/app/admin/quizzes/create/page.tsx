@@ -139,7 +139,7 @@ export default function CreateQuizPage() {
             </div>
 
             {/* Basic Info */}
-            <div className="bg-white dark:bg-[#151925] rounded-3xl p-6 border border-gray-100 dark:border-white/5 space-y-4">
+            <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-100 dark:border-white/5 space-y-4">
                 <input
                     className="w-full text-3xl font-bold bg-transparent border-b border-gray-100 dark:border-white/10 pb-4 focus:outline-none focus:border-cyan-500"
                     placeholder="Quiz Title"
@@ -164,7 +164,7 @@ export default function CreateQuizPage() {
                     <div className="space-y-6">
                         {questions.map((q, qIndex) => (
                             <SortableItem key={q.id} id={q.id}>
-                                <div className="bg-white dark:bg-[#151925] rounded-3xl p-6 border border-gray-100 dark:border-white/5 relative group">
+                                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-100 dark:border-white/5 relative group">
                                     <Button
                                         onClick={() => removeQuestion(qIndex)}
                                         variant="ghost"
@@ -218,7 +218,7 @@ export default function CreateQuizPage() {
             <Button
                 onClick={addQuestion}
                 variant="outline"
-                className="w-full py-6 rounded-3xl border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-400 font-bold hover:border-cyan-500 hover:text-cyan-500 hover:bg-transparent"
+                className="w-full py-6 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-400 font-bold hover:border-cyan-500 hover:text-cyan-500 hover:bg-transparent"
             >
                 <Plus size={20} /> Add Question
             </Button>

@@ -32,7 +32,7 @@ This workflow ensures code reliability and UI correctness through automated chec
         *   [ ] No generic classes (e.g., `rounded`, `bg-blue-500`).
         *   [ ] Primary buttons use `#00C888` + `shadow`.
         *   [ ] Dark backgrounds use `#0F1117` / `#0B0E14`.
-        *   [ ] Border radius is `rounded-xl` or `rounded-3xl` (not sm/md).
+        *   [ ] Border radius is `rounded-xl` or `rounded-xl` (not sm/md).
     *   **Action**: If violatons found -> REFACTOR immediately.
 
 6.  **Final Review**

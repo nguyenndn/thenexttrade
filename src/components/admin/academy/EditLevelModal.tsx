@@ -47,7 +47,7 @@ export function EditLevelModal({ isOpen, onClose, level }: EditLevelModalProps) 
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-md bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 p-6 rounded-3xl shadow-2xl">
+            <DialogContent className="max-w-md bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 p-6 rounded-xl shadow-2xl">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">Edit Level</h2>
 

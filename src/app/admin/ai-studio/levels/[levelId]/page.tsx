@@ -37,7 +37,7 @@ export default async function LevelDetailPage(props: { params: Promise<{ levelId
             </div>
 
             {/* Header */}
-            <div className="bg-white dark:bg-[#151925] p-8 rounded-3xl border border-gray-100 dark:border-white/5 relative overflow-hidden">
+            <div className="bg-white dark:bg-[#151925] p-8 rounded-xl border border-gray-100 dark:border-white/5 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
                     <Layers size={120} />
                 </div>

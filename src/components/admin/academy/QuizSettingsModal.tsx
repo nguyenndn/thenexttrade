@@ -43,7 +43,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-md bg-white dark:bg-[#151925] p-6 rounded-3xl border border-gray-100 dark:border-white/5">
+            <DialogContent className="max-w-md bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-100 dark:border-white/5">
                 <DialogHeader className="mb-4">
                     <DialogTitle className="text-xl font-bold">Edit Quiz Details</DialogTitle>
                 </DialogHeader>

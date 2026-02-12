@@ -14,7 +14,7 @@ export default function Loading() {
             </div>
 
             {/* Table Skeleton */}
-            <div className="bg-white dark:bg-[#151925] rounded-[2.5rem] border border-gray-100 dark:border-white/5 overflow-hidden">
+            <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden">
                 {/* Toolbar */}
                 <div className="p-6 border-b border-gray-100 dark:border-white/5 flex gap-4">
                     <div className="h-10 flex-1 bg-gray-50 dark:bg-white/5 rounded-xl" />

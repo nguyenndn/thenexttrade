@@ -126,7 +126,7 @@ export default function LessonView({
                 {/* Main Content Area */}
                 <div className="xl:col-span-8 space-y-6">
                     {/* Content Card */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl p-6 md:p-8 shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 md:p-8 shadow-sm">
                         <div className="prose prose-lg dark:prose-invert max-w-none 
                             prose-headings:text-gray-900 dark:prose-headings:text-white 
                             prose-headings:font-bold
@@ -187,7 +187,7 @@ export default function LessonView({
                 {/* Right Sidebar - Course Structure */}
                 <div className="xl:col-span-4 space-y-6 sticky top-24">
                     {/* Module Progress Card */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl p-6 shadow-sm overflow-hidden relative">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm overflow-hidden relative">
                         <div className="relative z-10">
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Current Module</p>
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">{lesson.module.title}</h3>

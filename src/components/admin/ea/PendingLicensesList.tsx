@@ -31,7 +31,7 @@ export function PendingLicensesList({ licenses, adminId }: PendingLicensesListPr
 
     if (licenses.length === 0) {
         return (
-            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-3xl border-2 border-dashed border-gray-200 dark:border-white/10">
+            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
                 <Check className="mx-auto text-gray-300 mb-4" size={48} />
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">All caught up!</h3>
                 <p className="text-gray-500 mt-2">There are no pending license requests.</p>

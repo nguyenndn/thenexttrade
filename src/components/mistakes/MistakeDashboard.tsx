@@ -75,7 +75,7 @@ export function MistakeDashboard() {
 
     if (!data || data.tradesWithMistakes === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-12 text-center bg-gray-50 dark:bg-white/5 rounded-3xl border-2 border-dashed border-gray-200 dark:border-white/10">
+            <div className="flex flex-col items-center justify-center p-12 text-center bg-gray-50 dark:bg-white/5 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
                 <div className="p-4 bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-500 rounded-full mb-4">
                     <CheckCircle size={32} />
                 </div>
@@ -174,7 +174,7 @@ export function MistakeDashboard() {
 
             <div className="grid lg:grid-cols-2 gap-8 h-full">
                 {/* Charts */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-lg">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-lg">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                         Mistakes by Cost
                         <span className="text-xs font-normal text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-full">Top 5</span>
@@ -182,7 +182,7 @@ export function MistakeDashboard() {
                     <MistakeCostChart data={data.mistakeStats} />
                 </div>
 
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-lg">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-lg">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Mistake Frequency</h3>
                     <MistakeFrequencyChart data={data.mistakesByCategory} />
                 </div>

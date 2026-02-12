@@ -90,7 +90,7 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-3xl border-0 dark:border dark:border-white/5 max-w-md">
+            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border dark:border-white/5 max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-gray-900 dark:text-white">
                         Upload New Version

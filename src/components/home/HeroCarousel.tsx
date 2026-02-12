@@ -35,7 +35,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
     if (!articles.length) return null;
 
     return (
-        <div className="relative group rounded-3xl overflow-hidden shadow-2xl h-[400px] md:h-[500px]">
+        <div className="relative group rounded-xl overflow-hidden shadow-2xl h-[400px] md:h-[500px]">
             {/* Slides */}
             {articles.map((article, idx) => (
                 <div

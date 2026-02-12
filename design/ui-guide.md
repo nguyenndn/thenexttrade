@@ -101,15 +101,15 @@ We use large border radius for a "friendly but premium" feel.
 
 **Standard Card (White/Dark)**
 ```tsx
-<div className="bg-white dark:bg-[#1E2028] rounded-[2.5rem] p-8 shadow-sm border border-gray-100 dark:border-white/5">
+<div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 shadow-sm border border-gray-100 dark:border-white/5">
   {/* Content */}
 </div>
 ```
-*Note: Use `rounded-[2.5rem]` for main feature cards, `rounded-xl` or `rounded-3xl` for smaller widgets.*
+*Note: Use `rounded-xl` for main feature cards, `rounded-xl` or `rounded-xl` for smaller widgets.*
 
 **Glass Panel (Results/Highlights)**
 ```tsx
-<div className="bg-[#1E2028] text-white rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden border border-gray-100 dark:border-white/5">
+<div className="bg-[#1E2028] text-white rounded-xl p-8 shadow-2xl relative overflow-hidden border border-gray-100 dark:border-white/5">
     {/* Optional Glow Effect */}
     <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/20 rounded-full blur-[80px] pointer-events-none"></div>
     
@@ -289,11 +289,11 @@ Used in headers or empty states.
 Used for dashboard widgets, academy levels, and any clickable card.
 - **Shadow:** `shadow-sm` -> `hover:shadow-xl`
 - **Lift:** `hover:-translate-y-1`
-- **Rounding:** `rounded-3xl` (preferred for widgets) or `rounded-xl`
+- **Rounding:** `rounded-xl` (preferred for widgets) or `rounded-xl`
 - **Transition:** `transition-all duration-300`
 
 ```tsx
-<div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+<div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
     {/* Content */}
 </div>
 ```
@@ -317,7 +317,7 @@ export default function Loading() {
             {/* Content Skeleton */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-40 bg-gray-100 dark:bg-white/5 rounded-3xl border border-gray-200 dark:border-white/5 animate-pulse" />
+                    <div key={i} className="h-40 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 animate-pulse" />
                 ))}
             </div>
         </div>

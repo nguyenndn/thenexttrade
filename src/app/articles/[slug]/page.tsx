@@ -194,7 +194,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <PublicHeader user={authUser} />
 
                 <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-32 sm:pt-40">
-                    <div className="bg-white dark:bg-[#1E2028] rounded-3xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
 
                         {/* Featured Image Section */}
                         {article.thumbnail && (

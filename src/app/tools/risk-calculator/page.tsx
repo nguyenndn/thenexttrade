@@ -28,7 +28,7 @@ export default function RiskCalculatorPage() {
                     </div>
 
                     {/* Main Hub */}
-                    <div className="w-full bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl p-6 md:p-8 shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden">
+                    <div className="w-full bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 md:p-8 shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden">
                         <CalculatorHub />
                     </div>
                 </div>

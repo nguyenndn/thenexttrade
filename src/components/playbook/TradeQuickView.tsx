@@ -36,7 +36,7 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200" onClick={onClose}>
             <div
-                className="bg-white dark:bg-[#151925] w-full max-w-6xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl relative"
+                className="bg-white dark:bg-[#151925] w-full max-w-6xl max-h-[90vh] rounded-xl overflow-hidden flex flex-col lg:flex-row shadow-2xl relative"
                 onClick={e => e.stopPropagation()}
             >
                 {/* Close Button */}

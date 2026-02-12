@@ -329,7 +329,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>

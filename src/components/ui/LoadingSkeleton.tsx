@@ -34,7 +34,7 @@ export function ArticleCardSkeleton({ count = 3 }: LoadingSkeletonProps) {
 
 export function HeroSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("h-[500px] rounded-3xl bg-slate-200 dark:bg-slate-800 animate-pulse", className)}>
+    <div className={cn("h-[500px] rounded-xl bg-slate-200 dark:bg-slate-800 animate-pulse", className)}>
       <div className="h-full w-full flex items-center justify-center">
         <div className="space-y-4 text-center">
           <div className="h-8 w-64 mx-auto rounded bg-slate-300 dark:bg-slate-700 animate-pulse" />

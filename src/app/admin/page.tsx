@@ -31,7 +31,7 @@ function StatCard({ title, value, change, icon: Icon, trend, color = "blue" }: S
     };
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
             <div className="flex justify-between items-start">
                 <div>
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{title}</p>

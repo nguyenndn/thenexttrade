@@ -86,7 +86,7 @@ export default async function BrokersPage() {
                     {/* Brokers Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {brokers.map((broker: any, index: number) => (
-                            <div key={broker.id || index} className="bg-white/80 dark:bg-[#1E2028]/80 backdrop-blur-sm rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-white/5 hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-xl">
+                            <div key={broker.id || index} className="bg-white/80 dark:bg-[#1E2028]/80 backdrop-blur-sm rounded-xl p-8 shadow-sm border border-gray-100 dark:border-white/5 hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-xl">
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="w-16 h-16 rounded-xl bg-gray-50 dark:bg-white/5 p-2 flex items-center justify-center">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -103,7 +103,7 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Main Editor Area (Left - 3 Cols) */}
                 <div className="lg:col-span-3 space-y-6 flex flex-col h-full">
-                    <div className="bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-3xl p-10 shadow-sm flex flex-col min-h-[800px]">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-xl p-10 shadow-sm flex flex-col min-h-[800px]">
                         {/* Title Input as a clear Field */}
                         <div className="mb-8">
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Lesson Title</label>
@@ -131,7 +131,7 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
 
                 {/* Sidebar (Right - 1 Col) */}
                 <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 p-6 space-y-8 sticky top-8 rounded-3xl shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 p-6 space-y-8 sticky top-8 rounded-xl shadow-sm">
 
                         <div>
                             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Meta Data</h3>

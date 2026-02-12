@@ -16,7 +16,7 @@ export default function Loading() {
             {/* Quick Actions Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(3)].map((_, i) => (
-                    <div key={i} className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl p-6 shadow-sm flex flex-col items-center text-center space-y-4">
+                    <div key={i} className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm flex flex-col items-center text-center space-y-4">
                         <div className="w-16 h-16 rounded-xl bg-gray-100 dark:bg-white/5" />
                         <div className="space-y-2 w-full flex flex-col items-center">
                             <div className="h-6 w-32 bg-gray-200 dark:bg-white/10 rounded" />
@@ -29,7 +29,7 @@ export default function Loading() {
             {/* Recent Activity Section */}
             <div className="space-y-6">
                 <div className="h-8 w-48 bg-gray-200 dark:bg-white/10 rounded-lg" />
-                <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-3xl p-6 space-y-4">
+                <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 space-y-4">
                     {[...Array(3)].map((_, i) => (
                         <div key={i} className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 shrink-0" />

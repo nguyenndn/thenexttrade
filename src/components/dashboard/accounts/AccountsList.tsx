@@ -28,7 +28,7 @@ export function AccountsList({ licenses }: AccountsListProps) {
             </div>
 
             {licenses.length === 0 ? (
-                <div className="bg-white dark:bg-[#1E2028] rounded-[2.5rem] p-16 text-center border border-gray-100 dark:border-white/5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-16 text-center border border-gray-100 dark:border-white/5 shadow-sm">
                     <div className="inline-flex items-center justify-center p-4 rounded-xl bg-cyan-500/10 text-cyan-500 mb-6 ring-4 ring-cyan-500/5">
                         <Wallet size={40} />
                     </div>

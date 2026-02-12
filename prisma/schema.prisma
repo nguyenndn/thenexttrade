@@ -320,6 +320,10 @@ model JournalEntry {
   tags          String[]  @default([])
   tradingSession String?  @map("trading_session") @db.VarChar(20) // Sydney, Tokyo, London, New Yorkcodes
 
+  // Sharing Settings
+  shareDescription String?  @map("share_description") @db.Text
+  shareMode        String?  @default("full") @map("share_mode") // basic, full
+
   // Strategy Tracking (Phase 46)
   strategy      String?   @db.VarChar(100) // Keep as string for loose coupling, or relation?
   // We'll keep the string for now as per plan, but also add a helper relation if we want to enforce it later.

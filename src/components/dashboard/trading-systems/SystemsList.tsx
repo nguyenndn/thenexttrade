@@ -56,7 +56,7 @@ export function SystemsList({ products, isLocked, onNavigateToGuide }: SystemsLi
 
     if (isLocked) {
         return (
-            <div className="bg-white dark:bg-[#0B0E14] rounded-[2.5rem] p-12 text-center border border-gray-100 dark:border-white/5 shadow-sm">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-12 text-center border border-gray-100 dark:border-white/5 shadow-sm">
                 <div className="inline-flex items-center justify-center p-4 rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 mb-6">
                     <Lock size={32} />
                 </div>

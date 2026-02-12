@@ -163,7 +163,7 @@ export default async function Home() {
               {featuredArticles.length > 0 ? (
                 <HeroCarousel articles={featuredArticles} />
               ) : (
-                <div className="h-[500px] rounded-3xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
+                <div className="h-[500px] rounded-xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
                   <p className="text-gray-500">No featured articles found. Please enable 'isFeatured' on some articles.</p>
                 </div>
               )}

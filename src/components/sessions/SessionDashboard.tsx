@@ -188,7 +188,7 @@ function SessionLoadingSkeleton() {
 
 function SessionEmptyState() {
     return (
-        <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-white dark:bg-[#1E2028] rounded-3xl border border-gray-100 dark:border-white/5">
+        <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5">
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6 text-gray-400">
                 <Clock size={40} />
             </div>

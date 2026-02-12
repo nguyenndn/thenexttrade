@@ -347,7 +347,7 @@ export default function JournalList() {
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl md:rounded-[2.5rem] p-4 md:p-8 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-4 md:p-8 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm whitespace-nowrap">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">

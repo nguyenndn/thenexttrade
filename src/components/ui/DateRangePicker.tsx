@@ -176,14 +176,15 @@ export function DateRangePicker({
                     transition: background-color 0.2s;
                 }
                 .rdrStaticRange:hover, .rdrStaticRangeSelected {
-                    background-color: #eff6ff !important;
+                    background-color: #ecfdf5 !important;
                 }
                 .rdrStaticRangeLabel {
                     color: #374151 !important;
                     font-weight: 500;
+                    background-color: transparent !important;
                 }
                 .rdrStaticRangeSelected .rdrStaticRangeLabel {
-                    color: #3b82f6 !important;
+                    color: #00C888 !important;
                 }
                 .rdrInputRanges {
                     display: none; 
@@ -223,8 +224,8 @@ export function DateRangePicker({
                         months={months}
                         ranges={tempRange}
                         direction="horizontal"
-                        rangeColors={["#3b82f6"]}
-                        color="#3b82f6"
+                        rangeColors={["#00C888"]}
+                        color="#00C888"
                         staticRanges={customStaticRanges}
                         inputRanges={[]}
                         maxDate={maxDate}
@@ -236,7 +237,7 @@ export function DateRangePicker({
                             variant="ghost"
                             size="sm"
                             onClick={handleCancel}
-                            className="text-gray-600"
+                            className="text-gray-600 hover:text-gray-900"
                         >
                             Cancel
                         </Button>
