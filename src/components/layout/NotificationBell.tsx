@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
-import { Bell, Check } from "lucide-react";
+import { useState } from "react";
+import { Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -13,90 +13,27 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
-
-// Define strict type for notification to avoid implicit any
-type Notification = {
-    id: string;
-    title: string;
-    message: string;
-    isRead: boolean;
-    type: string;
-    createdAt: string; // serialized date
-    link?: string;
-};
+import { useNotifications } from "@/hooks/useNotifications";
 
 export function NotificationBell() {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
-    const supabase = createClient();
-
-    // Fetch notifications
-    const fetchNotifications = async () => {
-        // In a real app we'd fetch from API
-        // For now we simulate or fetch from a server action if available
-        // I'll create a quick fetch to /api/user/notifications (Task 4.4 - not created yet)
-        // Or simpler: fetch from simple server action or just use dummy until API is ready.
-        // I will implement the API in Task 4.4, so for now I'll stub it or assume it exists.
-        // Actually, I should create the API first if I want this to work.
-        // But I'm doing 4.1 first. I'll write the fetch logic assuming the API route `GET /api/user/notifications` exists or will exist.
-        // Spec 35.5 says "API: GET /api/user/notifications".
-
-        try {
-            const res = await fetch("/api/user/notifications?limit=5");
-            if (res.ok) {
-                const data = await res.json();
-                if (data.success) {
-                    setNotifications(data.data.notifications);
-                    setUnreadCount(data.data.unreadCount);
-                }
-            }
-        } catch (e) {
-            console.error("Failed to fetch notifications");
-        }
-    };
-
-    useEffect(() => {
-        fetchNotifications();
-
-        // Real-time subscription (Optional for Phase 4, spec 35.6)
-        // For now, poll or just manual.
-        const interval = setInterval(fetchNotifications, 60000); // Poll every minute
-        return () => clearInterval(interval);
-    }, []);
-
-    const markAsRead = async (id?: string) => {
-        // Call API to mark as read
-        try {
-            const res = await fetch("/api/user/notifications", {
-                method: "PATCH",
-                body: JSON.stringify({ id: id || "ALL" }), // "ALL" to mark all
-            });
-            if (res.ok) {
-                fetchNotifications();
-            }
-        } catch (e) {
-            console.error("Failed to mark read");
-        }
-    };
+    const { notifications, unreadCount, markAsRead, isLoading } = useNotifications();
 
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full border border-gray-100 dark:border-gray-800 relative text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100">
                     <Bell size={20} />
                     {unreadCount > 0 && (
-                        <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                        <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-[#1E2028]">
+                            {unreadCount > 9 ? '9+' : unreadCount}
                         </span>
                     )}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0 rounded-xl bg-white dark:bg-[#1E2028] border-gray-100 dark:border-white/5 shadow-xl" align="end">
-                <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/5">
+            <PopoverContent className="w-80 p-0 rounded-xl bg-white dark:bg-[#1E2028] border-gray-100 dark:border-gray-800 shadow-xl" align="end">
+                <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
                     <h3 className="font-bold text-gray-900 dark:text-white">Notifications</h3>
                     {unreadCount > 0 && (
                         <Button
@@ -114,14 +51,14 @@ export function NotificationBell() {
                     {notifications.length === 0 ? (
                         <div className="p-8 text-center text-gray-500">
                             <Bell size={24} className="mx-auto mb-2 opacity-50" />
-                            <p className="text-xs">No notifications</p>
+                            <p className="text-xs">{isLoading ? "Loading..." : "No notifications"}</p>
                         </div>
                     ) : (
                         notifications.map(n => (
                             <div
                                 key={n.id}
                                 className={cn(
-                                    "p-4 border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition cursor-pointer",
+                                    "p-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-white/5 transition cursor-pointer",
                                     !n.isRead && "bg-blue-50/50 dark:bg-blue-900/10"
                                 )}
                                 onClick={() => {
@@ -150,7 +87,7 @@ export function NotificationBell() {
                     )}
                 </div>
 
-                <div className="p-2 border-t border-gray-100 dark:border-white/5">
+                <div className="p-2 border-t border-gray-100 dark:border-gray-800">
                     <Button
                         variant="ghost"
                         className="w-full text-xs text-gray-500 justify-center h-8"

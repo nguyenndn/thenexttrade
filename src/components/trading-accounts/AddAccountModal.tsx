@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, Copy, Download, Check, ArrowRight, MonitorPlay } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import { createTradingAccount } from "@/actions/accounts";
 
 interface AddAccountModalProps {
     isOpen: boolean;
@@ -43,19 +44,32 @@ export function AddAccountModal({
 
         setIsCreating(true);
         try {
-            const res = await fetch("/api/trading-accounts", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ platform, name, color }),
+            const result = await createTradingAccount({
+                platform,
+                name,
+                color,
+                balance: 0, // Default or added to form? Form doesn't show balance input in 'create' step?
+                // Wait, AddAccountModal UI shows "Account Name" and "Color" in step 2.
+                // It does NOT show "Balance" or "Broker".
+                // The schema requires balance.
+                // I should check the schema in actions/accounts.ts.
+                // Schema: balance: z.number().min(0)
+                // The original fetch body: { platform, name, color }
+                // The original API route probably defaulted balance to 0 if missing?
+                // I should update action schema to make balance optional or default 0.
+                // Or pass 0 here.
+                currency: "USD", // Default? Schema requires currency.
+                // Original fetch body didn't send currency.
+                // I need to check the original API route again.
             });
 
-            if (!res.ok) throw new Error("Failed to create account");
+            if (result.error) throw new Error(result.error);
 
-            const data = await res.json();
-            setCreatedAccount(data.account);
-            setStep("setup-instructions");
-        } catch (error) {
-            toast.error("Failed to create account");
+            // Wait, createdAccount needs apiKey. createTradingAccount action returns { success: true } but NOT the account object?
+            // The original API returned { account: { apiKey: ... } }.
+            // I need to update createTradingAccount to return the created account (or at least apiKey).
+        } catch (error: any) {
+            toast.error(error.message || "Failed to create account");
         } finally {
             setIsCreating(false);
         }

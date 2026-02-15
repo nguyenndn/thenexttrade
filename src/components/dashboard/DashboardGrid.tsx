@@ -9,7 +9,7 @@ interface DashboardGridProps {
 export function DashboardGrid({ children, className }: DashboardGridProps) {
     return (
         <div className={cn(
-            "grid grid-cols-1 xl:grid-cols-12 gap-6",
+            "grid grid-cols-1 xl:grid-cols-12 gap-4",
             className
         )}>
             {children}
@@ -20,7 +20,7 @@ export function DashboardGrid({ children, className }: DashboardGridProps) {
 export function DashboardMain({ children, className }: DashboardGridProps) {
     return (
         <div className={cn(
-            "xl:col-span-7 flex flex-col gap-6",
+            "xl:col-span-7 flex flex-col gap-4",
             className
         )}>
             {children}
@@ -31,7 +31,7 @@ export function DashboardMain({ children, className }: DashboardGridProps) {
 export function DashboardSide({ children, className }: DashboardGridProps) {
     return (
         <div className={cn(
-            "xl:col-span-5 grid grid-cols-1 md:grid-cols-2 xl:flex xl:flex-col gap-6",
+            "xl:col-span-5 grid grid-cols-1 md:grid-cols-2 xl:flex xl:flex-col gap-4",
             className
         )}>
             {children}

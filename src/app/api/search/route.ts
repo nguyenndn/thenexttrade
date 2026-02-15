@@ -114,7 +114,7 @@ export async function GET(request: Request) {
                     type: "article",
                     id: article.id,
                     title: article.title,
-                    slug: `/articles/${article.id}`,
+                    slug: `/articles/${article.slug}`,
                     description: article.excerpt,
                     image: article.thumbnail,
                     date: article.createdAt,

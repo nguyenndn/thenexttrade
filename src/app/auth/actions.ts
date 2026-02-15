@@ -36,15 +36,31 @@ export async function login(formData: FormData) {
     if (user) {
         const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
         if (!dbUser) {
-            // Self-heal: Create missing user record
-            await prisma.user.create({
-                data: {
-                    id: user.id,
-                    email: user.email,
-                    name: user.user_metadata?.full_name || '',
-                    image: user.user_metadata?.avatar_url || '',
-                }
+            // Check for potential ID mismatch (Seed Data vs Supabase Auth)
+            const existingUserByEmail = await prisma.user.findUnique({
+                where: { email: user.email! }
             });
+
+            if (existingUserByEmail) {
+                // Conflict: Email exists but ID is different.
+                // Action: Updates the local user ID to match Supabase Auth ID.
+                // This preserves seed data relationships while fixing the auth link.
+                console.log(`[Auth] Resolving ID mismatch for ${user.email}: ${existingUserByEmail.id} -> ${user.id}`);
+                await prisma.user.update({
+                    where: { email: user.email! },
+                    data: { id: user.id }
+                });
+            } else {
+                // Self-heal: Create missing user record
+                await prisma.user.create({
+                    data: {
+                        id: user.id,
+                        email: user.email,
+                        name: user.user_metadata?.full_name || '',
+                        image: user.user_metadata?.avatar_url || '',
+                    }
+                });
+            }
         }
         await recordSession(user.id);
 

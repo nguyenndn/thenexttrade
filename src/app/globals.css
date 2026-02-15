@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== Dashboard Background ===== */
+/* Edit these hex values to change the dashboard background color */
+:root {
+  --dashboard-bg: #f5f7f8ba;
+  /* Light mode: gray-50 */
+  /* --dashboard-bg: #f9fafb; */
+}
+
+.dark {
+  --dashboard-bg: #000000;
+  /* Dark mode: black */
+}
+
 body {
   font-family: var(--font-inter);
   @apply bg-base-100 text-base-content antialiased;
@@ -209,7 +222,8 @@ input:-webkit-autofill:active {
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 161 100% 39%; /* #00C888 */
+    --primary: 161 100% 39%;
+    /* #00C888 */
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
@@ -229,6 +243,7 @@ input:-webkit-autofill:active {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -236,7 +251,8 @@ input:-webkit-autofill:active {
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 161 100% 39%; /* #00C888 */
+    --primary: 161 100% 39%;
+    /* #00C888 */
     --primary-foreground: 0 0% 9%;
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
@@ -261,7 +277,16 @@ input:-webkit-autofill:active {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Disable all transitions during theme switch */
+.disable-transitions,
+.disable-transitions *,
+.disable-transitions *::before,
+.disable-transitions *::after {
+  transition-duration: 0s !important;
 }

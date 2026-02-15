@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus, RefreshCw } from "lucide-react";
 import { AccountCard } from "./AccountCard";
 import { AddAccountModal } from "./AddAccountModal";
 import { AccountSettingsModal } from "./AccountSettingsModal"; // Import Settings Modal
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import { useRouter, useSearchParams } from "next/navigation";
+import { deleteTradingAccount, regenerateAccountKey } from "@/actions/accounts";
+import { PaginationControl } from "@/components/ui/PaginationControl";
 
 interface TradingAccount {
     id: string;
@@ -19,21 +22,33 @@ interface TradingAccount {
     lastSync: string | null;
     totalTrades: number;
     isConnected: boolean;
-    color?: string;
+    color?: string | null;
     autoSync?: boolean;
-    server?: string;
-    balance?: number;
-    equity?: number;
-    accountType?: string;
+    server?: string | null;
+    balance?: number | null;
+    equity?: number | null;
+    accountType?: string | null;
+}
+
+interface Meta {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
 }
 
 interface AccountListClientProps {
     initialAccounts: TradingAccount[];
+    meta?: Meta;
 }
 
-export function AccountListClient({ initialAccounts }: AccountListClientProps) {
-    const [accounts, setAccounts] = useState<TradingAccount[]>(initialAccounts);
-    const [isLoading, setIsLoading] = useState(false); // Initial load is done on server
+export function AccountListClient({ initialAccounts, meta }: AccountListClientProps) {
+    const router = useRouter();
+    // const [accounts, setAccounts] = useState<TradingAccount[]>(initialAccounts); // We can just use initialAccounts if we use router.refresh()
+    // However, for immediate UI feedback we might want state. But router.refresh() with server actions is the "Vercel way".
+    // Let's us initialAccounts directly.
+    const accounts = initialAccounts;
+    const [isLoading, setIsLoading] = useState(false); // Only for manual refresh button
     const [showAddModal, setShowAddModal] = useState(false);
     const [showSettingsModal, setShowSettingsModal] = useState<TradingAccount | null>(null);
     const [showRegenModal, setShowRegenModal] = useState<string | null>(null);
@@ -42,29 +57,14 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
     const [copied, setCopied] = useState(false);
 
     // Refresh function for manual updates
-    async function fetchAccounts() {
-        try {
-            setIsLoading(true);
-            const res = await fetch("/api/trading-accounts");
-            if (!res.ok) throw new Error("Failed to fetch");
-            const data = await res.json();
-            setAccounts(data);
-        } catch (error) {
-            toast.error("Failed to load accounts");
-        } finally {
-            setIsLoading(false);
-        }
-    }
+    // fetchAccounts removed, using router.refresh()
 
     async function handleRegenerateKey() {
         if (!showRegenModal) return;
         try {
-            const res = await fetch(`/api/trading-accounts/${showRegenModal}/regenerate-key`, {
-                method: "POST"
-            });
-            if (!res.ok) throw new Error("Failed");
-            const data = await res.json();
-            setNewKey(data.apiKey);
+            const result = await regenerateAccountKey(showRegenModal);
+            if (result.error) throw new Error(result.error);
+            setNewKey(result.apiKey || null);
             toast.success("New API Key generated");
         } catch (e) {
             toast.error("Failed to regenerate key");
@@ -74,13 +74,11 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
     async function handleDelete() {
         if (!showDeleteModal) return;
         try {
-            const res = await fetch(`/api/trading-accounts/${showDeleteModal}`, {
-                method: "DELETE"
-            });
-            if (!res.ok) throw new Error("Failed");
+            const result = await deleteTradingAccount(showDeleteModal);
+            if (result.error) throw new Error(result.error);
             toast.success("Account deleted");
             setShowDeleteModal(null);
-            fetchAccounts();
+            router.refresh(); // Refresh server data
         } catch (e) {
             toast.error("Failed to delete account");
         }
@@ -107,7 +105,11 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                         {/* Actions */}
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 sm:mt-0">
                             <button
-                                onClick={fetchAccounts}
+                                onClick={() => {
+                                    setIsLoading(true);
+                                    router.refresh();
+                                    setTimeout(() => setIsLoading(false), 1000); // Fake spinner for visual feedback, or use transition
+                                }}
                                 className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors sm:mr-2 py-2 sm:py-0"
                             >
                                 <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
@@ -162,12 +164,27 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                         <AccountCard
                             key={account.id}
                             account={account}
-                            onUpdate={fetchAccounts}
+                            onUpdate={() => router.refresh()}
                             onRegenerateKey={(id) => setShowRegenModal(id)}
                             onDelete={(id) => setShowDeleteModal(id)}
                             onSettings={(acc) => setShowSettingsModal(acc)}
                         />
                     ))}
+                </div>
+            )}
+
+            {/* Pagination */}
+            {meta && (
+                <div className="mt-8">
+                    <PaginationControl
+                        currentPage={meta.page}
+                        totalPages={meta.totalPages}
+                        pageSize={meta.limit}
+                        totalItems={meta.total}
+                        onPageChange={(p) => router.push(`/dashboard/accounts?page=${p}&limit=${meta.limit}`)}
+                        onPageSizeChange={(l) => router.push(`/dashboard/accounts?page=1&limit=${l}`)}
+                        itemName="accounts"
+                    />
                 </div>
             )}
 
@@ -177,7 +194,7 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                     isOpen={!!showSettingsModal}
                     account={showSettingsModal}
                     onClose={() => setShowSettingsModal(null)}
-                    onUpdate={fetchAccounts}
+                    onUpdate={() => router.refresh()}
                     onDelete={() => {
                         setShowSettingsModal(null);
                         setShowDeleteModal(showSettingsModal.id);
@@ -195,7 +212,7 @@ export function AccountListClient({ initialAccounts }: AccountListClientProps) {
                 onClose={() => setShowAddModal(false)}
                 onSuccess={(account) => {
                     setShowAddModal(false);
-                    fetchAccounts();
+                    router.refresh(); // Refresh list
                 }}
             />
 

@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { format, startOfMonth, endOfMonth, startOfDay, endOfDay } from "date-fns";
-import { toast } from "sonner";
+import { useSearchParams, useRouter } from "next/navigation";
+import { format } from "date-fns";
 import { BarChart3 } from "lucide-react";
 
 import { KPICards } from "./KPICards";
@@ -15,7 +13,7 @@ import { RecentTradesTable } from "./RecentTradesTable";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { AccountSelector } from "@/components/dashboard/AccountSelector";
 
-interface AnalyticsData {
+export interface AnalyticsData {
     summary: {
         totalTrades: number;
         winRate: number;
@@ -26,6 +24,8 @@ interface AnalyticsData {
             type: 'win' | 'loss';
             count: number;
         };
+        avgWin: number;
+        avgLoss: number;
     };
     equityCurve: Array<{ date: string; balance: number; pnl: number }>;
     dailyPnL: Array<{
@@ -40,54 +40,41 @@ interface AnalyticsData {
     recentTrades: Array<{ id: string; symbol: string; type: string; pnl: number; entryDate: string; result: string }>;
 }
 
-export function AnalyticsDashboard() {
+interface AnalyticsDashboardProps {
+    data: AnalyticsData;
+    accountId?: string;
+    dateRange: {
+        start: Date;
+        end: Date;
+    };
+}
+
+export function AnalyticsDashboard({ data, accountId, dateRange }: AnalyticsDashboardProps) {
+    const router = useRouter();
     const searchParams = useSearchParams();
-    const accountId = searchParams.get("accountId");
 
-    const [data, setData] = useState<AnalyticsData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [dateRange, setDateRange] = useState({
-        start: startOfDay(new Date()),
-        end: endOfDay(new Date()),
-    });
-
-    const fetchAnalytics = async () => {
-        try {
-            setIsLoading(true);
-            const params = new URLSearchParams({
-                startDate: format(dateRange.start, "yyyy-MM-dd"),
-                endDate: format(dateRange.end, "yyyy-MM-dd"),
-            });
-            if (accountId) params.set("accountId", accountId);
-
-            const res = await fetch(`/api/analytics?${params}`);
-            if (!res.ok) throw new Error("Failed to fetch");
-
-            const json = await res.json();
-            setData(json);
-        } catch (error) {
-            toast.error("Failed to load analytics");
-            console.error(error);
-        } finally {
-            setIsLoading(false);
+    // Handlers for URL updates
+    const handleAccountChange = (newAccountId: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (newAccountId === "all") {
+            params.delete("accountId");
+        } else {
+            params.set("accountId", newAccountId);
         }
+        router.push(`/dashboard/analytics?${params.toString()}`);
     };
 
-    useEffect(() => {
-        fetchAnalytics();
-    }, [dateRange, accountId]);
+    const handleDateRangeChange = (range: { start: Date; end: Date }) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("startDate", format(range.start, "yyyy-MM-dd"));
+        params.set("endDate", format(range.end, "yyyy-MM-dd"));
+        router.push(`/dashboard/analytics?${params.toString()}`);
+    };
 
-    if (isLoading) {
-        return <AnalyticsLoadingSkeleton />;
-    }
-
-    if (!data) {
-        return <AnalyticsEmptyState />;
-    }
+    const isEmpty = !data || data.summary.totalTrades === 0;
 
     return (
-
-        <>
+        <div className="space-y-6">
             {/* Header with filters */}
             <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -98,10 +85,18 @@ export function AnalyticsDashboard() {
                         </h1>
                     </div>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
-                        <AccountSelector currentAccountId={accountId ?? undefined} />
+                        <AccountSelector
+                            currentAccountId={accountId ?? undefined}
+                        />
+                        {/* Note: AccountSelector needs refactor to accept onValueChange or we use URL effect in parent. 
+                            Actually, AccountSelector internally might use router.push or we need to pass a handler.
+                            Let's check AccountSelector implementation. 
+                            If it uses standard navigation, we are good. If it uses internal state, we might need to adjust it.
+                            For now, assuming we might need to control it or it just navigates.
+                        */}
                         <DateRangePicker
                             value={dateRange}
-                            onChange={setDateRange}
+                            onChange={handleDateRangeChange}
                         />
                     </div>
                 </div>
@@ -110,24 +105,30 @@ export function AnalyticsDashboard() {
                 </p>
             </div>
 
-            {/* KPI Summary Cards */}
-            <KPICards summary={data.summary} />
+            {isEmpty ? (
+                <AnalyticsEmptyState />
+            ) : (
+                <>
+                    {/* KPI Summary Cards */}
+                    <KPICards summary={data.summary} />
 
-            {/* Charts Row 1 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <EquityCurve data={data.equityCurve} />
-                <ProfitCalendar data={data.dailyPnL} />
-            </div>
+                    {/* Charts Row 1 */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <EquityCurve data={data.equityCurve} />
+                        <ProfitCalendar data={data.dailyPnL} />
+                    </div>
 
-            {/* Charts Row 2 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <PairPerformance data={data.pairPerformance} />
-                <DayPerformance data={data.dayOfWeekPerformance} />
-            </div>
+                    {/* Charts Row 2 */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <PairPerformance data={data.pairPerformance} />
+                        <DayPerformance data={data.dayOfWeekPerformance} />
+                    </div>
 
-            {/* Recent Trades */}
-            <RecentTradesTable trades={data.recentTrades} />
-        </>
+                    {/* Recent Trades */}
+                    <RecentTradesTable trades={data.recentTrades} />
+                </>
+            )}
+        </div>
     );
 }
 

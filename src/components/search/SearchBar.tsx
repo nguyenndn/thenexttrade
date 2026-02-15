@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useDebouncedCallback } from "use-debounce";
+
 interface SearchBarProps {
     className?: string;
     variant?: "default" | "minimal";
@@ -16,15 +18,20 @@ export function SearchBar({ className, variant = "default", targetRoute = "/dash
     const router = useRouter();
     const [query, setQuery] = useState("");
 
-    const handleSearch = useCallback((e: React.FormEvent) => {
-        e.preventDefault();
-        if (query.trim()) {
-            router.push(`${targetRoute}?q=${encodeURIComponent(query.trim())}`);
+    const handleSearch = useDebouncedCallback((term: string) => {
+        if (term.trim()) {
+            router.push(`${targetRoute}?q=${encodeURIComponent(term.trim())}`);
         }
-    }, [query, router, targetRoute]);
+    }, 500);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        setQuery(val);
+        handleSearch(val);
+    };
 
     return (
-        <form onSubmit={handleSearch} className={cn("relative w-full max-w-sm", className)}>
+        <div className={cn("relative w-full max-w-sm", className)}>
             <div className="relative group">
                 <Search
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"
@@ -33,16 +40,21 @@ export function SearchBar({ className, variant = "default", targetRoute = "/dash
                 <input
                     type="text"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={handleChange}
                     placeholder="Search..."
                     className={cn(
-                        "w-full pl-10 pr-4 py-2.5 rounded-xl border outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500",
+                        "w-full pl-10 pr-16 py-2 rounded-full border-none outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm font-medium",
                         variant === "default"
-                            ? "bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 focus:bg-white dark:focus:bg-[#151925] focus:border-primary focus:ring-2 focus:ring-primary/20"
-                            : "bg-transparent border-none focus:ring-0 px-0 pl-8 text-sm"
+                            ? "bg-gray-50 dark:bg-white/5 focus:bg-white dark:focus:bg-white/10 focus:ring-2 focus:ring-primary/10"
+                            : "bg-transparent px-0 pl-8"
                     )}
                 />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:block">
+                    <kbd className="inline-flex h-6 items-center gap-1 rounded-md border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-2 font-mono text-[10px] font-medium text-gray-500 dark:text-gray-400 shadow-sm">
+                        <span className="text-xs">Ctrl</span>K
+                    </kbd>
+                </div>
             </div>
-        </form>
+        </div>
     );
 }

@@ -3,6 +3,8 @@
 // import Image from "next/image"; 
 import { TrendingUp, TrendingDown, Maximize2 } from "lucide-react";
 import { format } from "date-fns";
+import { TradeTypeBadge } from "@/components/ui/TradeTypeBadge";
+import { PnLDisplay } from "@/components/ui/PnLDisplay";
 
 interface PlaybookCardProps {
     trade: {
@@ -34,6 +36,8 @@ export function PlaybookCard({ trade, onClick }: PlaybookCardProps) {
                 <img
                     src={imageUrl}
                     alt={`${trade.symbol} Trade`}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
@@ -49,12 +53,7 @@ export function PlaybookCard({ trade, onClick }: PlaybookCardProps) {
                 <div className="flex justify-between items-end">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${trade.type === 'BUY'
-                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/20'
-                                : 'bg-orange-500/20 text-orange-400 border border-orange-500/20'
-                                }`}>
-                                {trade.type}
-                            </span>
+                            <TradeTypeBadge type={trade.type} />
                             <span className="text-xs text-gray-300 font-medium">
                                 {format(formattedDate, "MMM d")}
                             </span>
@@ -65,11 +64,11 @@ export function PlaybookCard({ trade, onClick }: PlaybookCardProps) {
                     </div>
 
                     <div className="text-right">
-                        <div className={`flex items-center gap-1 font-mono font-bold text-lg ${isWin ? "text-primary" : isLoss ? "text-red-500" : "text-gray-400"
-                            }`}>
-                            {isWin ? <TrendingUp size={16} /> : isLoss ? <TrendingDown size={16} /> : null}
-                            ${Math.abs(trade.pnl || 0).toLocaleString()}
-                        </div>
+                        <PnLDisplay
+                            value={trade.pnl}
+                            showIcon={true}
+                            className="text-lg"
+                        />
                     </div>
                 </div>
             </div>

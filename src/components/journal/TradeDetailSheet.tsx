@@ -33,6 +33,7 @@ interface JournalEntry {
     accountId: string | null;
     notes?: string;
     mindset?: string;
+    images?: string[];
 }
 
 interface TradeDetailSheetProps {
@@ -69,7 +70,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                             </h2>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button 
+                            <Button
                                 onClick={() => setShowShareModal(true)}
                                 className="bg-primary hover:bg-[#00a872] text-white shadow-lg shadow-primary/30 rounded-xl px-5 font-bold flex items-center gap-2 hover:-translate-y-0.5 transition-all border-none h-10"
                             >
@@ -342,17 +343,50 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                             </p>}
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </TabsContent>
                     </Tabs>
+
+                    {/* Screenshots - Always visible at bottom */}
+                    {entry.images && entry.images.length > 0 && (
+                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
+                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <div className="w-1.5 h-3 bg-pink-500 rounded-full"></div>
+                                Trade Screenshots
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {entry.images.map((img, idx) => (
+                                    <a
+                                        key={idx}
+                                        href={img}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="relative aspect-video rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 group hover:ring-2 ring-primary transition-all"
+                                    >
+                                        <img
+                                            src={img}
+                                            alt={`Trade Screenshot ${idx + 1}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                            <div className="bg-white/90 text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all">
+                                                View Full Size
+                                            </div>
+                                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </SheetContent>
 
-            <ShareTradeModal 
-                open={showShareModal} 
-                onClose={() => setShowShareModal(false)} 
-                entry={entry} 
+            <ShareTradeModal
+                open={showShareModal}
+                onClose={() => setShowShareModal(false)}
+                entry={entry}
             />
         </Sheet>
     )

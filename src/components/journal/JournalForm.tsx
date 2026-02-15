@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Save, Loader2, AlertCircle, Plus, Brain, Check, X } from "lucide-react";
 import { EmotionSelector } from "@/components/psychology/EmotionSelector";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
-import { ImageUploader } from "@/components/ui/ImageUploader";
+
 import Link from "next/link";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -23,6 +23,7 @@ interface JournalFormProps {
 export default function JournalForm({ initialData, isEditMode = false, onSuccess, onCancel }: JournalFormProps) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const imageInputRef = useRef<HTMLInputElement>(null);
     const [strategies, setStrategies] = useState<any[]>([]);
     const [accounts, setAccounts] = useState<any[]>([]);
     const [showStrategyModal, setShowStrategyModal] = useState(false);
@@ -137,9 +138,23 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
         setIsSubmitting(true);
 
         try {
+            // Auto-add pending image URL if user forgot to click add
+            let currentImages = formData.images || [];
+            if (imageInputRef.current) {
+                const pendingUrl = imageInputRef.current.value.trim();
+                if (pendingUrl) {
+                    if (pendingUrl.match(/\.(jpeg|jpg|gif|png)$/) != null || pendingUrl.includes("images") || pendingUrl.includes("img") || pendingUrl.includes("tradingview")) {
+                        currentImages = [...currentImages, pendingUrl];
+                        // Clear input to indicate it was handled
+                        imageInputRef.current.value = "";
+                    }
+                }
+            }
+
             // Convert numbers
             const payload = {
                 ...formData,
+                images: currentImages,
                 entryPrice: parseFloat(formData.entryPrice),
                 exitPrice: formData.exitPrice ? parseFloat(formData.exitPrice) : null,
                 stopLoss: formData.stopLoss ? parseFloat(formData.stopLoss) : null,
@@ -158,8 +173,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 notesPsychology: formData.notesPsychology || null,
                 // Mistakes (Phase 45)
                 mistakes: formData.mistakes || [],
-                // Screenshots (Phase 53)
-                images: formData.images || []
+                // Screenshots (Phase 53) - Handled above in currentImages
             };
 
             const url = isEditMode ? `/api/journal-entries/${initialData.id}` : "/api/journal-entries";
@@ -680,14 +694,50 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                             </div>
                         ))}
 
-                        {/* Upload Button */}
-                        <ImageUploader
-                            onChange={(url) => {
-                                if (url) {
-                                    setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
-                                }
-                            }}
-                        />
+                        {/* URL Input */}
+                        <div className="flex gap-2 items-start">
+                            <input
+                                ref={imageInputRef}
+                                type="url"
+                                placeholder="Paste image URL (e.g. TradingView, Imgur)..."
+                                className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        const input = e.currentTarget;
+                                        const url = input.value.trim();
+                                        if (url) {
+                                            // Basic validation
+                                            if (url.match(/\.(jpeg|jpg|gif|png)$/) != null || url.includes("images") || url.includes("img") || url.includes("tradingview")) {
+                                                setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
+                                                input.value = "";
+                                            } else {
+                                                toast.error("Please enter a valid image URL");
+                                            }
+                                        }
+                                    }
+                                }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (imageInputRef.current) {
+                                        const url = imageInputRef.current.value.trim();
+                                        if (url) {
+                                            if (url.match(/\.(jpeg|jpg|gif|png)$/) != null || url.includes("images") || url.includes("img") || url.includes("tradingview")) {
+                                                setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
+                                                imageInputRef.current.value = "";
+                                            } else {
+                                                toast.error("Please enter a valid image URL");
+                                            }
+                                        }
+                                    }
+                                }}
+                                className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-primary"
+                            >
+                                <Plus size={20} />
+                            </button>
+                        </div>
                     </div>
                 </div>
 

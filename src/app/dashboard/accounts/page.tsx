@@ -8,47 +8,26 @@ export const metadata: Metadata = {
 
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
-import { prisma } from "@/lib/prisma";
 import { AccountListClient } from "@/components/trading-accounts/AccountListClient";
+import { getTradingAccounts } from "@/actions/accounts";
 
-export default async function TradingAccountsPage() {
+export default async function TradingAccountsPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
     const user = await getAuthUser();
     if (!user) redirect("/auth/signin");
 
-    // Fetch account data server-side
-    // We map raw database objects to the Interface structure to avoid serialization issues if any
-    const rawAccounts = await prisma.tradingAccount.findMany({
-        where: { userId: user.id },
-        include: {
-            _count: {
-                select: { journalEntries: true }
-            }
-        },
-        orderBy: { createdAt: "desc" }
-    });
+    const resolvedParams = await searchParams;
+    const page = typeof resolvedParams.page === "string" ? parseInt(resolvedParams.page) : 1;
+    const limit = typeof resolvedParams.limit === "string" ? parseInt(resolvedParams.limit) : 12;
 
-    const accounts = rawAccounts.map(account => ({
-        id: account.id,
-        name: account.name,
-        platform: account.platform || "MetaTrader 4", // Default if null
-        broker: account.broker,
-        accountNumber: account.accountNumber,
-        status: account.status,
-        lastHeartbeat: account.lastHeartbeat?.toISOString() || null,
-        lastSync: account.lastSync?.toISOString() || null,
-        totalTrades: account._count.journalEntries,
-        isConnected: account.status === 'CONNECTED', // Simplified logic, can be enhanced
-        color: account.color || undefined,
-        autoSync: account.autoSync,
-        server: account.server || undefined,
-        balance: account.balance || 0,
-        equity: account.equity || 0,
-        accountType: account.accountType
-    }));
+    const { accounts, meta } = await getTradingAccounts(page, limit);
 
     return (
         <div className="w-full max-w-full">
-            <AccountListClient initialAccounts={accounts} />
+            <AccountListClient initialAccounts={accounts} meta={meta} />
         </div>
     );
 }

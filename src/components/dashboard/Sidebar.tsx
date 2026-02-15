@@ -23,6 +23,8 @@ export interface SidebarItem {
 interface SidebarProps {
     items?: any[];
     className?: string;
+    collapsed?: boolean;
+    setCollapsed?: (value: boolean) => void;
 }
 
 interface SidebarItemComponentProps {
@@ -55,13 +57,10 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
     const handleMainClick = (e: React.MouseEvent) => {
         if (hasSubItems) {
             if (isGroupLink) {
-                // If it's a link (e.g. Dashboard), we navigate AND toggle if not already open
-                // Actually if strict accordion, clicking Dashboard should open it.
                 if (!isExpanded) {
                     onToggle();
                 }
             } else {
-                // Pure Folder: Toggle
                 e.preventDefault();
                 onToggle();
             }
@@ -80,46 +79,46 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
     const isActiveStyle = isBranchActive;
 
     return (
-        <div>
+        <div className="mb-1">
             <div
                 className={cn(
-                    "flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 group relative select-none",
-                    collapsed ? "justify-center px-2" : "",
+                    "flex items-center gap-3 px-3 py-2.5 mx-3 rounded-xl cursor-pointer transition-all duration-300 group relative select-none",
+                    collapsed ? "justify-center px-0 mx-2" : "",
                     isActiveStyle
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-primary/10 text-primary font-semibold shadow-sm"
                         : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
                 )}
                 onClick={handleMainClick}
             >
                 <Link
-                    href={item.href === "#" ? "" : item.href} // Empty href if # to prevent navigation logic confusion, handled by onClick
+                    href={item.href === "#" ? "" : item.href}
                     className="absolute inset-0 z-0"
                     onClick={(e) => {
                         if (item.href === "#") e.preventDefault();
                     }}
                 />
 
-                <Icon size={22} className={cn(
-                    "transition-colors relative z-10 pointer-events-none min-w-[22px]",
+                <Icon size={20} className={cn(
+                    "transition-colors relative z-10 pointer-events-none min-w-[20px]",
                     isActiveStyle ? "text-primary" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"
                 )} />
 
                 {!collapsed && (
                     <>
-                        <span className="flex-1 font-medium text-sm relative z-10 pointer-events-none">{item.name}</span>
+                        <span className="flex-1 text-sm relative z-10 pointer-events-none">{item.name}</span>
                         {hasSubItems && (
                             <div
                                 role="button"
                                 tabIndex={0}
                                 onClick={handleChevronClick}
                                 className={cn(
-                                    "relative z-20 p-1 -mr-2 rounded-lg transition-colors",
+                                    "relative z-20 p-1 -mr-1 rounded-lg transition-colors",
                                     isBranchActive
                                         ? "text-primary hover:bg-primary/20"
                                         : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
                                 )}
                             >
-                                <ChevronDown size={18} className={cn(
+                                <ChevronDown size={16} className={cn(
                                     "transition-transform duration-200",
                                     isExpanded ? "rotate-180" : ""
                                 )} />
@@ -129,7 +128,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                 )}
 
                 {collapsed && (
-                    <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10">
+                    <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10">
                         {item.name}
                     </div>
                 )}
@@ -137,26 +136,26 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
 
             {/* Sub Menu */}
             {!collapsed && hasSubItems && isExpanded && (
-                <div className="ml-9 mt-1 space-y-1 animate-in slide-in-from-top-2 fade-in duration-200">
+                <div className="ml-4 pl-4 border-l-2 border-gray-100 dark:border-white/5 mt-1 space-y-1 animate-in slide-in-from-top-2 fade-in duration-200 hidden-scrollbar">
                     {item.items?.map((subItem) => {
                         const isSubActive = pathname === subItem.href || pathname?.startsWith(`${subItem.href}/`);
                         return (
-                                <Link
-                                    key={subItem.href}
-                                    href={subItem.href}
-                                    className={cn(
-                                        "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors",
-                                        isSubActive
-                                            ? "text-primary font-medium"
-                                            : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
-                                    )}
-                                >
-                                    <div className={cn(
-                                        "w-1.5 h-1.5 rounded-full shrink-0",
-                                        isSubActive ? "bg-primary" : "bg-transparent"
-                                    )} />
-                                    <span>{subItem.name}</span>
-                                </Link>
+                            <Link
+                                key={subItem.href}
+                                href={subItem.href}
+                                className={cn(
+                                    "flex items-center gap-2 px-3 py-2 mx-2 rounded-lg text-sm transition-colors relative",
+                                    isSubActive
+                                        ? "text-primary font-medium"
+                                        : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
+                                )}
+                            >
+                                <div className={cn(
+                                    "w-1.5 h-1.5 rounded-full bg-primary shrink-0 transition-opacity duration-200",
+                                    isSubActive ? "opacity-100" : "opacity-0"
+                                )} />
+                                <span>{subItem.name}</span>
+                            </Link>
                         );
                     })}
                 </div>
@@ -165,22 +164,16 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
     );
 }
 
-export function Sidebar({ items = dashboardMenuItems, className }: SidebarProps) {
+export function Sidebar({ items = dashboardMenuItems, className, collapsed, setCollapsed }: SidebarProps) {
     const pathname = usePathname();
-    const [collapsed, setCollapsed] = useState(false);
-
-    // Accordion State: Track the name of the expanded group
+    const isCollapsed = collapsed ?? false;
+    // const [collapsed, setCollapsed] = useState(false); // Removed local state
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
-    // Sync expansion with active path on mount and navigation
     useEffect(() => {
         if (!pathname) return;
-
-        // Find which group should be open based on active path
         const activeGroup = items.find((item: any) => {
-            // Check self (for group links)
             if (item.href !== "#" && pathname === item.href) return true;
-            // Check children
             if (item.items) {
                 return item.items.some((sub: any) => pathname === sub.href || pathname.startsWith(`${sub.href}/`));
             }
@@ -194,37 +187,24 @@ export function Sidebar({ items = dashboardMenuItems, className }: SidebarProps)
 
     return (
         <aside className={cn(
-            "hidden lg:flex flex-col bg-white dark:bg-[#0B0E14] border-r border-gray-100 dark:border-white/5 h-screen sticky top-0 transition-all duration-300 z-20 shadow-sm",
-            collapsed ? "w-24" : "w-[272px]",
+            "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-gray-800 h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-100 ease-in-out z-30",
+            isCollapsed ? "w-20" : "w-[280px]",
             className
         )}>
-            {/* Header / Logo */}
-            <div className={cn(
-                "h-16 flex items-center border-b border-gray-100 dark:border-white/5 bg-white dark:bg-[#0B0E14] transition-all",
-                collapsed ? "justify-center px-0" : "justify-between px-6"
-            )}>
-                {!collapsed && <Logo />}
-
-                <button
-                    onClick={() => setCollapsed(!collapsed)}
-                    className="p-2 rounded-xl text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                >
-                    <Menu size={24} />
-                </button>
-            </div>
-
             {/* Navigation Items */}
-            <div className="flex-1 overflow-y-auto py-6 flex flex-col gap-2 px-4">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
+                <div className="px-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    Main
+                </div>
                 {items.map((item: any) => (
                     <SidebarItemComponent
                         key={item.name}
                         item={item}
                         pathname={pathname}
-                        collapsed={collapsed}
-                        setCollapsed={setCollapsed}
+                        collapsed={isCollapsed}
+                        setCollapsed={setCollapsed || (() => { })}
                         isExpanded={expandedGroup === item.name}
                         onToggle={() => {
-                            // Toggle logic: If clicking already open group, close it. Else open it (closing others).
                             setExpandedGroup(prev => prev === item.name ? null : item.name);
                         }}
                     />
@@ -232,15 +212,15 @@ export function Sidebar({ items = dashboardMenuItems, className }: SidebarProps)
             </div>
 
             {/* Bottom Actions */}
-            <div className="p-4 border-t border-gray-100 dark:border-white/5 space-y-2 bg-gray-50/50 dark:bg-white/[0.02]">
+            <div className="p-4 border-t border-gray-100 dark:border-white/5 m-4 mt-auto">
                 <button
                     onClick={() => signout()}
                     className={cn(
-                        "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left",
-                        collapsed && "justify-center"
+                        "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group",
+                        isCollapsed && "justify-center px-0"
                     )}>
-                    <LogOut size={20} />
-                    {!collapsed && <span className="font-medium text-sm">Logout</span>}
+                    <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
+                    {!isCollapsed && <span className="font-medium text-sm">Logout</span>}
                 </button>
             </div>
         </aside>

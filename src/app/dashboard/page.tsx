@@ -1,12 +1,13 @@
+import { Suspense } from "react";
+import DashboardSkeleton from "@/components/dashboard/loading/DashboardSkeleton";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { BADGES } from "@/lib/gamification";
 import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
-import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
-import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getKeyStats, getMonthlyAnalytics, getTopTrades, getLotDistribution } from "@/lib/analytics-queries";
-import { startOfMonth, endOfMonth, startOfDay, endOfDay, subDays, format, addHours, subHours, parseISO } from "date-fns";
+import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution } from "@/lib/analytics-queries";
+import { endOfDay, parseISO } from "date-fns";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,12 @@ export default async function DashboardPage({
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const resolvedParams = await searchParams;
-    return <DashboardLoader searchParams={resolvedParams} />;
+
+    return (
+        <Suspense fallback={<DashboardSkeleton />}>
+            <DashboardLoader searchParams={resolvedParams} />
+        </Suspense>
+    );
 }
 
 async function DashboardLoader({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
@@ -67,13 +73,12 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     const endDate = toParam ? endOfDay(parseISO(toParam)) : undefined;
 
     // 2. Optimized Data Fetching (Parallel)
-    // 2. Optimized Data Fetching (Parallel)
     const [
         userData,
         accounts,
         recentTrades,
-        stats,     // Now individual result
-        monthly,   // Now individual result
+        dashboardStats,     // Cached wrapper result
+        // monthly,   // Included in dashboardStats
         dailyPerformance,
         symbolStats,
         topTrades,
@@ -102,14 +107,9 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
                 account: { select: { name: true, color: true } }
             }
         }),
-        // Stats (Respects Date Filter)
-        getKeyStats(user.id, accountId, startDate, endDate),
-        
-        // Monthly Analytics (Always last 12 months for trend view, or we could filter it too)
-        // Keeping it fixed to 12 months for now as per "Monthly Analytics" usually showing trends.
-        getMonthlyAnalytics(user.id, accountId),
+        // Stats & Monthly (Cached)
+        getCachedDashboardStats(user.id, accountId, startDate?.toISOString(), endDate?.toISOString()),
 
-        
         // Daily Chart Data (Aggregated via SQL)
         getDailyPerformance(user.id, accountId, startDate, endDate),
         // Symbol Performance (Aggregated via SQL)
@@ -119,6 +119,9 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         // Lot Distribution
         getLotDistribution(user.id, accountId, startDate, endDate)
     ]);
+
+    // Destructure stats from cached result
+    const { stats, monthly } = dashboardStats;
 
     // 3. Post-Processing & Formatting
     const totalBalance = accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
@@ -147,7 +150,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         .sort((a, b) => b.grossProfit - a.grossProfit)
         .slice(0, 5)
         .map(s => ({ name: s.symbol, value: s.grossProfit }));
-    
+
     // Symbol Analytics for Table
     const symbolAnalytics = symbolStats.map(s => ({
         symbol: s.symbol,
@@ -157,14 +160,14 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
 
     // Dashboard Data Object
     const dashboardData = {
-        totalBalance, 
+        totalBalance,
         winRate: stats.winRate,
         winRateChange: 0, // Needs comparison with previous period (skipped for speed V1)
         streak: userData?.streak || 0,
-        periodPnL: stats.totalPnL, 
-        todayPnL: 0, 
+        periodPnL: stats.totalPnL,
+        todayPnL: 0,
         profitFactor: stats.profitFactor,
-        avgWin: stats.winCount > 0 ? stats.grossProfit / stats.winCount : 0, 
+        avgWin: stats.winCount > 0 ? stats.grossProfit / stats.winCount : 0,
         avgLoss: stats.lossCount > 0 ? stats.grossLoss / stats.lossCount : 0,
     };
 

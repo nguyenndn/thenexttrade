@@ -131,7 +131,7 @@ export default function DashboardClient({
     ];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <JournalEntryModal
                 open={showTradeModal}
                 onOpenChange={setShowTradeModal}
@@ -160,7 +160,7 @@ export default function DashboardClient({
             <DashboardGrid>
                 <DashboardMain>
                     {/* KPI Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {kpiCards.map((card, index) => {
                             const Icon = card.icon;
                             // Map colors for top border
@@ -194,7 +194,7 @@ export default function DashboardClient({
                     }} />
 
                     {/* Balance Growth Chart */}
-                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-primary">
+                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-primary">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -216,9 +216,9 @@ export default function DashboardClient({
                     </div>
 
                     {/* Bottom Row: Daily Win Rate & Top Trades */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Daily Win Rate Chart */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-green-500">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-green-500">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-green-500/10 rounded-lg text-green-500">
@@ -234,7 +234,7 @@ export default function DashboardClient({
                         </div>
 
                         {/* Top Trades */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-cyan-500">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-cyan-500">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-cyan-500/10 rounded-lg text-cyan-500">
@@ -253,9 +253,9 @@ export default function DashboardClient({
 
                 <DashboardSide>
                     {/* Charts Row: Profit & Lot Distribution */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 md:col-span-2 xl:col-span-1">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4 md:col-span-2 xl:col-span-1">
                         {/* Profit Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-blue-500 h-[324px] flex flex-col justify-between">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-blue-500 h-[314px] flex flex-col justify-between">
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
                                     <PieChart size={20} />
@@ -266,7 +266,7 @@ export default function DashboardClient({
                         </div>
 
                         {/* Lot Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-orange-500 h-[324px] flex flex-col justify-between">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-orange-500 h-[314px] flex flex-col justify-between">
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="p-3 bg-orange-500/10 rounded-xl text-orange-500">
                                     <Layers size={20} />
@@ -278,7 +278,7 @@ export default function DashboardClient({
                     </div>
 
                     {/* Monthly Analytics */}
-                    <div className="md:col-span-2 xl:col-span-1 bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm border-t-4 border-t-purple-500">
+                    <div className="md:col-span-2 xl:col-span-1 bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-purple-500">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
                                 <CalendarRange size={20} />

@@ -40,7 +40,7 @@ export function StatsGrid({ data }: StatsGridProps) {
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {stats.map((stat, i) => {
                 const Icon = stat.icon;
                 const borderColor = i === 0 ? "border-t-blue-500" : i === 1 ? "border-t-green-500" : "border-t-red-500";

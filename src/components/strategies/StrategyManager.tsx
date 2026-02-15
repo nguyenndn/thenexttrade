@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/Button";
 import { StrategyModal } from "./StrategyModal";
 import { StrategyPerformanceChart } from "./StrategyPerformanceChart";
 import { StrategyComparisonTable } from "./StrategyComparisonTable";
+import { PaginationControl } from "@/components/ui/PaginationControl";
+import { useRouter, useSearchParams } from "next/navigation";
+import { deleteStrategy, getStrategyPerformance, untagStrategy } from "@/actions/strategies";
 
 interface Strategy {
     id: string;
@@ -26,36 +29,47 @@ interface StrategyPerformance {
     profitFactor: number;
 }
 
-export function StrategyManager() {
-    const [strategies, setStrategies] = useState<Strategy[]>([]);
+interface StrategyManagerProps {
+    initialStrategies: Strategy[];
+    meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
+}
+
+export function StrategyManager({ initialStrategies, meta }: StrategyManagerProps) {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const page = meta.page;
+    const limit = meta.limit;
+
+    // Use props directly, but if we need optimistic updates, we might need state.
+    // For now, rely on Server Action revalidation + router.refresh() if needed.
+    const strategies = initialStrategies;
+
     const [performance, setPerformance] = useState<StrategyPerformance[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingPerformance, setIsLoadingPerformance] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingStrategy, setEditingStrategy] = useState<Strategy | null>(null);
 
-    const fetchStrategies = async () => {
-        try {
-            const res = await fetch("/api/strategies");
-            const data = await res.json();
-            setStrategies(data.strategies || []);
-        } catch (error) {
-            toast.error("Failed to load strategies");
-        }
-    };
-
     const fetchPerformance = async () => {
         try {
-            const res = await fetch("/api/strategies/performance");
-            const data = await res.json();
-            setPerformance(data.performance || []);
+            setIsLoadingPerformance(true);
+            const result = await getStrategyPerformance();
+            if (result.error) throw new Error(result.error);
+            setPerformance(result.performance || []);
         } catch (error) {
             console.error(error);
+            toast.error("Failed to load strategy performance");
+        } finally {
+            setIsLoadingPerformance(false);
         }
     };
 
     useEffect(() => {
-        Promise.all([fetchStrategies(), fetchPerformance()])
-            .finally(() => setIsLoading(false));
+        fetchPerformance();
     }, []);
 
     // Merge real strategies with "ghost" strategies found in performance
@@ -78,36 +92,32 @@ export function StrategyManager() {
         try {
             // Check if it's a temporary strategy (ghost)
             if (id.startsWith("temp-")) {
-                const res = await fetch("/api/strategies/untag", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name })
-                });
-                if (!res.ok) throw new Error();
-            } else {
-                // Real strategy deletion
-                const res = await fetch(`/api/strategies/${id}`, { method: "DELETE" });
-                if (!res.ok) throw new Error();
-            }
+                const result = await untagStrategy(name);
+                if (result.error) throw new Error(result.error);
 
-            toast.success("Strategy deleted");
-            fetchStrategies();
-            fetchPerformance();
-        } catch (error) {
-            toast.error("Failed to delete strategy");
+                router.refresh(); // Refresh to update list if needed
+                fetchPerformance(); // Re-fetch performance to clear ghost
+            } else {
+                // Real strategy deletion via Server Action
+                const result = await deleteStrategy(id);
+                if (result.error) throw new Error(result.error);
+                toast.success("Strategy deleted");
+                // No need to manually fetchStrategies, revalidatePath in action handles it.
+                // But we might want to refresh performance stats too.
+                router.refresh(); // Syncs server component
+                fetchPerformance();
+            }
+        } catch (error: any) {
+            toast.error(error.message || "Failed to delete strategy");
         }
     };
 
     const handleSave = () => {
         setShowModal(false);
         setEditingStrategy(null);
-        fetchStrategies();
+        router.refresh(); // Refresh server data
         fetchPerformance();
     };
-
-    if (isLoading) {
-        return <StrategiesLoadingSkeleton />;
-    }
 
     return (
 
@@ -136,16 +146,20 @@ export function StrategyManager() {
             </div>
 
             {/* Performance Chart */}
-            {performance.length > 0 && (
-                <div className="space-y-8">
-                    <StrategyPerformanceChart data={performance} />
-                    <StrategyComparisonTable data={performance} />
-                </div>
-            )}
+            <div className="space-y-8">
+                {isLoadingPerformance ? (
+                    <div className="h-64 bg-gray-100 dark:bg-white/5 rounded-xl animate-pulse" />
+                ) : performance.length > 0 ? (
+                    <>
+                        <StrategyPerformanceChart data={performance} />
+                        <StrategyComparisonTable data={performance} />
+                    </>
+                ) : null}
+            </div>
 
             {/* Strategy Cards */}
             {allStrategies.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
                     {allStrategies.map((strategy) => {
                         const perf = performance.find(p => p.strategy === strategy.name);
                         const isGhost = strategy.id.startsWith("temp-");
@@ -168,6 +182,18 @@ export function StrategyManager() {
             ) : (
                 <EmptyState onAdd={() => setShowModal(true)} />
             )}
+
+            <div className="mt-8">
+                <PaginationControl
+                    currentPage={page}
+                    totalPages={meta.totalPages}
+                    pageSize={limit}
+                    totalItems={meta.total}
+                    onPageChange={(p) => router.push(`/dashboard/strategies?page=${p}&limit=${limit}`)}
+                    onPageSizeChange={(l) => router.push(`/dashboard/strategies?page=1&limit=${l}`)}
+                    itemName="strategies"
+                />
+            </div>
 
             {/* Modal */}
             {showModal && (

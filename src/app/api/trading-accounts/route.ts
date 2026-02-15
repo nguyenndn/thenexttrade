@@ -11,30 +11,40 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const accounts = await prisma.tradingAccount.findMany({
-            where: { userId: user.id },
-            orderBy: { createdAt: "desc" },
-            select: {
-                id: true,
-                name: true,
-                color: true, // Custom color
-                platform: true,
-                broker: true,
-                accountNumber: true,
-                status: true,
-                lastHeartbeat: true,
-                lastSync: true,
-                totalTrades: true,
-                autoSync: true,
-                createdAt: true,
-                server: true,
-                balance: true,
-                equity: true,
-                accountType: true,
-                // Don't expose full API key
-                apiKey: false,
-            },
-        });
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "12");
+        const skip = (page - 1) * limit;
+
+        const [accounts, total] = await Promise.all([
+            prisma.tradingAccount.findMany({
+                where: { userId: user.id },
+                orderBy: { createdAt: "desc" },
+                select: {
+                    id: true,
+                    name: true,
+                    color: true, // Custom color
+                    platform: true,
+                    broker: true,
+                    accountNumber: true,
+                    status: true,
+                    lastHeartbeat: true,
+                    lastSync: true,
+                    totalTrades: true,
+                    autoSync: true,
+                    createdAt: true,
+                    server: true,
+                    balance: true,
+                    equity: true,
+                    accountType: true,
+                    // Don't expose full API key
+                    apiKey: false,
+                },
+                skip,
+                take: limit,
+            }),
+            prisma.tradingAccount.count({ where: { userId: user.id } })
+        ]);
 
         // Calculate connection status based on heartbeat
         const accountsWithStatus = accounts.map((acc) => ({
@@ -44,7 +54,15 @@ export async function GET(request: NextRequest) {
                 : false,
         }));
 
-        return NextResponse.json(accountsWithStatus);
+        return NextResponse.json({
+            accounts: accountsWithStatus,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
     } catch (error) {
         console.error("Trading accounts list error:", error);
         return NextResponse.json(

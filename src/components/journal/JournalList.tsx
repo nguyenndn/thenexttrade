@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, TrendingUp, TrendingDown, Calendar, Search, Settings2, ArrowUpDown, ChevronLeft, ChevronRight, ScrollText, ChevronDown } from "lucide-react";
+import { Plus, Edit2, Search, Settings2, ArrowUpDown, ScrollText, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import JournalForm from "@/components/journal/JournalForm";
+import { useRouter, useSearchParams } from "next/navigation";
 import JournalStats from "@/components/journal/JournalStats";
 import { Modal } from "@/components/ui/Modal";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
@@ -12,12 +12,24 @@ import { StrategyCell } from "@/components/journal/cells/StrategyCell";
 import { MindsetCell } from "@/components/journal/cells/MindsetCell";
 import { TagsCell } from "@/components/journal/cells/TagsCell";
 import { MistakesCell } from "@/components/journal/cells/MistakesCell";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { MISTAKES, getMistakeSeverityColor } from "@/lib/mistakes";
-import psychologyData from "@/data/psychology.json";
-import { TradeDetailSheet } from "./TradeDetailSheet";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
+import { PaginationControl } from "@/components/ui/PaginationControl";
+import { TradeTypeBadge } from "@/components/ui/TradeTypeBadge";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { PnLDisplay } from "@/components/ui/PnLDisplay";
+import dynamic from "next/dynamic";
+import { useDebouncedCallback } from "use-debounce";
+
+// Dynamic Imports for Modals
+const JournalForm = dynamic(() => import("@/components/journal/JournalForm"), {
+    loading: () => <div className="p-8 text-center text-gray-500">Loading form...</div>,
+    ssr: false
+});
+const TradeDetailSheet = dynamic(() => import("./TradeDetailSheet").then(mod => mod.TradeDetailSheet), {
+    ssr: false
+});
+
+import { updateJournalEntry, deleteJournalEntry } from "@/actions/journal";
 
 // Types
 interface JournalEntry {
@@ -39,48 +51,61 @@ interface JournalEntry {
     mistakes: string[];
     emotionBefore: string | null;
     accountId: string | null;
+    [key: string]: any; // Allow loose typing for now
 }
 
-export default function JournalList() {
+interface Meta {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+}
+
+interface JournalListProps {
+    initialEntries: any[];
+    meta: Meta;
+    strategies: any[];
+}
+
+export default function JournalList({ initialEntries, meta, strategies: initialStrategies }: JournalListProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const accountId = searchParams.get("accountId");
 
-    const [entries, setEntries] = useState<JournalEntry[]>([]);
-    const [strategies, setStrategies] = useState<any[]>([]); // Store strategies locally
-    const [stats, setStats] = useState<any>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
-    const [pageSize, setPageSize] = useState(10); // Added Page Size State
+    // Parse URL Params for State
+    const accountId = searchParams.get("accountId");
+    const page = parseInt(searchParams.get("page") || "1");
+    // const pageSize = parseInt(searchParams.get("limit") || "10"); // We can parse this
+    const [pageSize, setPageSize] = useState(10); // Keep local for component control, or push to URL
+
+    // Filters from URL
+    const filterSymbol = searchParams.get("symbol") || "";
+    const filterType = searchParams.get("type") || "ALL"; // BUY/SELL
+    const filterStatus = searchParams.get("status") || "ALL"; // WIN/LOSS/OPEN
+
+    // Convert initial data
+    const [entries, setEntries] = useState<any[]>(initialEntries);
+    // Sync entries when initialEntries change (e.g. after server refetch)
+    useEffect(() => {
+        setEntries(initialEntries);
+    }, [initialEntries]);
+
+    const strategies = initialStrategies || [];
+    const [stats, setStats] = useState<any>(null); // Stats might need their own server action or pass from page
+    const [isLoading, setIsLoading] = useState(false);
 
     // Column Visibility State
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set([
-        "symbol", "type", "volume", "pnl", "strategy", "mindset", "customTags", "mistakes"
+        "symbol", "type", "volume", "pnl", "strategy", "mindset", "customTags", "mistakes", "status"
     ]));
-    
-    // Date Filter (From URL - Global Header)
-    const paramFrom = searchParams.get("from");
-    const paramTo = searchParams.get("to");
-    const dateRange = {
-        start: paramFrom ? new Date(paramFrom) : undefined,
-        end: paramTo ? new Date(paramTo) : undefined
-    };
 
-    // Fetch Strategies on mount
-    useEffect(() => {
-        fetch("/api/strategies")
-            .then(res => res.json())
-            .then(data => {
-                if (data.strategies) setStrategies(data.strategies);
-            })
-            .catch(err => console.error("Failed to load strategies", err));
-    }, []);
+    // Fetch Strategies on mount - REMOVED (Passed via props)
 
     // Available Columns Configuration
     const columnsConfig = [
         { id: "date", label: "Date" },
         { id: "symbol", label: "Symbol" },
         { id: "type", label: "Type" },
+        { id: "status", label: "Status" },
         { id: "openTime", label: "Open Time" },
         { id: "closeTime", label: "Close Time" },
         { id: "volume", label: "Volume" },
@@ -121,12 +146,52 @@ export default function JournalList() {
         localStorage.setItem("journal_columns", JSON.stringify(Array.from(visibleColumns)));
     }, [visibleColumns]);
 
-    // Filter State
-    const [filter, setFilter] = useState({ symbol: "" });
-    const [filterType, setFilterType] = useState<string>("ALL");
+    // Helper to update URL params
+    const updateParams = (updates: Record<string, string | null | undefined>) => {
+        const params = new URLSearchParams(searchParams.toString());
+        Object.entries(updates).forEach(([key, value]) => {
+            if (value === null || value === undefined || value === "") {
+                params.delete(key);
+            } else {
+                params.set(key, value);
+            }
+        });
+        // Reset to page 1 on filter change usually, except if explicit page update
+        if (!updates.page && (updates.symbol !== undefined || updates.type !== undefined || updates.status !== undefined)) {
+            params.set("page", "1");
+        }
+        router.push(`?${params.toString()}`);
+    };
 
-    // Sort State
-    const [sort, setSort] = useState<{ col: string; dir: "asc" | "desc" }>({ col: "entryDate", dir: "desc" });
+    // Handlers
+    const handleSort = (colId: string) => {
+        const currentSort = searchParams.get("sort");
+        const currentDir = searchParams.get("dir");
+        const newDir = currentSort === colId && currentDir === "desc" ? "asc" : "desc";
+        updateParams({ sort: colId, dir: newDir });
+    };
+
+    const renderSortIcon = (colId: string) => {
+        const sort = searchParams.get("sort");
+        const dir = searchParams.get("dir");
+        if (sort === colId) {
+            return dir === "asc" ? <ArrowUpDown size={14} className="text-primary rotate-180" /> : <ArrowUpDown size={14} className="text-primary" />;
+        }
+        return <ArrowUpDown size={14} className="text-gray-300 opacity-50" />;
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this trade?")) return;
+        try {
+            const res = await deleteJournalEntry(id);
+            if (res.error) throw new Error(res.error);
+            toast.success("Entry deleted");
+            // Server action revalidates path, Router refresh will happen automatically or we can force it
+            router.refresh();
+        } catch (error) {
+            toast.error("Could not delete entry");
+        }
+    };
 
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -136,95 +201,6 @@ export default function JournalList() {
     // Trade Detail Sheet State
     const [selectedDetailEntry, setSelectedDetailEntry] = useState<JournalEntry | null>(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
-
-    // Client-side Sorting Logic
-    const sortedEntries = entries.slice().sort((a, b) => {
-        // ... (sorting logic unchanged used by client sort if needed, but we fetch new data) ...
-        const { col, dir } = sort;
-        const multiplier = dir === "asc" ? 1 : -1;
-
-        const getVal = (obj: any, key: string) => {
-            if (key === "date" || key === "openTime") return new Date(obj.entryDate).getTime();
-            if (key === "closeTime") return obj.exitDate ? new Date(obj.exitDate).getTime() : 0;
-            if (key === "lotSize") return Number(obj.lotSize || 0);
-            if (key === "pnl") return Number(obj.pnl || 0);
-            if (key === "takeProfit") return Number(obj.takeProfit || 0);
-            if (key === "stopLoss") return Number(obj.stopLoss || 0);
-            return obj[key];
-        };
-
-        const valA = getVal(a, col);
-        const valB = getVal(b, col);
-
-        if (valA < valB) return -1 * multiplier;
-        if (valA > valB) return 1 * multiplier;
-        return 0;
-    });
-
-    const fetchEntries = async (page = 1) => {
-        try {
-            setIsLoading(true);
-            const query = new URLSearchParams({
-                page: page.toString(),
-                limit: pageSize.toString(),
-                ...(filter.symbol && { symbol: filter.symbol }),
-                ...(filterType !== "ALL" && { type: filterType }),
-                ...(accountId && { accountId }),
-                // Add Date Filtering
-                ...(dateRange?.start && { startDate: dateRange.start.toISOString() }),
-                ...(dateRange?.end && { endDate: dateRange.end.toISOString() })
-            });
-
-            console.log("Journal Fetch Query:", query.toString()); // DEBUG LOG
-
-            const res = await fetch(`/api/journal-entries?${query}`);
-            const data = await res.json();
-
-            if (data.data) {
-                setEntries(data.data);
-                setPagination({ page: data.meta.page, totalPages: data.meta.totalPages });
-                if (data.stats) setStats(data.stats);
-            }
-        } catch (error) {
-            toast.error("Failed to load journal entries");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            fetchEntries(1);
-        }, 500);
-        return () => clearTimeout(timeout);
-    }, [filter, accountId, paramFrom, paramTo, pageSize, filterType]); 
-
-    const handleSort = (colId: string) => {
-        setSort(prev => ({
-            col: colId,
-            dir: prev.col === colId && prev.dir === "desc" ? "asc" : "desc"
-        }));
-    };
-
-    const renderSortIcon = (colId: string) => {
-        if (sort.col === colId) {
-            return sort.dir === "asc" ? <TrendingUp size={14} className="text-primary" /> : <TrendingDown size={14} className="text-primary" />;
-        }
-        return <ArrowUpDown size={14} className="text-gray-300" />;
-    };
-
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this trade?")) return;
-
-        try {
-            const res = await fetch(`/api/journal-entries/${id}`, { method: "DELETE" });
-            if (!res.ok) throw new Error("Failed to delete");
-            toast.success("Entry deleted");
-            fetchEntries(pagination.page);
-        } catch (error) {
-            toast.error("Could not delete entry");
-        }
-    };
 
     const handleCreate = () => {
         setEditingEntry(null);
@@ -244,34 +220,38 @@ export default function JournalList() {
     const handleSuccess = () => {
         setIsModalOpen(false);
         setEditingEntry(null);
-        fetchEntries(pagination.page);
         toast.success(editingEntry ? "Trade updated successfully" : "Trade logged successfully");
+        router.refresh();
     };
 
     const handleEntryUpdate = async (id: string, data: any) => {
-        // 1. Optimistic Update
+        // Optimistic Update
         const previousEntries = [...entries];
         setEntries(prev => prev.map(entry =>
             entry.id === id ? { ...entry, ...data } : entry
         ));
 
         try {
-            // 2. Call API quietly
-            const res = await fetch(`/api/journal-entries/${id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-
-            if (!res.ok) throw new Error("Failed to update");
-
+            const res = await updateJournalEntry(id, data);
+            if (res.error) throw new Error(res.error);
         } catch (error) {
-            // 3. Revert on failure
             console.error("Update failed", error);
             setEntries(previousEntries);
             toast.error("Failed to update entry");
         }
     };
+
+    // Search State
+    const [searchTerm, setSearchTerm] = useState(filterSymbol);
+
+    const handleSearch = useDebouncedCallback((value: string) => {
+        updateParams({ symbol: value });
+    }, 500);
+
+    // Sync local search when URL changes
+    useEffect(() => {
+        setSearchTerm(filterSymbol);
+    }, [filterSymbol]);
 
     return (
         <>
@@ -300,8 +280,10 @@ export default function JournalList() {
                     Track your trades and analyze your performance.
                 </p>
             </div>
-            
+
             {stats && <JournalStats stats={stats} />}
+
+
 
             {/* Filters & Controls */}
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-xl shadow-sm border border-gray-100 dark:border-white/5">
@@ -313,13 +295,16 @@ export default function JournalList() {
                             type="text"
                             placeholder="Filter by Pair (e.g. XAUUSD)"
                             className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
-                            value={filter.symbol}
-                            onChange={(e) => setFilter({ symbol: e.target.value })}
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                handleSearch(e.target.value);
+                            }}
                         />
                     </div>
 
-                   {/* Filters Group */}
-                   <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
+                    {/* Filters Group */}
+                    <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
                         {/* Type Filter */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -330,13 +315,13 @@ export default function JournalList() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="start">
                                 {["ALL", "BUY", "SELL"].map((s) => (
-                                    <DropdownMenuItem key={s} onClick={() => setFilterType(s)}>
+                                    <DropdownMenuItem key={s} onClick={() => updateParams({ type: s })}>
                                         {s === "ALL" ? "All Types" : s}
                                     </DropdownMenuItem>
                                 ))}
                             </DropdownMenuContent>
                         </DropdownMenu>
-                   </div>
+                    </div>
                 </div>
 
                 {/* Column Toggle */}
@@ -374,12 +359,12 @@ export default function JournalList() {
                                     visibleColumns.has(col.id) && (
                                         <th
                                             key={col.id}
-                                            className={`px-6 py-4 ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'text-right' : col.id.toLowerCase().includes("time") || col.id === 'type' || col.id === 'volume' || col.id === 'mindset' ? 'text-center' : ''} cursor-pointer hover:text-gray-600 dark:hover:text-gray-200 group/th`}
-                                            onClick={() => ["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl"].includes(col.id) ? handleSort(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id) : null}
+                                            className={`px-6 py-4 ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'text-right' : col.id.toLowerCase().includes("time") || col.id === 'type' || col.id === 'volume' || col.id === 'mindset' || col.id === 'status' ? 'text-center' : ''} cursor-pointer hover:text-gray-600 dark:hover:text-gray-200 group/th`}
+                                            onClick={() => ["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl", "status"].includes(col.id) ? handleSort(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id) : null}
                                         >
-                                            <div className={`flex items-center gap-1 ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'justify-end' : col.id.toLowerCase().includes("time") || col.id === 'type' || col.id === 'volume' || col.id === 'mindset' ? 'justify-center' : ''}`}>
+                                            <div className={`flex items-center gap-1 ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'justify-end' : col.id.toLowerCase().includes("time") || col.id === 'type' || col.id === 'volume' || col.id === 'mindset' || col.id === 'status' ? 'justify-center' : ''}`}>
                                                 {col.label}
-                                                {["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl"].includes(col.id) && renderSortIcon(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id)}
+                                                {["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl", "status"].includes(col.id) && renderSortIcon(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id)}
                                             </div>
                                         </th>
                                     )
@@ -397,7 +382,7 @@ export default function JournalList() {
                                     <td colSpan={14} className="px-6 py-8 text-center text-gray-500">No trades recorded yet.</td>
                                 </tr>
                             ) : (
-                                sortedEntries.map((entry) => (
+                                entries.map((entry) => (
                                     <tr key={entry.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
                                         <td className="px-6 py-4">
                                             <button
@@ -412,22 +397,15 @@ export default function JournalList() {
                                         </td>
                                         {columnsConfig.map((col) => (
                                             visibleColumns.has(col.id) && (
-                                                <td key={col.id} className={`px-6 py-4 ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'text-right' : col.id.toLowerCase().includes("time") || col.id === 'type' || col.id === 'volume' || col.id === 'mindset' ? 'text-center' : ''}`}>
+                                                <td key={col.id} className={`px-6 py-4 ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'text-right' : col.id.toLowerCase().includes("time") || col.id === 'type' || col.id === 'volume' || col.id === 'mindset' || col.id === 'status' ? 'text-center' : ''}`}>
                                                     {col.id === "date" && format(new Date(entry.entryDate), "dd MMM yyyy")}
                                                     {col.id === "symbol" && <span className="font-bold text-gray-900 dark:text-white">{entry.symbol}</span>}
-                                                    {col.id === "type" && (
-                                                        <span className={`text-xs font-bold ${entry.type === 'BUY' ? 'text-blue-500' : 'text-red-500'}`}>
-                                                            {entry.type}
-                                                        </span>
-                                                    )}
+                                                    {col.id === "type" && <TradeTypeBadge type={entry.type} />}
+                                                    {col.id === "status" && <StatusBadge status={entry.status} />}
                                                     {col.id === "openTime" && format(new Date(entry.entryDate), "HH:mm")}
                                                     {col.id === "closeTime" && (entry.exitDate ? format(new Date(entry.exitDate), "HH:mm") : "-")}
                                                     {col.id === "volume" && <span className="font-mono text-gray-500">{(entry as any).lotSize || "0.00"}</span>}
-                                                    {col.id === "pnl" && (
-                                                        <span className={`font-mono font-bold ${entry.pnl && entry.pnl > 0 ? 'text-blue-500' : entry.pnl && entry.pnl < 0 ? 'text-red-500' : 'text-gray-500'}`}>
-                                                            {entry.pnl ? entry.pnl.toFixed(2) : "-"}
-                                                        </span>
-                                                    )}
+                                                    {col.id === "pnl" && <PnLDisplay value={entry.pnl} />}
                                                     {col.id === "tp" && <span className="font-mono text-primary font-medium">{(entry as any).takeProfit || "-"}</span>}
                                                     {col.id === "sl" && <span className="font-mono text-red-500 font-medium">{(entry as any).stopLoss || "-"}</span>}
                                                     {col.id === "strategy" && (
@@ -459,97 +437,16 @@ export default function JournalList() {
                     </table>
                 </div>
 
-                {/* Pagination */}
-                {pagination.totalPages > 0 && (
-                    <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4">
-                        
-                        {/* Rows Per Page Selector */}
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <span>Rows per page:</span>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="flex items-center gap-1 font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">
-                                        {pageSize}
-                                        <ChevronDown size={14} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    {[10, 20, 50, 100].map((size) => (
-                                        <DropdownMenuItem 
-                                            key={size} 
-                                            onClick={() => {
-                                                setPageSize(size);
-                                            }}
-                                            className={pageSize === size ? "bg-primary/10 text-primary font-bold" : ""}
-                                        >
-                                            {size}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-
-                        <div className="flex items-center gap-1 p-1 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 shadow-sm">
-                            <button
-                                disabled={pagination.page <= 1}
-                                onClick={() => fetchEntries(pagination.page - 1)}
-                                className="p-1.5 rounded-lg transition-all text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <ChevronLeft size={16} />
-                            </button>
-
-                            <div className="flex items-center gap-1">
-                                {(() => {
-                                    const { page, totalPages } = pagination;
-                                    const buttons = [];
-
-                                    if (totalPages <= 7) {
-                                        for (let i = 1; i <= totalPages; i++) buttons.push(i);
-                                    } else {
-                                        buttons.push(1);
-                                        if (page > 3) buttons.push('...');
-
-                                        let start = Math.max(2, page - 1);
-                                        let end = Math.min(totalPages - 1, page + 1);
-
-                                        if (page < 3) end = 4;
-                                        if (page > totalPages - 2) start = totalPages - 3;
-
-                                        for (let i = start; i <= end; i++) buttons.push(i);
-
-                                        if (page < totalPages - 2) buttons.push('...');
-                                        buttons.push(totalPages);
-                                    }
-
-                                    return buttons.map((p, idx) => (
-                                        typeof p === 'number' ? (
-                                            <button
-                                                key={idx}
-                                                onClick={() => fetchEntries(p)}
-                                                className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-xs transition-all ${p === pagination.page
-                                                    ? 'bg-primary text-white shadow-md shadow-primary/20'
-                                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
-                                                    }`}
-                                            >
-                                                {p}
-                                            </button>
-                                        ) : (
-                                            <span key={idx} className="w-8 h-8 flex items-center justify-center text-gray-400 font-bold text-xs">...</span>
-                                        )
-                                    ));
-                                })()}
-                            </div>
-
-                            <button
-                                disabled={pagination.page >= pagination.totalPages}
-                                onClick={() => fetchEntries(pagination.page + 1)}
-                                className="p-1.5 rounded-lg transition-all text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <ChevronRight size={16} />
-                            </button>
-                        </div>
-                    </div>
-                )}
+                {/* New Pagination Control */}
+                <PaginationControl
+                    currentPage={meta.page}
+                    totalPages={meta.totalPages}
+                    pageSize={meta.limit}
+                    totalItems={meta.total}
+                    onPageChange={(page) => updateParams({ page: page.toString() })}
+                    onPageSizeChange={(size) => updateParams({ limit: size.toString() })}
+                    itemName="trades"
+                />
             </div>
 
             <Modal
@@ -558,7 +455,7 @@ export default function JournalList() {
                 title={editingEntry ? "Edit Trade" : "Log New Trade"}
             >
                 <JournalForm
-                    initialData={editingEntry || { accountId }}
+                    initialData={editingEntry || { accountId: accountId || undefined }} // Ensure undefined if null
                     isEditMode={!!editingEntry}
                     onSuccess={handleSuccess}
                     onCancel={handleModalClose}

@@ -76,6 +76,7 @@ export async function GET(request: Request) {
 
     const type = searchParams.get("type");
     const result = searchParams.get("result");
+    const hasImages = searchParams.get("hasImages");
 
     const skip = (page - 1) * limit;
 
@@ -89,10 +90,13 @@ export async function GET(request: Request) {
     if (status && status !== "ALL") where.status = status;
     if (type && type !== "ALL") where.type = type;
     if (result && result !== "ALL") where.result = result;
+    if (hasImages === "true") {
+        where.images = { isEmpty: false };
+    }
     if (startDate && endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
-        
+
         // Ensure end date covers the full day (23:59:59.999)
         end.setHours(23, 59, 59, 999);
 

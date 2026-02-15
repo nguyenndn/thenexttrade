@@ -40,14 +40,31 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const root = document.documentElement;
         if (theme === "dark") {
             root.classList.add("dark");
+            root.style.colorScheme = "dark";
+            root.setAttribute("data-theme", "dark");
         } else {
             root.classList.remove("dark");
+            root.style.colorScheme = "light";
+            root.setAttribute("data-theme", "light");
         }
         localStorage.setItem("theme", theme);
     }, [theme, mounted]);
 
     const toggleTheme = () => {
+        const root = document.documentElement;
+
+        // Disable all transitions before switching
+        root.classList.add("disable-transitions");
+
+        // Toggle theme
         setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+
+        // Re-enable transitions after browser repaint
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                root.classList.remove("disable-transitions");
+            });
+        });
     };
 
     // To prevent hydration mismatch, we might render nothing or default until mounted.

@@ -2,67 +2,97 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
 import { PlaybookFilters } from "./PlaybookFilters";
 import { PlaybookGrid } from "./PlaybookGrid";
-import { TradeQuickView } from "./TradeQuickView";
+import { PaginationControl } from "@/components/ui/PaginationControl";
+import dynamic from "next/dynamic";
 
-export function PlaybookDashboard() {
-    const [trades, setTrades] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [search, setSearch] = useState("");
-    const [filter, setFilter] = useState<"ALL" | "WIN" | "LOSS">("ALL");
+const TradeQuickView = dynamic(() => import("./TradeQuickView").then(mod => mod.TradeQuickView), {
+    ssr: false,
+    loading: () => null
+});
+
+interface PlaybookDashboardProps {
+    initialEntries: any[];
+    meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
+}
+
+export function PlaybookDashboard({ initialEntries, meta }: PlaybookDashboardProps) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    // URL Params
+    const searchParam = searchParams.get("search") || "";
+    const filter = searchParams.get("filter") || "ALL";
+
+    const [trades, setTrades] = useState<any[]>(initialEntries);
     const [selectedTrade, setSelectedTrade] = useState<any | null>(null);
+    const [localSearch, setLocalSearch] = useState(searchParam);
+
+    // Sync local search with URL param if it changes externally
+    useEffect(() => {
+        setLocalSearch(searchParam);
+    }, [searchParam]);
 
     useEffect(() => {
-        fetchTrades();
-    }, []);
+        setTrades(initialEntries);
+    }, [initialEntries]);
 
-    const fetchTrades = async () => {
-        try {
-            setIsLoading(true);
-            // Fetch all trades, filter client-side for now or add API params later
-            // We specifically need trades with images
-            const res = await fetch("/api/journal-entries");
-            if (!res.ok) throw new Error("Failed to fetch trades");
-
-            const json = await res.json();
-            // Filter only trades with images
-            const tradesWithImages = json.data.filter((t: any) => t.images && t.images.length > 0);
-
-            setTrades(tradesWithImages);
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to load playbook");
-        } finally {
-            setIsLoading(false);
+    // Update URL helper
+    const updateParams = (updates: Record<string, string | null | undefined>) => {
+        const params = new URLSearchParams(searchParams.toString());
+        Object.entries(updates).forEach(([key, value]) => {
+            if (value === null || value === undefined || value === "") {
+                params.delete(key);
+            } else {
+                params.set(key, value);
+            }
+        });
+        if (!updates.page && (updates.search !== undefined || updates.filter !== undefined)) {
+            params.set("page", "1");
         }
+        router.push(`?${params.toString()}`);
     };
 
-    // Client-side filtering
-    const filteredTrades = trades.filter(trade => {
-        const matchesSearch = trade.symbol.toLowerCase().includes(search.toLowerCase());
-        const matchesFilter =
-            filter === "ALL" ? true :
-                filter === "WIN" ? (trade.pnl || 0) > 0 :
-                    filter === "LOSS" ? (trade.pnl || 0) < 0 : true;
+    // Debounce Search
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (localSearch !== searchParam) {
+                updateParams({ search: localSearch });
+            }
+        }, 500);
+        return () => clearTimeout(timeout);
+    }, [localSearch]);
 
-        return matchesSearch && matchesFilter;
-    });
+    // Handlers
+    const setSearch = (value: string) => {
+        setLocalSearch(value);
+    };
+
+    const setFilter = (value: string) => {
+        updateParams({ filter: value });
+    };
 
     // Navigation handlers
     const handleNext = () => {
         if (!selectedTrade) return;
-        const currentIndex = filteredTrades.findIndex(t => t.id === selectedTrade.id);
-        if (currentIndex < filteredTrades.length - 1) {
-            setSelectedTrade(filteredTrades[currentIndex + 1]);
+        const currentIndex = trades.findIndex(t => t.id === selectedTrade.id);
+        if (currentIndex < trades.length - 1) {
+            setSelectedTrade(trades[currentIndex + 1]);
         }
     };
 
     const handlePrev = () => {
         if (!selectedTrade) return;
-        const currentIndex = filteredTrades.findIndex(t => t.id === selectedTrade.id);
+        const currentIndex = trades.findIndex(t => t.id === selectedTrade.id);
         if (currentIndex > 0) {
-            setSelectedTrade(filteredTrades[currentIndex - 1]);
+            setSelectedTrade(trades[currentIndex - 1]);
         }
     };
 
@@ -83,16 +113,28 @@ export function PlaybookDashboard() {
             </div>
 
             <PlaybookFilters
-                search={search}
+                search={localSearch}
                 setSearch={setSearch}
-                filter={filter}
+                filter={filter as "ALL" | "WIN" | "LOSS"}
                 setFilter={setFilter}
             />
 
             <PlaybookGrid
-                trades={filteredTrades}
-                isLoading={isLoading}
+                trades={trades}
+                isLoading={false}
                 onTradeClick={setSelectedTrade}
+            />
+
+            {/* Pagination */}
+            <PaginationControl
+                currentPage={meta.page}
+                totalPages={meta.totalPages}
+                pageSize={meta.limit}
+                totalItems={meta.total}
+                onPageChange={(page) => updateParams({ page: page.toString() })}
+                onPageSizeChange={(size) => updateParams({ limit: size.toString() })}
+                itemName="playbook entries"
+                pageSizeOptions={[12, 24, 48, 96]}
             />
 
             {/* Quick View Modal */}

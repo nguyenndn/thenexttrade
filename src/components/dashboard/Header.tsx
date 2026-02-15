@@ -10,7 +10,7 @@ import { AccountSelector } from "@/components/dashboard/AccountSelector";
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { signout } from '@/app/auth/actions';
-import { SearchBar } from '@/components/search/SearchBar';
+import { CommandPalette, CommandPaletteTrigger } from '@/components/search/CommandPalette';
 import { UserMenu } from "@/components/layout/UserMenu";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 
@@ -19,13 +19,17 @@ export function Header({
     searchRoute = "/dashboard/search",
     showAccountSelector = false,
     user: initialUser,
-    bell
+    bell,
+    collapsed,
+    setCollapsed
 }: {
     onMobileMenuClick?: () => void,
     searchRoute?: string,
     showAccountSelector?: boolean,
     user?: AuthUser | null,
-    bell?: React.ReactNode
+    bell?: React.ReactNode,
+    collapsed?: boolean,
+    setCollapsed?: (v: boolean) => void
 }) {
     const searchParams = useSearchParams();
     const accountId = searchParams.get("accountId");
@@ -50,93 +54,64 @@ export function Header({
     }, [user]);
 
     return (
-        <header className="h-16 bg-white/80 dark:bg-[#0B0E14]/80 backdrop-blur-md border-b border-gray-100 dark:border-white/5 sticky top-0 z-50 px-4 lg:px-6 flex items-center justify-between">
-            {/* ... (Search bar section) ... */}
-            <div className="flex items-center gap-3 flex-1">
-                <button
-                    className="lg:hidden p-2 -ml-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                    onClick={onMobileMenuClick}
-                >
-                    <Menu size={20} />
-                </button>
-                <div className="hidden md:block w-full max-w-md ml-4">
-                    <SearchBar targetRoute={searchRoute} />
+        <>
+            <header className="mx-4 mt-3 mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-gray-100 dark:border-gray-800 h-16 px-4 lg:px-6 flex items-center justify-between z-40 relative transition-all duration-100 ease-in-out">
+                {/* Left Section: Toggle + Logo */}
+                <div className="flex items-center gap-4">
+                    {/* Mobile Menu Button */}
+                    <button
+                        className="lg:hidden p-2 -ml-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                        onClick={onMobileMenuClick}
+                    >
+                        <Menu size={20} />
+                    </button>
+
+                    {/* Desktop Toggle + Logo (Toggle FIRST) */}
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setCollapsed?.(!collapsed)}
+                            className="hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                        >
+                            <Menu size={20} />
+                        </button>
+                        <Logo />
+                    </div>
                 </div>
-            </div>
 
-            <div className="flex items-center gap-2 sm:gap-4">
-                {/* Gamification Stats (Hidden on mobile) */}
-                {user && (
-                    <div className="hidden lg:flex items-center gap-3 mr-2">
-                        {/* Streak Badge */}
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 text-orange-600 dark:text-orange-400">
-                            <Flame size={16} className="fill-current" />
-                            <span className="text-xs font-bold">{user.profile?.streak || 0}</span>
-                        </div>
+                {/* Spacer */}
+                <div className="flex-1" />
 
-                        {/* Level & XP */}
-                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20">
-                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
-                                {user.profile?.level || 1}
-                            </div>
-                            <div className="flex flex-col w-16 gap-0.5">
-                                <span className="text-[10px] font-bold text-blue-700 dark:text-blue-300 leading-none">
-                                    {user.profile?.xp || 0} XP
-                                </span>
-                                <div className="h-1 w-full bg-blue-200 dark:bg-blue-500/30 rounded-full overflow-hidden">
-                                    {/* Simple progress bar mock: (XP % 1000) / 10 */}
-                                    <div
-                                        className="h-full bg-blue-500 rounded-full"
-                                        style={{ width: `${((user.profile?.xp || 0) % 1000) / 10}%` }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                {/* Right Side Actions & Search */}
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="hidden md:block mr-2">
+                        <CommandPaletteTrigger />
                     </div>
-                )}
 
-                {showAccountSelector && (
-                    <div className="hidden md:block">
-                        <AccountSelector currentAccountId={accountId ?? undefined} />
-                    </div>
-                )}
-                {/* Theme Toggle */}
-                <button
-                    onClick={toggleTheme}
-                    className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 ${isDark
-                        ? 'bg-gray-600 focus:ring-offset-slate-900'
-                        : 'bg-gray-300 focus:ring-offset-white'
-                        }`}
-                >
-                    <span
-                        className={`inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 transform rounded-full bg-white transition-transform ${isDark ? 'translate-x-5 sm:translate-x-6' : 'translate-x-0.5 sm:translate-x-1'
-                            }`}
-                    />
-                </button>
+                    {showAccountSelector && (
+                        <div className="hidden md:block">
+                            <AccountSelector currentAccountId={accountId ?? undefined} />
+                        </div>
+                    )}
 
-                {/* Notification Bell */}
-                {bell ? (
-                    bell
-                ) : (
-                    <NotificationBell />
-                )}
+                    {/* Theme Toggle - Compact */}
+                    <button
+                        onClick={toggleTheme}
+                        className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 dark:border-gray-800 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100"
+                    >
+                        {isDark ? <span className="text-base">🌙</span> : <span className="text-base">☀️</span>}
+                    </button>
 
-                <div className="h-8 w-[1px] bg-gray-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
+                    {/* Notification Bell */}
+                    {bell ? bell : <NotificationBell />}
 
-                {/* UserMenu needs AuthUser. We pass user which is AuthUser | null. */}
-                {/* UserMenu profile prop: previously passed userProfile | null. */}
-                {/* UserMenu uses profile.username mainly. */}
-                {/* AuthUser has profile.username. */}
-                {/* So we can pass user too? UserMenu implementation shows: */}
-                {/* const userData = { username: user?.profile?.username || "User" ... } */}
-                {/* Wait, UserMenu implementation I updated in Step 2239: */}
-                {/* username: user?.profile?.username || "User" */}
-                {/* So UserMenu extracts from user.profile. */}
-                {/* The 'profile' prop in UserMenu might be redundant now? */}
-                {/* I will pass empty profile or just user. */}
+                    <div className="h-6 w-[1px] bg-gray-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
 
-                <UserMenu user={initialUser ?? null} variant="dashboard" />
-            </div>
-        </header>
+                    <UserMenu user={initialUser ?? null} variant="dashboard" />
+                </div>
+            </header>
+
+            {/* Command Palette Modal (Ctrl+K) */}
+            <CommandPalette />
+        </>
     );
 }

@@ -17,7 +17,7 @@ export async function getMonthlyAnalytics(userId: string, accountId?: string) {
     // Determine the WHERE clause
     // Note: We use template literals for trusted values, but be careful with strings.
     // Prisma.sql is safer for preventing injection.
-    
+
     // We fetch last 12 months by default
     const result = await prisma.$queryRaw`
         SELECT 
@@ -50,7 +50,7 @@ export async function getMonthlyAnalytics(userId: string, accountId?: string) {
  */
 export async function getKeyStats(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
     // Build date filter
-    const dateFilter = startDate && endDate 
+    const dateFilter = startDate && endDate
         ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
         : Prisma.empty;
 
@@ -84,7 +84,9 @@ export async function getKeyStats(userId: string, accountId?: string, startDate?
         totalPnL: Number(stats.totalPnL || 0),
         profitFactor: grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? 999 : 0,
         grossProfit,
-        grossLoss
+        grossLoss,
+        avgWin: wins > 0 ? grossProfit / wins : 0,
+        avgLoss: losses > 0 ? grossLoss / losses : 0
     };
 }
 
@@ -93,17 +95,20 @@ export async function getKeyStats(userId: string, accountId?: string, startDate?
  * Revalidates every 60 seconds or on demand
  */
 export const getCachedDashboardStats = unstable_cache(
-    async (userId: string, accountId?: string) => {
+    async (userId: string, accountId?: string, startDate?: string, endDate?: string) => {
+        const start = startDate ? new Date(startDate) : undefined;
+        const end = endDate ? new Date(endDate) : undefined;
+
         const [stats, monthly] = await Promise.all([
-            getKeyStats(userId, accountId),
+            getKeyStats(userId, accountId, start, end),
             getMonthlyAnalytics(userId, accountId)
         ]);
         return { stats, monthly };
     },
-    ['dashboard-stats'], 
-    { 
+    ['dashboard-stats'],
+    {
         revalidate: 60, // 60 Seconds Cache
-        tags: ['dashboard-stats'] 
+        tags: ['dashboard-stats']
     }
 );
 
@@ -115,7 +120,7 @@ export const getCachedDashboardStats = unstable_cache(
  */
 export async function getDailyPerformance(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
     // Build date filter
-    const dateFilter = startDate && endDate 
+    const dateFilter = startDate && endDate
         ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
         : Prisma.sql`AND "exitDate" >= NOW() - INTERVAL '90 days'`; // Default to 90 days if no date
 
@@ -151,7 +156,7 @@ export async function getDailyPerformance(userId: string, accountId?: string, st
  */
 export async function getSymbolPerformance(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
     // Build date filter
-    const dateFilter = startDate && endDate 
+    const dateFilter = startDate && endDate
         ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
         : Prisma.empty;
 
@@ -184,7 +189,7 @@ export async function getSymbolPerformance(userId: string, accountId?: string, s
  */
 export async function getTopTrades(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
     // Build date filter
-    const dateFilter = startDate && endDate 
+    const dateFilter = startDate && endDate
         ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
         : Prisma.empty;
 
@@ -236,7 +241,7 @@ export async function getTopTrades(userId: string, accountId?: string, startDate
  */
 export async function getLotDistribution(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
     // Build date filter
-    const dateFilter = startDate && endDate 
+    const dateFilter = startDate && endDate
         ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
         : Prisma.empty;
 
@@ -257,5 +262,46 @@ export async function getLotDistribution(userId: string, accountId?: string, sta
     return (result as any[]).map(row => ({
         name: row.symbol,
         value: Number(row.totalLots || 0)
+    }));
+}
+/**
+ * Get Day of Week Performance
+ * Returns { day, dayIndex, pnl, tradeCount, winRate }
+ */
+export async function getDayOfWeekPerformance(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
+    // Build date filter
+    const dateFilter = startDate && endDate
+        ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
+        : Prisma.empty;
+
+    // We use EXTRACT(DOW from "exitDate") which returns 0-6 (Sun-Sat)
+    // Adjust for Broker Time offset if necessary. Assuming UTC for now.
+    // If BROKER_OFFSET_HOURS is needed, we'd add it before extracting.
+    // For simplicity V1, we use UTC.
+
+    const result = await prisma.$queryRaw`
+        SELECT 
+            EXTRACT(DOW FROM "exitDate") as "dayIndex",
+            COUNT(*) as "tradeCount",
+            SUM("pnl") as "netProfit",
+            SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
+        FROM "JournalEntry"
+        WHERE "userId" = ${userId}::uuid
+        AND "status" = 'CLOSED'
+        -- Optional Account Filter
+        AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
+        ${dateFilter}
+        GROUP BY 1
+        ORDER BY 1 ASC
+    `;
+
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    return (result as any[]).map(row => ({
+        day: dayNames[Number(row.dayIndex)],
+        dayIndex: Number(row.dayIndex),
+        pnl: Number(row.netProfit || 0),
+        tradeCount: Number(row.tradeCount || 0),
+        winRate: Number(row.tradeCount) > 0 ? (Number(row.winCount) / Number(row.tradeCount)) * 100 : 0
     }));
 }

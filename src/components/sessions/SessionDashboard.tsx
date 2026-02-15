@@ -67,16 +67,8 @@ export function SessionDashboard() {
         fetchData();
     }, [dateRange]);
 
-    if (isLoading) {
-        return <SessionLoadingSkeleton />;
-    }
-
-    if (!data || data.sessionStats.length === 0) {
-        return <SessionEmptyState />;
-    }
-
     return (
-        <>
+        <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex justify-between items-center">
@@ -92,52 +84,60 @@ export function SessionDashboard() {
                 </p>
             </div>
 
-            {/* AI Insights - Moved to top for visibility */}
-            {data.recommendations.length > 0 && (
-                <SessionRecommendations recommendations={data.recommendations} />
+            {isLoading ? (
+                <SessionLoadingSkeleton />
+            ) : !data || data.sessionStats.length === 0 ? (
+                <SessionEmptyState />
+            ) : (
+                <>
+                    {/* AI Insights - Moved to top for visibility */}
+                    {data.recommendations.length > 0 && (
+                        <SessionRecommendations recommendations={data.recommendations} />
+                    )}
+
+                    {/* Quick Stats */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <QuickStatCard
+                            label="Best Session"
+                            value={data.bestSession ? data.sessionStats.find(s => s.session === data.bestSession)?.displayName || "" : "-"}
+                            icon={TrendingUp}
+                            color="text-green-500"
+                        />
+                        <QuickStatCard
+                            label="Worst Session"
+                            value={data.worstSession ? data.sessionStats.find(s => s.session === data.worstSession)?.displayName || "" : "-"}
+                            icon={TrendingDown}
+                            color="text-red-500"
+                        />
+                        <QuickStatCard
+                            label="Best Hour"
+                            value={data.bestHour !== null ? `${data.bestHour.toString().padStart(2, '0')}:00 UTC` : "-"}
+                            icon={Sun}
+                            color="text-yellow-500"
+                        />
+                        <QuickStatCard
+                            label="Worst Hour"
+                            value={data.worstHour !== null ? `${data.worstHour.toString().padStart(2, '0')}:00 UTC` : "-"}
+                            icon={Moon}
+                            color="text-gray-500"
+                        />
+                    </div>
+
+                    {/* Main Charts */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="lg:col-span-2">
+                            <SessionPerformance data={data.sessionStats} />
+                        </div>
+                        <div className="lg:col-span-1">
+                            <SessionClock data={data.sessionStats} />
+                        </div>
+                    </div>
+
+                    {/* Hourly Heatmap */}
+                    <HourlyHeatmap data={data.hourlyStats} />
+                </>
             )}
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <QuickStatCard
-                    label="Best Session"
-                    value={data.bestSession ? data.sessionStats.find(s => s.session === data.bestSession)?.displayName || "" : "-"}
-                    icon={TrendingUp}
-                    color="text-green-500"
-                />
-                <QuickStatCard
-                    label="Worst Session"
-                    value={data.worstSession ? data.sessionStats.find(s => s.session === data.worstSession)?.displayName || "" : "-"}
-                    icon={TrendingDown}
-                    color="text-red-500"
-                />
-                <QuickStatCard
-                    label="Best Hour"
-                    value={data.bestHour !== null ? `${data.bestHour.toString().padStart(2, '0')}:00 UTC` : "-"}
-                    icon={Sun}
-                    color="text-yellow-500"
-                />
-                <QuickStatCard
-                    label="Worst Hour"
-                    value={data.worstHour !== null ? `${data.worstHour.toString().padStart(2, '0')}:00 UTC` : "-"}
-                    icon={Moon}
-                    color="text-gray-500"
-                />
-            </div>
-
-            {/* Main Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
-                    <SessionPerformance data={data.sessionStats} />
-                </div>
-                <div className="lg:col-span-1">
-                    <SessionClock data={data.sessionStats} />
-                </div>
-            </div>
-
-            {/* Hourly Heatmap */}
-            <HourlyHeatmap data={data.hourlyStats} />
-        </>
+        </div>
     );
 }
 

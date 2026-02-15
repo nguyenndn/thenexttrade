@@ -10,26 +10,44 @@ const strategySchema = z.object({
     color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
 });
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         const user = await getAuthUser();
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const strategies = await prisma.strategy.findMany({
-            where: { userId: user.id },
-            orderBy: { name: "asc" },
-            select: {
-                id: true,
-                name: true,
-                description: true,
-                rules: true,
-                color: true,
-            },
-        });
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "20");
+        const skip = (page - 1) * limit;
 
-        return NextResponse.json({ strategies });
+        const [strategies, total] = await Promise.all([
+            prisma.strategy.findMany({
+                where: { userId: user.id },
+                orderBy: { name: "asc" },
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    rules: true,
+                    color: true,
+                },
+                skip,
+                take: limit,
+            }),
+            prisma.strategy.count({ where: { userId: user.id } })
+        ]);
+
+        return NextResponse.json({
+            strategies,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
     } catch (error) {
         console.error("Get strategies error:", error);
         return NextResponse.json({ error: "Failed to fetch strategies" }, { status: 500 });

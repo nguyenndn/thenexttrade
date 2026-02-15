@@ -21,20 +21,27 @@ export function DashboardLayoutClient({
     user
 }: DashboardLayoutClientProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-50/50 dark:bg-black flex font-sans">
-            {/* Sidebar for Desktop */}
-            <Sidebar />
+        <div className="h-screen font-sans flex flex-col overflow-hidden" style={{ backgroundColor: 'var(--dashboard-bg)' }}>
+            {/* Top Header - Full Width */}
+            <Header
+                onMobileMenuClick={() => setMobileMenuOpen(true)}
+                user={user}
+                collapsed={collapsed}
+                setCollapsed={setCollapsed}
+            />
 
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 transition-all duration-300">
-                <Header
-                    onMobileMenuClick={() => setMobileMenuOpen(true)}
-                    user={user}
+            <div className="flex flex-1 overflow-hidden">
+                {/* Sidebar for Desktop */}
+                <Sidebar
+                    collapsed={collapsed}
+                    setCollapsed={setCollapsed}
                 />
 
-                <main className="flex-1 p-4 md:p-6 lg:p-8 w-full max-w-[100vw] overflow-x-hidden">
+                {/* Main Content Area */}
+                <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full custom-scrollbar">
                     {children}
                 </main>
             </div>
@@ -80,7 +87,7 @@ export function DashboardLayoutClient({
                                 onClick={() => signout()}
                                 className="flex items-center gap-4 px-4 py-3 w-full text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors font-medium">
                                 <LogOut size={20} />
-                                Logout
+                                <span className="text-sm">Logout</span>
                             </button>
                         </div>
                     </div>

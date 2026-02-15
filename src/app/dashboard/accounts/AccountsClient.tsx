@@ -12,19 +12,32 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
+import { useRouter, useSearchParams } from "next/navigation";
+import { PaginationControl } from "@/components/ui/PaginationControl";
+
 export default function AccountsClient() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "12");
+
     const [accounts, setAccounts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<any | null>(null);
+    const [meta, setMeta] = useState({ total: 0, totalPages: 1 });
 
     const fetchAccounts = async () => {
         try {
-            const res = await fetch("/api/accounts");
+            const res = await fetch(`/api/trading-accounts?page=${page}&limit=${limit}`);
             const data = await res.json();
             if (data.accounts) {
                 setAccounts(data.accounts);
+                setMeta({
+                    total: data.meta?.total || 0,
+                    totalPages: data.meta?.totalPages || 1
+                });
             }
         } catch (error) {
             console.error("Failed to fetch accounts", error);
@@ -35,8 +48,9 @@ export default function AccountsClient() {
     };
 
     useEffect(() => {
+        setIsLoading(true);
         fetchAccounts();
-    }, []);
+    }, [page, limit]);
 
     const handleEdit = (account: any) => {
         setSelectedAccount(account);
@@ -205,6 +219,18 @@ export default function AccountsClient() {
                         <span className="font-bold text-lg">Add New Account</span>
                     </button>
                 )}
+            </div>
+
+            <div className="mt-8">
+                <PaginationControl
+                    currentPage={page}
+                    totalPages={meta.totalPages}
+                    pageSize={limit}
+                    totalItems={meta.total}
+                    onPageChange={(p) => router.push(`/dashboard/accounts?page=${p}&limit=${limit}`)}
+                    onPageSizeChange={(l) => router.push(`/dashboard/accounts?page=1&limit=${l}`)}
+                    itemName="accounts"
+                />
             </div>
 
             {isModalOpen && (

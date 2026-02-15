@@ -110,6 +110,20 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                         </h1>
                     </div>
 
+                    {/* Video Player */}
+                    {videoId && (
+                        <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-900 border border-gray-100 dark:border-white/5 shadow-lg">
+                            <iframe
+                                src={`https://www.youtube.com/embed/${videoId}`}
+                                title={lesson.title}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                loading="lazy"
+                                className="absolute inset-0 w-full h-full"
+                            />
+                        </div>
+                    )}
+
                     {/* Content */}
                     <article className="prose prose-base dark:prose-invert max-w-none 
                         prose-headings:font-bold prose-headings:tracking-tight 

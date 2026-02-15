@@ -7,16 +7,16 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Inter, Outfit } from "next/font/google";
 import { Toaster } from "sonner";
 
-const inter = Inter({ 
-  subsets: ["latin"], 
-  variable: "--font-inter", 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
   display: 'swap',
   preload: true,
   adjustFontFallback: true
 });
-const outfit = Outfit({ 
-  subsets: ["latin"], 
-  variable: "--font-outfit", 
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
   display: 'swap',
   preload: false
 });
@@ -77,7 +77,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: 'dark' }}>
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${outfit.variable} font-sans`}>
         <NextTopLoader
           color="hsl(var(--primary))"

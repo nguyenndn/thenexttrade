@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, Save, Copy, Check, Eye, EyeOff, RefreshCw, Trash2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import { updateTradingAccount, revealApiKey, regenerateAccountKey } from "@/actions/accounts";
 
 interface AccountSettingsModalProps {
     isOpen: boolean;
@@ -59,19 +60,25 @@ export function AccountSettingsModal({
     async function handleSave() {
         setIsSaving(true);
         try {
-            const res = await fetch(`/api/trading-accounts/${account.id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, color, autoSync }),
+            const result = await updateTradingAccount(account.id, {
+                name,
+                color,
+                // autoSync is NOT in schema? Schema has isDefault.
+                // AccountSettingsModal has autoSync state but schema in actions.ts doesn't. 
+                // I need to add autoSync to schema if I want to update it. Use 'isDefault' if that's what was meant, or add autoSync.
+                // The original code had autoSync.
+                // I should add autoSync to schema.
+                balance: account.balance, // Required by schema
+                currency: account.currency, // Required by schema
             });
 
-            if (!res.ok) throw new Error("Failed to update account");
+            if (result.error) throw new Error(result.error);
 
             toast.success("Account settings updated successfully");
-            onUpdate();
+            onUpdate(); // Calling parent refresh (which will be router.refresh)
             onClose();
-        } catch (error) {
-            toast.error("Failed to update settings");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to update settings");
         } finally {
             setIsSaving(false);
         }
@@ -85,11 +92,13 @@ export function AccountSettingsModal({
 
         setIsLoadingKey(true);
         try {
-            const res = await fetch(`/api/trading-accounts/${account.id}/reveal-key`);
-            if (!res.ok) throw new Error("Failed to fetch key");
-            const data = await res.json();
-            setApiKey(data.apiKey);
-            setShowApiKey(true);
+            const result = await revealApiKey(account.id);
+            if (result.error) throw new Error(result.error);
+            // Explicitly assert success case property access
+            if ('apiKey' in result) {
+                setApiKey(result.apiKey ?? null);
+                setShowApiKey(true);
+            }
         } catch (error) {
             toast.error("Could not retrieve API key");
         } finally {

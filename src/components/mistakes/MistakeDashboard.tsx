@@ -1,69 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { format, startOfMonth, endOfMonth, subMonths } from "date-fns";
-import { toast } from "sonner";
-import { AlertTriangle, TrendingDown, CheckCircle, XCircle, ArrowUp, ArrowDown, DollarSign } from "lucide-react";
+import { useState } from "react";
+import { startOfMonth, endOfMonth } from "date-fns";
+import { AlertTriangle, TrendingDown, CheckCircle, XCircle, DollarSign } from "lucide-react";
 
 import { MistakeCostChart } from "./MistakeCostChart";
 import { MistakeFrequencyChart } from "./MistakeFrequencyChart";
 import { getMistakeByCode } from "@/lib/mistakes";
 import { Loader2 } from "lucide-react";
 
-interface MistakeData {
-    mistakeStats: Array<{
-        code: string;
-        name: string;
-        category: string;
-        severity: string;
-        emoji: string;
-        count: number;
-        totalPnL: number;
-        avgPnL: number;
-        winRate: number;
-    }>;
-    totalMistakes: number;
-    mostCostlyMistake: string | null;
-    mostFrequentMistake: string | null;
-    mistakesByCategory: Record<string, number>;
-    tradesWithMistakes: number;
-    tradesWithoutMistakes: number;
-    cleanTradeWinRate: number;
-    mistakeTradeWinRate: number;
-    costOfMistakes: number;
-}
+
+
+import { useMistakeStats } from "@/hooks/useMistakeStats";
 
 export function MistakeDashboard() {
-    const [data, setData] = useState<MistakeData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [dateRange, setDateRange] = useState({
         start: startOfMonth(new Date()),
         end: endOfMonth(new Date()),
     });
 
-    const fetchData = async () => {
-        try {
-            setIsLoading(true);
-            const params = new URLSearchParams({
-                startDate: format(dateRange.start, "yyyy-MM-dd"),
-                endDate: format(dateRange.end, "yyyy-MM-dd"),
-            });
-
-            const res = await fetch(`/api/analytics/mistakes?${params}`);
-            if (!res.ok) throw new Error("Failed to fetch");
-
-            const json = await res.json();
-            setData(json);
-        } catch (error) {
-            toast.error("Failed to load mistake data");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [dateRange]);
+    const { data, isLoading } = useMistakeStats(dateRange.start, dateRange.end);
 
     if (isLoading) {
         return (

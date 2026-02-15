@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { createStrategy, updateStrategy } from "@/actions/strategies";
 // import { Label } from "@/components/ui/label"; // Replaced with html label
 // import { Textarea } from "@/components/ui/textarea"; // Replaced with html textarea
 
@@ -49,25 +50,28 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
         try {
             const isNew = !strategy || strategy.id.startsWith("temp-");
 
-            const url = isNew
-                ? "/api/strategies"
-                : `/api/strategies/${strategy!.id}`;
-
-            const method = isNew ? "POST" : "PATCH";
-
-            const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || "Failed to save strategy");
+            let result;
+            if (isNew) {
+                result = await createStrategy({
+                    name: formData.name,
+                    description: formData.description,
+                    rules: formData.rules,
+                    color: formData.color,
+                });
+            } else {
+                result = await updateStrategy(strategy!.id, {
+                    name: formData.name,
+                    description: formData.description,
+                    rules: formData.rules,
+                    color: formData.color,
+                });
             }
 
-            toast.success(strategy ? "Strategy updated" : "Strategy created");
+            if (result.error) {
+                throw new Error(result.error);
+            }
+
+            toast.success(strategy && !strategy.id.startsWith("temp-") ? "Strategy updated" : "Strategy created");
             onSave();
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Something went wrong");
