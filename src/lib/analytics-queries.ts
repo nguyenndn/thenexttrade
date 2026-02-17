@@ -165,7 +165,8 @@ export async function getSymbolPerformance(userId: string, accountId?: string, s
             "symbol",
             COUNT(*) as "tradeCount",
             SUM("pnl") as "netProfit",
-            SUM(CASE WHEN "pnl" > 0 THEN "pnl" ELSE 0 END) as "grossProfit"
+            SUM(CASE WHEN "pnl" > 0 THEN "pnl" ELSE 0 END) as "grossProfit",
+            SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
         AND "status" = 'CLOSED'
@@ -180,7 +181,8 @@ export async function getSymbolPerformance(userId: string, accountId?: string, s
         symbol: row.symbol,
         trades: Number(row.tradeCount),
         pnl: Number(row.netProfit || 0),
-        grossProfit: Number(row.grossProfit || 0)
+        grossProfit: Number(row.grossProfit || 0),
+        winRate: Number(row.tradeCount) > 0 ? (Number(row.winCount) / Number(row.tradeCount)) * 100 : 0
     }));
 }
 
@@ -304,4 +306,37 @@ export async function getDayOfWeekPerformance(userId: string, accountId?: string
         tradeCount: Number(row.tradeCount || 0),
         winRate: Number(row.tradeCount) > 0 ? (Number(row.winCount) / Number(row.tradeCount)) * 100 : 0
     }));
+}
+
+/**
+ * Get Current Win/Loss Streak
+ * Queries the most recent closed trades and counts consecutive results
+ */
+export async function getCurrentStreak(userId: string, accountId?: string): Promise<{ type: 'win' | 'loss' | 'none'; count: number }> {
+    const result = await prisma.$queryRaw`
+        SELECT "result"
+        FROM "JournalEntry"
+        WHERE "userId" = ${userId}::uuid
+        AND "status" = 'CLOSED'
+        AND "result" IS NOT NULL
+        AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
+        ORDER BY "exitDate" DESC
+        LIMIT 50
+    ` as { result: string }[];
+
+    if (!result.length) return { type: 'none', count: 0 };
+
+    const firstResult = result[0].result; // WIN or LOSS
+    if (firstResult !== 'WIN' && firstResult !== 'LOSS') return { type: 'none', count: 0 };
+
+    let count = 0;
+    for (const trade of result) {
+        if (trade.result === firstResult) {
+            count++;
+        } else {
+            break;
+        }
+    }
+
+    return { type: firstResult === 'WIN' ? 'win' : 'loss', count };
 }

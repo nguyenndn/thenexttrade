@@ -145,16 +145,18 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
                 </p>
             </div>
 
-            {/* Performance Chart */}
+            {/* Performance Chart - Only show when strategies exist */}
             <div className="space-y-8">
-                {isLoadingPerformance ? (
-                    <div className="h-64 bg-gray-100 dark:bg-white/5 rounded-xl animate-pulse" />
-                ) : performance.length > 0 ? (
-                    <>
-                        <StrategyPerformanceChart data={performance} />
-                        <StrategyComparisonTable data={performance} />
-                    </>
-                ) : null}
+                {strategies.length > 0 && (
+                    isLoadingPerformance ? (
+                        <div className="h-64 bg-gray-100 dark:bg-white/5 rounded-xl animate-pulse" />
+                    ) : performance.length > 0 ? (
+                        <>
+                            <StrategyPerformanceChart data={performance} />
+                            <StrategyComparisonTable data={performance} />
+                        </>
+                    ) : null
+                )}
             </div>
 
             {/* Strategy Cards */}
@@ -315,21 +317,17 @@ function StrategyCard({
 
 function EmptyState({ onAdd }: { onAdd: () => void }) {
     return (
-        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
+        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 mt-8">
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Target size={32} className="text-gray-400" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                 No strategies yet
             </h3>
-            <p className="text-gray-500 px-6 max-w-sm mx-auto mb-8">
+            <p className="text-gray-500 px-6 max-w-sm mx-auto">
                 Create strategies to track which setups work best for you.
                 Tag your trades and analyze their performance.
             </p>
-            <Button onClick={onAdd} className="bg-primary hover:bg-[#00b078] text-white">
-                <Plus size={18} className="mr-2" />
-                Create First Strategy
-            </Button>
         </div>
     );
 }

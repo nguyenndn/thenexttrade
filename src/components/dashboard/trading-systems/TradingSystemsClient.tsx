@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Wallet, Download, BookOpen, BarChart2 } from "lucide-react";
-import { EALicense, EAProduct } from "@prisma/client"; // Check types
+import { EALicense, EAProduct } from "@prisma/client";
 import { AccountsList } from "@/components/dashboard/accounts/AccountsList";
 import { SystemsList } from "@/components/dashboard/trading-systems/SystemsList";
 import { InstallationWizard } from "@/components/dashboard/trading-systems/InstallationWizard";
@@ -49,7 +49,7 @@ function FilterTab({ label, icon: Icon, active, onClick }: any) {
 }
 
 interface TradingSystemsClientProps {
-    licenses: any[]; // Use correct type eALicense is extended sometimes
+    licenses: any[];
     products: any[];
     hasApprovedLicense: boolean;
 }
@@ -67,27 +67,15 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense }:
     };
 
     const navItems = [
-        {
-            id: "ACCOUNTS",
-            title: "My Accounts",
-            icon: Wallet,
-        },
-        {
-            id: "DOWNLOADS",
-            title: "Downloads",
-            icon: Download,
-        },
-        {
-            id: "GUIDE",
-            title: "Installation Guide",
-            icon: BookOpen,
-        },
+        { id: "ACCOUNTS", title: "My Accounts", icon: Wallet },
+        { id: "DOWNLOADS", title: "Downloads", icon: Download },
+        { id: "GUIDE", title: "Installation Guide", icon: BookOpen },
     ];
 
     return (
         <>
             {/* Header */}
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
+            <div className="flex flex-col gap-4 pb-6">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
@@ -96,96 +84,81 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense }:
                         </h1>
                     </div>
                 </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-                    Manage accounts & downloads.
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+                    Manage accounts &amp; downloads.
                 </p>
+
+                {/* Horizontal Pill Tabs */}
+                <div className="flex gap-2 p-1.5 bg-gray-100 dark:bg-[#0F1117] rounded-xl border border-gray-100 dark:border-white/5 w-full overflow-x-auto scrollbar-hide">
+                    {navItems.map((item) => {
+                        const isActive = activeTab === item.id;
+                        const Icon = item.icon;
+                        return (
+                            <FilterTab
+                                key={item.id}
+                                label={item.title}
+                                icon={Icon}
+                                active={isActive}
+                                onClick={() => setActiveTab(item.id as Tab)}
+                            />
+                        );
+                    })}
+                </div>
             </div>
 
-            <div className="flex flex-col xl:flex-row gap-6">
-                {/* Sidebar / Navigation Tabs */}
-                <aside className="w-full xl:w-64 flex-shrink-0 z-20">
-                    <div className="sticky top-[10px] bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 p-2 xl:p-4 shadow-sm">
-                        <nav className="flex xl:flex-col gap-2 overflow-x-auto scrollbar-hide pb-2 xl:pb-0">
-                            {navItems.map((item) => {
-                                const isActive = activeTab === item.id;
-                                const Icon = item.icon;
-
-                                return (
-                                    <div key={item.id}>
-                                        <button
-                                            onClick={() => setActiveTab(item.id as Tab)}
-                                            className={`w-full flex flex-col xl:flex-row items-center xl:gap-3 px-4 py-3 xl:px-3 xl:py-2.5 rounded-xl transition-all font-medium text-xs xl:text-sm group flex-shrink-0 border xl:border-transparent ${isActive
-                                                ? "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary xl:bg-primary/10 xl:dark:bg-primary/20"
-                                                : "bg-white dark:bg-transparent border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
-                                                }`}
-                                        >
-                                            <Icon size={20} className={`mb-2 xl:mb-0 ${isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"}`} />
-                                            <span className="text-center xl:text-left whitespace-nowrap">{item.title}</span>
-                                            {isActive && <div className="hidden xl:block w-1 h-4 bg-primary rounded-full ml-auto" />}
-                                        </button>
-                                    </div>
-                                );
-                            })}
-                        </nav>
+            {/* Content Area - Full Width */}
+            <div className="min-h-[500px]">
+                {activeTab === "ACCOUNTS" && (
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <AccountsList licenses={licenses} />
                     </div>
-                </aside>
+                )}
 
-                {/* Main Content */}
-                <div className="flex-1 w-full min-w-0">
-                    <div className="min-h-[500px]">
-                        {activeTab === "ACCOUNTS" && (
-                            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                <AccountsList licenses={licenses} />
-                            </div>
-                        )}
-
-                        {activeTab === "DOWNLOADS" && (
-                            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                <div className="mb-6">
-                                    <p className="text-transparent bg-clip-text bg-gradient-to-r from-gray-800 to-gray-500 dark:from-white dark:to-gray-500 font-bold text-lg tracking-tight">
-                                        Download expert advisors and indicators
-                                    </p>
-                                </div>
-                                <SystemsList
-                                    products={products}
-                                    isLocked={!hasApprovedLicense}
-                                    onNavigateToGuide={handleNavigateToGuide}
-                                />
-                            </div>
-                        )}
-
-                        {activeTab === "GUIDE" && (
-                            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                <div className="mb-6">
-                                    <p className="text-transparent bg-clip-text bg-gradient-to-r from-gray-800 to-gray-500 dark:from-white dark:to-gray-500 font-bold text-lg tracking-tight">
-                                        Follow the steps below to install your trading tools correctly
-                                    </p>
-                                </div>
-
-                                {/* Filter Tabs for Guide */}
-                                <div className="flex gap-2 p-1.5 bg-gray-100 dark:bg-[#0F1117] rounded-xl border border-gray-100 dark:border-white/5 w-full mb-8">
-                                    <FilterTab
-                                        label="MT5 Expert Advisor"
-                                        icon={CustomBotIcon}
-                                        active={guideFilter === "MT5_EA"}
-                                        onClick={() => setGuideFilter("MT5_EA")}
-                                    />
-                                    <FilterTab
-                                        label="MT5 Indicators"
-                                        icon={BarChart2}
-                                        active={guideFilter === "MT5_INDICATOR"}
-                                        onClick={() => setGuideFilter("MT5_INDICATOR")}
-                                    />
-                                </div>
-
-                                {/* Wizard Content */}
-                                <div className="pb-12">
-                                    <InstallationWizard type={guideFilter} />
-                                </div>
-                            </div>
-                        )}
+                {activeTab === "DOWNLOADS" && (
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="mb-6">
+                            <p className="text-transparent bg-clip-text bg-gradient-to-r from-gray-800 to-gray-500 dark:from-white dark:to-gray-500 font-bold text-lg tracking-tight">
+                                Download expert advisors and indicators
+                            </p>
+                        </div>
+                        <SystemsList
+                            products={products}
+                            isLocked={!hasApprovedLicense}
+                            onNavigateToGuide={handleNavigateToGuide}
+                        />
                     </div>
-                </div>
+                )}
+
+                {activeTab === "GUIDE" && (
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="mb-6">
+                            <p className="text-transparent bg-clip-text bg-gradient-to-r from-gray-800 to-gray-500 dark:from-white dark:to-gray-500 font-bold text-lg tracking-tight">
+                                Follow the steps below to install your trading tools correctly
+                            </p>
+                        </div>
+
+                        {/* Filter Tabs for Guide */}
+                        <div className="flex gap-2 p-1.5 bg-gray-100 dark:bg-[#0F1117] rounded-xl border border-gray-100 dark:border-white/5 w-full mb-8">
+                            <FilterTab
+                                label="MT5 Expert Advisor"
+                                icon={CustomBotIcon}
+                                active={guideFilter === "MT5_EA"}
+                                onClick={() => setGuideFilter("MT5_EA")}
+                            />
+                            <FilterTab
+                                label="MT5 Indicators"
+                                icon={BarChart2}
+                                active={guideFilter === "MT5_INDICATOR"}
+                                onClick={() => setGuideFilter("MT5_INDICATOR")}
+                            />
+                        </div>
+
+                        {/* Wizard Content */}
+                        <div className="pb-12">
+                            <InstallationWizard type={guideFilter} />
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );

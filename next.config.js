@@ -35,19 +35,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'zcedocoskwlvjturukrg.supabase.co',
-      },
-      {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com', // Common for OAuth
-      },
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com', // Common for Google OAuth
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: '**',
       },
     ],
   },
@@ -78,7 +66,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://zcedocoskwlvjturukrg.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.supabase.co https://avatars.githubusercontent.com https://lh3.googleusercontent.com https://images.unsplash.com https://*.tradingview.com https://*.imgur.com; font-src 'self'; connect-src 'self' https://zcedocoskwlvjturukrg.supabase.co;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://zcedocoskwlvjturukrg.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://zcedocoskwlvjturukrg.supabase.co https:;"
           }
         ]
       }

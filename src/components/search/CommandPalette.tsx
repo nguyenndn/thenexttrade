@@ -18,13 +18,18 @@ import { cn } from "@/lib/utils";
 // Flatten navigation items for search
 function flattenNavItems() {
     const items: { name: string; href: string; category: string; icon?: any }[] = [];
+    const seen = new Set<string>();
     for (const group of dashboardMenuItems) {
-        if (group.href && group.href !== "#") {
+        if (group.href && group.href !== "#" && !seen.has(group.href)) {
+            seen.add(group.href);
             items.push({ name: group.name, href: group.href, category: "Pages", icon: group.icon });
         }
         if (group.items) {
             for (const sub of group.items) {
-                items.push({ name: sub.name, href: sub.href, category: group.name, icon: group.icon });
+                if (!seen.has(sub.href)) {
+                    seen.add(sub.href);
+                    items.push({ name: sub.name, href: sub.href, category: group.name, icon: group.icon });
+                }
             }
         }
     }

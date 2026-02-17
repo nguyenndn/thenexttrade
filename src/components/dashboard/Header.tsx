@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search, Menu, Settings, LogOut, Flame } from 'lucide-react';
+import { Bell, Search, Menu, Settings, LogOut, Flame, Sun, Moon } from 'lucide-react';
 import { useSearchParams } from "next/navigation";
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { AuthUser } from "@/lib/auth-types";
@@ -93,12 +93,12 @@ export function Header({
                         </div>
                     )}
 
-                    {/* Theme Toggle - Compact */}
+                    {/* Theme Toggle */}
                     <button
                         onClick={toggleTheme}
-                        className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 dark:border-gray-800 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100"
+                        className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-200"
                     >
-                        {isDark ? <span className="text-base">🌙</span> : <span className="text-base">☀️</span>}
+                        {isDark ? <Moon size={18} /> : <Sun size={18} />}
                     </button>
 
                     {/* Notification Bell */}

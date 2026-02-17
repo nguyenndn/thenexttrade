@@ -10,7 +10,8 @@ import {
     getMonthlyAnalytics,
     getDailyPerformance,
     getSymbolPerformance,
-    getDayOfWeekPerformance
+    getDayOfWeekPerformance,
+    getCurrentStreak
 } from "@/lib/analytics-queries";
 
 export const dynamic = "force-dynamic";
@@ -70,17 +71,13 @@ export default async function AnalyticsPage({
         dailyPerformance,
         pairPerformance,
         dayOfWeekPerformance,
-        // We need recent trades and equity curve logic which are partly in getDailyPerformance 
-        // or need separate queries.
-        // Re-using exiting queries where possible.
-        // Note: The previous API had custom "Equity Curve" calculation logic in API route.
-        // We should replicate that or move it to a helper. 
-        // For now, let's look at what we have.
+        streak,
     ] = await Promise.all([
         getKeyStats(user.id, accountId, startDate, endDate),
         getDailyPerformance(user.id, accountId, startDate, endDate),
-        getSymbolPerformance(user.id, accountId, startDate, endDate), // Used for Pair Performance
-        getDayOfWeekPerformance(user.id, accountId, startDate, endDate)
+        getSymbolPerformance(user.id, accountId, startDate, endDate),
+        getDayOfWeekPerformance(user.id, accountId, startDate, endDate),
+        getCurrentStreak(user.id, accountId)
     ]);
 
     // 3. Transform Data to match AnalyticsData Interface
@@ -147,15 +144,12 @@ export default async function AnalyticsPage({
         trades: [] // We don't load nested trades for the calendar view in V1 to save size
     }));
 
-    // Pair Performance (Format match)
+    // Pair Performance (Format match — winRate now comes from query)
     const pairPerfFormatted = pairPerformance.map((p: any) => ({
         symbol: p.symbol,
         pnl: p.pnl,
         tradeCount: p.trades,
-        winRate: 0 // getSymbolPerformance needs to return winRate if needed. 
-        // Current query returns { symbol, trades, pnl, grossProfit }
-        // We actually need WinRate.
-        // Let's calc it or ignore for now.
+        winRate: p.winRate
     }));
 
     // 4. Construct Final Data Object
@@ -166,13 +160,13 @@ export default async function AnalyticsPage({
             profitFactor: stats.profitFactor,
             totalPnL: stats.totalPnL,
             avgRRR: stats.lossCount > 0 ? stats.avgWin / stats.avgLoss : 0,
-            currentStreak: { type: 'win', count: 0 }, // Streak requires separate query
+            currentStreak: streak.type === 'none' ? { type: 'win', count: 0 } : streak as { type: 'win' | 'loss'; count: number },
             avgWin: stats.winCount > 0 ? stats.grossProfit / stats.winCount : 0,
             avgLoss: stats.lossCount > 0 ? stats.grossLoss / stats.lossCount : 0,
         },
         equityCurve,
         dailyPnL,
-        pairPerformance: pairPerfFormatted.map(p => ({ ...p, winRate: 0 })), // Placeholder until query updated
+        pairPerformance: pairPerfFormatted,
         dayOfWeekPerformance: dayOfWeekPerformance,
         recentTrades
     };

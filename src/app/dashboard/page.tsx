@@ -8,6 +8,7 @@ import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
 import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution } from "@/lib/analytics-queries";
 import { endOfDay, parseISO } from "date-fns";
+import { getGoalsProgress } from "@/actions/goals";
 
 export const dynamic = "force-dynamic";
 
@@ -82,7 +83,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         dailyPerformance,
         symbolStats,
         topTrades,
-        lotDistribution
+        lotDistribution,
+        goalsProgress
     ] = await Promise.all([
         // User Info
         prisma.user.findUnique({
@@ -117,7 +119,9 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         // Top Trades
         getTopTrades(user.id, accountId, startDate, endDate),
         // Lot Distribution
-        getLotDistribution(user.id, accountId, startDate, endDate)
+        getLotDistribution(user.id, accountId, startDate, endDate),
+        // Goals Progress
+        getGoalsProgress()
     ]);
 
     // Destructure stats from cached result
@@ -192,6 +196,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
             worstTrades={topTrades.worst}
             symbolAnalytics={symbolAnalytics}
             lotDistribution={lotDistribution}
+            goalsProgress={goalsProgress}
         />
     );
 }

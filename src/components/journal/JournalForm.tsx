@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Loader2, AlertCircle, Plus, Brain, Check, X } from "lucide-react";
+import { ArrowLeft, Save, Loader2, AlertCircle, Plus, Brain, Check, X, RefreshCw, ExternalLink } from "lucide-react";
 import { EmotionSelector } from "@/components/psychology/EmotionSelector";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
 
 import Link from "next/link";
+import Image from "next/image";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Button, buttonVariants } from "@/components/ui/Button";
@@ -60,8 +61,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
     const [customTagInput, setCustomTagInput] = useState("");
 
-    const addCustomTag = (e: React.FormEvent) => {
-        e.preventDefault();
+    const addCustomTag = () => {
         if (!customTagInput.trim()) return;
         if (!formData.tags.includes(customTagInput.trim())) {
             setFormData(prev => ({ ...prev, tags: [...prev.tags, customTagInput.trim()] }));
@@ -85,7 +85,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
     const fetchAccounts = async () => {
         try {
-            const res = await fetch("/api/accounts");
+            const res = await fetch("/api/trading-accounts");
             const data = await res.json();
             setAccounts(data.accounts || []);
 
@@ -143,7 +143,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
             if (imageInputRef.current) {
                 const pendingUrl = imageInputRef.current.value.trim();
                 if (pendingUrl) {
-                    if (pendingUrl.match(/\.(jpeg|jpg|gif|png)$/) != null || pendingUrl.includes("images") || pendingUrl.includes("img") || pendingUrl.includes("tradingview")) {
+                    if (pendingUrl.startsWith("http")) {
                         currentImages = [...currentImages, pendingUrl];
                         // Clear input to indicate it was handled
                         imageInputRef.current.value = "";
@@ -420,29 +420,45 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                             {/* Strategy Selection */}
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Strategy</label>
-                                <div className="flex gap-2">
-                                    <select
-                                        name="strategy"
-                                        value={formData.strategy}
-                                        onChange={handleChange}
-                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none"
-                                    >
-                                        <option value="">No Strategy</option>
-                                        {strategies.map((s: any) => (
-                                            <option key={s.id} value={s.name}>
-                                                {s.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowStrategyModal(true)}
-                                        className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-500"
-                                        title="Create new strategy"
-                                    >
-                                        <Plus size={20} />
-                                    </button>
-                                </div>
+                                {strategies.length === 0 ? (
+                                    /* Empty State — no strategies yet */
+                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10">
+                                        <span className="text-sm text-gray-400 flex-1">Chưa có strategy nào</span>
+                                        <a
+                                            href="/dashboard/strategies"
+                                            target="_blank"
+                                            className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+                                        >
+                                            <ExternalLink size={14} />
+                                            Tạo Strategy
+                                        </a>
+                                    </div>
+                                ) : (
+                                    /* Has strategies — show select + refresh */
+                                    <div className="flex gap-2">
+                                        <select
+                                            name="strategy"
+                                            value={formData.strategy}
+                                            onChange={handleChange}
+                                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none"
+                                        >
+                                            <option value="">No Strategy</option>
+                                            {strategies.map((s: any) => (
+                                                <option key={s.id} value={s.name}>
+                                                    {s.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            type="button"
+                                            onClick={fetchStrategies}
+                                            className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-500 hover:text-primary"
+                                            title="Refresh strategies"
+                                        >
+                                            <RefreshCw size={18} />
+                                        </button>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Custom Tags */}
@@ -466,7 +482,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
-                                                addCustomTag(e as any);
+                                                addCustomTag();
                                             }
                                         }}
                                         placeholder="Add custom tag (e.g. NFP, Test)..."
@@ -474,7 +490,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                     />
                                     <button
                                         type="button"
-                                        onClick={(e) => addCustomTag(e as any)}
+                                        onClick={() => addCustomTag()}
                                         className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-primary"
                                     >
                                         <Plus size={20} />
@@ -672,13 +688,21 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                         {/* Existing Images */}
                         {(formData.images || []).map((img: string, idx: number) => (
                             <div key={idx} className="relative aspect-video rounded-xl overflow-hidden group border border-gray-200 dark:border-white/10">
-                                <img
+                                <Image
                                     src={img}
                                     alt={`Screenshot ${idx + 1}`}
-                                    className="w-full h-full object-cover"
-                                    referrerPolicy="no-referrer"
+                                    fill
+                                    className="object-cover"
+                                    onError={(e) => {
+                                        // Fallback logic remains similar, finding parent to replace content
+                                        const target = e.currentTarget;
+                                        const parent = target.parentElement;
+                                        if (parent) {
+                                            parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-400 text-sm p-4 text-center">Image failed to load<br/><span class="text-xs opacity-60 break-all">${img}</span></div>`;
+                                        }
+                                    }}
                                 />
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -707,12 +731,11 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         const input = e.currentTarget;
                                         const url = input.value.trim();
                                         if (url) {
-                                            // Basic validation
-                                            if (url.match(/\.(jpeg|jpg|gif|png)$/) != null || url.includes("images") || url.includes("img") || url.includes("tradingview")) {
+                                            if (url.startsWith("http")) {
                                                 setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
                                                 input.value = "";
                                             } else {
-                                                toast.error("Please enter a valid image URL");
+                                                toast.error("URL phải bắt đầu bằng http:// hoặc https://");
                                             }
                                         }
                                     }
@@ -724,11 +747,11 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                     if (imageInputRef.current) {
                                         const url = imageInputRef.current.value.trim();
                                         if (url) {
-                                            if (url.match(/\.(jpeg|jpg|gif|png)$/) != null || url.includes("images") || url.includes("img") || url.includes("tradingview")) {
+                                            if (url.startsWith("http")) {
                                                 setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
                                                 imageInputRef.current.value = "";
                                             } else {
-                                                toast.error("Please enter a valid image URL");
+                                                toast.error("URL phải bắt đầu bằng http:// hoặc https://");
                                             }
                                         }
                                     }

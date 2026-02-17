@@ -32,9 +32,8 @@ export async function getJournalEntries(
         accountId?: string;
         symbol?: string;
         type?: string;
-        status?: string; // This could be OPEN/CLOSED or WIN/LOSS?
-        // UI often mixes them. Let's support both if possible or map.
-        // If status is WIN/LOSS/BE, map to result. If OPEN/CLOSED, map to status.
+        status?: string;
+        tag?: string;
         dateFrom?: string;
         dateTo?: string;
         sortBy?: string;
@@ -45,7 +44,7 @@ export async function getJournalEntries(
     const user = await getAuthUser();
     if (!user) return { entries: [], meta: { total: 0, page, limit, totalPages: 0 } };
 
-    const { accountId, symbol, type, status, dateFrom, dateTo, sortBy, sortOrder, hasImages } = filters;
+    const { accountId, symbol, type, status, tag, dateFrom, dateTo, sortBy, sortOrder, hasImages } = filters;
     const skip = (page - 1) * limit;
 
     const where: any = { userId: user.id };
@@ -69,6 +68,10 @@ export async function getJournalEntries(
 
     if (hasImages) {
         where.images = { isEmpty: false };
+    }
+
+    if (tag) {
+        where.tags = { has: tag };
     }
 
     // Determine sorting
@@ -179,4 +182,59 @@ export async function deleteJournalEntry(id: string) {
     } catch (error) {
         return { error: "Failed to delete entry" };
     }
+}
+
+/**
+ * Get all unique tags across user's trades
+ */
+export async function getUserTags(): Promise<string[]> {
+    const user = await getAuthUser();
+    if (!user) return [];
+
+    const result = await prisma.journalEntry.findMany({
+        where: { userId: user.id },
+        select: { tags: true },
+        distinct: ['tags'],
+    });
+
+    // Flatten and deduplicate
+    const allTags = new Set<string>();
+    result.forEach(entry => {
+        entry.tags.forEach(tag => allTags.add(tag));
+    });
+
+    return Array.from(allTags).sort();
+}
+
+/**
+ * Get Daily PnL summary for Calendar Heatmap
+ * Returns array of { date, pnl, tradeCount } for all closed trades
+ */
+export async function getDailyPnlForCalendar(accountId?: string) {
+    const user = await getAuthUser();
+    if (!user) return [];
+
+    const { Prisma } = await import("@prisma/client");
+
+    const result = await prisma.$queryRaw`
+        SELECT 
+            DATE("exitDate") as "date",
+            SUM("pnl")::float as "pnl",
+            COUNT(*)::int as "tradeCount"
+        FROM "JournalEntry"
+        WHERE "userId" = ${user.id}::uuid
+        AND "status" = 'CLOSED'
+        AND "exitDate" IS NOT NULL
+        AND (${accountId || '1'} = '1' OR "accountId" = ${accountId || ''})
+        GROUP BY DATE("exitDate")
+        ORDER BY "date" ASC
+    `;
+
+    return (result as any[]).map(row => ({
+        date: row.date instanceof Date
+            ? row.date.toISOString().split('T')[0]
+            : String(row.date).split('T')[0],
+        pnl: Number(row.pnl || 0),
+        tradeCount: Number(row.tradeCount || 0)
+    }));
 }

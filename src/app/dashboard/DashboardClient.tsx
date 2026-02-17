@@ -15,6 +15,7 @@ import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";
 import { TopTradesList } from "@/components/dashboard/TopTradesList";
 import { SymbolPerformanceList } from "@/components/dashboard/SymbolPerformanceList";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
+import { GoalsTracker } from "@/components/dashboard/GoalsTracker";
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from "recharts";
 
 interface DashboardClientProps {
@@ -48,6 +49,7 @@ interface DashboardClientProps {
     worstTrades: any[];
     symbolAnalytics: any[];
     lotDistribution: { name: string; value: number }[];
+    goalsProgress: any[];
 }
 
 export default function DashboardClient({
@@ -65,7 +67,8 @@ export default function DashboardClient({
     bestTrades,
     worstTrades,
     symbolAnalytics,
-    lotDistribution
+    lotDistribution,
+    goalsProgress = []
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -329,6 +332,11 @@ export default function DashboardClient({
                     {/* Symbol Performance List */}
                     <div className="md:col-span-2 xl:col-span-1">
                         <SymbolPerformanceList data={symbolAnalytics} />
+                    </div>
+
+                    {/* Trading Goals */}
+                    <div className="md:col-span-2 xl:col-span-1">
+                        <GoalsTracker goals={goalsProgress} />
                     </div>
                 </DashboardSide>
             </DashboardGrid>

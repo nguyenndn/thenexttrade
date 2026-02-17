@@ -51,7 +51,8 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                 const res = await fetch("/api/trading-accounts");
                 if (res.ok) {
                     const data = await res.json();
-                    const accs = Array.isArray(data) ? data : [];
+                    // API returns { accounts: [...], meta: {...} }
+                    const accs = Array.isArray(data) ? data : (data.accounts || []);
                     setAccounts(accs);
                 }
             } catch (error) {
@@ -82,7 +83,7 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
 
         if (active) {
             setSelectedAccount(active);
-            
+
             // Auto-select ONLY if URL param is completely missing
             if (!currentAccountId) {
                 const params = new URLSearchParams(searchParams?.toString());
@@ -103,7 +104,7 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
         // 2. Update URL
         const params = new URLSearchParams(searchParams?.toString());
         params.set("accountId", account.id);
-        
+
         router.push(`?${params.toString()}`);
 
     }, [router, searchParams]);

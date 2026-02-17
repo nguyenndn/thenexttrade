@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 import DOMPurify from "isomorphic-dompurify";
@@ -57,61 +58,42 @@ export async function updateSettings(formData: FormData) {
         avatarUrl = publicUrl;
     }
 
-    // 3. Update User Table (Avatar)
+    // 3. Update User Table (Avatar) — Use Prisma to bypass RLS
     if (avatarUrl) {
         // Sync with Auth Metadata (Important for Header/Session)
         await supabase.auth.updateUser({
             data: { avatar_url: avatarUrl }
         });
 
-        const { error: userUpdateError } = await supabase
-            .from("User")
-            .update({ image: avatarUrl })
-            .eq("id", user.id);
-
-        if (userUpdateError) {
-            console.error("User Update Error:", userUpdateError);
+        try {
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { image: avatarUrl },
+            });
+        } catch (err) {
+            console.error("User Update Error:", err);
             return { error: "Failed to update user avatar" };
         }
     }
 
-    // 4. Update Profile Table (Bio, Username)
-    // Check if profile exists to determine if we need to generate an ID
-    const { data: existingProfile } = await supabase
-        .from("Profile")
-        .select("id")
-        .eq("userId", user.id)
-        .single();
-
-    let profileError;
-
-    if (existingProfile) {
-        // Update existing
-        const { error } = await supabase
-            .from("Profile")
-            .update({
+    // 4. Update Profile Table (Bio, Username) — Use Prisma to bypass RLS
+    try {
+        await prisma.profile.upsert({
+            where: { userId: user.id },
+            update: {
                 username: username,
                 bio: bio,
-                updatedAt: new Date().toISOString(),
-            })
-            .eq("userId", user.id);
-        profileError = error;
-    } else {
-        // Insert new (Generate ID manually since DB default might be missing)
-        const { error } = await supabase
-            .from("Profile")
-            .insert({
-                id: crypto.randomUUID(),
+                updatedAt: new Date(),
+            },
+            create: {
                 userId: user.id,
                 username: username,
                 bio: bio,
-                updatedAt: new Date().toISOString(),
-            });
-        profileError = error;
-    }
-
-    if (profileError) {
-        console.error("Profile Update Error:", profileError);
+                updatedAt: new Date(),
+            },
+        });
+    } catch (err) {
+        console.error("Profile Update Error:", err);
         return { error: "Failed to update profile details" };
     }
 

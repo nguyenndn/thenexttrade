@@ -99,22 +99,10 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                 <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-[#151925] rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
 
                     {/* Header Info */}
-                    <div className="p-5 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5">
-                        <div className="mb-4">
-                            <h4 className="font-bold text-xl text-gray-900 dark:text-white leading-tight">
-                                Hello, <span className="text-primary">{userData.name}</span>
-                            </h4>
-                        </div>
-
-                        {/* Quick Stats Row - REMOVED for cleanup
-                        <div className="bg-white dark:bg-[#0B0E14] p-3 rounded-xl border border-gray-100 dark:border-white/5 text-center shadow-sm">
-                            <div className="flex items-center justify-center gap-1.5 text-[#2F80ED] mb-1">
-                                <Trophy size={14} />
-                                <span className="text-[10px] font-extrabold uppercase tracking-wider">Points</span>
-                            </div>
-                            <p className="font-bold text-gray-900 dark:text-white text-lg">{stats.points} XP</p>
-                        </div>
-                        */}
+                    <div className="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5">
+                        <h4 className="font-bold text-lg text-gray-900 dark:text-white leading-tight">
+                            Hello, <span className="text-primary">{userData.name}</span>
+                        </h4>
                     </div>
 
                     {/* Menu Items */}
@@ -148,7 +136,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                     <div className="p-2 border-t border-gray-100 dark:border-white/5">
                         <button
                             onClick={() => signout()}
-                            className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                            className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                         >
                             <LogOut size={18} />
                             Log Out

@@ -193,9 +193,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
         )}>
             {/* Navigation Items */}
             <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
-                <div className="px-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                    Main
-                </div>
+
                 {items.map((item: any) => (
                     <SidebarItemComponent
                         key={item.name}
