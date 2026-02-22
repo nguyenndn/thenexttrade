@@ -148,15 +148,9 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                         No Trading Accounts
                     </h3>
-                    <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+                    <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
                         Connect your MetaTrader account to automatically sync your trading history and analyze your performance.
                     </p>
-                    <button
-                        onClick={() => setShowAddModal(true)}
-                        className="px-6 py-2.5 bg-primary text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors"
-                    >
-                        Connect Account
-                    </button>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

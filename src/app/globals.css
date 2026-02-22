@@ -8,11 +8,17 @@
   --dashboard-bg: #f5f7f8ba;
   /* Light mode: gray-50 */
   /* --dashboard-bg: #f9fafb; */
+  --tooltip-bg: rgba(255, 255, 255, 0.95);
+  --tooltip-text: #111827;
+  --tooltip-border: rgba(0, 0, 0, 0.05);
 }
 
 .dark {
   --dashboard-bg: #000000;
   /* Dark mode: black */
+  --tooltip-bg: rgba(30, 30, 30, 0.95);
+  --tooltip-text: #f3f4f6;
+  --tooltip-border: rgba(255, 255, 255, 0.1);
 }
 
 body {

@@ -17,7 +17,7 @@ const COLORS = ['hsl(var(--primary))', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899
 export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, outerRadius = 80 }: ProfitDistributionChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className={`w-full flex items-center justify-center text-gray-400`} style={{ height }}>
+            <div className={`w-full flex items-center justify-center font-medium text-sm text-gray-400 dark:text-gray-500`} style={{ height }}>
                 No data available
             </div>
         );
@@ -29,12 +29,12 @@ export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, 
         .map(d => ({ ...d, absValue: Math.abs(d.value) })); // Use absValue for slice size
 
     return (
-        <div className="w-full" style={{ height }}>
+        <div className="w-full [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none" style={{ height }}>
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart key={JSON.stringify(validData)}>
                     <Pie
                         data={validData}
-                        cx="50%"
+                        cx="35%"
                         cy="50%"
                         innerRadius={innerRadius}
                         outerRadius={outerRadius}
@@ -48,23 +48,30 @@ export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, 
                         ))}
                     </Pie>
                     <Tooltip
-                        contentStyle={{
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                            borderRadius: '12px',
-                            border: 'none',
-                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                        }}
-                        itemStyle={{ color: '#111827', fontWeight: 600 }}
-                        formatter={(value: any, name: any, props: any) => {
-                             // Find original value from payload
-                             const originalValue = props.payload.value;
-                             return [`$${Number(originalValue).toFixed(2)}`, "Profit/Loss"];
+                        content={({ active, payload }: any) => {
+                            if (active && payload && payload.length) {
+                                const data = payload[0].payload;
+                                return (
+                                    <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-100 dark:border-white/10 rounded-xl shadow-xl flex items-center gap-3">
+                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: payload[0].payload.fill }}></div>
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-500">{data.name}</p>
+                                            <p className="text-base font-bold text-gray-900 dark:text-white">
+                                                ${Number(data.value).toFixed(2)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            return null;
                         }}
                     />
                     <Legend
-                        verticalAlign="bottom"
-                        height={36}
+                        layout="vertical"
+                        verticalAlign="middle"
+                        align="right"
                         iconType="circle"
+                        wrapperStyle={{ paddingRight: "10px" }}
                         formatter={(value) => <span className="text-gray-500 dark:text-gray-400 text-xs font-medium ml-1">{value}</span>}
                     />
                 </PieChart>

@@ -105,7 +105,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
 
                 {!collapsed && (
                     <>
-                        <span className="flex-1 text-sm relative z-10 pointer-events-none">{item.name}</span>
+                        <span className="flex-1 text-sm relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis">{item.name}</span>
                         {hasSubItems && (
                             <div
                                 role="button"
@@ -154,7 +154,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                                     "w-1.5 h-1.5 rounded-full bg-primary shrink-0 transition-opacity duration-200",
                                     isSubActive ? "opacity-100" : "opacity-0"
                                 )} />
-                                <span>{subItem.name}</span>
+                                <span className="whitespace-nowrap overflow-hidden text-ellipsis">{subItem.name}</span>
                             </Link>
                         );
                     })}
@@ -187,7 +187,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
 
     return (
         <aside className={cn(
-            "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-gray-800 h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-100 ease-in-out z-30",
+            "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-gray-800 h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30",
             isCollapsed ? "w-20" : "w-[280px]",
             className
         )}>

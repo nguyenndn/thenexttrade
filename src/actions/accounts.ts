@@ -25,7 +25,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
     const [accounts, total] = await Promise.all([
         prisma.tradingAccount.findMany({
             where: { userId: user.id },
-            orderBy: { createdAt: "desc" },
+            orderBy: { createdAt: "asc" },
             select: {
                 id: true,
                 name: true,
@@ -85,7 +85,7 @@ export async function createTradingAccount(data: z.infer<typeof accountSchema>) 
     const validation = accountSchema.safeParse(data);
     if (!validation.success) return { error: "Invalid data" };
 
-    const { name, broker, balance, currency, platform, isDefault } = validation.data;
+    const { name, broker, balance, currency, platform, isDefault, color } = validation.data;
 
     try {
         // Handle Default Account Logic
@@ -105,11 +105,10 @@ export async function createTradingAccount(data: z.infer<typeof accountSchema>) 
                 broker,
                 balance,
                 currency,
-                platform: platform || "MetaTrader 4",
+                platform: platform || "MT4",
                 isDefault: isDefault || false,
                 apiKey,
-                // Default color
-                color: "hsl(var(--primary))",
+                color: color || "hsl(var(--primary))",
             },
         });
 

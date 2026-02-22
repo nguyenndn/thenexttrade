@@ -16,7 +16,7 @@ interface DailyWinRateChartProps {
 export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps) {
   if (!data || data.length === 0) {
     return (
-      <div className={`w-full flex items-center justify-center text-gray-400`} style={{ height }}>
+      <div className={`w-full flex items-center justify-center font-medium text-sm text-gray-400 dark:text-gray-500`} style={{ height }}>
         No data available
       </div>
     );
@@ -42,7 +42,7 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
   };
 
   return (
-    <div className="w-full" style={{ height }}>
+    <div className="w-full [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none" style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" opacity={0.3} />

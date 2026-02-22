@@ -17,10 +17,13 @@ import { PaginationControl } from "@/components/ui/PaginationControl";
 import { TradeTypeBadge } from "@/components/ui/TradeTypeBadge";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { PnLDisplay } from "@/components/ui/PnLDisplay";
-import dynamic from "next/dynamic";
 import { useDebouncedCallback } from "use-debounce";
+import dynamic from "next/dynamic";
 import { CalendarHeatmap } from "@/components/journal/CalendarHeatmap";
 import { getDailyPnlForCalendar } from "@/actions/journal";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { FolderOpen } from "lucide-react";
 
 // Dynamic Imports for Modals
 const JournalForm = dynamic(() => import("@/components/journal/JournalForm"), {
@@ -275,53 +278,46 @@ export default function JournalList({ initialEntries, meta, strategies: initialS
     return (
         <>
             {/* Header */}
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Trading Journal
-                        </h1>
-                    </div>
-                    {/* Filter (Account + Date) - Matched to Dashboard Layout */}
-                    <div className="flex items-center gap-2">
-                        {/* View Toggle */}
-                        <div className="hidden sm:flex items-center bg-gray-100 dark:bg-white/5 rounded-lg p-0.5">
-                            <button
-                                onClick={() => setViewMode("list")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === "list"
-                                    ? "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white shadow-sm"
-                                    : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                                    }`}
-                            >
-                                <List size={14} />
-                                List
-                            </button>
-                            <button
-                                onClick={() => setViewMode("calendar")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === "calendar"
-                                    ? "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white shadow-sm"
-                                    : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                                    }`}
-                            >
-                                <CalendarDays size={14} />
-                                Calendar
-                            </button>
-                        </div>
-                        <DashboardFilter currentAccountId={accountId || undefined} />
+            {/* Header */}
+            <PageHeader 
+                title="Trading Journal" 
+                description="Track your trades and analyze your performance."
+            >
+                {/* Filter (Account + Date) - Matched to Dashboard Layout */}
+                <div className="flex items-center gap-2">
+                    {/* View Toggle */}
+                    <div className="hidden sm:flex items-center bg-gray-100 dark:bg-white/5 rounded-lg p-0.5">
                         <button
-                            onClick={handleCreate}
-                            className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-4 py-2 h-10 text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95 whitespace-nowrap"
+                            onClick={() => setViewMode("list")}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === "list"
+                                ? "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white shadow-sm"
+                                : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                }`}
                         >
-                            <Plus size={18} strokeWidth={2.5} />
-                            Log Trade
+                            <List size={14} />
+                            List
+                        </button>
+                        <button
+                            onClick={() => setViewMode("calendar")}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === "calendar"
+                                ? "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white shadow-sm"
+                                : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                }`}
+                        >
+                            <CalendarDays size={14} />
+                            Calendar
                         </button>
                     </div>
+                    <DashboardFilter currentAccountId={accountId || undefined} />
+                    <button
+                        onClick={handleCreate}
+                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-4 py-2 h-10 text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95 whitespace-nowrap"
+                    >
+                        <Plus size={18} strokeWidth={2.5} />
+                        Log Trade
+                    </button>
                 </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-                    Track your trades and analyze your performance.
-                </p>
-            </div>
+            </PageHeader>
 
             {stats && <JournalStats stats={stats} />}
 
@@ -460,7 +456,13 @@ export default function JournalList({ initialEntries, meta, strategies: initialS
                                         </tr>
                                     ) : entries.length === 0 ? (
                                         <tr>
-                                            <td colSpan={14} className="px-6 py-8 text-center text-gray-500">No trades recorded yet.</td>
+                                            <td colSpan={14} className="p-0">
+                                                <EmptyState 
+                                                    icon={FolderOpen} 
+                                                    title="No Trades Found" 
+                                                    description="You haven't recorded any trades matching the current filters." 
+                                                />
+                                            </td>
                                         </tr>
                                     ) : (
                                         entries.map((entry) => (

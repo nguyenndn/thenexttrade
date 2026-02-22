@@ -22,19 +22,18 @@ We have organized the documentation into the following sections:
 
 ### 🏗️ Architecture
 - [System Overview](docs/architecture/overview.md) - Tech stack & High-level architecture.
-- [Database Schema](docs/architecture/database-schema.md) - ER Diagram & Data Models.
-- [Project Structure](docs/planning/PROJECT_STRUCTURE.md) - File system organization.
+- [Database Schema](docs/architecture/database.md) - ER Diagram & Data Models.
+- [Project Documentation Index](DOCUMENTATION_INDEX.md) - Complete directory guides.
 
 ### 🧩 Key Features
 - [Authentication](docs/features/authentication.md) - Auth flows & RBAC.
 - [Analytics Dashboard](docs/features/analytics.md) - Performance metrics & calculations.
 - [Trading Journal](docs/features/trading-journal.md) - Logging trades & psychology.
+- [Academy & Knowledge](#) - Educational content and lesson progress mapping.
+- [Trader Tools](docs/features/trader-tools.md) - Risk calculator, market hours, etc.
 
 ### 🔌 API Reference
 - [API Endpoints](docs/api/endpoints.md) - Backend API Routes.
-
-### 📜 Archives
-- [Legacy Specs](docs/archive/) - Old specification files (Reference only).
 
 ---
 

@@ -10,6 +10,7 @@ import { dashboardMenuItems } from "@/config/navigation";
 import { signout } from "@/app/auth/actions";
 import { cn } from "@/lib/utils";
 import { AuthUser } from "@/lib/auth-types";
+import { FloatingQuickActions } from "@/components/dashboard/FloatingQuickActions";
 
 interface DashboardLayoutClientProps {
     children: React.ReactNode;
@@ -93,6 +94,8 @@ export function DashboardLayoutClient({
                     </div>
                 </div>
             )}
+
+            <FloatingQuickActions />
         </div>
     );
 }

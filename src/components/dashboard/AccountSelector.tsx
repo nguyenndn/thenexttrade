@@ -76,7 +76,7 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
             active = accounts.find((a) => a.id === currentAccountId);
         }
 
-        // Fallback to Newest Account (First in list because API sorts by createdAt desc)
+        // Fallback to Oldest Account (First in list because API sorts by createdAt asc)
         if (!active && accounts.length > 0) {
             active = accounts[0];
         }
@@ -84,10 +84,12 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
         if (active) {
             setSelectedAccount(active);
 
-            // Auto-select ONLY if URL param is completely missing
-            if (!currentAccountId) {
+            // Navigate if URL param is missing OR if it didn't match any account (stale/deleted)
+            if (!currentAccountId || active.id !== currentAccountId) {
                 const params = new URLSearchParams(searchParams?.toString());
                 params.set("accountId", active.id);
+                // Update cookie to correct value
+                document.cookie = `last_account_id=${active.id}; path=/; max-age=31536000; SameSite=Lax`;
                 // Use replace to avoid history stack pollution for default redirect
                 router.replace(`?${params.toString()}`);
             }

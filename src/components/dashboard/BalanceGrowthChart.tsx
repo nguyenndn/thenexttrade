@@ -21,8 +21,8 @@ interface BalanceGrowthChartProps {
 export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="h-[300px] w-full flex items-center justify-center text-gray-400">
-                No data available for this period
+            <div className="h-[300px] md:h-full min-h-[300px] w-full flex items-center justify-center font-medium text-sm text-gray-400 dark:text-gray-500">
+                No data available
             </div>
         );
     }
@@ -70,7 +70,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
     });
 
     return (
-        <div className="h-[300px] w-full">
+        <div className="h-[250px] sm:h-[calc(100%-48px)] min-h-[220px] w-full pb-6 [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
             <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
                     data={chartData}
@@ -103,16 +103,21 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                         domain={['auto', 'auto']}
                     />
                     <Tooltip
-                        contentStyle={{
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                            borderColor: '#E5E7EB',
-                            borderRadius: '12px',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                        content={({ active, payload, label }: any) => {
+                            if (active && payload && payload.length) {
+                                return (
+                                    <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-100 dark:border-white/10 rounded-xl shadow-xl">
+                                        <p className="text-sm font-medium text-gray-500 mb-1">
+                                            {format(new Date(label), "MMM dd, HH:mm")}
+                                        </p>
+                                        <p className="text-base font-bold text-gray-900 dark:text-white">
+                                            Balance: <span className="text-primary">${Number(payload[0].value).toFixed(2)}</span>
+                                        </p>
+                                    </div>
+                                );
+                            }
+                            return null;
                         }}
-                        itemStyle={{ color: 'hsl(var(--primary))', fontWeight: 'bold' }}
-                        labelStyle={{ color: '#6B7280', marginBottom: '4px' }}
-                        labelFormatter={(value) => format(new Date(value), "MMM dd, HH:mm")}
-                        formatter={(value: any) => [`$${Number(value).toFixed(2)}`, "Balance"]}
                     />
                     <Area
                         type="monotone"

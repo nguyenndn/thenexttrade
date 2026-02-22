@@ -12,7 +12,7 @@ export default function DashboardCharts({ data }: DashboardChartsProps) {
     const isDark = theme === "dark";
 
     return (
-        <div className="h-full w-full">
+        <div className="h-full w-full [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
             <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <AreaChart data={data}>
                     <defs>

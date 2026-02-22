@@ -66,7 +66,7 @@ export default function AccountsClient() {
         if (!confirm("Are you sure you want to delete this account? Associated trades will be unlinked.")) return;
 
         try {
-            const res = await fetch(`/api/accounts/${id}`, {
+            const res = await fetch(`/api/trading-accounts/${id}`, {
                 method: "DELETE",
             });
 
@@ -122,15 +122,9 @@ export default function AccountsClient() {
                             <Wallet className="text-gray-400" size={32} />
                         </div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No Accounts Found</h3>
-                        <p className="text-gray-500 max-w-sm mx-auto mb-6">
+                        <p className="text-gray-500 max-w-sm mx-auto">
                             Add a trading account to start tracking your portfolio performance.
                         </p>
-                        <button
-                            onClick={openNewAccountModal}
-                            className="text-primary font-bold hover:underline"
-                        >
-                            Add your first account
-                        </button>
                     </div>
                 ) : (
                     accounts.map((account) => (

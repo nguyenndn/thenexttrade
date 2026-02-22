@@ -73,29 +73,29 @@ export function AccountCard({
                         </div>
 
                         <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-3 mb-1.5 align-middle">
-                                <h3 className="font-bold text-gray-900 dark:text-white text-xl truncate" title={account.name}>
+                            <div className="flex flex-wrap items-center gap-2 mb-1.5 align-middle">
+                                <h3 className="font-bold text-gray-900 dark:text-white text-xl truncate max-w-[160px]" title={account.name}>
                                     {account.name}
                                 </h3>
                                 {/* Type Badge */}
-                                <span className={`text-[11px] font-bold px-2.5 py-1 rounded md:mt-0.5 uppercase tracking-wide border whitespace-nowrap ${isReal
+                                <span className={`text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide border whitespace-nowrap md:mt-0.5 ${isReal
                                     ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
                                     : "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20"
                                     }`}>
                                     {accountType}
                                 </span>
-                            </div>
-
-                            <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                                <span className="font-medium bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded text-gray-700 dark:text-gray-300">
+                                {/* Account Number */}
+                                <span className="text-xs font-semibold bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10 md:mt-0.5 whitespace-nowrap shadow-sm">
                                     #{account.accountNumber}
                                 </span>
-                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mt-2">
                                 <span className="font-bold text-gray-700 dark:text-gray-300 uppercase">
                                     {account.platform || "MT4"}
                                 </span>
-                                <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                                <span className="truncate max-w-[140px]" title={account.server}>
+                                <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 shrink-0"></span>
+                                <span className="break-words font-medium">
                                     {account.server || "Server Unknown"}
                                 </span>
                             </div>

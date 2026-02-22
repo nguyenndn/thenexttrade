@@ -17,7 +17,7 @@ export function JournalEntryModal({ open, onOpenChange, entry }: JournalEntryMod
                 <div className="p-6">
                     <JournalForm
                         initialData={entry}
-                        isEditMode={true}
+                        isEditMode={!!entry}
                         onCancel={() => onOpenChange(false)}
                         onSuccess={() => onOpenChange(false)}
                     />

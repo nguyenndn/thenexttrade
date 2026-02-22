@@ -55,11 +55,11 @@ export async function PATCH(
         }
 
         const body = await request.json();
-        const { name, broker, autoSync, color } = body;
+        const { name, broker, accountNumber, autoSync, color } = body;
 
         const account = await prisma.tradingAccount.updateMany({
             where: { id: params.id, userId: user.id },
-            data: { name, broker, autoSync, color },
+            data: { name, broker, accountNumber, autoSync, color },
         });
 
         if (account.count === 0) {

@@ -90,7 +90,7 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
             <div className="px-5 py-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                     <Target size={18} className="text-primary" />
-                    <h3 className="font-bold text-gray-900 dark:text-white">Trading Goals</h3>
+                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">Trading Goals</h3>
                 </div>
                 <button
                     onClick={() => setShowForm(!showForm)}

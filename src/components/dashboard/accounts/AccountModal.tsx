@@ -10,6 +10,7 @@ interface TradingAccount {
     id: string;
     name: string;
     broker: string | null;
+    accountNumber: string | null;
     balance: number;
     currency: string;
     platform: string | null;
@@ -22,15 +23,20 @@ interface AccountModalProps {
     onSave: () => void;
 }
 
-const PLATFORMS = ["MetaTrader 4", "MetaTrader 5", "cTrader", "TradingView", "Other"];
+const PLATFORMS = [
+    { value: "MT4", label: "MetaTrader 4" },
+    { value: "MT5", label: "MetaTrader 5" },
+    { value: "CTRADER", label: "cTrader" },
+];
 
 export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
     const [formData, setFormData] = useState({
         name: "",
         broker: "",
+        accountNumber: "",
         balance: 0,
         currency: "USD",
-        platform: "MetaTrader 4",
+        platform: "MT4",
         isDefault: false,
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -40,9 +46,10 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
             setFormData({
                 name: account.name,
                 broker: account.broker || "",
+                accountNumber: account.accountNumber || "",
                 balance: account.balance,
                 currency: account.currency,
-                platform: account.platform || "MetaTrader 4",
+                platform: account.platform || "MT4",
                 isDefault: account.isDefault,
             });
         }
@@ -54,8 +61,8 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
 
         try {
             const url = account
-                ? `/api/accounts/${account.id}`
-                : "/api/accounts";
+                ? `/api/trading-accounts/${account.id}`
+                : "/api/trading-accounts";
 
             const method = account ? "PATCH" : "POST";
 
@@ -129,7 +136,7 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
                                     onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
                                 >
                                     {PLATFORMS.map(p => (
-                                        <option key={p} value={p}>{p}</option>
+                                        <option key={p.value} value={p.value}>{p.label}</option>
                                     ))}
                                 </select>
                                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
@@ -137,6 +144,16 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <PremiumInput
+                            id="accountNumber"
+                            label="Account Number"
+                            placeholder="e.g. 8062451"
+                            value={formData.accountNumber}
+                            onChange={(e: any) => setFormData({ ...formData, accountNumber: e.target.value })}
+                        />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">

@@ -40,9 +40,20 @@ export default async function AnalyticsPage({
     if (!accountId) {
         const cookieStore = await cookies();
         const lastAccountId = cookieStore.get("last_account_id")?.value;
+
+        // Validate cookie account ID actually exists for this user
         if (lastAccountId) {
-            accountId = lastAccountId;
-        } else {
+            const cookieAccountExists = await prisma.tradingAccount.findFirst({
+                where: { id: lastAccountId, userId: user.id },
+                select: { id: true }
+            });
+            if (cookieAccountExists) {
+                accountId = lastAccountId;
+            }
+        }
+
+        // Fallback: Get the most recent account from DB
+        if (!accountId) {
             const firstAccount = await prisma.tradingAccount.findFirst({
                 where: { userId: user.id },
                 orderBy: { createdAt: 'desc' },
@@ -52,9 +63,6 @@ export default async function AnalyticsPage({
                 accountId = firstAccount.id;
             }
         }
-        // Optional: Redirect to include accountId in URL for consistency, 
-        // but component handles empty/all check too. 
-        // Let's stick to simple props passing.
     }
 
     // Date Range Logic

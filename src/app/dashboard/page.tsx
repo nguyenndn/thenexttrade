@@ -3,12 +3,12 @@ import DashboardSkeleton from "@/components/dashboard/loading/DashboardSkeleton"
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import { BADGES } from "@/lib/gamification";
+
 import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
 import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution } from "@/lib/analytics-queries";
 import { endOfDay, parseISO } from "date-fns";
-import { getGoalsProgress } from "@/actions/goals";
+
 
 export const dynamic = "force-dynamic";
 
@@ -39,8 +39,20 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
 
     // Server-Side Redirect to enforce accountId in URL (Prevent Double Load)
     if (!searchParams?.accountId) {
-        let targetId = lastAccountId;
+        let targetId: string | undefined;
 
+        // Validate cookie account ID actually exists for this user
+        if (lastAccountId) {
+            const cookieAccountExists = await prisma.tradingAccount.findFirst({
+                where: { id: lastAccountId, userId: user.id },
+                select: { id: true }
+            });
+            if (cookieAccountExists) {
+                targetId = lastAccountId;
+            }
+        }
+
+        // Fallback: Get the most recent account from DB
         if (!targetId) {
             const defaultAccount = await prisma.tradingAccount.findFirst({
                 where: { userId: user.id },
@@ -79,17 +91,15 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         accounts,
         recentTrades,
         dashboardStats,     // Cached wrapper result
-        // monthly,   // Included in dashboardStats
         dailyPerformance,
         symbolStats,
         topTrades,
         lotDistribution,
-        goalsProgress
     ] = await Promise.all([
-        // User Info
+        // User Info (name + streak only)
         prisma.user.findUnique({
             where: { id: user.id },
-            select: { xp: true, level: true, badges: true, streak: true, name: true }
+            select: { streak: true, name: true }
         }),
         // Accounts (For Live Balance)
         prisma.tradingAccount.findMany({
@@ -111,7 +121,6 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         }),
         // Stats & Monthly (Cached)
         getCachedDashboardStats(user.id, accountId, startDate?.toISOString(), endDate?.toISOString()),
-
         // Daily Chart Data (Aggregated via SQL)
         getDailyPerformance(user.id, accountId, startDate, endDate),
         // Symbol Performance (Aggregated via SQL)
@@ -120,8 +129,6 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         getTopTrades(user.id, accountId, startDate, endDate),
         // Lot Distribution
         getLotDistribution(user.id, accountId, startDate, endDate),
-        // Goals Progress
-        getGoalsProgress()
     ]);
 
     // Destructure stats from cached result
@@ -173,16 +180,13 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         profitFactor: stats.profitFactor,
         avgWin: stats.winCount > 0 ? stats.grossProfit / stats.winCount : 0,
         avgLoss: stats.lossCount > 0 ? stats.grossLoss / stats.lossCount : 0,
+        winCount: stats.winCount,
+        lossCount: stats.lossCount,
+        breakEvenCount: Math.max(0, stats.totalTrades - stats.winCount - stats.lossCount),
     };
-
-    const allBadges = Object.values(BADGES).map(b => ({
-        id: b.code, code: b.code, name: b.name, description: b.description, icon: b.icon
-    }));
 
     return (
         <DashboardClient
-            userData={userData || undefined}
-            allBadges={allBadges}
             userName={userData?.name || "Trader"}
             dashboardData={dashboardData}
             chartData={chartData}
@@ -196,7 +200,6 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
             worstTrades={topTrades.worst}
             symbolAnalytics={symbolAnalytics}
             lotDistribution={lotDistribution}
-            goalsProgress={goalsProgress}
         />
     );
 }

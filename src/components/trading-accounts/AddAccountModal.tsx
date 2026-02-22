@@ -48,26 +48,18 @@ export function AddAccountModal({
                 platform,
                 name,
                 color,
-                balance: 0, // Default or added to form? Form doesn't show balance input in 'create' step?
-                // Wait, AddAccountModal UI shows "Account Name" and "Color" in step 2.
-                // It does NOT show "Balance" or "Broker".
-                // The schema requires balance.
-                // I should check the schema in actions/accounts.ts.
-                // Schema: balance: z.number().min(0)
-                // The original fetch body: { platform, name, color }
-                // The original API route probably defaulted balance to 0 if missing?
-                // I should update action schema to make balance optional or default 0.
-                // Or pass 0 here.
-                currency: "USD", // Default? Schema requires currency.
-                // Original fetch body didn't send currency.
-                // I need to check the original API route again.
+                balance: 0,
+                currency: "USD",
             });
 
             if (result.error) throw new Error(result.error);
 
-            // Wait, createdAccount needs apiKey. createTradingAccount action returns { success: true } but NOT the account object?
-            // The original API returned { account: { apiKey: ... } }.
-            // I need to update createTradingAccount to return the created account (or at least apiKey).
+            if (result.account) {
+                setCreatedAccount(result.account);
+                setStep("setup-instructions");
+                toast.success("Account created successfully!");
+                onSuccess(result.account);
+            }
         } catch (error: any) {
             toast.error(error.message || "Failed to create account");
         } finally {

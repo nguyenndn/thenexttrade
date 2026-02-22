@@ -2,6 +2,7 @@
 
 import { PlaybookCard } from "./PlaybookCard";
 import { ImageOff } from "lucide-react";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 interface PlaybookGridProps {
     trades: any[];
@@ -22,17 +23,12 @@ export function PlaybookGrid({ trades, isLoading, onTradeClick }: PlaybookGridPr
 
     if (trades.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 bg-white dark:bg-[#1E2028] rounded-xl border border-dashed border-gray-200 dark:border-white/10">
-                <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-4 text-gray-400">
-                    <ImageOff size={32} />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                    No Screenshots Found
-                </h3>
-                <p className="text-gray-500 max-w-sm">
-                    Trades with screenshots will appear here automatically. Add images to your journal entries to build your playbook.
-                </p>
-            </div>
+            <EmptyState 
+                icon={ImageOff}
+                title="No Screenshots Found"
+                description="Trades with screenshots will appear here automatically. Add images to your journal entries to build your playbook."
+                className="bg-white dark:bg-[#1E2028] min-h-[400px] border border-dashed border-gray-200 dark:border-white/10 rounded-xl"
+            />
         );
     }
 

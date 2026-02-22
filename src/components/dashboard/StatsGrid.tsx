@@ -9,9 +9,10 @@ interface StatsGridProps {
         avgWin: number;
         avgLoss: number;
     };
+    vertical?: boolean;
 }
 
-export function StatsGrid({ data }: StatsGridProps) {
+export function StatsGrid({ data, vertical = false }: StatsGridProps) {
     const stats = [
         {
             label: "Profit Factor",
@@ -40,7 +41,7 @@ export function StatsGrid({ data }: StatsGridProps) {
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className={vertical ? "flex flex-col gap-4" : "grid grid-cols-1 md:grid-cols-3 gap-4"}>
             {stats.map((stat, i) => {
                 const Icon = stat.icon;
                 const borderColor = i === 0 ? "border-t-blue-500" : i === 1 ? "border-t-green-500" : "border-t-red-500";
@@ -50,7 +51,7 @@ export function StatsGrid({ data }: StatsGridProps) {
                             <div className={`p-3 rounded-xl ${stat.bg}`}>
                                 <Icon size={20} className={stat.color} />
                             </div>
-                            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider">{stat.label}</h3>
+                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{stat.label}</h3>
 
                         </div>
                         <p className={`text-lg font-black ${stat.color}`}>{stat.value}</p>

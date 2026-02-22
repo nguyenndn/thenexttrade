@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { GraduationCap, Clock, CheckCircle, PlayCircle, Award, Trophy, ArrowRight, Zap } from "lucide-react";
+import { GraduationCap, Clock, CheckCircle, PlayCircle, Award, Trophy, ArrowRight, Zap, Target } from "lucide-react";
 import Link from "next/link";
 import AcademyMap from "@/components/academy/AcademyMap"; // Import Map
+import { PageHeader } from "@/components/ui/PageHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 import { getAuthUser } from "@/lib/auth-cache";
 import { redirect } from "next/navigation";
@@ -86,31 +88,19 @@ export default async function UserAcademyDashboard() {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Academy Cockpit
-                        </h1>
+            <PageHeader 
+                title="Academy Cockpit" 
+                description="Your professional trading journey tracker."
+            >
+                <div className="flex items-center gap-2 text-sm font-medium mt-2 sm:mt-0 p-2 sm:p-0">
+                    <div className="flex items-center gap-1.5 text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+                        <GraduationCap size={14} />
+                        <span>{Math.round(overallProgress)}% Complete</span>
                     </div>
+                    <span className="text-gray-300 dark:text-gray-700">|</span>
+                    <span className="text-gray-500 dark:text-gray-400">{completedLessons}/{totalLessons} Lessons</span>
                 </div>
-                <div className="pl-4.5">
-                    <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">
-                        Your professional trading journey tracker.
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 text-sm font-medium">
-                        <div className="flex items-center gap-1.5 text-primary bg-primary/10 px-2 py-0.5 rounded-md">
-                            <GraduationCap size={14} />
-                            <span>{Math.round(overallProgress)}% Complete</span>
-                        </div>
-                        <span className="text-gray-300 dark:text-gray-700">|</span>
-                        <span className="text-gray-500 dark:text-gray-400">{completedLessons}/{totalLessons} Lessons</span>
-                    </div>
-                </div>
-            </div>
+            </PageHeader>
 
             <div className="grid lg:grid-cols-3 gap-8">
                 {/* Main Map Column */}
@@ -187,9 +177,11 @@ export default async function UserAcademyDashboard() {
                         </h3>
 
                         {quizAttempts.length === 0 ? (
-                            <div className="text-center py-8 text-gray-500 text-sm bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
-                                No quizzes taken yet.
-                            </div>
+                            <EmptyState 
+                                icon={Target} 
+                                description="No quizzes taken yet. Complete lessons to unlock quizzes." 
+                                className="border border-dashed border-gray-200 dark:border-white/10 rounded-xl"
+                            />
                         ) : (
                             <div className="space-y-4">
                                 {quizAttempts.map(attempt => (

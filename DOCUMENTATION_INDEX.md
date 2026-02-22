@@ -33,10 +33,14 @@ Welcome to GSN-CRM documentation! All documentation has been reorganized for cla
 │
 ├── planning/                      # Project planning
 │   ├── PROJECT_STRUCTURE.md       # Code organization
-│   ├── PAGE_STRUCTURE.md          # Page/route structure
 │   ├── DEVELOPMENT_PROCESS.md     # Dev workflow
 │   ├── PLAN.md                    # Project plan
 │   └── SUPABASE_SETUP.md          # Database setup
+│
+├── architecture/                  # System Architecture
+│   ├── overview.md                # System overview
+│   ├── database.md                # Database ER models
+│   └── routes.md                  # App routing and page structure
 │
 ├── BA/                            # Business analysis
 │   ├── academy.md
@@ -111,7 +115,7 @@ npm run perf:test      # Run performance tests
 
 ### For Designers
 - [design-system/USER_DASHBOARD_SPECS.md](docs/design-system/USER_DASHBOARD_SPECS.md)
-- [PAGE_STRUCTURE.md](docs/planning/PAGE_STRUCTURE.md)
+- [routes.md](docs/architecture/routes.md)
 
 ## 📝 File Naming Convention
 

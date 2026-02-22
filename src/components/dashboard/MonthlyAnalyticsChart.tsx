@@ -72,7 +72,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
 
     if (!data || data.length === 0) {
         return (
-            <div className="h-[300px] w-full flex items-center justify-center text-gray-400">
+            <div className="h-[300px] w-full flex items-center justify-center font-medium text-sm text-gray-400 dark:text-gray-500">
                 No data available
             </div>
         );
@@ -97,7 +97,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
                 ))}
             </div>
 
-            <div className="flex-1 min-h-[250px]">
+            <div className="flex-1 min-h-[250px] [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={chartData}
