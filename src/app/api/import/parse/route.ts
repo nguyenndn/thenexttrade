@@ -2,12 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { parseTradeFile } from "@/lib/importers";
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
-
 export async function POST(request: NextRequest) {
     try {
         const user = await getAuthUser();

@@ -135,6 +135,22 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Phase 9: Data Validation Shield
+        const ep = parseFloat(formData.entryPrice);
+        const sl = formData.stopLoss ? parseFloat(formData.stopLoss) : null;
+        const tp = formData.takeProfit ? parseFloat(formData.takeProfit) : null;
+
+        if (!isNaN(ep)) {
+            if (formData.type === "BUY") {
+                if (sl !== null && sl >= ep) return toast.error("Invalid Logic: For BUY trades, Stop Loss must be LOWER than Entry Price.");
+                if (tp !== null && tp <= ep) return toast.error("Invalid Logic: For BUY trades, Take Profit must be HIGHER than Entry Price.");
+            } else if (formData.type === "SELL") {
+                if (sl !== null && sl <= ep) return toast.error("Invalid Logic: For SELL trades, Stop Loss must be HIGHER than Entry Price.");
+                if (tp !== null && tp >= ep) return toast.error("Invalid Logic: For SELL trades, Take Profit must be LOWER than Entry Price.");
+            }
+        }
+
         setIsSubmitting(true);
 
         try {

@@ -1,39 +1,99 @@
 "use client";
 
-import { Lightbulb, Info } from "lucide-react";
+import { Lightbulb, Info, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+type RecommendationType = 'positive' | 'negative' | 'warning' | 'neutral';
 
 interface SessionRecommendationsProps {
-    recommendations: string[];
+    recommendations: {
+        type: RecommendationType;
+        text: string;
+    }[];
+}
+
+const configMap: Record<RecommendationType, { icon: any, bg: string, border: string, text: string, iconColor: string }> = {
+    positive: {
+        icon: CheckCircle2,
+        bg: "bg-green-50 dark:bg-green-500/10",
+        border: "border-green-200 border-l-4 border-l-green-500 dark:border-green-500/20 dark:border-l-green-500",
+        text: "text-green-800 dark:text-green-200",
+        iconColor: "text-green-600 dark:text-green-400"
+    },
+    negative: {
+        icon: XCircle,
+        bg: "bg-red-50 dark:bg-red-500/10",
+        border: "border-red-200 border-l-4 border-l-red-500 dark:border-red-500/20 dark:border-l-red-500",
+        text: "text-red-800 dark:text-red-200",
+        iconColor: "text-red-600 dark:text-red-400"
+    },
+    warning: {
+        icon: AlertTriangle,
+        bg: "bg-amber-50 dark:bg-amber-500/10",
+        border: "border-amber-200 border-l-4 border-l-amber-500 dark:border-amber-500/20 dark:border-l-amber-500",
+        text: "text-amber-800 dark:text-amber-200",
+        iconColor: "text-amber-600 dark:text-amber-400"
+    },
+    neutral: {
+        icon: Info,
+        bg: "bg-indigo-50 dark:bg-indigo-500/10",
+        border: "border-indigo-200 border-l-4 border-l-indigo-500 dark:border-indigo-500/20 dark:border-l-indigo-500",
+        text: "text-indigo-800 dark:text-indigo-200",
+        iconColor: "text-indigo-600 dark:text-indigo-400"
+    }
 }
 
 export function SessionRecommendations({ recommendations }: SessionRecommendationsProps) {
     if (recommendations.length === 0) return null;
 
     return (
-        <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-500/10 dark:to-blue-500/10 p-6 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
-            <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+        <div className="bg-gradient-to-br from-indigo-50 via-white to-blue-50 dark:from-indigo-500/5 dark:via-[#1E2028] dark:to-blue-500/5 p-6 rounded-xl border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
+            <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm">
                     <Lightbulb size={20} />
                 </div>
                 <div>
                     <h3 className="font-bold text-gray-900 dark:text-white">
                         AI Insights
                     </h3>
-                    <p className="text-xs text-indigo-600 dark:text-indigo-400 font-medium">
-                        Based on your historical performance
+                    <p className="text-xs text-indigo-600 dark:text-indigo-400 font-medium tracking-wide uppercase">
+                        Actionable Intelligence
                     </p>
                 </div>
             </div>
 
-            <div className="space-y-3">
-                {recommendations.map((rec, index) => (
-                    <div key={index} className="flex gap-3 items-start bg-white dark:bg-[#1E2028] p-3 rounded-xl border border-indigo-100 dark:border-indigo-500/10 shadow-sm">
-                        <Info size={16} className="text-indigo-400 shrink-0 mt-0.5" />
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                            {rec}
-                        </p>
-                    </div>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                {recommendations.map((rec, index) => {
+                    const styling = configMap[rec.type] || configMap.neutral;
+                    const IconComponent = styling.icon;
+
+                    // Extract the title part before the colon for bold highlighting
+                    const parts = rec.text.split(':');
+                    const hasTitle = parts.length > 1;
+
+                    return (
+                        <div 
+                            key={index} 
+                            className={cn(
+                                "flex gap-3 items-start p-4 rounded-xl shadow-sm border transition-shadow hover:shadow-md cursor-default",
+                                styling.bg,
+                                styling.border
+                            )}
+                        >
+                            <IconComponent size={20} className={cn("shrink-0 mt-0.5", styling.iconColor)} />
+                            <p className={cn("text-sm leading-relaxed whitespace-pre-line", styling.text)}>
+                                {hasTitle ? (
+                                    <>
+                                        <span className="font-bold block mb-1">{parts[0]}:</span>
+                                        <span className="opacity-90">{parts.slice(1).join(':')}</span>
+                                    </>
+                                ) : (
+                                    <span className="opacity-90">{rec.text}</span>
+                                )}
+                            </p>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

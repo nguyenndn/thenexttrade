@@ -31,11 +31,15 @@ export async function POST(request: NextRequest) {
         }
 
         // ========================================
-        // ACCOUNT NUMBER VALIDATION (Spec 1.1)
+        // STRICT ACCOUNT NUMBER VALIDATION
         // ========================================
+        if (!accountNumber) {
+            return NextResponse.json({ error: "Missing accountNumber from EA payload" }, { status: 400 });
+        }
+
         // Strict Lock: If accountNumber is already set, it MUST match.
         // If not set (first connect), we allow it and save it below.
-        if (account.accountNumber && accountNumber) {
+        if (account.accountNumber) {
             if (account.accountNumber !== String(accountNumber)) {
                 return NextResponse.json(
                     {

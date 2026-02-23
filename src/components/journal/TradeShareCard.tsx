@@ -23,48 +23,48 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
     const textColor = isWin ? "text-green-500" : "text-red-500";
     const badgeBg = isWin ? "bg-green-500" : "bg-red-500";
 
-    // Generate Stylized Chart Data
+    // Generate Stylized Chart Data (PnL Progression)
     const { data: chartData, min, max } = useMemo(() => {
-        if (!entry.entryPrice || !entry.exitPrice) return { data: [], min: 0, max: 0 };
+        if (entry.pnl === undefined || entry.pnl === null) return { data: [], min: 0, max: 0 };
 
         const points = 10; // Reduce points for smoother, less jagged look
-        const startPrice = Number(entry.entryPrice);
-        const endPrice = Number(entry.exitPrice);
+        const startPnL = 0;
+        const endPnL = Number(entry.pnl);
         
-        // Calculate volatility
-        const priceDiff = Math.abs(startPrice - endPrice);
-        const basePrice = startPrice;
-        const minVolatility = basePrice * 0.0005; 
-        const volatility = Math.max(priceDiff, minVolatility) * 0.5;
+        // Calculate volatility based on PnL magnitude
+        const volatility = Math.abs(endPnL) * 0.4;
 
-        let minVal = Math.min(startPrice, endPrice);
-        let maxVal = Math.max(startPrice, endPrice);
+        let minVal = Math.min(startPnL, endPnL);
+        let maxVal = Math.max(startPnL, endPnL);
 
         const data = Array.from({ length: points }).map((_, i) => {
             const progress = i / (points - 1);
-            let price = startPrice + (endPrice - startPrice) * progress;
+            // Non-linear progression for a more "trading" feel (starts slow, accelerates, slows down)
+            const easedProgress = Math.pow(progress, 1.5); 
+            let pnl = startPnL + (endPnL - startPnL) * easedProgress;
             
             if (i > 0 && i < points - 1) {
                 // Smoother wave, less random jitter
-                const noise = (Math.random() - 0.5) * volatility * 0.5;
-                const wave = Math.sin(progress * Math.PI) * (volatility * 0.3); 
-                price += noise + wave;
+                const noise = (Math.random() - 0.5) * volatility * 0.3;
+                const wave = Math.sin(progress * Math.PI) * (volatility * 0.5); 
+                // Invert the wave for losses to make it look like a drawdown recovery attempt
+                pnl += isWin ? (noise - wave * 0.5) : (noise + wave * 0.5);
             }
 
-            minVal = Math.min(minVal, price);
-            maxVal = Math.max(maxVal, price);
+            minVal = Math.min(minVal, pnl);
+            maxVal = Math.max(maxVal, pnl);
 
-            return { index: i, value: price };
+            return { index: i, value: pnl };
         });
         
-        const padding = (maxVal - minVal) * 0.2 || minVolatility;
+        const padding = Math.abs(maxVal - minVal) * 0.2 || 1;
 
         return { 
             data, 
             min: minVal - padding, 
             max: maxVal + padding 
         };
-    }, [entry.entryPrice, entry.exitPrice]);
+    }, [entry.pnl, isWin]);
 
     const percentGain = entry.pnl ? ((entry.pnl / 10000) * 100).toFixed(2) : "0.00";
 
@@ -81,9 +81,9 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                         <div className="flex items-center justify-between mb-6 md:mb-8">
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-black text-lg shadow-lg shadow-primary/30">
-                                    G
+                                    T
                                 </div>
-                                <span className="font-bold text-gray-900 dark:text-white tracking-tight">GSN Trading</span>
+                                <span className="font-bold text-gray-900 dark:text-white tracking-tight">TheNextTrade</span>
                             </div>
                             <span className="px-3 py-1 rounded-full border border-blue-500/30 text-blue-500 text-[10px] font-black uppercase tracking-widest bg-blue-500/5">
                                 Verified
@@ -128,7 +128,7 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                         {/* Watermark / Brand in Chart */}
                         <div className="absolute top-6 right-6 flex items-center gap-2 opacity-50 z-20">
                             <Medal size={16} className="text-blue-500" />
-                            <span className="text-xs font-bold text-gray-400">Verified by GSN</span>
+                            <span className="text-xs font-bold text-gray-400">Verified by TheNextTrade</span>
                         </div>
 
                         {/* Chart */}
@@ -152,20 +152,20 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                                         fill={`url(#${gradientId})`}
                                         isAnimationActive={false} // Smooth rendering
                                     />
-                                    {/* Entry Point Marker */}
+                                    {/* Entry Point Marker (0 PnL) */}
                                     <ReferenceDot 
                                         x={0} 
-                                        y={Number(entry.entryPrice)} 
+                                        y={0} 
                                         r={4} 
                                         fill={themeColor} 
                                         stroke="white" 
                                         strokeWidth={2}
                                     />
 
-                                    {/* Exit Point Marker */}
+                                    {/* Exit Point Marker (Final PnL) */}
                                     <ReferenceDot 
                                         x={9} 
-                                        y={Number(entry.exitPrice)} 
+                                        y={Number(entry.pnl || 0)} 
                                         r={4} 
                                         fill={themeColor} 
                                         stroke="white" 

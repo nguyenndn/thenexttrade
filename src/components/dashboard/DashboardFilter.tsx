@@ -40,13 +40,28 @@ export function DashboardFilter({ currentAccountId, className }: DashboardFilter
         }
     }, [searchParams]);
 
-    // Default to Today on mount if URL is empty
+    // Default to Saved Range or Today on mount if URL is empty
     useEffect(() => {
         const start = searchParams.get("from");
         const end = searchParams.get("to");
 
         if (!start && !end) {
-             // Enforce "Today" in URL if missing
+             // 1. Check for saved range in localStorage first
+             const savedRangeStr = localStorage.getItem("gsn_date_range");
+             if (savedRangeStr) {
+                 try {
+                     const savedRange = JSON.parse(savedRangeStr);
+                     const params = new URLSearchParams(searchParams.toString());
+                     params.set("from", format(new Date(savedRange.start), "yyyy-MM-dd"));
+                     params.set("to", format(new Date(savedRange.end), "yyyy-MM-dd"));
+                     router.replace(`?${params.toString()}`);
+                     return;
+                 } catch (e) {
+                     console.error("Failed to parse saved date range", e);
+                 }
+             }
+
+             // 2. Enforce "Today" in URL if missing and nothing saved
              const todayStart = startOfDay(new Date());
              const todayEnd = endOfDay(new Date());
              

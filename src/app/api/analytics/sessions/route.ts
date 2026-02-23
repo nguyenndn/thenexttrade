@@ -200,30 +200,74 @@ export async function GET(request: NextRequest) {
             : null;
 
         // Generate recommendations
-        const recommendations: string[] = [];
+        const recommendations: { type: 'positive' | 'negative' | 'warning' | 'neutral', text: string }[] = [];
 
+        // 1. Phân tích Session tốt nhất
         if (bestSession) {
             const best = sessionStats.find(s => s.session === bestSession);
-            if (best && best.winRate > 55) {
-                recommendations.push(
-                    `Focus on trading during ${SESSION_NAMES[bestSession]} - your best session with ${best.winRate.toFixed(0)}% win rate.`
-                );
+            if (best) {
+                if (best.profitFactor >= 2 && best.winRate >= 50) {
+                    recommendations.push({
+                        type: 'positive',
+                        text: `Goldmine: The ${SESSION_NAMES[bestSession] || bestSession} session is highly consistent. Your Win Rate is ${best.winRate.toFixed(0)}% with a Profit Factor of ${best.profitFactor.toFixed(2)}. Prioritize capital allocation for this timeframe.`
+                    });
+                } else if (best.winRate > 55) {
+                    recommendations.push({
+                        type: 'positive',
+                        text: `Solid Performance: Your win rate during the ${SESSION_NAMES[bestSession] || bestSession} session is excellent (${best.winRate.toFixed(0)}%). This is your safest window for entries.`
+                    });
+                } else if (best.totalPnL > 0) {
+                     recommendations.push({
+                        type: 'positive',
+                        text: `Profitable: The ${SESSION_NAMES[bestSession] || bestSession} session yields your highest profit, despite a ${best.winRate.toFixed(0)}% win rate. Keep up this current Risk/Reward ratio.`
+                    });
+                }
             }
         }
 
+        // 2. Phân tích Session tệ nhất
         if (worstSession && worstSession !== bestSession) {
             const worst = sessionStats.find(s => s.session === worstSession);
-            if (worst && worst.winRate < 45) {
-                recommendations.push(
-                    `Consider avoiding ${SESSION_NAMES[worstSession]} - your worst session with ${worst.winRate.toFixed(0)}% win rate.`
-                );
+            if (worst) {
+                if (worst.totalPnL < 0 && worst.profitFactor < 0.5) {
+                    recommendations.push({
+                        type: 'negative',
+                        text: `Red Alert: The ${SESSION_NAMES[worstSession] || worstSession} session is draining your account. Profit Factor is critically low (${worst.profitFactor.toFixed(2)}). Recommendation: Stay out of the market during this session to preserve capital.`
+                    });
+                } else if (worst.winRate < 45) {
+                    recommendations.push({
+                        type: 'warning',
+                        text: `Restrict Entries: Poor performance during the ${SESSION_NAMES[worstSession] || worstSession} session (${worst.winRate.toFixed(0)}% Win). Market structure here might not align with your core strategy.`
+                    });
+                }
             }
         }
 
-        if (bestHour !== null && worstHour !== null) {
-            recommendations.push(
-                `Your best hour is ${bestHour.toString().padStart(2, '0')}:00 UTC. Worst is ${worstHour.toString().padStart(2, '0')}:00 UTC.`
-            );
+        // 3. Phân tích Khung giờ
+        if (bestHour !== null && worstHour !== null && bestHour !== worstHour) {
+            const bHour = fullHourlyStats.find(h => h.hour === bestHour);
+            const wHour = fullHourlyStats.find(h => h.hour === worstHour);
+            
+            if (bHour && bHour.winRate >= 60 && bHour.totalTrades >= 3) {
+                recommendations.push({
+                    type: 'positive',
+                    text: `Golden Hour: ${bestHour.toString().padStart(2, '0')}:00 - ${bestHour.toString().padStart(2, '0')}:59 UTC is your peak performance window (${bHour.winRate.toFixed(0)}% Win).`
+                });
+            }
+            if (wHour && wHour.winRate <= 30 && wHour.totalTrades >= 3) {
+                recommendations.push({
+                    type: 'negative',
+                    text: `Danger Zone: You frequently face losses at ${worstHour.toString().padStart(2, '0')}:00 UTC (${wHour.winRate.toFixed(0)}% Win). It is highly recommended to step away from the charts during this hour.`
+                });
+            }
+        }
+        
+        // 4. Fallback nếu Data chưa đủ cấu thành Insight sâu sắc
+        if (recommendations.length === 0 && sessionStats.length > 0) {
+             recommendations.push({
+                 type: 'neutral',
+                 text: "Insufficient Data: No session has proven exceptionally profitable or excessively risky yet. Keep journaling more trades to uncover actionable insights."
+             });
         }
 
         return NextResponse.json({

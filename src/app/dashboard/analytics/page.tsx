@@ -66,8 +66,8 @@ export default async function AnalyticsPage({
     }
 
     // Date Range Logic
-    const startDateParam = resolvedParams?.startDate as string;
-    const endDateParam = resolvedParams?.endDate as string;
+    const startDateParam = resolvedParams?.from as string;
+    const endDateParam = resolvedParams?.to as string;
 
     const now = new Date();
     const startDate = startDateParam ? parseISO(startDateParam) : startOfMonth(now);

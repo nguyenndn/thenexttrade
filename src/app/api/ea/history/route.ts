@@ -32,8 +32,27 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { trades, syncType, dateRange } = body;
+        const { trades, syncType, dateRange, accountNumber } = body;
         // syncType: "LAST_30_DAYS" | "LAST_60_DAYS" | "LAST_90_DAYS" | "ALL"
+
+        // ========================================
+        // STRICT ACCOUNT NUMBER VALIDATION
+        // ========================================
+        if (!accountNumber) {
+            return NextResponse.json({ error: "Missing accountNumber from EA payload" }, { status: 400 });
+        }
+
+        if (account.accountNumber) {
+            if (account.accountNumber !== String(accountNumber)) {
+                return NextResponse.json(
+                    {
+                        error: "Account mismatch",
+                        message: `API key is for account #${account.accountNumber}, not #${accountNumber}`,
+                    },
+                    { status: 403 }
+                );
+            }
+        }
 
         if (!Array.isArray(trades)) {
             return NextResponse.json({ error: "Invalid trades data" }, { status: 400 });

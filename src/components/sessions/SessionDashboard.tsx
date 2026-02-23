@@ -1,14 +1,31 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { format, startOfMonth, endOfMonth } from "date-fns";
+
 import { toast } from "sonner";
 import { Clock, Globe, Sun, Moon, TrendingUp, TrendingDown, Loader2 } from "lucide-react";
-
-import { SessionPerformance } from "./SessionPerformance";
-import { HourlyHeatmap } from "./HourlyHeatmap";
-import { SessionClock } from "./SessionClock";
+import dynamic from "next/dynamic";
 import { SessionRecommendations } from "./SessionRecommendations";
+import { useSearchParams } from "next/navigation";
+import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
+
+const SessionPerformance = dynamic(() => import("./SessionPerformance").then(m => m.SessionPerformance), {
+    loading: () => <div className="h-[400px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl" />,
+    ssr: false
+});
+
+const HourlyHeatmap = dynamic(() => import("./HourlyHeatmap").then(m => m.HourlyHeatmap), {
+    loading: () => <div className="h-[200px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl" />,
+    ssr: false
+});
+
+const SessionClock = dynamic(() => import("./SessionClock").then(m => m.SessionClock), {
+    loading: () => <div className="h-[400px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl" />,
+    ssr: false
+});
+
 
 interface SessionData {
     sessionStats: Array<{
@@ -31,24 +48,26 @@ interface SessionData {
     worstSession: string | null;
     bestHour: number | null;
     worstHour: number | null;
-    recommendations: string[];
+    recommendations: { type: 'positive' | 'negative' | 'warning' | 'neutral', text: string }[];
 }
 
 export function SessionDashboard() {
+    const searchParams = useSearchParams();
+    const accountId = searchParams?.get("accountId");
+    const fromStr = searchParams?.get("from");
+    const toStr = searchParams?.get("to");
+    
     const [data, setData] = useState<SessionData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [dateRange, setDateRange] = useState({
-        start: startOfMonth(new Date()),
-        end: endOfMonth(new Date()),
-    });
 
     const fetchData = async () => {
         try {
             setIsLoading(true);
-            const params = new URLSearchParams({
-                startDate: format(dateRange.start, "yyyy-MM-dd"),
-                endDate: format(dateRange.end, "yyyy-MM-dd"),
-            });
+            const params = new URLSearchParams();
+
+            if (fromStr) params.append("startDate", fromStr);
+            if (toStr) params.append("endDate", toStr);
+            if (accountId) params.append("accountId", accountId);
 
             const res = await fetch(`/api/analytics/sessions?${params}`);
             if (!res.ok) throw new Error("Failed to fetch");
@@ -65,29 +84,28 @@ export function SessionDashboard() {
 
     useEffect(() => {
         fetchData();
-    }, [dateRange]);
+    }, [fromStr, toStr, accountId]);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Session Analysis
-                        </h1>
-                    </div>
-                </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-                    Optimize your trading schedule by analyzing performance across market sessions.
-                </p>
-            </div>
+            <PageHeader 
+                title="Session Analysis" 
+                description="Optimize your trading schedule by analyzing performance across market sessions."
+            >
+                <DashboardFilter currentAccountId={accountId || undefined} />
+            </PageHeader>
 
             {isLoading ? (
                 <SessionLoadingSkeleton />
             ) : !data || data.sessionStats.length === 0 ? (
-                <SessionEmptyState />
+                <div className="min-h-[60vh] flex items-center justify-center p-8 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5">
+                    <EmptyState 
+                        icon={Clock} 
+                        title="No Session Data Available" 
+                        description="We rely on the timestamps of your trades to analyze session performance. Log some closed trades to see your optimal trading times." 
+                    />
+                </div>
             ) : (
                 <>
                     {/* AI Insights - Moved to top for visibility */}
@@ -124,7 +142,7 @@ export function SessionDashboard() {
                     </div>
 
                     {/* Main Charts */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div className="lg:col-span-2">
                             <SessionPerformance data={data.sessionStats} />
                         </div>
@@ -153,7 +171,7 @@ function QuickStatCard({
     color: string;
 }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center gap-2 mb-2">
                 <div className={`p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 ${color}`}>
                     <Icon size={16} />
@@ -171,33 +189,17 @@ function QuickStatCard({
 
 function SessionLoadingSkeleton() {
     return (
-        <div className="space-y-6 animate-pulse">
+        <div className="space-y-4 animate-pulse">
             <div className="h-24 bg-gray-100 dark:bg-white/5 rounded-xl w-full" />
             <div className="grid grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map(i => (
                     <div key={i} className="h-24 bg-gray-100 dark:bg-white/5 rounded-xl" />
                 ))}
             </div>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-2 h-80 bg-gray-100 dark:bg-white/5 rounded-xl" />
                 <div className="col-span-1 h-80 bg-gray-100 dark:bg-white/5 rounded-xl" />
             </div>
-        </div>
-    );
-}
-
-function SessionEmptyState() {
-    return (
-        <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5">
-            <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6 text-gray-400">
-                <Clock size={40} />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                No Session Data Available
-            </h3>
-            <p className="text-gray-500 max-w-md mx-auto mb-8">
-                We rely on the timestamps of your trades to analyze session performance. Log some closed trades to see your optimal trading times.
-            </p>
         </div>
     );
 }

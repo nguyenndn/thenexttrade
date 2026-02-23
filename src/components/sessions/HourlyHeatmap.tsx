@@ -40,23 +40,23 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
 
         // Normalize intensity for visual distinction steps
         if (pnl > 0) {
-            if (intensity > 0.8) return "bg-green-500";
-            if (intensity > 0.6) return "bg-green-400";
-            if (intensity > 0.3) return "bg-green-300 dark:bg-green-500/60";
-            return "bg-green-200 dark:bg-green-500/30";
+            if (intensity > 0.8) return "bg-green-400 dark:bg-green-500/80 text-white";
+            if (intensity > 0.6) return "bg-green-300 dark:bg-green-500/60 text-gray-900 dark:text-white";
+            if (intensity > 0.3) return "bg-green-200 dark:bg-green-500/40 text-gray-900 dark:text-white";
+            return "bg-green-100 dark:bg-green-500/20 text-gray-700 dark:text-gray-300";
         } else if (pnl < 0) {
-            if (intensity > 0.8) return "bg-red-500";
-            if (intensity > 0.6) return "bg-red-400";
-            if (intensity > 0.3) return "bg-red-300 dark:bg-red-500/60";
-            return "bg-red-200 dark:bg-red-500/30";
+            if (intensity > 0.8) return "bg-red-400 dark:bg-red-500/80 text-white";
+            if (intensity > 0.6) return "bg-red-300 dark:bg-red-500/60 text-gray-900 dark:text-white";
+            if (intensity > 0.3) return "bg-red-200 dark:bg-red-500/40 text-gray-900 dark:text-white";
+            return "bg-red-100 dark:bg-red-500/20 text-gray-700 dark:text-gray-300";
         } else {
             // Breakeven but traded
-            return "bg-gray-300 dark:bg-gray-600";
+            return "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300";
         }
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm transition-shadow hover:shadow-md">
             <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                 24-Hour Trading Heatmap
             </h3>
@@ -73,12 +73,11 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                             key={hour.hour}
                             className={`
                 aspect-square rounded-lg flex items-center justify-center
-                text-[10px] font-bold cursor-pointer transition-all hover:scale-110 relative group
+                text-[10px] sm:text-xs font-bold md:font-black cursor-pointer transition-all hover:scale-110 relative group
                 ${getColor(hour)}
-                ${hour.totalTrades === 0 ? 'text-gray-400' : 'text-white'}
               `}
                         >
-                            <span className="opacity-90">{hour.totalTrades > 0 ? hour.totalTrades : ""}</span>
+                            <span className="opacity-100">{hour.totalTrades > 0 ? hour.totalTrades : ""}</span>
 
                             {/* Tooltip */}
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-32 bg-gray-900 text-white text-xs rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">

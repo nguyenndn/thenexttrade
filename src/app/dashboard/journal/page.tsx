@@ -33,7 +33,7 @@ export default async function JournalPage({
     const sortBy = typeof resolvedParams.sort === "string" ? resolvedParams.sort : undefined;
     const sortOrder = typeof resolvedParams.dir === "string" && (resolvedParams.dir === "asc" || resolvedParams.dir === "desc") ? resolvedParams.dir : undefined;
 
-    const [{ entries, meta }, { strategies }, userTags] = await Promise.all([
+    const [{ entries, meta, stats }, { strategies }, userTags] = await Promise.all([
         getJournalEntries(page, limit, {
             accountId,
             symbol,
@@ -50,7 +50,7 @@ export default async function JournalPage({
 
     return (
         <div className="space-y-6">
-            <JournalList initialEntries={entries} meta={meta} strategies={strategies} userTags={userTags} />
+            <JournalList initialEntries={entries} meta={meta} initialStats={stats} strategies={strategies} userTags={userTags} />
         </div>
     );
 }

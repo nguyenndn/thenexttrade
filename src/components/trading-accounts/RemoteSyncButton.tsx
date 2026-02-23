@@ -18,7 +18,7 @@ interface RemoteSyncButtonProps {
     tradingAccountId: string;
     accountName: string;
     isConnected: boolean;
-    variant?: "default" | "icon";
+    variant?: "default" | "icon" | "premium";
 }
 
 type CommandStatus = "idle" | "pending" | "processing" | "completed" | "failed";
@@ -156,12 +156,15 @@ export function RemoteSyncButton({
                 <Button
                     variant="outline"
                     size={variant === "icon" ? "icon" : "sm"}
-                    disabled={!isConnected}
-                    className={variant === "icon" ? "h-8 w-8 text-gray-500" : "gap-2"}
+                    className={
+                        variant === "premium" 
+                            ? "flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 hover:shadow-sm border border-gray-100 dark:border-white/5 text-gray-800 dark:text-gray-200 font-bold text-xs transition-all h-auto shadow-none" 
+                            : variant === "icon" ? "h-8 w-8 text-gray-500" : "gap-2"
+                    }
                     title={!isConnected ? "EA must be connected to sync" : "Remote Sync"}
                 >
-                    <RefreshCw className="h-4 w-4" />
-                    {variant === "default" && <span className="hidden sm:inline">Sync</span>}
+                    <RefreshCw className={variant === "premium" ? "h-4 w-4 text-gray-400 hover:text-primary" : "h-4 w-4"} />
+                    {variant !== "icon" && <span className={variant === "premium" ? "hidden sm:inline-block" : "hidden sm:inline"}>Sync</span>}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">

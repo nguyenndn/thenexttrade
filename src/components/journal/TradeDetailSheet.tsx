@@ -4,12 +4,13 @@ import * as React from "react"
 import { useState } from "react"
 import { format } from "date-fns"
 import { ShareTradeModal } from "./ShareTradeModal"
-import { Share2, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Clock, Info, DollarSign, Tag, Brain, BarChart3, MessageSquare, AlertTriangle, X } from "lucide-react"
+import { Share2, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Clock, Info, DollarSign, Tag, Brain, BarChart3, MessageSquare, AlertTriangle, X, Medal, Target, ShieldAlert } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/Sheet"
 import { Button } from "@/components/ui/Button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs"
 import { getMistakeByCode } from "@/lib/mistakes"
+import { EmptyState } from "@/components/ui/EmptyState"
 
 
 interface JournalEntry {
@@ -41,9 +42,13 @@ interface TradeDetailSheetProps {
     strategies?: any[];
     isOpen: boolean;
     onClose: () => void;
+    onNext?: () => void;
+    onPrev?: () => void;
+    hasNext?: boolean;
+    hasPrev?: boolean;
 }
 
-export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: TradeDetailSheetProps) {
+export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNext, onPrev, hasNext, hasPrev }: TradeDetailSheetProps) {
     const [showShareModal, setShowShareModal] = useState(false);
 
     if (!entry) return null;
@@ -93,7 +98,13 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                             {/* Left: Symbol & Type */}
                             <div className="flex items-center gap-6">
-                                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400">
+                                <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    onClick={onPrev}
+                                    disabled={!hasPrev}
+                                    className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
                                     <ChevronLeft size={24} />
                                 </Button>
 
@@ -128,7 +139,13 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                     </div>
                                 </div>
 
-                                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400">
+                                <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    onClick={onNext}
+                                    disabled={!hasNext}
+                                    className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
                                     <ChevronRight size={24} />
                                 </Button>
                             </div>
@@ -154,104 +171,127 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                         </TabsList>
 
                         <TabsContent value="metrics" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            {/* Unified Performance Card - Minimalist */}
-                            <div className="space-y-8 pt-4">
-                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-8 flex items-center gap-2 pl-2">
+                            {/* Unified Performance Card - Premium Grid Layout */}
+                            <div className="space-y-6 pt-2">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 flex items-center gap-2 pl-2">
                                     <BarChart3 size={14} />
                                     Performance Summary
                                 </h3>
 
-                                <div className="space-y-12">
-                                    {/* Group 1: Trade Information */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
-                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 border-b border-gray-100 dark:border-white/5 pb-2">
-                                            Trade Information
-                                        </h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Volume</p>
-                                                <p className="text-base font-black text-gray-900 dark:text-white">{entry.lotSize} Lots</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Open Time</p>
-                                                <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                                    {format(new Date(entry.entryDate), "MMM dd, HH:mm")}
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Close Time</p>
-                                                <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                                    {entry.exitDate ? format(new Date(entry.exitDate), "MMM dd, HH:mm") : "---"}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-100 dark:border-white/5 shadow-xl relative overflow-hidden group">
+                                    {/* Ambient Glow based on Result */}
+                                    <div className={cn(
+                                        "absolute top-0 right-0 w-[400px] h-[400px] rounded-full blur-[120px] pointer-events-none opacity-20 transition-all duration-700", 
+                                        isWin ? "bg-green-500 group-hover:opacity-30" : "bg-red-500 group-hover:opacity-30"
+                                    )}></div>
 
-                                    {/* Group 2: Price Summary */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
-                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 border-b border-gray-100 dark:border-white/5 pb-2">
-                                            Price Summary
-                                        </h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-white/5">
+                                        
+                                        {/* Left Column: Trade Info & Costs */}
+                                        <div className="p-8 space-y-8">
+                                            {/* Trade Information */}
                                             <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Open Price</p>
-                                                <p className="text-base font-black text-gray-900 dark:text-white font-mono">{entry.entryPrice}</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Close Price</p>
-                                                <p className="text-base font-black text-gray-900 dark:text-white font-mono">{entry.exitPrice || "???"}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Group 3: Transaction Costs */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
-                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 border-b border-gray-100 dark:border-white/5 pb-2">
-                                            Transaction Costs
-                                        </h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Commission</p>
-                                                <p className="text-base font-bold text-gray-900 dark:text-white font-mono">0.00</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Swap</p>
-                                                <p className="text-base font-bold text-gray-900 dark:text-white font-mono">0.00</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Fee</p>
-                                                <p className="text-base font-bold text-gray-900 dark:text-white font-mono">0.00</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Group 4: Trade Results */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 relative overflow-hidden">
-                                        <div className={cn("absolute top-0 right-0 w-32 h-32 rounded-full blur-[60px] opacity-10 pointer-events-none", isWin ? "bg-green-500" : "bg-red-500")}></div>
-                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 border-b border-gray-100 dark:border-white/5 pb-2 relative z-10">
-                                            Trade Results
-                                        </h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
-                                            <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Gross Profit</p>
-                                                <p className={cn("text-lg font-black font-mono", pnlColor)}>
-                                                    {entry.pnl?.toFixed(2) || "0.00"}
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Net Profit</p>
-                                                <div className="flex items-center gap-2">
-                                                    <p className={cn("text-xl font-black font-mono", pnlColor)}>
-                                                        {entry.pnl?.toFixed(2) || "0.00"}
-                                                    </p>
-                                                    {isWin && <span className="bg-primary/10 text-primary p-1 rounded-full"><TrendingUp size={12} /></span>}
+                                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                                    <Clock size={12} className="text-primary" /> Trade Journey
+                                                </h4>
+                                                <div className="space-y-4">
+                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-100 dark:border-white/5">
+                                                        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Volume</span>
+                                                        <span className="text-sm font-black text-gray-900 dark:text-white font-mono">{entry.lotSize} Lots</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-100 dark:border-white/5">
+                                                        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Open</span>
+                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                                            {format(new Date(entry.entryDate), "MMM dd, HH:mm")}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-100 dark:border-white/5">
+                                                        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Close</span>
+                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                                            {entry.exitDate ? format(new Date(entry.exitDate), "MMM dd, HH:mm") : "---"}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
+
+                                            {/* Transaction Costs */}
                                             <div>
-                                                <p className="text-xs text-gray-400 font-bold mb-1">Percent Gain</p>
-                                                <p className={cn("text-lg font-black font-mono", pnlColor)}>
-                                                    {entry.pnl ? ((entry.pnl / 10000) * 100).toFixed(2) : "0.00"}%
-                                                </p>
+                                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                                    <DollarSign size={12} className="text-yellow-500" /> Transaction Fees
+                                                </h4>
+                                                <div className="grid grid-cols-3 gap-3">
+                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-xl border border-gray-100 dark:border-white/5 flex flex-col items-center justify-center text-center">
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Commission</span>
+                                                        <span className="text-xs font-black text-gray-900 dark:text-white font-mono">0.00</span>
+                                                    </div>
+                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-xl border border-gray-100 dark:border-white/5 flex flex-col items-center justify-center text-center">
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Swap</span>
+                                                        <span className="text-xs font-black text-gray-900 dark:text-white font-mono">0.00</span>
+                                                    </div>
+                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-xl border border-gray-100 dark:border-white/5 flex flex-col items-center justify-center text-center">
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Fee</span>
+                                                        <span className="text-xs font-black text-gray-900 dark:text-white font-mono">0.00</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Right Column: Price & Results */}
+                                        <div className="p-8 space-y-8 bg-gray-50/30 dark:bg-white/[0.01]">
+                                            {/* Price Summary */}
+                                            <div>
+                                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                                    <TrendingUp size={12} className={cn(isWin ? "text-green-500" : "text-red-500")} /> Price Execution
+                                                </h4>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 block">Entry Price</span>
+                                                        <span className="text-lg font-black text-gray-900 dark:text-white font-mono">{entry.entryPrice}</span>
+                                                    </div>
+                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 block">Exit Price</span>
+                                                        <span className="text-lg font-black text-gray-900 dark:text-white font-mono">{entry.exitPrice || "---"}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Trade Results Hub */}
+                                            <div className="bg-white dark:bg-[#151925] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner relative overflow-hidden">
+                                                <div className={cn("absolute inset-0 opacity-[0.03] pattern-diagonal-lines pattern-size-4 pattern-bg-white", isWin ? "pattern-green-500" : "pattern-red-500")}></div>
+                                                
+                                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 relative z-10 flex items-center gap-2">
+                                                    <Medal size={12} className={pnlColor} /> Final Outcome
+                                                </h4>
+                                                
+                                                <div className="grid grid-cols-2 gap-6 relative z-10">
+                                                    <div>
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-1">Gross Profit</span>
+                                                        <span className={cn("text-xl font-black font-mono", pnlColor)}>
+                                                            {entry.pnl?.toFixed(2) || "0.00"}
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-1">Percent Gain</span>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className={cn("text-xl font-black font-mono", pnlColor)}>
+                                                                {entry.pnl ? ((entry.pnl / 10000) * 100).toFixed(2) : "0.00"}%
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-span-2 pt-4 border-t border-gray-100 dark:border-white/5">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Net Profit</span>
+                                                        <div className="flex items-center gap-3">
+                                                            <span className={cn("text-4xl font-black font-mono tracking-tighter", pnlColor)}>
+                                                                {isWin ? "+" : ""}{entry.pnl?.toFixed(2) || "0.00"}
+                                                            </span>
+                                                            {isWin && (
+                                                                <span className="bg-green-500/10 text-green-500 p-2 rounded-xl animate-bounce shadow-lg shadow-green-500/20">
+                                                                    <TrendingUp size={20} />
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -260,21 +300,24 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                         </TabsContent>
 
                         <TabsContent value="tags" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            {/* Unified Analysis Card - Minimalist */}
-                            <div className="space-y-8 pt-4">
-                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-8 flex items-center gap-2 pl-2">
+                            {/* Unified Analysis Card - Premium Grid Layout */}
+                            <div className="space-y-6 pt-2">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 flex items-center gap-2 pl-2">
                                     <Brain size={14} />
                                     Trade Analysis & Context
                                 </h3>
 
-                                <div className="space-y-6">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-100 dark:border-white/5 shadow-xl p-8 space-y-8">
                                     {/* Strategy & Psychology */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
-                                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                                <TrendingUp size={12} /> Strategy
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-6 rounded-2xl border border-gray-100 dark:border-white/5 relative overflow-hidden">
+                                            <div className="absolute -top-10 -right-10 text-blue-500/5 rotate-12 pointer-events-none">
+                                                <Target size={120} strokeWidth={1} />
+                                            </div>
+                                            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
+                                                <Target size={12} className="text-blue-500" /> Strategy Executed
                                             </h4>
-                                            <div className="flex flex-wrap gap-2">
+                                            <div className="relative z-10">
                                                 {entry.strategy ? (
                                                     <span
                                                         className="px-5 py-2.5 rounded-xl text-sm font-black uppercase tracking-wider border"
@@ -286,43 +329,70 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                                     >
                                                         {currentStrategy?.name || entry.strategy}
                                                     </span>
-                                                ) : <p className="text-sm text-gray-400 font-medium italic">No strategy selected</p>}
+                                                ) : (
+                                                    <div className="py-2">
+                                                         <EmptyState 
+                                                            icon={Target} 
+                                                            title="No Strategy Selected" 
+                                                            description="This trade was logged without a specific system."
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
-                                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
-                                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                                <Brain size={12} /> Psychology
+                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-6 rounded-2xl border border-gray-100 dark:border-white/5 relative overflow-hidden">
+                                            <div className="absolute -bottom-6 -right-6 text-purple-500/5 -rotate-12 pointer-events-none">
+                                                <Brain size={120} strokeWidth={1} />
+                                            </div>
+                                            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
+                                                <Brain size={12} className="text-purple-500" /> Psychological State
                                             </h4>
-                                            <div className="flex flex-wrap gap-2">
+                                            <div className="relative z-10">
                                                 {entry.mindset ? (
-                                                    <span className="px-5 py-2.5 bg-purple-500/10 text-purple-500 rounded-xl text-sm font-black uppercase tracking-wider border border-purple-500/20">
+                                                    <span className="px-5 py-2.5 bg-purple-500/10 text-purple-500 rounded-xl text-sm font-black uppercase tracking-wider border border-purple-500/20 shadow-inner">
                                                         {entry.mindset}
                                                     </span>
-                                                ) : <p className="text-sm text-gray-400 font-medium italic">No mindset recorded</p>}
+                                                ) : (
+                                                    <div className="py-2">
+                                                         <EmptyState 
+                                                            icon={Brain} 
+                                                            title="Mindset Not Recorded" 
+                                                            description="Emotion tracking was skipped for this execution."
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Custom Tags */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
-                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                            <Tag size={12} /> Custom Tags
+                                    <div className="pt-8 border-t border-gray-100 dark:border-white/5">
+                                        <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                            <Tag size={12} className="text-primary" /> Filtering Tags
                                         </h4>
-                                        <div className="flex flex-wrap gap-3">
+                                        <div className="flex flex-wrap gap-2">
                                             {entry.tags && entry.tags.length > 0 ? entry.tags.map(tag => (
                                                 <span key={tag} className="px-4 py-2 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl text-xs font-bold uppercase tracking-wider border border-gray-200 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default">
                                                     {tag}
                                                 </span>
-                                            )) : <p className="text-sm text-gray-400 font-medium italic">No custom tags added</p>}
+                                            )) : (
+                                                <div className="w-full">
+                                                    <EmptyState 
+                                                        icon={Tag} 
+                                                        title="No Custom Tags" 
+                                                        description="Tags help you categorize trades by specific setups or events."
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
                                     {/* Mistakes */}
-                                    <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5">
-                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                            <AlertTriangle size={12} /> Mistakes & Errors
+                                    <div className="pt-8 border-t border-gray-100 dark:border-white/5">
+                                        <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                            <ShieldAlert size={12} className="text-red-500" /> Execution Flaws
                                         </h4>
-                                        <div className="flex flex-wrap gap-3">
+                                        <div className="flex flex-wrap gap-2">
                                             {entry.mistakes && entry.mistakes.length > 0 ? entry.mistakes.map(mistakeCode => {
                                                 const mistake = getMistakeByCode(mistakeCode);
                                                 return (
@@ -337,10 +407,17 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose }: Tr
                                                         )}
                                                     </span>
                                                 )
-                                            }) : <p className="text-sm text-gray-400 font-medium italic flex items-center gap-2">
-                                                <span className="w-2 h-2 rounded-full bg-primary"></span>
-                                                Clean trade! No mistakes recorded.
-                                            </p>}
+                                            }) : (
+                                                <div className="w-full p-6 border border-primary/20 bg-primary/5 rounded-xl flex items-center justify-center gap-3">
+                                                    <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center">
+                                                        <Medal size={20} />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-gray-900 dark:text-white">Flawless Execution</p>
+                                                        <p className="text-sm text-gray-500">No trading mistakes were recorded for this entry.</p>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 

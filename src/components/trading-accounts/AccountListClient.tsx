@@ -10,6 +10,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useRouter, useSearchParams } from "next/navigation";
 import { deleteTradingAccount, regenerateAccountKey } from "@/actions/accounts";
 import { PaginationControl } from "@/components/ui/PaginationControl";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Wallet } from "lucide-react";
 
 interface TradingAccount {
     id: string;
@@ -93,41 +96,32 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
     return (
         <div>
             <div className="space-y-8">
-                {/* Page Header */}
-                <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-3">
-                            <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                            <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                                Trading Accounts
-                            </h1>
-                        </div>
-                        {/* Actions */}
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 sm:mt-0">
-                            <button
-                                onClick={() => {
-                                    setIsLoading(true);
-                                    router.refresh();
-                                    setTimeout(() => setIsLoading(false), 1000); // Fake spinner for visual feedback, or use transition
-                                }}
-                                className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors sm:mr-2 py-2 sm:py-0"
-                            >
-                                <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
-                                Refresh Status
-                            </button>
-                            <button
-                                onClick={() => setShowAddModal(true)}
-                                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors shadow-lg shadow-primary/20"
-                            >
-                                <Plus size={18} />
-                                Add Account
-                            </button>
-                        </div>
-                    </div>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-                        Manage your connected MT4/MT5 trading accounts
-                    </p>
+            {/* Page Header */}
+            <PageHeader 
+                title="Trading Accounts"
+                description="Manage your connected MT4/MT5 trading accounts"
+            >
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
+                    <button
+                        onClick={() => {
+                            setIsLoading(true);
+                            router.refresh();
+                            setTimeout(() => setIsLoading(false), 1000); 
+                        }}
+                        className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 dark:bg-white/5 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors sm:mr-2"
+                    >
+                        <RefreshCw size={16} className={isLoading ? "animate-spin text-primary" : ""} />
+                        Refresh Status
+                    </button>
+                    <button
+                        onClick={() => setShowAddModal(true)}
+                        className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-[#00B377] text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/25 active:scale-95"
+                    >
+                        <Plus size={18} />
+                        Add Account
+                    </button>
                 </div>
+            </PageHeader>
             </div>
 
             {/* Account Grid */}
@@ -141,28 +135,33 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                     ))}
                 </div>
             ) : accounts.length === 0 ? (
-                <div className="text-center py-16 bg-gray-50 dark:bg-[#1E2028] rounded-xl border border-dashed border-gray-200 dark:border-white/10">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                        <Plus size={32} className="text-primary" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        No Trading Accounts
-                    </h3>
-                    <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-                        Connect your MetaTrader account to automatically sync your trading history and analyze your performance.
-                    </p>
+                <div className="py-20">
+                    <EmptyState 
+                        icon={Wallet}
+                        title="No Trading Accounts"
+                        description="Connect your MetaTrader account to automatically sync your trading history and analyze your performance."
+                        action={
+                            <button
+                                onClick={() => setShowAddModal(true)}
+                                className="px-6 py-2.5 bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 font-bold rounded-xl transition-colors shadow-lg"
+                            >
+                                Add Account
+                            </button>
+                        }
+                    />
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
                     {accounts.map((account) => (
-                        <AccountCard
-                            key={account.id}
-                            account={account}
-                            onUpdate={() => router.refresh()}
-                            onRegenerateKey={(id) => setShowRegenModal(id)}
-                            onDelete={(id) => setShowDeleteModal(id)}
-                            onSettings={(acc) => setShowSettingsModal(acc)}
-                        />
+                        <div key={account.id} className="min-w-0 h-full">
+                            <AccountCard
+                                account={account}
+                                onUpdate={() => router.refresh()}
+                                onRegenerateKey={(id) => setShowRegenModal(id)}
+                                onDelete={(id) => setShowDeleteModal(id)}
+                                onSettings={(acc) => setShowSettingsModal(acc)}
+                            />
+                        </div>
                     ))}
                 </div>
             )}

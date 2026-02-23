@@ -76,9 +76,24 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
             active = accounts.find((a) => a.id === currentAccountId);
         }
 
-        // Fallback to Oldest Account (First in list because API sorts by createdAt asc)
+        // Fallback to Cookie or Oldest Account
         if (!active && accounts.length > 0) {
-            active = accounts[0];
+            // Helper to get cookie
+            const getCookie = (name: string) => {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop()?.split(';').shift();
+                return null;
+            };
+
+            const savedAccountId = getCookie("last_account_id");
+            if (savedAccountId) {
+                active = accounts.find((a) => a.id === savedAccountId);
+            }
+
+            if (!active) {
+                active = accounts[0];
+            }
         }
 
         if (active) {

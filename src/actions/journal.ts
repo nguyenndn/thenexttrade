@@ -84,7 +84,7 @@ export async function getJournalEntries(
         orderBy = { [field]: sortOrder || "desc" };
     }
 
-    const [entries, total] = await Promise.all([
+    const [entries, total, pnlResult, resultsGrouped] = await Promise.all([
         prisma.journalEntry.findMany({
             where,
             orderBy,
@@ -95,8 +95,30 @@ export async function getJournalEntries(
             skip,
             take: limit,
         }),
-        prisma.journalEntry.count({ where })
+        prisma.journalEntry.count({ where }),
+        prisma.journalEntry.aggregate({ where, _sum: { pnl: true } }),
+        prisma.journalEntry.groupBy({
+            by: ['result'],
+            where,
+            _count: true,
+        })
     ]);
+
+    let winCount = 0;
+    let lossCount = 0;
+    resultsGrouped.forEach(g => {
+        if (g.result === 'WIN') winCount += g._count;
+        if (g.result === 'LOSS') lossCount += g._count;
+    });
+    const winRate = total > 0 ? (winCount / total) * 100 : 0;
+
+    const stats = {
+        totalPnL: pnlResult._sum.pnl || 0,
+        totalTrades: total,
+        winCount,
+        lossCount,
+        winRate,
+    };
 
     const formattedEntries = entries.map(entry => ({
         ...entry,
@@ -116,7 +138,8 @@ export async function getJournalEntries(
             page,
             limit,
             totalPages: Math.ceil(total / limit)
-        }
+        },
+        stats
     };
 }
 
@@ -184,6 +207,57 @@ export async function deleteJournalEntry(id: string) {
     }
 }
 
+export async function bulkDeleteJournalEntries(ids: string[]) {
+    const user = await getAuthUser();
+    if (!user) return { error: "Unauthorized" };
+
+    try {
+        await prisma.journalEntry.deleteMany({
+            where: {
+                id: { in: ids },
+                userId: user.id
+            }
+        });
+
+        revalidatePath("/dashboard/journal");
+        return { success: true, count: ids.length };
+    } catch (error) {
+        return { error: "Failed to delete entries" };
+    }
+}
+
+export async function bulkAddTagsToJournalEntries(ids: string[], tagsToAdd: string[]) {
+    const user = await getAuthUser();
+    if (!user) return { error: "Unauthorized" };
+
+    if (!tagsToAdd || tagsToAdd.length === 0) return { error: "No tags provided" };
+
+    try {
+        // Since Prisma doesn't support pushing to string arrays within updateMany perfectly for all dbs,
+        // we'll fetch existing, append securely, and update each.
+        const entries = await prisma.journalEntry.findMany({
+            where: { id: { in: ids }, userId: user.id },
+            select: { id: true, tags: true }
+        });
+
+        const updates = entries.map(entry => {
+            // Merge unique tags
+            const newTags = Array.from(new Set([...entry.tags, ...tagsToAdd]));
+            return prisma.journalEntry.update({
+                where: { id: entry.id },
+                data: { tags: newTags }
+            });
+        });
+
+        await prisma.$transaction(updates);
+
+        revalidatePath("/dashboard/journal");
+        return { success: true, count: updates.length };
+    } catch (error) {
+        return { error: "Failed to add tags" };
+    }
+}
+
 /**
  * Get all unique tags across user's trades
  */
@@ -237,4 +311,76 @@ export async function getDailyPnlForCalendar(accountId?: string) {
         pnl: Number(row.pnl || 0),
         tradeCount: Number(row.tradeCount || 0)
     }));
+}
+
+export async function exportJournalEntries(filters: {
+    accountId?: string;
+    symbol?: string;
+    type?: string;
+    status?: string;
+    tag?: string;
+    dateFrom?: string;
+    dateTo?: string;
+}) {
+    const user = await getAuthUser();
+    if (!user) return { error: "Unauthorized" };
+
+    const { accountId, symbol, type, status, tag, dateFrom, dateTo } = filters;
+    const where: any = { userId: user.id };
+
+    if (accountId) where.accountId = accountId;
+    if (symbol) where.symbol = { contains: symbol, mode: "insensitive" };
+    if (type) where.type = type as TradeType;
+
+    if (status) {
+        if (["WIN", "LOSS", "BREAK_EVEN"].includes(status)) {
+            where.result = status as TradeResult;
+        } else if (["OPEN", "CLOSED"].includes(status)) {
+            where.status = status as TradeStatus;
+        }
+    }
+
+    if (dateFrom || dateTo) {
+        where.entryDate = {};
+        if (dateFrom) where.entryDate.gte = new Date(dateFrom);
+        if (dateTo) where.entryDate.lte = new Date(dateTo);
+    }
+
+    if (tag) {
+        where.tags = { has: tag };
+    }
+
+    try {
+        const entries = await prisma.journalEntry.findMany({
+            where,
+            orderBy: { entryDate: "desc" },
+            include: { account: { select: { name: true } } },
+            take: 5000, // Reasonable limit for CSV export
+        });
+
+        // Format specifically for CSV
+        const csvData = entries.map(entry => ({
+            id: entry.id,
+            account: entry.account?.name || "Unknown",
+            symbol: entry.symbol,
+            type: entry.type,
+            status: entry.status,
+            result: entry.result || "",
+            entryDate: entry.entryDate.toISOString(),
+            exitDate: entry.exitDate ? entry.exitDate.toISOString() : "",
+            entryPrice: entry.entryPrice,
+            exitPrice: entry.exitPrice || "",
+            stopLoss: entry.stopLoss || "",
+            takeProfit: entry.takeProfit || "",
+            lotSize: entry.lotSize,
+            pnl: entry.pnl || 0,
+            strategy: entry.strategy || "",
+            tags: entry.tags.join("; "),
+            mistakes: (entry.mistakes as string[] || []).join("; ")
+        }));
+
+        return { data: csvData };
+    } catch (error) {
+        return { error: "Failed to export data" };
+    }
 }

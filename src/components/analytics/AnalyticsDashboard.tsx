@@ -10,8 +10,7 @@ import { ProfitCalendar } from "./ProfitCalendar";
 import { PairPerformance } from "./PairPerformance";
 import { DayPerformance } from "./DayPerformance";
 import { RecentTradesTable } from "./RecentTradesTable";
-import { DateRangePicker } from "@/components/ui/DateRangePicker";
-import { AccountSelector } from "@/components/dashboard/AccountSelector";
+import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 
 export interface AnalyticsData {
     summary: {
@@ -50,27 +49,6 @@ interface AnalyticsDashboardProps {
 }
 
 export function AnalyticsDashboard({ data, accountId, dateRange }: AnalyticsDashboardProps) {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-
-    // Handlers for URL updates
-    const handleAccountChange = (newAccountId: string) => {
-        const params = new URLSearchParams(searchParams.toString());
-        if (newAccountId === "all") {
-            params.delete("accountId");
-        } else {
-            params.set("accountId", newAccountId);
-        }
-        router.push(`/dashboard/analytics?${params.toString()}`);
-    };
-
-    const handleDateRangeChange = (range: { start: Date; end: Date }) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set("startDate", format(range.start, "yyyy-MM-dd"));
-        params.set("endDate", format(range.end, "yyyy-MM-dd"));
-        router.push(`/dashboard/analytics?${params.toString()}`);
-    };
-
     const isEmpty = !data || data.summary.totalTrades === 0;
 
     return (
@@ -85,19 +63,7 @@ export function AnalyticsDashboard({ data, accountId, dateRange }: AnalyticsDash
                         </h1>
                     </div>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
-                        <AccountSelector
-                            currentAccountId={accountId ?? undefined}
-                        />
-                        {/* Note: AccountSelector needs refactor to accept onValueChange or we use URL effect in parent. 
-                            Actually, AccountSelector internally might use router.push or we need to pass a handler.
-                            Let's check AccountSelector implementation. 
-                            If it uses standard navigation, we are good. If it uses internal state, we might need to adjust it.
-                            For now, assuming we might need to control it or it just navigates.
-                        */}
-                        <DateRangePicker
-                            value={dateRange}
-                            onChange={handleDateRangeChange}
-                        />
+                        <DashboardFilter currentAccountId={accountId ?? undefined} />
                     </div>
                 </div>
                 <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">

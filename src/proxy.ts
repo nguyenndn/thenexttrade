@@ -9,7 +9,7 @@ const limiter = rateLimit({
   uniqueTokenPerInterval: 500, // Max 500 users per second
 })
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = await updateSession(request)
 
   // 1. Rate Limiting (API Routes Only)
