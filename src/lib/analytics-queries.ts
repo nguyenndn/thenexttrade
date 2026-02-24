@@ -57,11 +57,11 @@ export async function getKeyStats(userId: string, accountId?: string, startDate?
     const result = await prisma.$queryRaw`
         SELECT 
             COUNT(*) as "totalTrades",
-            SUM("pnl") as "totalPnL",
-            SUM(CASE WHEN "pnl" > 0 THEN 1 ELSE 0 END) as "wins",
-            SUM(CASE WHEN "pnl" < 0 THEN 1 ELSE 0 END) as "losses",
-            SUM(CASE WHEN "pnl" > 0 THEN "pnl" ELSE 0 END) as "grossProfit",
-            SUM(CASE WHEN "pnl" < 0 THEN ABS("pnl") ELSE 0 END) as "grossLoss"
+            SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "totalPnL",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "wins",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "losses",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN ABS(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossLoss"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
         AND "status" = 'CLOSED'
@@ -122,14 +122,14 @@ export async function getDailyPerformance(userId: string, accountId?: string, st
     // Build date filter
     const dateFilter = startDate && endDate
         ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
-        : Prisma.sql`AND "exitDate" >= NOW() - INTERVAL '90 days'`; // Default to 90 days if no date
+        : Prisma.empty; // Default to all time if no date
 
     const result = await prisma.$queryRaw`
         SELECT 
             TO_CHAR("exitDate", 'YYYY-MM-DD') as "date",
-            SUM("pnl") as "profit",
+            SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "profit",
             COUNT(*) as "tradeCount",
-            SUM(CASE WHEN "pnl" > 0 THEN 1 ELSE 0 END) as "winCount"
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
         AND "status" = 'CLOSED'
@@ -164,8 +164,8 @@ export async function getSymbolPerformance(userId: string, accountId?: string, s
         SELECT 
             "symbol",
             COUNT(*) as "tradeCount",
-            SUM("pnl") as "netProfit",
-            SUM(CASE WHEN "pnl" > 0 THEN "pnl" ELSE 0 END) as "grossProfit",
+            SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
             SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
@@ -198,26 +198,26 @@ export async function getTopTrades(userId: string, accountId?: string, startDate
     const [bestResult, worstResult] = await Promise.all([
         // Best Trades: Highest Positive PnL
         prisma.$queryRaw`
-            SELECT "id", "symbol", "type", "pnl", "entryDate", "exitDate", "result", "lotSize"
+            SELECT "id", "symbol", "type", (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl", "entryDate", "exitDate", "result", "lotSize"
             FROM "JournalEntry"
             WHERE "userId" = ${userId}::uuid
             AND "status" = 'CLOSED'
             AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
             ${dateFilter}
-            AND "pnl" > 0
-            ORDER BY "pnl" DESC
+            AND (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0
+            ORDER BY (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) DESC
             LIMIT 3
         `,
         // Worst Trades: Lowest Negative PnL (Biggest Loss)
         prisma.$queryRaw`
-            SELECT "id", "symbol", "type", "pnl", "entryDate", "exitDate", "result", "lotSize"
+            SELECT "id", "symbol", "type", (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl", "entryDate", "exitDate", "result", "lotSize"
             FROM "JournalEntry"
             WHERE "userId" = ${userId}::uuid
             AND "status" = 'CLOSED'
             AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
             ${dateFilter}
-            AND "pnl" < 0
-            ORDER BY "pnl" ASC
+            AND (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0
+            ORDER BY (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ASC
             LIMIT 3
         `
     ]);
@@ -285,7 +285,7 @@ export async function getDayOfWeekPerformance(userId: string, accountId?: string
         SELECT 
             EXTRACT(DOW FROM "exitDate") as "dayIndex",
             COUNT(*) as "tradeCount",
-            SUM("pnl") as "netProfit",
+            SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
             SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid

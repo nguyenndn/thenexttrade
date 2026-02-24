@@ -63,7 +63,11 @@ export async function getJournalEntries(
     if (dateFrom || dateTo) {
         where.entryDate = {};
         if (dateFrom) where.entryDate.gte = new Date(dateFrom);
-        if (dateTo) where.entryDate.lte = new Date(dateTo);
+        if (dateTo) {
+            const endDate = new Date(dateTo);
+            endDate.setUTCHours(23, 59, 59, 999);
+            where.entryDate.lte = endDate;
+        }
     }
 
     if (hasImages) {
@@ -96,7 +100,7 @@ export async function getJournalEntries(
             take: limit,
         }),
         prisma.journalEntry.count({ where }),
-        prisma.journalEntry.aggregate({ where, _sum: { pnl: true } }),
+        prisma.journalEntry.aggregate({ where, _sum: { pnl: true, swap: true, commission: true } }),
         prisma.journalEntry.groupBy({
             by: ['result'],
             where,
@@ -113,7 +117,7 @@ export async function getJournalEntries(
     const winRate = total > 0 ? (winCount / total) * 100 : 0;
 
     const stats = {
-        totalPnL: pnlResult._sum.pnl || 0,
+        totalPnL: (pnlResult._sum.pnl || 0) + (pnlResult._sum.swap || 0) + (pnlResult._sum.commission || 0),
         totalTrades: total,
         winCount,
         lossCount,
@@ -122,6 +126,7 @@ export async function getJournalEntries(
 
     const formattedEntries = entries.map(entry => ({
         ...entry,
+        pnl: entry.pnl ? entry.pnl + (entry.swap || 0) + (entry.commission || 0) : null,
         entryDate: entry.entryDate.toISOString(),
         exitDate: entry.exitDate?.toISOString() || null,
         createdAt: entry.createdAt.toISOString(),
@@ -293,7 +298,7 @@ export async function getDailyPnlForCalendar(accountId?: string) {
     const result = await prisma.$queryRaw`
         SELECT 
             DATE("exitDate") as "date",
-            SUM("pnl")::float as "pnl",
+            SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0))::float as "pnl",
             COUNT(*)::int as "tradeCount"
         FROM "JournalEntry"
         WHERE "userId" = ${user.id}::uuid
@@ -384,3 +389,131 @@ export async function exportJournalEntries(filters: {
         return { error: "Failed to export data" };
     }
 }
+
+/**
+ * Get all trades and specific statistics for a given day (for calendar modal)
+ */
+export async function getDayDetails(date: string, accountId?: string) {
+    const user = await getAuthUser();
+    if (!user) return { error: "Unauthorized" };
+
+    const start = new Date(date);
+    start.setUTCHours(0, 0, 0, 0);
+    const end = new Date(date);
+    end.setUTCHours(23, 59, 59, 999);
+
+    const where: any = {
+        userId: user.id,
+        status: "CLOSED",
+        exitDate: { gte: start, lte: end }
+    };
+    if (accountId) where.accountId = accountId;
+
+    try {
+        const trades = await prisma.journalEntry.findMany({
+            where,
+            orderBy: { exitDate: "desc" },
+            select: {
+                id: true,
+                symbol: true,
+                type: true,
+                status: true,
+                result: true,
+                pnl: true,
+                commission: true,
+                swap: true,
+                entryDate: true,
+                exitDate: true,
+                lotSize: true,
+            }
+        });
+
+        let buys = 0;
+        let sells = 0;
+        let bestTrade = -Infinity;
+        let worstTrade = Infinity;
+        let totalHoldTimeMs = 0;
+        let totalCommissions = 0;
+        let grossProfit = 0;
+        let grossLoss = 0;
+        let winCount = 0;
+        let lossCount = 0;
+        
+        // Cần giả lập equity curve trong ngày để tìm Max Drawdown
+        // Sắp xếp trades theo thời gian đóng lệnh sớm nhất trước (ASC) để vẽ lại Curve
+        const sortedTradesAsc = [...trades].sort((a, b) => {
+            if (!a.exitDate || !b.exitDate) return 0;
+            return a.exitDate.getTime() - b.exitDate.getTime();
+        });
+
+        let peak = 0;
+        let currentDrawdown = 0;
+        let maxDrawdown = 0;
+        let runningPnl = 0;
+
+        const formattedTrades = trades.map(t => {
+            const netPnl = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+
+            if (t.type === 'BUY') buys++;
+            if (t.type === 'SELL') sells++;
+
+            if (netPnl > bestTrade) bestTrade = netPnl;
+            if (netPnl < worstTrade) worstTrade = netPnl;
+
+            if (t.exitDate && t.entryDate) {
+                totalHoldTimeMs += t.exitDate.getTime() - t.entryDate.getTime();
+            }
+
+            totalCommissions += (t.commission || 0) + (t.swap || 0);
+
+            if (netPnl > 0) {
+                grossProfit += netPnl;
+                winCount++;
+            } else if (netPnl < 0) {
+                grossLoss += Math.abs(netPnl);
+                lossCount++;
+            }
+
+            return {
+                ...t,
+                netPnl,
+                entryDate: t.entryDate.toISOString(),
+                exitDate: t.exitDate?.toISOString() || null
+            };
+        });
+
+        // Calculate max drawdown intraday
+        sortedTradesAsc.forEach(t => {
+            const netPnl = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            runningPnl += netPnl;
+            if (runningPnl > peak) {
+                peak = runningPnl;
+            }
+            const drawdown = peak - runningPnl;
+            if (drawdown > maxDrawdown) {
+                maxDrawdown = drawdown;
+            }
+        });
+
+        return {
+            trades: formattedTrades,
+            stats: {
+                buys,
+                sells,
+                totalTrades: trades.length,
+                bestTrade: bestTrade === -Infinity ? 0 : bestTrade,
+                worstTrade: worstTrade === Infinity ? 0 : worstTrade,
+                avgHoldTimeMinutes: trades.length ? Math.round((totalHoldTimeMs / trades.length) / 60000) : 0,
+                maxDrawdown,
+                commissionsAndFees: totalCommissions,
+                winrate: trades.length ? (winCount / trades.length) * 100 : 0,
+                profitFactor: grossLoss > 0 ? grossProfit / grossLoss : (grossProfit > 0 ? 999 : 0),
+                expectancy: trades.length ? (grossProfit - grossLoss) / trades.length : 0
+            }
+        };
+
+    } catch (error) {
+        return { error: "Failed to load day details" };
+    }
+}
+

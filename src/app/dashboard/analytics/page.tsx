@@ -65,13 +65,12 @@ export default async function AnalyticsPage({
         }
     }
 
-    // Date Range Logic
+    // Date Range Logic (All-Time by default since Date Filter is removed)
     const startDateParam = resolvedParams?.from as string;
     const endDateParam = resolvedParams?.to as string;
 
-    const now = new Date();
-    const startDate = startDateParam ? parseISO(startDateParam) : startOfMonth(now);
-    const endDate = endDateParam ? endOfDay(parseISO(endDateParam)) : endOfMonth(now);
+    const startDate = startDateParam ? parseISO(startDateParam) : undefined;
+    const endDate = endDateParam ? endOfDay(parseISO(endDateParam)) : undefined;
 
     // 2. Parallel Data Fetching
     const [
@@ -143,14 +142,21 @@ export default async function AnalyticsPage({
         result: t.result || "BREAK_EVEN"
     }));
 
-    // Daily PnL (Format match)
-    const dailyPnL = dailyPerformance.map((d: any) => ({
-        date: d.date,
-        pnl: d.value,
-        growth: 0, // Simplified for now
-        tradeCount: d.tradeCount,
-        trades: [] // We don't load nested trades for the calendar view in V1 to save size
-    }));
+    // Daily PnL (Format match & Calculate Growth based on previous period balance)
+    let rBalance = currentBalance - totalPeriodPnL;
+    const dailyPnL = dailyPerformance.map((d: any) => {
+        const prevBalance = rBalance;
+        rBalance += d.value;
+        const growth = prevBalance > 0 ? (d.value / prevBalance) * 100 : 0;
+        
+        return {
+            date: d.date,
+            pnl: d.value,
+            growth: growth,
+            tradeCount: d.tradeCount,
+            trades: [] // We don't load nested trades for the calendar view in V1 to save size
+        };
+    });
 
     // Pair Performance (Format match — winRate now comes from query)
     const pairPerfFormatted = pairPerformance.map((p: any) => ({

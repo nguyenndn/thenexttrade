@@ -75,28 +75,37 @@ export function KPICards({ summary }: KPICardsProps) {
     ];
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
             {cards.map((card, index) => {
                 const Icon = card.icon;
+                
+                // Set text color properly aligned with Journal style - clean and strong
+                let colorClass = 'text-gray-900 dark:text-white';
+                if (card.color.includes('green')) colorClass = 'text-[#00C888]';
+                else if (card.color.includes('red')) colorClass = 'text-red-500';
+
                 return (
                     <div
                         key={index}
-                        className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow"
+                        className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace('text-', 'border-t-')}`}
                     >
-                        <div className="flex items-center gap-3 mb-3">
-                            <div className={`p-2.5 rounded-xl ${card.bg}`}>
-                                <Icon size={18} className={card.color} />
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className={`p-3 rounded-2xl ${card.bg} text-opacity-80 group-hover:bg-opacity-100 transition-colors shadow-sm relative z-10`}>
+                                <Icon size={20} className={card.color} strokeWidth={2.5} />
                             </div>
                         </div>
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
+                        <h3 className="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1.5 relative z-10">
                             {card.title}
                         </h3>
-                        <p className={`text-2xl font-black ${card.color.includes('green') || card.color.includes('red') ? card.color : 'text-gray-900 dark:text-white'}`}>
+                        <p className={`text-[28px] font-bold tracking-tight ${colorClass} group-hover:scale-[1.02] transform origin-left transition-transform relative z-10`}>
                             {card.prefix && card.prefix}
                             {card.value}
                         </p>
                         {card.description && (
-                            <p className="text-xs text-gray-400 mt-1">{card.description}</p>
+                            <p className="text-xs text-gray-400 font-medium mt-1.5 flex items-center gap-1.5 relative z-10">
+                                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${card.color.replace('text-', 'bg-')}`}></span>
+                                {card.description}
+                            </p>
                         )}
                     </div>
                 );

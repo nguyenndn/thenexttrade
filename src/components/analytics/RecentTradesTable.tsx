@@ -41,16 +41,19 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-gray-900 dark:text-white">
-                    Recent Trades
-                </h3>
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-1.5 h-6 bg-[#00C888] rounded-full"></div>
+                    <h3 className="font-bold text-gray-900 dark:text-white text-lg">
+                        Recent Trades
+                    </h3>
+                </div>
                 <Link
                     href="/dashboard/journal"
-                    className="text-sm text-primary hover:underline font-medium"
+                    className="text-xs font-bold uppercase tracking-widest text-[#00C888] hover:opacity-80 transition-opacity bg-[#00C888]/10 px-3 py-1.5 rounded-lg border border-[#00C888]/20"
                 >
-                    View all →
+                    View journal
                 </Link>
             </div>
 
@@ -59,51 +62,49 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                     No trades to display
                 </div>
             ) : (
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-white/5">
                     <table className="w-full text-left text-sm">
-                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider border-b border-gray-100 dark:border-white/5">
                             <tr>
-                                <th className="px-4 py-3 rounded-l-xl">Date</th>
+                                <th className="px-4 py-3">Date</th>
                                 <th className="px-4 py-3">Pair</th>
                                 <th className="px-4 py-3">Type</th>
                                 <th className="px-4 py-3">Result</th>
-                                <th className="px-4 py-3 rounded-r-xl text-right">P&L</th>
+                                <th className="px-4 py-3 text-right">P&L</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {trades.map((trade) => (
                                 <tr
                                     key={trade.id}
-                                    className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                    className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group/row"
                                 >
-                                    <td className="px-4 py-3 text-gray-500">
+                                    <td className="px-4 py-3.5 text-gray-500 font-medium whitespace-nowrap">
                                         {format(parseISO(trade.entryDate), "MMM dd, HH:mm")}
                                     </td>
-                                    <td className="px-4 py-3 font-bold text-gray-900 dark:text-white">
+                                    <td className="px-4 py-3.5 font-bold text-gray-900 dark:text-white whitespace-nowrap">
                                         {trade.symbol}
                                     </td>
-                                    <td className="px-4 py-3">
+                                    <td className="px-4 py-3.5 whitespace-nowrap">
                                         <span
-                                            className={`text-xs font-bold px-2 py-1 rounded ${trade.type === "BUY"
-                                                    ? "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400"
-                                                    : "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400"
+                                            className={`text-[11px] font-bold px-2 py-1 rounded inline-block ${trade.type === "BUY"
+                                                    ? "bg-emerald-50 text-emerald-600 dark:bg-[#00C888]/10 dark:text-[#00C888]"
+                                                    : "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
                                                 }`}
                                         >
                                             {trade.type}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-3">
+                                    <td className="px-4 py-3.5 whitespace-nowrap">
                                         <span
-                                            className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded ${getResultBadge(
-                                                trade.result
-                                            )}`}
+                                            className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2 py-1 rounded ${trade.result === "WIN" ? "bg-emerald-50 dark:bg-[#00C888]/10 text-emerald-600 dark:text-[#00C888]" : trade.result === "LOSS" ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400" : "bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400"}`}
                                         >
                                             {getResultIcon(trade.result)}
                                             {trade.result}
                                         </span>
                                     </td>
                                     <td
-                                        className={`px-4 py-3 text-right font-bold ${trade.pnl >= 0 ? "text-green-500" : "text-red-500"
+                                        className={`px-4 py-3.5 text-right font-bold whitespace-nowrap ${trade.pnl >= 0 ? "text-emerald-500 dark:text-[#00C888]" : "text-red-500"
                                             }`}
                                     >
                                         {trade.pnl >= 0 ? "+" : ""}${trade.pnl.toLocaleString()}

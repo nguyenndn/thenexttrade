@@ -9,9 +9,10 @@ import { startOfMonth, endOfMonth, format, subDays, startOfDay, endOfDay } from 
 interface DashboardFilterProps {
     currentAccountId?: string;
     className?: string;
+    hideDateFilter?: boolean;
 }
 
-export function DashboardFilter({ currentAccountId, className }: DashboardFilterProps) {
+export function DashboardFilter({ currentAccountId, className, hideDateFilter }: DashboardFilterProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -42,6 +43,8 @@ export function DashboardFilter({ currentAccountId, className }: DashboardFilter
 
     // Default to Saved Range or Today on mount if URL is empty
     useEffect(() => {
+        if (hideDateFilter) return;
+
         const start = searchParams.get("from");
         const end = searchParams.get("to");
 
@@ -99,13 +102,17 @@ export function DashboardFilter({ currentAccountId, className }: DashboardFilter
     return (
         <div className={`grid grid-cols-1 md:grid-cols-2 2xl:flex 2xl:flex-row items-center gap-3 w-full 2xl:w-auto ${className || ""}`}>
             <AccountSelector currentAccountId={currentAccountId} className="w-full" />
-            <div className="h-8 w-[1px] bg-gray-200 dark:bg-white/10 hidden 2xl:block"></div>
-            <DateRangePicker
-                value={dateRange}
-                onChange={handleDateChange}
-                className="w-full 2xl:w-auto"
-                maxDate={new Date()} // Prevent future selection
-            />
+            {!hideDateFilter && (
+                <>
+                    <div className="h-8 w-[1px] bg-gray-200 dark:bg-white/10 hidden 2xl:block"></div>
+                    <DateRangePicker
+                        value={dateRange}
+                        onChange={handleDateChange}
+                        className="w-full 2xl:w-auto"
+                        maxDate={new Date()} // Prevent future selection
+                    />
+                </>
+            )}
         </div>
     );
 }

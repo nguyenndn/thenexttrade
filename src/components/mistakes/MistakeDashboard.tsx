@@ -49,97 +49,107 @@ export function MistakeDashboard() {
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
                 {/* Cost of Mistakes */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-red-100 dark:bg-red-500/10 text-red-500 rounded-lg">
-                            <DollarSign size={20} />
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div className="flex items-center gap-3.5 mb-3">
+                        <div className="p-3 bg-red-500/10 text-red-500 dark:text-red-400 rounded-2xl group-hover:bg-red-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                            <DollarSign size={22} strokeWidth={2.5} />
                         </div>
-                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Cost of Mistakes</p>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Cost of Mistakes</p>
                     </div>
-                    <p className="text-2xl font-black text-red-500">
+                    <p className="text-3xl font-black text-red-500 tracking-tighter">
                         ${Math.abs(data.costOfMistakes).toFixed(2)}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-gray-400 font-medium mt-1.5 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>
                         Total loss from mistake trades
                     </p>
                 </div>
 
                 {/* Win Rate Gap */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-500/10 text-blue-500 rounded-lg">
-                            <TrendingDown size={20} />
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div className="flex items-center gap-3.5 mb-3">
+                        <div className="p-3 bg-blue-500/10 text-blue-500 dark:text-blue-400 rounded-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                            <TrendingDown size={22} strokeWidth={2.5} />
                         </div>
-                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Performance Gap</p>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Performance Gap</p>
                     </div>
-                    <div className="flex items-baseline gap-2">
-                        <p className="text-2xl font-black text-gray-900 dark:text-white">
+                    <div className="flex items-end gap-2 mb-1">
+                        <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">
                             {(data.cleanTradeWinRate - data.mistakeTradeWinRate).toFixed(1)}%
                         </p>
-                        <span className="text-xs font-bold text-gray-400">diff</span>
+                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">diff</span>
                     </div>
-                    <div className="flex items-center gap-2 mt-2 text-xs">
-                        <span className="text-green-500 font-bold">{data.cleanTradeWinRate.toFixed(0)}% clean</span>
-                        <span className="text-gray-300">vs</span>
-                        <span className="text-red-500 font-bold">{data.mistakeTradeWinRate.toFixed(0)}% w/ mistakes</span>
+                    <div className="flex items-center gap-2 mt-2 text-[11px] font-bold tracking-wide uppercase">
+                        <span className="text-[#00C888]">{data.cleanTradeWinRate.toFixed(0)}% clean</span>
+                        <span className="text-gray-300 dark:text-gray-600">vs</span>
+                        <span className="text-red-500">{data.mistakeTradeWinRate.toFixed(0)}% w/ mistakes</span>
                     </div>
                 </div>
 
                 {/* Most Frequent */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-yellow-100 dark:bg-yellow-500/10 text-yellow-500 rounded-lg">
-                            <AlertTriangle size={20} />
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div className="flex items-center gap-3.5 mb-4">
+                        <div className="p-3 bg-amber-500/10 text-amber-500 dark:text-amber-400 rounded-2xl group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                            <AlertTriangle size={22} strokeWidth={2.5} />
                         </div>
-                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Frequent Issue</p>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Frequent Issue</p>
                     </div>
                     {mostFrequent ? (
                         <>
-                            <p className="text-lg font-bold text-gray-900 dark:text-white truncate">
+                            <p className="text-lg font-black text-gray-900 dark:text-white truncate tracking-tight">
                                 {mostFrequent.emoji} {mostFrequent.name}
                             </p>
-                            <p className="text-xs text-gray-400 mt-1">
+                            <p className="text-xs text-gray-400 font-medium mt-1.5 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
                                 Occurred {data.mistakeStats.find(s => s.code === mostFrequent.code)?.count} times
                             </p>
                         </>
-                    ) : (<p className="text-gray-400">None</p>)}
+                    ) : (<p className="text-sm font-medium text-gray-400">None</p>)}
                 </div>
 
                 {/* Deadliest Mistake */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-purple-100 dark:bg-purple-500/10 text-purple-500 rounded-lg">
-                            <XCircle size={20} />
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                    <div className="flex items-center gap-3.5 mb-4">
+                        <div className="p-3 bg-purple-500/10 text-purple-500 dark:text-purple-400 rounded-2xl group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                            <XCircle size={22} strokeWidth={2.5} />
                         </div>
-                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Costliest Mistake</p>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Costliest Mistake</p>
                     </div>
                     {mostCostly ? (
                         <>
-                            <p className="text-lg font-bold text-gray-900 dark:text-white truncate">
+                            <p className="text-lg font-black text-gray-900 dark:text-white truncate tracking-tight">
                                 {mostCostly.emoji} {mostCostly.name}
                             </p>
-                            <p className="text-xs text-red-500 font-bold mt-1">
+                            <p className="text-sm text-red-500 font-black mt-1 tracking-tight">
                                 -${Math.abs(data.mistakeStats.find(s => s.code === mostCostly.code)?.totalPnL || 0).toFixed(2)}
                             </p>
                         </>
-                    ) : (<p className="text-gray-400">None</p>)}
+                    ) : (<p className="text-sm font-medium text-gray-400">None</p>)}
                 </div>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-8 h-full">
+            <div className="grid lg:grid-cols-2 gap-5 h-full">
                 {/* Charts */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-lg">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-                        Mistakes by Cost
-                        <span className="text-xs font-normal text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-full">Top 5</span>
-                    </h3>
+                <div className="bg-white dark:bg-[#1E2028] p-6 md:p-8 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Mistakes by Cost</h3>
+                            <p className="text-sm text-gray-400 font-medium">Lỗ lớn nhất do nguyên nhân nào?</p>
+                        </div>
+                        <span className="text-[10px] font-black text-[#00C888] bg-[#00C888]/10 px-3 py-1.5 rounded-lg uppercase tracking-widest border border-[#00C888]/20">Top 5</span>
+                    </div>
                     <MistakeCostChart data={data.mistakeStats} />
                 </div>
 
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-lg">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Mistake Frequency</h3>
+                <div className="bg-white dark:bg-[#1E2028] p-6 md:p-8 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Mistake Frequency</h3>
+                            <p className="text-sm text-gray-400 font-medium">Tần suất mắc các lỗi giao dịch</p>
+                        </div>
+                    </div>
                     <MistakeFrequencyChart data={data.mistakesByCategory} />
                 </div>
             </div>

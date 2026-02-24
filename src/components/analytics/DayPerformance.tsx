@@ -1,5 +1,6 @@
 "use client";
 
+import { Activity } from "lucide-react";
 import {
     BarChart,
     Bar,
@@ -8,8 +9,9 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    Cell,
+    Cell
 } from "recharts";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 interface DayPerformanceProps {
     data: Array<{
@@ -21,15 +23,16 @@ interface DayPerformanceProps {
 }
 
 export function DayPerformance({ data }: DayPerformanceProps) {
-    // Ensure we have all weekdays (Mon-Fri)
-    const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-    const chartData = weekdays.map((day, index) => {
-        const dayData = data.find(d => d.day === day);
+    const { theme } = useTheme();
+    const isDark = theme === "dark";
+
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+    const chartData = days.map((day, index) => {
+        const dayData = data.find(d => d.dayIndex === index + 1);
         return {
-            day: day.substring(0, 3), // Mon, Tue, etc.
-            fullDay: day,
+            name: day,
             pnl: dayData?.pnl || 0,
-            tradeCount: dayData?.tradeCount || 0,
+            tradeCount: dayData?.tradeCount || 0
         };
     });
 
@@ -37,56 +40,52 @@ export function DayPerformance({ data }: DayPerformanceProps) {
     const bestDay = [...chartData].sort((a, b) => b.pnl - a.pnl)[0];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-4">
-                Performance by Day
-            </h3>
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group">
+            <div className="flex items-center gap-2.5 mb-6">
+                <div className="p-2 bg-[#00C888]/10 rounded-lg text-[#00C888]">
+                    <Activity size={18} />
+                </div>
+                <div>
+                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">Performance by Day</h3>
+                    <p className="text-xs text-gray-400">Weekday distribution</p>
+                </div>
+            </div>
 
             <div className="h-[250px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={chartData}
-                        margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
+                        margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
                     >
-                        <CartesianGrid
-                            strokeDasharray="3 3"
-                            stroke="#374151"
-                            opacity={0.1}
-                            vertical={false}
-                        />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#333" : "#f0f0f0"} />
                         <XAxis
-                            dataKey="day"
-                            stroke="#9CA3AF"
-                            fontSize={12}
-                            tickLine={false}
+                            dataKey="name"
                             axisLine={false}
-                        />
-                        <YAxis
-                            stroke="#9CA3AF"
-                            fontSize={12}
                             tickLine={false}
-                            axisLine={false}
-                            tickFormatter={(value) => `$${value}`}
+                            tick={{ fontSize: 11, fontWeight: 600, fill: isDark ? '#9CA3AF' : '#4B5563' }}
                         />
+                        <YAxis hide />
                         <Tooltip
                             contentStyle={{
-                                backgroundColor: "#1F2937",
-                                border: "none",
-                                borderRadius: "12px",
-                                padding: "12px",
+                                backgroundColor: isDark ? '#1E2028' : '#fff',
+                                border: 'none',
+                                borderRadius: '12px',
+                                boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                                fontSize: '12px'
                             }}
-                            itemStyle={{ color: "#fff" }}
-                            formatter={(value: any) => [`$${Number(value).toLocaleString()}`, "P&L"]}
-                            labelFormatter={(label) => {
-                                const day = chartData.find(d => d.day === label);
-                                return `${day?.fullDay} (${day?.tradeCount} trades)`;
-                            }}
+                            itemStyle={{ color: isDark ? '#fff' : '#000' }}
+                            formatter={(value: any) => [`$${Number(value).toLocaleString()}`, "PnL"]}
                         />
-                        <Bar dataKey="pnl" radius={[4, 4, 0, 0]}>
+                        <Bar
+                            dataKey="pnl"
+                            radius={[4, 4, 0, 0]}
+                            barSize={32}
+                        >
                             {chartData.map((entry, index) => (
                                 <Cell
                                     key={`cell-${index}`}
-                                    fill={entry.pnl >= 0 ? "hsl(var(--primary))" : "#EF4444"}
+                                    fill={entry.pnl >= 0 ? "#00C888" : "#EF4444"}
+                                    fillOpacity={0.8}
                                 />
                             ))}
                         </Bar>
@@ -94,15 +93,12 @@ export function DayPerformance({ data }: DayPerformanceProps) {
                 </ResponsiveContainer>
             </div>
 
-            {/* Best day insight */}
-            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-500">Best day: {bestDay?.fullDay}</span>
-                    <span className={`font-bold ${bestDay?.pnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                        {bestDay?.pnl >= 0 ? '+' : ''}${bestDay?.pnl.toLocaleString()}
-                    </span>
+            {chartData.some(d => d.pnl !== 0) && (
+                <div className="mt-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                    <span>Strongest Day: {bestDay.name}</span>
+                    <span className="text-[#00C888]">+{bestDay.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

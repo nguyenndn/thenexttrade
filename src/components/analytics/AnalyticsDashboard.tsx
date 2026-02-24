@@ -4,13 +4,13 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { BarChart3 } from "lucide-react";
 
-import { KPICards } from "./KPICards";
 import { EquityCurve } from "./EquityCurve";
 import { ProfitCalendar } from "./ProfitCalendar";
 import { PairPerformance } from "./PairPerformance";
 import { DayPerformance } from "./DayPerformance";
-import { RecentTradesTable } from "./RecentTradesTable";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
+import { PageHeader } from "@/components/ui/PageHeader";
+import Link from "next/link";
 
 export interface AnalyticsData {
     summary: {
@@ -43,8 +43,8 @@ interface AnalyticsDashboardProps {
     data: AnalyticsData;
     accountId?: string;
     dateRange: {
-        start: Date;
-        end: Date;
+        start?: Date;
+        end?: Date;
     };
 }
 
@@ -53,45 +53,31 @@ export function AnalyticsDashboard({ data, accountId, dateRange }: AnalyticsDash
 
     return (
         <div className="space-y-6">
-            {/* Header with filters */}
-            <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Analytics
-                        </h1>
-                    </div>
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
-                        <DashboardFilter currentAccountId={accountId ?? undefined} />
-                    </div>
+            {/* Header with filters using standardized PageHeader component */}
+            <PageHeader 
+                title="Analytics" 
+                description="Analyze your trading performance"
+            >
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                    <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
                 </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-                    Analyze your trading performance
-                </p>
-            </div>
+            </PageHeader>
 
             {isEmpty ? (
                 <AnalyticsEmptyState />
             ) : (
                 <>
-                    {/* KPI Summary Cards */}
-                    <KPICards summary={data.summary} />
-
-                    {/* Charts Row 1 */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Charts Row 1 - Full Width */}
+                    <div className="grid grid-cols-1 gap-6">
                         <EquityCurve data={data.equityCurve} />
-                        <ProfitCalendar data={data.dailyPnL} />
+                        <ProfitCalendar data={data.dailyPnL} equityCurve={data.equityCurve} accountId={accountId || undefined} />
                     </div>
 
-                    {/* Charts Row 2 */}
+                    {/* Charts Row 2 - Two Columns */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <PairPerformance data={data.pairPerformance} />
                         <DayPerformance data={data.dayOfWeekPerformance} />
                     </div>
-
-                    {/* Recent Trades */}
-                    <RecentTradesTable trades={data.recentTrades} />
                 </>
             )}
         </div>

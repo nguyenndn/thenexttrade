@@ -6,7 +6,7 @@ interface MistakeFrequencyChartProps {
     data: Record<string, number>;
 }
 
-const COLORS = ['hsl(var(--primary))', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
+const COLORS = ['#00C888', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
 
 export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
     const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
@@ -30,6 +30,7 @@ export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
                         outerRadius={80}
                         paddingAngle={5}
                         dataKey="value"
+                        stroke="none"
                     >
                         {chartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -40,16 +41,20 @@ export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
                             if (active && payload && payload.length) {
                                 const data = payload[0].payload;
                                 return (
-                                    <div className="bg-white dark:bg-[#1E2028] p-3 rounded-xl border border-gray-100 dark:border-white/10 shadow-xl">
-                                        <p className="font-bold text-gray-900 dark:text-white">
+                                    <div className="bg-[#151925]/95 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
+                                        <p className="font-black text-white mb-2 tracking-tight">
                                             {data.name}
                                         </p>
-                                        <p className="text-primary font-bold">
-                                            {data.value} mistakes
-                                        </p>
-                                        <p className="text-xs text-gray-500">
-                                            {((data.value / total) * 100).toFixed(1)}% of total
-                                        </p>
+                                        <div className="space-y-1">
+                                            <p className="text-[#00C888] font-bold flex justify-between gap-6">
+                                                <span className="text-gray-400 text-xs font-medium uppercase tracking-widest">Mistakes</span>
+                                                {data.value}
+                                            </p>
+                                            <p className="text-gray-300 font-bold flex justify-between gap-6">
+                                                <span className="text-gray-400 text-xs font-medium uppercase tracking-widest">% of Total</span>
+                                                {((data.value / total) * 100).toFixed(1)}%
+                                            </p>
+                                        </div>
                                     </div>
                                 );
                             }
