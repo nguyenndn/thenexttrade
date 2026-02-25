@@ -41,7 +41,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-300 group">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-1.5 h-6 bg-[#00C888] rounded-full"></div>

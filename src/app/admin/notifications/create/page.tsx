@@ -142,7 +142,7 @@ export default function CreateBroadcastPage() {
                     </div>
 
                     <div className="flex justify-end gap-3 pt-4">
-                        <Button variant="ghost" type="button" onClick={() => router.back()}>Cancel</Button>
+                        <Button variant="outline" type="button" onClick={() => router.back()}>Cancel</Button>
                         <Button type="submit" variant="primary" className="bg-primary hover:bg-[#00B078] text-white" disabled={isSubmitting}>
                             {isSubmitting ? <Loader2 className="animate-spin mr-2" size={18} /> : <Send className="mr-2" size={18} />}
                             {isSubmitting ? "Sending..." : "Send Broadcast"}

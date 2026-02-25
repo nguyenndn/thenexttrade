@@ -170,53 +170,52 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <span className={`text-[11px] font-bold px-3 py-1 rounded-full ${monthlyPnL >= 0 ? 'bg-[#00C888]/10 text-[#00C888]' : 'bg-red-500/10 text-red-500'}`}>
+                <div className="flex items-center gap-4">
+                    <div className={`flex items-center justify-center px-4 py-1.5 rounded-full ${monthlyPnL >= 0 ? 'bg-[#00C888]/10 text-[#00C888]' : 'bg-red-500/10 text-red-500'} font-bold text-sm tracking-wide`}>
                         {monthlyPnL >= 0 ? '+' : ''}${Math.abs(monthlyPnL).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </span>
-                    <div className="flex items-center gap-1">
-                    <button
-                        onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                        className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
-                    >
-                        <ChevronLeft size={18} className="text-gray-500" />
-                    </button>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
-                        {format(currentMonth, "MMMM yyyy")}
-                    </span>
-                    <button
-                        onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                        className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
-                    >
-                        <ChevronRight size={18} className="text-gray-500" />
-                    </button>
+                    </div>
                     
-                    <button
-                        onClick={() => setCurrentMonth(new Date())}
-                        className="text-xs font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white px-2 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors mx-1 border border-gray-200 dark:border-white/10"
-                    >
-                        This month
-                    </button>
-                    
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+                            className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                        >
+                            <ChevronLeft size={18} className="text-gray-500" />
+                        </button>
+                        <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
+                            {format(currentMonth, "MMMM yyyy")}
+                        </span>
+                        <button
+                            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+                            className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                        >
+                            <ChevronRight size={18} className="text-gray-500" />
+                        </button>
+                    </div>
+
                     <div className="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
-                    
+
                     <button
                         onClick={handleScreenshot}
                         disabled={isCapturing}
-                        className={`p-1 rounded-lg transition-colors mr-1 border border-transparent 
+                        className={`p-1.5 rounded-lg transition-colors border border-transparent 
                             ${isCapturing 
                                 ? "text-gray-300 dark:text-gray-600 bg-gray-50 dark:bg-white/5" 
                                 : "text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 hover:border-gray-200 dark:hover:border-white/10"
                             }`}
                         title="Screenshot Report"
                     >
-                        {isCapturing ? <Loader2 size={18} className="animate-spin" /> : <Camera size={18} />}
+                        {isCapturing ? <Loader2 size={16} className="animate-spin" /> : <Camera size={16} />}
                     </button>
-                    </div>
+                </div>
                 </div>
             </div>
 
-            {/* Day headers */}
-            <div className="grid grid-cols-8 gap-2 mb-2">
+            {/* Horizontal Scroll Wrapper for Mobile */}
+            <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
+                <div className="min-w-[768px]">
+                    {/* Day headers */}
+                    <div className="grid grid-cols-8 gap-2 mb-2">
                 {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Weekly"].map(day => (
                     <div
                         key={day}
@@ -295,18 +294,20 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                             })}
 
                             {/* Weekly Summary Cell */}
-                            <div className="min-h-[80px] rounded-xl flex flex-col items-center justify-center bg-gray-50/50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 relative p-2 shadow-sm">
-                                <span className="text-[10px] font-bold text-[#00C888] absolute top-1.5 uppercase tracking-wider">Week {weekIndex + 1}</span>
-                                <div className="flex flex-col items-center mt-3">
-                                    <span className={`text-sm font-bold leading-none mb-1 ${weeklyPnL >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                            <div className="h-[90px] rounded-2xl flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 relative p-3 shadow-sm hover:shadow-md transition-shadow">
+                                <span className={`text-[11px] font-black uppercase tracking-widest mb-1.5 ${weeklyPnL >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>Week {weekIndex + 1}</span>
+                                <div className="flex flex-col items-center gap-0.5">
+                                    <span className={`text-[17px] font-black leading-none ${weeklyPnL >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
                                         ${Math.abs(weeklyPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
-                                    <span className="text-[9px] text-gray-400 font-medium">{weeklyTradeDays} trade days</span>
+                                    <span className="text-[10px] text-gray-400 font-medium">{weeklyTradeDays} trade days</span>
                                 </div>
                             </div>
                         </React.Fragment>
                     );
                 })}
+                    </div>
+                </div>
             </div>
 
             {/* Legend */}

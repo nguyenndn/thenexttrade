@@ -21,15 +21,13 @@ interface PairPerformanceProps {
         winRate: number;
     }>;
 }
+import { processPairPerformanceData } from "./utils/chartHelpers";
 
 export function PairPerformance({ data }: PairPerformanceProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
-    // Sort by PnL and take top 8
-    const chartData = [...data]
-        .sort((a, b) => b.pnl - a.pnl)
-        .slice(0, 8);
+    const { isEmpty, chartData, bestPair } = processPairPerformanceData(data);
 
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group">
@@ -94,10 +92,10 @@ export function PairPerformance({ data }: PairPerformanceProps) {
                 </div>
             )}
             
-            {data.length > 0 && (
+            {!isEmpty && bestPair && (
                 <div className="mt-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                    <span>Best: {chartData[0].symbol}</span>
-                    <span className="text-[#00C888]">+{chartData[0].pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                    <span>Best: {bestPair.symbol}</span>
+                    <span className="text-[#00C888]">+{bestPair.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
                 </div>
             )}
         </div>

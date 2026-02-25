@@ -32,7 +32,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                     Performance Summary: {data.period}
                 </h4>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Net P/L</p>
                         <p className={`text-2xl font-black ${data.summary.netPnL >= 0 ? 'text-primary' : 'text-red-500'}`}>

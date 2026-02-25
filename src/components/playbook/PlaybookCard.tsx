@@ -28,7 +28,7 @@ export function PlaybookCard({ trade, onClick }: PlaybookCardProps) {
 
     return (
         <div
-            className="group relative aspect-[16/9] rounded-xl overflow-hidden cursor-pointer border border-gray-100 dark:border-white/5 bg-gray-100 dark:bg-[#1E2028] transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+            className="group relative aspect-[16/9] rounded-xl overflow-hidden cursor-pointer border border-gray-100 dark:border-white/5 bg-gray-100 dark:bg-[#1E2028] transition-shadow duration-300 hover:shadow-md hover:scale-[1.02]"
             onClick={onClick}
         >
             {/* Image */}

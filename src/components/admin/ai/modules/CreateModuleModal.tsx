@@ -149,7 +149,7 @@ export default function CreateModuleModal({ levelId, levelTitle }: CreateModuleM
                                         AI Provider: GitHub Models
                                     </div>
                                     <div className="flex space-x-3">
-                                        <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+                                        <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
                                         <Button
                                             className="bg-primary hover:bg-[#00a872] text-white font-bold"
                                             onClick={handleGenerate}

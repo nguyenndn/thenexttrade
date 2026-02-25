@@ -83,8 +83,9 @@ export function AddAccountModal({
     }
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-white/5 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleClose} />
+            <div className="relative z-10 bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-white/5 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -117,7 +118,7 @@ export function AddAccountModal({
                     w-full flex items-center gap-4 p-4 rounded-xl border transition-all text-left group
                     ${p.disabled
                                             ? "opacity-50 cursor-not-allowed border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5"
-                                            : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] hover:border-primary hover:shadow-lg dark:hover:shadow-primary/10 hover:-translate-y-0.5"
+                                            : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] hover:border-primary hover:shadow-md transition-shadow dark:hover:shadow-primary/10 hover:-translate-y-0.5"
                                         }
                   `}
                                 >

@@ -258,9 +258,10 @@ All admin pages must follow the "AI Studio" header style to ensure consistency:
 </div>
 ```
 
-### 4.4 Page Spacing
+### 4.4 Page Spacing & Section Gaps
 - **Top Padding**: Do NOT add `pt-` or `py-` to your page wrapper. The main layout already handles the top offset from the navbar.
 - **Horizontal Padding**: Use `w-full` for admin pages. Avoid extra side padding unless necessary for specific containment.
+- **Section Gaps (CRITICAL)**: Always use `16px` (`gap-4` or `space-y-4`) as the standard spacing between major sections, grids, and dashboard widgets. Do NOT use `gap-6` or `space-y-6` to ensure consistency with the main Dashboard layout.
 
 ### 4.5 Decorative Icons
 Used in headers or empty states.
@@ -273,7 +274,7 @@ Used in headers or empty states.
 ---
 
 ## 5. Animation
-- **Hover Lift:** `hover:-translate-y-0.5 transition-all`
+- **Hover Lift:** CHỈ dùng cho Nút Bấm (`hover:-translate-y-0.5 transition-all`). KHÔNG dùng cho Card Components.
 - **Fade In:** `animate-in fade-in slide-in-from-top-4`
 - **Blur Glow:** `blur-[60px] opacity-20` background blobs
 
@@ -287,18 +288,35 @@ Used in headers or empty states.
 
 ### 6.1 Interactive Cards (Hover Effect)
 Used for dashboard widgets, academy levels, and any clickable card.
-- **Shadow:** `shadow-sm` -> `hover:shadow-xl`
-- **Lift:** `hover:-translate-y-1`
-- **Rounding:** `rounded-xl` (preferred for widgets) or `rounded-xl`
-- **Transition:** `transition-all duration-300`
+- **Shadow:** BẮT BUỘC dùng `shadow-sm` -> `hover:shadow-md`
+- **Lift:** NGHIÊM CẤM dùng `hover:-translate-y` trên thẻ Card Widget. (Quá đà)
+- **Rounding:** BẮT BUỘC `rounded-xl`
+- **Transition:** BẮT BUỘC `transition-shadow` (không dùng transition-all trừ khi đổi màu nền)
 
 ```tsx
-<div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+<div className="bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
     {/* Content */}
 </div>
 ```
 
-### 6.2 Loading States (Instant Feedback)
+### 6.2 Modal Components (Backdrop Click)
+All custom Modals MUST close when the user clicks completely outside the modal content area (the backdrop). 
+To implement this cleanly, separate the backdrop and the modal box into sibling elements inside the root `inset-0` container.
+
+**Standard Architecture:**
+```tsx
+<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    {/* 1. Backdrop Overlay (Handles onClick to close) */}
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
+    
+    {/* 2. Modal Content Box (z-10 ensures it sits above the backdrop) */}
+    <div className="relative z-10 w-full max-w-lg bg-white dark:bg-[#1E2028] rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="p-6">Content here</div>
+    </div>
+</div>
+```
+
+### 6.3 Loading States (Instant Feedback)
 All Admin pages must use `loading.tsx` to provide instant feedback. Use a tailored Skeleton structure.
 
 **Standard Page Skeleton:**

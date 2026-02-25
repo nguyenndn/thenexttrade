@@ -149,7 +149,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={article.id}
                                         href={`/articles/${article.slug}`}
-                                        className="group flex flex-col rounded-xl overflow-hidden bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/5 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                                        className="group flex flex-col rounded-xl overflow-hidden bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-300 hover:-translate-y-0.5"
                                     >
                                         {/* Thumbnail */}
                                         <div className="relative h-56 w-full overflow-hidden">

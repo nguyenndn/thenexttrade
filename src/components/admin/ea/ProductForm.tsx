@@ -152,7 +152,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     </div>
                     <div className="flex items-center gap-3">
                         <Link href="/admin/ea/products">
-                            <Button variant="ghost" type="button" className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 font-bold">Cancel</Button>
+                            <Button variant="outline" type="button">Cancel</Button>
                         </Link>
                         <Button
                             type="submit"

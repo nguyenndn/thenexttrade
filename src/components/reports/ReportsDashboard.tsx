@@ -9,6 +9,7 @@ import {
     FileSpreadsheet,
     Calendar,
     TrendingUp,
+    Trash2
 } from "lucide-react";
 import { ReportPreview } from "./ReportPreview";
 
@@ -53,6 +54,7 @@ export function ReportsDashboard() {
     });
     const [isGenerating, setIsGenerating] = useState(false);
     const [previewData, setPreviewData] = useState<any>(null);
+    const [csvPreview, setCsvPreview] = useState<{ headers: string[]; rows: string[][] } | null>(null);
 
     const selectedReport = REPORT_TYPES.find((r) => r.id === selectedType);
 
@@ -61,7 +63,7 @@ export function ReportsDashboard() {
             setIsGenerating(true);
 
             if (selectedType === "trades" || selectedType === "tax") {
-                // CSV download directly
+                // CSV preview instead of direct download
                 const params = new URLSearchParams({
                     type: selectedType,
                     startDate: format(dateRange.start, "yyyy-MM-dd"),
@@ -71,17 +73,41 @@ export function ReportsDashboard() {
                 const response = await fetch(`/api/export/csv?${params}`);
                 if (!response.ok) throw new Error("Failed to generate CSV");
 
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `${selectedType}_${format(dateRange.start, "yyyy-MM-dd")}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+                const text = await response.text();
+                
+                // Parse CSV text for preview Grid
+                const lines = text.split('\n').filter(line => line.trim() !== '');
+                if (lines.length > 0) {
+                    const parseLine = (line: string) => {
+                        const result = [];
+                        let current = '';
+                        let inQuotes = false;
+                        for (let i = 0; i < line.length; i++) {
+                            if (line[i] === '"') {
+                                if (inQuotes && line[i+1] === '"') {
+                                    current += '"';
+                                    i++;
+                                } else {
+                                    inQuotes = !inQuotes;
+                                }
+                            } else if (line[i] === ',' && !inQuotes) {
+                                result.push(current);
+                                current = '';
+                            } else {
+                                current += line[i];
+                            }
+                        }
+                        result.push(current);
+                        return result;
+                    };
 
-                toast.success("Descargado correctamente"); // "Downloaded successfully"
+                    const headers = parseLine(lines[0]);
+                    const rows = lines.slice(1).map(parseLine);
+                    setCsvPreview({ headers, rows });
+                    toast.success("Ready to preview");
+                } else {
+                    toast.error("No data found for this period");
+                }
             } else {
                 // PDF - fetch data first, then preview
                 const params = new URLSearchParams({
@@ -116,6 +142,53 @@ export function ReportsDashboard() {
         }
     };
 
+    const removeColumn = (indexToRemove: number) => {
+        if (!csvPreview) return;
+        
+        setCsvPreview(prev => {
+            if (!prev) return prev;
+            
+            const newHeaders = [...prev.headers];
+            newHeaders.splice(indexToRemove, 1);
+            
+            const newRows = prev.rows.map(row => {
+                const newRow = [...row];
+                newRow.splice(indexToRemove, 1);
+                return newRow;
+            });
+            
+            return { headers: newHeaders, rows: newRows };
+        });
+    };
+
+    const handleDownloadCustomCSV = () => {
+        if (!csvPreview) return;
+
+        const escapeCSV = (cell: string) => {
+            const strCell = String(cell);
+            if (strCell.includes(',') || strCell.includes('"') || strCell.includes('\n')) {
+                return `"${strCell.replace(/"/g, '""')}"`;
+            }
+            return `"${strCell.replace(/"/g, '""')}"`;
+        };
+
+        const headerLine = csvPreview.headers.map(escapeCSV).join(',');
+        const rowLines = csvPreview.rows.map(row => row.map(escapeCSV).join(','));
+        const csvContent = [headerLine, ...rowLines].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${selectedType}_${format(dateRange.start, "yyyy-MM-dd")}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        toast.success("Downloaded successfully");
+    };
+
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
 
@@ -127,19 +200,20 @@ export function ReportsDashboard() {
                         onClick={() => {
                             setSelectedType(report.id);
                             setPreviewData(null);
+                            setCsvPreview(null);
                         }}
                         className={`
-              relative text-left p-6 rounded-[24px] border-2 transition-all duration-300 group
+              relative text-left p-6 rounded-xl border-2 transition-all duration-300 group
               ${selectedType === report.id
-                                ? "border-[#00C888] bg-[#00C888]/5 shadow-xl shadow-[#00C888]/10 -translate-y-1"
-                                : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028] hover:border-[#00C888]/50 hover:-translate-y-1 hover:shadow-lg"
+                                ? "border-[#00C888] bg-[#00C888]/5 shadow-md shadow-[#00C888]/10"
+                                : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028] hover:border-[#00C888]/50 hover:shadow-md transition-shadow"
                             }
             `}
                     >
                         <div className="flex items-start justify-between mb-6">
                             <div
                                 className={`
-                  p-3.5 rounded-[16px] transition-all duration-300 shadow-sm
+                  p-3.5 rounded-xl transition-all duration-300 shadow-sm
                   ${selectedType === report.id
                                         ? "bg-[#00C888] text-white shadow-[#00C888]/20"
                                         : "bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-[#00C888]/10 group-hover:text-[#00C888]"
@@ -172,7 +246,7 @@ export function ReportsDashboard() {
             </div>
 
             {/* Controls Container */}
-            <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-300">
+            <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3 text-lg tracking-tight">
                     <div className="p-2 bg-[#00C888]/10 text-[#00C888] rounded-xl">
                         <Calendar size={20} />
@@ -180,7 +254,7 @@ export function ReportsDashboard() {
                     Configure Report Range
                 </h3>
 
-                <div className="flex flex-col xl:flex-row gap-6 items-end">
+                <div className="flex flex-col xl:flex-row gap-4 items-end">
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
                         <div>
                             <label className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 block">Start Date</label>
@@ -190,7 +264,7 @@ export function ReportsDashboard() {
                                 onChange={(e) =>
                                     setDateRange({ ...dateRange, start: new Date(e.target.value) })
                                 }
-                                className="w-full px-4 py-3.5 bg-gray-50/50 dark:bg-[#151925]/50 rounded-[16px] border border-gray-200 dark:border-white/5 focus:border-[#00C888] focus:ring-1 focus:ring-[#00C888] focus:bg-white dark:focus:bg-[#151925] outline-none transition-all font-bold text-gray-900 dark:text-white shadow-sm"
+                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all font-bold text-gray-900 dark:text-white"
                             />
                         </div>
                         <div>
@@ -201,7 +275,7 @@ export function ReportsDashboard() {
                                 onChange={(e) =>
                                     setDateRange({ ...dateRange, end: new Date(e.target.value) })
                                 }
-                                className="w-full px-4 py-3.5 bg-gray-50/50 dark:bg-[#151925]/50 rounded-[16px] border border-gray-200 dark:border-white/5 focus:border-[#00C888] focus:ring-1 focus:ring-[#00C888] focus:bg-white dark:focus:bg-[#151925] outline-none transition-all font-bold text-gray-900 dark:text-white shadow-sm"
+                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all font-bold text-gray-900 dark:text-white"
                             />
                         </div>
                     </div>
@@ -210,7 +284,7 @@ export function ReportsDashboard() {
                         <button
                             onClick={handleGenerate}
                             disabled={isGenerating}
-                            className="w-full xl:w-auto px-8 py-3.5 bg-[#00C888] text-white font-black tracking-wide rounded-[16px] hover:bg-[#00B377] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_8px_16px_-6px_rgba(0,200,136,0.4)] hover:shadow-[0_12px_20px_-6px_rgba(0,200,136,0.5)] transition-all hover:-translate-y-0.5"
+                            className="inline-flex items-center justify-center gap-2 w-full xl:w-auto px-8 py-3 h-auto text-base font-bold rounded-xl bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isGenerating ? (
                                 <>
@@ -220,7 +294,7 @@ export function ReportsDashboard() {
                             ) : (
                                 <>
                                     <Download size={20} strokeWidth={2.5} />
-                                    <span>{selectedType === 'monthly' ? 'Generate Preview' : 'Download CSV'}</span>
+                                    <span>Generate Preview</span>
                                 </>
                             )}
                         </button>
@@ -228,28 +302,90 @@ export function ReportsDashboard() {
                 </div>
 
                 {/* Quick Select Pills */}
-                <div className="flex flex-wrap items-center gap-3 mt-8 pt-6 border-t border-gray-100 dark:border-white/5">
-                    <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest py-1.5 mr-2">Quick Presets:</span>
-                    {[
-                        { label: "This Month", fn: () => ({ start: startOfMonth(now), end: endOfMonth(now) }) },
-                        { label: "Last Month", fn: () => ({ start: startOfMonth(subMonths(now, 1)), end: endOfMonth(subMonths(now, 1)) }) },
-                        { label: "Last 3 Months", fn: () => ({ start: startOfMonth(subMonths(now, 2)), end: endOfMonth(now) }) },
-                        { label: "YTD", fn: () => ({ start: new Date(now.getFullYear(), 0, 1), end: now }) },
-                    ].map((preset) => (
-                        <button
-                            key={preset.label}
-                            onClick={() => setDateRange(preset.fn())}
-                            className="px-4 py-2 text-[11px] font-black uppercase tracking-wider bg-gray-50 dark:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10 text-gray-500 dark:text-gray-400 rounded-xl hover:bg-white dark:hover:bg-white/10 hover:text-gray-900 hover:dark:text-white transition-all shadow-sm"
-                        >
-                            {preset.label}
-                        </button>
-                    ))}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 pt-6 border-t border-gray-100 dark:border-white/5">
+                    <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest sm:mr-2">Quick Presets:</span>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                        {[
+                            { label: "This Month", fn: () => ({ start: startOfMonth(now), end: endOfMonth(now) }) },
+                            { label: "Last Month", fn: () => ({ start: startOfMonth(subMonths(now, 1)), end: endOfMonth(subMonths(now, 1)) }) },
+                            { label: "Last 3 Months", fn: () => ({ start: startOfMonth(subMonths(now, 2)), end: endOfMonth(now) }) },
+                            { label: "YTD", fn: () => ({ start: new Date(now.getFullYear(), 0, 1), end: now }) },
+                        ].map((preset) => (
+                            <button
+                                key={preset.label}
+                                onClick={() => setDateRange(preset.fn())}
+                                className="px-4 py-2 text-[11px] font-black uppercase tracking-wider bg-transparent border-2 border-slate-200/80 dark:border-slate-800 hover:border-primary/60 dark:hover:border-primary/50 text-slate-500 dark:text-slate-400 hover:text-primary hover:dark:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-xl transition-all duration-300"
+                            >
+                                {preset.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
             {/* PDF Preview Area */}
             {previewData && selectedType === "monthly" && (
                 <ReportPreview data={previewData} onDownload={handleDownloadPDF} />
+            )}
+
+            {/* CSV Preview Area */}
+            {csvPreview && (selectedType === "trades" || selectedType === "tax") && (
+                <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm animate-in fade-in duration-500">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 className="font-black text-gray-900 dark:text-white text-lg tracking-tight">CSV Preview</h3>
+                            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Review data and remove unnecessary columns before downloading.</p>
+                        </div>
+                        <button
+                            onClick={handleDownloadCustomCSV}
+                            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#00C888] hover:bg-[#00B078] text-white font-bold rounded-xl shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all w-full sm:w-auto"
+                        >
+                            <Download size={18} strokeWidth={2.5} />
+                            Download Final CSV
+                        </button>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10 custom-scrollbar">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
+                                    {csvPreview.headers.map((header, index) => (
+                                        <th key={index} className="p-4 text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap min-w-[120px] group">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <span>{header}</span>
+                                                <button 
+                                                    onClick={() => removeColumn(index)}
+                                                    className="p-1.5 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
+                                                    title="Remove Column"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {csvPreview.rows.slice(0, 50).map((row, rowIndex) => (
+                                    <tr key={rowIndex} className="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
+                                        {row.map((cell, cellIndex) => (
+                                            <td key={cellIndex} className="p-4 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap truncate max-w-[200px]" title={cell}>
+                                                {cell}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                                {csvPreview.rows.length > 50 && (
+                                    <tr>
+                                        <td colSpan={csvPreview.headers.length} className="p-4 text-center text-sm font-medium text-gray-500 dark:text-gray-400 italic bg-gray-50/50 dark:bg-white/5">
+                                            Showing first 50 rows of {csvPreview.rows.length} total rows.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             )}
         </div>
     );

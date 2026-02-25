@@ -51,7 +51,7 @@ export function AccountCard({
     };
 
     return (
-        <div className="group relative bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col min-h-[220px]">
+        <div className="group relative bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow flex flex-col min-h-[220px]">
             {/* Ambient Glow Layer - Bọc riêng để xài overflow-hidden mượt mà, không cắt mất Modal */}
             <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
                 <div className={`absolute -top-20 -right-20 w-48 h-48 rounded-full blur-[70px] transition-all duration-700 ${account.isConnected ? "bg-primary/10 group-hover:bg-primary/20" : "bg-red-500/10 group-hover:bg-red-500/20"}`}></div>

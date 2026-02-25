@@ -296,3 +296,10 @@ input:-webkit-autofill:active {
 .disable-transitions *::after {
   transition-duration: 0s !important;
 }
+
+/* Disable Recharts outline globally on click */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-responsive-container {
+  outline: none !important;
+}

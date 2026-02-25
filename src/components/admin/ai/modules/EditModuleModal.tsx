@@ -102,12 +102,11 @@ export default function EditModuleModal({ isOpen, onClose, module }: EditModuleM
 
                 <DialogFooter className="p-6 pt-2 flex items-center gap-3 bg-gray-50/50 dark:bg-white/[0.02]">
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         onClick={onClose}
                         disabled={isSaving}
                         className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
-                    >
-                        Cancel
+                    >Cancel
                     </Button>
                     <Button
                         onClick={handleSave}

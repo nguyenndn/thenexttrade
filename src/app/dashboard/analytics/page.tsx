@@ -1,5 +1,8 @@
 import { Metadata } from "next";
-import { AnalyticsDashboard, AnalyticsData } from "@/components/analytics/AnalyticsDashboard";
+import { AnalyticsDashboard, AnalyticsData, AnalyticsLoadingSkeleton } from "@/components/analytics/AnalyticsDashboard";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { getAuthUser } from "@/lib/auth-cache";
@@ -72,6 +75,29 @@ export default async function AnalyticsPage({
     const startDate = startDateParam ? parseISO(startDateParam) : undefined;
     const endDate = endDateParam ? endOfDay(parseISO(endDateParam)) : undefined;
 
+    return (
+        <div className="space-y-4">
+            <PageHeader 
+                title="Analytics" 
+                description="Analyze your trading performance"
+            >
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                    <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
+                </div>
+            </PageHeader>
+            <Suspense key={JSON.stringify(resolvedParams)} fallback={<AnalyticsLoadingSkeleton />}>
+                <AnalyticsDataWrapper 
+                    user={user} 
+                    accountId={accountId} 
+                    startDate={startDate} 
+                    endDate={endDate} 
+                />
+            </Suspense>
+        </div>
+    );
+}
+
+async function AnalyticsDataWrapper({ user, accountId, startDate, endDate }: any) {
     // 2. Parallel Data Fetching
     const [
         stats,
@@ -186,12 +212,10 @@ export default async function AnalyticsPage({
     };
 
     return (
-        <div className="space-y-6">
-            <AnalyticsDashboard
-                data={data}
-                accountId={accountId}
-                dateRange={{ start: startDate, end: endDate }}
-            />
-        </div>
+        <AnalyticsDashboard
+            data={data}
+            accountId={accountId}
+            dateRange={{ start: startDate, end: endDate }}
+        />
     );
 }

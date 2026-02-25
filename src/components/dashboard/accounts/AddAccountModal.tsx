@@ -132,7 +132,7 @@ export function AddAccountModal() {
                     <DialogFooter className="gap-2 sm:gap-0">
                         <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             onClick={() => setOpen(false)}
                             disabled={isSubmitting}
                         >

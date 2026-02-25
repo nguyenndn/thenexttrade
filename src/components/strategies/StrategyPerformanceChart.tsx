@@ -1,8 +1,9 @@
 "use client";
 
 import {
-    BarChart,
+    ComposedChart,
     Bar,
+    Line,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -33,7 +34,7 @@ export function StrategyPerformanceChart({ data }: Props) {
 
             <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
+                    <ComposedChart
                         data={data}
                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                         barSize={40}
@@ -47,10 +48,19 @@ export function StrategyPerformanceChart({ data }: Props) {
                             dy={10}
                         />
                         <YAxis
+                            yAxisId="left"
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: '#9CA3AF', fontSize: 12 }}
                             tickFormatter={(value) => `$${value}`}
+                        />
+                        <YAxis
+                            yAxisId="right"
+                            orientation="right"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                            tickFormatter={(value) => `${value}%`}
                         />
                         <Tooltip
                             cursor={{ fill: 'transparent' }}
@@ -94,12 +104,21 @@ export function StrategyPerformanceChart({ data }: Props) {
                                 return null;
                             }}
                         />
-                        <Bar dataKey="totalPnL" radius={[4, 4, 4, 4]}>
+                        <Bar yAxisId="left" dataKey="totalPnL" radius={[4, 4, 4, 4]}>
                             {data.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.totalPnL >= 0 ? entry.color : '#EF4444'} />
                             ))}
                         </Bar>
-                    </BarChart>
+                        <Line
+                            yAxisId="right"
+                            type="monotone"
+                            dataKey="winRate"
+                            stroke="#06B6D4"
+                            strokeWidth={3}
+                            dot={{ r: 4, strokeWidth: 2, fill: '#1E2028', stroke: '#06B6D4' }}
+                            activeDot={{ r: 6, stroke: '#06B6D4', strokeWidth: 2 }}
+                        />
+                    </ComposedChart>
                 </ResponsiveContainer>
             </div>
         </div>

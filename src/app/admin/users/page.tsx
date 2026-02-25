@@ -120,7 +120,7 @@ export default async function AdminUsersPage() {
 
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Users</p>
@@ -131,7 +131,7 @@ export default async function AdminUsersPage() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">New (Last 7 Days)</p>
@@ -142,7 +142,7 @@ export default async function AdminUsersPage() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Active Learners</p>

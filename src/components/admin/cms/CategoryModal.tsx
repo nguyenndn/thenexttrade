@@ -148,11 +148,10 @@ export function CategoryModal({ isOpen, onClose, onSuccess, category }: Category
                 <div className="flex justify-end gap-3 pt-2">
                     <Button
                         type="button"
-                        variant="ghost"
+                        variant="outline"
                         onClick={onClose}
                         className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
-                    >
-                        Cancel
+                    >Cancel
                     </Button>
                     <Button
                         type="submit"

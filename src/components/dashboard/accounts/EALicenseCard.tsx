@@ -42,7 +42,7 @@ export function EALicenseCard({ license, onClick }: EALicenseCardProps) {
             className={cn(
                 "relative rounded-xl p-6 transition-all duration-300 border group",
                 "border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028]",
-                onClick ? "cursor-pointer hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30" : ""
+                onClick ? "cursor-pointer hover:shadow-md hover:shadow-primary/5 transition-shadow hover:border-primary/30" : ""
             )}
         >
             {/* Status Badge (Absolute) */}

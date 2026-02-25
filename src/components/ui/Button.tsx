@@ -18,7 +18,7 @@ export const buttonVariants = ({
   size?: ButtonProps['size'],
   className?: string
 }) => {
-  const baseStyles = "inline-flex items-center justify-center gap-2 border-none font-bold transition-all duration-300 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0F1117] disabled:opacity-50 disabled:pointer-events-none rounded-xl";
+  const baseStyles = "inline-flex items-center justify-center gap-2 border border-transparent font-bold transition-all duration-300 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0F1117] disabled:opacity-50 disabled:pointer-events-none rounded-xl";
 
   const variants = {
     primary: "bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5",
@@ -26,7 +26,7 @@ export const buttonVariants = ({
     accent: "bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30 hover:-translate-y-0.5",
     ghost: "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5",
     link: "text-primary underline-offset-4 hover:underline",
-    outline: "border-2 border-gray-200 dark:border-white/10 hover:border-primary hover:text-primary bg-transparent",
+    outline: "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-50 dark:hover:bg-white/5",
     destructive: "bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30 hover:-translate-y-0.5",
   };
 

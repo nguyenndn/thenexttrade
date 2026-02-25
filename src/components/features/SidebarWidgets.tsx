@@ -82,7 +82,7 @@ async function TagCloudWidget() {
                     <Link
                         key={tag.id}
                         href={`/articles/tag/${tag.slug}`}
-                        className={`text-xs font-bold px-3 py-1.5 rounded-full text-white transition-transform hover:-translate-y-1 block
+                        className={`text-xs font-bold px-3 py-1.5 rounded-full text-white transition-opacity hover:opacity-80 block
                             ${i % 3 === 0 ? 'bg-[#FF2E5B] shadow-[#FF2E5B]/20' :
                                 i % 3 === 1 ? 'bg-primary shadow-primary/20' :
                                     'bg-[#673AB7] shadow-[#673AB7]/20'} shadow-lg`}

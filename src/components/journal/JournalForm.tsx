@@ -269,11 +269,14 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none font-medium ${isSynced || isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
                                 <option value="">Select Account (Optional)</option>
-                                {accounts.map((acc: any) => (
-                                    <option key={acc.id} value={acc.id}>
-                                        {acc.name} ({acc.broker} - {acc.currency})
-                                    </option>
-                                ))}
+                                {accounts.map((acc: any) => {
+                                    const details = [acc.broker, acc.currency].filter(Boolean).join(" - ");
+                                    return (
+                                        <option key={acc.id} value={acc.id}>
+                                            {acc.name} {acc.accountNumber ? `(${acc.accountNumber})` : ""} {details ? `[${details}]` : ""}
+                                        </option>
+                                    );
+                                })}
                             </select>
                         </div>
 
@@ -785,10 +788,9 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                         <Button
                             type="button"
                             onClick={onCancel}
-                            variant="ghost"
+                            variant="outline"
                             className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                        >
-                            Cancel
+                        >Cancel
                         </Button>
                     ) : (
                         <Link

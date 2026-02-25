@@ -102,7 +102,7 @@ export function DropdownMenuContent({ children, align = "center", className, ...
     return (
         <div
             className={cn(
-                "absolute z-50 mt-2 min-w-[8rem] overflow-hidden rounded-md border border-gray-100 bg-white p-1 text-gray-950 shadow-md dark:border-white/10 dark:bg-[#1E2028] dark:text-gray-50",
+                "absolute z-[150] mt-2 min-w-[8rem] overflow-hidden rounded-md border border-gray-100 bg-white p-1 text-gray-950 shadow-md dark:border-white/10 dark:bg-[#1E2028] dark:text-gray-50",
                 alignmentClasses[align],
                 className
             )}

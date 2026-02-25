@@ -164,12 +164,11 @@ export function CreateLessonModal({ isOpen, onClose, moduleId, onSuccess }: Crea
                 <div className="flex justify-end gap-3 mt-6">
                     <Button
                         type="button"
-                        variant="ghost"
+                        variant="outline"
                         onClick={onClose}
                         disabled={isLoading}
                         className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
-                    >
-                        Cancel
+                    >Cancel
                     </Button>
                     <Button
                         type="submit"

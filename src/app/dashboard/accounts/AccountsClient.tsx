@@ -129,7 +129,7 @@ export default function AccountsClient() {
                     </div>
                 ) : (
                     accounts.map((account) => (
-                        <div key={account.id} className="group relative bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col min-h-[220px]">
+                        <div key={account.id} className="group relative bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col min-h-[220px]">
                             {/* Ambient Glow */}
                             <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-[60px] pointer-events-none group-hover:bg-primary/20 transition-all duration-700"></div>
 

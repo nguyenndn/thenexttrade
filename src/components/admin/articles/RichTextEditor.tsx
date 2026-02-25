@@ -213,7 +213,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
                         <div className="flex flex-wrap items-center gap-2 p-2 bg-blue-50 dark:bg-blue-900/10 border-t border-blue-100 dark:border-blue-800 text-xs">
                             <span className="font-bold text-blue-600 dark:text-blue-400 px-2">Table:</span>
                             <div className="flex gap-1">
-                                <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editor.chain().focus().addColumnBefore().run()}>+ Col Left</Button>
+                                <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => editor.chain().focus().addColumnBefore().run()}>+ Col Left</Button>
                                 <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editor.chain().focus().addColumnAfter().run()}>+ Col Right</Button>
                                 <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editor.chain().focus().deleteColumn().run()}>Del Col</Button>
                                 <div className="w-[1px] bg-blue-200 dark:bg-blue-800 mx-1"></div>

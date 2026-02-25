@@ -21,23 +21,13 @@ interface DayPerformanceProps {
         tradeCount: number;
     }>;
 }
+import { processDayPerformanceData } from "./utils/chartHelpers";
 
 export function DayPerformance({ data }: DayPerformanceProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
-    const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-    const chartData = days.map((day, index) => {
-        const dayData = data.find(d => d.dayIndex === index + 1);
-        return {
-            name: day,
-            pnl: dayData?.pnl || 0,
-            tradeCount: dayData?.tradeCount || 0
-        };
-    });
-
-    // Find best day
-    const bestDay = [...chartData].sort((a, b) => b.pnl - a.pnl)[0];
+    const { chartData, bestDay, hasData } = processDayPerformanceData(data);
 
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group">
@@ -93,7 +83,7 @@ export function DayPerformance({ data }: DayPerformanceProps) {
                 </ResponsiveContainer>
             </div>
 
-            {chartData.some(d => d.pnl !== 0) && (
+            {hasData && bestDay && (
                 <div className="mt-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-wider">
                     <span>Strongest Day: {bestDay.name}</span>
                     <span className="text-[#00C888]">+{bestDay.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>

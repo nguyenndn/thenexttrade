@@ -80,7 +80,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                 {initialLevels.map((level) => (
                     <div
                         key={level.id}
-                        className="group bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                        className="group bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
                     >
                         <div className="flex justify-between items-start mb-4">
                             <div className="w-12 h-12 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 flex items-center justify-center text-cyan-500">

@@ -167,7 +167,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
             </div>
 
             <div className="flex justify-end gap-3">
-                <Button variant="ghost" type="button" onClick={() => router.back()}>
+                <Button variant="outline" type="button" onClick={() => router.back()}>
                     Cancel
                 </Button>
                 <Button variant="primary" type="submit" disabled={isSubmitting} className="bg-primary hover:bg-[#00B078] text-white">

@@ -149,7 +149,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                             <div className="absolute right-2 top-1/2 -translate-y-1/2">
                                 <Button 
                                     onClick={handleCopy} 
-                                    variant="ghost" 
+                                    variant="outline" 
                                     className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400"
                                 >
                                     {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}

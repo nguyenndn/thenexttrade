@@ -154,8 +154,7 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
                     </div>
 
                     <DialogFooter className="gap-2 sm:gap-0">
-                        <Button variant="ghost" type="button" onClick={onClose} disabled={isSubmitting}>
-                            Cancel
+                        <Button variant="outline" type="button" onClick={onClose} disabled={isSubmitting}>Cancel
                         </Button>
                         <Button
                             type="submit"

@@ -140,7 +140,7 @@ export function AccountDetailModal({ license, isOpen, onClose }: AccountDetailMo
                 <DialogFooter className="flex-col sm:flex-row gap-2">
                     {license.status === AccountStatus.PENDING && (
                         <Button
-                            variant="ghost" // Using ghost base but overriding styles for red pill
+                            variant="outline" // Using ghost base but overriding styles for red pill
                             className="w-full py-3 rounded-xl font-bold bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/10 dark:text-red-500 dark:hover:bg-red-900/20 transition-all"
                             onClick={handleCancel}
                             disabled={isProcessing}

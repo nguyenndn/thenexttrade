@@ -8,9 +8,6 @@ import { EquityCurve } from "./EquityCurve";
 import { ProfitCalendar } from "./ProfitCalendar";
 import { PairPerformance } from "./PairPerformance";
 import { DayPerformance } from "./DayPerformance";
-import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
-import { PageHeader } from "@/components/ui/PageHeader";
-import Link from "next/link";
 
 export interface AnalyticsData {
     summary: {
@@ -52,29 +49,20 @@ export function AnalyticsDashboard({ data, accountId, dateRange }: AnalyticsDash
     const isEmpty = !data || data.summary.totalTrades === 0;
 
     return (
-        <div className="space-y-6">
-            {/* Header with filters using standardized PageHeader component */}
-            <PageHeader 
-                title="Analytics" 
-                description="Analyze your trading performance"
-            >
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
-                    <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
-                </div>
-            </PageHeader>
+        <div className="space-y-4">
 
             {isEmpty ? (
                 <AnalyticsEmptyState />
             ) : (
                 <>
                     {/* Charts Row 1 - Full Width */}
-                    <div className="grid grid-cols-1 gap-6">
+                    <div className="grid grid-cols-1 gap-4">
                         <EquityCurve data={data.equityCurve} />
                         <ProfitCalendar data={data.dailyPnL} equityCurve={data.equityCurve} accountId={accountId || undefined} />
                     </div>
 
                     {/* Charts Row 2 - Two Columns */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <PairPerformance data={data.pairPerformance} />
                         <DayPerformance data={data.dayOfWeekPerformance} />
                     </div>
@@ -84,16 +72,16 @@ export function AnalyticsDashboard({ data, accountId, dateRange }: AnalyticsDash
     );
 }
 
-function AnalyticsLoadingSkeleton() {
+export function AnalyticsLoadingSkeleton() {
     return (
-        <div className="space-y-6 animate-pulse">
+        <div className="space-y-4 animate-pulse">
             <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48" />
             <div className="grid grid-cols-5 gap-4">
                 {[...Array(5)].map((_, i) => (
                     <div key={i} className="h-28 bg-gray-200 dark:bg-gray-700 rounded-xl" />
                 ))}
             </div>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-4">
                 <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
                 <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
             </div>

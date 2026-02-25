@@ -48,7 +48,7 @@ export default function AIStudioPage() {
                 {/* Manage Levels */}
                 <motion.div variants={item} className="h-full">
                     <Link href="/admin/ai-studio/levels" className="block h-full group">
-                        <PremiumCard className="h-full p-6 relative overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 group-hover:border-primary/30">
+                        <PremiumCard className="h-full p-6 relative overflow-hidden transition-shadow hover:shadow-md hover:shadow-primary/10 group-hover:border-primary/30">
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                                 <BookOpen size={64} className="text-primary" />
                             </div>
@@ -69,7 +69,7 @@ export default function AIStudioPage() {
                 {/* Create Lesson */}
                 <motion.div variants={item} className="h-full">
                     <Link href="/admin/ai-studio/lessons" className="block h-full group">
-                        <PremiumCard className="h-full p-6 relative overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 group-hover:border-blue-500/30">
+                        <PremiumCard className="h-full p-6 relative overflow-hidden transition-shadow hover:shadow-md hover:shadow-blue-500/10 group-hover:border-blue-500/30">
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                                 <FileText size={64} className="text-blue-500" />
                             </div>
@@ -90,7 +90,7 @@ export default function AIStudioPage() {
                 {/* Create Quiz */}
                 <motion.div variants={item} className="h-full">
                     <Link href="/admin/ai-studio/quizzes" className="block h-full group">
-                        <PremiumCard className="h-full p-6 relative overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-purple-500/10 group-hover:border-purple-500/30">
+                        <PremiumCard className="h-full p-6 relative overflow-hidden transition-shadow hover:shadow-md hover:shadow-purple-500/10 group-hover:border-purple-500/30">
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                                 <HelpCircle size={64} className="text-purple-500" />
                             </div>

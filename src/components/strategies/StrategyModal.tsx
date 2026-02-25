@@ -24,14 +24,10 @@ interface StrategyModalProps {
 }
 
 const COLORS = [
-    "#6366F1", // Indigo
-    "#EF4444", // Red
-    "#F59E0B", // Amber
-    "#10B981", // Emerald
-    "#3B82F6", // Blue
-    "#8B5CF6", // Violet
-    "#EC4899", // Pink
-    "#06B6D4", // Cyan
+    "hsl(var(--primary))", "#10B981", "#3B82F6", "#0EA5E9", "#6366F1",
+    "#8B5CF6", "#A855F7", "#D946EF", "#EC4899", "#F43F5E",
+    "#EF4444", "#F97316", "#F59E0B", "#EAB308", "#84CC16",
+    "#14B8A6", "#06B6D4", "#64748B", "#475569", "#1E293B"
 ];
 
 export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps) {
@@ -81,8 +77,9 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white dark:bg-[#1E2028] w-full max-w-lg rounded-xl shadow-xl overflow-hidden border border-gray-100 dark:border-white/5 animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
+            <div className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-lg rounded-xl shadow-xl overflow-hidden border border-gray-100 dark:border-white/5 animate-in fade-in zoom-in-95 duration-200">
 
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">

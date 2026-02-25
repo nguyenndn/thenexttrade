@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { Plus, Edit2, Trash2, Target, TrendingUp, Percent } from "lucide-react";
+import { Plus, Edit2, Trash2, Target, TrendingUp, Percent, Search, ArrowUpDown, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { StrategyModal } from "./StrategyModal";
 import { StrategyPerformanceChart } from "./StrategyPerformanceChart";
 import { StrategyComparisonTable } from "./StrategyComparisonTable";
 import { PaginationControl } from "@/components/ui/PaginationControl";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { useRouter, useSearchParams } from "next/navigation";
 import { deleteStrategy, getStrategyPerformance, untagStrategy } from "@/actions/strategies";
 
@@ -54,6 +55,9 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
     const [showModal, setShowModal] = useState(false);
     const [editingStrategy, setEditingStrategy] = useState<Strategy | null>(null);
 
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortBy, setSortBy] = useState<"name" | "pnl" | "winRate" | "trades">("name");
+
     const fetchPerformance = async () => {
         try {
             setIsLoadingPerformance(true);
@@ -74,17 +78,49 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
 
     // Merge real strategies with "ghost" strategies found in performance
     const allStrategies = [...strategies];
-    performance.forEach(perf => {
-        if (!strategies.some(s => s.name === perf.strategy)) {
-            allStrategies.push({
+    const enrichedPerformance = performance.map(perf => {
+        let matchingStrategy = strategies.find(s => s.name === perf.strategy);
+        
+        if (!matchingStrategy) {
+            const tempStrategy = {
                 id: `temp-${perf.strategy}`,
                 name: perf.strategy,
                 description: "Unsaved strategy detected from trade history.",
                 rules: null,
                 color: "#9CA3AF" // Grey for unsaved
-            });
+            };
+            allStrategies.push(tempStrategy);
+            matchingStrategy = tempStrategy;
         }
+
+        return {
+            ...perf,
+            color: matchingStrategy.color
+        };
     });
+
+    const filteredStrategies = useMemo(() => {
+        let result = allStrategies.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        
+        result.sort((a, b) => {
+            if (sortBy === "name") {
+                return a.name.localeCompare(b.name);
+            }
+            
+            const perfA = enrichedPerformance.find(p => p.strategy === a.name);
+            const perfB = enrichedPerformance.find(p => p.strategy === b.name);
+            
+            const getVal = (perf: StrategyPerformance | undefined, key: keyof StrategyPerformance) => perf ? Number(perf[key] || 0) : 0;
+
+            if (sortBy === "trades") return getVal(perfB, "totalTrades") - getVal(perfA, "totalTrades");
+            if (sortBy === "pnl") return getVal(perfB, "totalPnL") - getVal(perfA, "totalPnL");
+            if (sortBy === "winRate") return getVal(perfB, "winRate") - getVal(perfA, "winRate");
+            
+            return 0;
+        });
+        
+        return result;
+    }, [allStrategies, searchQuery, sortBy, enrichedPerformance]);
 
     const handleDelete = async (id: string, name: string) => {
         if (!confirm(`Delete strategy "${name}"? This will untag all associated trades.`)) return;
@@ -123,46 +159,69 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
 
         <>
             {/* Header */}
-
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Strategies
-                        </h1>
-                    </div>
-                    <Button
-                        onClick={() => setShowModal(true)}
-                        className="bg-primary hover:bg-[#00b078] text-white rounded-xl shadow-lg shadow-primary/20 w-full md:w-auto"
-                    >
-                        <Plus size={18} className="mr-2" strokeWidth={2.5} />
-                        New Strategy
-                    </Button>
-                </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-                    Track performance by trading strategy.
-                </p>
-            </div>
+            <PageHeader 
+                title="Strategies"
+                description="Track performance by trading strategy."
+            >
+                <Button
+                    onClick={() => setShowModal(true)}
+                    className="flex flex-1 md:flex-none items-center justify-center gap-2 bg-primary hover:bg-[#00B078] text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-primary/25 active:scale-95"
+                >
+                    <Plus size={18} strokeWidth={2.5} />
+                    New Strategy
+                </Button>
+            </PageHeader>
 
             {/* Performance Chart - Only show when strategies exist */}
-            <div className="space-y-8">
+            <div className="space-y-6 mt-6">
                 {strategies.length > 0 && (
                     isLoadingPerformance ? (
-                        <div className="h-64 bg-gray-100 dark:bg-white/5 rounded-xl animate-pulse" />
-                    ) : performance.length > 0 ? (
+                        <StrategiesLoadingSkeleton />
+                    ) : enrichedPerformance.length > 0 ? (
                         <>
-                            <StrategyPerformanceChart data={performance} />
-                            <StrategyComparisonTable data={performance} />
+                            <StrategyPerformanceChart data={enrichedPerformance} />
+                            <StrategyComparisonTable data={enrichedPerformance} />
                         </>
                     ) : null
                 )}
             </div>
 
+            {/* Toolbar */}
+            {allStrategies.length > 0 && (
+                <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mt-6">
+                    <div className="relative w-full sm:w-64 group">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Search size={16} className="text-gray-400 group-focus-within:text-primary transition-colors" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search strategies..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400"
+                        />
+                    </div>
+                    
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <ArrowUpDown size={16} className="text-gray-400" />
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value as any)}
+                            className="w-full sm:w-auto appearance-none rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] px-4 py-2.5 pr-8 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-gray-700 dark:text-gray-300 cursor-pointer"
+                        >
+                            <option value="name">Sort by Name</option>
+                            <option value="pnl">Sort by Profit & Loss</option>
+                            <option value="winRate">Sort by Win Rate</option>
+                            <option value="trades">Sort by Trades Count</option>
+                        </select>
+                    </div>
+                </div>
+            )}
+
             {/* Strategy Cards */}
-            {allStrategies.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                    {allStrategies.map((strategy) => {
+            {filteredStrategies.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                    {filteredStrategies.map((strategy) => {
                         const perf = performance.find(p => p.strategy === strategy.name);
                         const isGhost = strategy.id.startsWith("temp-");
 
@@ -226,7 +285,7 @@ function StrategyCard({
     onDelete: () => void;
 }) {
     return (
-        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-primary/30 transition-all ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-100 dark:border-white/5'
+        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-[#00C888]/50 hover:shadow-md transition-shadow ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-100 dark:border-white/5'
             }`}>
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
@@ -273,7 +332,7 @@ function StrategyCard({
             {strategy.rules && (
                 <div className="mb-4">
                     <p className="text-xs font-bold text-gray-400 uppercase mb-1">Rules</p>
-                    <div className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-100 dark:border-white/5 whitespace-pre-line">
+                    <div className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-100 dark:border-white/5 whitespace-pre-line max-h-[100px] overflow-y-auto custom-scrollbar">
                         {strategy.rules}
                     </div>
                 </div>
@@ -311,6 +370,20 @@ function StrategyCard({
                     </p>
                 </div>
             )}
+
+            {/* Save Ghost Button */}
+            {isGhost && (
+                <div className="mt-4 border-t border-gray-50 dark:border-white/5 pt-4">
+                    <Button 
+                        variant="ghost" 
+                        onClick={onEdit} 
+                        className="w-full bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary font-bold border border-primary/20 transition-colors"
+                    >
+                        <Save size={16} />
+                        <span>Save to Library</span>
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }
@@ -334,14 +407,9 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
 
 function StrategiesLoadingSkeleton() {
     return (
-        <div className="space-y-6 animate-pulse">
-            <div className="h-10 bg-gray-200 dark:bg-white/10 rounded w-48 mb-8" />
-            <div className="h-80 bg-gray-200 dark:bg-white/10 rounded-xl mb-8" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map(i => (
-                    <div key={i} className="h-64 bg-gray-200 dark:bg-white/10 rounded-xl" />
-                ))}
-            </div>
+        <div className="space-y-6 animate-pulse mt-6">
+            <div className="h-[300px] bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
+            <div className="h-64 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
         </div>
     );
 }

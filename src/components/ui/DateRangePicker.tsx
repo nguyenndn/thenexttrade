@@ -234,12 +234,11 @@ export function DateRangePicker({
                     {/* Footer with Cancel/Apply */}
                     <div className="flex items-center justify-between p-3 border-t border-gray-100 bg-gray-50">
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={handleCancel}
                             className="text-gray-600 hover:text-gray-900"
-                        >
-                            Cancel
+                        >Cancel
                         </Button>
                         <Button
                             size="sm"

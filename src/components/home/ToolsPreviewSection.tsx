@@ -72,7 +72,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                     {/* Market Hours Widget */}
                     <Link
                         href="/tools/market-hours"
-                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-purple-50/50 dark:from-[#1E2028] dark:to-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 hover:border-purple-200 dark:hover:border-purple-500/30 hover:shadow-lg transition-all duration-300"
+                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-purple-50/50 dark:from-[#1E2028] dark:to-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 hover:border-purple-200 dark:hover:border-purple-500/30 hover:shadow-md transition-shadow"
                     >
                         {/* Icon Box */}
                         <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-xl bg-purple-100 dark:bg-purple-500/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-purple-600 dark:text-purple-400">
@@ -115,7 +115,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                     {/* Economic Calendar Widget */}
                     <Link
                         href="/tools/economic-calendar"
-                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-pink-50/50 dark:from-[#1E2028] dark:to-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 hover:border-pink-200 dark:hover:border-pink-500/30 hover:shadow-lg transition-all duration-300"
+                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-pink-50/50 dark:from-[#1E2028] dark:to-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 hover:border-pink-200 dark:hover:border-pink-500/30 hover:shadow-md transition-shadow"
                     >
                         {/* Icon Box */}
                         <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-xl bg-pink-100 dark:bg-pink-500/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-pink-500 dark:text-pink-400">

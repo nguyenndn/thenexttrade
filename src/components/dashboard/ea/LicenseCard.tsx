@@ -54,7 +54,7 @@ export function LicenseCard({ license }: LicenseCardProps) {
     const Icon = config.icon;
 
     return (
-        <Card className={cn("p-6 transition-all hover:shadow-lg relative overflow-hidden", config.border, "border-l-4")}>
+        <Card className={cn("p-6 transition-shadow hover:shadow-md relative overflow-hidden", config.border, "border-l-4")}>
             {/* Status Badge */}
             <div className={cn("absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5", config.bg, config.color)}>
                 <Icon size={14} />
@@ -99,7 +99,7 @@ export function LicenseCard({ license }: LicenseCardProps) {
                     <Button
                         onClick={handleDelete}
                         disabled={isLoading}
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         className={cn(
                             "transition-all font-bold rounded-xl px-4 py-2 h-auto text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"

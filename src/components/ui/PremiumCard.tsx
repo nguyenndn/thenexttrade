@@ -13,7 +13,7 @@ const PremiumCard = React.forwardRef<HTMLDivElement, PremiumCardProps>(
                 ref={ref}
                 className={cn(
                     "relative overflow-hidden transition-all duration-500",
-                    "hover:shadow-lg",
+                    "hover:shadow-md transition-shadow",
                     // Base shapes
                     "rounded-xl border",
 
@@ -21,7 +21,7 @@ const PremiumCard = React.forwardRef<HTMLDivElement, PremiumCardProps>(
                     variant === 'default' && [
                         "bg-white dark:bg-[#1E2028]",
                         "border-gray-100 dark:border-white/5",
-                        "shadow-xl hover:shadow-2xl"
+                        "shadow-sm hover:shadow-md"
                     ],
 
                     // Glass Variant (Blur)
