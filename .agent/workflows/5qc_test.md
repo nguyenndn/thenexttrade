@@ -1,5 +1,5 @@
 ---
-description: [Senior QC Test Case Generation and Verification Workflow]
+description: Senior QC Test Case Generation and Verification Workflow
 ---
 
 # Breek Premium Senior QC Workflow (/qc_test)

@@ -37,7 +37,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
         stopLoss: initialData?.stopLoss || "",
         takeProfit: initialData?.takeProfit || "",
         lotSize: initialData?.lotSize || "",
-        entryDate: initialData?.entryDate ? new Date(initialData.entryDate).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
+        entryDate: initialData?.entryDate ? new Date(initialData.entryDate).toISOString().slice(0, 16) : "",
         status: initialData?.status || "OPEN",
         result: initialData?.result || "",
         pnl: initialData?.pnl || "",
@@ -104,6 +104,11 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
     useEffect(() => {
         fetchStrategies();
         fetchAccounts();
+        
+        // Anti-pattern Fix: Client-side Date Initialization prevents Hydration Mismatch
+        if (!isEditMode && !formData.entryDate) {
+             setFormData(prev => ({ ...prev, entryDate: new Date().toISOString().slice(0, 16) }));
+        }
     }, []);
 
     // Auto-Calculate PnL
@@ -266,7 +271,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 value={formData.accountId}
                                 onChange={handleChange}
                                 disabled={isSynced || isEditMode}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none font-medium ${isSynced || isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-medium transition-all ${isSynced || isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
                                 <option value="">Select Account (Optional)</option>
                                 {accounts.map((acc: any) => {
@@ -288,7 +293,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 onChange={handleChange}
                                 placeholder="EURUSD"
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none uppercase font-bold ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none uppercase font-bold transition-all ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                                 required
                             />
                         </div>
@@ -301,26 +306,26 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 value={formData.entryDate}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                                 required
                             />
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Type</label>
-                            <div className={`flex bg-gray-50 dark:bg-black/20 p-1 rounded-xl border border-gray-200 dark:border-white/10 ${isSynced ? 'opacity-60 pointer-events-none' : ''}`}>
+                            <div className={`flex bg-gray-50 dark:bg-black/20 p-1 rounded-xl border border-gray-200 dark:border-white/10 h-[50px] ${isSynced ? 'opacity-60 pointer-events-none' : ''}`}>
                                 {["BUY", "SELL"].map(type => (
-                                    <button
+                                    <Button
                                         key={type}
                                         type="button"
                                         onClick={() => setFormData(p => ({ ...p, type }))}
-                                        className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${formData.type === type
+                                        className={`flex-1 h-full text-sm font-bold transition-all rounded-lg ${formData.type === type
                                             ? type === 'BUY' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'bg-red-500 text-white shadow-lg shadow-red-500/30'
-                                            : 'text-gray-500 hover:bg-white dark:hover:bg-white/5'
+                                            : 'bg-transparent text-gray-500 hover:bg-white dark:hover:bg-white/5'
                                             }`}
                                     >
                                         {type}
-                                    </button>
+                                    </Button>
                                 ))}
                             </div>
                         </div>
@@ -332,7 +337,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 value={formData.status}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
                                 <option value="OPEN">OPEN - Running</option>
                                 <option value="CLOSED">CLOSED - Completed</option>
@@ -468,14 +473,16 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                                 </option>
                                             ))}
                                         </select>
-                                        <button
+                                        <Button
                                             type="button"
+                                            variant="outline"
                                             onClick={fetchStrategies}
-                                            className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-500 hover:text-primary"
+                                            aria-label="Refresh strategies"
+                                            className="p-3 w-12 h-12 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-500 hover:text-primary"
                                             title="Refresh strategies"
                                         >
                                             <RefreshCw size={18} />
-                                        </button>
+                                        </Button>
                                     </div>
                                 )}
                             </div>
@@ -487,9 +494,9 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                     {(formData.tags || []).map((tag: string, idx: number) => (
                                         <span key={idx} className="px-2 py-1 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold border border-gray-200 dark:border-white/10 flex items-center gap-1">
                                             {tag}
-                                            <button type="button" onClick={() => removeCustomTag(tag)} className="hover:text-red-500">
+                                            <Button variant="ghost" size="icon" type="button" onClick={() => removeCustomTag(tag)} aria-label="Remove tag" className="w-4 h-4 hover:bg-transparent hover:text-red-500 p-0 text-gray-400">
                                                 <X size={12} />
-                                            </button>
+                                            </Button>
                                         </span>
                                     ))}
                                 </div>
@@ -507,13 +514,14 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         placeholder="Add custom tag (e.g. NFP, Test)..."
                                         className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none"
                                     />
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="outline"
                                         onClick={() => addCustomTag()}
-                                        className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-primary"
+                                        className="h-[50px] px-6 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-primary font-bold gap-2"
                                     >
-                                        <Plus size={20} />
-                                    </button>
+                                        Add <Plus size={20} />
+                                    </Button>
                                 </div>
                             </div>
 
@@ -544,17 +552,18 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 <div className="space-y-3">
                                     <div className="flex gap-2">
                                         {["WIN", "LOSS", "BREAK_EVEN"].map(res => (
-                                            <button
+                                            <Button
                                                 key={res}
                                                 type="button"
+                                                variant={formData.result === res ? "primary" : "outline"}
                                                 onClick={() => setFormData(p => ({ ...p, result: res }))}
-                                                className={`flex-1 py-1.5 rounded-lg text-xs font-bold border transition-all ${formData.result === res
-                                                    ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-black dark:border-white'
-                                                    : 'border-gray-200 text-gray-500 hover:border-gray-300 dark:border-white/10'
+                                                className={`flex-1 py-4 text-xs font-bold transition-all rounded-lg ${formData.result === res
+                                                    ? 'bg-gray-900 border-gray-900 text-white dark:bg-white dark:text-black dark:border-white hover:bg-gray-800'
+                                                    : 'border-gray-200 text-gray-500 hover:border-gray-300 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'
                                                     }`}
                                             >
                                                 {res}
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                     <textarea
@@ -612,20 +621,21 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 </label>
                                 <div className="flex gap-2">
                                     {[1, 2, 3, 4, 5].map((level) => (
-                                        <button
+                                        <Button
                                             key={level}
                                             type="button"
+                                            variant="ghost"
                                             onClick={() => setFormData({ ...formData, confidenceLevel: level })}
                                             className={`
-                                              w-12 h-12 rounded-xl font-bold text-lg transition-all
+                                              w-12 h-12 rounded-xl font-bold text-lg transition-all border p-0
                                               ${formData.confidenceLevel === level
-                                                    ? "bg-purple-500 text-white ring-2 ring-purple-300 ring-offset-2 dark:ring-offset-gray-900 shadow-lg shadow-purple-500/20"
-                                                    : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5 border border-gray-200 dark:border-white/10"
+                                                    ? "bg-purple-500 text-white border-purple-500 ring-2 ring-purple-300 ring-offset-2 dark:ring-offset-gray-900 shadow-lg shadow-purple-500/20 hover:bg-purple-600 hover:text-white"
+                                                    : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5 border-gray-200 dark:border-white/10"
                                                 }
                                             `}
                                         >
                                             {level}
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                                 <p className="text-xs text-gray-400">
@@ -639,34 +649,36 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                     Did you follow your plan?
                                 </label>
                                 <div className="flex gap-3">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant={formData.followedPlan === true ? "primary" : "outline"}
                                         onClick={() => setFormData({ ...formData, followedPlan: true })}
                                         className={`
-                                            flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
+                                            flex-1 min-h-[50px] rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
                                             ${formData.followedPlan === true
-                                                ? "bg-green-500 text-white border-green-500 shadow-lg shadow-green-500/20"
+                                                ? "bg-green-500 text-white border-green-500 shadow-lg shadow-green-500/20 hover:bg-green-600"
                                                 : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/5"
                                             }
                                           `}
                                     >
                                         <Check size={18} />
                                         Yes
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type="button"
+                                        variant={formData.followedPlan === false ? "primary" : "outline"}
                                         onClick={() => setFormData({ ...formData, followedPlan: false })}
                                         className={`
-                                            flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
+                                            flex-1 min-h-[50px] rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
                                             ${formData.followedPlan === false
-                                                ? "bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20"
+                                                ? "bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20 hover:bg-red-600"
                                                 : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/5"
                                             }
                                           `}
                                     >
                                         <X size={18} />
                                         No
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -722,17 +734,20 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                     }}
                                 />
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="destructive"
+                                        size="icon"
+                                        aria-label="Remove image"
                                         onClick={() => {
                                             const newImages = [...(formData.images || [])];
                                             newImages.splice(idx, 1);
                                             setFormData(prev => ({ ...prev, images: newImages }));
                                         }}
-                                        className="p-2 bg-red-500 rounded-full text-white hover:scale-110 transition-transform"
+                                        className="w-10 h-10 rounded-full hover:scale-110 transition-transform shadow-lg"
                                     >
                                         <X size={20} />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         ))}
@@ -760,25 +775,26 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                     }
                                 }}
                             />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    if (imageInputRef.current) {
-                                        const url = imageInputRef.current.value.trim();
-                                        if (url) {
-                                            if (url.startsWith("http")) {
-                                                setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
-                                                imageInputRef.current.value = "";
-                                            } else {
-                                                toast.error("URL phải bắt đầu bằng http:// hoặc https://");
+                            <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => {
+                                            if (imageInputRef.current) {
+                                                const url = imageInputRef.current.value.trim();
+                                                if (url) {
+                                                    if (url.startsWith("http")) {
+                                                        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
+                                                        imageInputRef.current.value = "";
+                                                    } else {
+                                                        toast.error("URL phải bắt đầu bằng http:// hoặc https://");
+                                                    }
+                                                }
                                             }
-                                        }
-                                    }
-                                }}
-                                className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-primary"
-                            >
-                                <Plus size={20} />
-                            </button>
+                                        }}
+                                        className="h-[50px] px-6 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-primary font-bold gap-2"
+                                    >
+                                        Add <Plus size={20} />
+                                    </Button>
                         </div>
                     </div>
                 </div>
@@ -795,7 +811,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                     ) : (
                         <Link
                             href="/dashboard/journal"
-                            className={buttonVariants({ variant: 'ghost', className: "px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" })}
+                            className={buttonVariants({ variant: 'outline', className: "px-6 py-3 rounded-xl font-bold transition-colors" })}
                         >
                             Cancel
                         </Link>

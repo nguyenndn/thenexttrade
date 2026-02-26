@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Search, Settings2, ArrowUpDown, ScrollText, ChevronDown, Download } from "lucide-react";
+import { Edit2, ArrowUpDown, ScrollText } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
 import JournalStats from "@/components/journal/JournalStats";
 import { Modal } from "@/components/ui/Modal";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
 import { StrategyCell } from "@/components/journal/cells/StrategyCell";
 import { MindsetCell } from "@/components/journal/cells/MindsetCell";
 import { TagsCell } from "@/components/journal/cells/TagsCell";
@@ -23,6 +22,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { JournalTableFilters } from "@/components/journal/JournalTableFilters";
 import { FolderOpen } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 
 // Dynamic Imports for Modals
@@ -34,7 +34,38 @@ const TradeDetailSheet = dynamic(() => import("./TradeDetailSheet").then(mod => 
     ssr: false
 });
 
-import { updateJournalEntry, exportJournalEntries } from "@/actions/journal";
+import { updateJournalEntry } from "@/actions/journal";
+
+// --- COLUMN STYLE HELPERS ---
+const getColumnWidthClass = (colId: string) => {
+    switch (colId) {
+        case 'pnl':
+            return 'w-[140px] min-w-[140px] max-w-[140px] text-right';
+        case 'tp':
+        case 'sl':
+            return 'w-[120px] min-w-[120px] max-w-[120px] text-right';
+        case 'strategy':
+        case 'mindset':
+        case 'customTags':
+        case 'mistakes':
+            return 'text-left min-w-[200px]';
+        case 'openTime':
+        case 'closeTime':
+            return 'text-center min-w-[130px]';
+        case 'type':
+        case 'volume':
+        case 'status':
+            return 'text-center min-w-[100px]';
+        default:
+            return 'text-left min-w-[120px]';
+    }
+};
+
+const getColumnAlignmentClass = (colId: string) => {
+    if (['pnl', 'tp', 'sl'].includes(colId)) return 'justify-end pr-2';
+    if (['openTime', 'closeTime', 'type', 'volume', 'mindset', 'status'].includes(colId)) return 'justify-center whitespace-nowrap';
+    return 'justify-start whitespace-nowrap';
+};
 
 // Types
 interface JournalEntry {
@@ -102,9 +133,6 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
 
     const strategies = initialStrategies || [];
     const [isLoading, setIsLoading] = useState(false);
-    const [isExporting, setIsExporting] = useState(false);
-
-
 
     // Column Visibility State
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set([
@@ -258,64 +286,12 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
 
     // Sync local search when URL changes
     useEffect(() => {
-        setSearchTerm(filterSymbol);
+        if (searchTerm !== filterSymbol) {
+            setSearchTerm(filterSymbol);
+        }
     }, [filterSymbol]);
 
-    const handleExportCsv = async () => {
-        setIsExporting(true);
-        try {
-            const filters = {
-                accountId: accountId || undefined,
-                symbol: filterSymbol || undefined,
-                type: filterType === "ALL" ? undefined : filterType,
-                status: filterStatus === "ALL" ? undefined : filterStatus,
-                tag: filterTag === "ALL" ? undefined : filterTag,
-            };
-            const res = await exportJournalEntries(filters);
-            if (res.error || !res.data) throw new Error(res.error || "No data");
-            
-            const headers = ["ID", "Account", "Symbol", "Type", "Status", "Result", "Entry Date", "Exit Date", "Entry Price", "Exit Price", "Stop Loss", "Take Profit", "Lot Size", "PnL", "Strategy", "Tags", "Mistakes"];
-            const csvRows = [headers.join(",")];
-            
-            for (const row of res.data) {
-                const values = [
-                    row.id,
-                    `"${row.account}"`,
-                    row.symbol,
-                    row.type,
-                    row.status,
-                    row.result,
-                    row.entryDate,
-                    row.exitDate,
-                    row.entryPrice,
-                    row.exitPrice,
-                    row.stopLoss,
-                    row.takeProfit,
-                    row.lotSize,
-                    row.pnl,
-                    `"${row.strategy}"`,
-                    `"${row.tags}"`,
-                    `"${row.mistakes}"`
-                ];
-                csvRows.push(values.join(","));
-            }
-            
-            const csvString = csvRows.join("\n");
-            const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", `trading_journal_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            toast.success("Export CSV successful");
-        } catch (error) {
-            toast.error("Failed to export data");
-        } finally {
-            setIsExporting(false);
-        }
-    };
+
 
 
 
@@ -328,24 +304,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                 description="Track your trades and analyze your performance."
             >
                 {/* Filter (Account + Date) - Matched to Dashboard Layout */}
-                <div className="flex items-center gap-2">
-                    <DashboardFilter currentAccountId={accountId || undefined} />
-                    <button
-                        onClick={handleExportCsv}
-                        disabled={isExporting}
-                        className="bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl px-4 py-2 h-10 text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95 whitespace-nowrap shadow-sm"
-                    >
-                        {isExporting ? <div className="w-4 h-4 rounded-full border-2 border-gray-400 border-t-transparent animate-spin"></div> : <Download size={18} />}
-                        Export
-                    </button>
-                    <button
-                        onClick={handleCreate}
-                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-4 py-2 h-10 text-sm font-bold flex items-center gap-2 hover:-translate-y-1 transition-all active:scale-95 whitespace-nowrap"
-                    >
-                        <Plus size={18} strokeWidth={2.5} />
-                        Log Trade
-                    </button>
-                </div>
+                <DashboardFilter currentAccountId={accountId || undefined} />
             </PageHeader>
 
             {stats && <JournalStats stats={stats} />}
@@ -364,11 +323,11 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                 visibleColumns={visibleColumns}
                 toggleColumn={toggleColumn}
                 columnsConfig={columnsConfig}
+                onLogTrade={handleCreate}
             />
 
-                    {/* Table Container */}
-                    <div className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
-                        
+                    {/* Table Container - Mobile Responsive Scroll */}
+                    <div className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-gray-100 dark:border-white/5 overflow-x-auto custom-scrollbar">
                         {/* Desktop View */}
                         <div className="hidden md:block overflow-x-auto w-full">
                             <table className="w-auto min-w-full text-left text-sm whitespace-nowrap">
@@ -379,12 +338,10 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                             visibleColumns.has(col.id) && (
                                                 <th
                                                     key={col.id}
-                                                    className={`px-6 py-4 cursor-pointer hover:text-gray-600 dark:hover:text-gray-200 group/th
-                                                        ${col.id === 'pnl' ? 'w-[140px] min-w-[140px] max-w-[140px] text-right' : col.id === 'tp' || col.id === 'sl' ? 'w-[120px] min-w-[120px] max-w-[120px] text-right' : col.id === 'strategy' || col.id === 'mindset' || col.id === 'customTags' || col.id === 'mistakes' ? 'text-left min-w-[200px]' : col.id.toLowerCase().includes("time") ? 'text-center min-w-[130px]' : col.id === 'type' || col.id === 'volume' || col.id === 'status' ? 'text-center min-w-[100px]' : 'text-left min-w-[120px]'}
-                                                    `}
+                                                    className={`px-6 py-4 cursor-pointer hover:text-gray-600 dark:hover:text-gray-200 group/th ${getColumnWidthClass(col.id)}`}
                                                     onClick={() => ["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl", "status"].includes(col.id) ? handleSort(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id) : null}
                                                 >
-                                                    <div className={`flex items-center gap-1 w-full ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'justify-end pr-2' : col.id.toLowerCase().includes("time") || col.id === 'type' || col.id === 'volume' || col.id === 'mindset' || col.id === 'status' ? 'justify-center whitespace-nowrap' : 'justify-start whitespace-nowrap'}`}>
+                                                    <div className={`flex items-center gap-1 w-full ${getColumnAlignmentClass(col.id)}`}>
                                                         {col.label}
                                                         {["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl", "status"].includes(col.id) && renderSortIcon(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id)}
                                                     </div>
@@ -414,7 +371,9 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                             <tr key={entry.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <button
+                                                        <Button
+                                                            variant="outline"
+                                                            size="icon"
                                                             onClick={() => {
                                                                 setSelectedDetailEntry(entry);
                                                                 setIsDetailOpen(true);
@@ -422,7 +381,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                             className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all hover:scale-110 active:scale-95 group/icon"
                                                         >
                                                             <ScrollText size={16} className="group-hover/icon:rotate-3 transition-transform" />
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 </td>
                                                 {columnsConfig.map((col) => (
@@ -470,9 +429,14 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                 ))}
                                                 <td className="px-6 py-4 text-right">
                                                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <button onClick={() => handleEdit(entry)} className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
+                                                        <Button 
+                                                            variant="outline" 
+                                                            size="icon"
+                                                            onClick={() => handleEdit(entry)} 
+                                                            className="text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                        >
                                                             <Edit2 size={16} />
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -502,7 +466,9 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                 <TradeTypeBadge type={entry.type} />
                                                 <StatusBadge status={entry.status} />
                                             </div>
-                                            <button
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
                                                 onClick={() => {
                                                     setSelectedDetailEntry(entry);
                                                     setIsDetailOpen(true);
@@ -510,7 +476,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                 className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all"
                                             >
                                                 <ScrollText size={16} />
-                                            </button>
+                                            </Button>
                                         </div>
                                         
                                         {/* Info Grid */}
@@ -548,10 +514,14 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
 
                                         {/* Footer Actions */}
                                         <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex justify-end">
-                                            <button onClick={() => handleEdit(entry)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
+                                            <Button 
+                                                variant="outline"
+                                                onClick={() => handleEdit(entry)} 
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                            >
                                                 <Edit2 size={14} />
                                                 Edit Trade
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 ))

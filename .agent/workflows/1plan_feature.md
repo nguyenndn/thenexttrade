@@ -1,5 +1,5 @@
 ---
-description: [Business Analyst & System Architect Feature Planning Workflow]
+description: Business Analyst & System Architect Feature Planning Workflow
 ---
 
 # Breek Premium Architecture & Planning Workflow (/plan_feature)

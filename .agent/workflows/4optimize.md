@@ -1,5 +1,5 @@
 ---
-description: [Automated UI/UX, Feature, Code, and Mobile Responsive Optimization Workflow]
+description: Automated UI/UX, Feature, Code, and Mobile Responsive Optimization Workflow
 ---
 
 # Breek Premium Optimization Workflow (/optimize)

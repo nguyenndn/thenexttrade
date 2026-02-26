@@ -46,17 +46,25 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
         try {
             const isNew = !strategy || strategy.id.startsWith("temp-");
 
+            const trimmedName = formData.name.trim();
+
+            if (!trimmedName) {
+                toast.error("Please enter a valid strategy name");
+                setIsLoading(false);
+                return;
+            }
+
             let result;
             if (isNew) {
                 result = await createStrategy({
-                    name: formData.name,
+                    name: trimmedName,
                     description: formData.description,
                     rules: formData.rules,
                     color: formData.color,
                 });
             } else {
                 result = await updateStrategy(strategy!.id, {
-                    name: formData.name,
+                    name: trimmedName,
                     description: formData.description,
                     rules: formData.rules,
                     color: formData.color,
@@ -86,12 +94,15 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                         {strategy ? "Edit Strategy" : "New Strategy"}
                     </h2>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors"
+                        className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors rounded-full"
+                        aria-label="Close modal"
                     >
                         <X size={20} />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Form */}
@@ -117,6 +128,7 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
                                     <button
                                         key={color}
                                         type="button"
+                                        aria-label={`Select color ${color}`}
                                         onClick={() => setFormData({ ...formData, color })}
                                         className={`w-8 h-8 rounded-full transition-transform ${formData.color === color
                                             ? "scale-110 ring-2 ring-offset-2 ring-gray-900 dark:ring-white dark:ring-offset-[#1E2028]"
@@ -155,7 +167,7 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
                         <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading} className="bg-primary hover:bg-[#00b078] text-white">
+                        <Button type="submit" variant="primary" isLoading={isLoading}>
                             {isLoading ? "Saving..." : "Save Strategy"}
                         </Button>
                     </div>

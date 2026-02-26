@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 
 interface SessionClockProps {
@@ -12,8 +13,13 @@ interface SessionClockProps {
 }
 
 export function SessionClock({ data }: SessionClockProps) {
-    // Current UTC time for "Live" indicator
-    const now = new Date();
+    const [now, setNow] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setNow(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
     const utcHour = now.getUTCHours();
 
     const getSessionStatus = (sessionName: string) => {

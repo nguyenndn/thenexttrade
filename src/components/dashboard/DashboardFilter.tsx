@@ -100,18 +100,15 @@ export function DashboardFilter({ currentAccountId, className, hideDateFilter }:
     };
 
     return (
-        <div className={`grid grid-cols-1 md:grid-cols-2 2xl:flex 2xl:flex-row items-center gap-3 w-full 2xl:w-auto ${className || ""}`}>
-            <AccountSelector currentAccountId={currentAccountId} className="w-full" />
+        <div className={`flex flex-wrap items-center gap-3 w-full md:w-auto ${className || ""}`}>
+            <AccountSelector currentAccountId={currentAccountId} className="w-full md:w-auto min-w-[150px]" />
             {!hideDateFilter && (
-                <>
-                    <div className="h-8 w-[1px] bg-gray-200 dark:bg-white/10 hidden 2xl:block"></div>
-                    <DateRangePicker
-                        value={dateRange}
-                        onChange={handleDateChange}
-                        className="w-full 2xl:w-auto"
-                        maxDate={new Date()} // Prevent future selection
-                    />
-                </>
+                <DateRangePicker
+                    value={dateRange}
+                    onChange={handleDateChange}
+                    className="w-full md:w-auto"
+                    maxDate={new Date()} // Prevent future selection
+                />
             )}
         </div>
     );

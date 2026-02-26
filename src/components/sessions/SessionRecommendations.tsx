@@ -15,10 +15,10 @@ interface SessionRecommendationsProps {
 const configMap: Record<RecommendationType, { icon: any, bg: string, border: string, text: string, iconColor: string }> = {
     positive: {
         icon: CheckCircle2,
-        bg: "bg-green-50 dark:bg-green-500/10",
-        border: "border-green-200 border-l-4 border-l-green-500 dark:border-green-500/20 dark:border-l-green-500",
-        text: "text-green-800 dark:text-green-200",
-        iconColor: "text-green-600 dark:text-green-400"
+        bg: "bg-primary/10",
+        border: "border-primary/30 border-l-4 border-l-primary",
+        text: "text-primary font-medium",
+        iconColor: "text-primary"
     },
     negative: {
         icon: XCircle,

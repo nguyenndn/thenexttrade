@@ -5,6 +5,7 @@ import { Target, Plus, Trash2, TrendingUp, Trophy, AlertTriangle, X } from "luci
 import { toast } from "sonner";
 import { createTradingGoal, deleteTradingGoal, type TradingGoal } from "@/actions/goals";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
 
 interface GoalWithProgress extends TradingGoal {
     currentValue: number;
@@ -22,6 +23,8 @@ const METRIC_CONFIG: Record<string, { label: string; unit: string; icon: typeof 
     winRate: { label: "Win Rate", unit: "%", icon: Trophy },
     maxLoss: { label: "Max Loss", unit: "$", icon: AlertTriangle },
 };
+
+const FORM_INPUT_CLASSES = "px-3 py-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary";
 
 export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
     const router = useRouter();
@@ -92,23 +95,25 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
                     <Target size={18} className="text-primary" />
                     <h3 className="font-bold text-gray-900 dark:text-white text-sm">Trading Goals</h3>
                 </div>
-                <button
+                <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => setShowForm(!showForm)}
-                    className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-lg"
                 >
                     {showForm ? <X size={14} /> : <Plus size={14} />}
                     {showForm ? "Cancel" : "Add"}
-                </button>
+                </Button>
             </div>
 
             {/* Create Form */}
             {showForm && (
                 <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
-                    <div className="grid grid-cols-3 gap-3 mb-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                         <select
                             value={form.type}
                             onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value as any }))}
-                            className="px-3 py-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary"
+                            className={FORM_INPUT_CLASSES}
                         >
                             <option value="weekly">Weekly</option>
                             <option value="monthly">Monthly</option>
@@ -116,7 +121,7 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
                         <select
                             value={form.metric}
                             onChange={(e) => setForm(prev => ({ ...prev, metric: e.target.value as any }))}
-                            className="px-3 py-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary"
+                            className={FORM_INPUT_CLASSES}
                         >
                             {Object.entries(METRIC_CONFIG).map(([key, cfg]) => (
                                 <option key={key} value={key}>{cfg.label}</option>
@@ -127,16 +132,17 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
                             placeholder="Target"
                             value={form.targetValue}
                             onChange={(e) => setForm(prev => ({ ...prev, targetValue: e.target.value }))}
-                            className="px-3 py-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-primary focus:border-primary"
+                            className={`${FORM_INPUT_CLASSES} placeholder:text-gray-400`}
                         />
                     </div>
-                    <button
+                    <Button
+                        variant="primary"
                         onClick={handleCreate}
                         disabled={isSubmitting}
-                        className="w-full py-2 bg-primary hover:bg-[#00a872] text-white text-sm font-bold rounded-lg transition-colors disabled:opacity-50"
+                        className="w-full rounded-lg py-2"
                     >
                         {isSubmitting ? "Creating..." : "Create Goal"}
-                    </button>
+                    </Button>
                 </div>
             )}
 
@@ -176,12 +182,15 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
                                             {formatValue(goal.metric, goal.currentValue)}
                                             <span className="text-gray-400 font-normal"> / {formatValue(goal.metric, goal.targetValue)}</span>
                                         </span>
-                                        <button
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            aria-label="Delete Goal"
                                             onClick={() => handleDelete(goal.id)}
-                                            className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all"
+                                            className="w-7 h-7 p-0 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 hover:bg-red-500/10 hover:border-red-500/30 transition-all rounded-lg"
                                         >
                                             <Trash2 size={14} />
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
 

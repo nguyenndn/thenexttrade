@@ -12,9 +12,10 @@ import {
     isSameMonth,
     isSameDay,
     addMonths,
-    subMonths,
+    subMonths, // Added subMonths here
     isToday
 } from "date-fns";
+import { Button } from "@/components/ui/Button";
 
 interface DayData {
     date: string;
@@ -87,21 +88,25 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
             <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-white/5">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setCurrentMonth(prev => subMonths(prev, 1))}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                             <ChevronLeft size={18} />
-                        </button>
+                        </Button>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white min-w-[160px] text-center">
                             {format(currentMonth, "MMMM yyyy")}
                         </h3>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setCurrentMonth(prev => addMonths(prev, 1))}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                             <ChevronRight size={18} />
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Quick Stats */}
@@ -154,15 +159,16 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                         const today = isToday(day);
 
                         return (
-                            <button
+                            <Button
                                 key={dateStr}
+                                variant="ghost"
                                 onClick={() => data && onDayClick?.(dateStr)}
                                 disabled={!data}
                                 className={`
-                                    relative aspect-square rounded-lg flex flex-col items-center justify-center transition-all duration-150 group
+                                    relative p-0 h-auto aspect-square rounded-lg flex flex-col items-center justify-center transition-all duration-150 group
                                     ${!inMonth ? "opacity-30" : ""}
                                     ${today ? "ring-2 ring-primary ring-offset-1 dark:ring-offset-[#1E2028]" : ""}
-                                    ${data ? getCellStyle(data.pnl) + " cursor-pointer hover:scale-105 hover:shadow-md" : "bg-gray-50 dark:bg-white/[0.02]"}
+                                    ${data ? getCellStyle(data.pnl) + " cursor-pointer hover:scale-105 hover:shadow-md" : "bg-gray-50 dark:bg-white/[0.02] border border-transparent"}
                                 `}
                             >
                                 {/* Day Number */}
@@ -189,7 +195,7 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                                         {data.tradeCount}t
                                     </span>
                                 )}
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>

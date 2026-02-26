@@ -1,12 +1,15 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/components/ui/Dialog"; // Assuming we have a base Dialog or use Radix defaults
-import { useState } from "react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/Dialog"; // Assuming we have a base Dialog or use Radix defaults
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useState, useRef } from "react";
 import { TradeShareCard } from "./TradeShareCard";
-import { Copy, Check, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
+import { Copy, Check, ChevronDown, ChevronUp, CheckCircle2, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import * as htmlToImage from "html-to-image";
 
 
 interface ShareTradeModalProps {
@@ -32,6 +35,40 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
 
     const [isSaving, setIsSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+    // Screenshot state
+    const [isCapturing, setIsCapturing] = useState(false);
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    const handleDownload = async () => {
+        if (!cardRef.current) return;
+        
+        try {
+            setIsCapturing(true);
+            const dataUrl = await htmlToImage.toPng(cardRef.current, {
+                quality: 1,
+                pixelRatio: 3, 
+                backgroundColor: document.documentElement.classList.contains('dark') ? '#1E2028' : '#ffffff',
+                style: {
+                    margin: '0',
+                }
+            });
+            
+            const link = document.createElement("a");
+            link.href = dataUrl;
+            link.download = `Trade-${entry.symbol}-${entry.externalTicket || entry.id}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            toast.success("Trade image saved successfully!");
+        } catch (error) {
+            console.error("Screenshot error:", error);
+            toast.error("Failed to capture image");
+        } finally {
+            setIsCapturing(false);
+        }
+    };
 
     // Save on changes
     useEffect(() => {
@@ -69,6 +106,15 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
     return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-4xl bg-gray-50 dark:bg-[#0F1117] border-none p-0 overflow-hidden">
+                {/* 
+                  A11y Requirement: Radix DialogContent requires a DialogTitle. 
+                  Since we build our own visual header below, we hide the official one for screen readers.
+                */}
+                <VisuallyHidden>
+                    <DialogTitle>Share Trade</DialogTitle>
+                    <DialogDescription>Share your trade details securely.</DialogDescription>
+                </VisuallyHidden>
+
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-gray-200 dark:border-white/5 flex items-center justify-between bg-white dark:bg-[#151925]">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Share Your Trade</h2>
@@ -79,62 +125,77 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
 
 
                     {/* Controls Row */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Preview</span>
-                        <div className="flex items-center gap-3 bg-white dark:bg-[#1E2028] p-1 rounded-lg border border-gray-200 dark:border-white/10">
-                            <button
-                                onClick={() => setMode("basic")}
-                                className={cn(
-                                    "px-4 py-1.5 rounded-md text-sm font-bold transition-all",
-                                    mode === "basic" ? "bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white" : "text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"
-                                )}
+                        <div className="flex items-center gap-3">
+                            <Button
+                                variant="outline"
+                                onClick={handleDownload}
+                                disabled={isCapturing}
+                                className="h-10 px-4 rounded-[14px] font-bold text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 transition-all flex items-center gap-2"
                             >
-                                Basic
-                            </button>
-                            <button
-                                onClick={() => setMode("full")}
-                                className={cn(
-                                    "px-4 py-1.5 rounded-md text-sm font-bold transition-all",
-                                    mode === "full" ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30" : "text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"
-                                )}
-                            >
-                                Full
-                            </button>
+                                {isCapturing ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+                                Download
+                            </Button>
+                            <div className="flex items-center justify-center gap-1.5 bg-gray-100 dark:bg-black/20 p-1.5 rounded-[18px] w-[180px]">
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => setMode("basic")}
+                                    className={`flex-1 rounded-[14px] font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm" : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"}`}
+                                >
+                                    Basic
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => setMode("full")}
+                                    className={`flex-1 rounded-[14px] font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm" : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"}`}
+                                >
+                                    Full
+                                </Button>
+                            </div>
                         </div>
                     </div>
 
                     {/* Card Preview Area */}
-                    <div className="flex justify-center py-4 w-full">
+                    <div className="flex justify-center py-4 w-full rounded-2xl bg-white dark:bg-[#1E2028]" ref={cardRef}>
                         <TradeShareCard entry={entry} variant={mode} className="max-w-none shadow-xl" />
                     </div>
 
                     {/* Add Description Accordion */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden">
-                        <button
-                            onClick={() => setDescriptionOpen(!descriptionOpen)}
-                            className="w-full flex items-center justify-between p-4 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300 shadow-sm">
+                        <button 
+                            type="button"
+                            onClick={() => setDescriptionOpen(!descriptionOpen)} 
+                            className="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
-                            <span>Add Description (Optional)</span>
-                            {descriptionOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                            <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Add Description (Optional)</span>
+                            <div className={`transition-transform duration-300 ${descriptionOpen ? "rotate-180" : ""}`}>
+                                <ChevronDown size={16} className="text-gray-400" />
+                            </div>
                         </button>
-                        {descriptionOpen && (
-                            <div className="p-4 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black/20 relative">
-                                <textarea
-                                    className="w-full p-3 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none resize-none"
-                                    rows={3}
-                                    placeholder="Tell the story of this trade..."
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                ></textarea>
-                                <div className="absolute bottom-6 right-6 pointer-events-none">
-                                    {isSaving ? (
-                                        <span className="text-xs text-gray-400 animate-pulse">Saving...</span>
-                                    ) : lastSaved ? (
-                                         <CheckCircle2 size={16} className="text-green-500" />
-                                    ) : null}
+                        
+                        <div className={`grid transition-all duration-300 ease-in-out ${descriptionOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                            <div className="overflow-hidden">
+                                <div className="p-4 relative bg-gray-50/50 dark:bg-black/10 border-t border-gray-100 dark:border-white/5">
+                                    <textarea
+                                        className="w-full p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none resize-none transition-all shadow-sm font-medium"
+                                        rows={3}
+                                        placeholder="Tell the story of this trade..."
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                    ></textarea>
+                                    <div className="absolute bottom-6 right-6 pointer-events-none">
+                                        {isSaving ? (
+                                            <span className="text-xs text-gray-500 font-medium px-2 py-1 rounded-md bg-white/80 dark:bg-[#1E2028]/90 backdrop-blur-sm shadow-sm flex items-center gap-1 animate-pulse border border-gray-100 dark:border-white/10">Saving...</span>
+                                        ) : lastSaved ? (
+                                             <div className="bg-white/90 dark:bg-[#1E2028]/90 backdrop-blur-sm rounded-full p-0.5 shadow-sm border border-green-100 dark:border-green-500/20">
+                                                <CheckCircle2 size={16} className="text-green-500" />
+                                             </div>
+                                        ) : null}
+                                    </div>
                                 </div>
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     {/* Share Link Section */}

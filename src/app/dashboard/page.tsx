@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
 import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution } from "@/lib/analytics-queries";
-import { endOfDay, parseISO } from "date-fns";
+import { endOfDay, parseISO, format } from "date-fns";
 
 
 export const dynamic = "force-dynamic";
@@ -78,8 +78,28 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     const accountId = searchParams?.accountId as string; // Guaranteed to be set or empty if no accounts
     const accountFilter = accountId ? { userId: user.id, id: accountId } : { userId: user.id };
 
-    const fromParam = typeof searchParams?.from === 'string' ? searchParams.from : undefined;
-    const toParam = typeof searchParams?.to === 'string' ? searchParams.to : undefined;
+    let fromParam = typeof searchParams?.from === 'string' ? searchParams.from : undefined;
+    let toParam = typeof searchParams?.to === 'string' ? searchParams.to : undefined;
+
+    // Server-Side Redirect to enforce date range in URL (Today by default)
+    if (!fromParam || !toParam) {
+        const todayStr = format(new Date(), 'yyyy-MM-dd');
+        fromParam = fromParam || todayStr;
+        toParam = toParam || todayStr;
+
+        const newParams = new URLSearchParams();
+        if (searchParams) {
+             Object.entries(searchParams).forEach(([key, value]) => {
+                if (typeof value === 'string' && key !== 'from' && key !== 'to') newParams.set(key, value);
+             });
+        }
+        newParams.set('from', fromParam);
+        newParams.set('to', toParam);
+        // Ensure accountId is still kept intact
+        newParams.set("accountId", accountId); 
+        
+        redirect(`/dashboard?${newParams.toString()}`);
+    }
 
     const startDate = fromParam ? parseISO(fromParam) : undefined;
     // For endDate, if it's "2025-02-11", we want the END of that day.
@@ -190,7 +210,6 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
             userName={userData?.name || "Trader"}
             dashboardData={dashboardData}
             chartData={chartData}
-            recentActivity={[]}
             recentTrades={recentTrades}
             symbolPerformance={symbolPerformance}
             currentAccountId={accountId}

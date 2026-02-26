@@ -1,18 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, RefreshCw } from "lucide-react";
+import { useState, useTransition } from "react";
+import { Plus, RefreshCw, Search, Wallet } from "lucide-react";
 import { AccountCard } from "./AccountCard";
 import { AddAccountModal } from "./AddAccountModal";
-import { AccountSettingsModal } from "./AccountSettingsModal"; // Import Settings Modal
-import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import { AccountSettingsModal } from "./AccountSettingsModal";
+import { RegenerateKeyModal } from "./RegenerateKeyModal";
+import { DeleteAccountModal } from "./DeleteAccountModal";
 import { useRouter, useSearchParams } from "next/navigation";
-import { deleteTradingAccount, regenerateAccountKey } from "@/actions/accounts";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Wallet } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface TradingAccount {
     id: string;
@@ -50,48 +49,23 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
     // const [accounts, setAccounts] = useState<TradingAccount[]>(initialAccounts); // We can just use initialAccounts if we use router.refresh()
     // However, for immediate UI feedback we might want state. But router.refresh() with server actions is the "Vercel way".
     // Let's us initialAccounts directly.
-    const accounts = initialAccounts;
-    const [isLoading, setIsLoading] = useState(false); // Only for manual refresh button
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [showSettingsModal, setShowSettingsModal] = useState<TradingAccount | null>(null);
-    const [showRegenModal, setShowRegenModal] = useState<string | null>(null);
-    const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
-    const [newKey, setNewKey] = useState<string | null>(null);
-    const [copied, setCopied] = useState(false);
+    const [isPending, startTransition] = useTransition();
+    const [searchQuery, setSearchQuery] = useState("");
+    
+    type ModalState = 
+        | { type: "NONE" }
+        | { type: "ADD" }
+        | { type: "SETTINGS"; account: TradingAccount }
+        | { type: "REGEN"; accountId: string }
+        | { type: "DELETE"; accountId: string };
 
-    // Refresh function for manual updates
-    // fetchAccounts removed, using router.refresh()
+    const [activeModal, setActiveModal] = useState<ModalState>({ type: "NONE" });
 
-    async function handleRegenerateKey() {
-        if (!showRegenModal) return;
-        try {
-            const result = await regenerateAccountKey(showRegenModal);
-            if (result.error) throw new Error(result.error);
-            setNewKey(result.apiKey || null);
-            toast.success("New API Key generated");
-        } catch (e) {
-            toast.error("Failed to regenerate key");
-        }
-    }
-
-    async function handleDelete() {
-        if (!showDeleteModal) return;
-        try {
-            const result = await deleteTradingAccount(showDeleteModal);
-            if (result.error) throw new Error(result.error);
-            toast.success("Account deleted");
-            setShowDeleteModal(null);
-            router.refresh(); // Refresh server data
-        } catch (e) {
-            toast.error("Failed to delete account");
-        }
-    }
-
-    function copyNewKey() {
-        navigator.clipboard.writeText(newKey || "");
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    }
+    // Lọc accounts theo search query
+    const filteredAccounts = initialAccounts.filter(account => {
+        const query = searchQuery.toLowerCase();
+        return (account.name?.toLowerCase().includes(query) || account.accountNumber?.toLowerCase().includes(query));
+    });
 
     return (
         <div>
@@ -102,30 +76,46 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                 description="Manage your connected MT4/MT5 trading accounts"
             >
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
-                    <button
+                    <div className="relative group w-full sm:w-64 order-last sm:order-first mt-2 sm:mt-0">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Search size={16} className="text-gray-400 group-focus-within:text-primary transition-colors" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search by name or number..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-inset focus:ring-primary/50 focus:border-primary block w-full pl-10 p-2.5 transition-all outline-none"
+                        />
+                    </div>
+                    
+                    <Button
+                        variant="outline"
                         onClick={() => {
-                            setIsLoading(true);
-                            router.refresh();
-                            setTimeout(() => setIsLoading(false), 1000); 
+                            startTransition(() => {
+                                router.refresh();
+                            });
                         }}
-                        className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 dark:bg-white/5 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors sm:mr-2"
+                        disabled={isPending}
+                        className="flex items-center justify-center gap-2 sm:mr-2 flex-1 sm:flex-none"
                     >
-                        <RefreshCw size={16} className={isLoading ? "animate-spin text-primary" : ""} />
-                        Refresh Status
-                    </button>
-                    <button
-                        onClick={() => setShowAddModal(true)}
-                        className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-[#00B377] text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/25 active:scale-95"
+                        <RefreshCw size={16} className={isPending ? "animate-spin text-primary" : ""} />
+                        Refresh
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={() => setActiveModal({ type: "ADD" })}
+                        className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
                     >
                         <Plus size={18} />
                         Add Account
-                    </button>
+                    </Button>
                 </div>
             </PageHeader>
             </div>
 
             {/* Account Grid */}
-            {isLoading && accounts.length === 0 ? (
+            {isPending && initialAccounts.length === 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[1, 2, 3].map((i) => (
                         <div
@@ -134,32 +124,45 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                         />
                     ))}
                 </div>
-            ) : accounts.length === 0 ? (
+            ) : initialAccounts.length === 0 ? (
                 <div className="py-20">
                     <EmptyState 
                         icon={Wallet}
                         title="No Trading Accounts"
                         description="Connect your MetaTrader account to automatically sync your trading history and analyze your performance."
                         action={
-                            <button
-                                onClick={() => setShowAddModal(true)}
-                                className="px-6 py-2.5 bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 font-bold rounded-xl transition-colors shadow-lg"
+                            <Button
+                                variant="primary"
+                                onClick={() => setActiveModal({ type: "ADD" })}
+                                className="shadow-lg min-w-[140px]"
                             >
                                 Add Account
-                            </button>
+                            </Button>
                         }
                     />
                 </div>
+            ) : filteredAccounts.length === 0 ? (
+                <div className="py-20 flex flex-col items-center justify-center gap-4 text-center">
+                    <Search size={48} className="text-gray-300 dark:text-gray-700" />
+                    <div>
+                        <p className="text-gray-900 dark:text-white font-bold text-lg mb-1">No accounts match your search</p>
+                        <p className="text-gray-500 text-sm max-w-sm mx-auto">Try typing a different name or account number to find what you are looking for.</p>
+                    </div>
+                </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
-                    {accounts.map((account) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
+                    {filteredAccounts.map((account) => (
                         <div key={account.id} className="min-w-0 h-full">
                             <AccountCard
                                 account={account}
-                                onUpdate={() => router.refresh()}
-                                onRegenerateKey={(id) => setShowRegenModal(id)}
-                                onDelete={(id) => setShowDeleteModal(id)}
-                                onSettings={(acc) => setShowSettingsModal(acc)}
+                                onUpdate={() => {
+                                    startTransition(() => {
+                                        router.refresh();
+                                    });
+                                }}
+                                onRegenerateKey={(id) => setActiveModal({ type: "REGEN", accountId: id })}
+                                onDelete={(id) => setActiveModal({ type: "DELETE", accountId: id })}
+                                onSettings={(acc) => setActiveModal({ type: "SETTINGS", account: acc })}
                             />
                         </div>
                     ))}
@@ -182,114 +185,45 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
             )}
 
             {/* Settings Modal */}
-            {showSettingsModal && (
+            {activeModal.type === "SETTINGS" && (
                 <AccountSettingsModal
-                    isOpen={!!showSettingsModal}
-                    account={showSettingsModal}
-                    onClose={() => setShowSettingsModal(null)}
+                    isOpen={true}
+                    account={activeModal.account}
+                    onClose={() => setActiveModal({ type: "NONE" })}
                     onUpdate={() => router.refresh()}
                     onDelete={() => {
-                        setShowSettingsModal(null);
-                        setShowDeleteModal(showSettingsModal.id);
+                        setActiveModal({ type: "DELETE", accountId: activeModal.account.id });
                     }}
                     onRegenerateKey={() => {
-                        setShowSettingsModal(null);
-                        setShowRegenModal(showSettingsModal.id);
+                        setActiveModal({ type: "REGEN", accountId: activeModal.account.id });
                     }}
                 />
             )}
 
             {/* Add Modal */}
             <AddAccountModal
-                isOpen={showAddModal}
-                onClose={() => setShowAddModal(false)}
+                isOpen={activeModal.type === "ADD"}
+                onClose={() => setActiveModal({ type: "NONE" })}
                 onSuccess={(account) => {
-                    setShowAddModal(false);
-                    router.refresh(); // Refresh list
+                    setActiveModal({ type: "NONE" });
+                    router.refresh();
                 }}
             />
 
             {/* Regenerate Key Modal */}
-            <Dialog open={!!showRegenModal} onOpenChange={(open) => !open && !newKey && setShowRegenModal(null)}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Regenerate API Key</DialogTitle>
-                        <DialogDescription>
-                            This will invalidate your current API key. You will need to update your EA settings with the new key immediately.
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    {newKey ? (
-                        <div className="space-y-4 py-4">
-                            <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5">
-                                <p className="text-xs font-bold text-gray-500 mb-2 uppercase">New API Key</p>
-                                <div className="flex gap-2">
-                                    <code className="flex-1 font-mono text-sm text-primary break-all">{newKey}</code>
-                                    <button onClick={copyNewKey} className="text-sm font-medium text-gray-500 hover:text-gray-700">
-                                        {copied ? "Copied" : "Copy"}
-                                    </button>
-                                </div>
-                            </div>
-                            <p className="text-sm text-red-500">Please save this key now. It will not be shown again.</p>
-                        </div>
-                    ) : null}
-
-                    <DialogFooter>
-                        {!newKey ? (
-                            <>
-                                <button
-                                    onClick={() => setShowRegenModal(null)}
-                                    className="px-4 py-2 text-gray-500 hover:text-gray-700 font-medium"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleRegenerateKey}
-                                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium"
-                                >
-                                    Regenerate
-                                </button>
-                            </>
-                        ) : (
-                            <button
-                                onClick={() => {
-                                    setShowRegenModal(null);
-                                    setNewKey(null);
-                                }}
-                                className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-medium"
-                            >
-                                Close
-                            </button>
-                        )}
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <RegenerateKeyModal
+                isOpen={activeModal.type === "REGEN"}
+                onClose={() => setActiveModal({ type: "NONE" })}
+                accountId={activeModal.type === "REGEN" ? activeModal.accountId : null}
+            />
 
             {/* Delete Confirmation Modal */}
-            <Dialog open={!!showDeleteModal} onOpenChange={() => setShowDeleteModal(null)}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Trading Account?</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete this account? All associated synced trades will be unlinked (or deleted depending on policy). This action cannot be undone.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <button
-                            onClick={() => setShowDeleteModal(null)}
-                            className="px-4 py-2 text-gray-500 hover:text-gray-700 font-medium"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleDelete}
-                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium"
-                        >
-                            Delete
-                        </button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <DeleteAccountModal
+                isOpen={activeModal.type === "DELETE"}
+                onClose={() => setActiveModal({ type: "NONE" })}
+                accountId={activeModal.type === "DELETE" ? activeModal.accountId : null}
+                onSuccess={() => router.refresh()}
+            />
 
         </div>
     );

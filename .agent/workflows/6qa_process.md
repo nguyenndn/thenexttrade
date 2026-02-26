@@ -1,5 +1,5 @@
 ﻿---
-description: [Automated Quality Assurance and Verification Workflow]
+description: Automated Quality Assurance and Verification Workflow
 ---
 
 # Breek Premium QA & Verification Workflow (/qa_process)

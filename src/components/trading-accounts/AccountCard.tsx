@@ -17,6 +17,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/Button";
 
 interface AccountCardProps {
     account: any;
@@ -26,29 +27,28 @@ interface AccountCardProps {
     onSettings: (account: any) => void;
 }
 
+// Logic: Map "PERSONAL" to "REAL", everything else defaults to input or "DEMO"
+const getAccountType = (type: string) => {
+    const t = (type || "DEMO").toUpperCase();
+    if (t === "PERSONAL") return "REAL";
+    return t;
+};
+
+const getPlatformIcon = (platform: string) => {
+    const p = platform?.toUpperCase() || "";
+    if (p.includes("MT4")) return "/icons/mt4.png";
+    if (p.includes("MT5")) return "/icons/mt5.png";
+    return null;
+};
+
 export function AccountCard({
     account,
     onRegenerateKey,
     onDelete,
     onSettings
 }: AccountCardProps) {
-
-    // Logic: Map "PERSONAL" to "REAL", everything else defaults to input or "DEMO"
-    const getAccountType = (type: string) => {
-        const t = (type || "DEMO").toUpperCase();
-        if (t === "PERSONAL") return "REAL";
-        return t;
-    };
-
     const accountType = getAccountType(account.accountType);
     const isReal = accountType === "REAL";
-
-    const getPlatformIcon = (platform: string) => {
-        const p = platform?.toUpperCase() || "";
-        if (p.includes("MT4")) return "/icons/mt4.png";
-        if (p.includes("MT5")) return "/icons/mt5.png";
-        return null;
-    };
 
     return (
         <div className="group relative bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow flex flex-col min-h-[220px]">
@@ -101,9 +101,9 @@ export function AccountCard({
                     <div className="flex items-center gap-2">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors focus:outline-none">
+                                <Button variant="ghost" size="icon" aria-label="Account options" className="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
                                     <MoreVertical size={16} />
-                                </button>
+                                </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-52 p-1.5 rounded-xl border-gray-100 dark:border-white/5 shadow-xl bg-white dark:bg-[#1E2028] z-[100]">
                                 <DropdownMenuItem onClick={() => onSettings(account)} className="flex items-center gap-3 px-3 py-2.5 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors">

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion";
 import Link from "next/link";
 import { Wallet, BarChart2, GraduationCap, X, LayoutGrid } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 const AnimatedGridIcon = ({ isOpen }: { isOpen: boolean }) => {
     return (
@@ -185,16 +186,14 @@ export function FloatingQuickActions() {
                 )}
             </AnimatePresence>
 
-            <button
-                onClick={(e) => {
-                    // Prevent click from firing at the end of a drag
-                    // We only toggle if it wasn't a drag event. But usually onClick handles this fine in Framer Motion if drag didn't move much.
-                    setIsOpen(!isOpen);
-                }}
-                className="w-14 h-14 rounded-full bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/30 flex items-center justify-center transition-colors pointer-events-auto"
+            <Button
+                variant="primary"
+                aria-label="Toggle Quick Actions"
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-14 h-14 rounded-full !p-0 shadow-lg shadow-primary/30 flex items-center justify-center pointer-events-auto shrink-0"
             >
                 <AnimatedGridIcon isOpen={isOpen} />
-            </button>
+            </Button>
         </motion.div>
     );
 }

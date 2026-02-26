@@ -74,7 +74,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                                                 </div>
                                                 <div className="flex justify-between gap-4">
                                                     <span className="text-gray-400">Profit Factor:</span>
-                                                    <span className="font-mono">{data.profitFactor === Infinity ? "∞" : (data.profitFactor ?? 0).toFixed(2)}</span>
+                                                    <span className="font-mono">{data.profitFactor === Infinity ? "MAX" : (data.profitFactor ?? 0).toFixed(2)}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -88,7 +88,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                             {data.map((entry, index) => (
                                 <Cell
                                     key={`cell-${index}`}
-                                    fill={entry.totalPnL >= 0 ? "hsl(var(--primary))" : "#EF4444"}
+                                    fill={entry.color}
                                 />
                             ))}
                         </Bar>

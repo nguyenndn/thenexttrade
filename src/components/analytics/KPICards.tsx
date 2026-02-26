@@ -39,8 +39,8 @@ export function KPICards({ summary }: KPICardsProps) {
         {
             title: "Profit Factor",
             value: summary.profitFactor === Infinity
-                ? "∞"
-                : (summary.profitFactor || 0).toFixed(2),
+                ? "MAX"
+                : (summary.profitFactor ?? 0).toFixed(2),
             icon: Scale,
             color: "text-blue-500",
             bg: "bg-blue-50 dark:bg-blue-500/10",

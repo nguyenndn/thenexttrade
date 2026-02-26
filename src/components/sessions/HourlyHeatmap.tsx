@@ -10,6 +10,13 @@ interface HourlyHeatmapProps {
     }>;
 }
 
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
     // Create full 24-hour array
     const fullHours = Array.from({ length: 24 }, (_, i) => {
@@ -40,20 +47,83 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
 
         // Normalize intensity for visual distinction steps
         if (pnl > 0) {
-            if (intensity > 0.8) return "bg-green-400 dark:bg-green-500/80 text-white";
-            if (intensity > 0.6) return "bg-green-300 dark:bg-green-500/60 text-gray-900 dark:text-white";
-            if (intensity > 0.3) return "bg-green-200 dark:bg-green-500/40 text-gray-900 dark:text-white";
-            return "bg-green-100 dark:bg-green-500/20 text-gray-700 dark:text-gray-300";
+            if (intensity > 0.8) return "bg-primary dark:bg-primary/90 text-white";
+            if (intensity > 0.6) return "bg-primary/70 text-white";
+            if (intensity > 0.3) return "bg-primary/40 text-gray-900 dark:text-white";
+            return "bg-primary/20 text-gray-700 dark:text-gray-300";
         } else if (pnl < 0) {
-            if (intensity > 0.8) return "bg-red-400 dark:bg-red-500/80 text-white";
-            if (intensity > 0.6) return "bg-red-300 dark:bg-red-500/60 text-gray-900 dark:text-white";
-            if (intensity > 0.3) return "bg-red-200 dark:bg-red-500/40 text-gray-900 dark:text-white";
-            return "bg-red-100 dark:bg-red-500/20 text-gray-700 dark:text-gray-300";
+            if (intensity > 0.8) return "bg-red-500 dark:bg-red-500/90 text-white";
+            if (intensity > 0.6) return "bg-red-400 dark:bg-red-500/70 text-white";
+            if (intensity > 0.3) return "bg-red-300 dark:bg-red-500/40 text-gray-900 dark:text-white";
+            return "bg-red-200 dark:bg-red-500/20 text-gray-700 dark:text-gray-300";
         } else {
             // Breakeven but traded
             return "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300";
         }
     };
+
+    const amHours = fullHours.slice(0, 12);
+    const pmHours = fullHours.slice(12, 24);
+
+    const renderHourBlock = (hoursData: typeof fullHours, isTopRow: boolean = false) => (
+        <div className="space-y-1.5">
+            {/* Hour cells */}
+            <div className="grid grid-cols-12 gap-1.5 md:gap-2">
+                {hoursData.map((hour) => (
+                    <Tooltip key={hour.hour} delayDuration={0}>
+                        <TooltipTrigger asChild>
+                            <div
+                                className={`
+                                    w-full h-[80px] rounded-lg flex flex-col items-center justify-center
+                                    cursor-pointer transition-all hover:scale-105 relative shadow-sm border border-transparent hover:border-white/20 hover:z-20
+                                    ${getColor(hour)}
+                                `}
+                            >
+                                <span className="font-bold text-[13px] opacity-100">{hour.totalTrades > 0 ? hour.totalTrades : ""}</span>
+                            </div>
+                        </TooltipTrigger>
+
+                        {/* Radix Portal Tooltip */}
+                        <TooltipContent 
+                            side={isTopRow ? "bottom" : "top"} 
+                            sideOffset={8}
+                            className="w-36 bg-gray-900 dark:bg-gray-900 border-gray-800 dark:border-white/10 text-white p-3 shadow-xl rounded-lg z-[100]"
+                        >
+                            <p className="font-bold border-b border-gray-700 pb-2 mb-2">{hour.hourLabel} UTC</p>
+                            <div className="space-y-1.5">
+                                <div className="flex justify-between items-center gap-2">
+                                    <span className="text-gray-400">Trades:</span>
+                                    <span className="font-medium">{hour.totalTrades}</span>
+                                </div>
+                                <div className="flex justify-between items-center gap-2">
+                                    <span className="text-gray-400">Win Rate:</span>
+                                    <span className="font-medium">{hour.winRate.toFixed(0)}%</span>
+                                </div>
+                                <div className="flex justify-between items-center gap-2">
+                                    <span className="text-gray-400">P&L:</span>
+                                    <span className={`font-medium ${hour.totalPnL > 0 ? "text-primary dark:text-[#00C888]" : hour.totalPnL < 0 ? "text-red-400" : "text-gray-300"}`}>
+                                        {hour.totalPnL > 0 ? '+' : ''}{hour.totalPnL.toFixed(2)}
+                                    </span>
+                                </div>
+                            </div>
+                        </TooltipContent>
+                    </Tooltip>
+                ))}
+            </div>
+            
+            {/* Hour labels */}
+            <div className="grid grid-cols-12 gap-1.5 md:gap-2">
+                {hoursData.map((hour) => (
+                    <div
+                        key={hour.hour}
+                        className="text-center text-[10px] font-medium text-gray-400"
+                    >
+                        {hour.hour}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm transition-shadow hover:shadow-md">
@@ -65,55 +135,14 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
             </p>
 
             {/* Heatmap Grid */}
-            <div className="space-y-2">
-                {/* Hour cells */}
-                <div className="grid grid-cols-6 sm:grid-cols-12 md:grid-cols-12 lg:grid-cols-24 gap-1">
-                    {fullHours.map((hour) => (
-                        <div
-                            key={hour.hour}
-                            className={`
-                aspect-square rounded-lg flex items-center justify-center
-                text-[10px] sm:text-xs font-bold md:font-black cursor-pointer transition-all hover:scale-110 relative group
-                ${getColor(hour)}
-              `}
-                        >
-                            <span className="opacity-100">{hour.totalTrades > 0 ? hour.totalTrades : ""}</span>
-
-                            {/* Tooltip */}
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-32 bg-gray-900 text-white text-xs rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                                <p className="font-bold border-b border-gray-700 pb-1 mb-1">{hour.hourLabel} UTC</p>
-                                <div className="space-y-0.5">
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-400">Trades:</span>
-                                        <span>{hour.totalTrades}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-400">Win Rate:</span>
-                                        <span>{hour.winRate.toFixed(0)}%</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-400">P&L:</span>
-                                        <span className={hour.totalPnL > 0 ? "text-green-400" : hour.totalPnL < 0 ? "text-red-400" : "text-gray-300"}>
-                                            {hour.totalPnL > 0 ? '+' : ''}{hour.totalPnL.toFixed(2)}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+            <TooltipProvider>
+                <div className="overflow-x-auto pb-6 custom-scrollbar">
+                    <div className="min-w-[500px] space-y-8 pr-4">
+                        {renderHourBlock(amHours, true)}
+                        {renderHourBlock(pmHours, false)}
+                    </div>
                 </div>
-                {/* Hour labels (simplified for small screens logic addressed via grid above) */}
-                <div className="grid grid-cols-6 sm:grid-cols-12 md:grid-cols-12 lg:grid-cols-24 gap-1">
-                    {fullHours.map((hour) => (
-                        <div
-                            key={hour.hour}
-                            className="text-center text-[8px] text-gray-400"
-                        >
-                            {hour.hour}
-                        </div>
-                    ))}
-                </div>
-            </div>
+            </TooltipProvider>
 
             {/* Color Legend */}
             <div className="flex items-center justify-end gap-4 mt-6 text-xs text-gray-500">
@@ -126,7 +155,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                     <span>No Activity</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded bg-green-400"></div>
+                    <div className="w-3 h-3 rounded bg-primary"></div>
                     <span>High Profit</span>
                 </div>
             </div>

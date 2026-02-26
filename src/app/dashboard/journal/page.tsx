@@ -2,6 +2,8 @@ import JournalList from "@/components/journal/JournalList";
 import { Metadata } from "next";
 import { getJournalEntries, getUserTags } from "@/actions/journal";
 import { getStrategies } from "@/actions/strategies";
+import { redirect } from "next/navigation";
+import { format } from "date-fns";
 
 export const dynamic = "force-dynamic";
 
@@ -27,8 +29,26 @@ export default async function JournalPage({
     const type = typeof resolvedParams.type === "string" && resolvedParams.type !== "ALL" ? resolvedParams.type : undefined;
     const tag = typeof resolvedParams.tag === "string" && resolvedParams.tag !== "ALL" ? resolvedParams.tag : undefined;
 
-    const dateFrom = typeof resolvedParams.from === "string" ? resolvedParams.from : undefined;
-    const dateTo = typeof resolvedParams.to === "string" ? resolvedParams.to : undefined;
+    let dateFrom = typeof resolvedParams.from === "string" ? resolvedParams.from : undefined;
+    let dateTo = typeof resolvedParams.to === "string" ? resolvedParams.to : undefined;
+
+    // Auto-inject Today's date if missing
+    if (!dateFrom || !dateTo) {
+        const todayStr = format(new Date(), 'yyyy-MM-dd');
+        dateFrom = dateFrom || todayStr;
+        dateTo = dateTo || todayStr;
+
+        const newParams = new URLSearchParams();
+        Object.entries(resolvedParams).forEach(([key, val]) => {
+            if (val !== undefined && key !== 'from' && key !== 'to') {
+                newParams.append(key, String(val));
+            }
+        });
+        newParams.append('from', dateFrom);
+        newParams.append('to', dateTo);
+
+        redirect(`/dashboard/journal?${newParams.toString()}`);
+    }
 
     const sortBy = typeof resolvedParams.sort === "string" ? resolvedParams.sort : undefined;
     const sortOrder = typeof resolvedParams.dir === "string" && (resolvedParams.dir === "asc" || resolvedParams.dir === "desc") ? resolvedParams.dir : undefined;

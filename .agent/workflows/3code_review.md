@@ -1,5 +1,5 @@
 ---
-description: [Senior Code Reviewer and Maintainer Workflow]
+description: Senior Code Reviewer and Maintainer Workflow
 ---
 
 # Breek Premium Code Review & Refactor Workflow (/code_review)

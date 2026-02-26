@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { MISTAKES, getMistakeSeverityColor } from "@/lib/mistakes";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
+import { Button } from "@/components/ui/Button";
 
 interface MistakesCellProps {
     entry: any; // Using any for JournalEntry
@@ -47,11 +48,13 @@ export function MistakesCell({ entry, onUpdate }: MistakesCellProps) {
                     }
                 })
             ) : (
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                 >
                     <Plus size={12} />
-                </button>
+                </Button>
             )}
         </div>
     );

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { AreaChart, Area, ResponsiveContainer, YAxis, XAxis, ReferenceDot } from "recharts";
-import { TrendingUp, TrendingDown, Medal } from "lucide-react";
+import { TrendingUp, TrendingDown, Medal, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TradeShareCardProps {
@@ -16,6 +16,13 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
 
     const isWin = entry.pnl && entry.pnl > 0;
     
+    // Hit logic
+    const isBuy = entry.type === "BUY";
+    const isTPHit = entry.status === "CLOSED" && entry.exitPrice && entry.takeProfit ? 
+        (isBuy ? entry.exitPrice >= entry.takeProfit : entry.exitPrice <= entry.takeProfit) : false;
+    const isSLHit = entry.status === "CLOSED" && entry.exitPrice && entry.stopLoss ? 
+        (isBuy ? entry.exitPrice <= entry.stopLoss : entry.exitPrice >= entry.stopLoss) : false;
+
     // Theme Colors based on Result
     const themeColor = isWin ? "#22c55e" : "#ef4444"; // Green-500 : Red-500
     const gradientId = isWin ? "gradientWin" : "gradientLoss";
@@ -23,31 +30,36 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
     const textColor = isWin ? "text-green-500" : "text-red-500";
     const badgeBg = isWin ? "bg-green-500" : "bg-red-500";
 
-    // Generate Stylized Chart Data (PnL Progression)
+    // Generate Stylized Chart Data (PnL Progression) - Static Hash logic to prevent jumping
     const { data: chartData, min, max } = useMemo(() => {
         if (entry.pnl === undefined || entry.pnl === null) return { data: [], min: 0, max: 0 };
 
-        const points = 10; // Reduce points for smoother, less jagged look
+        const points = 10;
         const startPnL = 0;
         const endPnL = Number(entry.pnl);
-        
-        // Calculate volatility based on PnL magnitude
         const volatility = Math.abs(endPnL) * 0.4;
-
+        
         let minVal = Math.min(startPnL, endPnL);
         let maxVal = Math.max(startPnL, endPnL);
 
+        // Simple pseudo-random generator based on ID or string to keep chart consistent per trade
+        const seedStr = `${entry.id || 'default'}-${endPnL}`;
+        const hash = Array.from(seedStr).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        
+        const pseudoRandom = (seed: number) => {
+            const x = Math.sin(seed + hash) * 10000;
+            return x - Math.floor(x);
+        };
+
         const data = Array.from({ length: points }).map((_, i) => {
             const progress = i / (points - 1);
-            // Non-linear progression for a more "trading" feel (starts slow, accelerates, slows down)
             const easedProgress = Math.pow(progress, 1.5); 
             let pnl = startPnL + (endPnL - startPnL) * easedProgress;
             
             if (i > 0 && i < points - 1) {
-                // Smoother wave, less random jitter
-                const noise = (Math.random() - 0.5) * volatility * 0.3;
+                // Static noise logic instead of Math.random()
+                const noise = (pseudoRandom(i) - 0.5) * volatility * 0.3;
                 const wave = Math.sin(progress * Math.PI) * (volatility * 0.5); 
-                // Invert the wave for losses to make it look like a drawdown recovery attempt
                 pnl += isWin ? (noise - wave * 0.5) : (noise + wave * 0.5);
             }
 
@@ -79,13 +91,15 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                     <div>
                         {/* Header: Logo & Badge */}
                         <div className="flex items-center justify-between mb-6 md:mb-8">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-black text-lg shadow-lg shadow-primary/30">
-                                    T
-                                </div>
-                                <span className="font-bold text-gray-900 dark:text-white tracking-tight">TheNextTrade</span>
+                            <div className="flex items-center gap-1.5">
+                                <span className="font-black text-2xl tracking-tighter">
+                                    <span className="text-gray-900 dark:text-white">The</span>
+                                    <span className="text-gray-900 dark:text-white">Next</span>
+                                    <span className="text-primary">Trade</span>
+                                </span>
                             </div>
-                            <span className="px-3 py-1 rounded-full border border-blue-500/30 text-blue-500 text-[10px] font-black uppercase tracking-widest bg-blue-500/5">
+                            <span className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-blue-500/30 text-blue-500 text-[10px] font-black uppercase tracking-widest bg-blue-500/5">
+                                <ShieldCheck size={12} strokeWidth={3} />
                                 Verified
                             </span>
                         </div>
@@ -113,7 +127,19 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                         </div>
                         <div className="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-white/5">
                             <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Exit Price</span>
-                            <span className="font-black text-gray-900 dark:text-white font-mono">{Number(entry.exitPrice || 0)}</span>
+                            <div className="flex items-center gap-2">
+                                {isTPHit && (
+                                    <span className="px-1.5 py-0.5 bg-green-500 text-white text-[9px] font-black uppercase rounded shadow-sm">
+                                        🎯 TP HIT
+                                    </span>
+                                )}
+                                {isSLHit && (
+                                    <span className="px-1.5 py-0.5 bg-red-500 text-white text-[9px] font-black uppercase rounded shadow-sm">
+                                        🛡️ SL HIT
+                                    </span>
+                                )}
+                                <span className="font-black text-gray-900 dark:text-white font-mono">{Number(entry.exitPrice || 0)}</span>
+                            </div>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Gain</span>
@@ -124,7 +150,13 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
 
                 {/* RIGHT COLUMN: Chart (Full Mode Only) */}
                 {variant === "full" && (
-                    <div className="flex-1 relative bg-gray-50 dark:bg-black/20 min-h-[250px] md:min-h-[300px] border-t md:border-t-0 md:border-l border-gray-100 dark:border-white/5 p-6 flex flex-col justify-end">
+                    <div className="relative flex-1 bg-gray-50 dark:bg-black/20 min-h-[250px] md:min-h-[300px] border-t md:border-t-0 md:border-l border-gray-100 dark:border-white/5 flex flex-col justify-end overflow-hidden">
+                        
+                        {/* Premium Grid Pattern Background */}
+                        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none" 
+                             style={{ backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
+                        </div>
+
                         {/* Watermark / Brand in Chart */}
                         <div className="absolute top-6 right-6 flex items-center gap-2 opacity-50 z-20">
                             <Medal size={16} className="text-blue-500" />

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/Button";
 
 interface TagsCellProps {
     entry: any;
@@ -43,11 +44,13 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             </span>
                         ))
                     ) : (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <Plus size={12} />
-                        </button>
+                        </Button>
                     )}
                 </div>
             </DropdownMenuTrigger>
@@ -62,14 +65,16 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             className="flex-1 px-2 py-1 text-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-md focus:outline-none focus:border-blue-500"
                             autoFocus
                         />
-                        <button
+                        <Button
                             type="button"
+                            variant="primary"
+                            size="icon"
                             onClick={() => handleAddTag()}
-                            className="p-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                            className="w-8 h-8 rounded-md"
                             disabled={!newTag.trim()}
                         >
                             <Plus size={16} />
-                        </button>
+                        </Button>
                     </form>
 
                     {tags.length > 0 && (
@@ -77,9 +82,9 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             {tags.map((tag: string) => (
                                 <span key={tag} className="flex items-center gap-1 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs">
                                     {tag}
-                                    <button onClick={() => handleRemoveTag(tag)} className="text-gray-400 hover:text-red-500">
+                                    <Button variant="ghost" size="icon" onClick={() => handleRemoveTag(tag)} className="w-4 h-4 p-0 text-gray-400 hover:text-red-500 hover:bg-transparent">
                                         <X size={12} />
-                                    </button>
+                                    </Button>
                                 </span>
                             ))}
                         </div>

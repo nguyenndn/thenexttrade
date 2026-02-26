@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { AccountList } from "@/components/trading-accounts/AccountList";
 
 export const metadata: Metadata = {
     title: "Trading Accounts | GSN",

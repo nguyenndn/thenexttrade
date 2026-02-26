@@ -81,21 +81,21 @@ describe('JournalList Component', () => {
     // ========================================
     describe('Initial Rendering', () => {
         it('should render journal list heading', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 expect(screen.getByText('Trading Journal')).toBeInTheDocument();
             });
         });
 
         it('should render log trade button', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 expect(screen.getByText('Log Trade')).toBeInTheDocument();
             });
         });
 
         it('should fetch entries on mount', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 expect(mockFetch).toHaveBeenCalledWith(
                     expect.stringContaining('/api/journal-entries')
@@ -109,28 +109,28 @@ describe('JournalList Component', () => {
     // ========================================
     describe('Stats Display', () => {
         it('should display total trades label', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 expect(screen.getByText('Total Trades')).toBeInTheDocument();
             });
         });
 
         it('should display win rate label', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 expect(screen.getByText('Win Rate')).toBeInTheDocument();
             });
         });
 
         it('should display net profit label', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 expect(screen.getByText('Net Profit')).toBeInTheDocument();
             });
         });
 
         it('should display W/L ratio label', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 expect(screen.getByText('W/L Ratio')).toBeInTheDocument();
             });
@@ -142,14 +142,14 @@ describe('JournalList Component', () => {
     // ========================================
     describe('Entry Display', () => {
         it('should display entry symbols', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 expect(screen.getByText('EURUSD')).toBeInTheDocument();
             });
         });
 
         it('should display entry types', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 // Multiple entries can have BUY type
                 const buyElements = screen.getAllByText('BUY');
@@ -158,7 +158,7 @@ describe('JournalList Component', () => {
         });
 
         it('should display entry status', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 // Multiple entries can be CLOSED
                 const closedElements = screen.getAllByText('CLOSED');
@@ -167,7 +167,7 @@ describe('JournalList Component', () => {
         });
 
         it('should display positive PnL in green', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             await waitFor(() => {
                 const pnlElement = screen.getByText('+350');
                 expect(pnlElement).toHaveClass('text-[#00C888]');
@@ -181,7 +181,7 @@ describe('JournalList Component', () => {
     describe('Loading State', () => {
         it('should show loading initially', () => {
             mockFetch.mockImplementationOnce(() => new Promise(() => { }));
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
             const spinnerOrLoading = document.querySelector('.animate-spin') ||
                 screen.queryByText(/loading/i);
             expect(spinnerOrLoading).toBeTruthy();
@@ -201,7 +201,7 @@ describe('JournalList Component', () => {
                 return Promise.resolve({ ok: true });
             });
 
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 expect(toast.error).toHaveBeenCalledWith('Failed to load journal entries');
@@ -215,7 +215,7 @@ describe('JournalList Component', () => {
     describe('Create Trade Action', () => {
         it('should open modal when Log Trade button is clicked', async () => {
             const user = userEvent.setup();
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 expect(screen.getByText('Trading Journal')).toBeInTheDocument();
@@ -231,7 +231,7 @@ describe('JournalList Component', () => {
 
         it('should show journal form in modal', async () => {
             const user = userEvent.setup();
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 expect(screen.getByText('Log Trade')).toBeInTheDocument();
@@ -253,7 +253,7 @@ describe('JournalList Component', () => {
             const user = userEvent.setup();
             const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 expect(screen.getByText('EURUSD')).toBeInTheDocument();
@@ -275,7 +275,7 @@ describe('JournalList Component', () => {
             const user = userEvent.setup();
             vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 expect(screen.getByText('EURUSD')).toBeInTheDocument();
@@ -305,7 +305,7 @@ describe('JournalList Component', () => {
     // ========================================
     describe('Pagination', () => {
         it('should not show pagination for single page', async () => {
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 expect(screen.getByText('EURUSD')).toBeInTheDocument();
@@ -331,7 +331,7 @@ describe('JournalList Component', () => {
                 return Promise.resolve({ ok: true });
             });
 
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 expect(screen.getByText('Prev')).toBeInTheDocument();
@@ -355,7 +355,7 @@ describe('JournalList Component', () => {
                 return Promise.resolve({ ok: true });
             });
 
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 const prevButton = screen.getByText('Prev');
@@ -392,7 +392,7 @@ describe('JournalList Component', () => {
                 return Promise.resolve({ ok: true });
             });
 
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 expect(screen.getByText('Next')).toBeInTheDocument();
@@ -429,7 +429,7 @@ describe('JournalList Component', () => {
                 return Promise.resolve({ ok: true });
             });
 
-            render(<JournalList />);
+            render(<JournalList initialEntries={[]} meta={{ page: 1, limit: 10, total: 30, totalPages: 3 }} strategies={[]} userTags={[]} />);
 
             await waitFor(() => {
                 expect(screen.getByText('Trading Journal')).toBeInTheDocument();

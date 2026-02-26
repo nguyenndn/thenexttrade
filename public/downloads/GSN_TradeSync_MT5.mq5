@@ -68,25 +68,25 @@ int g_RateLimitSeconds = 60;    // Default cooldown (seconds)
 #define BTN_SYNC_CUSTOM "GSN_BtnSyncCustom"
 
 //--- Colors - Premium Modern Dark Theme
-#define CLR_PANEL_BG C '18,18,24'       // Deep dark background
-#define CLR_PANEL_BG2 C '24,24,32'      // Card background
-#define CLR_PANEL_BORDER C '45,45,55'   // Subtle border
-#define CLR_HEADER_BG C '24,24,32'      // Dark header (no green bar)
-#define CLR_HEADER_TEXT C '255,255,255' // White header text
-#define CLR_ACCENT C '0,212,140'        // GSN Emerald Green
-#define CLR_ACCENT_DIM C '0,170,112'    // Hover state
-#define CLR_LABEL C '140,140,155'       // Muted labels
-#define CLR_VALUE C '240,240,245'       // Bright values
-#define CLR_CONNECTED C '46,204,113'    // Success green
-#define CLR_DISCONNECTED C '231,76,60'  // Error red
-#define CLR_WARNING C '241,196,15'      // Warning amber
-#define CLR_BTN_BG C '32,32,42'         // Button background
-#define CLR_BTN_BORDER C '55,55,70'     // Button border
-#define CLR_BTN_TEXT C '220,220,230'    // Button text
-#define CLR_BTN_PRIMARY C '0,200,130'   // Primary action
-#define CLR_POPUP_BG C '22,22,30'       // Popup background
-#define CLR_EDIT_BG C '16,16,22'        // Input background
-#define CLR_DIVIDER C '45,45,58'        // Subtle divider
+#define CLR_PANEL_BG C'18,18,24'       // Deep dark background
+#define CLR_PANEL_BG2 C'24,24,32'      // Card background
+#define CLR_PANEL_BORDER C'45,45,55'   // Subtle border
+#define CLR_HEADER_BG C'24,24,32'      // Dark header (no green bar)
+#define CLR_HEADER_TEXT C'255,255,255' // White header text
+#define CLR_ACCENT C'0,212,140'        // GSN Emerald Green
+#define CLR_ACCENT_DIM C'0,170,112'    // Hover state
+#define CLR_LABEL C'140,140,155'       // Muted labels
+#define CLR_VALUE C'240,240,245'       // Bright values
+#define CLR_CONNECTED C'46,204,113'    // Success green
+#define CLR_DISCONNECTED C'231,76,60'  // Error red
+#define CLR_WARNING C'241,196,15'      // Warning amber
+#define CLR_BTN_BG C'32,32,42'         // Button background
+#define CLR_BTN_BORDER C'55,55,70'     // Button border
+#define CLR_BTN_TEXT C'220,220,230'    // Button text
+#define CLR_BTN_PRIMARY C'0,200,130'   // Primary action
+#define CLR_POPUP_BG C'22,22,30'       // Popup background
+#define CLR_EDIT_BG C'16,16,22'        // Input background
+#define CLR_DIVIDER C'45,45,58'        // Subtle divider
 
 //--- Additional panel objects for premium look
 #define PANEL_HEADER_BG "GSN_HeaderBG"
@@ -486,7 +486,7 @@ void CreatePremiumButton(string name, int x, int y, int width, int height,
 
   if (isPrimary) {
     ObjectSetInteger(0, name, OBJPROP_BGCOLOR, CLR_ACCENT);
-    ObjectSetInteger(0, name, OBJPROP_COLOR, C '10,10,15');
+    ObjectSetInteger(0, name, OBJPROP_COLOR, C'10,10,15');
     ObjectSetInteger(0, name, OBJPROP_BORDER_COLOR, CLR_ACCENT);
   } else {
     ObjectSetInteger(0, name, OBJPROP_BGCOLOR, CLR_BTN_BG);
@@ -577,9 +577,9 @@ void CreatePeriodPopup() {
   //--- Entire History (warning style)
   CreatePopupButton(BTN_ALL, x + padding, btnY, btnWidth, btnHeight,
                     "Entire History");
-  ObjectSetInteger(0, BTN_ALL, OBJPROP_BGCOLOR, C '45,28,28');
-  ObjectSetInteger(0, BTN_ALL, OBJPROP_BORDER_COLOR, C '80,45,45');
-  ObjectSetInteger(0, BTN_ALL, OBJPROP_COLOR, C '255,180,180');
+  ObjectSetInteger(0, BTN_ALL, OBJPROP_BGCOLOR, C'45,28,28');
+  ObjectSetInteger(0, BTN_ALL, OBJPROP_BORDER_COLOR, C'80,45,45');
+  ObjectSetInteger(0, BTN_ALL, OBJPROP_COLOR, C'255,180,180');
   btnY += btnSpacing + 6;
 
   //--- Divider
@@ -1107,15 +1107,24 @@ int SyncDateRange(datetime fromDate, datetime toDate) {
     double openPrice = 0;
     datetime openTime = 0;
     int tradeType = 0;
-    double stopLoss = 0;
-    double takeProfit = 0;
+
+    //--- Extract SL/TP directly from closing deal first (MT5 build 2300+)
+    double stopLoss = HistoryDealGetDouble(closingTickets[i], DEAL_SL);
+    double takeProfit = HistoryDealGetDouble(closingTickets[i], DEAL_TP);
+
+    double fbSL = 0;
+    double fbTP = 0;
 
     if (!FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType,
-                                 stopLoss, takeProfit)) {
+                                 fbSL, fbTP)) {
       openPrice = closePrice;
       openTime = closeTime;
       tradeType = fallbackType;
     }
+
+    //--- Fallback if DEAL_SL/TP is 0
+    if (stopLoss == 0) stopLoss = fbSL;
+    if (takeProfit == 0) takeProfit = fbTP;
 
     if (!first)
       tradesJson += ",";
@@ -1338,11 +1347,19 @@ bool SyncSingleTrade(ulong dealTicket) {
   double openPrice = 0;
   datetime openTime = 0;
   int tradeType = 0; // 0=BUY, 1=SELL
-  double stopLoss = 0;
-  double takeProfit = 0;
+  
+  //--- MT5 build 2300+ stores SL/TP in the closing deal
+  double stopLoss = HistoryDealGetDouble(dealTicket, DEAL_SL);
+  double takeProfit = HistoryDealGetDouble(dealTicket, DEAL_TP);
+  
+  double fbSL = 0;
+  double fbTP = 0;
 
   if (FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType,
-                              stopLoss, takeProfit)) {
+                              fbSL, fbTP)) {
+    if (stopLoss == 0) stopLoss = fbSL;
+    if (takeProfit == 0) takeProfit = fbTP;
+                              
     Print("Found opening deal - Price: ", openPrice,
           " Time: ", TimeToString(openTime), " SL: ", stopLoss,
           " TP: ", takeProfit);

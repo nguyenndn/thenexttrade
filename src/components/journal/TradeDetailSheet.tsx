@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs"
 import { getMistakeByCode } from "@/lib/mistakes"
 import { EmptyState } from "@/components/ui/EmptyState"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 
 interface JournalEntry {
@@ -61,10 +62,28 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
     const currentStrategy = entry.strategy ? strategies.find(s => s.name === entry.strategy || s.id === entry.strategy) : null;
     const strategyColor = currentStrategy?.color || "#6B7280";
 
+    // Hit Logic calculations (only if trade is closed)
+    const isBuy = entry.type === "BUY";
+    const isTPHit = entry.status === "CLOSED" && entry.exitPrice && entry.takeProfit ? 
+        (isBuy ? entry.exitPrice >= entry.takeProfit : entry.exitPrice <= entry.takeProfit) : false;
+        
+    const isSLHit = entry.status === "CLOSED" && entry.exitPrice && entry.stopLoss ? 
+        (isBuy ? entry.exitPrice <= entry.stopLoss : entry.exitPrice >= entry.stopLoss) : false;
+
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
             {/* Main Sheet Container - Dark Mode BG #0F1117 */}
             <SheetContent className="sm:max-w-4xl p-0 gap-0 bg-gray-50 dark:bg-[#0F1117] border-l border-gray-200 dark:border-white/5 overflow-y-auto">
+                {/* 
+                  A11y Requirement: Radix DialogContent requires a DialogTitle. 
+                  Since we build our own visual header below, we hide the official one for screen readers.
+                */}
+                <VisuallyHidden>
+                    <SheetHeader>
+                        <SheetTitle>Trade Details</SheetTitle>
+                        <SheetDescription>View metrics, analysis, and screenshots for this trade.</SheetDescription>
+                    </SheetHeader>
+                </VisuallyHidden>
 
                 {/* Header Section */}
                 <div className="sticky top-0 z-10 bg-gray-50/80 dark:bg-[#0F1117]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/5 px-8 py-6">
@@ -140,7 +159,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                 </div>
 
                                 <Button 
-                                    variant="ghost" 
+                                    variant="outline" 
                                     size="icon" 
                                     onClick={onNext}
                                     disabled={!hasNext}
@@ -248,9 +267,23 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                                         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 block">Entry Price</span>
                                                         <span className="text-lg font-black text-gray-900 dark:text-white font-mono">{entry.entryPrice}</span>
                                                     </div>
-                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 block">Exit Price</span>
-                                                        <span className="text-lg font-black text-gray-900 dark:text-white font-mono">{entry.exitPrice || "---"}</span>
+                                                    <div className="relative bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 flex items-center justify-between">
+                                                            Exit Price
+                                                            {isTPHit && <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded-sm animate-pulse tracking-widest font-black shadow-sm shadow-green-500/20">🎯 TP HIT</span>}
+                                                            {isSLHit && <span className="text-[9px] bg-red-500 text-white px-1.5 py-0.5 rounded-sm animate-pulse tracking-widest font-black shadow-sm shadow-red-500/20">🛡️ SL HIT</span>}
+                                                        </span>
+                                                        <span className={cn("text-lg font-black font-mono", isTPHit ? "text-green-500" : isSLHit ? "text-red-500" : "text-gray-900 dark:text-white")}>
+                                                            {entry.exitPrice || "---"}
+                                                        </span>
+                                                    </div>
+                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm opacity-80">
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 block">Stop Loss</span>
+                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300 font-mono">{entry.stopLoss || "---"}</span>
+                                                    </div>
+                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm opacity-80">
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 block">Take Profit</span>
+                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300 font-mono">{entry.takeProfit || "---"}</span>
                                                     </div>
                                                 </div>
                                             </div>

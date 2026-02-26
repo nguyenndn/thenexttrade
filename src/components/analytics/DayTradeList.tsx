@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 
 import { format } from "date-fns";
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
 interface DayTradeListProps {
     date: string;
@@ -51,12 +52,14 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                         {displayDate}
                     </h2>
-                    <button 
+                    <Button 
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                        className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 transition-colors"
+                        className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 transition-colors border-0"
                     >
                         <X size={20} />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Scrollable Content */}

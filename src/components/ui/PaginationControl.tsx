@@ -74,10 +74,10 @@ export const PaginationControl = ({
                     <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Show:</span>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button className="flex items-center gap-1 font-bold text-gray-900 dark:text-white hover:text-primary transition-colors bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 px-2 py-1 rounded-lg">
+                            <Button variant="outline" size="sm" className="font-bold flex items-center gap-1">
                                 {pageSize}
                                 <ChevronDown size={14} />
-                            </button>
+                            </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start">
                             {pageSizeOptions.map((size) => (
@@ -96,40 +96,46 @@ export const PaginationControl = ({
 
             {/* Right: Navigation */}
             <div className="flex items-center gap-1.5 p-1">
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     disabled={currentPage <= 1}
                     onClick={() => onPageChange(currentPage - 1)}
-                    className="p-2 rounded-xl transition-all text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="text-gray-500 hover:text-gray-900 dark:hover:text-white disabled:opacity-30"
                 >
                     <ChevronLeft size={16} />
-                </button>
+                </Button>
 
                 <div className="flex items-center gap-1 px-1">
                     {getPageNumbers().map((p, idx) => (
                         typeof p === 'number' ? (
-                            <button
+                            <Button
                                 key={idx}
+                                variant={p === currentPage ? "primary" : "ghost"}
                                 onClick={() => onPageChange(p)}
-                                className={`min-w-[36px] h-9 px-3 flex items-center justify-center rounded-xl font-bold text-sm transition-all ${p === currentPage
-                                        ? 'bg-[#00C888] text-white shadow-md shadow-[#00C888]/20 ring-1 ring-[#00C888]/50'
-                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-white/10'
-                                    }`}
+                                className={`w-9 h-9 px-0 sm:px-3 sm:w-auto font-bold text-sm ${
+                                    p === currentPage
+                                        ? 'shadow-md shadow-[#00C888]/20'
+                                        : 'text-gray-600 dark:text-gray-400'
+                                }`}
                             >
                                 {p}
-                            </button>
+                            </Button>
                         ) : (
                             <span key={idx} className="w-9 h-9 flex items-center justify-center text-gray-400 font-bold text-xs select-none">...</span>
                         )
                     ))}
                 </div>
 
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     disabled={currentPage >= totalPages}
                     onClick={() => onPageChange(currentPage + 1)}
-                    className="p-2 rounded-xl transition-all text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="text-gray-500 hover:text-gray-900 dark:hover:text-white disabled:opacity-30"
                 >
                     <ChevronRight size={16} />
-                </button>
+                </Button>
             </div>
         </div>
     );

@@ -13,6 +13,7 @@ import { DayTradeList } from "./DayTradeList";
 import { toast } from "sonner";
 import * as htmlToImage from "html-to-image";
 import { getDayDetails } from "@/actions/journal";
+import { Button } from "@/components/ui/Button";
 
 interface ProfitCalendarProps {
     data: Array<{
@@ -176,26 +177,32 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                     </div>
                     
                     <div className="flex items-center gap-3">
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                            className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                            className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors border-0"
                         >
                             <ChevronLeft size={18} className="text-gray-500" />
-                        </button>
+                        </Button>
                         <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
                             {format(currentMonth, "MMMM yyyy")}
                         </span>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                            className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                            className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors border-0"
                         >
                             <ChevronRight size={18} className="text-gray-500" />
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
 
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={handleScreenshot}
                         disabled={isCapturing}
                         className={`p-1.5 rounded-lg transition-colors border border-transparent 
@@ -206,7 +213,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                         title="Screenshot Report"
                     >
                         {isCapturing ? <Loader2 size={16} className="animate-spin" /> : <Camera size={16} />}
-                    </button>
+                    </Button>
                 </div>
                 </div>
             </div>

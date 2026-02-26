@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, Save, Copy, Check, Eye, EyeOff, RefreshCw, Trash2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import { Button } from "@/components/ui/Button";
 import { updateTradingAccount, revealApiKey, regenerateAccountKey } from "@/actions/accounts";
 
 interface AccountSettingsModalProps {
@@ -123,12 +124,15 @@ export function AccountSettingsModal({
                         <div className="w-2.5 h-8 rounded-full shadow-sm" style={{ backgroundColor: color }} />
                         Account Settings
                     </h2>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20"
+                        aria-label="Close settings"
+                        className="w-10 h-10 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
                     >
                         <X size={20} />
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="p-6 space-y-6 overflow-y-auto custom-scrollbar">
@@ -152,13 +156,16 @@ export function AccountSettingsModal({
                             <div className="flex flex-wrap gap-2.5">
                                 {COLORS.map((c) => (
                                     <button
+                                        type="button"
                                         key={c}
                                         onClick={() => setColor(c)}
-                                        className={`w-9 h-9 rounded-full transition-all flex items-center justify-center relative ${color === c ? "scale-110 z-10" : "hover:scale-105"
-                                            }`}
+                                        aria-label={`Select color ${c}`}
+                                        className={`w-9 h-9 rounded-full transition-all flex items-center justify-center relative shadow-sm ring-offset-2 ring-offset-white dark:ring-offset-[#151925] ${
+                                            color === c ? "scale-110 z-10 ring-2 ring-current" : "hover:scale-105"
+                                        }`}
                                         style={{ 
-                                            backgroundColor: c, 
-                                            boxShadow: color === c ? `0 0 0 3px ${c}40, 0 4px 12px ${c}60` : "0 2px 5px rgba(0,0,0,0.1)" 
+                                            backgroundColor: c,
+                                            color: c // Đặt color = c để class ring-current ăn theo màu này
                                         }}
                                     >
                                         {color === c && <Check size={16} strokeWidth={3} className="text-white drop-shadow-md" />}
@@ -181,12 +188,14 @@ export function AccountSettingsModal({
                         <div className="p-4 bg-gray-50/80 dark:bg-white/[0.02] rounded-[20px] border border-gray-100 dark:border-white/5 shadow-inner">
                             <div className="flex items-center justify-between mb-2">
                                 <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">API Key</label>
-                                <button
+                                <Button
+                                    variant="outline"
+                                    size="sm"
                                     onClick={onRegenerateKey}
-                                    className="text-[11px] font-bold text-orange-500 hover:text-orange-600 flex items-center gap-1.5 px-3 py-1.5 hover:bg-orange-50 dark:hover:bg-orange-500/10 rounded-lg transition-colors uppercase tracking-wider"
+                                    className="text-[11px] font-bold text-orange-500 hover:text-orange-600 border-orange-200 hover:bg-orange-50 dark:border-orange-500/20 dark:hover:bg-orange-500/10 uppercase tracking-wider h-8 px-3"
                                 >
-                                    <RefreshCw size={12} strokeWidth={2.5} /> Regenerate
-                                </button>
+                                    <RefreshCw size={12} strokeWidth={2.5} className="mr-1.5" /> Regenerate
+                                </Button>
                             </div>
 
                             <div className="flex items-center gap-2.5 mb-2">
@@ -218,21 +227,27 @@ export function AccountSettingsModal({
                                     )}
                                 </div>
 
-                                <button
+                                <Button
+                                    variant="outline"
+                                    size="icon"
                                     onClick={fetchApiKey}
                                     disabled={isLoadingKey}
-                                    className="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/10 hover:shadow-sm transition-all focus:outline-none shrink-0"
+                                    aria-label="Toggle API Key visibility"
+                                    className="w-12 h-12 rounded-xl text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white shrink-0"
                                 >
                                     {isLoadingKey ? <RefreshCw size={18} className="animate-spin" /> : showApiKey ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </button>
+                                </Button>
 
                                 {showApiKey && apiKey && (
-                                    <button
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
                                         onClick={() => copyToClipboard(apiKey)}
-                                        className="w-12 h-12 flex items-center justify-center text-primary bg-primary/10 border border-primary/20 rounded-xl hover:bg-primary/20 transition-all shadow-sm shrink-0"
+                                        aria-label="Copy API Key"
+                                        className="w-12 h-12 rounded-xl text-primary border-primary/20 hover:bg-primary/10 shrink-0"
                                     >
                                         <Copy size={18} />
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                             <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -240,41 +255,44 @@ export function AccountSettingsModal({
                             </p>
                         </div>
                     </div>
-
-                    {/* Danger Zone */}
-                    <div className="pt-4 border-t border-dashed border-gray-200 dark:border-white/10">
-                        <button
-                            onClick={onDelete}
-                            className="w-full py-3 text-red-500 hover:text-white hover:bg-red-500 border border-red-500/20 hover:border-red-500 font-bold rounded-xl transition-all flex items-center justify-center gap-2.5 group"
-                        >
-                            <Trash2 size={18} className="group-hover:scale-110 transition-transform" />
-                            Delete this account
-                        </button>
-                    </div>
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-gray-100 dark:border-white/5 flex flex-col-reverse sm:flex-row gap-3 bg-white dark:bg-[#151925] shrink-0">
-                    <button
-                        onClick={onClose}
-                        className="w-full sm:w-auto px-6 py-3 font-bold text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white bg-gray-50 hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10 rounded-xl transition-colors sm:flex-1"
+                <div className="px-6 py-4 border-t border-gray-100 dark:border-white/5 flex flex-col sm:flex-row gap-3 bg-white dark:bg-[#151925] shrink-0 justify-between items-center w-full">
+                    <Button
+                        variant="destructive"
+                        onClick={onDelete}
+                        className="w-full sm:w-auto px-4 group"
+                        title="Delete this account"
                     >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={handleSave}
-                        disabled={isSaving}
-                        className="w-full sm:w-auto px-6 py-3 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 sm:flex-1 disabled:opacity-70 disabled:hover:translate-y-0"
-                    >
-                        {isSaving ? (
-                            <>
-                                <RefreshCw size={18} className="animate-spin" />
-                                Saving...
-                            </>
-                        ) : (
-                            "Save Changes"
-                        )}
-                    </button>
+                        <Trash2 size={16} className="group-hover:scale-110 transition-transform sm:mr-0 mr-2" />
+                        <span className="sm:hidden">Delete Account</span>
+                    </Button>
+                    
+                    <div className="flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto">
+                        <Button
+                            variant="outline"
+                            onClick={onClose}
+                            className="w-full sm:w-auto px-6 font-bold"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={handleSave}
+                            disabled={isSaving}
+                            className="w-full sm:w-auto px-6 font-bold shadow-lg shadow-primary/25"
+                        >
+                            {isSaving ? (
+                                <>
+                                    <RefreshCw size={18} className="animate-spin mr-2" />
+                                    Saving...
+                                </>
+                            ) : (
+                                "Save Changes"
+                            )}
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -101,8 +101,7 @@ export function StrategyComparisonTable({ data }: StrategyComparisonTableProps) 
                                                     ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400"
                                                     : "bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400"
                                     )}>
-                                        {item.profitFactor === Infinity ? "∞" : (item.profitFactor ?? 0).toFixed(2)}
-                                        PF
+                                        {item.profitFactor === Infinity ? "MAX" : (item.profitFactor ?? 0).toFixed(2)}
                                     </span>
                                 </td>
 

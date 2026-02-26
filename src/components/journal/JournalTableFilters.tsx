@@ -1,4 +1,4 @@
-import { Search, ChevronDown, Settings2 } from "lucide-react";
+import { Search, ChevronDown, Settings2, Plus } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -8,6 +8,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/Button";
 
 interface JournalTableFiltersProps {
     searchTerm: string;
@@ -22,6 +23,7 @@ interface JournalTableFiltersProps {
     visibleColumns: Set<string>;
     toggleColumn: (id: string) => void;
     columnsConfig: { id: string; label: string }[];
+    onLogTrade?: () => void;
 }
 
 export function JournalTableFilters({
@@ -36,7 +38,8 @@ export function JournalTableFilters({
     setIsColumnMenuOpen,
     visibleColumns,
     toggleColumn,
-    columnsConfig
+    columnsConfig,
+    onLogTrade
 }: JournalTableFiltersProps) {
     return (
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-xl shadow-sm border border-gray-100 dark:border-white/5">
@@ -61,10 +64,10 @@ export function JournalTableFilters({
                     {/* Type Filter */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl text-xs font-medium text-gray-700 dark:text-gray-300 transition-colors whitespace-nowrap">
+                            <Button variant="outline" size="sm" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
                                 Type: <span className="text-primary">{filterType === "ALL" ? "All" : filterType}</span>
                                 <ChevronDown size={14} />
-                            </button>
+                            </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start">
                             {["ALL", "BUY", "SELL"].map((s) => (
@@ -79,10 +82,10 @@ export function JournalTableFilters({
                     {userTags.length > 0 && (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <button className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl text-xs font-medium text-gray-700 dark:text-gray-300 transition-colors whitespace-nowrap">
+                                <Button variant="outline" size="sm" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
                                     Tag: <span className="text-primary">{filterTag === "ALL" ? "All" : filterTag}</span>
                                     <ChevronDown size={14} />
-                                </button>
+                                </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="start" className="max-h-[250px] overflow-y-auto">
                                 <DropdownMenuItem onClick={() => updateParams({ tag: "ALL" })}>
@@ -99,28 +102,42 @@ export function JournalTableFilters({
                 </div>
             </div>
 
-            {/* Column Toggle */}
-            <DropdownMenu open={isColumnMenuOpen} onOpenChange={setIsColumnMenuOpen}>
-                <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">
-                        <Settings2 size={16} />
-                        Columns
-                    </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/10 max-h-[300px] overflow-y-auto">
-                    <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {columnsConfig.map((col) => (
-                        <DropdownMenuCheckboxItem
-                            key={col.id}
-                            checked={visibleColumns.has(col.id)}
-                            onCheckedChange={() => toggleColumn(col.id)}
-                        >
-                            {col.label}
-                        </DropdownMenuCheckboxItem>
-                    ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Action Buttons Group */}
+            <div className="flex items-center gap-3 w-full md:w-auto ml-auto">
+                <DropdownMenu open={isColumnMenuOpen} onOpenChange={setIsColumnMenuOpen}>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <Settings2 size={16} />
+                            Columns
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/10 max-h-[300px] overflow-y-auto">
+                        <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {columnsConfig.map((col) => (
+                            <DropdownMenuCheckboxItem
+                                key={col.id}
+                                checked={visibleColumns.has(col.id)}
+                                onCheckedChange={() => toggleColumn(col.id)}
+                            >
+                                {col.label}
+                            </DropdownMenuCheckboxItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {onLogTrade && (
+                    <Button
+                        variant="primary"
+                        onClick={onLogTrade}
+                        className="shrink-0 whitespace-nowrap shadow-sm"
+                        size="sm"
+                    >
+                        <Plus size={16} strokeWidth={2.5} />
+                        Log Trade
+                    </Button>
+                )}
+            </div>
         </div>
     );
 }

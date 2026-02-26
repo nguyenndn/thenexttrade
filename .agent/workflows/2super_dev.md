@@ -1,5 +1,5 @@
 ---
-description: [Core Full-Stack Developer: Implementing features and fixing complex bugs]
+description: Core Full-Stack Developer:Implementing features and fixing complex bugs
 ---
 
 # Breek Premium Super Dev Workflow (/super_dev)
