@@ -2,6 +2,7 @@
 
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { TrendingUp } from "lucide-react";
+import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 import {
     Area,
     XAxis,
@@ -25,18 +26,14 @@ export function EquityCurve({ data }: EquityCurveProps) {
     const { isEmpty, chartData, firstBalance, totalNetProfit, splitOffset } = processEquityCurveData(data);
 
     if (isEmpty) {
-        return (
-            <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm h-[400px] flex items-center justify-center text-gray-400">
-                No performance data available
-            </div>
-        );
+        return <ChartEmptyState height="h-[400px]" />;
     }
     
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group/card">
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#00C888]/10 rounded-lg text-[#00C888]">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
                         <TrendingUp size={20} />
                     </div>
                     <div>
@@ -47,7 +44,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
                 
                 <div className="text-right">
                     <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Net Profit</p>
-                    <p className={`text-lg font-black ${totalNetProfit >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                    <p className={`text-lg font-black ${totalNetProfit >= 0 ? 'text-primary' : 'text-red-500'}`}>
                         {totalNetProfit >= 0 ? '+' : ''}${Math.abs(totalNetProfit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                 </div>
@@ -108,7 +105,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
                                                 <p className="text-sm font-black text-gray-900 dark:text-white mb-1">
                                                     Balance: ${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                 </p>
-                                                <p className={`text-xs font-bold ${pnlVal >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
+                                                <p className={`text-xs font-bold ${pnlVal >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                                     PnL: {pnlVal >= 0 ? '+' : '-'}${Math.abs(pnlVal).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                 </p>
                                             </div>

@@ -153,7 +153,7 @@ function TrustedBrokersWidget() {
 
                 <Link
                     href="/brokers"
-                    className="inline-block w-full text-center py-3 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/25 hover:shadow-primary/40 transform group-hover:-translate-y-0.5"
+                    className="inline-block w-full text-center py-3 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/25 hover:shadow-primary/40 transform"
                 >
                     Compare Now
                 </Link>

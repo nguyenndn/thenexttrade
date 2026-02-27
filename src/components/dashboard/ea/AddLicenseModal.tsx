@@ -97,7 +97,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                         variant="primary"
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="px-6 py-3 rounded-xl bg-primary hover:bg-[#00B078] text-white font-bold shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all"
+                        className="px-6 py-3 rounded-xl bg-primary hover:bg-[#00B078] text-white font-bold shadow-lg hover:shadow-primary/25 transition-all"
                     >
                         {isLoading ? "Submitting..." : "Submit Request"}
                     </Button>

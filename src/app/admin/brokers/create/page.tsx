@@ -175,7 +175,7 @@ export default function CreateBrokerPage() {
                             type="submit"
                             disabled={loading}
                             isLoading={loading}
-                            className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-xl bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all"
+                            className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-xl bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all"
                         >
                             {!loading && <Briefcase size={20} />}
                             Create Broker

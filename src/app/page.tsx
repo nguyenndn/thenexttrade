@@ -233,7 +233,7 @@ export default async function Home() {
               <Link
                 key={idx}
                 href={topic.href}
-                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow hover:bg-white/80 dark:hover:bg-white/20 hover:-translate-y-0.5 hover:border-primary dark:hover:border-primary transition-all duration-300"
+                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow hover:bg-white/80 dark:hover:bg-white/20 hover:border-primary dark:hover:border-primary transition-all duration-300"
               >
                 <span className="text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors">
                   # {topic.name}
@@ -325,7 +325,7 @@ export default async function Home() {
               { icon: Zap, title: "4. Trader", desc: "Risk & Psych.", color: "text-pink-500", bg: "bg-pink-500/10" },
               { icon: Calendar, title: "5. Pro", desc: "Consistency.", color: "text-orange-500", bg: "bg-orange-500/10" },
             ].map((step, idx) => (
-              <div key={idx} className="relative group bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-shadow duration-300 hover:-translate-y-0.5 hover:shadow-md md:w-[30%] lg:w-auto">
+              <div key={idx} className="relative group bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-shadow duration-300 hover:shadow-md md:w-[30%] lg:w-auto">
                 <div className={`w-12 h-12 rounded-xl ${step.bg} ${step.color} flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform`}>
                   <step.icon size={24} strokeWidth={2.5} />
                 </div>

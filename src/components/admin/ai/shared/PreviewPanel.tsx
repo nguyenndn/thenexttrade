@@ -53,7 +53,7 @@ export default function PreviewPanel({
                     )}
                     {onSave && (
                         <Button
-                            className="bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-lg shadow-lg shadow-primary/30 hover:-translate-y-0.5 active:scale-95 transition-all px-4 py-2"
+                            className="bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-lg shadow-lg shadow-primary/30 active:scale-95 transition-all px-4 py-2"
                             onClick={onSave}
                             isLoading={isSaving}
                             disabled={isLoading}

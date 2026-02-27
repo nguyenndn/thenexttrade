@@ -115,7 +115,7 @@ export function AccountSettingsModal({
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6" onClick={onClose}>
             <div
-                className="bg-white dark:bg-[#151925] rounded-[24px] w-full max-w-[520px] overflow-hidden border border-gray-100 dark:border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]"
+                className="bg-white dark:bg-[#151925] rounded-[24px] w-full max-w-[520px] overflow-hidden border border-gray-100 dark:border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh] cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}

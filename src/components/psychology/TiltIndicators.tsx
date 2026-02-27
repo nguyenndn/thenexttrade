@@ -16,8 +16,8 @@ interface TiltIndicatorsProps {
 
 export function TiltIndicators({ data }: TiltIndicatorsProps) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <AlertTriangle size={18} className="text-orange-500" />
                 Tilt Indicators
             </h3>
@@ -52,7 +52,7 @@ export function TiltIndicators({ data }: TiltIndicatorsProps) {
                 </div>
 
                 {/* Performance Context */}
-                <div className="space-y-3 pt-4 border-t border-gray-50 dark:border-white/5">
+                <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-white/5">
                     <h4 className="text-xs font-bold uppercase text-gray-400">
                         Performance Context
                     </h4>

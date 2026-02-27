@@ -1,6 +1,6 @@
 "use client";
 
-// import Image from "next/image"; 
+import { transformImageUrl } from "@/lib/utils";
 import { TrendingUp, TrendingDown, Maximize2 } from "lucide-react";
 import { format } from "date-fns";
 import { TradeTypeBadge } from "@/components/ui/TradeTypeBadge";
@@ -34,14 +34,14 @@ export function PlaybookCard({ trade, onClick }: PlaybookCardProps) {
             {/* Image */}
             <div className="absolute inset-0">
                 <img
-                    src={imageUrl}
+                    src={transformImageUrl(imageUrl)}
                     alt={`${trade.symbol} Trade`}
                     loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                        (e.target as HTMLImageElement).src = "https://placehold.co/600x400?text=No+Image";
+                        (e.target as HTMLImageElement).src = "https://placehold.co/600x400/1E2028/00C888?text=No+Screenshot";
                     }}
                 />
                 {/* Gradient Overlay */}

@@ -45,7 +45,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
         >
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
             <div 
-                className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-md rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 flex flex-col max-h-[95vh] overflow-hidden animate-in zoom-in-95 duration-200"
+                className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-md rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 flex flex-col max-h-[95vh] overflow-hidden animate-in zoom-in-95 duration-200 cursor-default"
             >
                 {/* Close Button Header (No Border) */}
                 <div className="px-6 pt-6 pb-2 relative shrink-0">
@@ -53,10 +53,11 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                         {displayDate}
                     </h2>
                     <Button 
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={onClose}
                         className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 transition-colors border-0"
+                        aria-label="Close"
                     >
                         <X size={20} />
                     </Button>
@@ -140,7 +141,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                         <div className="space-y-4">
                             <div className="flex justify-between items-center text-sm">
                                 <span className="text-gray-500 dark:text-gray-400">Best Trade</span>
-                                <span className="font-bold text-[#3B82F6]">${stats?.bestTrade ? stats.bestTrade.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</span>
+                                <span className="font-bold text-[#3B82F6]">{stats?.bestTrade ? '$' + stats.bestTrade.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '$0.00'}</span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                                 <span className="text-gray-500 dark:text-gray-400">Worst Trade</span>

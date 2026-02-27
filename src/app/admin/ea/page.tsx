@@ -83,7 +83,7 @@ export default async function EADashboardPage() {
                     <Link href="/admin/ea/products/create">
                         <Button
                             variant="primary"
-                            className="bg-[#2F80ED] hover:bg-[#2563EB] shadow-lg shadow-blue-500/30 hover:-translate-y-0.5"
+                            className="bg-[#2F80ED] hover:bg-[#2563EB] shadow-lg shadow-blue-500/30"
                         >
                             <Bot className="mr-2" size={18} />
                             New Product

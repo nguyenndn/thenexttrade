@@ -12,6 +12,7 @@ import {
     Cell
 } from "recharts";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 
 interface PairPerformanceProps {
     data: Array<{
@@ -32,7 +33,7 @@ export function PairPerformance({ data }: PairPerformanceProps) {
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group">
             <div className="flex items-center gap-2.5 mb-6">
-                <div className="p-2 bg-[#00C888]/10 rounded-lg text-[#00C888]">
+                <div className="p-2 bg-primary/10 rounded-lg text-primary">
                     <BarChart2 size={18} />
                 </div>
                 <div>
@@ -42,9 +43,7 @@ export function PairPerformance({ data }: PairPerformanceProps) {
             </div>
 
             {data.length === 0 ? (
-                <div className="h-[250px] flex items-center justify-center text-gray-400">
-                    No data available
-                </div>
+                <ChartEmptyState />
             ) : (
                 <div className="h-[250px]">
                     <ResponsiveContainer width="100%" height="100%">
@@ -95,7 +94,7 @@ export function PairPerformance({ data }: PairPerformanceProps) {
             {!isEmpty && bestPair && (
                 <div className="mt-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-wider">
                     <span>Best: {bestPair.symbol}</span>
-                    <span className="text-[#00C888]">+{bestPair.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                    <span className="text-primary">+{bestPair.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
                 </div>
             )}
         </div>

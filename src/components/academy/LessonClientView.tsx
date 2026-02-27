@@ -142,7 +142,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                 "group relative px-8 py-3 rounded-full font-bold text-base flex items-center gap-2 transition-all",
                                 isCompleted
                                     ? "bg-green-50 dark:bg-green-900/10 text-green-600 cursor-default"
-                                    : "bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/20 hover:-translate-y-0.5"
+                                    : "bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/20"
                             )}
                         >
                             {isCompleted ? (

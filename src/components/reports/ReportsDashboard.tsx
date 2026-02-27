@@ -45,6 +45,29 @@ const REPORT_TYPES: ReportType[] = [
     },
 ];
 
+const parseCSVLine = (line: string) => {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+        if (line[i] === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+                current += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (line[i] === ',' && !inQuotes) {
+            result.push(current);
+            current = '';
+        } else {
+            current += line[i];
+        }
+    }
+    result.push(current);
+    return result;
+};
+
 export function ReportsDashboard() {
     const now = new Date();
     const [selectedType, setSelectedType] = useState<string>("monthly");
@@ -78,31 +101,8 @@ export function ReportsDashboard() {
                 // Parse CSV text for preview Grid
                 const lines = text.split('\n').filter(line => line.trim() !== '');
                 if (lines.length > 0) {
-                    const parseLine = (line: string) => {
-                        const result = [];
-                        let current = '';
-                        let inQuotes = false;
-                        for (let i = 0; i < line.length; i++) {
-                            if (line[i] === '"') {
-                                if (inQuotes && line[i+1] === '"') {
-                                    current += '"';
-                                    i++;
-                                } else {
-                                    inQuotes = !inQuotes;
-                                }
-                            } else if (line[i] === ',' && !inQuotes) {
-                                result.push(current);
-                                current = '';
-                            } else {
-                                current += line[i];
-                            }
-                        }
-                        result.push(current);
-                        return result;
-                    };
-
-                    const headers = parseLine(lines[0]);
-                    const rows = lines.slice(1).map(parseLine);
+                    const headers = parseCSVLine(lines[0]);
+                    const rows = lines.slice(1).map(parseCSVLine);
                     setCsvPreview({ headers, rows });
                     toast.success("Ready to preview");
                 } else {
@@ -205,8 +205,8 @@ export function ReportsDashboard() {
                         className={`
               relative text-left p-6 rounded-xl border-2 transition-all duration-300 group
               ${selectedType === report.id
-                                ? "border-[#00C888] bg-[#00C888]/5 shadow-md shadow-[#00C888]/10"
-                                : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028] hover:border-[#00C888]/50 hover:shadow-md transition-shadow"
+                                ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                                : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-md transition-shadow"
                             }
             `}
                     >
@@ -215,8 +215,8 @@ export function ReportsDashboard() {
                                 className={`
                   p-3.5 rounded-xl transition-all duration-300 shadow-sm
                   ${selectedType === report.id
-                                        ? "bg-[#00C888] text-white shadow-[#00C888]/20"
-                                        : "bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-[#00C888]/10 group-hover:text-[#00C888]"
+                                        ? "bg-primary text-white shadow-primary/20"
+                                        : "bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-primary/10 group-hover:text-primary"
                                     }
                 `}
                             >
@@ -227,7 +227,7 @@ export function ReportsDashboard() {
                   text-[10px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-lg border
                   ${report.format === "pdf"
                                         ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
-                                        : "bg-emerald-500/10 text-emerald-600 dark:text-[#00C888] border-emerald-500/20"
+                                        : "bg-primary/10 text-primary dark:text-primary border-primary/20"
                                     }
                 `}
                             >
@@ -248,7 +248,7 @@ export function ReportsDashboard() {
             {/* Controls Container */}
             <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3 text-lg tracking-tight">
-                    <div className="p-2 bg-[#00C888]/10 text-[#00C888] rounded-xl">
+                    <div className="p-2 bg-primary/10 text-primary rounded-xl">
                         <Calendar size={20} />
                     </div>
                     Configure Report Range
@@ -264,7 +264,7 @@ export function ReportsDashboard() {
                                 onChange={(e) =>
                                     setDateRange({ ...dateRange, start: new Date(e.target.value) })
                                 }
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all font-bold text-gray-900 dark:text-white"
+                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-900 dark:text-white"
                             />
                         </div>
                         <div>
@@ -275,7 +275,7 @@ export function ReportsDashboard() {
                                 onChange={(e) =>
                                     setDateRange({ ...dateRange, end: new Date(e.target.value) })
                                 }
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all font-bold text-gray-900 dark:text-white"
+                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-900 dark:text-white"
                             />
                         </div>
                     </div>
@@ -284,7 +284,7 @@ export function ReportsDashboard() {
                         <button
                             onClick={handleGenerate}
                             disabled={isGenerating}
-                            className="inline-flex items-center justify-center gap-2 w-full xl:w-auto px-8 py-3 h-auto text-base font-bold rounded-xl bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="inline-flex items-center justify-center gap-2 w-full xl:w-auto px-6 py-2.5 h-auto text-sm font-bold rounded-xl bg-primary hover:bg-[#00B377] text-white shadow-lg hover:shadow-primary/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isGenerating ? (
                                 <>
@@ -338,7 +338,7 @@ export function ReportsDashboard() {
                         </div>
                         <button
                             onClick={handleDownloadCustomCSV}
-                            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#00C888] hover:bg-[#00B078] text-white font-bold rounded-xl shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all w-full sm:w-auto"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00B377] text-white font-bold rounded-xl shadow-lg hover:shadow-primary/25 transition-all w-full sm:w-auto"
                         >
                             <Download size={18} strokeWidth={2.5} />
                             Download Final CSV

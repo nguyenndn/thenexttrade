@@ -22,8 +22,8 @@ interface ConfidenceCorrelationProps {
 
 export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4">
                 Confidence vs. Performance
             </h3>
             <p className="text-sm text-gray-500 mb-6">
@@ -45,8 +45,8 @@ export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
                         <YAxis
                             yAxisId="left"
                             orientation="left"
-                            stroke="#8884d8"
-                            label={{ value: 'Win Rate (%)', angle: -90, position: 'insideLeft', fill: '#8884d8', fontSize: 12 }}
+                            stroke="#00C888"
+                            label={{ value: 'Win Rate (%)', angle: -90, position: 'insideLeft', fill: '#00C888', fontSize: 12 }}
                         />
                         <YAxis
                             yAxisId="right"
@@ -62,7 +62,7 @@ export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
                                 color: "#F3F4F6",
                             }}
                         />
-                        <Bar yAxisId="left" dataKey="winRate" name="Win Rate %" fill="#8884d8" radius={[4, 4, 0, 0]} barSize={30} />
+                        <Bar yAxisId="left" dataKey="winRate" name="Win Rate %" fill="#00C888" radius={[4, 4, 0, 0]} barSize={30} />
                         <Bar yAxisId="right" dataKey="avgPnL" name="Avg PnL $" fill="#10B981" radius={[4, 4, 0, 0]} barSize={30} />
                     </BarChart>
                 </ResponsiveContainer>

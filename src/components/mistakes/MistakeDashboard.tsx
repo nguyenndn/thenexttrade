@@ -46,6 +46,9 @@ export function MistakeDashboard() {
 
     const mostCostly = data.mostCostlyMistake ? getMistakeByCode(data.mostCostlyMistake) : null;
     const mostFrequent = data.mostFrequentMistake ? getMistakeByCode(data.mostFrequentMistake) : null;
+    
+    const costlyStat = mostCostly ? data.mistakeStats.find(s => s.code === mostCostly.code) : null;
+    const frequentStat = mostFrequent ? data.mistakeStats.find(s => s.code === mostFrequent.code) : null;
 
     return (
         <div className="space-y-4">
@@ -82,7 +85,7 @@ export function MistakeDashboard() {
                         <span className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">diff</span>
                     </div>
                     <div className="flex items-center gap-2 mt-2 text-[11px] font-bold tracking-wide uppercase">
-                        <span className="text-[#00C888]">{data.cleanTradeWinRate.toFixed(0)}% clean</span>
+                        <span className="text-primary">{data.cleanTradeWinRate.toFixed(0)}% clean</span>
                         <span className="text-gray-300 dark:text-gray-600">vs</span>
                         <span className="text-red-500">{data.mistakeTradeWinRate.toFixed(0)}% w/ mistakes</span>
                     </div>
@@ -103,7 +106,7 @@ export function MistakeDashboard() {
                             </p>
                             <p className="text-xs text-gray-400 font-medium mt-1.5 flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                                Occurred {data.mistakeStats.find(s => s.code === mostFrequent.code)?.count} times
+                                Occurred {frequentStat?.count || 0} times
                             </p>
                         </>
                     ) : (<p className="text-sm font-medium text-gray-400">None</p>)}
@@ -123,7 +126,7 @@ export function MistakeDashboard() {
                                 {mostCostly.emoji} {mostCostly.name}
                             </p>
                             <p className="text-sm text-red-500 font-black mt-1 tracking-tight">
-                                -${Math.abs(data.mistakeStats.find(s => s.code === mostCostly.code)?.totalPnL || 0).toFixed(2)}
+                                -${Math.abs(costlyStat?.totalPnL || 0).toFixed(2)}
                             </p>
                         </>
                     ) : (<p className="text-sm font-medium text-gray-400">None</p>)}
@@ -138,7 +141,7 @@ export function MistakeDashboard() {
                             <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Mistakes by Cost</h3>
                             <p className="text-sm text-gray-400 font-medium">Identify your most expensive errors.</p>
                         </div>
-                        <span className="text-[10px] font-black text-[#00C888] bg-[#00C888]/10 px-3 py-1.5 rounded-lg uppercase tracking-widest border border-[#00C888]/20">Top 5</span>
+                        <span className="text-[10px] font-black text-primary bg-primary/10 px-3 py-1.5 rounded-lg uppercase tracking-widest border border-primary/20">Top 5</span>
                     </div>
                     <MistakeCostChart data={data.mistakeStats} />
                 </div>

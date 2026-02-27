@@ -104,13 +104,19 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
     const filteredStrategies = useMemo(() => {
         let result = allStrategies.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
         
+        // PRE-COMPUTE PERFORMANCE lookup object to fix O(N^2) issue
+        const perfMap = new Map<string, StrategyPerformance>();
+        for (const p of enrichedPerformance) {
+            perfMap.set(p.strategy, p);
+        }
+
         const getVal = (perf: StrategyPerformance | undefined, key: keyof StrategyPerformance) => perf ? Number(perf[key] || 0) : 0;
 
         return result.sort((a, b) => {
             if (sortBy === "name") return a.name.localeCompare(b.name);
             
-            const perfA = enrichedPerformance.find(p => p.strategy === a.name);
-            const perfB = enrichedPerformance.find(p => p.strategy === b.name);
+            const perfA = perfMap.get(a.name);
+            const perfB = perfMap.get(b.name);
             
             if (sortBy === "trades") return getVal(perfB, "totalTrades") - getVal(perfA, "totalTrades");
             if (sortBy === "pnl") return getVal(perfB, "totalPnL") - getVal(perfA, "totalPnL");
@@ -205,7 +211,7 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
                         <ArrowUpDown size={16} className="text-gray-400" />
                         <select
                             value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value as any)}
+                            onChange={(e) => setSortBy(e.target.value as "name" | "pnl" | "winRate" | "trades")}
                             className="w-full sm:w-auto appearance-none rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] px-4 py-2.5 pr-8 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-gray-700 dark:text-gray-300 cursor-pointer"
                         >
                             <option value="name">Sort by Name</option>

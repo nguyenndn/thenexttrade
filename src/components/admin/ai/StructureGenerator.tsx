@@ -151,7 +151,7 @@ export default function StructureGenerator() {
                     />
 
                     <Button
-                        className="w-full py-3 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all"
+                        className="w-full py-3 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/30 active:scale-95 transition-all"
                         onClick={handleGenerate}
                         isLoading={generating}
                     >

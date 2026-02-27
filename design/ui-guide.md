@@ -51,25 +51,25 @@ Buttons must have smooth transitions, subtle depth, and strict alignment.
   ```
 
 **Primary CTA (Green)**
-Used for "Create", "Add New", "Save" (Major).
+Used for "Create", "Add New", "Save" (Major). Default `md` size = `px-6 py-2.5 text-sm`.
 ```tsx
-<Button
-  variant="primary"
-  className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-xl bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg hover:shadow-[#00C888]/25 hover:-translate-y-0.5 transition-all"
->
+// Standard — no inline sizing needed, Button.tsx handles it
+<Button variant="primary">
   <Icon size={20} />
   <span>Button Text</span>
 </Button>
-// Note: shadow-lg + hover lift + large padding
+
+// Large — for hero sections or major CTAs only
+<Button variant="primary" size="lg">
+  <Icon size={20} />
+  <span>Major Action</span>
+</Button>
 ```
 
 **Secondary / Action (Blue)**
 Used for "Export", "Save" (Minor).
 ```tsx
-<Button
-  variant="primary"
-  className="shadow-lg shadow-blue-500/30 hover:-translate-y-1 bg-[#2F80ED] hover:bg-[#2563EB]"
->
+<Button variant="secondary">
   Save Changes
 </Button>
 ```
@@ -274,7 +274,7 @@ Used in headers or empty states.
 ---
 
 ## 5. Animation
-- **Hover Lift:** CHỈ dùng cho Nút Bấm (`hover:-translate-y-0.5 transition-all`). KHÔNG dùng cho Card Components.
+- **Hover Lift:** NGHIÊM CẤM dùng `hover:-translate-y` trên bất kỳ element nào (cả nút bấm lẫn card). Chỉ dùng `hover:shadow` để tạo depth.
 - **Fade In:** `animate-in fade-in slide-in-from-top-4`
 - **Blur Glow:** `blur-[60px] opacity-20` background blobs
 
@@ -289,7 +289,7 @@ Used in headers or empty states.
 ### 6.1 Interactive Cards (Hover Effect)
 Used for dashboard widgets, academy levels, and any clickable card.
 - **Shadow:** BẮT BUỘC dùng `shadow-sm` -> `hover:shadow-md`
-- **Lift:** NGHIÊM CẤM dùng `hover:-translate-y` trên thẻ Card Widget. (Quá đà)
+- **Lift:** NGHIÊM CẤM dùng `hover:-translate-y` trên mọi element. Dùng `hover:shadow-md` thay thế.
 - **Rounding:** BẮT BUỘC `rounded-xl`
 - **Transition:** BẮT BUỘC `transition-shadow` (không dùng transition-all trừ khi đổi màu nền)
 
@@ -383,3 +383,73 @@ Supports variants (`primary`, `secondary`, `ghost`, `outline`) and `isLoading` s
   Link Button
 </Link>
 ```
+
+---
+
+## 9. Code Hygiene Rules (CRITICAL)
+
+These rules are enforced during every Code Review and QA pass.
+
+### 9.1 English Only Policy
+**NGHIÊM CẤM** hardcode text Tiếng Việt trên giao diện người dùng. Tất cả text hiển thị (Toast, Alert, Placeholder, Empty State, Button label) phải 100% Tiếng Anh.
+- ❌ `"Đang tải..."` → ✅ `"Loading..."`
+- ❌ `"Tính năng đang phát triển"` → ✅ `"Coming soon"`
+
+### 9.2 No Emoji Icons
+**NGHIÊM CẤM** dùng Emoji (🚀, 📈, ❌, ✅) làm icon trên giao diện. BẮT BUỘC dùng `lucide-react`.
+- ❌ `🔒` → ✅ `<Lock size={16} />`
+- ❌ `✅` → ✅ `<CheckCircle size={16} />`
+
+### 9.3 No Console Pollution
+**NGHIÊM CẤM** để `console.log()` hoặc `console.error()` trong production code.
+- Dùng `toast.error()` cho user-facing errors.
+- Xóa tất cả debug logs trước khi commit.
+
+### 9.4 Global Cursor Policy
+Cursor mặc định là `default` (mũi tên) cho toàn bộ ứng dụng. Quy tắc nằm trong `globals.css` (unlayered, `!important`):
+- Tất cả elements → `cursor: default`
+- `a`, `button`, `select`, `[role="button"]` → `cursor: pointer`
+- `input`, `textarea`, `[contenteditable]` → `cursor: text`
+
+> **Không cần** thêm `cursor-default` vào từng component. Global CSS đã xử lý.
+
+---
+
+## 10. Border Radius Standards
+
+| Minimum | Class | Sử dụng |
+|:---|:---|:---|
+| **Cards, Modals, Inputs** | `rounded-xl` | Mặc định cho mọi container chính |
+| **Badges, Tags, Chips** | `rounded-lg` | Các phần tử nhỏ hơn |
+| **Pills, Dots** | `rounded-full` | Trạng thái indicators |
+
+> **NGHIÊM CẤM** dùng `rounded-md`, `rounded-sm`, hoặc `rounded` đơn thuần. Minimum là `rounded-lg`.
+
+---
+
+## 11. Tab & Filter Label Rules
+
+Labels trong Tab bars và Filter bars **BẮT BUỘC** có `whitespace-nowrap` để tránh bẻ dòng khi text dài (VD: "MT5 Expert Advisor").
+
+```tsx
+<span className="whitespace-nowrap">{label}</span>
+```
+
+---
+
+## 12. Icon Button Accessibility
+
+Mọi nút chỉ chứa icon (không có text) **BẮT BUỘC** có `aria-label` mô tả hành động:
+
+```tsx
+// ✅ Đúng
+<Button variant="ghost" aria-label="Close modal">
+    <X size={20} />
+</Button>
+
+// ❌ Sai — thiếu aria-label
+<Button variant="ghost">
+    <X size={20} />
+</Button>
+```
+

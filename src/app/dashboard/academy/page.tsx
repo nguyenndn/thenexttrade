@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { GraduationCap, Clock, CheckCircle, PlayCircle, Award, Trophy, ArrowRight, Zap, Target } from "lucide-react";
+import { GraduationCap, Trophy, ArrowRight, Zap, Target } from "lucide-react";
 import Link from "next/link";
 import AcademyMap from "@/components/academy/AcademyMap"; // Import Map
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -93,7 +93,7 @@ export default async function UserAcademyDashboard() {
                 description="Your professional trading journey tracker."
             >
                 <div className="flex items-center gap-2 text-sm font-medium mt-2 sm:mt-0 p-2 sm:p-0">
-                    <div className="flex items-center gap-1.5 text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+                    <div className="flex items-center gap-1.5 text-primary bg-primary/10 px-2 py-0.5 rounded-lg">
                         <GraduationCap size={14} />
                         <span>{Math.round(overallProgress)}% Complete</span>
                     </div>
@@ -102,9 +102,9 @@ export default async function UserAcademyDashboard() {
                 </div>
             </PageHeader>
 
-            <div className="grid lg:grid-cols-3 gap-8">
+            <div className="grid lg:grid-cols-3 gap-4">
                 {/* Main Map Column */}
-                <div className="lg:col-span-2 space-y-8">
+                <div className="lg:col-span-2 space-y-4">
 
                     {/* Focus Banner (Next Lesson) */}
                     {nextLesson ? (

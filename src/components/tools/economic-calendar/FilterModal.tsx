@@ -96,7 +96,7 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
     return (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
-            <div className={`relative z-10 w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${isDark ? 'bg-slate-800 text-white' : 'bg-white text-gray-900'}`}>
+            <div className={`relative z-10 w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? 'bg-slate-800 text-white' : 'bg-white text-gray-900'}`}>
                 {/* Header */}
                 <div className={`px-6 py-4 flex items-center justify-between border-b ${isDark ? 'border-slate-700 bg-slate-900' : 'border-gray-100 bg-gray-50'}`}>
                     <h3 className="text-lg font-bold flex items-center gap-2">

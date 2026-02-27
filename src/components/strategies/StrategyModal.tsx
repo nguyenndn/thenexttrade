@@ -87,7 +87,7 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
-            <div className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-lg rounded-xl shadow-xl overflow-hidden border border-gray-100 dark:border-white/5 animate-in fade-in zoom-in-95 duration-200">
+            <div className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-lg rounded-xl shadow-xl overflow-hidden border border-gray-100 dark:border-white/5 animate-in fade-in zoom-in-95 duration-200 cursor-default">
 
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
@@ -95,10 +95,10 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
                         {strategy ? "Edit Strategy" : "New Strategy"}
                     </h2>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors rounded-full"
+                        className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors rounded-full border-gray-100 dark:border-white/5"
                         aria-label="Close modal"
                     >
                         <X size={20} />

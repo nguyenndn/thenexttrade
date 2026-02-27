@@ -1,6 +1,8 @@
 "use client";
 
+import { useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { ChartEmptyState } from '@/components/ui/ChartEmptyState';
 
 interface MistakeFrequencyChartProps {
     data: Record<string, number>;
@@ -9,13 +11,17 @@ interface MistakeFrequencyChartProps {
 const COLORS = ['#00C888', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
 
 export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
-    const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
-    const total = chartData.reduce((sum, item) => sum + item.value, 0);
+    const { chartData, total } = useMemo(() => {
+        const mappedData = Object.entries(data).map(([name, value]) => ({ name, value }));
+        const sum = mappedData.reduce((acc, item) => acc + item.value, 0);
+        return { chartData: mappedData, total: sum };
+    }, [data]);
 
     if (total === 0) return (
-        <div className="h-64 flex items-center justify-center text-gray-400">
-            No data available
-        </div>
+        <ChartEmptyState 
+            title="Clean Slate"
+            description="No mistakes have been logged for this time period."
+        />
     );
 
     return (
@@ -46,7 +52,7 @@ export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
                                             {data.name}
                                         </p>
                                         <div className="space-y-1">
-                                            <p className="text-[#00C888] font-bold flex justify-between gap-6">
+                                            <p className="text-primary font-bold flex justify-between gap-6">
                                                 <span className="text-gray-400 text-xs font-medium uppercase tracking-widest">Mistakes</span>
                                                 {data.value}
                                             </p>

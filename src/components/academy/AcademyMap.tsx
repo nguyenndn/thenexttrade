@@ -41,7 +41,8 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
     const [fireflies, setFireflies] = useState<{ id: number; top: string; left: string; duration: number; delay: number }[]>([]);
 
     useEffect(() => {
-        const count = 80;
+        const isMobile = window.innerWidth < 768;
+        const count = isMobile ? 20 : 50;
         const newFireflies = Array.from({ length: count }).map((_, i) => ({
             id: i,
             top: `${Math.random() * 100}%`,

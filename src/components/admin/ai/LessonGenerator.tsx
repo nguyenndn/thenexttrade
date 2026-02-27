@@ -185,7 +185,7 @@ export default function LessonGenerator() {
                     </div>
 
                     <Button
-                        className="w-full py-3 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all mt-4"
+                        className="w-full py-3 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/30 active:scale-95 transition-all mt-4"
                         onClick={handleGenerate}
                         isLoading={generating}
                     >

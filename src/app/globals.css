@@ -289,6 +289,34 @@ input:-webkit-autofill:active {
   }
 }
 
+/* === Global Cursor Policy (Unlayered = beats browser defaults) === */
+* {
+  cursor: default !important;
+}
+
+a,
+button,
+select,
+summary,
+[role="button"],
+[class*="cursor-pointer"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"],
+input[type="submit"],
+input[type="reset"],
+input[type="range"],
+label[for] {
+  cursor: pointer !important;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="submit"]):not([type="reset"]):not([type="range"]),
+textarea,
+[contenteditable="true"],
+[class*="cursor-text"] {
+  cursor: text !important;
+}
+
 /* Disable all transitions during theme switch */
 .disable-transitions,
 .disable-transitions *,

@@ -1,6 +1,8 @@
 "use client";
 
+import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { ChartEmptyState } from '@/components/ui/ChartEmptyState';
 
 interface MistakeCostChartProps {
     data: Array<{
@@ -15,15 +17,18 @@ export function MistakeCostChart({ data }: MistakeCostChartProps) {
     // Take top 5 costliest mistakes (lowest PnL)
     // Data is already sorted by PnL ascending (most negative first) check API?
     // API sorts by totalPnL ascending. So index 0 is most negative (costliest).
-    const chartData = data.slice(0, 5).map(d => ({
-        ...d,
-        absPnL: Math.abs(d.totalPnL) // For bar height
-    }));
+    const chartData = useMemo(() => {
+        return data.slice(0, 5).map(d => ({
+            ...d,
+            absPnL: Math.abs(d.totalPnL) // For bar height
+        }));
+    }, [data]);
 
     if (chartData.length === 0) return (
-        <div className="h-64 flex items-center justify-center text-gray-400">
-            No mistakes recorded yet
-        </div>
+        <ChartEmptyState 
+            title="No Costly Mistakes" 
+            description="You haven't recorded any mistakes that incurred a loss during this period." 
+        />
     );
 
     return (

@@ -112,7 +112,7 @@ export default async function AdminUsersPage() {
                 </div>
                 <Button
                     variant="primary"
-                    className="shadow-lg shadow-blue-500/30 hover:-translate-y-1 bg-[#2F80ED] hover:bg-[#2563EB] text-base font-bold px-6 py-2.5 h-auto rounded-xl"
+                    className="shadow-lg shadow-blue-500/30 bg-[#2F80ED] hover:bg-[#2563EB] text-base font-bold px-6 py-2.5 h-auto rounded-xl"
                 >
                     Export User Data
                 </Button>

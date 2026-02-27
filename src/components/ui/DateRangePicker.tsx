@@ -206,7 +206,7 @@ export function DateRangePicker({
                             !value && "text-gray-500"
                         )}
                     >
-                        <div className="p-1.5 bg-blue-500/10 text-blue-500 rounded-lg">
+                        <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
                             <CalendarIcon size={16} />
                         </div>
                         <span className="flex-1 truncate text-left">{getDisplayText()}</span>

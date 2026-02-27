@@ -12,6 +12,7 @@ import {
     Cell
 } from "recharts";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 
 interface DayPerformanceProps {
     data: Array<{
@@ -32,7 +33,7 @@ export function DayPerformance({ data }: DayPerformanceProps) {
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group">
             <div className="flex items-center gap-2.5 mb-6">
-                <div className="p-2 bg-[#00C888]/10 rounded-lg text-[#00C888]">
+                <div className="p-2 bg-primary/10 rounded-lg text-primary">
                     <Activity size={18} />
                 </div>
                 <div>
@@ -41,8 +42,11 @@ export function DayPerformance({ data }: DayPerformanceProps) {
                 </div>
             </div>
 
-            <div className="h-[250px]">
-                <ResponsiveContainer width="100%" height="100%">
+            {!hasData ? (
+                <ChartEmptyState />
+            ) : (
+                <div className="h-[250px]">
+                    <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={chartData}
                         margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
@@ -82,11 +86,12 @@ export function DayPerformance({ data }: DayPerformanceProps) {
                     </BarChart>
                 </ResponsiveContainer>
             </div>
+            )}
 
             {hasData && bestDay && (
                 <div className="mt-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-wider">
                     <span>Strongest Day: {bestDay.name}</span>
-                    <span className="text-[#00C888]">+{bestDay.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                    <span className="text-primary">+{bestDay.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
                 </div>
             )}
         </div>

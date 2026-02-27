@@ -83,7 +83,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
                         <button
                             onClick={handleSave}
                             disabled={isLoading}
-                            className="px-6 py-3 rounded-xl font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50"
+                            className="px-6 py-3 rounded-xl font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2 disabled:opacity-50"
                         >
                             {isLoading && <Loader2 className="animate-spin" size={18} />}
                             Save Changes

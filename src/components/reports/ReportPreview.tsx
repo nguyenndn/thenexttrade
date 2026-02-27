@@ -18,7 +18,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                 </h3>
                 <button
                     onClick={onDownload}
-                    className="px-4 py-2 bg-primary text-white font-bold rounded-xl hover:bg-[#00B377] flex items-center gap-2 transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5"
+                    className="px-4 py-2 bg-primary text-white font-bold rounded-xl hover:bg-[#00B377] flex items-center gap-2 transition-all shadow-lg shadow-primary/20"
                 >
                     <Download size={18} />
                     Download PDF
@@ -118,21 +118,21 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase font-bold text-gray-500">
                             <tr>
-                                <th className="px-4 py-3 text-left">Date</th>
-                                <th className="px-4 py-3 text-left">Symbol</th>
-                                <th className="px-4 py-3 text-left">Type</th>
-                                <th className="px-4 py-3 text-right">Result</th>
-                                <th className="px-4 py-3 text-right">P/L</th>
+                                <th className="px-4 py-3 text-left whitespace-nowrap">Date</th>
+                                <th className="px-4 py-3 text-left whitespace-nowrap">Symbol</th>
+                                <th className="px-4 py-3 text-left whitespace-nowrap">Type</th>
+                                <th className="px-4 py-3 text-right whitespace-nowrap">Result</th>
+                                <th className="px-4 py-3 text-right whitespace-nowrap">P/L</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                            {data.recentTrades.some((t: any) => true) ? (
+                            {data.recentTrades?.length > 0 ? (
                                 data.recentTrades.slice(0, 5).map((trade: any, i: number) => (
                                     <tr key={i} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                                        <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{trade.date}</td>
-                                        <td className="px-4 py-3 font-bold text-gray-900 dark:text-white">{trade.symbol}</td>
-                                        <td className={`px-4 py-3 font-bold ${trade.type === 'BUY' ? 'text-green-500' : 'text-red-500'}`}>{trade.type}</td>
-                                        <td className="px-4 py-3 text-right">
+                                        <td className="px-4 py-3 text-gray-600 dark:text-gray-400 whitespace-nowrap">{trade.date}</td>
+                                        <td className="px-4 py-3 font-bold text-gray-900 dark:text-white whitespace-nowrap">{trade.symbol}</td>
+                                        <td className={`px-4 py-3 font-bold whitespace-nowrap ${trade.type === 'BUY' ? 'text-green-500' : 'text-red-500'}`}>{trade.type}</td>
+                                        <td className="px-4 py-3 text-right whitespace-nowrap">
                                             <span className={`
                             px-2 py-1 rounded text-xs font-bold
                             ${trade.result === 'WIN' ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' :
@@ -142,7 +142,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                                 {trade.result}
                                             </span>
                                         </td>
-                                        <td className={`px-4 py-3 text-right font-bold ${trade.pnl >= 0 ? 'text-primary' : 'text-red-500'}`}>
+                                        <td className={`px-4 py-3 text-right font-bold whitespace-nowrap ${trade.pnl >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                             {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
                                         </td>
                                     </tr>

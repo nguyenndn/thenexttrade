@@ -19,6 +19,31 @@ import {
 } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
+import { formatAccountLabel } from "@/lib/utils";
+
+// Helper component for colored rendering
+function AccountLabelDisplay({ account }: { account: TradingAccount }) {
+    if (!account) return <span>Unknown Account</span>;
+    
+    const type = account.accountType ? account.accountType.toUpperCase() : "PERSONAL";
+    const displayType = (type === "PERSONAL" || type === "REAL") ? "REAL" : type;
+    
+    const broker = account.broker || account.name || "Unknown Broker";
+    const accNumber = account.accountNumber ? `(${account.accountNumber})` : "";
+    const platform = account.platform ? `[${account.platform}] ` : "";
+
+    // REAL usually text-[#00C888] (Breek primary)
+    // DEMO usually text-red-500
+    const typeColor = displayType === "REAL" ? "text-primary font-bold" : "text-red-500 font-bold";
+
+    return (
+        <span className="inline-flex items-center gap-1.5 truncate">
+            {platform && <span className="text-gray-400 font-normal">{platform}</span>}
+            <span className={typeColor}>{displayType}</span>
+            <span className="text-gray-600 dark:text-gray-300">- {broker} <span className="text-gray-400">{accNumber}</span></span>
+        </span>
+    );
+}
 
 // Define Account Type
 type TradingAccount = {
@@ -29,6 +54,8 @@ type TradingAccount = {
     currency: string;
     isDefault: boolean;
     accountNumber: string;
+    platform?: string;
+    accountType?: string;
 };
 
 interface AccountSelectorProps {
@@ -137,11 +164,11 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                         className
                     )}
                 >
-                    <div className="p-1.5 bg-blue-500/10 text-blue-500 rounded-lg">
+                    <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
                         <Wallet size={16} />
                     </div>
-                    <span className="flex-1 truncate text-left">
-                        {selectedAccount ? `${selectedAccount.name} (${selectedAccount.accountNumber})` : (isLoading ? "Loading..." : "Select Account")}
+                    <span className="flex-1 text-left font-medium overflow-hidden">
+                        {selectedAccount ? <AccountLabelDisplay account={selectedAccount} /> : (isLoading ? "Loading..." : "Select Account")}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </button>
@@ -170,9 +197,9 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                                                 : "opacity-0"
                                         )}
                                     />
-                                    <div className="flex flex-col">
-                                        <span>{account.name} <span className="text-gray-400">({account.accountNumber})</span></span>
-                                        <span className="text-xs text-gray-400">{account.broker || "No Broker"}</span>
+                                    <div className="flex flex-col text-left overflow-hidden">
+                                        <span className="font-medium text-sm truncate"><AccountLabelDisplay account={account} /></span>
+                                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">{account.name}</span>
                                     </div>
                                 </CommandItem>
                             ))}

@@ -35,7 +35,7 @@ export function SiteFooter() {
                                 <a
                                     key={i}
                                     href={social.href}
-                                    className="w-9 h-9 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all hover:text-primary hover:border-primary/50 hover:-translate-y-1"
+                                    className="w-9 h-9 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all hover:text-primary hover:border-primary/50"
                                 >
                                     <social.icon size={16} />
                                 </a>

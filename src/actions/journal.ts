@@ -5,6 +5,7 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { TradeType, TradeStatus, TradeResult } from "@prisma/client";
+import { buildDateRangeFilter } from "@/lib/utils";
 
 const journalSchema = z.object({
     symbol: z.string().min(1),
@@ -60,14 +61,9 @@ export async function getJournalEntries(
         }
     }
 
-    if (dateFrom || dateTo) {
-        where.entryDate = {};
-        if (dateFrom) where.entryDate.gte = new Date(dateFrom);
-        if (dateTo) {
-            const endDate = new Date(dateTo);
-            endDate.setUTCHours(23, 59, 59, 999);
-            where.entryDate.lte = endDate;
-        }
+    const dateFilter = buildDateRangeFilter(dateFrom, dateTo);
+    if (dateFilter) {
+        where.entryDate = dateFilter;
     }
 
     if (hasImages) {
@@ -345,10 +341,9 @@ export async function exportJournalEntries(filters: {
         }
     }
 
-    if (dateFrom || dateTo) {
-        where.entryDate = {};
-        if (dateFrom) where.entryDate.gte = new Date(dateFrom);
-        if (dateTo) where.entryDate.lte = new Date(dateTo);
+    const dateFilter = buildDateRangeFilter(dateFrom, dateTo);
+    if (dateFilter) {
+        where.entryDate = dateFilter;
     }
 
     if (tag) {

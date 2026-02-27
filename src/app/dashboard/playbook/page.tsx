@@ -21,17 +21,19 @@ export default async function PlaybookPage({
     const page = typeof resolvedParams.page === "string" ? parseInt(resolvedParams.page) : 1;
     const limit = typeof resolvedParams.limit === "string" ? parseInt(resolvedParams.limit) : 12; // Grid view needs more items
     const accountId = typeof resolvedParams.accountId === "string" ? resolvedParams.accountId : undefined;
-    const symbol = typeof resolvedParams.symbol === "string" ? resolvedParams.symbol : undefined;
+    const symbol = typeof resolvedParams.symbol === "string" ? resolvedParams.symbol : typeof resolvedParams.search === "string" ? resolvedParams.search : undefined;
+    const filter = typeof resolvedParams.filter === "string" ? (resolvedParams.filter === "WIN" || resolvedParams.filter === "LOSS" ? resolvedParams.filter : undefined) : undefined;
 
     const { entries, meta } = await getJournalEntries(page, limit, {
         accountId,
         symbol,
+        status: filter,
         hasImages: true, // Only fetch entries with images for Playbook
     });
 
     return (
         <div className="space-y-6">
-            <PlaybookDashboard initialEntries={entries} meta={meta} />
+            <PlaybookDashboard initialEntries={entries as any} meta={meta} />
         </div>
     );
 }

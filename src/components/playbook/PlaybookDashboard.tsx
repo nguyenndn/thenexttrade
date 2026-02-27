@@ -8,14 +8,33 @@ import { PlaybookGrid } from "./PlaybookGrid";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
 import dynamic from "next/dynamic";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const TradeQuickView = dynamic(() => import("./TradeQuickView").then(mod => mod.TradeQuickView), {
     ssr: false,
     loading: () => null
 });
 
+export interface PlaybookTrade {
+    id: string;
+    symbol: string;
+    type: "BUY" | "SELL";
+    pnl: number | null;
+    entryDate: string | Date;
+    images: string[];
+    notes?: string;
+    emotionBefore?: string;
+    emotionAfter?: string;
+    entryReason?: string;
+    exitReason?: string;
+    entryPrice?: number | string;
+    exitPrice?: number | string;
+    strategy?: string;
+    lotSize?: number | string;
+}
+
 interface PlaybookDashboardProps {
-    initialEntries: any[];
+    initialEntries: PlaybookTrade[];
     meta: {
         total: number;
         page: number;
@@ -32,8 +51,8 @@ export function PlaybookDashboard({ initialEntries, meta }: PlaybookDashboardPro
     const searchParam = searchParams.get("search") || "";
     const filter = searchParams.get("filter") || "ALL";
 
-    const [trades, setTrades] = useState<any[]>(initialEntries);
-    const [selectedTrade, setSelectedTrade] = useState<any | null>(null);
+    const [trades, setTrades] = useState<PlaybookTrade[]>(initialEntries);
+    const [selectedTrade, setSelectedTrade] = useState<PlaybookTrade | null>(null);
     const [localSearch, setLocalSearch] = useState(searchParam);
 
     // Sync local search with URL param if it changes externally
@@ -62,14 +81,13 @@ export function PlaybookDashboard({ initialEntries, meta }: PlaybookDashboardPro
     };
 
     // Debounce Search
+    const debouncedSearch = useDebounce(localSearch, 500);
+
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            if (localSearch !== searchParam) {
-                updateParams({ search: localSearch });
-            }
-        }, 500);
-        return () => clearTimeout(timeout);
-    }, [localSearch]);
+        if (debouncedSearch !== searchParam) {
+            updateParams({ search: debouncedSearch });
+        }
+    }, [debouncedSearch]);
 
     // Handlers
     const setSearch = (value: string) => {

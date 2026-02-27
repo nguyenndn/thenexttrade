@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { StrategyModal } from "@/components/strategies/StrategyModal";
 import { calculateProfitLoss } from "@/lib/calculators";
+import { formatAccountLabel, transformImageUrl } from "@/lib/utils";
 
 interface JournalFormProps {
     initialData?: any;
@@ -37,7 +38,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
         stopLoss: initialData?.stopLoss || "",
         takeProfit: initialData?.takeProfit || "",
         lotSize: initialData?.lotSize || "",
-        entryDate: initialData?.entryDate ? new Date(initialData.entryDate).toISOString().slice(0, 16) : "",
+        entryDate: initialData?.entryDate ? format(new Date(initialData.entryDate), "yyyy-MM-dd'T'HH:mm") : "",
         status: initialData?.status || "OPEN",
         result: initialData?.result || "",
         pnl: initialData?.pnl || "",
@@ -107,7 +108,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
         
         // Anti-pattern Fix: Client-side Date Initialization prevents Hydration Mismatch
         if (!isEditMode && !formData.entryDate) {
-             setFormData(prev => ({ ...prev, entryDate: new Date().toISOString().slice(0, 16) }));
+             setFormData(prev => ({ ...prev, entryDate: format(new Date(), "yyyy-MM-dd'T'HH:mm") }));
         }
     }, []);
 
@@ -165,7 +166,8 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 const pendingUrl = imageInputRef.current.value.trim();
                 if (pendingUrl) {
                     if (pendingUrl.startsWith("http")) {
-                        currentImages = [...currentImages, pendingUrl];
+                        const directUrl = transformImageUrl(pendingUrl);
+                        currentImages = [...currentImages, directUrl];
                         // Clear input to indicate it was handled
                         imageInputRef.current.value = "";
                     }
@@ -274,14 +276,11 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-medium transition-all ${isSynced || isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
                                 <option value="">Select Account (Optional)</option>
-                                {accounts.map((acc: any) => {
-                                    const details = [acc.broker, acc.currency].filter(Boolean).join(" - ");
-                                    return (
-                                        <option key={acc.id} value={acc.id}>
-                                            {acc.name} {acc.accountNumber ? `(${acc.accountNumber})` : ""} {details ? `[${details}]` : ""}
-                                        </option>
-                                    );
-                                })}
+                                {accounts.map((acc: any) => (
+                                    <option key={acc.id} value={acc.id}>
+                                        {formatAccountLabel(acc)}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -715,42 +714,45 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                         <div className="w-1.5 h-6 bg-pink-500 rounded-full"></div>
                         Trade Screenshots
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Existing Images */}
-                        {(formData.images || []).map((img: string, idx: number) => (
-                            <div key={idx} className="relative aspect-video rounded-xl overflow-hidden group border border-gray-200 dark:border-white/10">
-                                <Image
-                                    src={img}
-                                    alt={`Screenshot ${idx + 1}`}
-                                    fill
-                                    className="object-cover"
-                                    onError={(e) => {
-                                        // Fallback logic remains similar, finding parent to replace content
-                                        const target = e.currentTarget;
-                                        const parent = target.parentElement;
-                                        if (parent) {
-                                            parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-400 text-sm p-4 text-center">Image failed to load<br/><span class="text-xs opacity-60 break-all">${img}</span></div>`;
-                                        }
-                                    }}
-                                />
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                                    <Button
-                                        type="button"
-                                        variant="destructive"
-                                        size="icon"
-                                        aria-label="Remove image"
-                                        onClick={() => {
-                                            const newImages = [...(formData.images || [])];
-                                            newImages.splice(idx, 1);
-                                            setFormData(prev => ({ ...prev, images: newImages }));
+                        {(formData.images || []).map((rawImg: string, idx: number) => {
+                            const img = transformImageUrl(rawImg);
+                            return (
+                                <div key={idx} className="relative aspect-video rounded-xl overflow-hidden group border border-gray-200 dark:border-white/10">
+                                    <Image
+                                        src={img}
+                                        alt={`Screenshot ${idx + 1}`}
+                                        fill
+                                        unoptimized
+                                        className="object-cover"
+                                        onError={(e) => {
+                                            const target = e.currentTarget;
+                                            const parent = target.parentElement;
+                                            if (parent) {
+                                                parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-400 text-sm p-4 text-center">Image failed to load<br/><span class="text-xs opacity-60 break-all">${img}</span></div>`;
+                                            }
                                         }}
-                                        className="w-10 h-10 rounded-full hover:scale-110 transition-transform shadow-lg"
-                                    >
-                                        <X size={20} />
-                                    </Button>
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                                        <Button
+                                            type="button"
+                                            variant="destructive"
+                                            size="icon"
+                                            aria-label="Remove image"
+                                            onClick={() => {
+                                                const newImages = [...(formData.images || [])];
+                                                newImages.splice(idx, 1);
+                                                setFormData(prev => ({ ...prev, images: newImages }));
+                                            }}
+                                            className="w-10 h-10 rounded-full hover:scale-110 transition-transform shadow-lg"
+                                        >
+                                            <X size={20} />
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
 
                         {/* URL Input */}
                         <div className="flex gap-2 items-start">
@@ -766,7 +768,8 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         const url = input.value.trim();
                                         if (url) {
                                             if (url.startsWith("http")) {
-                                                setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
+                                                const directUrl = transformImageUrl(url);
+                                                setFormData(prev => ({ ...prev, images: [...(prev.images || []), directUrl] }));
                                                 input.value = "";
                                             } else {
                                                 toast.error("URL phải bắt đầu bằng http:// hoặc https://");
@@ -783,7 +786,8 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                                 const url = imageInputRef.current.value.trim();
                                                 if (url) {
                                                     if (url.startsWith("http")) {
-                                                        setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
+                                                        const directUrl = transformImageUrl(url);
+                                                        setFormData(prev => ({ ...prev, images: [...(prev.images || []), directUrl] }));
                                                         imageInputRef.current.value = "";
                                                     } else {
                                                         toast.error("URL phải bắt đầu bằng http:// hoặc https://");
@@ -805,13 +809,13 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                             type="button"
                             onClick={onCancel}
                             variant="outline"
-                            className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="rounded-xl font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >Cancel
                         </Button>
                     ) : (
                         <Link
                             href="/dashboard/journal"
-                            className={buttonVariants({ variant: 'outline', className: "px-6 py-3 rounded-xl font-bold transition-colors" })}
+                            className={buttonVariants({ variant: 'outline', className: "rounded-xl font-bold transition-colors" })}
                         >
                             Cancel
                         </Link>
@@ -819,7 +823,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="px-8 py-3 text-base"
+                        className=""
                     >
                         {isSubmitting ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
                         Save Trade

@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 
 interface StrategyPerformance {
     strategy: string;
@@ -161,9 +162,10 @@ export function StrategyComparisonTable({ data }: StrategyComparisonTableProps) 
             </div>
 
             {data.length === 0 && (
-                <div className="p-10 text-center text-gray-500">
-                    No data available for comparison
-                </div>
+                <ChartEmptyState 
+                    title="No Comparisons"
+                    description="You need at least two strategies with trades to compare performance metrics."
+                />
             )}
         </div>
     );

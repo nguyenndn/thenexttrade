@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import {
     format,
     startOfMonth,
@@ -76,23 +76,26 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
     // Get starting day offset (0 = Sunday, 1 = Monday, etc.)
     const startDayOffset = getDay(monthStart);
 
-    // Build weeks array (7 days per week)
-    const weeks: Array<Array<Date | null>> = [];
-    let currentWeek: Array<Date | null> = Array(startDayOffset).fill(null);
-    
-    days.forEach(day => {
-        currentWeek.push(day);
-        if (currentWeek.length === 7) {
-            weeks.push(currentWeek);
-            currentWeek = [];
+    // Build weeks array (7 days per week) using useMemo for performance
+    const weeks = useMemo(() => {
+        const result: Array<Array<Date | null>> = [];
+        let currentWeek: Array<Date | null> = Array(startDayOffset).fill(null);
+        
+        days.forEach(day => {
+            currentWeek.push(day);
+            if (currentWeek.length === 7) {
+                result.push(currentWeek);
+                currentWeek = [];
+            }
+        });
+        if (currentWeek.length > 0) {
+            while (currentWeek.length < 7) {
+                currentWeek.push(null);
+            }
+            result.push(currentWeek);
         }
-    });
-    if (currentWeek.length > 0) {
-        while (currentWeek.length < 7) {
-            currentWeek.push(null);
-        }
-        weeks.push(currentWeek);
-    }
+        return result;
+    }, [days, startDayOffset]);
 
     const handleScreenshot = async () => {
         if (!calendarRef.current) return;
@@ -126,29 +129,29 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
         }
     };
 
-    // Create data map for quick lookup
-    const dataMap = new Map(
-        data.map(d => [d.date, d])
-    );
+    // Create data map and calculate monthly PnL using useMemo
+    const { dataMap, monthlyPnL, maxPnL } = useMemo(() => {
+        const map = new Map(data.map(d => [d.date, d]));
+        
+        let pnl = 0;
+        days.forEach(day => {
+            const dateKey = format(day, "yyyy-MM-dd");
+            const dayData = map.get(dateKey);
+            if (dayData && dayData.tradeCount > 0) {
+                pnl += dayData.pnl;
+            }
+        });
 
-    // Calculate monthly PnL
-    let monthlyPnL = 0;
-    days.forEach(day => {
-        const dateKey = format(day, "yyyy-MM-dd");
-        const dayData = dataMap.get(dateKey);
-        if (dayData && dayData.tradeCount > 0) {
-            monthlyPnL += dayData.pnl;
-        }
-    });
+        const max = Math.max(...data.map(d => Math.abs(d.pnl)), 1);
 
-    // Calculate max absolute PnL for color intensity
-    const maxPnL = Math.max(...data.map(d => Math.abs(d.pnl)), 1);
+        return { dataMap: map, monthlyPnL: pnl, maxPnL: max };
+    }, [data, days]);
 
     const getColorClass = (pnl: number) => {
         const intensity = Math.min(Math.abs(pnl) / maxPnL, 1);
         // Use opacity based on intensity
         if (pnl > 0) {
-            return "bg-emerald-50/80 dark:bg-[#00C888]/10 text-emerald-600 dark:text-[#00C888] border-emerald-100/50 dark:border-[#00C888]/20";
+            return "bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary border-emerald-100/50 dark:border-primary/20";
         } else if (pnl < 0) {
             return "bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100/50 dark:border-red-500/20";
         }
@@ -160,7 +163,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-[#00C888]/10 rounded-lg text-[#00C888]">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
                         <CalendarDays size={18} />
                     </div>
                     <div>
@@ -172,47 +175,46 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                 </div>
                 <div className="flex items-center gap-3">
                 <div className="flex items-center gap-4">
-                    <div className={`flex items-center justify-center px-4 py-1.5 rounded-full ${monthlyPnL >= 0 ? 'bg-[#00C888]/10 text-[#00C888]' : 'bg-red-500/10 text-red-500'} font-bold text-sm tracking-wide`}>
+                    <div className={`flex items-center justify-center px-4 py-1.5 rounded-full ${monthlyPnL >= 0 ? 'bg-primary/10 text-primary' : 'bg-red-500/10 text-red-500'} font-bold text-sm tracking-wide`}>
                         {monthlyPnL >= 0 ? '+' : ''}${Math.abs(monthlyPnL).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
                     
                     <div className="flex items-center gap-3">
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                            className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors border-0"
+                            className="rounded-lg border-0"
+                            aria-label="Previous month"
                         >
-                            <ChevronLeft size={18} className="text-gray-500" />
+                            <ChevronLeft size={18} />
                         </Button>
                         <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
                             {format(currentMonth, "MMMM yyyy")}
                         </span>
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                            className="p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors border-0"
+                            className="rounded-lg border-0"
+                            aria-label="Next month"
                         >
-                            <ChevronRight size={18} className="text-gray-500" />
+                            <ChevronRight size={18} />
                         </Button>
                     </div>
 
                     <div className="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
 
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={handleScreenshot}
                         disabled={isCapturing}
-                        className={`p-1.5 rounded-lg transition-colors border border-transparent 
-                            ${isCapturing 
-                                ? "text-gray-300 dark:text-gray-600 bg-gray-50 dark:bg-white/5" 
-                                : "text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 hover:border-gray-200 dark:hover:border-white/10"
-                            }`}
+                        className={`rounded-lg ${isCapturing ? "opacity-50" : ""}`}
                         title="Screenshot Report"
+                        aria-label="Download screenshot"
                     >
-                        {isCapturing ? <Loader2 size={16} className="animate-spin" /> : <Camera size={16} />}
+                        {isCapturing ? <Loader2 size={16} className="animate-spin text-gray-400" /> : <Camera size={16} className="text-gray-500" />}
                     </Button>
                 </div>
                 </div>
@@ -286,7 +288,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                                                     <Loader2 size={16} className="animate-spin text-gray-400 mt-1" />
                                                 ) : (
                                                     <>
-                                                        <span className="text-sm font-bold leading-none mb-0.5">
+                                                        <span className="text-xs sm:text-sm tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5">
                                                             {pnl >= 0 ? "+" : ""}{formattedPnL}
                                                         </span>
                                                         <span className="text-[10px] opacity-80 font-medium">
@@ -301,13 +303,20 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                             })}
 
                             {/* Weekly Summary Cell */}
-                            <div className="h-[90px] rounded-2xl flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 relative p-3 shadow-sm hover:shadow-md transition-shadow">
-                                <span className={`text-[11px] font-black uppercase tracking-widest mb-1.5 ${weeklyPnL >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>Week {weekIndex + 1}</span>
-                                <div className="flex flex-col items-center gap-0.5">
-                                    <span className={`text-[17px] font-black leading-none ${weeklyPnL >= 0 ? 'text-[#00C888]' : 'text-red-500'}`}>
-                                        ${Math.abs(weeklyPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <div className="min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 relative shadow-sm hover:shadow-md transition-all hover:scale-105 hover:z-10">
+                                <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${weeklyPnL >= 0 ? 'text-primary' : 'text-red-500'}`}>
+                                    W{weekIndex + 1}
+                                </span>
+                                <div className="flex flex-col items-center mt-2.5 w-full">
+                                    <span 
+                                        className={`w-full text-center px-0.5 text-xs sm:text-sm tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5 ${weeklyPnL >= 0 ? 'text-primary' : 'text-red-500'}`}
+                                        title={`$${Math.abs(weeklyPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                                    >
+                                        {weeklyPnL >= 0 ? "+" : "-"}{Math.abs(weeklyPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
-                                    <span className="text-[10px] text-gray-400 font-medium">{weeklyTradeDays} trade days</span>
+                                    <span className="text-[10px] opacity-80 font-medium text-gray-500 dark:text-gray-400 w-full text-center">
+                                        {weeklyTradeDays} days
+                                    </span>
                                 </div>
                             </div>
                         </React.Fragment>
@@ -320,7 +329,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
             {/* Legend */}
             <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
                 <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-[#00C888]" />
+                    <div className="w-3 h-3 rounded-full bg-primary" />
                     <span className="text-xs text-gray-500 dark:text-gray-400">Profit</span>
                 </div>
                 <div className="flex items-center gap-2">

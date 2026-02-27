@@ -89,7 +89,7 @@ export function PendingLicensesList({ licenses, adminId }: PendingLicensesListPr
                                 </Button>
                                 <Button
                                     onClick={() => handleAction(req, "APPROVE")}
-                                    className="flex-1 md:flex-none bg-primary hover:bg-[#00B078] text-white font-bold shadow-lg shadow-primary/30 hover:shadow-primary/40 hover:-translate-y-0.5 px-6 rounded-xl transition-all border-none"
+                                    className="flex-1 md:flex-none bg-primary hover:bg-[#00B078] text-white font-bold shadow-lg shadow-primary/30 hover:shadow-primary/40 px-6 rounded-xl transition-all border-none"
                                 >
                                     <Check size={18} className="mr-2" />
                                     Approve

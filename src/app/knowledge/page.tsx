@@ -113,7 +113,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={cat.id}
                                         href={`/knowledge?category=${cat.slug}`}
-                                        className="px-5 py-2.5 rounded-xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/20 hover:border-primary hover:bg-white/60 dark:hover:bg-white/10 transition-all cursor-pointer text-sm font-bold text-gray-700 dark:text-gray-200 hover:-translate-y-0.5"
+                                        className="px-5 py-2.5 rounded-xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/20 hover:border-primary hover:bg-white/60 dark:hover:bg-white/10 transition-all cursor-pointer text-sm font-bold text-gray-700 dark:text-gray-200"
                                     >
                                         {cat.name}
                                     </Link>
@@ -149,7 +149,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={article.id}
                                         href={`/articles/${article.slug}`}
-                                        className="group flex flex-col rounded-xl overflow-hidden bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-300 hover:-translate-y-0.5"
+                                        className="group flex flex-col rounded-xl overflow-hidden bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-300"
                                     >
                                         {/* Thumbnail */}
                                         <div className="relative h-56 w-full overflow-hidden">

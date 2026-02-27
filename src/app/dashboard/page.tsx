@@ -7,7 +7,8 @@ import { prisma } from "@/lib/prisma";
 import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
 import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution } from "@/lib/analytics-queries";
-import { endOfDay, parseISO, format } from "date-fns";
+import { format } from "date-fns";
+import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 
 
 export const dynamic = "force-dynamic";
@@ -101,9 +102,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         redirect(`/dashboard?${newParams.toString()}`);
     }
 
-    const startDate = fromParam ? parseISO(fromParam) : undefined;
-    // For endDate, if it's "2025-02-11", we want the END of that day.
-    const endDate = toParam ? endOfDay(parseISO(toParam)) : undefined;
+    const startDate = parseLocalStartOfDay(fromParam);
+    const endDate = parseLocalEndOfDay(toParam);
 
     // 2. Optimized Data Fetching (Parallel)
     const [

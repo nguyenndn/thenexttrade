@@ -119,7 +119,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
-            <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 cursor-default">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">

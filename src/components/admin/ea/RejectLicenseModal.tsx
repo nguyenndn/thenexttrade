@@ -109,7 +109,7 @@ export function RejectLicenseModal({ isOpen, onClose, license, adminId }: Reject
                     <Button
                         onClick={handleReject}
                         disabled={isLoading}
-                        className="px-8 py-3 h-auto text-base font-bold rounded-xl bg-red-500 hover:bg-red-600 text-white border-none shadow-lg shadow-red-500/20 hover:shadow-red-500/40 hover:-translate-y-0.5 transition-all"
+                        className="rounded-xl font-bold border-none"
                     >
                         {isLoading ? "Rejecting..." : "Reject Request"}
                     </Button>

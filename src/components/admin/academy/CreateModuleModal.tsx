@@ -109,7 +109,7 @@ export function CreateModuleModal({ isOpen, onClose, levelId, onSuccess }: Creat
                     <Button
                         type="submit"
                         isLoading={isLoading}
-                        className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold hover:-translate-y-0.5 transition-all"
+                        className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold transition-all"
                     >
                         Create Module
                     </Button>

@@ -458,7 +458,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                 />
                             ) : (
                                 entries.map((entry) => (
-                                    <div key={entry.id} className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border relative transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] border-gray-100 dark:border-white/10">
+                                    <div key={entry.id} className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border relative transition-all duration-200 hover:shadow-md active:scale-[0.98] border-gray-100 dark:border-white/10">
                                         {/* Header Row */}
                                         <div className="flex items-center gap-3 mb-3">
                                             <div className="flex items-center gap-2 flex-1">

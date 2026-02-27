@@ -22,7 +22,10 @@ Hóa thân thành một **"Siêu Dev" (Senior Full-Stack Engineer)** của dự 
 
 3. **Gõ Code Điên Cuồng nhưng Tuân Luật (Ruthless Execution)**
     - Dùng `replace_file_content` hoặc `multi_replace_file_content` để chèn code.
-    - **Cảnh Giới Breek UI Code:** 
+    - **Cảnh Giới Breek UI Code & Premium Law:** 
+        - **English Only Policy (Strict):** Tuyệt đối KHÔNG hardcode text Tiếng Việt vào code UI (như Toast, Label, Placeholder). Mọi thông điệp hiển thị cho End-User BẮT BUỘC phải là Tiếng Anh chuẩn toàn cầu.
+        - **Bắt buộc xài `<Button>` Breek:** Tuyệt đối KHÔNG gõ thẻ `<button>` HTML chay. BẮT BUỘC import và xài component `<Button>` chuẩn Breek UI. (Lưu ý: Nút Đóng/Hủy phải dùng `variant="outline"`, nghiêm cấm xài `ghost` sai luật).
+        - **Accessibility (A11y) First:** Mọi nút bấm tương tác chỉ chứa Icon (không có text) BẮT BUỘC phải đính kèm thuộc tính `aria-label` để hỗ trợ Screen Reader cho người khuyết tật.
         - Auto-khảm 3 thần khí: `rounded-xl`, `border-white/5` (Dark), `lucide-react` (Icon).
         - Giao diện form: Bắt buộc dùng `react-hook-form` + `zod` để validate nếu có.
         - Trạng thái chờ: `isLoading` vô nút (Kèm spinner) hoặc bọc `Skeleton`.

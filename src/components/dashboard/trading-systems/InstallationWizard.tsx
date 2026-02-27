@@ -171,38 +171,39 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                     </div>
                 </div>
 
-                {/* Footer Controls */}
                 <div className="mt-12 pt-8 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
-                    <button
+                    <Button
+                        variant="outline"
                         onClick={handlePrev}
                         disabled={currentStep === 0}
                         className={cn(
-                            "flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all",
+                            "rounded-xl font-bold transition-all",
                             currentStep === 0
-                                ? "text-gray-300 dark:text-gray-700 cursor-not-allowed"
-                                : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                                ? "opacity-50"
+                                : ""
                         )}
                     >
                         <ChevronLeft size={18} />
                         Previous
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
+                        variant={currentStep === steps.length - 1 ? "secondary" : "primary"}
                         onClick={handleNext}
                         disabled={currentStep === steps.length - 1}
                         className={cn(
-                            "flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg",
+                            "rounded-xl font-bold transition-all shadow-lg",
                             currentStep === steps.length - 1
-                                ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 cursor-default"
-                                : "bg-primary hover:bg-[#00A870] text-white shadow-primary/20 hover:scale-105 active:scale-95"
+                                ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 shadow-none"
+                                : "shadow-primary/20 hover:scale-105 active:scale-95"
                         )}
                     >
                         {currentStep === steps.length - 1 ? (
-                            <>Type "Finish" to Done <CheckCircle size={18} /></>
+                            <>Finish <CheckCircle size={18} /></>
                         ) : (
                             <>Next <ChevronRight size={18} /></>
                         )}
-                    </button>
+                    </Button>
                 </div>
             </div>
 

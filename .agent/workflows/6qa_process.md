@@ -17,6 +17,7 @@ Quy trình kiểm thử nghiêm ngặt đạt chuẩn Production-Ready (QA) áp 
     - Nếu có Unit Test / Integration Test cho component đó, bắt buộc test pass 100%.
 
 2. **Thẩm định "The LAW" - Breek Premium UI Guide**
+    - **English Only Enforcement:** Càn quét khắt khe bề mặt giao diện, Toast và Form. NỘI QUY: Không được phép sót một chữ Tiếng Việt nào trên UI. Tự động Auto-Fix dịch toàn bộ text bị lỗi sang Tiếng Anh chuẩn (VD: "Tính năng đang phát triển" -> "Coming soon").
     - **Aesthetics Check:** Tuyệt đối không dùng class Tailwind chung chung kiểu `bg-blue-500`, `rounded-md`. Primary Action phải đúng chuẩn: `bg-primary hover:bg-[#00C888]`, `text-white`, `rounded-xl`.
     - Nút Cancel / Back / Đóng: BẮT BUỢC dùng `variant="outline"`, không dùng chữ trơn `variant="ghost"`.
     - Viền và Shadow chuẩn Breek Premium: Phải có `border-white/5` (Light mode `border-white/10`) và `rounded-xl` (Nghiêm cấm dùng sm/md thay thế).

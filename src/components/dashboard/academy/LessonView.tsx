@@ -8,9 +8,6 @@ import {
     ChevronLeft,
     ChevronRight,
     CheckCircle,
-    PlayCircle,
-    Menu,
-    X,
     Sparkles,
     GraduationCap,
     ArrowLeft,
@@ -42,7 +39,6 @@ export default function LessonView({
     userId
 }: Props) {
     const router = useRouter();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [completing, setCompleting] = useState(false);
 
     // Check if current lesson is already completed
@@ -77,7 +73,7 @@ export default function LessonView({
                 setTimeout(moveToNext, 1500);
             }
         } catch (error) {
-            console.error(error);
+
             toast.error("Failed to save progress.");
         } finally {
             setCompleting(false);
@@ -95,10 +91,10 @@ export default function LessonView({
     };
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
             {/* Header / Breadcrumbs */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-widest">
                         <Link href="/dashboard/academy" className="hover:underline flex items-center gap-1">
                             <GraduationCap size={14} />
@@ -115,14 +111,14 @@ export default function LessonView({
                 </div>
 
                 <Link href="/dashboard/academy">
-                    <Button variant="outline" size="sm" className="rounded-xl border-gray-200 dark:border-white/5 bg-white dark:bg-[#151925] hover:bg-gray-50 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300">
-                        <ArrowLeft size={16} className="mr-2" />
+                    <Button variant="outline" className="rounded-xl font-bold border-gray-200 dark:border-white/5 bg-white dark:bg-[#151925] hover:bg-gray-50 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300">
+                        <ArrowLeft size={16} />
                         Back to Map
                     </Button>
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
                 {/* Main Content Area */}
                 <div className="xl:col-span-8 space-y-6">
                     {/* Content Card */}
@@ -139,43 +135,45 @@ export default function LessonView({
                         </div>
 
                         {/* Navigation Footer */}
-                        <div className="mt-12 pt-8 border-t border-gray-100 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6">
+                        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="flex items-center gap-4">
                                 {prevLesson ? (
                                     <Link href={`/dashboard/academy/lessons/${prevLesson.slug}`}>
                                         <Button variant="ghost" className="text-gray-500 hover:text-primary hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
-                                            <ChevronLeft size={16} className="mr-1" />
+                                            <ChevronLeft size={16} />
                                             Previous
                                         </Button>
                                     </Link>
                                 ) : <div />}
                             </div>
 
-                            <Button
-                                onClick={handleComplete}
-                                disabled={completing}
-                                className={cn(
-                                    "px-10 py-6 rounded-xl font-bold text-lg transition-all shadow-lg",
-                                    isCompleted
-                                        ? "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 cursor-pointer hover:bg-gray-200 dark:hover:bg-white/10"
-                                        : "bg-primary hover:bg-[#00B078] text-white shadow-primary/20 hover:-translate-y-1 active:scale-95"
-                                )}
-                            >
-                                {isCompleted ? (
-                                    <>Next <ChevronRight size={20} className="ml-2" /></>
-                                ) : (
-                                    <>
-                                        {completing ? "Processing..." : "Complete Lesson"}
-                                        {!completing && <Sparkles size={20} className="ml-2 text-yellow-300" />}
-                                    </>
-                                )}
-                            </Button>
+                            {isCompleted ? (
+                                <Button
+                                    onClick={handleComplete}
+                                    variant="outline"
+                                    aria-label="Go to next lesson"
+                                    className="rounded-xl font-bold border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                                >
+                                    Next <ChevronRight size={20} />
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={handleComplete}
+                                    variant="primary"
+                                    disabled={completing}
+                                    aria-label="Complete this lesson"
+                                    className="font-bold rounded-xl bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg hover:shadow-[#00C888]/25 transition-all"
+                                >
+                                    {completing ? "Processing..." : "Complete Lesson"}
+                                    {!completing && <Sparkles size={20} className="text-yellow-300" />}
+                                </Button>
+                            )}
 
                             <div className="flex items-center gap-4">
                                 {nextLesson ? (
                                     <Link href={`/dashboard/academy/lessons/${nextLesson.slug}`}>
                                         <Button variant="ghost" className="text-gray-500 hover:text-primary hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
-                                            Next <ChevronRight size={16} className="ml-1" />
+                                            Next <ChevronRight size={16} />
                                         </Button>
                                     </Link>
                                 ) : <div />}
@@ -192,18 +190,18 @@ export default function LessonView({
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Current Module</p>
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">{lesson.module.title}</h3>
                             <div className="flex items-center gap-3 text-xs text-gray-500 mb-6">
-                                <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-md">
+                                <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg">
                                     <Clock size={12} />
                                     <span>{lesson.duration || "10"} mins</span>
                                 </div>
-                                <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-md">
+                                <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg">
                                     <BookOpen size={12} />
                                     <span>{courseLessons.length} lessons</span>
                                 </div>
                             </div>
 
                             {/* Lesson List with Timeline Style */}
-                            <div className="space-y-1 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-100 dark:before:bg-white/5">
+                            <div className="space-y-1">
                                 {courseLessons.map((l: any, idx: number) => {
                                     const isActive = l.id === lesson.id;
                                     const itemCompleted = l.progress?.some((p: any) => p.isCompleted);

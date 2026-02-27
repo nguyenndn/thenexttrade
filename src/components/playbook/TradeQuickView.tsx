@@ -1,12 +1,15 @@
 "use client";
 
 import { X, ChevronLeft, ChevronRight, Calendar, Target, Activity, DollarSign, Brain, MoveRight } from "lucide-react";
-// import Image from "next/image"; // Removed to allow external URLs
+import { transformImageUrl } from "@/lib/utils";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import { PlaybookTrade } from "./PlaybookDashboard";
+import { Button } from "@/components/ui/Button";
 
 interface TradeQuickViewProps {
-    trade: any;
+    trade: PlaybookTrade;
     onClose: () => void;
     onNext?: () => void;
     onPrev?: () => void;
@@ -14,12 +17,16 @@ interface TradeQuickViewProps {
 
 export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickViewProps) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [mounted, setMounted] = useState(false);
 
-    if (!trade) return null;
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
 
-    const images = trade.images || [];
-    const isWin = (trade.pnl || 0) > 0;
-    const isLoss = (trade.pnl || 0) < 0;
+    const images = trade?.images || [];
+    const isWin = (trade?.pnl || 0) > 0;
+    const isLoss = (trade?.pnl || 0) < 0;
 
     const nextImage = () => {
         if (currentImageIndex < images.length - 1) {
@@ -33,32 +40,52 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
         }
     };
 
-    return (
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            } else if (e.key === 'ArrowRight') {
+                nextImage();
+            } else if (e.key === 'ArrowLeft') {
+                prevImage();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [currentImageIndex, images.length, onClose]);
+
+    if (!trade || !mounted) return null;
+
+    return createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200" onClick={onClose}>
+            {/* Global Close Button (Outside Card) */}
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                aria-label="Close modal"
+                className="absolute top-4 right-4 md:top-6 md:right-6 z-50 bg-white/10 hover:bg-white/20 text-white hover:text-white rounded-full transition-colors backdrop-blur-sm"
+            >
+                <X size={24} />
+            </Button>
+
             <div
-                className="bg-white dark:bg-[#151925] w-full max-w-6xl max-h-[90vh] rounded-xl overflow-hidden flex flex-col lg:flex-row shadow-2xl relative"
+                className="bg-white dark:bg-[#151925] w-full max-w-6xl max-h-[85vh] md:max-h-[90vh] rounded-xl overflow-hidden flex flex-col lg:flex-row shadow-2xl relative cursor-default"
                 onClick={e => e.stopPropagation()}
             >
-                {/* Close Button */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 z-10 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
-                >
-                    <X size={20} />
-                </button>
-
                 {/* Left: Image Gallery */}
                 <div className="lg:w-2/3 bg-black/90 relative flex items-center justify-center h-[40vh] lg:h-auto overflow-hidden group">
                     {images.length > 0 ? (
                         <>
-                            <div className="relative w-full h-full">
+                            <div className="relative w-full h-full select-none">
                                 <img
-                                    src={images[currentImageIndex]}
+                                    src={transformImageUrl(images[currentImageIndex])}
                                     alt={`${trade.symbol} Screenshot`}
-                                    className="w-full h-full object-contain"
+                                    className="w-full h-full object-contain pointer-events-none"
                                     referrerPolicy="no-referrer"
                                     onError={(e) => {
-                                        (e.target as HTMLImageElement).src = "https://placehold.co/800x600?text=Image+Load+Error";
+                                        (e.target as HTMLImageElement).src = "https://placehold.co/800x600/1E2028/00C888?text=Image+Load+Error";
                                     }}
                                 />
                             </div>
@@ -66,23 +93,29 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
                             {/* Image Navigation */}
                             {images.length > 1 && (
                                 <>
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={(e) => { e.stopPropagation(); prevImage(); }}
                                         disabled={currentImageIndex === 0}
-                                        className="absolute left-4 p-2 bg-white/10 text-white rounded-full hover:bg-white/20 disabled:opacity-0 transition-opacity"
+                                        aria-label="Previous image"
+                                        className="absolute left-4 bg-white/10 text-white rounded-full hover:bg-white/20 hover:text-white disabled:opacity-0 transition-opacity"
                                     >
                                         <ChevronLeft size={24} />
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={(e) => { e.stopPropagation(); nextImage(); }}
                                         disabled={currentImageIndex === images.length - 1}
-                                        className="absolute right-4 p-2 bg-white/10 text-white rounded-full hover:bg-white/20 disabled:opacity-0 transition-opacity"
+                                        aria-label="Next image"
+                                        className="absolute right-4 bg-white/10 text-white rounded-full hover:bg-white/20 hover:text-white disabled:opacity-0 transition-opacity"
                                     >
                                         <ChevronRight size={24} />
-                                    </button>
+                                    </Button>
                                     {/* Dots */}
                                     <div className="absolute bottom-4 flex gap-2">
-                                        {images.map((_: any, idx: number) => (
+                                        {images.map((_: string, idx: number) => (
                                             <div
                                                 key={idx}
                                                 className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? 'bg-white w-4' : 'bg-white/30'}`}
@@ -203,22 +236,27 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
 
                     {/* Footer Nav */}
                     <div className="p-4 border-t border-gray-100 dark:border-white/5 flex gap-2">
-                        <button
+                        <Button
+                            variant="outline"
                             onClick={(e) => { e.stopPropagation(); onPrev?.(); }}
-                            className="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-sm font-bold transition-colors flex items-center justify-center gap-2"
+                            aria-label="View previous trade"
+                            className="flex-1 py-6 text-sm font-bold flex items-center justify-center gap-2 rounded-xl"
                         >
                             <ChevronLeft size={16} /> Previous Trade
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="outline"
                             onClick={(e) => { e.stopPropagation(); onNext?.(); }}
-                            className="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-sm font-bold transition-colors flex items-center justify-center gap-2"
+                            aria-label="View next trade"
+                            className="flex-1 py-6 text-sm font-bold flex items-center justify-center gap-2 rounded-xl"
                         >
                             Next Trade <ChevronRight size={16} />
-                        </button>
+                        </Button>
                     </div>
 
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }

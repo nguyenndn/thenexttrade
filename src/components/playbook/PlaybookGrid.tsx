@@ -27,7 +27,7 @@ export function PlaybookGrid({ trades, isLoading, onTradeClick }: PlaybookGridPr
                 icon={ImageOff}
                 title="No Screenshots Found"
                 description="Trades with screenshots will appear here automatically. Add images to your journal entries to build your playbook."
-                className="bg-white dark:bg-[#1E2028] min-h-[400px] border border-dashed border-gray-200 dark:border-white/10 rounded-xl"
+                className="bg-gray-50/50 dark:bg-black/20 min-h-[400px] border border-dashed border-gray-200 dark:border-white/10 rounded-xl"
             />
         );
     }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { User, Lock, Save, Camera, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 import { ImageUploader } from '@/components/ui/ImageUploader';
+import { Button } from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
 export default function SettingsClient() {
@@ -170,14 +171,14 @@ export default function SettingsClient() {
                 </div>
 
                 <div className="flex justify-end">
-                    <button
+                    <Button
                         type="submit"
+                        variant="primary"
                         disabled={isSaving}
-                        className="px-8 py-3 bg-primary hover:bg-[#00b078] text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 active:scale-95 disabled:opacity-70 flex items-center gap-2"
                     >
                         {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                         Save Changes
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

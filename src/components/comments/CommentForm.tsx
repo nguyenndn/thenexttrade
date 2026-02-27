@@ -104,7 +104,7 @@ export function CommentForm({
                 ) : (
                     <button
                         type="submit"
-                        className="absolute right-3 bottom-3 p-2 bg-primary hover:bg-[#00B078] text-white rounded-lg shadow-lg shadow-primary/30 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                        className="absolute right-3 bottom-3 p-2 bg-primary hover:bg-[#00B078] text-white rounded-lg shadow-lg shadow-primary/30 transition-all active:translate-y-0"
                     >
                         <Send size={16} />
                     </button>

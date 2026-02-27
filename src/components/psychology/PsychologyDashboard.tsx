@@ -10,6 +10,7 @@ import { ConfidenceCorrelation } from "./ConfidenceCorrelation";
 import { PlanAdherence } from "./PlanAdherence";
 import { TiltIndicators } from "./TiltIndicators";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
+import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 
 interface PsychologyData {
     emotionBeforeStats: Array<{
@@ -87,7 +88,14 @@ export function PsychologyDashboard() {
     }
 
     if (!data) {
-        return <PsychologyEmptyState />;
+        return (
+            <div className="py-20">
+                <ChartEmptyState
+                    title="No psychology data yet"
+                    description="Start tracking emotions when logging trades to see insights here."
+                />
+            </div>
+        );
     }
 
     // Find best emotion for trading
@@ -131,13 +139,15 @@ export function PsychologyDashboard() {
 
             {/* Tilt Warning Banner */}
             {hasTiltWarning && (
-                <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl p-4 flex items-start gap-3">
-                    <AlertTriangle className="text-red-500 flex-shrink-0 mt-0.5" size={20} />
-                    <div className="space-y-1">
+                <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl p-5 flex gap-4">
+                    <div className="flex-shrink-0 pt-0.5">
+                        <AlertTriangle className="text-red-500" size={20} />
+                    </div>
+                    <div className="space-y-1 w-full">
                         <h4 className="font-bold text-red-700 dark:text-red-400">
                             Tilt Warning Detected
                         </h4>
-                        <ul className="text-sm text-red-600 dark:text-red-300 list-disc list-inside">
+                        <ul className="text-sm text-red-600 dark:text-red-300 list-disc list-inside mt-2">
                             {data.tiltIndicators.revengeTradeCount > 0 && (
                                 <li>You made <strong>{data.tiltIndicators.revengeTradeCount} revenge trade(s)</strong>. Stop and reset.</li>
                             )}
@@ -161,19 +171,18 @@ export function PsychologyDashboard() {
 
             {/* Key Insight Card */}
             {bestEmotion && (
-                <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-200 dark:border-purple-500/20 rounded-xl p-6">
-                    <h3 className="text-sm uppercase tracking-wider text-purple-500 font-bold mb-2">
+                <div className="bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/20 rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer group">
+                    <h3 className="text-sm uppercase tracking-wider text-primary font-bold mb-2 group-hover:text-primary/80 transition-colors">
                         Key Insight
                     </h3>
                     <p className="text-lg text-gray-900 dark:text-white">
-                        You trade best when feeling <span className="font-bold text-purple-500">{bestEmotion.emotion}</span> with a{" "}
+                        You trade best when feeling <span className="font-bold text-primary">{bestEmotion.emotion}</span> with a{" "}
                         <span className="font-bold text-green-500">{bestEmotion.winRate.toFixed(0)}% win rate</span>.
                     </p>
                 </div>
             )}
 
-            {/* Charts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <EmotionPerformanceChart
                     data={data.emotionBeforeStats}
                     title="Performance by Emotion (Before Trade)"
@@ -181,7 +190,7 @@ export function PsychologyDashboard() {
                 <ConfidenceCorrelation data={data.confidenceCorrelation} />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <PlanAdherence data={data.planAdherenceStats} />
                 <TiltIndicators data={data.tiltIndicators} />
             </div>
@@ -191,27 +200,17 @@ export function PsychologyDashboard() {
 
 function PsychologyLoadingSkeleton() {
     return (
-        <div className="space-y-6 animate-pulse">
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64" />
-            <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-            <div className="grid grid-cols-2 gap-6">
-                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+        <div className="space-y-4 animate-pulse">
+            <div className="h-8 bg-gray-200 dark:bg-white/5 rounded w-64 mb-8" />
+            <div className="h-24 bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
+                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
             </div>
-        </div>
-    );
-}
-
-function PsychologyEmptyState() {
-    return (
-        <div className="text-center py-20">
-            <Brain size={48} className="mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                No psychology data yet
-            </h3>
-            <p className="text-gray-500">
-                Start tracking emotions when logging trades to see insights here.
-            </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
+                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
+            </div>
         </div>
     );
 }

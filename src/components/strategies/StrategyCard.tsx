@@ -16,7 +16,7 @@ export function StrategyCard({
     onDelete: () => void;
 }) {
     return (
-        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-[#00C888]/50 hover:shadow-md transition-shadow ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-100 dark:border-white/5'
+        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-primary/50 hover:shadow-md transition-shadow ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-100 dark:border-white/5'
             }`}>
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
@@ -34,19 +34,19 @@ export function StrategyCard({
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={onEdit}
-                        className="text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-white border-transparent hover:border-gray-200 dark:hover:border-white/10"
                         aria-label="Edit strategy"
                     >
                         <Edit2 size={16} />
                     </Button>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={onDelete}
-                        className="hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500"
+                        className="hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 border-transparent hover:border-red-100 dark:hover:border-red-500/20"
                         aria-label="Delete strategy"
                     >
                         <Trash2 size={16} />

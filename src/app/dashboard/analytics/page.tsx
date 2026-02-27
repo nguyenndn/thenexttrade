@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { startOfMonth, endOfMonth, startOfDay, endOfDay, parseISO } from "date-fns";
+import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import {
     getKeyStats,
     getMonthlyAnalytics,
@@ -72,8 +73,8 @@ export default async function AnalyticsPage({
     const startDateParam = resolvedParams?.from as string;
     const endDateParam = resolvedParams?.to as string;
 
-    const startDate = startDateParam ? parseISO(startDateParam) : undefined;
-    const endDate = endDateParam ? endOfDay(parseISO(endDateParam)) : undefined;
+    const startDate = parseLocalStartOfDay(startDateParam);
+    const endDate = parseLocalEndOfDay(endDateParam);
 
     return (
         <div className="space-y-4">
