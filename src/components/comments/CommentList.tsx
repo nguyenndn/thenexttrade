@@ -6,6 +6,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Reply, Trash2, MoreHorizontal } from "lucide-react";
 import { CommentForm } from "./CommentForm";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 // Checking file list, I passed `Button.tsx`, `Modal.tsx`. I don't see Dropdown.
 // I'll stick to a simple Delete button if it's my own comment.
 
@@ -122,23 +123,25 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
                 </div>
 
                 <div className="flex items-center gap-4 text-sm">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => setIsReplying(!isReplying)}
-                        className="flex items-center gap-1.5 text-gray-500 hover:text-primary transition-colors font-medium"
+                        className="flex items-center gap-1.5 h-auto px-2 py-1 text-gray-500 hover:text-primary transition-colors font-medium"
                     >
                         <Reply size={14} />
                         Reply
-                    </button>
+                    </Button>
 
                     {isAuthor && (
-                        <button
+                        <Button
+                            variant="ghost"
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            className="flex items-center gap-1.5 text-gray-400 hover:text-red-500 transition-colors font-medium"
+                            className="flex items-center gap-1.5 h-auto px-2 py-1 text-gray-400 hover:text-red-500 transition-colors font-medium"
                         >
                             <Trash2 size={14} />
                             Delete
-                        </button>
+                        </Button>
                     )}
                 </div>
 

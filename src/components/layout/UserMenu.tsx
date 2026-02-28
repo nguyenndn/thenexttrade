@@ -96,10 +96,10 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-[#151925] rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-[#151925] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
 
                     {/* Header Info */}
-                    <div className="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5">
+                    <div className="p-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5">
                         <h4 className="font-bold text-lg text-gray-900 dark:text-white leading-tight">
                             Hello, <span className="text-primary">{userData.name}</span>
                         </h4>
@@ -133,7 +133,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                         )}
                     </div>
 
-                    <div className="p-2 border-t border-gray-100 dark:border-white/5">
+                    <div className="p-2 border-t border-gray-200 dark:border-white/10">
                         <button
                             onClick={() => signout()}
                             className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"

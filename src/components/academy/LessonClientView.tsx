@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight, CheckCircle, PlayCircle, Menu, X, MonitorPla
 import Markdown from 'react-markdown';
 import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 interface Props {
     lesson: any;
@@ -72,10 +73,10 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
         <div className="min-h-screen bg-white dark:bg-[#0B0E14] flex flex-col font-sans">
 
             {/* Header / Nav */}
-            <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#0B0E14]/80 backdrop-blur border-b border-gray-100 dark:border-white/5 h-14 flex items-center px-4">
+            <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#0B0E14]/80 backdrop-blur border-b border-gray-200 dark:border-white/10 h-14 flex items-center px-4">
                 <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Link href="/dashboard/academy" className="text-gray-400 hover:text-primary transition-colors">
+                        <Link href="/dashboard/academy" className="text-gray-400 hover:text-primary transition-colors" aria-label="Go to Dashboard">
                             <Home size={18} />
                         </Link>
                         <span className="text-gray-200 dark:text-gray-800">/</span>
@@ -83,9 +84,9 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                             {lesson.title}
                         </h1>
                     </div>
-                    <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2 text-gray-500">
+                    <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)} className="lg:hidden text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5" aria-label="Open Course Menu">
                         <Menu size={20} />
-                    </button>
+                    </Button>
                 </div>
             </header>
 
@@ -112,7 +113,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
 
                     {/* Video Player */}
                     {videoId && (
-                        <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-900 border border-gray-100 dark:border-white/5 shadow-lg">
+                        <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-900 border border-gray-200 dark:border-white/10 shadow-lg">
                             <iframe
                                 src={`https://www.youtube.com/embed/${videoId}`}
                                 title={lesson.title}
@@ -134,15 +135,17 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     </article>
 
                     {/* Completion Area */}
-                    <div className="pt-10 border-t border-gray-100 dark:border-white/5 flex flex-col items-center gap-6">
-                        <button
+                    <div className="pt-10 border-t border-gray-200 dark:border-white/10 flex flex-col items-center gap-6">
+                        <Button
+                            size="lg"
                             onClick={handleComplete}
                             disabled={isCompleted || completing}
                             className={cn(
-                                "group relative px-8 py-3 rounded-full font-bold text-base flex items-center gap-2 transition-all",
+                                "group rounded-full font-bold px-8 shadow-lg transition-all",
                                 isCompleted
-                                    ? "bg-green-50 dark:bg-green-900/10 text-green-600 cursor-default"
-                                    : "bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/20"
+                                    ? "bg-green-50 dark:bg-green-900/10 text-green-600 border-green-200 dark:border-green-800/30 cursor-default"
+                                    : "bg-primary hover:bg-[#00B078] text-white shadow-primary/20",
+                                !isCompleted && !completing && "hover:scale-105"
                             )}
                         >
                             {isCompleted ? (
@@ -153,7 +156,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                     <Sparkles size={18} className={cn("text-yellow-300", !completing && "animate-pulse")} />
                                 </>
                             )}
-                        </button>
+                        </Button>
 
                         <div className="flex items-center justify-between w-full max-w-md text-xs font-bold text-gray-400 uppercase tracking-wider">
                             {prevLesson ? (
@@ -177,7 +180,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     <div className="sticky top-32 space-y-6">
 
                         {/* Module Info */}
-                        <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-5 border border-gray-100 dark:border-white/5">
+                        <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-5 border border-gray-200 dark:border-white/10">
                             <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Current Module</h3>
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2 leading-tight">{lesson.module.title}</h2>
                             <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">
@@ -222,11 +225,13 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     <div className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#151925] shadow-2xl p-6 overflow-y-auto" onClick={e => e.stopPropagation()}>
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="font-bold text-lg">Course Content</h3>
-                            <button onClick={() => setMobileMenuOpen(false)}><X size={20} /></button>
+                            <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
+                                <X size={20} />
+                            </Button>
                         </div>
                         <div className="space-y-3">
                             {courseLessons.map((l, idx) => (
-                                <Link key={l.id} href={`/academy/lesson/${l.slug}`} className="block py-2 text-sm border-b border-gray-100 dark:border-white/5">
+                                <Link key={l.id} href={`/academy/lesson/${l.slug}`} className="block py-2 text-sm border-b border-gray-200 dark:border-white/10">
                                     <span className="font-bold text-gray-400 mr-2">{idx + 1}.</span> {l.title}
                                 </Link>
                             ))}

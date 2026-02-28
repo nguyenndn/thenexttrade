@@ -31,7 +31,7 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
 
     return (
         <Dialog open={true} onOpenChange={onClose}>
-            <DialogContent className="max-w-md bg-white dark:bg-[#1E2028] border-gray-100 dark:border-white/5">
+            <DialogContent className="max-w-md bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10">
                 <DialogHeader>
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -48,7 +48,7 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
                     {/* API URL */}
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Sync Endpoint URL</label>
-                        <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-black/20 rounded-lg border border-gray-100 dark:border-white/5 group relative">
+                        <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-black/20 rounded-lg border border-gray-200 dark:border-white/10 group relative">
                             <Server size={16} className="text-gray-400" />
                             <code className="text-sm font-mono text-gray-700 dark:text-gray-300 truncate flex-1">
                                 {apiUrl}
@@ -65,7 +65,7 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
                     {/* Account ID */}
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Account ID (Secret Key)</label>
-                        <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-black/20 rounded-lg border border-gray-100 dark:border-white/5 group relative">
+                        <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-black/20 rounded-lg border border-gray-200 dark:border-white/10 group relative">
                             <ShieldCheck size={16} className="text-gray-400" />
                             <code className="text-sm font-mono text-gray-700 dark:text-gray-300 truncate flex-1">
                                 {account.id}
@@ -83,7 +83,7 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
                     </div>
                 </div>
 
-                <div className="border-t border-gray-100 dark:border-white/5 pt-4">
+                <div className="border-t border-gray-200 dark:border-white/10 pt-4">
                     <button
                         onClick={onClose}
                         className="w-full py-2.5 bg-primary hover:bg-[#00B377] text-white font-bold rounded-xl transition-all"

@@ -30,7 +30,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
     }
     
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group/card">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 group/card">
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -100,7 +100,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
                                         const val = payload[0].value as number;
                                         const pnlVal = payload[0].payload.pnl as number;
                                         return (
-                                            <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-100 dark:border-white/10 rounded-xl shadow-xl">
+                                            <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl">
                                                 <p className="text-[11px] font-bold text-gray-400 uppercase mb-1">{label}</p>
                                                 <p className="text-sm font-black text-gray-900 dark:text-white mb-1">
                                                     Balance: ${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

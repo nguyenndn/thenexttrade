@@ -15,18 +15,11 @@ import { cache } from "@/lib/cache";
 // Revalidate data every 60 seconds
 export const revalidate = 60;
 
-function shuffleArray<T>(array: T[]): T[] {
-  const newArray = [...array];
-  for (let i = newArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-  }
-  return newArray;
-}
-
-// I will just modify the function body and imports.
 import { getAuthUser } from "@/lib/auth-cache";
 import { getMarketData } from "@/app/actions/get-market-data";
+import { shuffleArray } from "@/lib/utils";
+import { HOMEPAGE_TRENDING_TOPICS } from "@/config/home-data";
+import { Button } from "@/components/ui/Button";
 
 // ... imports ... 
 
@@ -134,20 +127,7 @@ export default async function Home() {
   // Shuffle specifically for random requirement
   const featuredArticles = shuffleArray(featuredRaw);
 
-  // Mock upcoming events for now (or fetch if we had a table)
-  const upcomingEvents = [
-    { date: "Today", time: "19:30", event: "Non-Farm Payrolls (USD)", impact: "High" },
-    { date: "12/06", time: "19:30", event: "CPI Data (USD)", impact: "High" },
-    { date: "14/06", time: "18:45", event: "Interest Rate Decision (EUR)", impact: "Medium" },
-  ];
-
-  const trendingTopics = [
-    { name: "PriceAction", volume: "High", change: "Up", href: "/knowledge?tag=price-action" },
-    { name: "RiskMgmt", volume: "Med", change: "Up", href: "/knowledge?tag=risk" },
-    { name: "Psychology", volume: "High", change: "Trending", href: "/knowledge?tag=psychology" },
-    { name: "Indicators", volume: "Low", change: "News", href: "/knowledge?tag=indicators" },
-    { name: "SmartMoney", volume: "High", change: "Event", href: "/knowledge?tag=smart-money" },
-  ];
+  const trendingTopics = HOMEPAGE_TRENDING_TOPICS;
 
   return (
     <main className="min-h-screen bg-white dark:bg-slate-900">
@@ -215,7 +195,7 @@ export default async function Home() {
       </div>
 
       {/* Trending Topics */}
-      <section className="py-16 relative bg-gray-50/50 dark:bg-[#0F1117] border-t border-gray-100 dark:border-white/5 overflow-hidden">
+      <section className="py-16 relative bg-gray-50/50 dark:bg-[#0F1117] border-t border-gray-200 dark:border-white/10 overflow-hidden">
         {/* Dot Pattern Background - Increased Visibility */}
         <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
 
@@ -246,7 +226,7 @@ export default async function Home() {
       </section>
 
       {/* Popular Guides Section */}
-      <section className="py-16 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-[#0F1117]">
+      <section className="py-16 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             title="Popular Guides"
@@ -257,7 +237,7 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {popularArticles.map((article, idx) => (
-              <Link key={article.id} href={`/articles/${article.slug}`} className="group relative bg-white dark:bg-[#1E2028] rounded-xl p-2 shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-white/5">
+              <Link key={article.id} href={`/articles/${article.slug}`} className="group relative bg-white dark:bg-[#1E2028] rounded-xl p-2 shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-white/10">
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
                   {article.thumbnail ? (
                     <Image
@@ -279,7 +259,7 @@ export default async function Home() {
                   <h3 className="mt-2 text-lg font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-purple-500 transition-colors">
                     {article.title}
                   </h3>
-                  <div className="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-white/5 pt-3">
+                  <div className="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-white/10 pt-3">
                     <span className="flex items-center gap-1">
                       <TrendingUp size={14} className="text-green-500" />
                       {article.views} Views
@@ -300,7 +280,7 @@ export default async function Home() {
       <MarketTickerSection initialData={marketData} />
 
       {/* Academy Learning Path Section */}
-      <section id="academy-preview" className="py-16 relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-gray-100 dark:border-white/5">
+      <section id="academy-preview" className="py-16 relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10">
         {/* Grid Pattern Background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/20 via-transparent to-transparent dark:from-blue-900/10 dark:via-transparent dark:to-transparent"></div>
@@ -325,7 +305,7 @@ export default async function Home() {
               { icon: Zap, title: "4. Trader", desc: "Risk & Psych.", color: "text-pink-500", bg: "bg-pink-500/10" },
               { icon: Calendar, title: "5. Pro", desc: "Consistency.", color: "text-orange-500", bg: "bg-orange-500/10" },
             ].map((step, idx) => (
-              <div key={idx} className="relative group bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-shadow duration-300 hover:shadow-md md:w-[30%] lg:w-auto">
+              <div key={idx} className="relative group bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary transition-shadow duration-300 hover:shadow-md md:w-[30%] lg:w-auto">
                 <div className={`w-12 h-12 rounded-xl ${step.bg} ${step.color} flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform`}>
                   <step.icon size={24} strokeWidth={2.5} />
                 </div>
@@ -338,18 +318,20 @@ export default async function Home() {
           </div>
 
           <div className="flex justify-center">
-            <Link
-              href="/academy"
-              className="inline-flex items-center justify-center px-10 py-5 rounded-full text-lg font-bold text-white shadow-xl shadow-primary/20 bg-gradient-to-r from-primary to-blue-600 hover:from-[#00B078] hover:to-blue-700 transform hover:scale-105 transition-all duration-300"
-            >
-              Start Learning Now
+            <Link href="/academy">
+              <Button 
+                size="lg" 
+                className="rounded-full shadow-xl shadow-primary/20 hover:shadow-primary/30 transform hover:scale-105 transition-all duration-300 px-10 py-6 text-lg"
+              >
+                Start Learning Now
+              </Button>
             </Link>
           </div>
         </div>
       </section>
 
       {/* Daily Quote */}
-      <section className="py-16 relative overflow-hidden border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-[#0F1117]">
+      <section className="py-16 relative overflow-hidden border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
         <FireflyBackground />

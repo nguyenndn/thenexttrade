@@ -115,7 +115,7 @@ export default function DashboardClient({
                     }} vertical />
                 </div>
                 <div className="xl:col-span-6 min-w-0">
-                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-primary h-full">
+                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-primary h-full">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -139,7 +139,7 @@ export default function DashboardClient({
                 <div className="xl:col-span-3 min-w-0">
                     <div className="flex flex-col gap-4 h-full">
                         {/* Profit Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-blue-500 flex flex-col overflow-hidden flex-1">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-blue-500 flex flex-col overflow-hidden flex-1">
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
                                     <PieChart size={20} />
@@ -152,7 +152,7 @@ export default function DashboardClient({
                         </div>
 
                         {/* Lot Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-orange-500 flex flex-col overflow-hidden flex-1">
+                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-orange-500 flex flex-col overflow-hidden flex-1">
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="p-3 bg-orange-500/10 rounded-xl text-orange-500">
                                     <Layers size={20} />
@@ -168,7 +168,7 @@ export default function DashboardClient({
 
                 {/* --- ROW 2: Daily Win Rate (8) + Win/Loss Distribution (4) --- */}
                 <div className="xl:col-span-8 min-w-0">
-                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-green-500 h-full">
+                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-green-500 h-full">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-green-500/10 rounded-lg text-green-500">
@@ -197,7 +197,7 @@ export default function DashboardClient({
                     <TopTradesList bestTrades={bestTrades} worstTrades={worstTrades} />
                 </div>
                 <div className="xl:col-span-7 min-w-0">
-                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-purple-500 overflow-hidden h-full">
+                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-purple-500 overflow-hidden h-full">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
                                 <CalendarRange size={20} />
@@ -229,7 +229,7 @@ export default function DashboardClient({
                                         content={({ active, payload, label }: any) => {
                                             if (active && payload && payload.length) {
                                                 return (
-                                                    <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-100 dark:border-white/10 rounded-xl shadow-xl">
+                                                    <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl">
                                                         <p className="text-sm font-medium text-gray-500 mb-1">{label}</p>
                                                         <p className="text-base font-bold text-gray-900 dark:text-white">
                                                             Net Profit: <span className="text-primary">${Number(payload[0].value).toFixed(2)}</span>

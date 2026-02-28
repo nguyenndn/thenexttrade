@@ -136,7 +136,7 @@ export function SiteFooter() {
                 </div>
 
                 {/* Copyright */}
-                <div className="pt-6 border-t border-gray-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="pt-6 border-t border-gray-200 dark:border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-sm text-gray-500">
                         &copy; 2026 The Next Trade. All rights reserved.
                     </p>

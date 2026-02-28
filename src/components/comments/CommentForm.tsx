@@ -102,12 +102,13 @@ export function CommentForm({
                         <Loader2 className="animate-spin" size={20} />
                     </div>
                 ) : (
-                    <button
+                    <Button
                         type="submit"
-                        className="absolute right-3 bottom-3 p-2 bg-primary hover:bg-[#00B078] text-white rounded-lg shadow-lg shadow-primary/30 transition-all active:translate-y-0"
+                        disabled={isLoading}
+                        className="absolute right-3 bottom-3 p-2 h-auto rounded-lg shadow-lg shadow-primary/30 transition-all active:translate-y-0"
                     >
-                        <Send size={16} />
-                    </button>
+                        <Send size={16} className="shrink-0" />
+                    </Button>
                 )}
             </div>
 
@@ -115,13 +116,14 @@ export function CommentForm({
                 <div className="flex justify-between items-center mt-2">
                     <p className="text-red-500 text-xs">{errors.content?.message}</p>
                     {onCancel && (
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
                             onClick={onCancel}
-                            className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                            className="text-xs h-auto px-2 py-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                         >
                             Cancel
-                        </button>
+                        </Button>
                     )}
                 </div>
             )}

@@ -88,9 +88,9 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
     }
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden hover:shadow-md transition-shadow">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                     <Target size={18} className="text-primary" />
                     <h3 className="font-bold text-gray-900 dark:text-white text-sm">Trading Goals</h3>
@@ -108,7 +108,7 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
 
             {/* Create Form */}
             {showForm && (
-                <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
+                <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                         <select
                             value={form.type}

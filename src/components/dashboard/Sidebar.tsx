@@ -136,7 +136,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
 
             {/* Sub Menu */}
             {!collapsed && hasSubItems && isExpanded && (
-                <div className="ml-4 pl-4 border-l-2 border-gray-100 dark:border-white/5 mt-1 space-y-1 animate-in slide-in-from-top-2 fade-in duration-200 hidden-scrollbar">
+                <div className="ml-4 pl-4 border-l-2 border-gray-200 dark:border-white/10 mt-1 space-y-1 animate-in slide-in-from-top-2 fade-in duration-200 hidden-scrollbar">
                     {item.items?.map((subItem) => {
                         const isSubActive = pathname === subItem.href || pathname?.startsWith(`${subItem.href}/`);
                         return (
@@ -187,7 +187,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
 
     return (
         <aside className={cn(
-            "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-gray-800 h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30",
+            "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30",
             isCollapsed ? "w-20" : "w-[280px]",
             className
         )}>
@@ -210,7 +210,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
             </div>
 
             {/* Bottom Actions */}
-            <div className="p-4 border-t border-gray-100 dark:border-white/5 m-4 mt-auto">
+            <div className="p-4 border-t border-gray-200 dark:border-white/10 m-4 mt-auto">
                 <button
                     onClick={() => signout()}
                     className={cn(

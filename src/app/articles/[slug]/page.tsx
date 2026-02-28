@@ -222,8 +222,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                     <div className="flex items-center gap-2">
                                         <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-200">
                                             <Image
-                                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100"
-                                                alt="Author"
+                                                src={article.author.image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100"}
+                                                alt={article.author.name || "Author"}
                                                 fill
                                                 className="object-cover"
                                             />
@@ -263,9 +263,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                 <div className="lg:col-span-7">
                                     <div
                                         className="prose dark:prose-invert prose-lg max-w-none 
-                                        prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white 
-                                        prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-8
-                                        prose-a:text-primary dark:prose-a:text-primary prose-img:rounded-xl prose-blockquote:border-l-primary"
+                                        prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-gray-900 dark:prose-headings:text-white 
+                                        prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
+                                        prose-a:text-primary dark:prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                                        prose-img:rounded-xl prose-img:shadow-md prose-blockquote:border-l-primary"
                                         dangerouslySetInnerHTML={{ __html: processedContent }}
                                     />
 

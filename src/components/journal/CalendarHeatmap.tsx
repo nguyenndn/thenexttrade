@@ -83,9 +83,9 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
     }
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
             {/* Header — Month Navigation + Summary */}
-            <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-white/5">
+            <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-white/10">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                         <Button
@@ -201,7 +201,7 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                 </div>
 
                 {/* Legend */}
-                <div className="flex items-center justify-center gap-4 mt-4 pt-3 border-t border-gray-100 dark:border-white/5">
+                <div className="flex items-center justify-center gap-4 mt-4 pt-3 border-t border-gray-200 dark:border-white/10">
                     <div className="flex items-center gap-1.5 text-xs text-gray-500">
                         <div className="w-3 h-3 rounded bg-red-500/60" />
                         <span>Loss</span>

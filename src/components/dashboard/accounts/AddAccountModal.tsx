@@ -534,7 +534,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             {/* Divider + Register CTA — outside DialogFooter to avoid justify-end */}
                             <div className="relative w-full py-2">
                                 <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-gray-100 dark:border-white/5" />
+                                    <div className="w-full border-t border-gray-200 dark:border-white/10" />
                                 </div>
                                 <div className="relative flex justify-center text-xs">
                                     <span className="px-3 bg-white dark:bg-[#1E2028] text-gray-400 font-medium">or</span>
@@ -583,9 +583,9 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             {brokers.map((broker) => (
                                 <div
                                     key={broker.slug}
-                                    className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] transition-colors"
+                                    className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-white/10 hover:border-gray-200 dark:hover:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] transition-colors"
                                 >
-                                    <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/10 border border-gray-100 dark:border-white/10 flex items-center justify-center flex-shrink-0 p-1.5">
+                                    <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 flex items-center justify-center flex-shrink-0 p-1.5">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img src={broker.logo} alt={broker.name} className="max-w-full max-h-full object-contain" />
                                     </div>

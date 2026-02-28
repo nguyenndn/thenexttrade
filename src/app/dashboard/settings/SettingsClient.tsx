@@ -91,7 +91,7 @@ export default function SettingsClient() {
             {/* Profile Form */}
             <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Avatar Section */}
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <Camera size={20} className="text-blue-500" />
                         Profile Picture
@@ -120,7 +120,7 @@ export default function SettingsClient() {
                 </div>
 
                 {/* General Info Section */}
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <User size={20} className="text-primary" />
                         Personal Information
@@ -150,7 +150,7 @@ export default function SettingsClient() {
                 </div>
 
                 {/* Security Section (Mock for MVP) */}
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-4 opacity-50 relative overflow-hidden">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-4 opacity-50 relative overflow-hidden">
                     <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-[1px] z-10 flex items-center justify-center">
                         <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-bold">Coming Soon</span>
                     </div>

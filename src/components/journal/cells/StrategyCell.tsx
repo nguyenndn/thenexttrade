@@ -64,7 +64,7 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
             </PopoverTrigger>
             <PopoverContent className="w-80 p-0 overflow-hidden" align="center" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-white/5">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-white/10">
                     <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Strategy Tags</h4>
                     <Button variant="ghost" size="icon" className="w-6 h-6 p-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                         <MoreVertical size={16} />

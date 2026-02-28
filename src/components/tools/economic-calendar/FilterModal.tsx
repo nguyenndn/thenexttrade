@@ -103,9 +103,9 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                         <Filter size={20} className="text-cyan-500" />
                         Filters
                     </h3>
-                    <button onClick={onClose} className={`p-1 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-700 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}>
+                    <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close Filters">
                         <X size={20} />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Content - Scrollable */}
@@ -132,27 +132,29 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                         <div className="flex items-center justify-between mb-4">
                             <h4 className="font-semibold text-sm opacity-80">Currencies</h4>
                             <div className="flex gap-2">
-                                <button onClick={handleSelectAllCurrencies} className="text-xs font-bold px-2 py-1 rounded bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors">All</button>
-                                <button onClick={handleClearAllCurrencies} className="text-xs font-bold px-2 py-1 rounded bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors">None</button>
+                                <Button variant="secondary" size="sm" onClick={handleSelectAllCurrencies} className="h-6 px-3 text-xs">All</Button>
+                                <Button variant="secondary" size="sm" onClick={handleClearAllCurrencies} className="h-6 px-3 text-xs">None</Button>
                             </div>
                         </div>
                         <div className="grid grid-cols-3 gap-3">
                             {ALL_CURRENCIES.map(curr => {
                                 const isChecked = filters.currencies.includes(curr);
                                 return (
-                                    <button
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
                                         key={curr}
                                         onClick={() => toggleCurrency(curr)}
-                                        className={`flex items-center gap-2 text-sm transition-all`}
+                                        className={`flex items-center gap-2 text-sm transition-all h-auto p-2 justify-start font-normal`}
                                     >
-                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors ${isChecked
+                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors shrink-0 ${isChecked
                                             ? 'bg-slate-700 border-slate-700 text-white'
                                             : isDark ? 'border-slate-600 bg-slate-800' : 'border-gray-300 bg-white'
                                             }`}>
                                             {isChecked && <Check size={12} strokeWidth={3} />}
                                         </div>
                                         <span className={isChecked ? 'font-bold' : 'opacity-80'}>{curr}</span>
-                                    </button>
+                                    </Button>
                                 );
                             })}
                         </div>
@@ -167,12 +169,14 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                             {ALL_IMPACTS.map(imp => {
                                 const isChecked = filters.impact.includes(imp.value);
                                 return (
-                                    <button
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
                                         key={imp.value}
                                         onClick={() => toggleImpact(imp.value)}
-                                        className="flex flex-col items-center gap-2 group"
+                                        className="flex flex-col items-center gap-2 group h-auto p-2 w-full max-w-[80px]"
                                     >
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors ${isChecked
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors shrink-0 ${isChecked
                                             ? 'bg-slate-700 border-slate-700 text-white'
                                             : isDark ? 'border-slate-600 bg-slate-800' : 'border-gray-300 bg-white'
                                             }`}>
@@ -184,7 +188,7 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                                             }`}>
                                             {imp.label}
                                         </span>
-                                    </button>
+                                    </Button>
                                 )
                             })}
                         </div>
@@ -199,19 +203,21 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                             {ALL_SESSIONS.map(session => {
                                 const isChecked = filters.sessions.includes(session);
                                 return (
-                                    <button
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
                                         key={session}
                                         onClick={() => toggleSession(session)}
-                                        className={`flex items-center gap-2 text-sm transition-all`}
+                                        className={`flex items-center justify-start gap-2 text-sm transition-all h-auto p-2 font-normal w-full`}
                                     >
-                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors ${isChecked
+                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors shrink-0 ${isChecked
                                             ? 'bg-slate-700 border-slate-700 text-white'
                                             : isDark ? 'border-slate-600 bg-slate-800' : 'border-gray-300 bg-white'
                                             }`}>
                                             {isChecked && <Check size={12} strokeWidth={3} />}
                                         </div>
                                         <span className={isChecked ? 'font-bold' : 'opacity-80'}>{session}</span>
-                                    </button>
+                                    </Button>
                                 );
                             })}
                         </div>

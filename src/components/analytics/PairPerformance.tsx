@@ -31,7 +31,7 @@ export function PairPerformance({ data }: PairPerformanceProps) {
     const { isEmpty, chartData, bestPair } = processPairPerformanceData(data);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 group">
             <div className="flex items-center gap-2.5 mb-6">
                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
                     <BarChart2 size={18} />

@@ -111,7 +111,7 @@ export default function LessonView({
                 </div>
 
                 <Link href="/dashboard/academy">
-                    <Button variant="outline" className="rounded-xl font-bold border-gray-200 dark:border-white/5 bg-white dark:bg-[#151925] hover:bg-gray-50 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300">
+                    <Button variant="outline" className="rounded-xl font-bold border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] hover:bg-gray-50 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300">
                         <ArrowLeft size={16} />
                         Back to Map
                     </Button>
@@ -122,7 +122,7 @@ export default function LessonView({
                 {/* Main Content Area */}
                 <div className="xl:col-span-8 space-y-6">
                     {/* Content Card */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 md:p-8 shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 shadow-sm">
                         <div className="prose prose-lg dark:prose-invert max-w-none 
                             prose-headings:text-gray-900 dark:prose-headings:text-white 
                             prose-headings:font-bold
@@ -135,7 +135,7 @@ export default function LessonView({
                         </div>
 
                         {/* Navigation Footer */}
-                        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="flex items-center gap-4">
                                 {prevLesson ? (
                                     <Link href={`/dashboard/academy/lessons/${prevLesson.slug}`}>
@@ -185,7 +185,7 @@ export default function LessonView({
                 {/* Right Sidebar - Course Structure */}
                 <div className="xl:col-span-4 space-y-6 sticky top-24">
                     {/* Module Progress Card */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm overflow-hidden relative">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm overflow-hidden relative">
                         <div className="relative z-10">
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Current Module</p>
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">{lesson.module.title}</h3>

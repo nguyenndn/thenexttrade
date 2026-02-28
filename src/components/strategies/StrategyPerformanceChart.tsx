@@ -27,7 +27,7 @@ interface Props {
 
 export function StrategyPerformanceChart({ data }: Props) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
                 Strategy Performance
             </h3>
@@ -68,7 +68,7 @@ export function StrategyPerformanceChart({ data }: Props) {
                                 if (active && payload && payload.length) {
                                     const item = payload[0].payload as StrategyPerformance;
                                     return (
-                                        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl shadow-lg border border-gray-100 dark:border-white/10">
+                                        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl shadow-lg border border-gray-200 dark:border-white/10">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <div
                                                     className="w-3 h-3 rounded-full"

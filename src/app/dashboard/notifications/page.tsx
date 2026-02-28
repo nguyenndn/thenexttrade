@@ -36,7 +36,7 @@ export default async function NotificationsPage() {
                 {/* Helper for marking read could generally be a client component button calling API, skipping here for simplicity as spec focus is on list */}
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                 {notifications.length === 0 ? (
                     <div className="p-16 text-center text-gray-500 dark:text-gray-400">
                         <Bell size={48} className="mx-auto mb-4 opacity-50" />

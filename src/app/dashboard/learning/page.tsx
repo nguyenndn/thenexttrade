@@ -78,7 +78,7 @@ export default async function MyLearningPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {courses.map(course => (
-                    <div key={course.id} className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden flex flex-col group hover:border-[#2F80ED]/30 transition-colors">
+                    <div key={course.id} className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col group hover:border-[#2F80ED]/30 transition-colors">
                         {/* Course Header / Thumbnail Placeholder */}
                         <div className="h-32 bg-gradient-to-br from-blue-500/10 to-violet-500/10 flex items-center justify-center relative">
                             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>

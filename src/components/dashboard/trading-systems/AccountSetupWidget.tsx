@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, UserCheck, BarChart2, Key, Download, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 interface SetupStep {
@@ -43,13 +44,14 @@ export function AccountSetupWidget({ hasAccount, hasApprovedLicense, hasDownload
                     <span className="text-xs font-bold text-gray-400 dark:text-gray-500">
                         {completedCount}/{steps.length} complete
                     </span>
-                    <button
+                    <Button
+                        variant="outline"
                         aria-label="Dismiss setup guide"
                         onClick={() => setIsDismissed(true)}
-                        className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                        className="w-7 h-7 p-0 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     >
                         <X size={15} />
-                    </button>
+                    </Button>
                 </div>
             </div>
 

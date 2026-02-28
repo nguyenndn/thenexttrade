@@ -46,7 +46,7 @@ export function LicenseCard({ license }: LicenseCardProps) {
         PENDING: { color: "text-yellow-500", bg: "bg-yellow-50 dark:bg-yellow-900/10", border: "border-yellow-200 dark:border-yellow-900/30", icon: Clock },
         APPROVED: { color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", icon: CheckCircle },
         REJECTED: { color: "text-red-500", bg: "bg-red-50 dark:bg-red-900/10", border: "border-red-200 dark:border-red-900/30", icon: XCircle },
-        SUSPENDED: { color: "text-gray-500", bg: "bg-gray-50 dark:bg-gray-900/10", border: "border-gray-200 dark:border-gray-800", icon: AlertTriangle },
+        SUSPENDED: { color: "text-gray-500", bg: "bg-gray-50 dark:bg-gray-900/10", border: "border-gray-200 dark:border-white/10", icon: AlertTriangle },
         EXPIRED: { color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-900/10", border: "border-orange-200 dark:border-orange-900/30", icon: AlertTriangle },
     };
 
@@ -73,7 +73,7 @@ export function LicenseCard({ license }: LicenseCardProps) {
                     </div>
                 </div>
 
-                <div className="pt-4 border-t border-gray-100 dark:border-white/5 space-y-2 text-sm">
+                <div className="pt-4 border-t border-gray-200 dark:border-white/10 space-y-2 text-sm">
                     <div className="flex justify-between">
                         <span className="text-gray-500">Date Added</span>
                         <span className="font-medium text-gray-900 dark:text-white">

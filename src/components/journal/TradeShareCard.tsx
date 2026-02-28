@@ -81,7 +81,7 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
     const percentGain = entry.pnl ? ((entry.pnl / 10000) * 100).toFixed(2) : "0.00";
 
     return (
-        <div className={cn("relative w-full max-w-3xl mx-auto rounded-2xl overflow-hidden bg-white dark:bg-[#1E2028] shadow-2xl border border-gray-100 dark:border-white/5 transition-all text-left", className)}>
+        <div className={cn("relative w-full max-w-3xl mx-auto rounded-2xl overflow-hidden bg-white dark:bg-[#1E2028] shadow-2xl border border-gray-200 dark:border-white/10 transition-all text-left", className)}>
             {/* Background Texture/Gradient */}
             <div className={cn("absolute inset-0 bg-gradient-to-br opacity-50 pointer-events-none", bgGradient)}></div>
             
@@ -121,11 +121,11 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
 
                     {/* Stats Grid */}
                     <div className="space-y-4 text-sm">
-                        <div className="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-white/5">
+                        <div className="flex justify-between items-center pb-2 border-b border-gray-200 dark:border-white/10">
                             <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Entry Price</span>
                             <span className="font-black text-gray-900 dark:text-white font-mono">{Number(entry.entryPrice)}</span>
                         </div>
-                        <div className="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-white/5">
+                        <div className="flex justify-between items-center pb-2 border-b border-gray-200 dark:border-white/10">
                             <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Exit Price</span>
                             <div className="flex items-center gap-2">
                                 {isTPHit && (
@@ -150,7 +150,7 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
 
                 {/* RIGHT COLUMN: Chart (Full Mode Only) */}
                 {variant === "full" && (
-                    <div className="relative flex-1 bg-gray-50 dark:bg-black/20 min-h-[250px] md:min-h-[300px] border-t md:border-t-0 md:border-l border-gray-100 dark:border-white/5 flex flex-col justify-end overflow-hidden">
+                    <div className="relative flex-1 bg-gray-50 dark:bg-black/20 min-h-[250px] md:min-h-[300px] border-t md:border-t-0 md:border-l border-gray-200 dark:border-white/10 flex flex-col justify-end overflow-hidden">
                         
                         {/* Premium Grid Pattern Background */}
                         <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none" 

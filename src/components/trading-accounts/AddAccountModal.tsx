@@ -86,9 +86,9 @@ export function AddAccountModal({
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleClose} />
-            <div className="relative z-10 bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-white/5 shadow-2xl animate-in fade-in zoom-in-95 duration-200 cursor-default">
+            <div className="relative z-10 bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200 cursor-default">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
+                <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         {step === "select-platform" && "Connect Logic - Select Platform"}
                         {step === "create" && "Account Details"}
@@ -122,8 +122,8 @@ export function AddAccountModal({
                                     className={`
                     w-full flex items-center justify-between gap-4 p-4 h-auto rounded-xl border transition-all text-left group
                     ${p.disabled
-                                            ? "opacity-50 cursor-not-allowed border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500"
-                                            : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] hover:border-primary hover:bg-white dark:hover:bg-[#151925] hover:shadow-md transition-shadow dark:hover:shadow-primary/10"
+                                            ? "opacity-50 cursor-not-allowed border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500"
+                                            : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] hover:border-primary hover:bg-white dark:hover:bg-[#151925] hover:shadow-md transition-shadow dark:hover:shadow-primary/10"
                                         }
                   `}
                                 >
@@ -206,7 +206,7 @@ export function AddAccountModal({
                     {step === "setup-instructions" && createdAccount && (
                         <div className="space-y-6">
                             {/* API Key */}
-                            <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5">
+                            <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10">
                                 <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
                                     Your API Key (Shown Once)
                                 </p>
@@ -228,7 +228,7 @@ export function AddAccountModal({
 
                             {/* Instructions */}
                             <div className="space-y-4">
-                                <h3 className="font-semibold text-gray-900 dark:text-white border-b border-gray-100 dark:border-white/5 pb-2">
+                                <h3 className="font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-white/10 pb-2">
                                     Setup Steps
                                 </h3>
                                 <ol className="space-y-4 text-sm text-gray-600 dark:text-gray-400">

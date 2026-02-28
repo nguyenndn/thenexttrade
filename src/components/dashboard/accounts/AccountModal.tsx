@@ -89,8 +89,8 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
-            <div className="relative z-10 bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-lg overflow-hidden border border-gray-100 dark:border-white/5 shadow-2xl animate-in fade-in zoom-in-95 duration-200 cursor-default">
-                <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
+            <div className="relative z-10 bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200 cursor-default">
+                <div className="p-6 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                         {account ? "Edit Account" : "Connect Account"}
                     </h2>

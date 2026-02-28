@@ -327,7 +327,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
             />
 
                     {/* Table Container - Mobile Responsive Scroll */}
-                    <div className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-gray-100 dark:border-white/5 overflow-x-auto custom-scrollbar">
+                    <div className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 overflow-x-auto custom-scrollbar">
                         {/* Desktop View */}
                         <div className="hidden md:block overflow-x-auto w-full">
                             <table className="w-auto min-w-full text-left text-sm whitespace-nowrap">
@@ -458,7 +458,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                 />
                             ) : (
                                 entries.map((entry) => (
-                                    <div key={entry.id} className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border relative transition-all duration-200 hover:shadow-md active:scale-[0.98] border-gray-100 dark:border-white/10">
+                                    <div key={entry.id} className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border relative transition-all duration-200 hover:shadow-md active:scale-[0.98] border-gray-200 dark:border-white/10">
                                         {/* Header Row */}
                                         <div className="flex items-center gap-3 mb-3">
                                             <div className="flex items-center gap-2 flex-1">
@@ -513,7 +513,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                         </div>
 
                                         {/* Footer Actions */}
-                                        <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex justify-end">
+                                        <div className="pt-3 border-t border-gray-200 dark:border-white/10 flex justify-end">
                                             <Button 
                                                 variant="outline"
                                                 onClick={() => handleEdit(entry)} 
@@ -530,7 +530,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
 
 
                         {/* New Pagination Control */}
-                        <div className="p-4 md:px-6 md:py-4 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+                        <div className="p-4 md:px-6 md:py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
                             <PaginationControl
                                 currentPage={meta.page}
                                 totalPages={meta.totalPages}

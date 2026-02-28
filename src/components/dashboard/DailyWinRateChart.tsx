@@ -25,7 +25,7 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-100 dark:border-white/10 rounded-xl shadow-lg">
+        <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-lg">
           <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-1">
             {format(new Date(label), "MMM dd, yyyy")}
           </p>

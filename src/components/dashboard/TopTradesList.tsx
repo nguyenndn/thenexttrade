@@ -32,9 +32,9 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-cyan-500 overflow-hidden">
+    <div className="flex flex-col h-full bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-cyan-500 overflow-hidden">
       {/* Container Header */}
-      <div className="px-5 py-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="p-2 bg-cyan-500/10 rounded-lg text-cyan-500">
             <TrendingUp size={18} />
@@ -67,7 +67,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
                 <div className="py-8 text-center text-xs text-gray-400 font-medium">No winning trades yet</div>
               ) : (
                 bestTrades.map((trade) => (
-                  <div key={trade.id} className="grid grid-cols-12 gap-2 items-center px-5 py-3 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-default border-t border-gray-50 dark:border-white/5 first:border-0">
+                  <div key={trade.id} className="grid grid-cols-12 gap-2 items-center px-5 py-3 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-default border-t border-gray-50 dark:border-white/10 first:border-0">
                     <div className="col-span-3 flex items-center">
                       <span className="font-bold text-sm text-gray-800 dark:text-gray-200">
                         {trade.symbol}
@@ -110,7 +110,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
                 <div className="py-8 text-center text-xs text-gray-400 font-medium">No losing trades yet</div>
               ) : (
                 worstTrades.map((trade) => (
-                  <div key={trade.id} className="grid grid-cols-12 gap-2 items-center px-5 py-3 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-default border-t border-gray-50 dark:border-white/5 first:border-0">
+                  <div key={trade.id} className="grid grid-cols-12 gap-2 items-center px-5 py-3 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-default border-t border-gray-50 dark:border-white/10 first:border-0">
                     <div className="col-span-3 flex items-center">
                       <span className="font-bold text-sm text-gray-800 dark:text-gray-200">
                         {trade.symbol}

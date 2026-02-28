@@ -9,7 +9,7 @@ interface DashboardHeroProps {
 
 export function DashboardHero({ totalBalance, periodPnL, winRate, isDark }: DashboardHeroProps) {
     return (
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-white to-gray-50 dark:from-[#0B0E14] dark:to-[#131720] border border-gray-200 dark:border-white/5 p-6 shadow-lg">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-white to-gray-50 dark:from-[#0B0E14] dark:to-[#131720] border border-gray-200 dark:border-white/10 p-6 shadow-lg">
             {/* Glow effects */}
             <div className="absolute top-0 left-1/4 w-40 h-40 bg-primary/10 dark:bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
             <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-cyan-500/10 dark:bg-cyan-500/15 rounded-full blur-[60px] pointer-events-none" />
@@ -25,7 +25,7 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, isDark }: Dash
                 </div>
 
                 {/* Period P&L */}
-                <div className="text-center border-l-0 sm:border-l border-gray-200 dark:border-white/5">
+                <div className="text-center border-l-0 sm:border-l border-gray-200 dark:border-white/10">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Period P&L</p>
                     <div className="flex items-center justify-center gap-2">
                         {periodPnL >= 0
@@ -42,7 +42,7 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, isDark }: Dash
                 </div>
 
                 {/* Win Rate */}
-                <div className="text-center sm:text-right border-l-0 sm:border-l border-gray-200 dark:border-white/5">
+                <div className="text-center sm:text-right border-l-0 sm:border-l border-gray-200 dark:border-white/10">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Win Rate</p>
                     <div className="flex items-center justify-center sm:justify-end gap-3">
                         <div className="relative w-14 h-14">

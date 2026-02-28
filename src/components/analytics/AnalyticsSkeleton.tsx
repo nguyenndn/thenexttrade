@@ -3,7 +3,7 @@ export default function AnalyticsSkeleton() {
     return (
         <div className="space-y-6 animate-pulse">
             {/* Header & Controls */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10">
                 <div className="h-10 w-64 bg-gray-200 dark:bg-white/10 rounded-xl"></div>
                 <div className="h-10 w-32 bg-gray-200 dark:bg-white/10 rounded-xl"></div>
             </div>

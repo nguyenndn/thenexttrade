@@ -108,7 +108,7 @@ export default async function UserAcademyDashboard() {
 
                     {/* Focus Banner (Next Lesson) */}
                     {nextLesson ? (
-                        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-[#1E2028] dark:to-[#151925] border border-gray-200 dark:border-white/5 p-6 shadow-xl">
+                        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-[#1E2028] dark:to-[#151925] border border-gray-200 dark:border-white/10 p-6 shadow-xl">
                             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                                 <div>
                                     <div className="flex items-center gap-2 mb-2">
@@ -139,8 +139,8 @@ export default async function UserAcademyDashboard() {
                     )}
 
                     {/* The Galaxy Map (Synced) */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
-                        <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+                        <div className="p-6 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
                             <h2 className="font-bold text-lg text-gray-900 dark:text-white">Your Flight Path</h2>
                             <span className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-white/5 rounded text-gray-500">Interactive Map</span>
                         </div>
@@ -171,7 +171,7 @@ export default async function UserAcademyDashboard() {
                     </div>
 
                     {/* Quiz Performance */}
-                    <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                             <Trophy size={18} className="text-yellow-500" /> Quiz Performance
                         </h3>

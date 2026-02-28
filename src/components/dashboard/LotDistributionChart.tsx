@@ -53,7 +53,7 @@ export function LotDistributionChart({ data, height = 300, innerRadius = 60, out
               if (active && payload && payload.length) {
                 const data = payload[0].payload;
                 return (
-                  <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-100 dark:border-white/10 rounded-xl shadow-xl flex items-center gap-3">
+                  <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: payload[0].payload.fill }}></div>
                     <div>
                       <p className="text-sm font-medium text-gray-500">{data.name}</p>

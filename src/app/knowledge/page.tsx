@@ -10,6 +10,9 @@ import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFire
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Pagination } from "@/components/ui/Pagination";
 import { getAuthUser } from "@/lib/auth-cache";
+import { ArticleCard } from "@/components/knowledge/ArticleCard";
+import { Button } from "@/components/ui/Button";
+import { X } from "lucide-react";
 
 // Knowledge base can use ISR since content is cacheable
 export const revalidate = 300; // 5 minutes
@@ -136,8 +139,11 @@ export default async function LibraryPage(props: LibraryPageProps) {
                             align="left"
                         />
                         {(query || categorySlug || tagSlug) && (
-                            <Link href="/knowledge" className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 text-sm font-bold text-red-500 hover:bg-white/60 transition-all">
-                                <span>Clear Filter</span>
+                            <Link href="/knowledge">
+                                <Button variant="outline" size="sm" className="flex items-center gap-2 text-red-500 border-red-500/20 hover:bg-red-500/10 hover:text-red-600 transition-all rounded-xl">
+                                    <X size={16} />
+                                    <span>Clear Filter</span>
+                                </Button>
                             </Link>
                         )}
                     </div>
@@ -146,75 +152,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                         <>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {articles.map((article) => (
-                                    <Link
-                                        key={article.id}
-                                        href={`/articles/${article.slug}`}
-                                        className="group flex flex-col rounded-xl overflow-hidden bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-300"
-                                    >
-                                        {/* Thumbnail */}
-                                        <div className="relative h-56 w-full overflow-hidden">
-                                            {article.thumbnail ? (
-                                                <Image
-                                                    src={article.thumbnail}
-                                                    alt={article.title}
-                                                    fill
-                                                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                                                />
-                                            ) : (
-                                                <div className="flex items-center justify-center h-full bg-gray-200 dark:bg-gray-800 text-gray-400">
-                                                    <BookOpen size={48} opacity={0.5} />
-                                                </div>
-                                            )}
-                                            {/* Glass Badge */}
-                                            <div className="absolute top-4 left-4">
-                                                <span className="px-3 py-1.5 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-xs font-bold text-white uppercase tracking-wider shadow-sm">
-                                                    {article.category?.name || 'General'}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Content */}
-                                        <div className="flex-1 p-6 flex flex-col relative">
-                                            {/* Decorative gradient glow behind text */}
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -z-10 group-hover:bg-primary/20 transition-colors"></div>
-
-                                            <div className="flex items-center gap-2 text-xs font-medium text-primary mb-3">
-                                                <Clock size={14} />
-                                                <span>{new Date(article.createdAt).toLocaleDateString()}</span>
-                                            </div>
-
-                                            <h3 className="text-xl font-bold font-heading text-gray-900 dark:text-white mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
-                                                {article.title}
-                                            </h3>
-
-                                            <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-6 flex-1 leading-relaxed">
-                                                {article.excerpt || "Unlock the secrets of the market with this comprehensive guide..."}
-                                            </p>
-
-                                            <div className="flex items-center gap-3 pt-4 border-t border-gray-200/50 dark:border-white/5">
-                                                <div className="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-white/20">
-                                                    {article.author?.image && (
-                                                        <Image
-                                                            src={article.author.image}
-                                                            alt={article.author.name || 'Author'}
-                                                            fill
-                                                            className="object-cover"
-                                                        />
-                                                    )}
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className="text-xs font-bold text-gray-900 dark:text-white">
-                                                        {article.author?.name || 'GSN Team'}
-                                                    </span>
-                                                    <span className="text-[10px] text-gray-500 uppercase tracking-wide">Author</span>
-                                                </div>
-
-                                                <div className="ml-auto w-8 h-8 rounded-full bg-white/50 dark:bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
-                                                    <TrendingUp size={14} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Link>
+                                    <ArticleCard key={article.id} article={article as any} />
                                 ))}
                             </div>
 

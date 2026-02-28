@@ -55,7 +55,7 @@ export function Header({
 
     return (
         <>
-            <header className="mx-4 mt-3 mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-gray-100 dark:border-gray-800 h-16 px-4 lg:px-6 flex items-center justify-between z-40 relative transition-all duration-100 ease-in-out">
+            <header className="mx-4 mt-3 mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-gray-200 dark:border-white/10 h-16 px-4 lg:px-6 flex items-center justify-between z-40 relative transition-all duration-100 ease-in-out">
                 {/* Left Section: Toggle + Logo */}
                 <div className="flex items-center gap-4">
                     {/* Mobile Menu Button */}

@@ -26,7 +26,7 @@ async function SettingsLoader() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
+            <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-white/10 pb-8">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
@@ -40,7 +40,7 @@ async function SettingsLoader() {
                 </p>
             </div>
 
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 p-6 md:p-8 shadow-sm">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-6 md:p-8 shadow-sm">
                 <AccountSettingsTabs user={user} profile={profile} />
             </div>
         </div>

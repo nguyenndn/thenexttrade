@@ -7,6 +7,18 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Standard array shuffler using Fisher-Yates algorithm.
+ */
+export function shuffleArray<T>(array: T[]): T[] {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+
+/**
  * Parses an ISO date string into a Date object (Start of Day in Local Time).
  * Equivalent to parsing "2024-01-01".
  */

@@ -51,7 +51,7 @@ export function AccountCard({
     const isReal = accountType === "REAL";
 
     return (
-        <div className="group relative bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow flex flex-col min-h-[220px]">
+        <div className="group relative bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow flex flex-col min-h-[220px]">
             {/* Ambient Glow Layer - Bọc riêng để xài overflow-hidden mượt mà, không cắt mất Modal */}
             <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
                 <div className={`absolute -top-20 -right-20 w-48 h-48 rounded-full blur-[70px] transition-all duration-700 ${account.isConnected ? "bg-primary/10 group-hover:bg-primary/20" : "bg-red-500/10 group-hover:bg-red-500/20"}`}></div>
@@ -61,7 +61,7 @@ export function AccountCard({
                 {/* Broker Badge & Options */}
                 <div className="flex justify-between items-start mb-auto w-full">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gray-50/50 dark:bg-black/20 flex items-center justify-center font-black text-gray-500 border border-gray-100 dark:border-white/5 shadow-inner shrink-0 relative overflow-hidden">
+                        <div className="w-12 h-12 rounded-xl bg-gray-50/50 dark:bg-black/20 flex items-center justify-center font-black text-gray-500 border border-gray-200 dark:border-white/10 shadow-inner shrink-0 relative overflow-hidden">
                             {getPlatformIcon(account.platform) ? (
                                 <NextImage
                                     src={getPlatformIcon(account.platform)!}
@@ -86,7 +86,7 @@ export function AccountCard({
                                     {accountType}
                                 </span>
                                 {account.accountNumber && (
-                                    <span className="text-[10px] font-mono font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest whitespace-nowrap bg-gray-50 border border-gray-100 dark:bg-white/5 dark:border-white/5 px-1.5 py-0.5 rounded-md">
+                                    <span className="text-[10px] font-mono font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest whitespace-nowrap bg-gray-50 border border-gray-200 dark:bg-white/5 dark:border-white/10 px-1.5 py-0.5 rounded-md">
                                         #{account.accountNumber}
                                     </span>
                                 )}
@@ -105,7 +105,7 @@ export function AccountCard({
                                     <MoreVertical size={16} />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-52 p-1.5 rounded-xl border-gray-100 dark:border-white/5 shadow-xl bg-white dark:bg-[#1E2028] z-[100]">
+                            <DropdownMenuContent align="end" className="w-52 p-1.5 rounded-xl border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#1E2028] z-[100]">
                                 <DropdownMenuItem onClick={() => onSettings(account)} className="flex items-center gap-3 px-3 py-2.5 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors">
                                     <Settings size={16} className="text-gray-400" />
                                     <span>Account Settings</span>
@@ -138,7 +138,7 @@ export function AccountCard({
                             ${(account.balance || 0).toLocaleString()}
                         </p>
                     </div>
-                    <div className="min-w-0 pl-2 border-l border-gray-100 dark:border-white/5">
+                    <div className="min-w-0 pl-2 border-l border-gray-200 dark:border-white/10">
                         <p className="text-[9px] md:text-[10px] font-black text-gray-400 tracking-widest uppercase mb-1 flex items-center gap-1.5 truncate">
                             <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 shrink-0"></span>
                             Equity
@@ -150,7 +150,7 @@ export function AccountCard({
                 </div>
 
                 {/* Actions / Status (Bottom) */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-white/5 mt-auto flex-wrap gap-y-3">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-white/10 mt-auto flex-wrap gap-y-3">
                     <div className="flex items-center gap-2 shrink-0">
                         {account.isConnected ? (
                             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-500">
@@ -175,7 +175,7 @@ export function AccountCard({
                     <div className="flex items-center gap-2 shrink-0 z-10 w-full sm:w-auto mt-2 sm:mt-0">
                         <Link
                             href={`/dashboard?accountId=${account.id}`}
-                            className="flex items-center justify-center sm:justify-start gap-2 px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 hover:shadow-sm border border-gray-100 dark:border-white/5 text-gray-800 dark:text-gray-200 font-bold text-xs transition-all group/link flex-1 sm:flex-none"
+                            className="flex items-center justify-center sm:justify-start gap-2 px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 hover:shadow-sm border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 font-bold text-xs transition-all group/link flex-1 sm:flex-none"
                             title="View Dashboard"
                         >
                             <ExternalLink size={14} className="text-gray-400 group-hover/link:text-primary transition-colors" />

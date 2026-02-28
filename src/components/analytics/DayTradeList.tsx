@@ -45,7 +45,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
         >
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
             <div 
-                className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-md rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 flex flex-col max-h-[95vh] overflow-hidden animate-in zoom-in-95 duration-200 cursor-default"
+                className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-md rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 flex flex-col max-h-[95vh] overflow-hidden animate-in zoom-in-95 duration-200 cursor-default"
             >
                 {/* Close Button Header (No Border) */}
                 <div className="px-6 pt-6 pb-2 relative shrink-0">
@@ -92,7 +92,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                     </div>
 
                     {/* Balances Section */}
-                    <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5">
+                    <div className="px-6 py-5 border-t border-gray-200 dark:border-white/10">
                         <div className="flex justify-between items-center mb-5">
                             <div>
                                 <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-1 font-medium italic">Start Balance</p>
@@ -126,7 +126,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                     </div>
 
                     {/* Trading Stats */}
-                    <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5">
+                    <div className="px-6 py-5 border-t border-gray-200 dark:border-white/10">
                         <div className="flex items-center gap-2 mb-4">
                             <BarChart3 size={14} className="text-gray-400" />
                             <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Trading Stats</span>
@@ -157,7 +157,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                     </div>
 
                     {/* Bottom Percentages Grid */}
-                    <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-white/5 border-t border-gray-100 dark:border-white/5">
+                    <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-white/5 border-t border-gray-200 dark:border-white/10">
                         <div className="p-4 text-center">
                             <p className="text-[10px] text-gray-500 dark:text-gray-400 mb-1.5 font-bold uppercase tracking-wider">Winrate</p>
                             <p className="font-bold text-gray-900 dark:text-white text-base">
@@ -180,7 +180,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                 </div>
 
                 {/* Footer Action */}
-                <div className="p-4 bg-white dark:bg-[#1E2028] border-t border-gray-100 dark:border-white/5 shrink-0">
+                <div className="p-4 bg-white dark:bg-[#1E2028] border-t border-gray-200 dark:border-white/10 shrink-0">
                     <Link
                         href={`/dashboard/journal?from=${date}&to=${date}`}
                         className="block w-full py-2 text-center text-sm font-bold text-[#3B82F6] hover:text-[#2563EB] transition-colors"

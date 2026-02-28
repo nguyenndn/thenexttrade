@@ -5,6 +5,7 @@ import { ArrowUp, ArrowDown } from "lucide-react";
 import { calculateRiskReward } from "@/lib/calculators";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 export function RiskRewardCalc() {
     const [inputs, setInputs] = useState({
@@ -35,28 +36,32 @@ export function RiskRewardCalc() {
             <div className="lg:col-span-7 space-y-6">
                 {/* Direction Switch */}
                 <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl">
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
                         onClick={() => setInputs({ ...inputs, direction: "LONG" })}
                         className={cn(
-                            "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-all",
+                            "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-all h-auto",
                             inputs.direction === "LONG"
-                                ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                ? "bg-green-500 text-white shadow-lg shadow-green-500/25 hover:bg-green-600 hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         <ArrowUp size={18} /> LONG
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="ghost"
                         onClick={() => setInputs({ ...inputs, direction: "SHORT" })}
                         className={cn(
-                            "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-all",
+                            "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-all h-auto",
                             inputs.direction === "SHORT"
-                                ? "bg-red-500 text-white shadow-lg shadow-red-500/25"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                ? "bg-red-500 text-white shadow-lg shadow-red-500/25 hover:bg-red-600 hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         <ArrowDown size={18} /> SHORT
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="space-y-4">

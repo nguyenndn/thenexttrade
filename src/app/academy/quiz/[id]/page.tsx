@@ -5,6 +5,8 @@ import { useRouter, useParams } from "next/navigation";
 import { CheckCircle, XCircle, ChevronRight, Loader2, ArrowLeft, Trophy } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 
 export default function QuizRunnerPage() {
     const router = useRouter();
@@ -62,7 +64,7 @@ export default function QuizRunnerPage() {
 
     const handleSubmit = async () => {
         if (!userId) {
-            alert("Please sign in to submit your quiz.");
+            toast.error("Please sign in to submit your quiz.");
             return;
         }
 
@@ -90,7 +92,7 @@ export default function QuizRunnerPage() {
             }
 
         } catch (error) {
-            alert("Error submitting quiz. Please try again.");
+            toast.error("Error submitting quiz. Please try again.");
         } finally {
             setSubmitting(false);
         }
@@ -120,9 +122,17 @@ export default function QuizRunnerPage() {
                             Back to Course
                         </Link>
                         {!results.passed && (
-                            <button onClick={() => window.location.reload()} className="flex-1 py-3 rounded-xl bg-cyan-500 text-white font-bold hover:bg-cyan-600 transition-colors">
+                            <Button
+                                size="lg"
+                                onClick={() => {
+                                    setAnswers({});
+                                    setResults(null);
+                                    setCurrentQuestionIndex(0);
+                                }} 
+                                className="flex-1 rounded-xl"
+                            >
                                 Try Again
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </div>
@@ -137,7 +147,7 @@ export default function QuizRunnerPage() {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-[#0B0E14] flex flex-col">
             <div className="bg-white dark:bg-[#151925] px-6 py-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <Link href="/academy" className="text-gray-500 hover:text-gray-900 dark:hover:text-white">
+                <Link href="/academy" className="text-gray-500 hover:text-gray-900 dark:hover:text-white" aria-label="Go back to course map">
                     <ArrowLeft />
                 </Link>
                 <div className="flex-1 mx-8 max-w-sm">
@@ -162,11 +172,11 @@ export default function QuizRunnerPage() {
                                     key={opt.id}
                                     onClick={() => handleSelectOption(opt.id)}
                                     className={`w-full text-left p-6 rounded-xl border-2 transition-all flex items-center justify-between ${isActive
-                                        ? 'border-cyan-500 bg-cyan-500/5 shadow-lg shadow-cyan-500/10'
+                                        ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
                                         : 'border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] hover:border-gray-200 dark:hover:border-white/10'}`}
                                 >
-                                    <span className={isActive ? 'font-bold text-cyan-600 dark:text-cyan-400' : 'font-medium'}>{opt.text}</span>
-                                    {isActive && <CheckCircle size={20} className="text-cyan-500" />}
+                                    <span className={isActive ? 'font-bold text-primary dark:text-primary' : 'font-medium'}>{opt.text}</span>
+                                    {isActive && <CheckCircle size={20} className="text-primary" />}
                                 </button>
                             );
                         })}
@@ -174,18 +184,19 @@ export default function QuizRunnerPage() {
                 </div>
 
                 <div className="flex justify-end mt-8">
-                    <button
+                    <Button
+                        size="lg"
                         onClick={handleNext}
                         disabled={!isSelected || submitting}
-                        className="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-bold rounded-xl flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all shadow-xl"
+                        className="group font-bold rounded-xl flex items-center gap-2 transition-all shadow-xl disabled:shadow-none"
                     >
                         {submitting ? <Loader2 className="animate-spin" /> : (
                             <>
                                 {currentQuestionIndex === quiz.questions.length - 1 ? "Submit Quiz" : "Next Question"}
-                                <ChevronRight size={20} />
+                                <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                             </>
                         )}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

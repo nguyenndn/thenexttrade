@@ -147,7 +147,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
             </div>
 
             {/* Step Card */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-8 shadow-xl shadow-gray-200/50 dark:shadow-none min-h-[400px] flex flex-col relative overflow-hidden">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-8 shadow-xl shadow-gray-200/50 dark:shadow-none min-h-[400px] flex flex-col relative overflow-hidden">
                 {/* Background Decor */}
                 <div className="absolute top-0 right-0 p-8 opacity-5 dark:opacity-[0.02] pointer-events-none">
                     <CurrentIcon size={200} />
@@ -171,7 +171,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                     </div>
                 </div>
 
-                <div className="mt-12 pt-8 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
+                <div className="mt-12 pt-8 border-t border-gray-200 dark:border-white/10 flex items-center justify-between relative z-10">
                     <Button
                         variant="outline"
                         onClick={handlePrev}

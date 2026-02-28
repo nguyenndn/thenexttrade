@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { Calculator, Target, DollarSign, Percent, TrendingUp } from "lucide-react";
 import { PositionSizeCalc } from "./PositionSizeCalc";
 import { RiskRewardCalc } from "./RiskRewardCalc";
 import { PipValueCalc } from "./PipValueCalc";
 import { MarginCalc } from "./MarginCalc";
 import { ProfitLossCalc } from "./ProfitLossCalc";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 
 const CALCULATORS = [
     {
@@ -42,49 +42,41 @@ const CALCULATORS = [
 ];
 
 export function CalculatorHub() {
-    const [activeCalc, setActiveCalc] = useState("position-size");
-
     return (
-        <div className="space-y-8">
+        <Tabs defaultValue="position-size" className="space-y-8">
             {/* Tabs */}
-            {/* Tabs */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-gray-100 dark:bg-white/5 p-1.5 rounded-xl w-full">
-                {CALCULATORS.map((calc) => {
-                    const Icon = calc.icon;
-                    return (
-                        <button
-                            key={calc.id}
-                            onClick={() => setActiveCalc(calc.id)}
-                            className={`
-                flex items-center justify-center gap-2 px-2 py-2.5 rounded-xl font-bold text-sm transition-all
-                ${activeCalc === calc.id
-                                    ? "bg-white dark:bg-[#1E2028] text-primary shadow-[0_2px_10px_-2px_rgba(0,0,0,0.1)] dark:shadow-none scale-100"
-                                    : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 scale-95 hover:scale-100"
-                                }
-              `}
-                        >
-                            <Icon size={18} className={activeCalc === calc.id ? "text-primary" : "opacity-70"} />
-                            <span className="truncate">{calc.name}</span>
-                        </button>
-                    );
-                })}
+            <div className="w-full relative overflow-hidden rounded-xl">
+                {/* 
+                  We override TabsList default 'w-fit' with 'w-full' to ensure it takes full layout width.
+                  And we force grid on mobile and tablet to preserve the previous look but with animations. 
+                */}
+                <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 w-full !bg-gray-100 flex-wrap !dark:bg-white/5 p-1.5 h-auto">
+                    {CALCULATORS.map((calc) => {
+                        const Icon = calc.icon;
+                        return (
+                            <TabsTrigger
+                                key={calc.id}
+                                value={calc.id}
+                                className="flex items-center justify-center gap-2 px-2 py-2.5 w-full dark:text-gray-300 [&[data-state=active]]:text-primary"
+                            >
+                                <Icon size={18} />
+                                <span className="truncate">{calc.name}</span>
+                            </TabsTrigger>
+                        );
+                    })}
+                </TabsList>
             </div>
 
-            {/* active tab description mobile only */}
-            <div className="sm:hidden text-center -mt-4">
-                <p className="text-sm font-medium text-gray-500">
-                    {CALCULATORS.find(c => c.id === activeCalc)?.name}
-                </p>
-            </div>
+            {/* active tab description mobile only -> We can drop this or use CSS to show/hide, but since Tabs labels are visible, let's keep it simple. */}
 
             {/* Content Area */}
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {activeCalc === "position-size" && <PositionSizeCalc />}
-                {activeCalc === "risk-reward" && <RiskRewardCalc />}
-                {activeCalc === "pip-value" && <PipValueCalc />}
-                {activeCalc === "margin" && <MarginCalc />}
-                {activeCalc === "profit-loss" && <ProfitLossCalc />}
+            <div>
+                <TabsContent value="position-size"><PositionSizeCalc /></TabsContent>
+                <TabsContent value="risk-reward"><RiskRewardCalc /></TabsContent>
+                <TabsContent value="pip-value"><PipValueCalc /></TabsContent>
+                <TabsContent value="margin"><MarginCalc /></TabsContent>
+                <TabsContent value="profit-loss"><ProfitLossCalc /></TabsContent>
             </div>
-        </div>
+        </Tabs>
     );
 }

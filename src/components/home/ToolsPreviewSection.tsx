@@ -28,44 +28,40 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
     const timeString = nextEvent ? getTimeDifference(nextEvent.date) : "";
 
     // Client-side session calculation (Basic Approximation)
-    const [sessions, setSessions] = useState([
-        { name: "Sydney", status: "Closed", color: "text-gray-400" },
-        { name: "Tokyo", status: "Closed", color: "text-gray-400" },
-        { name: "London", status: "Closed", color: "text-gray-400" },
-        { name: "New York", status: "Closed", color: "text-gray-400" },
-    ]);
+    const getSessions = () => {
+        const now = new Date();
+        const utcHour = now.getUTCHours();
+
+        // Simplified Market Hours (UTC)
+        // Sydney: 22:00 - 07:00
+        // Tokyo: 00:00 - 09:00
+        // London: 08:00 - 16:00
+        // NY: 13:00 - 21:00 (Overlap 13-16)
+
+        const isSydney = utcHour >= 22 || utcHour < 7;
+        const isTokyo = utcHour >= 0 && utcHour < 9;
+        const isLondon = utcHour >= 8 && utcHour < 17;
+        const isNY = utcHour >= 13 && utcHour < 22;
+
+        return [
+            { name: "Sydney", status: isSydney ? "Open" : "Closed", color: isSydney ? "text-green-500" : "text-gray-400" },
+            { name: "Tokyo", status: isTokyo ? "Open" : "Closed", color: isTokyo ? "text-cyan-500" : "text-gray-400" },
+            { name: "London", status: isLondon ? "Open" : "Closed", color: isLondon ? "text-orange-500" : "text-gray-400" },
+            { name: "New York", status: isNY ? "Open" : "Closed", color: isNY ? "text-purple-500" : "text-gray-400" },
+        ];
+    };
+
+    const [sessions, setSessions] = useState(getSessions);
 
     useEffect(() => {
-        const calcSessions = () => {
-            const now = new Date();
-            const utcHour = now.getUTCHours();
-
-            // Simplified Market Hours (UTC)
-            // Sydney: 22:00 - 07:00
-            // Tokyo: 00:00 - 09:00
-            // London: 08:00 - 16:00
-            // NY: 13:00 - 21:00 (Overlap 13-16)
-
-            const isSydney = utcHour >= 22 || utcHour < 7;
-            const isTokyo = utcHour >= 0 && utcHour < 9;
-            const isLondon = utcHour >= 8 && utcHour < 17;
-            const isNY = utcHour >= 13 && utcHour < 22;
-
-            setSessions([
-                { name: "Sydney", status: isSydney ? "Open" : "Closed", color: isSydney ? "text-green-500" : "text-gray-400" },
-                { name: "Tokyo", status: isTokyo ? "Open" : "Closed", color: isTokyo ? "text-cyan-500" : "text-gray-400" },
-                { name: "London", status: isLondon ? "Open" : "Closed", color: isLondon ? "text-orange-500" : "text-gray-400" },
-                { name: "New York", status: isNY ? "Open" : "Closed", color: isNY ? "text-purple-500" : "text-gray-400" },
-            ]);
-        };
-
-        calcSessions();
-        const interval = setInterval(calcSessions, 60000);
+        const interval = setInterval(() => {
+            setSessions(getSessions());
+        }, 60000);
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <section className="py-8 bg-white dark:bg-[#0B0E14] border-t border-gray-100 dark:border-white/5">
+        <section className="py-8 bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10">
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -98,9 +94,9 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                             {/* Session Status Pills */}
                             <div className="flex flex-wrap gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                                 {sessions.map((s) => (
-                                    <span key={s.name} className={`flex items-center gap-1.5 px-2 py-1 rounded border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 ${s.status === "Open" ? "border-green-500/20 bg-green-500/5" : "opacity-60"}`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full ${s.status === "Open" ? "bg-green-500" : "bg-gray-400"}`}></span>
-                                        <span className={s.status === "Open" ? "text-gray-900 dark:text-white font-bold" : ""}>{s.name}</span>
+                                    <span suppressHydrationWarning key={s.name} className={`flex items-center gap-1.5 px-2 py-1 rounded border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 ${s.status === "Open" ? "border-green-500/20 bg-green-500/5" : "opacity-60"}`}>
+                                        <span suppressHydrationWarning className={`w-1.5 h-1.5 rounded-full ${s.status === "Open" ? "bg-green-500" : "bg-gray-400"}`}></span>
+                                        <span suppressHydrationWarning className={s.status === "Open" ? "text-gray-900 dark:text-white font-bold" : ""}>{s.name}</span>
                                     </span>
                                 ))}
                             </div>

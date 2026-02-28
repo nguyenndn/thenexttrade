@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Sun, Moon } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { createClient } from "@/lib/supabase/client";
 import { AuthUser } from "@/lib/auth-types";
@@ -42,8 +43,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
         >
             <div className="px-0 lg-plus:px-4 py-2 flex justify-center">
                 <div
-                    className={`flex w-full lg-plus:w-4/5 items-center justify-between gap-2 sm:gap-4 md:gap-6 rounded-xl border px-3 sm:px-4 md:px-6 h-16 shadow-lg ${isDark ? 'bg-slate-900/90 border-slate-700' : 'bg-white border-gray-200'
-                        }`}
+                    className="flex w-full lg-plus:w-4/5 items-center justify-between gap-2 sm:gap-4 md:gap-6 rounded-xl border px-3 sm:px-4 md:px-6 h-16 shadow-lg bg-white dark:bg-[#151925]/90 border-gray-200 dark:border-white/10"
                 >
                     {/* Logo */}
                     <div className="flex-shrink-0">
@@ -58,10 +58,10 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
                         {/* Theme Toggle */}
                         <button
                             onClick={toggleTheme}
-                            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-200"
                             aria-label="Toggle theme"
                         >
-                            {isDark ? <span className="text-sm sm:text-base">🌙</span> : <span className="text-sm sm:text-base">☀️</span>}
+                            {isDark ? <Moon size={18} /> : <Sun size={18} />}
                         </button>
 
                         {/* Login / User Menu Logic */}

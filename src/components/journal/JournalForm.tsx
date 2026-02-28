@@ -258,7 +258,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Main Info Card */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-primary rounded-full"></div>
                         Trade Details
@@ -346,7 +346,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 </div>
 
                 {/* Price & Risk */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
                         Pricing & Risk
@@ -431,7 +431,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 </div>
 
                 {/* Analysis */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
                         Analysis & Result
@@ -580,7 +580,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 </div>
 
                 {/* Psychology Tracking (Phase 44) */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="p-1.5 bg-purple-500/10 text-purple-500 rounded-lg">
                             <Brain size={20} />
@@ -602,7 +602,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
                         {/* Emotion After Exit */}
                         {formData.status === "CLOSED" && (
-                            <div className="space-y-2 pt-4 border-t border-gray-100 dark:border-white/5">
+                            <div className="space-y-2 pt-4 border-t border-gray-200 dark:border-white/10">
                                 <EmotionSelector
                                     value={formData.emotionAfter}
                                     onChange={(value) => setFormData({ ...formData, emotionAfter: value })}
@@ -612,7 +612,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                             </div>
                         )}
 
-                        <div className="grid md:grid-cols-2 gap-8 pt-4 border-t border-gray-100 dark:border-white/5">
+                        <div className="grid md:grid-cols-2 gap-8 pt-4 border-t border-gray-200 dark:border-white/10">
                             {/* Confidence Level */}
                             <div className="space-y-3">
                                 <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
@@ -709,7 +709,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 )}
 
                 {/* Screenshots Section (Phase 53) */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-pink-500 rounded-full"></div>
                         Trade Screenshots
@@ -803,7 +803,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                <div className="flex justify-end gap-4 pt-4 border-t border-gray-200 dark:border-white/10">
                     {onCancel ? (
                         <Button
                             type="button"

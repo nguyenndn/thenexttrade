@@ -11,7 +11,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
     if (!data) return null;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center mb-6">
                 <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                     Report Preview
@@ -68,7 +68,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         {data.byStrategy.slice(0, 5).map((strat: any) => (
                             <div
                                 key={strat.name}
-                                className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5"
+                                className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10"
                             >
                                 <div className="flex flex-col">
                                     <span className="font-bold text-gray-900 dark:text-white text-sm">
@@ -94,7 +94,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         {data.byPair.slice(0, 5).map((pair: any) => (
                             <div
                                 key={pair.symbol}
-                                className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5"
+                                className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10"
                             >
                                 <span className="font-bold text-gray-900 dark:text-white">
                                     {pair.symbol}
@@ -114,7 +114,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
             {/* Recent Trades Table */}
             <div className="mt-8">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-500">Recent Trades</h4>
-                <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-white/5">
+                <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10">
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase font-bold text-gray-500">
                             <tr>

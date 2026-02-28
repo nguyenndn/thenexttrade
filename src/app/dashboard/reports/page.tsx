@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function ReportsPage() {
     return (
         <div className="space-y-4">
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8 mb-4">
+            <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-white/10 pb-8 mb-4">
                 <div className="flex items-center gap-3">
                     <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                     <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">

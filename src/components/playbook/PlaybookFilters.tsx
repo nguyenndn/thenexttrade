@@ -22,12 +22,12 @@ export function PlaybookFilters({ search, setSearch, filter, setFilter }: Playbo
                     placeholder="Search symbol..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full h-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/5 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all text-gray-900 dark:text-white placeholder-gray-400 caret-primary"
+                    className="w-full h-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all text-gray-900 dark:text-white placeholder-gray-400 caret-primary"
                 />
             </div>
 
             {/* Filter Tabs */}
-            <div className="grid grid-cols-3 p-1 bg-gray-100 dark:bg-[#1E2028] border border-gray-200 dark:border-white/5 rounded-xl min-w-[300px]">
+            <div className="grid grid-cols-3 p-1 bg-gray-100 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl min-w-[300px]">
                 {(["ALL", "WIN", "LOSS"] as const).map((f) => (
                     <button
                         key={f}

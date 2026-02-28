@@ -115,11 +115,11 @@ export function AccountSettingsModal({
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6" onClick={onClose}>
             <div
-                className="bg-white dark:bg-[#151925] rounded-[24px] w-full max-w-[520px] overflow-hidden border border-gray-100 dark:border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh] cursor-default"
+                className="bg-white dark:bg-[#151925] rounded-[24px] w-full max-w-[520px] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh] cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/5 relative bg-white dark:bg-[#151925] z-10 shrink-0">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 relative bg-white dark:bg-[#151925] z-10 shrink-0">
                     <h2 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-3">
                         <div className="w-2.5 h-8 rounded-full shadow-sm" style={{ backgroundColor: color }} />
                         Account Settings
@@ -185,7 +185,7 @@ export function AccountSettingsModal({
                             <span className="text-[9px] font-black bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 px-2.5 py-1 rounded-md tracking-wider uppercase">Sensitive</span>
                         </div>
 
-                        <div className="p-4 bg-gray-50/80 dark:bg-white/[0.02] rounded-[20px] border border-gray-100 dark:border-white/5 shadow-inner">
+                        <div className="p-4 bg-gray-50/80 dark:bg-white/[0.02] rounded-[20px] border border-gray-200 dark:border-white/10 shadow-inner">
                             <div className="flex items-center justify-between mb-2">
                                 <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">API Key</label>
                                 <Button
@@ -258,7 +258,7 @@ export function AccountSettingsModal({
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-gray-100 dark:border-white/5 flex flex-col sm:flex-row gap-3 bg-white dark:bg-[#151925] shrink-0 justify-between items-center w-full">
+                <div className="px-6 py-4 border-t border-gray-200 dark:border-white/10 flex flex-col sm:flex-row gap-3 bg-white dark:bg-[#151925] shrink-0 justify-between items-center w-full">
                     <Button
                         variant="destructive"
                         onClick={onDelete}

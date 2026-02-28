@@ -109,7 +109,7 @@ export default function AccountsClient() {
                 {isLoading ? (
                     // Skeleton
                     [1, 2, 3].map((i) => (
-                        <div key={i} className="h-[220px] rounded-xl bg-gray-100 dark:bg-[#1E2028] animate-pulse border border-gray-100 dark:border-white/5" />
+                        <div key={i} className="h-[220px] rounded-xl bg-gray-100 dark:bg-[#1E2028] animate-pulse border border-gray-200 dark:border-white/10" />
                     ))
                 ) : accounts.length === 0 ? (
                     <div className="col-span-full py-20">
@@ -129,14 +129,14 @@ export default function AccountsClient() {
                     </div>
                 ) : (
                     accounts.map((account) => (
-                        <div key={account.id} className="group relative bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col min-h-[220px]">
+                        <div key={account.id} className="group relative bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-6 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col min-h-[220px]">
                             {/* Ambient Glow */}
                             <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-[60px] pointer-events-none group-hover:bg-primary/20 transition-all duration-700"></div>
 
                             {/* Broker Badge & Options */}
                             <div className="flex justify-between items-start mb-auto relative z-10">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-gray-50/50 dark:bg-black/20 flex items-center justify-center font-black text-gray-500 border border-gray-100 dark:border-white/5 shadow-inner">
+                                    <div className="w-12 h-12 rounded-xl bg-gray-50/50 dark:bg-black/20 flex items-center justify-center font-black text-gray-500 border border-gray-200 dark:border-white/10 shadow-inner">
                                         {account.platform?.includes("MetaTrader") ? "MT" : "CT"}
                                     </div>
                                     <div>
@@ -159,7 +159,7 @@ export default function AccountsClient() {
                                                 <MoreHorizontal size={16} />
                                             </button>
                                         </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-100 dark:border-white/5">
+                                        <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-200 dark:border-white/10">
                                             <DropdownMenuItem onClick={() => handleEdit(account)} className="font-medium cursor-pointer rounded-lg mx-1 my-1">
                                                 <Edit2 size={14} className="mr-2 text-gray-400" /> Edit Details
                                             </DropdownMenuItem>
@@ -185,13 +185,13 @@ export default function AccountsClient() {
                             </div>
 
                             {/* Actions / Status (Bottom) */}
-                            <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-white/5 relative z-10 mt-auto">
+                            <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-white/10 relative z-10 mt-auto">
                                 <div className="flex items-center gap-2">
                                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-500">
                                         <CheckCircle2 size={12} fill="currentColor" className="text-white dark:text-green-900" />
                                         <span className="text-[10px] font-black uppercase tracking-widest">Active</span>
                                     </div>
-                                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400">
+                                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400">
                                         <CandlestickChart size={12} />
                                         <span className="text-[10px] font-black uppercase tracking-widest">{account.platform?.split(' ')[0] || "Trader"}</span>
                                     </div>

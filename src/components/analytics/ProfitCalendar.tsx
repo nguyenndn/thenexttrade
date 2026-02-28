@@ -159,7 +159,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
     };
 
     return (
-        <div ref={calendarRef} className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group">
+        <div ref={calendarRef} className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 group">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2.5">
@@ -327,7 +327,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
             </div>
 
             {/* Legend */}
-            <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
+            <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-gray-200 dark:border-white/10">
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-primary" />
                     <span className="text-xs text-gray-500 dark:text-gray-400">Profit</span>

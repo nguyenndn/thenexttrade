@@ -41,7 +41,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-[24px] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-[24px] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-1.5 h-6 bg-[#00C888] rounded-full"></div>
@@ -62,9 +62,9 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                     No trades to display
                 </div>
             ) : (
-                <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-white/5">
+                <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10">
                     <table className="w-full text-left text-sm">
-                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider border-b border-gray-100 dark:border-white/5">
+                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider border-b border-gray-200 dark:border-white/10">
                             <tr>
                                 <th className="px-4 py-3">Date</th>
                                 <th className="px-4 py-3">Pair</th>

@@ -206,7 +206,7 @@ export function ReportsDashboard() {
               relative text-left p-6 rounded-xl border-2 transition-all duration-300 group
               ${selectedType === report.id
                                 ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
-                                : "border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-md transition-shadow"
+                                : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-md transition-shadow"
                             }
             `}
                     >
@@ -246,7 +246,7 @@ export function ReportsDashboard() {
             </div>
 
             {/* Controls Container */}
-            <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3 text-lg tracking-tight">
                     <div className="p-2 bg-primary/10 text-primary rounded-xl">
                         <Calendar size={20} />
@@ -302,7 +302,7 @@ export function ReportsDashboard() {
                 </div>
 
                 {/* Quick Select Pills */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 pt-6 border-t border-gray-100 dark:border-white/5">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
                     <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest sm:mr-2">Quick Presets:</span>
                     <div className="flex flex-wrap items-center gap-2.5">
                         {[
@@ -330,7 +330,7 @@ export function ReportsDashboard() {
 
             {/* CSV Preview Area */}
             {csvPreview && (selectedType === "trades" || selectedType === "tax") && (
-                <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm animate-in fade-in duration-500">
+                <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm animate-in fade-in duration-500">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
                             <h3 className="font-black text-gray-900 dark:text-white text-lg tracking-tight">CSV Preview</h3>
@@ -367,7 +367,7 @@ export function ReportsDashboard() {
                             </thead>
                             <tbody>
                                 {csvPreview.rows.slice(0, 50).map((row, rowIndex) => (
-                                    <tr key={rowIndex} className="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
+                                    <tr key={rowIndex} className="border-b border-gray-200 dark:border-white/10 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
                                         {row.map((cell, cellIndex) => (
                                             <td key={cellIndex} className="p-4 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap truncate max-w-[200px]" title={cell}>
                                                 {cell}

@@ -131,10 +131,10 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
                 </div>
 
                 {/* Right: Trade Details */}
-                <div className="lg:w-1/3 flex flex-col bg-white dark:bg-[#1E2028] border-l border-gray-100 dark:border-white/5">
+                <div className="lg:w-1/3 flex flex-col bg-white dark:bg-[#1E2028] border-l border-gray-200 dark:border-white/10">
 
                     {/* Header */}
-                    <div className="p-6 border-b border-gray-100 dark:border-white/5">
+                    <div className="p-6 border-b border-gray-200 dark:border-white/10">
                         <div className="flex items-start justify-between mb-2">
                             <div>
                                 <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{trade.symbol}</h2>
@@ -170,7 +170,7 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
                     <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
                         {/* Price Action */}
-                        <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
+                        <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
                             <div>
                                 <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Entry</label>
                                 <div className="font-mono text-lg font-bold text-gray-900 dark:text-white">{trade.entryPrice}</div>
@@ -188,7 +188,7 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
                                     <Activity size={16} className="text-primary" />
                                     Analysis Notes
                                 </h4>
-                                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-200 dark:border-white/10">
                                     {trade.notes}
                                 </p>
                             </div>
@@ -202,11 +202,11 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
                                     Psychology
                                 </h4>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <div className="p-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
+                                    <div className="p-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
                                         <div className="text-[10px] text-gray-400 uppercase font-bold">Before</div>
                                         <div className="capitalize font-medium text-gray-700 dark:text-gray-200">{trade.emotionBefore}</div>
                                     </div>
-                                    <div className="p-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
+                                    <div className="p-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
                                         <div className="text-[10px] text-gray-400 uppercase font-bold">After</div>
                                         <div className="capitalize font-medium text-gray-700 dark:text-gray-200">{trade.emotionAfter || "-"}</div>
                                     </div>
@@ -216,7 +216,7 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
 
                         {/* Entry/Exit Reason */}
                         {(trade.entryReason || trade.exitReason) && (
-                            <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                            <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-white/10">
                                 {trade.entryReason && (
                                     <div>
                                         <h4 className="text-xs font-bold text-gray-500 uppercase mb-1">Entry Reason</h4>
@@ -235,7 +235,7 @@ export function TradeQuickView({ trade, onClose, onNext, onPrev }: TradeQuickVie
                     </div>
 
                     {/* Footer Nav */}
-                    <div className="p-4 border-t border-gray-100 dark:border-white/5 flex gap-2">
+                    <div className="p-4 border-t border-gray-200 dark:border-white/10 flex gap-2">
                         <Button
                             variant="outline"
                             onClick={(e) => { e.stopPropagation(); onPrev?.(); }}

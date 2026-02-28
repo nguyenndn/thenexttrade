@@ -83,7 +83,7 @@ export function DashboardLayoutClient({
                             </nav>
                         </div>
 
-                        <div className="border-t border-gray-100 dark:border-white/5 pt-4">
+                        <div className="border-t border-gray-200 dark:border-white/10 pt-4">
                             <button
                                 onClick={() => signout()}
                                 className="flex items-center gap-4 px-4 py-3 w-full text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors font-medium">

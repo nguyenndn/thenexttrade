@@ -25,7 +25,7 @@ interface SessionPerformanceProps {
 
 export function SessionPerformance({ data }: SessionPerformanceProps) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm h-full flex flex-col transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col transition-shadow hover:shadow-md">
             <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                 P&L by Session
             </h3>
@@ -97,7 +97,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
             </div>
 
             {/* Legend with session colors */}
-            <div className="flex flex-wrap gap-3 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex flex-wrap gap-3 mt-4 pt-4 border-t border-gray-200 dark:border-white/10">
                 {data.map((session) => (
                     <div key={session.session} className="flex items-center gap-2">
                         <div

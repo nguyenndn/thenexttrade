@@ -117,7 +117,7 @@ export function PsychologyDashboard() {
 
         <>
             {/* Header */}
-            <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
+            <div className="flex flex-col gap-4 border-b border-gray-200 dark:border-white/10 pb-8">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
@@ -202,14 +202,14 @@ function PsychologyLoadingSkeleton() {
     return (
         <div className="space-y-4 animate-pulse">
             <div className="h-8 bg-gray-200 dark:bg-white/5 rounded w-64 mb-8" />
-            <div className="h-24 bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
+            <div className="h-24 bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10" />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
-                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
+                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10" />
+                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10" />
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
-                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5" />
+                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10" />
+                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10" />
             </div>
         </div>
     );

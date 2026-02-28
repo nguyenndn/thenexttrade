@@ -116,7 +116,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                 </VisuallyHidden>
 
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-white/5 flex items-center justify-between bg-white dark:bg-[#151925]">
+                <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-white dark:bg-[#151925]">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Share Your Trade</h2>
                     {/* Close button handled by DialogContent usually, but we can have custom header actions */}
                 </div>
@@ -176,7 +176,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                         
                         <div className={`grid transition-all duration-300 ease-in-out ${descriptionOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                             <div className="overflow-hidden">
-                                <div className="p-4 relative bg-gray-50/50 dark:bg-black/10 border-t border-gray-100 dark:border-white/5">
+                                <div className="p-4 relative bg-gray-50/50 dark:bg-black/10 border-t border-gray-200 dark:border-white/10">
                                     <textarea
                                         className="w-full p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none resize-none transition-all shadow-sm font-medium"
                                         rows={3}
@@ -186,7 +186,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                                     ></textarea>
                                     <div className="absolute bottom-6 right-6 pointer-events-none">
                                         {isSaving ? (
-                                            <span className="text-xs text-gray-500 font-medium px-2 py-1 rounded-md bg-white/80 dark:bg-[#1E2028]/90 backdrop-blur-sm shadow-sm flex items-center gap-1 animate-pulse border border-gray-100 dark:border-white/10">Saving...</span>
+                                            <span className="text-xs text-gray-500 font-medium px-2 py-1 rounded-md bg-white/80 dark:bg-[#1E2028]/90 backdrop-blur-sm shadow-sm flex items-center gap-1 animate-pulse border border-gray-200 dark:border-white/10">Saving...</span>
                                         ) : lastSaved ? (
                                              <div className="bg-white/90 dark:bg-[#1E2028]/90 backdrop-blur-sm rounded-full p-0.5 shadow-sm border border-green-100 dark:border-green-500/20">
                                                 <CheckCircle2 size={16} className="text-green-500" />
@@ -220,7 +220,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                     </div>
 
                     {/* Footer Actions */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-white/5">
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-white/10">
                         <div className="text-sm text-gray-500 italic">
                             {isSaving ? "Saving changes..." : lastSaved ? "Changes saved" : ""}
                         </div>

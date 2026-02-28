@@ -93,12 +93,14 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
             {/* Navigation Buttons (Hidden on mobile, visible on hover) */}
             <button
                 onClick={prevSlide}
+                aria-label="Previous slide"
                 className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 transition-all opacity-0 group-hover:opacity-100 z-20"
             >
                 <ChevronLeft size={24} />
             </button>
             <button
                 onClick={nextSlide}
+                aria-label="Next slide"
                 className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 transition-all opacity-0 group-hover:opacity-100 z-20"
             >
                 <ChevronRight size={24} />
@@ -110,6 +112,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                     <button
                         key={idx}
                         onClick={() => setCurrent(idx)}
+                        aria-label={`Go to slide ${idx + 1}`}
                         className={`transition-all duration-300 rounded-full ${idx === current ? "w-8 h-2 bg-primary" : "w-2 h-2 bg-white/50 hover:bg-white"
                             }`}
                     />

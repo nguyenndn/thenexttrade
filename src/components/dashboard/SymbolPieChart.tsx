@@ -15,14 +15,14 @@ export function SymbolPieChart({ data }: SymbolPieChartProps) {
 
     if (!data || data.length === 0) {
         return (
-            <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col items-center justify-center text-center">
+            <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col items-center justify-center text-center">
                 <span className="text-sm font-medium text-gray-400 dark:text-gray-500">No data available</span>
             </div>
         );
     }
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h3 className="font-bold text-gray-900 dark:text-white text-sm">Symbols Traded</h3>

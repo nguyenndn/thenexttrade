@@ -16,7 +16,7 @@ export function StrategyCard({
     onDelete: () => void;
 }) {
     return (
-        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-primary/50 hover:shadow-md transition-shadow ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-100 dark:border-white/5'
+        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-primary/50 hover:shadow-md transition-shadow ${isGhost ? 'border-dashed border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10'
             }`}>
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
@@ -69,7 +69,7 @@ export function StrategyCard({
             {strategy.rules && (
                 <div className="mb-4">
                     <p className="text-xs font-bold text-gray-400 uppercase mb-1">Rules</p>
-                    <div className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-100 dark:border-white/5 whitespace-pre-line max-h-[100px] overflow-y-auto custom-scrollbar">
+                    <div className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-white/10 whitespace-pre-line max-h-[100px] overflow-y-auto custom-scrollbar">
                         {strategy.rules}
                     </div>
                 </div>
@@ -77,7 +77,7 @@ export function StrategyCard({
 
             {/* Stats */}
             {performance ? (
-                <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-50 dark:border-white/5">
+                <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-50 dark:border-white/10">
                     <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-xl">
                         <Target size={16} className="mx-auto mb-1 text-purple-500" />
                         <p className="text-base font-bold text-gray-900 dark:text-white">
@@ -110,7 +110,7 @@ export function StrategyCard({
 
             {/* Save Ghost Button */}
             {isGhost && (
-                <div className="mt-4 border-t border-gray-50 dark:border-white/5 pt-4">
+                <div className="mt-4 border-t border-gray-50 dark:border-white/10 pt-4">
                     <Button 
                         variant="outline" 
                         onClick={onEdit} 

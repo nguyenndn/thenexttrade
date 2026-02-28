@@ -2,6 +2,7 @@
 "use client";
 
 import { Mail, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export default function NewsletterWidget() {
     return (
@@ -24,12 +25,12 @@ export default function NewsletterWidget() {
                     className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 placeholder:text-cyan-100/70 text-white focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all text-sm"
                     required
                 />
-                <button
+                <Button
                     type="submit"
                     className="w-full py-3 bg-white text-cyan-600 rounded-xl font-bold text-sm hover:bg-cyan-50 transition-colors flex items-center justify-center gap-2"
                 >
                     Subscribe Free <ArrowRight size={16} />
-                </button>
+                </Button>
             </form>
 
             <p className="text-xs text-cyan-100/60 mt-4 text-center">

@@ -99,7 +99,7 @@ export function SessionDashboard() {
             {isLoading ? (
                 <SessionLoadingSkeleton />
             ) : !data || data.sessionStats.length === 0 ? (
-                <div className="min-h-[60vh] flex items-center justify-center p-8 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5">
+                <div className="min-h-[60vh] flex items-center justify-center p-8 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10">
                     <EmptyState 
                         icon={Clock} 
                         title="No Session Data Available" 
@@ -171,7 +171,7 @@ function QuickStatCard({
     color: string;
 }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center gap-2 mb-2">
                 <div className={`p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 ${color}`}>
                     <Icon size={16} />

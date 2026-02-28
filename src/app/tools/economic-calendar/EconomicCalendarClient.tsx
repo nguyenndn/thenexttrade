@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import { FilterModal, CalendarFilters } from "@/components/tools/economic-calendar/FilterModal";
 import { TimezoneSelector } from "@/components/tools/economic-calendar/TimezoneSelector";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
+import { Button } from "@/components/ui/Button";
 
 const DEFAULT_FILTERS: CalendarFilters = {
     currencies: ["USD", "EUR", "GBP", "JPY", "CAD", "AUD", "NZD", "CHF", "CNY"],
@@ -130,21 +131,22 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                 onChange={setSelectedTimezone}
                             />
 
-                            <button
+                            <Button
+                                variant="outline"
                                 onClick={() => setIsFilterModalOpen(true)}
-                                className={`px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border ${isDark
-                                    ? 'bg-slate-800 border-slate-700 hover:border-slate-600 text-gray-200'
-                                    : 'bg-white border-gray-200 hover:border-gray-300 text-gray-700'
+                                className={`rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${isDark
+                                    ? 'bg-slate-800 border-slate-700 hover:border-slate-600 focus:bg-slate-700 text-gray-200'
+                                    : 'bg-white border-gray-200 hover:border-gray-300 focus:bg-gray-100 text-gray-700'
                                     }`}
                             >
                                 <Filter size={16} className="text-gray-400" />
                                 Filters
-                            </button>
+                            </Button>
 
-                            <button
+                            <Button
+                                variant="outline"
                                 onClick={async () => {
-                                    setIsLoading(true); // Re-use loading state or add specific one
-                                    // Fetch only from local API (Database)
+                                    setIsLoading(true); 
                                     try {
                                         await fetchEvents();
                                     } catch (e) {
@@ -153,15 +155,15 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                         setIsLoading(false);
                                     }
                                 }}
-                                className={`px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border ${isDark
-                                    ? 'bg-slate-800 border-slate-700 hover:border-slate-600 text-gray-200'
-                                    : 'bg-white border-gray-200 hover:border-gray-300 text-gray-700'
+                                className={`rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${isDark
+                                    ? 'bg-slate-800 border-slate-700 hover:border-slate-600 focus:bg-slate-700 text-gray-200'
+                                    : 'bg-white border-gray-200 hover:border-gray-300 focus:bg-gray-100 text-gray-700'
                                     }`}
                                 title="Refresh Data"
                             >
                                 <RefreshCw size={16} className={isLoading ? "animate-spin text-cyan-500" : "text-gray-400"} />
                                 Refresh
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -176,13 +178,15 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                     const isToday = isSameDay(day, new Date());
 
                                     return (
-                                        <button
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
                                             key={day.toISOString()}
                                             onClick={() => setSelectedDate(day)}
                                             className={`
-                                                relative flex flex-col items-center justify-center py-2 md:py-3 rounded-xl transition-all
+                                                relative flex flex-col items-center justify-center py-2 md:py-3 rounded-xl transition-all h-auto
                                                 ${isSelected
-                                                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
+                                                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20 hover:bg-cyan-600'
                                                     : isDark
                                                         ? 'hover:bg-slate-700 text-gray-400 hover:text-white'
                                                         : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
@@ -198,7 +202,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                             {isToday && !isSelected && (
                                                 <span className={`absolute bottom-1 w-1 h-1 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-cyan-500'}`}></span>
                                             )}
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>
@@ -227,12 +231,13 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                 {format(selectedDate, "EEEE, d MMMM yyyy")}
                             </h2>
                             {isSameDay(selectedDate, new Date()) || (
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={() => setSelectedDate(new Date())}
-                                    className="text-xs font-bold text-cyan-500 hover:underline bg-cyan-500/10 px-3 py-1.5 rounded-lg"
+                                    className="text-xs font-bold text-cyan-500 hover:text-cyan-600 hover:bg-cyan-500/10 px-3 py-1.5 rounded-lg"
                                 >
                                     Jump to Today
-                                </button>
+                                </Button>
                             )}
                         </div>
 
@@ -272,9 +277,9 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                 <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                     There are no market events for this date matching your filters.
                                 </p>
-                                <button onClick={() => setSelectedDate(new Date())} className="mt-4 text-sm font-bold text-pink-500 hover:underline">
+                                <Button variant="link" onClick={() => setSelectedDate(new Date())} className="mt-4 text-sm font-bold text-pink-500 hover:text-pink-600 p-0">
                                     Go to Today
-                                </button>
+                                </Button>
                             </div>
                         )}
                     </div>

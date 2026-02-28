@@ -171,7 +171,7 @@ export function FloatingQuickActions() {
                                 <Link
                                     href={action.href}
                                     onClick={() => setIsOpen(false)}
-                                    className={`flex items-center gap-3 px-4 py-3 bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-2xl shadow-xl hover:shadow-2xl transition-all group ${isLeftAligned ? 'flex-row-reverse' : ''}`}
+                                    className={`flex items-center gap-3 px-4 py-3 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-2xl shadow-xl hover:shadow-2xl transition-all group ${isLeftAligned ? 'flex-row-reverse' : ''}`}
                                 >
                                     <span className="font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                                         {action.label}

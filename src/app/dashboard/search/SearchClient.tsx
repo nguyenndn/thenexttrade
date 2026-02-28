@@ -94,7 +94,7 @@ export default function SearchClient() {
                                     <Link
                                         key={`${result.type}-${result.id}`}
                                         href={result.slug}
-                                        className="block bg-white dark:bg-[#151925] p-5 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-colors group shadow-sm"
+                                        className="block bg-white dark:bg-[#151925] p-5 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary transition-colors group shadow-sm"
                                     >
                                         <div className="flex items-start gap-4">
                                             <div className={`p-3 rounded-xl shrink-0 ${result.type === 'article'
@@ -127,7 +127,7 @@ export default function SearchClient() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5">
+                            <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10">
                                 <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
                                 <p className="text-gray-500">Try adjusting your search terms or check for typos.</p>

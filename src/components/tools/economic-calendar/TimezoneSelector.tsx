@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Clock, ChevronDown, Check } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import { Button } from "@/components/ui/Button";
 
 export interface TimezoneOption {
     label: string;
@@ -105,21 +106,23 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <button
+            <Button
+                type="button"
+                variant="outline"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${isDark
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all h-auto w-full sm:w-auto font-normal ${isDark
                     ? 'bg-slate-800 border-slate-700 hover:border-slate-600 text-gray-200'
                     : 'bg-white border-gray-200 hover:border-gray-300 text-gray-700'
                     }`}
             >
-                <Clock size={16} className="text-gray-400" />
-                <span className="text-xs font-medium">
+                <Clock size={16} className="text-gray-400 shrink-0" />
+                <span className="text-xs font-medium truncate">
                     <span className="opacity-70 hidden sm:inline">Time: </span>
                     <span className="opacity-70">({selectedZone.offsetDisplay})</span>
                     <span className="ml-1 font-bold text-cyan-500">{currentTime}</span>
                 </span>
-                <ChevronDown size={14} className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-            </button>
+                <ChevronDown size={14} className={`text-gray-400 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
+            </Button>
 
             {isOpen && (
                 <div className={`absolute right-0 mt-2 w-64 rounded-xl shadow-xl border overflow-hidden z-50 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'
@@ -130,10 +133,12 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
                     </div>
                     <div className="max-h-80 overflow-y-auto">
                         {ALL_TIMEZONES.map((zone) => (
-                            <button
+                            <Button
+                                type="button"
+                                variant="ghost"
                                 key={zone.label}
                                 onClick={() => handleSelect(zone)}
-                                className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors ${isDark
+                                className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors h-auto font-normal rounded-none ${isDark
                                     ? 'hover:bg-slate-700 text-gray-300'
                                     : 'hover:bg-gray-50 text-gray-700'
                                     } ${selectedZone.value === zone.value ? (isDark ? 'bg-slate-700/50' : 'bg-cyan-50/50') : ''}`}
@@ -142,8 +147,8 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
                                     <span className={`font-medium ${selectedZone.label === zone.label ? 'text-cyan-500' : ''}`}>{zone.label}</span>
                                     <span className="text-xs opacity-50">{zone.offsetDisplay}</span>
                                 </div>
-                                {selectedZone.value === zone.value && <Check size={16} className="text-cyan-500" />}
-                            </button>
+                                {selectedZone.value === zone.value && <Check size={16} className="text-cyan-500 shrink-0" />}
+                            </Button>
                         ))}
                     </div>
                 </div>

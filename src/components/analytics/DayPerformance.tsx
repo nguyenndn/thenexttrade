@@ -31,7 +31,7 @@ export function DayPerformance({ data }: DayPerformanceProps) {
     const { chartData, bestDay, hasData } = processDayPerformanceData(data);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-200 group">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 group">
             <div className="flex items-center gap-2.5 mb-6">
                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
                     <Activity size={18} />

@@ -106,7 +106,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                         content={({ active, payload, label }: any) => {
                             if (active && payload && payload.length) {
                                 return (
-                                    <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-100 dark:border-white/10 rounded-xl shadow-xl">
+                                    <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl">
                                         <p className="text-sm font-medium text-gray-500 mb-1">
                                             {format(new Date(label), "MMM dd, HH:mm")}
                                         </p>

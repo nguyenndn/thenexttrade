@@ -56,7 +56,7 @@ export function RegenerateKeyModal({ isOpen, onClose, accountId }: RegenerateKey
 
                 {newKey ? (
                     <div className="space-y-4 py-4">
-                        <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5">
+                        <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10">
                             <p className="text-xs font-bold text-gray-500 mb-2 uppercase">New API Key</p>
                             <div className="flex gap-2 items-center">
                                 <code className="flex-1 font-mono text-sm text-primary break-all bg-white dark:bg-black/40 p-2.5 rounded-lg border border-gray-200 dark:border-white/10">{newKey}</code>

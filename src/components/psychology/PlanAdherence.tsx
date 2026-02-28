@@ -16,7 +16,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
     ].filter(d => d.value > 0);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
+        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
             <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4">
                 Plan Adherence
             </h3>

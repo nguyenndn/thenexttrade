@@ -2,6 +2,7 @@
 
 import { Facebook, Linkedin, Twitter, Link as LinkIcon, Check } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/Button";
 
 interface SocialShareProps {
     title: string;
@@ -56,13 +57,15 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                 >
                     <Linkedin size={18} />
                 </a>
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={copyToClipboard}
                     className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-800 text-gray-500 hover:text-primary shadow-lg shadow-gray-200 dark:shadow-none rounded-full transition-all border border-gray-100 dark:border-white/5"
-                    title="Copy Link"
+                    aria-label="Copy Link"
                 >
                     {copied ? <Check size={18} /> : <LinkIcon size={18} />}
-                </button>
+                </Button>
             </div>
         );
     }
@@ -99,13 +102,15 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                 >
                     <Linkedin size={16} />
                 </a>
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={copyToClipboard}
                     className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-gray-800 hover:text-white hover:border-gray-800 dark:hover:bg-white dark:hover:text-black transition-all rounded-full"
-                    title="Copy Link"
+                    aria-label="Copy Link"
                 >
                     {copied ? <Check size={16} className="text-green-500" /> : <LinkIcon size={16} />}
-                </button>
+                </Button>
             </div>
         </div>
     );

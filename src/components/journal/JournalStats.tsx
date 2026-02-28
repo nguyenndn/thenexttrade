@@ -55,7 +55,7 @@ export default function JournalStats({ stats }: StatsProps) {
             {cards.map((card, index) => {
                 const Icon = card.icon;
                 return (
-                    <div key={index} className={`bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all duration-200 border-t-4 ${card.border}`}>
+                    <div key={index} className={`bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-200 border-t-4 ${card.border}`}>
                         <div className="flex items-center gap-3 mb-3">
                             <div className={`p-3 rounded-xl ${card.bg}`}>
                                 <Icon size={20} className={card.color} />

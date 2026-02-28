@@ -79,7 +79,7 @@ export function MarketTickerSection({ initialData }: { initialData?: MarketItem[
     const displayData = [...tickerData, ...tickerData, ...tickerData];
 
     return (
-        <section className="relative w-full overflow-hidden bg-white/50 dark:bg-[#0B0E14]/80 backdrop-blur-md border-y border-gray-100 dark:border-white/5">
+        <section className="relative w-full overflow-hidden bg-white/50 dark:bg-[#0B0E14]/80 backdrop-blur-md border-y border-gray-200 dark:border-white/10">
 
             {/* Gradient Fade Masks */}
             <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white dark:from-[#0B0E14] to-transparent z-10 pointer-events-none"></div>

@@ -49,7 +49,7 @@ export function SessionClock({ data }: SessionClockProps) {
     ];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm h-full transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full transition-shadow hover:shadow-md">
             <div className="flex justify-between items-start mb-6">
                 <div>
                     <h3 className="font-bold text-gray-900 dark:text-white mb-2">
@@ -90,7 +90,7 @@ export function SessionClock({ data }: SessionClockProps) {
                             </div>
 
                             {stats && (
-                                <div className="flex items-center justify-between text-xs pl-4 border-l-2 border-gray-100 dark:border-white/5 ml-1">
+                                <div className="flex items-center justify-between text-xs pl-4 border-l-2 border-gray-200 dark:border-white/10 ml-1">
                                     <span className="text-gray-500">Your PnL:</span>
                                     <span className={`font-bold ${stats.totalPnL > 0 ? "text-green-500" : stats.totalPnL < 0 ? "text-red-500" : "text-gray-400"}`}>
                                         {stats.totalPnL > 0 ? "+" : ""}{stats.totalPnL.toFixed(2)}
@@ -102,7 +102,7 @@ export function SessionClock({ data }: SessionClockProps) {
                 })}
             </div>
 
-            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
+            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-white/10">
                 <p className="text-xs text-center text-gray-400">
                     Sessions are based on UTC time.
                 </p>

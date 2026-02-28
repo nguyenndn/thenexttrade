@@ -126,7 +126,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
     );
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm transition-shadow hover:shadow-md">
             <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                 24-Hour Trading Heatmap
             </h3>

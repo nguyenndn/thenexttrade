@@ -29,8 +29,8 @@ export function StrategyComparisonTable({ data }: StrategyComparisonTableProps) 
     const maxPnL = Math.max(...data.map(d => Math.abs(d.totalPnL)), 1);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
-            <div className="px-6 py-4 border-b border-gray-100 dark:border-white/5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10">
                 <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                     Strategy Comparison
                 </h3>

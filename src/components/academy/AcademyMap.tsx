@@ -130,8 +130,8 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                 <div className={cn(
                                     "w-20 h-20 rounded-full flex items-center justify-center border-4 shadow-lg transition-all duration-500 group relative",
                                     isLocked
-                                        ? "bg-gray-100 border-gray-200 text-gray-400 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-600 grayscale"
-                                        : `bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white shadow-${phase.color.split('-')[1]}-500/20`
+                                        ? "bg-gray-100 border-gray-200 text-gray-400 dark:bg-gray-900 dark:border-white/10 dark:text-gray-600 grayscale"
+                                        : `bg-white dark:bg-gray-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white shadow-${phase.color.split('-')[1]}-500/20`
                                 )}>
                                     {/* Glow Effect for Active Planet */}
                                     {!isLocked && (
@@ -163,7 +163,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                                 className={cn("block group w-full max-w-sm", !module.lessons[0] && "pointer-events-none opacity-50")}
                                             >
                                                 <div className={cn(
-                                                    "inline-flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
+                                                    "inline-flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
                                                     index % 2 !== 0 && "md:flex-row-reverse"
                                                 )}>
                                                     <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-black/50 flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:bg-primary group-hover:text-white transition-colors flex-shrink-0">
@@ -178,7 +178,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-xs font-mono text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-gray-800 rounded-lg p-3 inline-block">
+                                    <div className="text-xs font-mono text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-white/10 rounded-lg p-3 inline-block">
                                         RESTRICTED AREA
                                     </div>
                                 )}

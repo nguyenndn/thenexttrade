@@ -54,7 +54,7 @@ export function MistakeDashboard() {
         <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 {/* Cost of Mistakes */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex items-center gap-3.5 mb-3">
                         <div className="p-3 bg-red-500/10 text-red-500 dark:text-red-400 rounded-2xl group-hover:bg-red-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <DollarSign size={22} strokeWidth={2.5} />
@@ -71,7 +71,7 @@ export function MistakeDashboard() {
                 </div>
 
                 {/* Win Rate Gap */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex items-center gap-3.5 mb-3">
                         <div className="p-3 bg-blue-500/10 text-blue-500 dark:text-blue-400 rounded-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <TrendingDown size={22} strokeWidth={2.5} />
@@ -92,7 +92,7 @@ export function MistakeDashboard() {
                 </div>
 
                 {/* Most Frequent */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex items-center gap-3.5 mb-4">
                         <div className="p-3 bg-amber-500/10 text-amber-500 dark:text-amber-400 rounded-2xl group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <AlertTriangle size={22} strokeWidth={2.5} />
@@ -113,7 +113,7 @@ export function MistakeDashboard() {
                 </div>
 
                 {/* Deadliest Mistake */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
+                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex items-center gap-3.5 mb-4">
                         <div className="p-3 bg-purple-500/10 text-purple-500 dark:text-purple-400 rounded-2xl group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <XCircle size={22} strokeWidth={2.5} />
@@ -135,7 +135,7 @@ export function MistakeDashboard() {
 
             <div className="grid lg:grid-cols-2 gap-5 h-full">
                 {/* Charts */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 md:p-8 rounded-xl border border-gray-100 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-shadow">
+                <div className="bg-white dark:bg-[#1E2028] p-6 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Mistakes by Cost</h3>
@@ -146,7 +146,7 @@ export function MistakeDashboard() {
                     <MistakeCostChart data={data.mistakeStats} />
                 </div>
 
-                <div className="bg-white dark:bg-[#1E2028] p-6 md:p-8 rounded-xl border border-gray-100 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-shadow">
+                <div className="bg-white dark:bg-[#1E2028] p-6 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Mistake Frequency</h3>
