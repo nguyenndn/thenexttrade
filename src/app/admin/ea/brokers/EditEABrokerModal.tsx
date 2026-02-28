@@ -18,6 +18,7 @@ interface EABrokerData {
     slug: string;
     logo: string;
     affiliateUrl: string | null;
+    ibCode: string | null;
     color: string;
     isActive: boolean;
     order: number;
@@ -36,6 +37,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
     const [name, setName] = useState(broker.name);
     const [logo, setLogo] = useState(broker.logo);
     const [affiliateUrl, setAffiliateUrl] = useState(broker.affiliateUrl || "");
+    const [ibCode, setIBCode] = useState(broker.ibCode || "");
     const [color, setColor] = useState(broker.color);
     const [order, setOrder] = useState(String(broker.order));
     const [isActive, setIsActive] = useState(broker.isActive);
@@ -52,6 +54,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                 name,
                 logo,
                 affiliateUrl: affiliateUrl || null,
+                ibCode: ibCode || null,
                 color,
                 order: parseInt(order) || 0,
                 isActive,
@@ -96,6 +99,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
         setName(broker.name);
         setLogo(broker.logo);
         setAffiliateUrl(broker.affiliateUrl || "");
+        setIBCode(broker.ibCode || "");
         setColor(broker.color);
         setOrder(String(broker.order));
         setIsActive(broker.isActive);
@@ -148,6 +152,13 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                             value={affiliateUrl}
                             onChange={(e) => setAffiliateUrl(e.target.value)}
                             placeholder="https://one.exnesstrack.org/..."
+                        />
+
+                        <PremiumInput
+                            label="IB Code / Number"
+                            value={ibCode}
+                            onChange={(e) => setIBCode(e.target.value)}
+                            placeholder="e.g. 14647313"
                         />
 
                         <div className="grid grid-cols-2 gap-4">

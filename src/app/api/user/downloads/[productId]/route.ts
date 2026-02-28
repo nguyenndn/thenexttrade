@@ -79,15 +79,29 @@ export async function GET(
         // This depends on how upload was implemented (Task 3.11 - not implemented yet).
         // I I'll assume it stores the relative path "productId/mt4/filename.ex4" or similar.
 
-        // 3. Generate Signed URL
-        const { data: signedUrlData, error: signError } = await supabase
+        // 3. Generate Download URL
+        // Try public URL first (if bucket is public), fallback to signed URL
+        let downloadUrl: string;
+
+        const { data: publicUrlData } = supabase
             .storage
             .from("ea-products")
-            .createSignedUrl(filePath, 60 * 5); // 5 minutes
+            .getPublicUrl(filePath);
 
-        if (signError || !signedUrlData) {
-            console.error("Storage Sign Error:", signError, filePath);
-            return NextResponse.json(createErrorResponse(ErrorCode.FILE_NOT_AVAILABLE), { status: 500 });
+        if (publicUrlData?.publicUrl) {
+            downloadUrl = publicUrlData.publicUrl;
+        } else {
+            // Fallback: signed URL for private buckets
+            const { data: signedUrlData, error: signError } = await supabase
+                .storage
+                .from("ea-products")
+                .createSignedUrl(filePath, 60 * 5);
+
+            if (signError || !signedUrlData) {
+                console.error("Storage Sign Error:", signError, filePath);
+                return NextResponse.json(createErrorResponse(ErrorCode.FILE_NOT_AVAILABLE), { status: 500 });
+            }
+            downloadUrl = signedUrlData.signedUrl;
         }
 
         // 4. Log Download
@@ -108,7 +122,7 @@ export async function GET(
             data: { totalDownloads: { increment: 1 } },
         });
 
-        return NextResponse.json(createSuccessResponse({ url: signedUrlData.signedUrl }));
+        return NextResponse.json(createSuccessResponse({ url: downloadUrl }));
 
     } catch (error) {
         console.error("Download API Error:", error);

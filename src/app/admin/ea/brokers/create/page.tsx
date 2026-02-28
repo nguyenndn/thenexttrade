@@ -17,6 +17,7 @@ export default function CreateEABrokerPage() {
     const [name, setName] = useState("");
     const [logo, setLogo] = useState("");
     const [affiliateUrl, setAffiliateUrl] = useState("");
+    const [ibCode, setIBCode] = useState("");
     const [color, setColor] = useState("#00C888");
     const [order, setOrder] = useState("0");
 
@@ -36,6 +37,7 @@ export default function CreateEABrokerPage() {
                 slug,
                 logo,
                 affiliateUrl: affiliateUrl || undefined,
+                ibCode: ibCode || undefined,
                 color,
                 order: parseInt(order) || 0,
             });
@@ -91,6 +93,13 @@ export default function CreateEABrokerPage() {
                         value={affiliateUrl}
                         onChange={(e) => setAffiliateUrl(e.target.value)}
                         placeholder="https://one.exnesstrack.org/..."
+                    />
+
+                    <PremiumInput
+                        label="IB Code / Number"
+                        value={ibCode}
+                        onChange={(e) => setIBCode(e.target.value)}
+                        placeholder="e.g. 14647313"
                     />
 
                     <div className="grid grid-cols-2 gap-4">

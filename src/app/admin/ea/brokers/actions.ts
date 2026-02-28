@@ -37,21 +37,21 @@ export async function createEABroker(data: {
     slug: string;
     logo: string;
     affiliateUrl?: string;
+    ibCode?: string | null;
     color?: string;
     isActive?: boolean;
     order?: number;
 }) {
     try {
         const broker = await prisma.eABroker.create({
-            data: {
                 name: data.name,
                 slug: data.slug.toUpperCase(),
                 logo: data.logo,
                 affiliateUrl: data.affiliateUrl || null,
+                ibCode: data.ibCode || null,
                 color: data.color || "#00C888",
                 isActive: data.isActive ?? true,
                 order: data.order ?? 0,
-            },
         });
 
         revalidatePath("/admin/ea");
@@ -72,6 +72,7 @@ export async function updateEABroker(id: string, data: {
     slug?: string;
     logo?: string;
     affiliateUrl?: string | null;
+    ibCode?: string | null;
     color?: string;
     isActive?: boolean;
     order?: number;

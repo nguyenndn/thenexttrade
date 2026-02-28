@@ -1,16 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Wallet, Download, BookOpen, BarChart2 } from "lucide-react";
-import { EALicense, EAProduct } from "@prisma/client";
+import { Wallet, BarChart2 } from "lucide-react";
 import { AccountsList } from "@/components/dashboard/accounts/AccountsList";
 import { SystemsList } from "@/components/dashboard/trading-systems/SystemsList";
-import { InstallationWizard } from "@/components/dashboard/trading-systems/InstallationWizard";
-import { cn } from "@/lib/utils";
-import { CustomBotIcon, FilterTab } from "./SharedUI";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { AccountSetupWidget } from "./AccountSetupWidget";
-
-
+import { CustomBotIcon } from "./SharedUI";
 
 interface TradingSystemsClientProps {
     licenses: any[];
@@ -20,15 +15,27 @@ interface TradingSystemsClientProps {
     eaBrokers: any[];
 }
 
-type Tab = "ACCOUNTS" | "DOWNLOADS";
-
 export function TradingSystemsClient({ licenses, products, hasApprovedLicense, hasDownloaded, eaBrokers }: TradingSystemsClientProps) {
-    const [activeTab, setActiveTab] = useState<Tab>("ACCOUNTS");
+    // Product counts for tab badges
+    const eaCount = products.filter(p =>
+        (p.platform === "MT5" || p.platform === "BOTH") &&
+        (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST")
+    ).length;
 
-    const navItems = [
-        { id: "ACCOUNTS", title: "My Accounts", icon: Wallet },
-        { id: "DOWNLOADS", title: "Downloads", icon: Download },
-    ];
+    const indicatorCount = products.filter(p =>
+        (p.platform === "MT5" || p.platform === "BOTH") &&
+        p.type === "INDICATOR"
+    ).length;
+
+    const eaProducts = products.filter(p =>
+        (p.platform === "MT5" || p.platform === "BOTH") &&
+        (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST")
+    );
+
+    const indicatorProducts = products.filter(p =>
+        (p.platform === "MT5" || p.platform === "BOTH") &&
+        p.type === "INDICATOR"
+    );
 
     return (
         <>
@@ -53,46 +60,63 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense, h
                     hasDownloaded={hasDownloaded}
                 />
 
-                {/* Tabs */}
-                <div className="inline-flex gap-1 p-1 bg-gray-50 dark:bg-[#0F1117] rounded-xl border border-gray-100 dark:border-white/5 w-auto overflow-x-auto scrollbar-hide">
-                    {navItems.map((item) => {
-                        const isActive = activeTab === item.id;
-                        const Icon = item.icon;
-                        return (
-                            <FilterTab
-                                key={item.id}
-                                label={item.title}
-                                icon={Icon}
-                                active={isActive}
-                                onClick={() => setActiveTab(item.id as Tab)}
+                {/* Unified Tabs */}
+                <Tabs defaultValue="ACCOUNTS" className="w-full">
+                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1.5 rounded-xl border-0 w-auto inline-flex h-auto">
+                        <TabsTrigger
+                            value="ACCOUNTS"
+                            className="rounded-lg px-5 py-2.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border-0"
+                        >
+                            <Wallet size={16} />
+                            My Accounts
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="MT5_EA"
+                            className="rounded-lg px-5 py-2.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border-0"
+                        >
+                            <CustomBotIcon size={16} />
+                            MT5 Expert Advisor
+                            {eaCount > 0 && (
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-primary/10 text-primary">
+                                    {eaCount}
+                                </span>
+                            )}
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="MT5_INDICATOR"
+                            className="rounded-lg px-5 py-2.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border-0"
+                        >
+                            <BarChart2 size={16} />
+                            MT5 Indicators
+                            {indicatorCount > 0 && (
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-primary/10 text-primary">
+                                    {indicatorCount}
+                                </span>
+                            )}
+                        </TabsTrigger>
+                    </TabsList>
+
+                    {/* Content Area */}
+                    <div className="min-h-[500px] mt-6">
+                        <TabsContent value="ACCOUNTS" className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0">
+                            <AccountsList licenses={licenses} eaBrokers={eaBrokers} />
+                        </TabsContent>
+
+                        <TabsContent value="MT5_EA" className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0">
+                            <SystemsList
+                                products={eaProducts}
+                                isLocked={!hasApprovedLicense}
                             />
-                        );
-                    })}
-                </div>
-            </div>
+                        </TabsContent>
 
-            {/* Content Area - Full Width */}
-            <div className="min-h-[500px]">
-                {activeTab === "ACCOUNTS" && (
-                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <AccountsList licenses={licenses} eaBrokers={eaBrokers} />
+                        <TabsContent value="MT5_INDICATOR" className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0">
+                            <SystemsList
+                                products={indicatorProducts}
+                                isLocked={!hasApprovedLicense}
+                            />
+                        </TabsContent>
                     </div>
-                )}
-
-                {activeTab === "DOWNLOADS" && (
-                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <div className="mb-6">
-                            <p className="text-transparent bg-clip-text bg-gradient-to-r from-gray-800 to-gray-500 dark:from-white dark:to-gray-500 font-bold text-lg tracking-tight">
-                                Download expert advisors and indicators
-                            </p>
-                        </div>
-                        <SystemsList
-                            products={products}
-                            isLocked={!hasApprovedLicense}
-                        />
-                    </div>
-                )}
-
+                </Tabs>
             </div>
         </>
     );

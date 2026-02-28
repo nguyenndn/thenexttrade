@@ -57,25 +57,33 @@ export function ProductForm({ initialData }: ProductFormProps) {
     const handleFileUploads = async (productId: string) => {
         const promises = [];
 
+        console.log("[Upload] Starting uploads. mt5File:", mt5File?.name, "thumbnailFile:", thumbnailFile?.name);
+
         if (mt5File) {
             const formData = new FormData();
             formData.append("file", mt5File);
+            console.log("[Upload] Uploading MT5 file:", mt5File.name, "size:", mt5File.size);
             promises.push(uploadEAFile(productId, "MT5", formData));
         }
 
         if (thumbnailFile) {
             const formData = new FormData();
             formData.append("file", thumbnailFile);
+            console.log("[Upload] Uploading thumbnail:", thumbnailFile.name);
             promises.push(uploadEAFile(productId, "THUMBNAIL", formData));
         }
 
         if (promises.length > 0) {
             const results = await Promise.all(promises);
+            console.log("[Upload] Results:", JSON.stringify(results));
             const failed = results.filter(r => !r.success);
             if (failed.length > 0) {
-                toast.error(`Failed to upload ${failed.length} file(s)`);
+                console.error("[Upload] Failed uploads:", JSON.stringify(failed));
+                toast.error(`Failed to upload ${failed.length} file(s): ${failed.map(f => f.error).join(', ')}`);
                 return false;
             }
+        } else {
+            console.log("[Upload] No files to upload");
         }
         return true;
     };
@@ -120,7 +128,9 @@ export function ProductForm({ initialData }: ProductFormProps) {
             }
 
             if (success && productId) {
+                console.log("[Submit] Product saved, starting file uploads for:", productId);
                 const uploadSuccess = await handleFileUploads(productId);
+                console.log("[Submit] Upload result:", uploadSuccess);
                 if (uploadSuccess) {
                     toast.success(initialData ? "Product updated successfully" : "Product created successfully");
                     router.push("/admin/ea/products");

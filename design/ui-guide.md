@@ -96,12 +96,16 @@ Used for "Cancel" or "Go Back" actions in modals.
 </Button>
 ```
 
-### 2.2 Cards & Containers
-We use large border radius for a "friendly but premium" feel.
+### 2.2 Cards, Containers & Borders
+We use large border radius for a "friendly but premium" feel, along with strict border color rules to maintain contrast.
+
+**Border Standard (CRITICAL):**
+- **Light Mode:** ALWAYS use `border-gray-200` to ensure crisp separation between sections. Do NOT use `border-gray-100` as it is too washed out.
+- **Dark Mode:** ALWAYS use `dark:border-white/10` to provide a subtle, elegant separator on dark backgrounds. Do NOT use `dark:border-white/5` as it is too dim.
 
 **Standard Card (White/Dark)**
 ```tsx
-<div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 shadow-sm border border-gray-100 dark:border-white/5">
+<div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 shadow-sm border border-gray-200 dark:border-white/10 group hover:shadow-md transition-shadow">
   {/* Content */}
 </div>
 ```
@@ -109,7 +113,7 @@ We use large border radius for a "friendly but premium" feel.
 
 **Glass Panel (Results/Highlights)**
 ```tsx
-<div className="bg-[#1E2028] text-white rounded-xl p-8 shadow-2xl relative overflow-hidden border border-gray-100 dark:border-white/5">
+<div className="bg-[#1E2028] text-white rounded-xl p-8 shadow-2xl relative overflow-hidden border border-gray-200 dark:border-white/10">
     {/* Optional Glow Effect */}
     <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/20 rounded-full blur-[80px] pointer-events-none"></div>
     
@@ -245,7 +249,7 @@ All admin pages must follow the "AI Studio" header style to ensure consistency:
 
 **Example:**
 ```tsx
-<div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
+<div className="flex flex-col gap-2 border-b border-gray-200 dark:border-white/10 pb-8">
     <div className="flex items-center gap-3">
         <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">

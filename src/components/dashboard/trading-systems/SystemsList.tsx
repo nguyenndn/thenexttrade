@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Lock, Download, Star, Shield, Info, BarChart2, Bot, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { EAProduct } from "@prisma/client"; // Or explicit type
-import { CustomBotIcon, FilterTab } from "./SharedUI";
-
-
+import { EAProduct } from "@prisma/client";
 
 import { InstallationWizard } from "./InstallationWizard";
 
@@ -16,74 +14,37 @@ interface SystemsListProps {
     isLocked: boolean;
 }
 
-type FilterType = "ALL" | "MT5_EA" | "MT5_INDICATOR";
-
 export function SystemsList({ products, isLocked }: SystemsListProps) {
-    const [filter, setFilter] = useState<FilterType>("MT5_EA");
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Mock counts - in real app, calculate from products array
-    const counts = {
-        MT5_EA: products.filter(p => (p.platform === "MT5" || p.platform === "BOTH") && (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST")).length,
-        MT5_INDICATOR: products.filter(p => (p.platform === "MT5" || p.platform === "BOTH") && p.type === "INDICATOR").length,
-    };
-
-    const filteredProducts = products.filter(p => {
-        const isMT5 = p.platform === "MT5" || p.platform === "BOTH";
-        const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-        
-        if (!matchesSearch) return false;
-
-        if (filter === "MT5_EA") return isMT5 && (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST");
-        if (filter === "MT5_INDICATOR") return isMT5 && p.type === "INDICATOR";
-        return true;
-    });
+    const filteredProducts = products.filter(p =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="space-y-6">
-            {/* Controls Row */}
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-                {/* Search Box */}
-                <div className="relative flex-1 group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-focus-within:text-primary transition-colors"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="Search trading systems..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3.5 h-[52px] bg-gray-100 dark:bg-[#0F1117] border border-gray-100 dark:border-white/5 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-gray-900 dark:text-white transition-all shadow-sm focus:shadow-md"
-                    />
+            {/* Search Box */}
+            <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-focus-within:text-primary transition-colors"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </div>
-                
-                {/* Filter Tabs */}
-                <div className="inline-flex gap-1 p-1 bg-gray-50 dark:bg-[#0F1117] rounded-xl border border-gray-100 dark:border-white/5 w-auto overflow-x-auto scrollbar-hide">
-                <FilterTab
-                    label="MT5 Expert Advisor"
-                    icon={CustomBotIcon}
-                    count={counts.MT5_EA}
-                    active={filter === "MT5_EA"}
-                    onClick={() => setFilter("MT5_EA")}
+                <input
+                    type="text"
+                    placeholder="Search trading systems..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3.5 h-[52px] bg-gray-100 dark:bg-[#0F1117] border border-gray-200 dark:border-white/10 rounded-xl text-sm focus:outline-none text-gray-900 dark:text-white transition-all shadow-sm focus:shadow-md"
                 />
-                <FilterTab
-                    label="MT5 Indicators"
-                    icon={BarChart2}
-                    count={counts.MT5_INDICATOR}
-                    active={filter === "MT5_INDICATOR"}
-                    onClick={() => setFilter("MT5_INDICATOR")}
-                />
-            </div>
             </div>
 
-            {/* List Content - GRID LAYOUT */}
+            {/* Product Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {filteredProducts.length === 0 ? (
-                    <div className="col-span-1 md:col-span-2 text-center py-20 bg-gray-50/50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
+                    <div className="col-span-1 md:col-span-2 text-center py-20 bg-gray-50/50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
                         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 dark:from-white/10 dark:to-white/5 mb-6">
                             <BarChart2 size={32} className="text-gray-300 dark:text-gray-600" />
                         </div>
-                        <p className="text-gray-500 dark:text-gray-400 font-medium">No trading systems found for your search.</p>
+                        <p className="text-gray-500 dark:text-gray-400 font-medium">No trading systems found.</p>
                     </div>
                 ) : (
                     filteredProducts.map(product => (
@@ -106,16 +67,59 @@ function SystemDetailCard({ product, isLocked }: { product: EAProduct, isLocked:
     const [zoomLevel, setZoomLevel] = useState(100);
     const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
     const [showLockedToast, setShowLockedToast] = useState(false);
+    const [downloading, setDownloading] = useState(false);
+    const router = useRouter();
 
     const guideType = product.type === "INDICATOR" ? "MT5_INDICATOR" : "MT5_EA";
 
+    const handleDownload = async () => {
+        if (isLocked || downloading) return;
+        setDownloading(true);
+        try {
+            const platform = product.platform === "MT4" ? "MT4" : "MT5";
+            const res = await fetch(`/api/user/downloads/${product.id}?platform=${platform}`);
+            const json = await res.json();
+
+            if (!res.ok || !json.success) {
+                const msg = json.error?.message || json.error || "Download failed";
+                alert(msg);
+                return;
+            }
+
+            // Silent download — fetch as blob, trigger via hidden link
+            const fileRes = await fetch(json.data.url);
+            const blob = await fileRes.blob();
+            const blobUrl = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = blobUrl;
+            // Keep original filename from URL
+            const originalName = decodeURIComponent(json.data.url.split('/').pop()?.split('?')[0] || 'download.ex5');
+            a.download = originalName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+
+            // Refresh page data to update AccountSetupWidget status
+            router.refresh();
+
+            // Show installation guide after download
+            setTimeout(() => setIsGuideModalOpen(true), 1000);
+        } catch {
+            alert("An error occurred while downloading. Please try again.");
+        } finally {
+            setDownloading(false);
+        }
+    };
+
     return (
         <>
-            <div className="group relative bg-white dark:bg-[#0B0E14] rounded-xl overflow-hidden border border-gray-100 dark:border-white/5 hover:shadow-md transition-shadow">
+            <div className="group relative bg-white dark:bg-[#0B0E14] rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 hover:shadow-md transition-shadow">
                 <div className="flex flex-row p-4 gap-4">
                     {/* Thumbnail — Small Square */}
                     <div
-                        className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#151925] dark:to-[#0B0E14] border border-gray-100 dark:border-white/5 cursor-pointer"
+                        className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#151925] dark:to-[#0B0E14] border border-gray-200 dark:border-white/10 cursor-pointer"
                         onClick={() => product.thumbnail && setIsImagePreviewOpen(true)}
                     >
                         {product.thumbnail ? (
@@ -169,7 +173,7 @@ function SystemDetailCard({ product, isLocked }: { product: EAProduct, isLocked:
                 </div>
 
                 {/* Footer Actions */}
-                <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-gray-100 dark:border-white/5">
+                <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-gray-200 dark:border-white/10">
                     <button
                         className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-semibold transition-colors bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-lg"
                         onClick={() => setIsGuideModalOpen(true)}
@@ -180,15 +184,14 @@ function SystemDetailCard({ product, isLocked }: { product: EAProduct, isLocked:
 
                     <div className="relative">
                         <Button
-                            disabled={isLocked}
+                            disabled={isLocked || downloading}
                             onClick={(e) => {
                                 if (isLocked) {
                                     e.preventDefault();
                                     setShowLockedToast(true);
                                     setTimeout(() => setShowLockedToast(false), 3000);
                                 } else {
-                                    window.open(`/api/user/downloads/${product.id}`, '_blank');
-                                    setTimeout(() => setIsGuideModalOpen(true), 1500);
+                                    handleDownload();
                                 }
                             }}
                             className={cn(
@@ -198,8 +201,8 @@ function SystemDetailCard({ product, isLocked }: { product: EAProduct, isLocked:
                                     : "bg-gradient-to-r from-[#EAB308] to-[#F59E0B] hover:from-[#CA9A00] hover:to-[#D97706] text-black shadow-[0_4px_15px_rgba(234,179,8,0.25)] hover:shadow-[0_6px_20px_rgba(234,179,8,0.4)]"
                             )}
                         >
-                            {isLocked ? <Lock size={13} /> : <Download size={13} />}
-                            {isLocked ? "Locked" : "Download"}
+                            {isLocked ? <Lock size={13} /> : downloading ? <Download size={13} className="animate-bounce" /> : <Download size={13} />}
+                            {isLocked ? "Locked" : downloading ? "Downloading..." : "Download"}
                         </Button>
 
                         {/* Toast for Locked State */}
@@ -219,10 +222,10 @@ function SystemDetailCard({ product, isLocked }: { product: EAProduct, isLocked:
                     onClick={() => setIsGuideModalOpen(false)}
                 >
                     <div 
-                        className="bg-white dark:bg-[#0B0E14] w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-gray-100 dark:border-white/5 relative"
+                        className="bg-white dark:bg-[#0B0E14] w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-gray-200 dark:border-white/10 relative"
                         onClick={e => e.stopPropagation()}
                     >
-                        <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
+                        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
                             <div>
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">Installation Guide</h2>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Follow these steps to install {product.name}</p>

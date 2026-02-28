@@ -29,11 +29,11 @@ export function AccountSetupWidget({ hasAccount, hasApprovedLicense, hasDownload
     const completedCount = steps.filter(s => s.completed).length;
     const progress = (completedCount / steps.length) * 100;
 
-    // Hide if dismissed or all complete
-    if (isDismissed || completedCount === steps.length) return null;
+    // Hide only if user explicitly dismissed
+    if (isDismissed) return null;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
             {/* Header */}
             <div className="flex items-center justify-between px-5 pt-5 pb-3">
                 <h3 className="text-base font-extrabold text-gray-900 dark:text-white tracking-tight">

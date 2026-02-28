@@ -792,6 +792,7 @@ model EABroker {
   slug          String   @unique              // "EXNESS" (stored in EALicense.broker)
   logo          String                        // URL
   affiliateUrl  String?                       // IB referral link
+  ibCode        String?                       // Dynamic IB Number/Code
   color         String   @default("#00C888")  // Brand color
   isActive      Boolean  @default(true)
   order         Int      @default(0)
