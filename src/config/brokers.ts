@@ -1,5 +1,10 @@
 
-export const BROKERS = {
+export const BROKERS: Record<string, {
+    name: string;
+    logo: string;
+    ibDashboardUrl: string;
+    color: string;
+}> = {
     EXNESS: {
         name: "Exness",
         logo: "/images/brokers/exness.png",
@@ -18,6 +23,4 @@ export const BROKERS = {
         ibDashboardUrl: "https://portal.vtmarkets.com/",
         color: "#00CED1",
     },
-} as const;
-
-export type BrokerKey = keyof typeof BROKERS;
+};

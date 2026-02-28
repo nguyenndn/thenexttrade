@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { toast } from "sonner";
 import { submitAccountRequest } from "@/app/dashboard/trading-systems/actions";
-import { BrokerName } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { Info } from "lucide-react";
 
@@ -18,7 +17,7 @@ interface AddLicenseModalProps {
 export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [broker, setBroker] = useState<BrokerName>("EXNESS");
+    const [broker, setBroker] = useState("EXNESS");
     const [accountNumber, setAccountNumber] = useState("");
 
     const handleSubmit = async () => {
@@ -68,7 +67,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                                         type="radio"
                                         name="broker"
                                         checked={broker === b}
-                                        onChange={() => setBroker(b as BrokerName)}
+                                        onChange={() => setBroker(b)}
                                         className="w-4 h-4 text-primary focus:ring-primary"
                                     />
                                     <span className="font-bold text-gray-700 dark:text-gray-200">{b}</span>

@@ -58,7 +58,7 @@ export function SystemsList({ products, isLocked }: SystemsListProps) {
                 </div>
                 
                 {/* Filter Tabs */}
-                <div className="flex gap-2 p-1.5 bg-gray-100 dark:bg-[#0F1117] rounded-xl border border-gray-100 dark:border-white/5 h-[52px] w-full md:w-auto overflow-x-auto scrollbar-hide">
+                <div className="inline-flex gap-1 p-1 bg-gray-50 dark:bg-[#0F1117] rounded-xl border border-gray-100 dark:border-white/5 w-auto overflow-x-auto scrollbar-hide">
                 <FilterTab
                     label="MT5 Expert Advisor"
                     icon={CustomBotIcon}
@@ -77,9 +77,9 @@ export function SystemsList({ products, isLocked }: SystemsListProps) {
             </div>
 
             {/* List Content - GRID LAYOUT */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {filteredProducts.length === 0 ? (
-                    <div className="col-span-1 md:col-span-2 xl:col-span-3 text-center py-20 bg-gray-50/50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
+                    <div className="col-span-1 md:col-span-2 text-center py-20 bg-gray-50/50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
                         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 dark:from-white/10 dark:to-white/5 mb-6">
                             <BarChart2 size={32} className="text-gray-300 dark:text-gray-600" />
                         </div>
@@ -111,117 +111,103 @@ function SystemDetailCard({ product, isLocked }: { product: EAProduct, isLocked:
 
     return (
         <>
-            <div className="group relative bg-white dark:bg-[#0B0E14] rounded-xl overflow-hidden border border-gray-100 dark:border-white/5 hover:shadow-md transition-shadow flex flex-col h-full">
-                {/* Image Section - aspect video for top of card */}
-                <div className="relative w-full aspect-[4/3] flex-shrink-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#151925] dark:to-[#0B0E14] border-b border-gray-100 dark:border-white/5">
+            <div className="group relative bg-white dark:bg-[#0B0E14] rounded-xl overflow-hidden border border-gray-100 dark:border-white/5 hover:shadow-md transition-shadow">
+                <div className="flex flex-row p-4 gap-4">
+                    {/* Thumbnail — Small Square */}
                     <div
-                        className="w-full h-full overflow-hidden cursor-pointer"
+                        className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#151925] dark:to-[#0B0E14] border border-gray-100 dark:border-white/5 cursor-pointer"
                         onClick={() => product.thumbnail && setIsImagePreviewOpen(true)}
                     >
                         {product.thumbnail ? (
-                            <>
-                                <img
-                                    src={product.thumbnail}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-                                {/* Hover Overlay */}
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                    <div className="text-white text-sm font-bold bg-black/60 backdrop-blur-sm px-4 py-2 rounded-lg">
-                                        Click to preview
-                                    </div>
-                                </div>
-                            </>
+                            <img
+                                src={product.thumbnail}
+                                alt={product.name}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
                         ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center gap-3">
+                            <div className="w-full h-full flex items-center justify-center">
                                 {product.type === "INDICATOR" ? (
-                                    <BarChart2 className="w-12 h-12 text-gray-300 dark:text-gray-600 opacity-30 group-hover:scale-110 transition-transform duration-500" />
+                                    <BarChart2 className="w-8 h-8 text-gray-300 dark:text-gray-600" />
                                 ) : (
-                                    <Bot className="w-12 h-12 text-gray-300 dark:text-gray-600 opacity-30 group-hover:scale-110 transition-transform duration-500" />
+                                    <Bot className="w-8 h-8 text-gray-300 dark:text-gray-600" />
                                 )}
                             </div>
                         )}
+                    </div>
 
-                        {/* Version Badge - Compact */}
-                        <div className="absolute top-3 left-3">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/70 backdrop-blur-xl text-white text-xs font-bold rounded-lg border border-white/20">
-                                <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                    {/* Content — Right Side */}
+                    <div className="flex-1 flex flex-col min-w-0">
+                        {/* Title Row + Version */}
+                        <div className="flex items-start justify-between gap-2 mb-1.5">
+                            <h3 className="text-base font-extrabold uppercase tracking-tight leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors duration-300 line-clamp-1">
+                                {product.name}
+                            </h3>
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/5 text-gray-500 dark:text-gray-400 text-[10px] font-bold rounded-md">
                                 {product.version}
                             </span>
                         </div>
-                    </div>
-                </div>
 
-                {/* Content Section */}
-                <div className="flex-1 flex flex-col p-5 min-w-0">
-                    <div className="flex-1">
-                        <div className="flex justify-between items-start gap-4 mb-3">
-                            <h3 className="text-xl font-extrabold uppercase tracking-tight leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors duration-300 line-clamp-2">
-                                {product.name}
-                            </h3>
-                        </div>
-
-                        {/* Badge System */}
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        {/* Badge */}
+                        <div className="flex flex-wrap gap-1.5 mb-2">
                             {(product as any).isFree ? (
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 text-primary rounded-md text-[10px] font-bold border border-primary/20">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-[10px] font-bold border border-primary/20">
                                     FREE
                                 </span>
                             ) : (
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 text-primary rounded-md text-[10px] font-bold border border-primary/20">
-                                    <Shield size={10} />
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-[10px] font-bold border border-primary/20">
+                                    <Shield size={9} />
                                     MT5 VERIFIED
                                 </span>
                             )}
                         </div>
 
-                        {/* Description - Expanded */}
-                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-3 mb-4">
-                            {product.description || "Professional trading system designed for optimal performance and risk management."}
+                        {/* Description */}
+                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">
+                            {product.description || "Professional trading system designed for optimal performance."}
                         </p>
                     </div>
+                </div>
 
-                    {/* Footer Actions */}
-                    <div className="flex items-center justify-between gap-3 pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
-                        <button
-                            className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-semibold transition-colors bg-primary/5 hover:bg-primary/10 px-3 py-2 rounded-lg"
-                            onClick={() => setIsGuideModalOpen(true)}
-                        >
-                            <Info size={14} />
-                            <span>Guide</span>
-                        </button>
+                {/* Footer Actions */}
+                <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-gray-100 dark:border-white/5">
+                    <button
+                        className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-semibold transition-colors bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-lg"
+                        onClick={() => setIsGuideModalOpen(true)}
+                    >
+                        <Info size={13} />
+                        <span>Guide</span>
+                    </button>
 
-                        <div className="relative">
-                            <Button
-                                disabled={isLocked}
-                                onClick={(e) => {
-                                    if (isLocked) {
-                                        e.preventDefault();
-                                        setShowLockedToast(true);
-                                        setTimeout(() => setShowLockedToast(false), 3000);
-                                    } else {
-                                        window.open(`/api/user/downloads/${product.id}`, '_blank');
-                                        setTimeout(() => setIsGuideModalOpen(true), 1500);
-                                    }
-                                }}
-                                className={cn(
-                                    "flex items-center justify-center gap-2 h-9 rounded-lg px-4 font-bold text-xs transition-all duration-300",
-                                    isLocked 
-                                        ? "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-white/10"
-                                        : "bg-gradient-to-r from-[#EAB308] to-[#F59E0B] hover:from-[#CA9A00] hover:to-[#D97706] text-black shadow-[0_4px_15px_rgba(234,179,8,0.25)] hover:shadow-[0_6px_20px_rgba(234,179,8,0.4)] hover:scale-105"
-                                )}
-                            >
-                                {isLocked ? <Lock size={14} /> : <Download size={14} />}
-                                {isLocked ? "Locked" : "Download"}
-                            </Button>
-
-                            {/* Toast for Locked State */}
-                            {showLockedToast && (
-                                <div className="absolute bottom-[calc(100%+8px)] right-0 w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs rounded-xl shadow-xl font-medium animate-in fade-in slide-in-from-bottom-2 z-20 text-center leading-relaxed">
-                                    Please connect your GSN account to unlock downloads.
-                                </div>
+                    <div className="relative">
+                        <Button
+                            disabled={isLocked}
+                            onClick={(e) => {
+                                if (isLocked) {
+                                    e.preventDefault();
+                                    setShowLockedToast(true);
+                                    setTimeout(() => setShowLockedToast(false), 3000);
+                                } else {
+                                    window.open(`/api/user/downloads/${product.id}`, '_blank');
+                                    setTimeout(() => setIsGuideModalOpen(true), 1500);
+                                }
+                            }}
+                            className={cn(
+                                "flex items-center justify-center gap-2 h-8 rounded-lg px-4 font-bold text-xs transition-all duration-300",
+                                isLocked 
+                                    ? "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-white/10"
+                                    : "bg-gradient-to-r from-[#EAB308] to-[#F59E0B] hover:from-[#CA9A00] hover:to-[#D97706] text-black shadow-[0_4px_15px_rgba(234,179,8,0.25)] hover:shadow-[0_6px_20px_rgba(234,179,8,0.4)]"
                             )}
-                        </div>
+                        >
+                            {isLocked ? <Lock size={13} /> : <Download size={13} />}
+                            {isLocked ? "Locked" : "Download"}
+                        </Button>
+
+                        {/* Toast for Locked State */}
+                        {showLockedToast && (
+                            <div className="absolute bottom-[calc(100%+8px)] right-0 w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs rounded-xl shadow-xl font-medium animate-in fade-in slide-in-from-bottom-2 z-20 text-center leading-relaxed">
+                                Please connect your GSN account to unlock downloads.
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

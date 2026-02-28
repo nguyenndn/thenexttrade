@@ -18,8 +18,8 @@ export default async function TradingSystemsPage() {
         redirect("/auth/login");
     }
 
-    // OPTIMIZED: Fetch licenses and products in parallel
-    const [licenses, products] = await Promise.all([
+    // OPTIMIZED: Fetch all data in parallel
+    const [licenses, products, downloadCount, eaBrokers] = await Promise.all([
         prisma.eALicense.findMany({
             where: { userId: user.id },
             orderBy: { createdAt: "desc" },
@@ -27,7 +27,14 @@ export default async function TradingSystemsPage() {
         prisma.eAProduct.findMany({
             where: { isActive: true },
             orderBy: { createdAt: "desc" },
-        })
+        }),
+        prisma.eADownload.count({
+            where: { userId: user.id },
+        }),
+        prisma.eABroker.findMany({
+            where: { isActive: true },
+            orderBy: { order: "asc" },
+        }),
     ]);
 
     // Check for Approved License
@@ -41,6 +48,8 @@ export default async function TradingSystemsPage() {
                 licenses={licenses}
                 products={products}
                 hasApprovedLicense={hasApprovedLicense}
+                hasDownloaded={downloadCount > 0}
+                eaBrokers={eaBrokers}
             />
         </div>
     );

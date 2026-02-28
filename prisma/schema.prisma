@@ -785,10 +785,22 @@ enum AccountStatus {
   SUSPENDED  // Temporarily disabled
 }
 
-enum BrokerName {
-  EXNESS
-  VANTAGE
-  VTMARKETS
+// EA Broker Management (for Trading Systems)
+model EABroker {
+  id            String   @id @default(uuid())
+  name          String                        // "Exness"
+  slug          String   @unique              // "EXNESS" (stored in EALicense.broker)
+  logo          String                        // URL
+  affiliateUrl  String?                       // IB referral link
+  color         String   @default("#00C888")  // Brand color
+  isActive      Boolean  @default(true)
+  order         Int      @default(0)
+
+  createdAt     DateTime @default(now()) @db.Timestamptz
+  updatedAt     DateTime @updatedAt @db.Timestamptz
+
+  @@index([isActive])
+  @@map("ea_brokers")
 }
 
 // EA License Request & Status
@@ -800,7 +812,7 @@ model EALicense {
   user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Account Info
-  broker          BrokerName
+  broker          String
   accountNumber   String
   
   // Status

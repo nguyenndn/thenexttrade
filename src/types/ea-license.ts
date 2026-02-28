@@ -1,5 +1,5 @@
 
-import { AccountStatus, BrokerName, EAType, PlatformType } from "@prisma/client";
+import { AccountStatus, EAType, PlatformType } from "@prisma/client";
 import { ErrorCode } from "@/lib/errors/ea-license";
 
 // ============================================
@@ -7,7 +7,7 @@ import { ErrorCode } from "@/lib/errors/ea-license";
 // ============================================
 
 export interface EALicenseBase {
-    broker: BrokerName;
+    broker: string;
     accountNumber: string;
 }
 
@@ -41,7 +41,7 @@ export interface EALicenseWithUser extends EALicense {
 
 // Form Inputs
 export interface SubmitAccountInput {
-    broker: BrokerName;
+    broker: string;
     accountNumber: string;
 }
 

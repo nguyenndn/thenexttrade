@@ -8,6 +8,7 @@ import { SystemsList } from "@/components/dashboard/trading-systems/SystemsList"
 import { InstallationWizard } from "@/components/dashboard/trading-systems/InstallationWizard";
 import { cn } from "@/lib/utils";
 import { CustomBotIcon, FilterTab } from "./SharedUI";
+import { AccountSetupWidget } from "./AccountSetupWidget";
 
 
 
@@ -15,11 +16,13 @@ interface TradingSystemsClientProps {
     licenses: any[];
     products: any[];
     hasApprovedLicense: boolean;
+    hasDownloaded: boolean;
+    eaBrokers: any[];
 }
 
 type Tab = "ACCOUNTS" | "DOWNLOADS";
 
-export function TradingSystemsClient({ licenses, products, hasApprovedLicense }: TradingSystemsClientProps) {
+export function TradingSystemsClient({ licenses, products, hasApprovedLicense, hasDownloaded, eaBrokers }: TradingSystemsClientProps) {
     const [activeTab, setActiveTab] = useState<Tab>("ACCOUNTS");
 
     const navItems = [
@@ -43,8 +46,15 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense }:
                     Manage accounts &amp; downloads.
                 </p>
 
-                {/* Horizontal Pill Tabs */}
-                <div className="flex gap-2 p-1.5 bg-gray-100 dark:bg-[#0F1117] rounded-xl border border-gray-100 dark:border-white/5 w-full overflow-x-auto scrollbar-hide">
+                {/* Account Setup Progress */}
+                <AccountSetupWidget
+                    hasAccount={licenses.length > 0}
+                    hasApprovedLicense={hasApprovedLicense}
+                    hasDownloaded={hasDownloaded}
+                />
+
+                {/* Tabs */}
+                <div className="inline-flex gap-1 p-1 bg-gray-50 dark:bg-[#0F1117] rounded-xl border border-gray-100 dark:border-white/5 w-auto overflow-x-auto scrollbar-hide">
                     {navItems.map((item) => {
                         const isActive = activeTab === item.id;
                         const Icon = item.icon;
@@ -65,7 +75,7 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense }:
             <div className="min-h-[500px]">
                 {activeTab === "ACCOUNTS" && (
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <AccountsList licenses={licenses} />
+                        <AccountsList licenses={licenses} eaBrokers={eaBrokers} />
                     </div>
                 )}
 

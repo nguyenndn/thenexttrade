@@ -8,7 +8,8 @@ import {
     Download,
     Bot,
     ArrowRight,
-    AlertCircle
+    AlertCircle,
+    Briefcase
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -199,6 +200,13 @@ export default async function EADashboardPage() {
                                     <Bot className="mb-3 text-cyan-500" size={24} />
                                     <h3 className="font-bold text-gray-900 dark:text-white">EA Products</h3>
                                     <p className="text-sm text-gray-500 mt-1">Manage files and versions</p>
+                                </div>
+                            </Link>
+                            <Link href="/admin/ea/brokers" className="block">
+                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-100 dark:border-white/5">
+                                    <Briefcase className="mb-3 text-amber-500" size={24} />
+                                    <h3 className="font-bold text-gray-900 dark:text-white">EA Brokers</h3>
+                                    <p className="text-sm text-gray-500 mt-1">Manage supported brokers</p>
                                 </div>
                             </Link>
                         </div>

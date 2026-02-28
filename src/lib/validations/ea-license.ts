@@ -2,8 +2,8 @@
 import { z } from "zod";
 
 export const submitAccountSchema = z.object({
-    broker: z.enum(["EXNESS", "VANTAGE", "VTMARKETS"] as const, {
-        message: "Please select a valid broker",
+    broker: z.string().min(1, {
+        message: "Please select a broker",
     }),
     accountNumber: z
         .string()
