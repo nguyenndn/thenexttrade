@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+    <style>
+        /* Base styles for email clients */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+        
+        /* Reset */
+        body { margin: 0; padding: 0; width: 100% !important; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
+        /* Utilities */
+        .wrapper { width: 100%; table-layout: fixed; background-color: #f3f4f6; padding-bottom: 60px; }
+        .main { background-color: #ffffff; margin: 0 auto; width: 100%; max-width: 600px; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); margin-top: 40px; }
+        .header { background-color: #0B0E14; padding: 30px; text-align: center; border-bottom: 4px solid #00C888; }
+        .logo { color: #ffffff; font-size: 28px; font-weight: 800; text-decoration: none; letter-spacing: -0.5px; }
+        .logo-green { color: #00C888; }
+        
+        .content { padding: 40px 30px; text-align: center; }
+        .title { color: #111827; font-size: 24px; font-weight: 700; margin: 0 0 16px 0; }
+        .text { color: #4B5563; font-size: 16px; line-height: 24px; margin: 0 0 32px 0; }
+        
+        .otp-box { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+        .otp-label { color: #6b7280; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 12px 0; }
+        .otp-code { color: #111827; font-size: 36px; font-weight: 800; letter-spacing: 8px; margin: 0; font-family: monospace; }
+        
+        .button { display: inline-block; background-color: #00C888; color: #ffffff; font-size: 16px; font-weight: 700; text-decoration: none; padding: 16px 32px; border-radius: 999px; }
+        .button-wrap { margin-bottom: 32px; }
+        
+        .footer { padding: 30px; text-align: center; background-color: #f9fafb; border-top: 1px solid #e5e7eb; }
+        .footer-text { color: #9ca3af; font-size: 14px; margin: 0 0 8px 0; }
+        .footer-link { color: #00C888; text-decoration: none; }
+        
+        @media screen and (max-width: 600px) {
+            .main { border-radius: 0; margin-top: 0; }
+            .content { padding: 30px 20px; }
+            .otp-code { font-size: 28px; letter-spacing: 4px; }
+        }
+    </style>
+</head>
+<body>
+    <center class="wrapper">
+        <table class="main" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+            <!-- Header -->
+            <tr>
+                <td class="header">
+                    <a href="{{ .SiteURL }}" class="logo">
+                        TheNext<span class="logo-green">Trade</span>
+                    </a>
+                </td>
+            </tr>
+            
+            <!-- Content -->
+            <tr>
+                <td class="content">
+                    <h1 class="title">Verify Your Email Address</h1>
+                    <p class="text">
+                        Welcome to TheNextTrade! To complete your registration and secure your account, please enter the verification code below on the signup page.
+                    </p>
+                    
+                    <!-- OTP Code Box -->
+                    <div class="otp-box">
+                        <p class="otp-label">Your Verification Code</p>
+                        <!-- Supabase injects the 8-digit token here -->
+                        <h2 class="otp-code">{{ .Token }}</h2>
+                    </div>
+                    
+                    <p class="text" style="font-size: 14px; color: #6b7280; margin-bottom: 16px;">
+                        Or you can instantly verify your account by clicking the button below:
+                    </p>
+                    
+                    <div class="button-wrap">
+                        <a href="{{ .ConfirmationURL }}" class="button">Verify Account Automatically</a>
+                    </div>
+                    
+                    <p class="text" style="font-size: 13px; margin: 0;">
+                        This code will expire in 24 hours. If you didn't request this email, you can safely ignore it.
+                    </p>
+                </td>
+            </tr>
+            
+            <!-- Footer -->
+            <tr>
+                <td class="footer">
+                    <p class="footer-text">
+                        &copy; 2026 TheNextTrade Academy. All rights reserved.
+                    </p>
+                    <p class="footer-text">
+                        Need help? <a href="{{ .SiteURL }}/contact" class="footer-link">Contact Support</a>
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </center>
+</body>
+</html>

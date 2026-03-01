@@ -54,12 +54,20 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
 
     if (!user) {
         return (
-            <Link
-                href="/auth/login"
-                className="text-sm sm:text-base font-medium whitespace-nowrap px-4 py-2 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-gray-100 transition-colors"
-            >
-                Login
-            </Link>
+            <div className="flex items-center gap-3">
+                <Link
+                    href="/auth/login"
+                    className="text-sm font-semibold whitespace-nowrap px-4 py-2 rounded-xl text-gray-800 hover:text-primary dark:text-gray-300 dark:hover:text-white transition-colors"
+                >
+                    Login
+                </Link>
+                <Link
+                    href="/auth/signup"
+                    className="text-sm font-bold whitespace-nowrap px-6 py-2 rounded-xl bg-gradient-to-r from-primary to-[#00A570] text-white hover:opacity-90 transition-opacity shadow-sm"
+                >
+                    Sign Up Free
+                </Link>
+            </div>
         );
     }
 
@@ -67,22 +75,22 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 pl-0.5 pr-3 py-0.5 rounded-full bg-[#EAF4FF] dark:bg-slate-800 border border-blue-100 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 transition-all group"
+                className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#00C888]/10 dark:bg-slate-800 border border-[#00C888]/20 dark:border-slate-700 hover:bg-[#00C888]/20 dark:hover:bg-slate-700 transition-all group shadow-sm"
                 aria-label="User menu"
             >
                 {/* Avatar Circle */}
-                <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-700 overflow-hidden border-2 border-white dark:border-slate-600 shadow-sm">
+                <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-700 overflow-hidden border border-white dark:border-slate-600 shadow-sm shrink-0">
                     {userData.image ? (
                         <Image
                             src={userData.image}
                             alt={userData.name || "User"}
-                            width={36}
-                            height={36}
+                            width={32}
+                            height={32}
                             className="object-cover w-full h-full"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-500 bg-gray-100 dark:bg-slate-800">
-                            <UserIcon size={18} />
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100 dark:bg-slate-800">
+                            <UserIcon size={16} />
                         </div>
                     )}
                 </div>
@@ -90,7 +98,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                 {/* Gear Icon */}
                 <Settings
                     size={20}
-                    className="text-[#2F80ED] dark:text-blue-400 group-hover:rotate-90 transition-transform duration-500"
+                    className="text-[#00C888] dark:text-[#00C888] group-hover:rotate-90 transition-transform duration-500"
                 />
             </button>
 

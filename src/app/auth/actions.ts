@@ -109,16 +109,20 @@ export async function verifyLogin2FA(code: string) {
 export async function signup(formData: FormData) {
     const supabase = await createClient()
 
-    const firstName = formData.get('firstName') as string
-    const lastName = formData.get('lastName') as string
+    const fullName = formData.get('fullName') as string
     const country = formData.get('country') as string
     const email = formData.get('email') as string
     const password = formData.get('password') as string
 
     // Simple validation
-    if (!email || !password || password.length < 6) {
+    if (!email || !password || password.length < 6 || !fullName) {
         return { error: 'Invalid inputs. Password must be at least 6 chars.' }
     }
+
+    // Attempt to split name for metadata if needed, otherwise just use full name
+    const nameParts = fullName.trim().split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
 
     // 2. Sign Up
     const { data, error } = await supabase.auth.signUp({
@@ -126,7 +130,7 @@ export async function signup(formData: FormData) {
         password,
         options: {
             data: {
-                full_name: `${firstName} ${lastName}`.trim(),
+                full_name: fullName.trim(),
                 country: country,
                 first_name: firstName,
                 last_name: lastName
@@ -138,28 +142,24 @@ export async function signup(formData: FormData) {
         return { error: error.message }
     }
 
-    // Sync to Prisma immediately
-    if (data.user) {
+    // Check if session is automatically established (Email Verification disabled)
+    if (data?.user && data.session) {
+        // Fallback: If verification is disabled, insert immediately
         await prisma.user.create({
             data: {
                 id: data.user.id,
                 email: email,
-                name: `${firstName} ${lastName}`.trim(),
+                name: fullName.trim(),
             }
-        }).catch(err => {
-            // Ignore duplicate error if it somehow exists
-            console.error("Prisma Create Error (Ignored):", err);
-        });
+        }).catch(err => console.error("Prisma Create Error:", err));
+        
+        revalidatePath('/', 'layout')
+        redirect('/onboarding')
     }
 
-    // Check if session is established
-    if (data?.user && !data.session) {
-        return { success: true, message: 'Please check your email to confirm your account.' }
-    }
-
-    // 3. Redirect
-    revalidatePath('/', 'layout')
-    redirect('/onboarding')
+    // Email verification is ON -> session is null -> Requires Verification Flow
+    // DO NOT insert into Prisma yet. Keep DB clean.
+    return { success: true, requiresVerification: true, email: email, message: 'OTP sent to your email.' }
 }
 
 export async function signout() {
@@ -217,4 +217,71 @@ export async function updatePassword(formData: FormData) {
     }
 
     redirect('/academy')
+}
+
+// ----------------------------------------------------------------------------
+// EMAIL VERIFICATION (OTP) ACTIONS
+// ----------------------------------------------------------------------------
+
+export async function verifyOtpAction(formData: FormData) {
+    const supabase = await createClient()
+    const email = formData.get('email') as string
+    const otp = formData.get('otp') as string
+
+    if (!email || !otp || otp.length !== 8) {
+        return { error: 'Email and an 8-digit OTP code are required.' }
+    }
+
+    const { data, error } = await supabase.auth.verifyOtp({
+        email,
+        token: otp,
+        type: 'signup'
+    })
+
+    if (error) {
+        return { error: error.message }
+    }
+
+    // On OTP Success: Insert user into Database (Prisma)
+    if (data.user) {
+        const metadata = data.user.user_metadata;
+        const fullName = metadata?.full_name || (metadata?.first_name ? metadata.first_name + ' ' + metadata.last_name : 'Trader');
+        
+        try {
+            await prisma.user.upsert({
+                where: { id: data.user.id },
+                update: {}, // Do nothing if exists
+                create: {
+                    id: data.user.id,
+                    email: data.user.email!,
+                    name: fullName.trim(),
+                }
+            })
+        } catch (err) {
+            console.error("Prisma Insert Error during Verify:", err);
+        }
+    }
+
+    revalidatePath('/', 'layout')
+    redirect('/onboarding')
+}
+
+export async function resendOtpAction(formData: FormData) {
+    const supabase = await createClient()
+    const email = formData.get('email') as string
+
+    if (!email) {
+        return { error: 'Email is required.' }
+    }
+
+    const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+    })
+
+    if (error) {
+        return { error: error.message }
+    }
+
+    return { success: true, message: 'A new 8-digit code has been sent to your email.' }
 }

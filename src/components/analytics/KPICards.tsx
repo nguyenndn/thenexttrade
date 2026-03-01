@@ -90,7 +90,7 @@ export function KPICards({ summary }: KPICardsProps) {
                         className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace('text-', 'border-t-')}`}
                     >
                         <div className="flex items-center gap-3 mb-4">
-                            <div className={`p-3 rounded-2xl ${card.bg} text-opacity-80 group-hover:bg-opacity-100 transition-colors shadow-sm relative z-10`}>
+                            <div className={`p-3 rounded-xl ${card.bg} text-opacity-80 group-hover:bg-opacity-100 transition-colors shadow-sm relative z-10`}>
                                 <Icon size={20} className={card.color} strokeWidth={2.5} />
                             </div>
                         </div>

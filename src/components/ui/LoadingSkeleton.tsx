@@ -112,3 +112,29 @@ export function PageSkeleton() {
     </div>
   );
 }
+
+export function HomeFeedSkeleton() {
+  return (
+    <div className="pt-24 pb-8 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        <div className="lg:col-span-2 space-y-4">
+          <HeroSkeleton />
+        </div>
+        <div className="space-y-4 flex flex-col h-full min-h-[400px]">
+          <div className="h-6 w-32 rounded bg-slate-200 dark:bg-slate-800 animate-pulse mb-4" />
+          <ArticleCardSkeleton count={4} />
+        </div>
+      </div>
+      <div className="space-y-8">
+        <div className="h-10 w-48 mx-auto rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
+        <div className="flex gap-4 justify-center">
+          <div className="h-12 w-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
+          <div className="h-12 w-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
+          <div className="h-12 w-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
+          <div className="h-12 w-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
+        </div>
+        <StatsSkeleton className="mt-8" />
+      </div>
+    </div>
+  );
+}

@@ -198,7 +198,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                     Performance Summary
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 shadow-xl relative overflow-hidden group">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl relative overflow-hidden group">
                                     {/* Ambient Glow based on Result */}
                                     <div className={cn(
                                         "absolute top-0 right-0 w-[400px] h-[400px] rounded-full blur-[120px] pointer-events-none opacity-20 transition-all duration-700", 
@@ -290,7 +290,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                             </div>
 
                                             {/* Trade Results Hub */}
-                                            <div className="bg-white dark:bg-[#151925] p-6 rounded-2xl border border-gray-200 dark:border-white/10 shadow-inner relative overflow-hidden">
+                                            <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-inner relative overflow-hidden">
                                                 <div className={cn("absolute inset-0 opacity-[0.03] pattern-diagonal-lines pattern-size-4 pattern-bg-white", isWin ? "pattern-green-500" : "pattern-red-500")}></div>
                                                 
                                                 <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 relative z-10 flex items-center gap-2">
@@ -341,10 +341,10 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                     Trade Analysis & Context
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 shadow-xl p-8 space-y-8">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl p-8 space-y-8">
                                     {/* Strategy & Psychology */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-6 rounded-2xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
+                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-6 rounded-xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
                                             <div className="absolute -top-10 -right-10 text-blue-500/5 rotate-12 pointer-events-none">
                                                 <Target size={120} strokeWidth={1} />
                                             </div>
@@ -374,7 +374,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-6 rounded-2xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
+                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-6 rounded-xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
                                             <div className="absolute -bottom-6 -right-6 text-purple-500/5 -rotate-12 pointer-events-none">
                                                 <Brain size={120} strokeWidth={1} />
                                             </div>

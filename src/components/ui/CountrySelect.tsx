@@ -54,8 +54,8 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                 type="button"
                 onClick={() => !loading && setIsOpen(!isOpen)}
                 className={cn(
-                    "flex items-center justify-between w-full h-12 px-4 rounded-xl border bg-[#0B0E14] text-left transition-all",
-                    "border-white/10 hover:border-white/20 focus:outline-none focus:border-[#2F80ED]/50 focus:ring-1 focus:ring-[#2F80ED]/50",
+                    "flex items-center justify-between w-full h-12 px-4 rounded-xl border bg-gray-50 dark:bg-[#0B0E14] text-left transition-all",
+                    "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:ring-1 focus:ring-[#2F80ED]/50 dark:focus:ring-[#2F80ED]/50",
                     error ? "border-red-500/50" : "",
                     loading ? "opacity-70 cursor-wait" : "",
                     className
@@ -71,7 +71,7 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                             alt={selectedCountry.name}
                             className="w-6 h-auto rounded-sm object-cover shadow-sm"
                         />
-                        <span className="text-white text-base truncate pr-2">{selectedCountry.name}</span>
+                        <span className="text-gray-900 dark:text-white text-base truncate pr-2">{selectedCountry.name}</span>
                     </div>
                 ) : (
                     <span className="text-gray-500 text-base">Select Country</span>
@@ -84,15 +84,15 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute z-50 w-full mt-2 bg-[#1C1F2E] border border-white/10 rounded-xl shadow-2xl max-h-80 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute z-50 w-full mt-2 bg-white dark:bg-[#1C1F2E] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl max-h-80 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
                     {/* Search Bar */}
-                    <div className="p-3 border-b border-white/10 sticky top-0 bg-[#1C1F2E] z-10">
+                    <div className="p-3 border-b border-gray-200 dark:border-white/10 sticky top-0 bg-white dark:bg-[#1C1F2E] z-10">
                         <div className="relative">
                             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                             <input
                                 type="text"
                                 placeholder="Search country..."
-                                className="w-full bg-[#0B0E14] text-white text-sm rounded-lg pl-9 pr-3 py-2 border border-white/10 focus:outline-none focus:border-[#2F80ED]/50"
+                                className="w-full bg-gray-50 dark:bg-[#0B0E14] text-gray-900 dark:text-white text-sm rounded-lg pl-9 pr-3 py-2 border border-gray-200 dark:border-white/10 focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 autoFocus
@@ -114,8 +114,8 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                                     }}
                                     className={cn(
                                         "flex items-center w-full px-3 py-2.5 rounded-lg text-left transition-colors",
-                                        "hover:bg-white/5 active:bg-white/10",
-                                        value === country.code ? "bg-[#2F80ED]/10 text-[#2F80ED]" : "text-gray-300"
+                                        "hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-white/5 dark:active:bg-white/10",
+                                        value === country.code ? "bg-[#2F80ED]/10 text-[#2F80ED]" : "text-gray-700 dark:text-gray-300"
                                     )}
                                 >
                                     <div className="flex items-center gap-3 flex-1">

@@ -7,8 +7,8 @@ export default function AuthCodeErrorPage() {
             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <AlertTriangle className="text-red-500" size={32} />
             </div>
-            <h1 className="text-2xl font-bold mb-2">Authentication Error</h1>
-            <p className="text-gray-400 mb-8">
+            <h1 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Authentication Error</h1>
+            <p className="text-gray-500 dark:text-gray-400 mb-8">
                 The link you used is invalid or has expired. Please try again.
             </p>
             <div className="flex flex-col gap-3">
@@ -20,7 +20,7 @@ export default function AuthCodeErrorPage() {
                 </Link>
                 <Link
                     href="/auth/login"
-                    className="w-full bg-[#151925] border border-white/10 hover:bg-[#1C1F2E] text-white font-bold py-3 rounded-xl transition-all"
+                    className="w-full bg-gray-100 dark:bg-[#151925] border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-[#1C1F2E] text-gray-900 dark:text-white font-bold py-3 rounded-xl transition-all"
                 >
                     Back to Login
                 </Link>

@@ -30,42 +30,38 @@ export default function UpdatePasswordPage() {
     return (
         <div className="w-full max-w-md">
             <div className="mb-8">
-                <Link href="/auth/login" className="inline-flex items-center text-sm text-gray-400 hover:text-white mb-6 transition-colors">
-                    <ArrowLeft size={16} className="mr-2" />
-                    Back to Login
-                </Link>
                 <h1 className="text-3xl font-bold mb-2">Set New Password</h1>
-                <p className="text-gray-400">
+                <p className="text-gray-500 dark:text-gray-400">
                     Your new password must be different from previously used passwords.
                 </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-300">New Password</label>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">New Password</label>
                     <div className="relative">
                         <input
                             name="password"
                             type="password"
                             required
                             placeholder="Min 6 characters"
-                            className="w-full bg-[#151925] border border-gray-800 rounded-xl px-4 py-3 pl-11 text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2F80ED] focus:ring-1 focus:ring-[#2F80ED] transition-all"
+                            className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 pl-11 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                         />
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
                     </div>
                 </div>
 
                 <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-300">Confirm Password</label>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
                     <div className="relative">
                         <input
                             name="confirmPassword"
                             type="password"
                             required
                             placeholder="Re-enter password"
-                            className="w-full bg-[#151925] border border-gray-800 rounded-xl px-4 py-3 pl-11 text-white placeholder:text-gray-500 focus:outline-none focus:border-[#2F80ED] focus:ring-1 focus:ring-[#2F80ED] transition-all"
+                            className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 pl-11 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                         />
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
                     </div>
                 </div>
 

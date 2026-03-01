@@ -9,39 +9,72 @@ export const metadata: Metadata = {
 export default function CookiePolicyPage() {
     return (
         <>
-            <div className="flex flex-col items-center justify-center mb-8">
-                <div className="p-3 bg-orange-500/10 text-orange-500 rounded-xl mb-4">
-                    <Cookie size={40} />
+            <div className="max-w-3xl mx-auto text-center space-y-6 mb-20 mt-12">
+                <div className="inline-flex items-center justify-center p-3 rounded-xl bg-orange-500/10 text-orange-500 mb-2 ring-4 ring-orange-500/5 animate-in fade-in zoom-in slide-in-from-bottom-4 duration-500">
+                    <Cookie size={40} strokeWidth={1.5} />
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-center m-0 mb-2">Cookie Policy</h1>
-                <p className="text-gray-500 dark:text-gray-400 text-center m-0">
+                <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">Cookie Policy</h1>
+                <p className="text-xl text-gray-500 dark:text-gray-400 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
                     Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </p>
             </div>
 
-            <h2>1. What Are Cookies</h2>
+            <div className="max-w-4xl mx-auto">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-500 dark:prose-p:text-gray-400 prose-li:text-gray-500 dark:prose-li:text-gray-400 prose-strong:text-gray-900 dark:prose-strong:text-white max-w-none transition-colors duration-300">
+
+
+            <h2>1. What Are Cookies?</h2>
             <p>
-                Cookies are small pieces of text sent to your web browser by a website you visit. A cookie file is stored in your web browser and allows the Service or a third-party to recognize you and make your next visit easier and the Service more useful to you.
+                Cookies are small data files placed on your computer or mobile device when you visit a website. They are widely used by online service providers to facilitate and help to make the interaction between users and websites faster and easier, as well as to provide reporting information.
+            </p>
+            <p>
+                Cookies set by the website owner (in this case, TheNextTrade) are called "first-party cookies." Cookies set by parties other than the website owner are called "third-party cookies." We use both to provide you with a seamless and secure trading journal experience.
             </p>
 
             <h2>2. How We Use Cookies</h2>
             <p>
-                When you use and access the Service, we may place a number of cookies files in your web browser. We use cookies for the following purposes: to enable certain functions of the Service, to provide analytics, to store your preferences, to enable advertisements delivery, including behavioral advertising.
+                When you access and use TheNextTrade platform, we may place persistent and session cookie files in your web browser. We use cookies for the following purposes:
             </p>
             <ul>
-                <li><strong>Essential cookies:</strong> We may use essential cookies to authenticate users and prevent fraudulent use of user accounts.</li>
-                <li><strong>Analytics cookies:</strong> We may use analytics cookies to track information how the Service is used so that we can make improvements. We may also use analytics cookies to test new advertisements, pages, features or new functionality of the Service to see how our users react to them.</li>
+                <li><strong>Essential / Strictly Necessary Cookies:</strong> These cookies are critical to the operation of our platform. They enable secure login, session management, and access to premium features (like your Trading Journal and Dashboards). Without these, our services cannot function properly.</li>
+                <li><strong>Performance and Analytics Cookies:</strong> We use these to understand how users interact with our site—for instance, which Academy pages are visited most often or how much time is spent analyzing trades. This helps us optimize performance and improve the user experience.</li>
+                <li><strong>Preference Cookies:</strong> These cookies allow us to remember your choices, such as your preferred theme (Dark or Light mode), layout settings, and language preferences, saving you the trouble of continually re-entering this information.</li>
+                <li><strong>Security Cookies:</strong> Used to authenticate users, prevent fraudulent use of login credentials, and protect user data from unauthorized parties.</li>
             </ul>
 
-            <h2>3. Third-party Cookies</h2>
+            <h2>3. Third-Party Cookies and Tracking</h2>
             <p>
-                In addition to our own cookies, we may also use various third-parties cookies to report usage statistics of the Service, deliver advertisements on and through the Service, and so on.
+                In addition to our own cookies, we may also utilize various third-party cookies from trusted partners to report usage statistics and improve site security. Specifically:
             </p>
+            <ul>
+                <li><strong>Cloudflare:</strong> We use Cloudflare for DDoS protection and web performance. Cloudflare places a necessary cookie to identify trusted web traffic and ensure security.</li>
+                <li><strong>Supabase:</strong> Our backend provider, Supabase, utilizes secure cookies to manage authentication sessions and ensure your trading data remains private and securely linked to your account.</li>
+                <li><strong>Analytics Providers:</strong> We may use tools to collect anonymized telemetry data that helps us understand traffic and app performance.</li>
+            </ul>
 
             <h2>4. Your Choices Regarding Cookies</h2>
             <p>
-                If you'd like to delete cookies or instruct your web browser to delete or refuse cookies, please visit the help pages of your web browser. Please note, however, that if you delete cookies or refuse to accept them, you might not be able to use all of the features we offer, you may not be able to store your preferences, and some of our pages might not display properly.
+                You have the right to decide whether to accept or reject cookies. You can exercise your cookie rights by setting your preferences in your web browser controls.
             </p>
+            <ul>
+                <li>If you choose to reject cookies, you may still use our website to view public content, but <strong>your access to your account, dashboards, and personalized trading features will be severely degraded or completely non-functional</strong> (as login sessions require cookies).</li>
+                <li>To learn how to manage cookies, please visit the help menus of your specific browser (Chrome, Firefox, Safari, Edge, etc.).</li>
+            </ul>
+
+            <h2>5. Updates to This Policy</h2>
+            <p>
+                We may update this Cookie Policy from time to time in order to reflect changes to the cookies we use or for other operational, legal, or regulatory reasons. Please revisit this page regularly to stay informed about our use of cookies and related technologies.
+            </p>
+
+            <h2>6. Contact Us</h2>
+            <p>
+                If you have any questions about our use of cookies or other technologies, please email us at:
+            </p>
+            <p>
+                <strong>Email:</strong> support@thenexttrade.com
+            </p>
+                </div>
+            </div>
         </>
     );
 }

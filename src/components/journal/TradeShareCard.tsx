@@ -81,7 +81,7 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
     const percentGain = entry.pnl ? ((entry.pnl / 10000) * 100).toFixed(2) : "0.00";
 
     return (
-        <div className={cn("relative w-full max-w-3xl mx-auto rounded-2xl overflow-hidden bg-white dark:bg-[#1E2028] shadow-2xl border border-gray-200 dark:border-white/10 transition-all text-left", className)}>
+        <div className={cn("relative w-full max-w-3xl mx-auto rounded-xl overflow-hidden bg-white dark:bg-[#1E2028] shadow-2xl border border-gray-200 dark:border-white/10 transition-all text-left", className)}>
             {/* Background Texture/Gradient */}
             <div className={cn("absolute inset-0 bg-gradient-to-br opacity-50 pointer-events-none", bgGradient)}></div>
             

@@ -51,17 +51,20 @@ export async function updateProfile(formData: FormData) {
 
     // 3. User Sync & Update (Avatar)
     // Ensure Prisma user exists before update (Defense in depth)
-    const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-    if (!dbUser) {
-        await prisma.user.create({
-            data: {
-                id: user.id,
-                email: user.email,
-                name: user.user_metadata?.full_name || '',
-                image: user.user_metadata?.avatar_url || '',
-            }
-        });
-    }
+    // Using upsert by email to prevent "Unique constraint failed" if a seeded or previous record exists
+    const dbUser = await prisma.user.upsert({
+        where: { email: user.email! },
+        update: {
+            id: user.id, // Ensure ID matches auth
+            name: user.user_metadata?.full_name || user.user_metadata?.first_name || '',
+        },
+        create: {
+            id: user.id,
+            email: user.email!,
+            name: user.user_metadata?.full_name || '',
+            image: user.user_metadata?.avatar_url || '',
+        }
+    });
 
     if (avatarUrl) {
         // Sync with Auth Metadata

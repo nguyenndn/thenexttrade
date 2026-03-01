@@ -157,7 +157,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                     </div>
 
                     {/* Card Preview Area */}
-                    <div className="flex justify-center py-4 w-full rounded-2xl bg-white dark:bg-[#1E2028]" ref={cardRef}>
+                    <div className="flex justify-center py-4 w-full rounded-xl bg-white dark:bg-[#1E2028]" ref={cardRef}>
                         <TradeShareCard entry={entry} variant={mode} className="max-w-none shadow-xl" />
                     </div>
 

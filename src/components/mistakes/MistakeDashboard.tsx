@@ -56,7 +56,7 @@ export function MistakeDashboard() {
                 {/* Cost of Mistakes */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex items-center gap-3.5 mb-3">
-                        <div className="p-3 bg-red-500/10 text-red-500 dark:text-red-400 rounded-2xl group-hover:bg-red-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <div className="p-3 bg-red-500/10 text-red-500 dark:text-red-400 rounded-xl group-hover:bg-red-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <DollarSign size={22} strokeWidth={2.5} />
                         </div>
                         <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Cost of Mistakes</p>
@@ -73,7 +73,7 @@ export function MistakeDashboard() {
                 {/* Win Rate Gap */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex items-center gap-3.5 mb-3">
-                        <div className="p-3 bg-blue-500/10 text-blue-500 dark:text-blue-400 rounded-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <div className="p-3 bg-blue-500/10 text-blue-500 dark:text-blue-400 rounded-xl group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <TrendingDown size={22} strokeWidth={2.5} />
                         </div>
                         <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Performance Gap</p>
@@ -94,7 +94,7 @@ export function MistakeDashboard() {
                 {/* Most Frequent */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex items-center gap-3.5 mb-4">
-                        <div className="p-3 bg-amber-500/10 text-amber-500 dark:text-amber-400 rounded-2xl group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <div className="p-3 bg-amber-500/10 text-amber-500 dark:text-amber-400 rounded-xl group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <AlertTriangle size={22} strokeWidth={2.5} />
                         </div>
                         <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Frequent Issue</p>
@@ -115,7 +115,7 @@ export function MistakeDashboard() {
                 {/* Deadliest Mistake */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex items-center gap-3.5 mb-4">
-                        <div className="p-3 bg-purple-500/10 text-purple-500 dark:text-purple-400 rounded-2xl group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <div className="p-3 bg-purple-500/10 text-purple-500 dark:text-purple-400 rounded-xl group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <XCircle size={22} strokeWidth={2.5} />
                         </div>
                         <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Costliest Mistake</p>

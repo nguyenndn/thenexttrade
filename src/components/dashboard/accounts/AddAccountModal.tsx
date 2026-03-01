@@ -233,7 +233,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         </h3>
 
                         {/* IB Info Box */}
-                        <div className="bg-gray-50 dark:bg-[#151925] rounded-2xl p-6 mb-8 text-center space-y-5">
+                        <div className="bg-gray-50 dark:bg-[#151925] rounded-xl p-6 mb-8 text-center space-y-5">
                             <div>
                                 <p className="text-sm font-bold text-gray-400 dark:text-gray-500 mb-1">Your Broker:</p>
                                 <p className="text-2xl font-black text-gray-900 dark:text-white">
@@ -326,7 +326,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         </h3>
 
                         {/* Balance Info Box */}
-                        <div className="bg-[#F8F9FA] dark:bg-[#151925] rounded-2xl p-6 mb-8 text-center space-y-2">
+                        <div className="bg-[#F8F9FA] dark:bg-[#151925] rounded-xl p-6 mb-8 text-center space-y-2">
                             <p className="text-sm font-bold text-gray-400 dark:text-gray-500">
                                 Minimum Required Balance:
                             </p>

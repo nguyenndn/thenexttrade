@@ -20,12 +20,27 @@ import { getMarketData } from "@/app/actions/get-market-data";
 import { shuffleArray } from "@/lib/utils";
 import { HOMEPAGE_TRENDING_TOPICS } from "@/config/home-data";
 import { Button } from "@/components/ui/Button";
+import { Suspense } from "react";
+import { HomeFeedSkeleton } from "@/components/ui/LoadingSkeleton";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 // ... imports ... 
 
 export default async function Home() {
-  const [user, featuredRaw, latestArticles, popularArticles, marketResult, nextEvent] = await Promise.all([
-    getAuthUser(),
+  const user = await getAuthUser();
+  return (
+    <main className="min-h-screen bg-white dark:bg-slate-900 overflow-hidden">
+      <PublicHeader user={user} />
+      <Suspense fallback={<HomeFeedSkeleton />}>
+        <HomeFeed />
+      </Suspense>
+      <SiteFooter />
+    </main>
+  );
+}
+
+async function HomeFeed() {
+  const [featuredRaw, latestArticles, popularArticles, marketResult, nextEvent] = await Promise.all([
     // 1. Fetch Featured Articles
     cache.wrap("home:featured", () => prisma.article.findMany({
       where: { isFeatured: true, status: 'PUBLISHED' },
@@ -54,7 +69,7 @@ export default async function Home() {
     }), 300),
 
     // 2. Fetch Latest Articles
-    cache.wrap("home:latest", () => prisma.article.findMany({
+    cache.wrap("home:latest_v3", () => prisma.article.findMany({
       where: { status: 'PUBLISHED' },
       select: {
         id: true,
@@ -77,7 +92,7 @@ export default async function Home() {
         }
       },
       orderBy: { createdAt: 'desc' },
-      take: 6
+      take: 4
     }), 300),
 
     // 3. Fetch Popular Guides
@@ -130,9 +145,8 @@ export default async function Home() {
   const trendingTopics = HOMEPAGE_TRENDING_TOPICS;
 
   return (
-    <main className="min-h-screen bg-white dark:bg-slate-900">
-      <PublicHeader user={user} />
-
+    <>
+      <FadeIn delay={0.1}>
       {/* Hero Section */}
       <div className="pt-24 pb-8 dark:bg-[#0B0E14]">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -150,7 +164,7 @@ export default async function Home() {
             </div>
 
             {/* Side Cards - Latest Articles */}
-            <div className="space-y-4 flex flex-col h-[500px]">
+            <div className="space-y-4 flex flex-col">
               <SectionHeader
                 title="Latest Updates"
                 align="left"
@@ -159,7 +173,7 @@ export default async function Home() {
                 className="!mb-2"
               />
 
-              <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
+              <div className="flex flex-col gap-4">
                 {latestArticles.map((article, idx) => (
                   <Link key={article.id} href={`/articles/${article.slug}`} className="group flex gap-3 p-2 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
                     <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gray-200">
@@ -193,7 +207,9 @@ export default async function Home() {
           </div>
         </div>
       </div>
+      </FadeIn>
 
+      <FadeIn delay={0.2} direction="up">
       {/* Trending Topics */}
       <section className="py-16 relative bg-gray-50/50 dark:bg-[#0F1117] border-t border-gray-200 dark:border-white/10 overflow-hidden">
         {/* Dot Pattern Background - Increased Visibility */}
@@ -213,7 +229,7 @@ export default async function Home() {
               <Link
                 key={idx}
                 href={topic.href}
-                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow hover:bg-white/80 dark:hover:bg-white/20 hover:border-primary dark:hover:border-primary transition-all duration-300"
+                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-primary/20 hover:bg-primary/5 dark:hover:bg-primary/10 hover:border-primary/50 transition-all duration-300"
               >
                 <span className="text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors">
                   # {topic.name}
@@ -224,7 +240,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      </FadeIn>
 
+      <FadeIn delay={0.1} direction="up">
       {/* Popular Guides Section */}
       <section className="py-16 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -250,13 +268,13 @@ export default async function Home() {
                   ) : (
                     <div className="w-full h-full bg-gray-200 dark:bg-gray-800" />
                   )}
-                  <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-white">
+                  <div className="absolute top-2 left-2 bg-gradient-to-r from-primary to-[#00A570] shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-black">
                     #{idx + 1} Trending
                   </div>
                 </div>
                 <div className="px-2 pb-2">
-                  <span className="text-xs font-bold text-purple-500 uppercase tracking-wide">{article.category.name}</span>
-                  <h3 className="mt-2 text-lg font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-purple-500 transition-colors">
+                  <span className="text-xs font-bold text-primary uppercase tracking-wide">{article.category.name}</span>
+                  <h3 className="mt-2 text-lg font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors">
                     {article.title}
                   </h3>
                   <div className="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-white/10 pt-3">
@@ -272,13 +290,19 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      </FadeIn>
 
+      <FadeIn delay={0.1} direction="up">
       {/* Tools Preview Section (Market Hours & Calendar) */}
       <ToolsPreviewSection nextEvent={nextEvent} />
+      </FadeIn>
 
+      <FadeIn delay={0.2} direction="up">
       {/* Market Ticker */}
       <MarketTickerSection initialData={marketData} />
+      </FadeIn>
 
+      <FadeIn delay={0.1} direction="up">
       {/* Academy Learning Path Section */}
       <section id="academy-preview" className="py-16 relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10">
         {/* Grid Pattern Background */}
@@ -296,7 +320,7 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 md:flex md:flex-wrap md:justify-center lg:grid lg:grid-cols-5 gap-6 mb-16 relative">
             {/* Connecting Line (Desktop Only) */}
-            <div className="hidden lg:block absolute top-12 left-6 right-6 h-0.5 bg-gradient-to-r from-primary/20 via-blue-500/20 to-primary/20 -z-10"></div>
+            <div className="hidden lg:block absolute top-12 left-6 right-6 h-1 bg-gradient-to-r from-primary/0 via-primary/50 to-primary/0 -z-10 shadow-[0_0_15px_rgba(0,200,136,0.3)]"></div>
 
             {[
               { icon: BookOpen, title: "1. Initiate", desc: "Forex fundamentals.", color: "text-blue-500", bg: "bg-blue-500/10" },
@@ -317,19 +341,24 @@ export default async function Home() {
             ))}
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-4">
             <Link href="/academy">
               <Button 
                 size="lg" 
-                className="rounded-full shadow-xl shadow-primary/20 hover:shadow-primary/30 transform hover:scale-105 transition-all duration-300 px-10 py-6 text-lg"
+                className="relative overflow-hidden rounded-full bg-gradient-to-r from-primary to-[#00A570] text-black font-black shadow-[0_0_20px_rgba(0,200,136,0.3)] hover:shadow-[0_0_30px_rgba(0,200,136,0.5)] transform hover:scale-105 transition-all duration-300 px-10 py-6 text-lg group"
               >
-                Start Learning Now
+                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="flex items-center gap-2 relative z-10">
+                  Start Learning Now <ArrowRight strokeWidth={3} size={20} className="group-hover:translate-x-1 transition-transform" />
+                </span>
               </Button>
             </Link>
           </div>
         </div>
       </section>
+      </FadeIn>
 
+      <FadeIn delay={0.2} direction="up">
       {/* Daily Quote */}
       <section className="py-16 relative overflow-hidden border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
         {/* Background Effects */}
@@ -340,8 +369,8 @@ export default async function Home() {
           <QuoteDisplay isDark={true} />
         </div>
       </section>
+      </FadeIn>
 
-      <SiteFooter />
-    </main>
+    </>
   );
 }
