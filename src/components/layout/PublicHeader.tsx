@@ -13,6 +13,7 @@ import { DesktopNav } from "@/components/layout/DesktopNav";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
+import { Button } from "@/components/ui/Button";
 
 interface PublicHeaderProps {
     user?: AuthUser | null;
@@ -63,7 +64,9 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
                         <UserMenu user={user} profile={profile} />
 
                         {/* Mobile Menu Button */}
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             className={`lg:hidden p-2 rounded-lg ${isDark ? 'text-white hover:bg-slate-800' : 'text-gray-700 hover:bg-gray-100'}`}
                             aria-label="Toggle menu"
@@ -77,7 +80,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
                             )}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

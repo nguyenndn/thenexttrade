@@ -3,6 +3,7 @@
 
 import { Sidebar } from "./Sidebar";
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface MobileSidebarProps {
     isOpen: boolean;
@@ -25,12 +26,14 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
             <div className="absolute left-0 top-0 bottom-0 w-[272px] bg-white dark:bg-[#0B0E14] shadow-2xl transform transition-transform duration-300">
                 <div className="flex flex-col h-full">
                     {/* Close button inside sidebar for convenience */}
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                        className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white z-50 bg-white/50 rounded-full"
+                        className="absolute top-4 right-4 p-2 h-auto w-auto text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white z-50 bg-white/50 hover:bg-gray-100 rounded-full"
                     >
                         <X size={20} />
-                    </button>
+                    </Button>
 
                     {/* Reuse existing Sidebar component logic but force it visible and strictly styled */}
                     <div className="h-full overflow-y-auto pt-10">

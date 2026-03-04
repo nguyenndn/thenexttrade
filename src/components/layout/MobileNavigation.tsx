@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { menuItems } from "@/config/navigation";
 import { ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface MobileNavigationProps {
     isOpen: boolean;
@@ -47,15 +48,16 @@ export function MobileNavigation({ isOpen, onClose }: MobileNavigationProps) {
                         } else {
                             return (
                                 <div key={item.name} className="dropdown-menu">
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={(e) => handleMobileDropdownToggle(item.name, e)}
-                                        className={`w-full flex items-center justify-between px-4 py-3 rounded-lg ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-900 hover:bg-gray-50 hover:text-teal-600'} transition-colors font-medium`}
+                                        className={`w-full flex h-auto items-center justify-between px-4 py-3 rounded-lg ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-900 hover:bg-gray-50 hover:text-teal-600'} transition-colors font-medium`}
                                     >
                                         <span>{item.name}</span>
                                         <ChevronDown
                                             className={`w-5 h-5 transition-transform ${openDropdown === item.name ? 'rotate-180' : ''}`}
                                         />
-                                    </button>
+                                    </Button>
                                     {openDropdown === item.name && (
                                         <div className="pl-4 mt-2 space-y-1">
                                             {item.items?.map((subItem, idx) => (

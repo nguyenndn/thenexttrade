@@ -8,6 +8,7 @@ import { deleteModule } from "@/app/admin/ai-studio/modules/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import EditModuleModal from "./EditModuleModal";
+import { Button } from "@/components/ui/Button";
 
 interface ModuleCardProps {
     module: {
@@ -58,26 +59,28 @@ export default function ModuleCard({ module, levelId }: ModuleCardProps) {
                     <div onClick={(e) => e.stopPropagation()}>
                         <Popover>
                             <PopoverTrigger asChild>
-                                <button className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400">
+                                <Button variant="ghost" size="icon" className="p-2 w-auto h-auto hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400">
                                     <MoreVertical size={18} />
-                                </button>
+                                </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-40 p-1" align="end">
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={() => setIsEditing(true)}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-left"
+                                    className="w-full flex justify-start items-center gap-2 px-3 py-2 h-auto text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors font-normal"
                                 >
                                     <Edit size={14} />
                                     <span>Edit</span>
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    variant="ghost"
                                     onClick={handleDelete}
                                     disabled={isDeleting}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-left"
+                                    className="w-full flex justify-start items-center gap-2 px-3 py-2 h-auto text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors font-normal"
                                 >
                                     <Trash size={14} />
                                     <span>{isDeleting ? "Deleting..." : "Delete"}</span>
-                                </button>
+                                </Button>
                             </PopoverContent>
                         </Popover>
                     </div>

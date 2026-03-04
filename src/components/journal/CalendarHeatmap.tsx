@@ -89,10 +89,11 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
+                            aria-label="Previous Month"
                             onClick={() => setCurrentMonth(prev => subMonths(prev, 1))}
-                            className="h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                             <ChevronLeft size={18} />
                         </Button>
@@ -100,10 +101,11 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                             {format(currentMonth, "MMMM yyyy")}
                         </h3>
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
+                            aria-label="Next Month"
                             onClick={() => setCurrentMonth(prev => addMonths(prev, 1))}
-                            className="h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                             <ChevronRight size={18} />
                         </Button>
@@ -159,12 +161,13 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                         const today = isToday(day);
 
                         return (
-                            <Button
-                                key={dateStr}
-                                variant="ghost"
-                                onClick={() => data && onDayClick?.(dateStr)}
-                                disabled={!data}
-                                className={`
+                                <Button
+                                    key={dateStr}
+                                    variant="outline"
+                                    aria-label={`View trades for ${dateStr}`}
+                                    onClick={() => data && onDayClick?.(dateStr)}
+                                    disabled={!data}
+                                    className={`
                                     relative p-0 h-auto aspect-square rounded-lg flex flex-col items-center justify-center transition-all duration-150 group
                                     ${!inMonth ? "opacity-30" : ""}
                                     ${today ? "ring-2 ring-primary ring-offset-1 dark:ring-offset-[#1E2028]" : ""}

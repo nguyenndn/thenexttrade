@@ -5,6 +5,7 @@ import { Flame, CheckCircle, Loader2, X } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, isFuture } from "date-fns";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 
 export default function StreakClient() {
@@ -149,15 +150,16 @@ export default function StreakClient() {
                             <p className="text-sm text-gray-400 font-medium">days in a row</p>
                         </div>
 
-                        <button
+                        <Button
                             onClick={handleCheckIn}
                             disabled={isCheckedInToday || isCheckingIn}
                             className={cn(
-                                "h-12 px-8 rounded-xl font-bold text-white transition-all flex items-center gap-2 text-base w-auto",
+                                "h-12 px-8 rounded-xl font-bold transition-all flex items-center gap-2 text-base w-auto",
                                 isCheckedInToday
                                     ? "bg-primary/10 text-primary cursor-not-allowed border border-primary/20"
-                                    : "bg-primary hover:bg-[#00B078] shadow-lg shadow-primary/20 active:scale-95"
+                                    : "text-white shadow-lg shadow-primary/20 active:scale-95"
                             )}
+                            style={!isCheckedInToday ? { backgroundColor: 'hsl(var(--primary))' } : undefined}
                         >
                             {isCheckingIn ? (
                                 <Loader2 className="animate-spin" size={20} />
@@ -169,7 +171,7 @@ export default function StreakClient() {
                             ) : (
                                 "Check-in Now"
                             )}
-                        </button>
+                        </Button>
 
                         {!isCheckedInToday && (
                             <p className="mt-4 text-xs text-gray-400">

@@ -5,6 +5,7 @@ import { fetchUserSessions, deleteSession } from "@/app/dashboard/settings/accou
 import { Loader2, Smartphone, Monitor, Globe, Trash2, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { Button } from "@/components/ui/Button";
 
 export function ActiveSessionsList() {
     const [sessions, setSessions] = useState<any[]>([]);
@@ -100,14 +101,16 @@ export function ActiveSessionsList() {
                             </div>
 
                             {!isCurrent && (
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => handleRevoke(session.id)}
-                                    disabled={revokingId === session.id}
-                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                    isLoading={revokingId === session.id}
+                                    className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
                                     title="Revoke Session"
                                 >
-                                    {revokingId === session.id ? <Loader2 size={18} className="animate-spin" /> : <LogOut size={18} />}
-                                </button>
+                                    {revokingId !== session.id && <LogOut size={18} />}
+                                </Button>
                             )}
 
                             {isCurrent && (

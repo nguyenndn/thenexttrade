@@ -5,6 +5,7 @@ import { startTwoFactorSetup, verifyTwoFactorSetup, disableTwoFactor } from "@/a
 import { toast } from "sonner";
 import { Shield, CheckCircle, Loader2, Copy, AlertTriangle } from "lucide-react";
 import Image from "next/image";
+import { Button } from "@/components/ui/Button";
 
 interface TwoFactorSetupProps {
     isEnabled: boolean;
@@ -97,13 +98,14 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
 
                 {step !== 'disable-verify' && (
                     <div className="mt-6 flex justify-end">
-                        <button
+                        <Button
+                            variant="outline"
                             onClick={handleDisableClick}
                             disabled={loading}
-                            className="px-6 py-2 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 font-semibold rounded-xl transition-all disabled:opacity-50"
+                            className="px-6 py-2 border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
                         >
                             Disable 2FA
-                        </button>
+                        </Button>
                     </div>
                 )}
 
@@ -121,17 +123,19 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                 maxLength={6}
                                 className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-red-500 font-mono text-center tracking-widest text-lg"
                             />
-                            <button
+                            <Button
+                                variant="destructive"
                                 onClick={confirmDisable}
                                 disabled={loading || disableCode.length < 6}
-                                className="px-6 py-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg active:scale-95"
+                                className="px-6 py-2"
                             >
-                                {loading ? <Loader2 size={20} className="animate-spin" /> : "Confirm Disable"}
-                            </button>
+                                {loading && <Loader2 size={20} className="animate-spin" />}
+                                {!loading && "Confirm Disable"}
+                            </Button>
                         </div>
-                        <button onClick={() => setStep('idle')} className="text-sm text-gray-500 underline decoration-dotted mt-4">
+                        <Button variant="link" onClick={() => setStep('idle')} className="text-sm text-gray-500 underline decoration-dotted mt-4">
                             Cancel
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>
@@ -159,14 +163,13 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
 
             {step === 'idle' && (
                 <div className="mt-6 flex justify-end">
-                    <button
+                    <Button
                         onClick={handleStart}
-                        disabled={loading}
-                        className="px-6 py-2 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-70 flex items-center gap-2"
+                        isLoading={loading}
+                        className="px-6 py-2 w-auto"
                     >
-                        {loading && <Loader2 size={16} className="animate-spin" />}
                         Setup 2FA
-                    </button>
+                    </Button>
                 </div>
             )}
 
@@ -197,15 +200,17 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                     <code className="bg-gray-200 dark:bg-black/30 px-3 py-1.5 rounded-lg text-sm font-mono text-gray-800 dark:text-gray-200 tracking-wider">
                                         {secret}
                                     </code>
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => {
                                             navigator.clipboard.writeText(secret);
                                             toast.success("Copied to clipboard");
                                         }}
-                                        className="p-1.5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg text-gray-500 dark:text-gray-400"
+                                        className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg text-gray-500 dark:text-gray-400"
                                     >
                                         <Copy size={14} />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -220,19 +225,20 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                         maxLength={6}
                                         className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary font-mono text-center tracking-widest text-lg"
                                     />
-                                    <button
+                                    <Button
                                         onClick={handleVerify}
                                         disabled={loading || code.length < 6}
-                                        className="px-6 py-2 bg-primary hover:bg-[#00B078] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg active:scale-95"
+                                        className="px-6 py-2"
                                     >
-                                        {loading ? <Loader2 size={20} className="animate-spin" /> : "Verify"}
-                                    </button>
+                                        {loading && <Loader2 size={20} className="animate-spin" />}
+                                        {!loading && "Verify"}
+                                    </Button>
                                 </div>
                             </div>
 
-                            <button onClick={() => setStep('idle')} className="text-sm text-gray-500 underline decoration-dotted">
+                            <Button variant="link" onClick={() => setStep('idle')} className="text-sm text-gray-500 underline decoration-dotted px-0 justify-start">
                                 Cancel Setup
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

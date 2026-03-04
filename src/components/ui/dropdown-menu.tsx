@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 interface DropdownMenuProps {
     children: React.ReactNode;
@@ -77,9 +78,9 @@ export function DropdownMenuTrigger({ asChild, children }: DropdownMenuTriggerPr
     }
 
     return (
-        <button onClick={toggle} type="button">
+        <Button variant="ghost" className="p-0 h-auto font-normal hover:bg-transparent" onClick={toggle} type="button">
             {children}
-        </button>
+        </Button>
     );
 }
 
@@ -121,9 +122,10 @@ export function DropdownMenuItem({ className, inset, children, ...props }: Dropd
     const { setIsOpen } = React.useContext(DropdownMenuContext);
 
     return (
-        <button
+        <Button
+            variant="ghost"
             className={cn(
-                "relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-50 dark:focus:bg-white/10 dark:focus:text-gray-50",
+                "relative flex w-full h-auto cursor-default font-normal justify-start select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-50 dark:focus:bg-white/10 dark:focus:text-gray-50",
                 inset && "pl-8",
                 className
             )}
@@ -134,7 +136,7 @@ export function DropdownMenuItem({ className, inset, children, ...props }: Dropd
             {...props}
         >
             {children}
-        </button>
+        </Button>
     );
 }
 
@@ -163,20 +165,15 @@ export function DropdownMenuCheckboxItem({
     const { setIsOpen } = React.useContext(DropdownMenuContext);
 
     return (
-        <button
+        <Button
+            variant="ghost"
             className={cn(
-                "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-50 dark:focus:bg-white/10 dark:focus:text-gray-50",
+                "relative flex w-full h-auto cursor-default font-normal justify-start select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-50 dark:focus:bg-white/10 dark:focus:text-gray-50",
                 className
             )}
             onClick={(e) => {
                 e.preventDefault();
                 onCheckedChange?.(!checked);
-                // Keep menu open for multiple selections? usually yes for checkboxes.
-                // But the context closes it on click in MenuItem.
-                // Here we override onClick.
-                // If we want it to verify, we shouldn't close it?
-                // The user usually wants toggling multiple things.
-                // So do NOT call setIsOpen(false).
             }}
             {...props}
         >
@@ -197,6 +194,6 @@ export function DropdownMenuCheckboxItem({
                 )}
             </span>
             {children}
-        </button>
+        </Button>
     );
 }

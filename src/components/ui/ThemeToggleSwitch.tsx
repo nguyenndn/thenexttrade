@@ -3,6 +3,7 @@
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/Button";
 
 export function ThemeToggleSwitch() {
     const { theme, toggleTheme } = useTheme();
@@ -19,15 +20,16 @@ export function ThemeToggleSwitch() {
     const isDark = theme === "dark";
 
     return (
-        <button
+        <Button
+            variant="ghost"
             onClick={toggleTheme}
             aria-label="Toggle theme"
             className={`
-                relative w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300
+                relative w-9 h-9 p-0 flex items-center justify-center rounded-full transition-all duration-300
                 focus:outline-none focus:ring-2 focus:ring-[#00C888]/50
                 ${isDark 
-                    ? 'bg-slate-800/80 border-2 border-slate-700 text-blue-400 hover:bg-slate-700/80' 
-                    : 'bg-white border-2 border-gray-200 text-amber-500 hover:bg-gray-50'
+                    ? 'bg-slate-800/80 border-2 border-slate-700 text-blue-400 hover:bg-slate-700/80 hover:text-blue-400' 
+                    : 'bg-white border-2 border-gray-200 text-amber-500 hover:bg-gray-50 hover:text-amber-500'
                 }
             `}
         >
@@ -52,6 +54,6 @@ export function ThemeToggleSwitch() {
                     <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
                 </svg>
             </div>
-        </button>
+        </Button>
     );
 }

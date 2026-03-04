@@ -5,6 +5,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Edit, Trash, CheckCircle2 } from "lucide-react";
 import { clsx } from "clsx";
+import { Button } from "@/components/ui/Button";
 
 interface QuestionProps {
     question: any;
@@ -38,13 +39,15 @@ export function SortableQuestion({ question, onEdit, onDelete }: QuestionProps) 
             )}
         >
             <div className="flex items-start gap-4">
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     {...attributes}
                     {...listeners}
-                    className="mt-1 cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                    className="mt-1 cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 bg-transparent hover:bg-transparent"
                 >
                     <GripVertical size={20} />
-                </button>
+                </Button>
 
                 <div className="flex-1 space-y-3">
                     <div className="font-medium text-gray-900 dark:text-white">
@@ -65,12 +68,12 @@ export function SortableQuestion({ question, onEdit, onDelete }: QuestionProps) 
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <button onClick={onEdit} className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors">
+                    <Button variant="ghost" size="icon" onClick={onEdit} className="text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors">
                         <Edit size={16} />
-                    </button>
-                    <button onClick={onDelete} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={onDelete} className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
                         <Trash size={16} />
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

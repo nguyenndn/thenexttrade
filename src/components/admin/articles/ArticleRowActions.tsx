@@ -3,6 +3,7 @@
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/Button";
 
 export function ArticleRowActions({ articleId }: { articleId: string }) {
     const router = useRouter();
@@ -31,13 +32,15 @@ export function ArticleRowActions({ articleId }: { articleId: string }) {
     };
 
     return (
-        <button
+        <Button
+            variant="ghost"
+            size="icon"
             onClick={handleDelete}
             disabled={isDeleting}
-            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+            className="p-2 h-auto w-auto text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
             title="Delete"
         >
             <Trash2 size={18} className={isDeleting ? "opacity-50" : ""} />
-        </button>
+        </Button>
     );
 }

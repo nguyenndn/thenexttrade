@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/command";
 import { dashboardMenuItems } from "@/config/navigation";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 // Flatten navigation items for search
 function flattenNavItems() {
@@ -24,8 +25,8 @@ function flattenNavItems() {
             seen.add(group.href);
             items.push({ name: group.name, href: group.href, category: "Pages", icon: group.icon });
         }
-        if (group.items) {
-            for (const sub of group.items) {
+        if ('items' in group && Array.isArray((group as any).items)) {
+            for (const sub of (group as any).items) {
                 if (!seen.has(sub.href)) {
                     seen.add(sub.href);
                     items.push({ name: sub.name, href: sub.href, category: group.name, icon: group.icon });
@@ -107,20 +108,23 @@ export function CommandPalette({ searchRoute = "/dashboard/search" }: { searchRo
                             }}
                             className="flex h-12 w-full bg-transparent py-3 text-[15px] outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 border-none"
                         />
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setOpen(false)}
-                            className="ml-2 p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="ml-2 w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
                             <X size={16} />
-                        </button>
+                        </Button>
                     </div>
 
                     <CommandList className="max-h-[360px] overflow-y-auto p-2">
                         <CommandEmpty className="py-2">
                             {searchQuery.trim() ? (
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={handleSearch}
-                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                    className="flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-lg text-left justify-start hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer font-normal"
                                 >
                                     <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 shrink-0">
                                         <Search size={16} className="text-primary" />
@@ -130,7 +134,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search" }: { searchRo
                                         <p className="text-xs text-gray-500 dark:text-gray-400">Search across all trades, sessions, and more</p>
                                     </div>
                                     <ArrowRight size={14} className="text-gray-400" />
-                                </button>
+                                </Button>
                             ) : (
                                 <p className="py-6 text-center text-sm text-gray-500">No results found.</p>
                             )}
@@ -216,10 +220,11 @@ export function CommandPaletteTrigger({ className }: { className?: string }) {
     };
 
     return (
-        <button
+        <Button
+            variant="ghost"
             onClick={handleClick}
             className={cn(
-                "flex items-center gap-2 px-3 py-2 rounded-full bg-gray-50 dark:bg-white/5 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-sm cursor-pointer",
+                "flex items-center gap-2 px-3 py-2 h-auto rounded-full bg-gray-50 dark:bg-white/5 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-sm cursor-pointer border border-transparent font-normal",
                 className
             )}
         >
@@ -228,6 +233,6 @@ export function CommandPaletteTrigger({ className }: { className?: string }) {
             <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-500 dark:text-gray-400">
                 <span className="text-[10px]">Ctrl</span>K
             </kbd>
-        </button>
+        </Button>
     );
 }

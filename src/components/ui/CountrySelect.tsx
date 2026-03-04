@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { countries as countryData } from "@/lib/data/countries";
+import { Button } from "@/components/ui/Button";
 
 interface Country {
     code: string;
@@ -50,11 +51,12 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
     return (
         <div className="relative w-full" ref={dropdownRef}>
             {/* Trigger Button */}
-            <button
+            <Button
+                variant="ghost"
                 type="button"
                 onClick={() => !loading && setIsOpen(!isOpen)}
                 className={cn(
-                    "flex items-center justify-between w-full h-12 px-4 rounded-xl border bg-gray-50 dark:bg-[#0B0E14] text-left transition-all",
+                    "flex items-center justify-between w-full h-12 px-4 rounded-xl border bg-gray-50 dark:bg-[#0B0E14] text-left transition-all font-normal hover:bg-gray-50 dark:hover:bg-[#0B0E14]",
                     "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:ring-1 focus:ring-[#2F80ED]/50 dark:focus:ring-[#2F80ED]/50",
                     error ? "border-red-500/50" : "",
                     loading ? "opacity-70 cursor-wait" : "",
@@ -77,7 +79,7 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                     <span className="text-gray-500 text-base">Select Country</span>
                 )}
                 <ChevronDown size={20} className={cn("text-gray-400 transition-transform shrink-0", isOpen ? "rotate-180" : "")} />
-            </button>
+            </Button>
 
             {/* Hidden Input for Form Submission */}
             <input type="hidden" name="country" value={value || ""} required />
@@ -104,7 +106,8 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                     <div className="overflow-y-auto flex-1 p-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                         {filteredCountries.length > 0 ? (
                             filteredCountries.map((country) => (
-                                <button
+                                <Button
+                                    variant="ghost"
                                     key={country.code}
                                     type="button"
                                     onClick={() => {
@@ -113,7 +116,7 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                                         setSearch("");
                                     }}
                                     className={cn(
-                                        "flex items-center w-full px-3 py-2.5 rounded-lg text-left transition-colors",
+                                        "flex items-center w-full px-3 py-2.5 h-auto rounded-lg text-left transition-colors font-normal justify-start",
                                         "hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-white/5 dark:active:bg-white/10",
                                         value === country.code ? "bg-[#2F80ED]/10 text-[#2F80ED]" : "text-gray-700 dark:text-gray-300"
                                     )}
@@ -127,7 +130,7 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                                         <span className="text-sm font-medium truncate">{country.name}</span>
                                     </div>
                                     {value === country.code && <Check size={16} className="text-[#2F80ED] shrink-0" />}
-                                </button>
+                                </Button>
                             ))
                         ) : (
                             <div className="p-4 text-center text-sm text-gray-500">No country found</div>

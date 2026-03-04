@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 interface MonthlyAnalyticsChartProps {
     data: {
@@ -82,18 +83,19 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
         <div className="h-full flex flex-col">
             <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
                 {years.map(year => (
-                    <button
+                    <Button
+                        variant="ghost"
                         key={year}
                         onClick={() => setSelectedYear(year)}
                         className={cn(
-                            "px-4 py-1.5 rounded-lg text-sm font-bold transition-colors",
+                            "px-4 py-1.5 h-auto rounded-lg text-sm font-bold transition-colors",
                             selectedYear === year
-                                ? "bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white"
+                                ? "bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20"
                                 : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
                         )}
                     >
                         {year}
-                    </button>
+                    </Button>
                 ))}
             </div>
 

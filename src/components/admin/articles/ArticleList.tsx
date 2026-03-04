@@ -11,6 +11,7 @@ import {
     ChevronLeft, ChevronRight, CheckCircle, XCircle
 } from "lucide-react";
 import { ArticleRowActions } from "./ArticleRowActions";
+import { Button } from "@/components/ui/Button";
 
 interface Article {
     id: string;
@@ -47,16 +48,18 @@ const ArticleRow = memo(function ArticleRow({
     return (
         <tr className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
             <td className="px-6 py-4 whitespace-nowrap">
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => onToggle(article.id)}
-                    className="text-gray-400 hover:text-primary transition-colors"
+                    className="w-auto h-auto p-0 text-gray-400 hover:bg-transparent hover:text-primary transition-colors"
                 >
                     {isSelected ? (
                         <CheckSquare className="w-5 h-5 text-primary" />
                     ) : (
                         <Square className="w-5 h-5" />
                     )}
-                </button>
+                </Button>
             </td>
             <td className="px-6 py-4">
                 <div className="flex items-center gap-3">
@@ -296,34 +299,40 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                     <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-xl animate-in fade-in slide-in-from-right-5 text-sm">
                         <span className="font-bold text-primary mr-2">{selectedIds.size} selected</span>
 
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleBulkAction("updateStatus", "PUBLISHED")}
                             disabled={isBulkLoading}
-                            className="p-2 hover:bg-primary/20 text-primary rounded-lg transition-colors disabled:opacity-50"
+                            className="p-2 h-auto w-auto hover:bg-primary/20 text-primary rounded-lg transition-colors disabled:opacity-50"
                             title="Set as Published"
                         >
                             {isBulkLoading ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle size={18} />}
-                        </button>
+                        </Button>
 
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleBulkAction("updateStatus", "DRAFT")}
                             disabled={isBulkLoading}
-                            className="p-2 hover:bg-primary/20 text-orange-500 rounded-lg transition-colors disabled:opacity-50"
+                            className="p-2 h-auto w-auto hover:bg-primary/20 text-orange-500 rounded-lg transition-colors disabled:opacity-50"
                             title="Set as Draft"
                         >
                             {isBulkLoading ? <Loader2 size={18} className="animate-spin" /> : <FileText size={18} />}
-                        </button>
+                        </Button>
 
                         <div className="w-[1px] h-4 bg-gray-300 dark:bg-white/10 mx-1" />
 
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleBulkAction("delete")}
                             disabled={isBulkLoading}
-                            className="p-2 hover:bg-red-50 text-red-500 rounded-lg transition-colors disabled:opacity-50"
+                            className="hover:bg-red-50 text-red-500 rounded-lg transition-colors disabled:opacity-50"
                             title="Delete Selected"
                         >
                             {isBulkLoading ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>
@@ -335,9 +344,9 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                         <thead>
                             <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
                                 <th className="px-6 py-5 w-10">
-                                    <button onClick={toggleSelectAll} className="text-gray-400 hover:text-gray-600">
+                                    <Button variant="ghost" size="icon" onClick={toggleSelectAll} className="p-0 text-gray-400 hover:text-gray-600 hover:bg-transparent">
                                         {selectedIds.size === articles.length && articles.length > 0 ? <CheckSquare size={20} /> : <Square size={20} />}
-                                    </button>
+                                    </Button>
                                 </th>
                                 <th className="px-6 py-5">Article</th>
                                 <th className="px-6 py-5">Category</th>
@@ -351,9 +360,9 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                             {articles.map((article) => (
                                 <tr key={article.id} className={`group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors ${selectedIds.has(article.id) ? 'bg-blue-50/30' : ''}`}>
                                     <td className="px-6 py-5">
-                                        <button onClick={() => toggleSelect(article.id)} className={`text-gray-400 hover:text-gray-600 ${selectedIds.has(article.id) ? 'text-blue-500' : ''}`}>
+                                        <Button variant="ghost" size="icon" onClick={() => toggleSelect(article.id)} className={`w-auto h-auto p-0 text-gray-400 hover:bg-transparent hover:text-gray-600 ${selectedIds.has(article.id) ? 'text-blue-500' : ''}`}>
                                             {selectedIds.has(article.id) ? <CheckSquare size={20} /> : <Square size={20} />}
-                                        </button>
+                                        </Button>
                                     </td>
 
                                     {quickEditId === article.id ? (
@@ -390,19 +399,20 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                                                     </select>
                                                 </div>
                                                 <div className="flex gap-2 pb-1">
-                                                    <button
+                                                    <Button
                                                         onClick={saveQuickEdit}
                                                         disabled={isSavingQuickEdit}
-                                                        className="px-3 py-2 bg-primary text-white rounded hover:bg-[#00a872]"
+                                                        className="px-3 py-2 h-auto bg-primary text-white rounded-md hover:bg-[#00a872]"
                                                     >
                                                         {isSavingQuickEdit ? <Loader2 size={16} className="animate-spin" /> : "Save"}
-                                                    </button>
-                                                    <button
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
                                                         onClick={() => setQuickEditId(null)}
-                                                        className="px-3 py-2 bg-gray-200 text-gray-600 rounded hover:bg-gray-300"
+                                                        className="px-3 py-2 h-auto bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300"
                                                     >
                                                         Cancel
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </td>
@@ -423,12 +433,14 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                                                         <p className="font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">{article.title}</p>
                                                         <div className="flex items-center gap-2 mt-1">
                                                             <span className="text-xs text-gray-400 font-mono">/{article.slug}</span>
-                                                            <button
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
                                                                 onClick={() => startQuickEdit(article)}
-                                                                className="text-[10px] items-center gap-1 text-blue-500 hidden group-hover:flex"
+                                                                className="text-[10px] items-center gap-1 text-blue-500 hidden group-hover:flex h-auto p-0 hover:bg-transparent"
                                                             >
                                                                 <Edit2 size={10} /> Quick Edit
-                                                            </button>
+                                                            </Button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -489,20 +501,24 @@ export const ArticleList = memo(function ArticleList({ initialArticles, authors,
                         Page {pagination.currentPage} of {pagination.totalPages}
                     </div>
                     <div className="flex gap-2">
-                        <button
+                        <Button
+                            variant="outline"
+                            size="icon"
                             onClick={() => handlePageChange(pagination.currentPage - 1)}
                             disabled={pagination.currentPage <= 1}
-                            className="p-2 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2 h-auto w-auto bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <ChevronLeft size={16} />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="icon"
                             onClick={() => handlePageChange(pagination.currentPage + 1)}
                             disabled={pagination.currentPage >= pagination.totalPages}
-                            className="p-2 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2 h-auto w-auto bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <ChevronRight size={16} />
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

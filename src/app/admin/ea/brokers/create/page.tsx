@@ -6,7 +6,7 @@ import { createEABroker } from "../actions";
 import { Briefcase, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { ImageUploader } from "@/components/ui/ImageUploader";
+import { FileUpload } from "@/components/ui/FileUpload";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
 
@@ -79,7 +79,7 @@ export default function CreateEABrokerPage() {
 
                     <div>
                         <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Logo</label>
-                        <ImageUploader
+                        <FileUpload
                             value={logo}
                             onChange={setLogo}
                             className="bg-white dark:bg-black/20 w-40"

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CheckCircle, AlertCircle, Search, Smartphone, Monitor, Facebook, Twitter, Wand2, Eye, FileText, AlignLeft } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface SeoProps {
     focusKeyword: string;
@@ -134,25 +135,28 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                     Yoast SEO (Pro)
                 </h3>
                 {/* Tabs */}
-                <div className="flex bg-gray-100 dark:bg-white/5 rounded-lg p-1">
-                    <button
+                <div className="flex bg-gray-100 dark:bg-white/5 rounded-lg p-1 gap-1">
+                    <Button
+                        variant="ghost"
                         onClick={() => setActiveTab('seo')}
-                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-white text-primary shadow-sm' : 'text-gray-500'}`}
+                        className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-500 hover:bg-gray-200'}`}
                     >
                         SEO
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={() => setActiveTab('readability')}
-                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'readability' ? 'bg-white text-primary shadow-sm' : 'text-gray-500'}`}
+                        className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'readability' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-500 hover:bg-gray-200'}`}
                     >
                         Readability
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={() => setActiveTab('social')}
-                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'social' ? 'bg-white text-primary shadow-sm' : 'text-gray-500'}`}
+                        className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'social' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-500 hover:bg-gray-200'}`}
                     >
                         Social
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -173,9 +177,9 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                     <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-200 dark:border-white/10">
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-bold text-gray-500 uppercase">Google Preview</span>
-                            <div className="flex bg-white dark:bg-white/5 rounded-lg p-1 border border-gray-200 dark:border-white/10">
-                                <button onClick={() => setPreviewMode('mobile')} className={`p-1.5 rounded ${previewMode === 'mobile' ? 'bg-indigo-50 text-indigo-500' : 'text-gray-400'}`}><Smartphone size={14} /></button>
-                                <button onClick={() => setPreviewMode('desktop')} className={`p-1.5 rounded ${previewMode === 'desktop' ? 'bg-indigo-50 text-indigo-500' : 'text-gray-400'}`}><Monitor size={14} /></button>
+                            <div className="flex bg-white dark:bg-white/5 rounded-lg p-1 border border-gray-200 dark:border-white/10 gap-1">
+                                <Button variant="ghost" size="icon" onClick={() => setPreviewMode('mobile')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'mobile' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-400 hover:bg-gray-100'}`}><Smartphone size={14} /></Button>
+                                <Button variant="ghost" size="icon" onClick={() => setPreviewMode('desktop')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'desktop' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-400 hover:bg-gray-100'}`}><Monitor size={14} /></Button>
                             </div>
                         </div>
 
@@ -208,18 +212,20 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                     </div>
                     {/* AI Generators */}
                     <div className="flex gap-2">
-                        <button
+                        <Button
+                            variant="ghost"
                             onClick={() => onAiGenerate?.('title')}
-                            className="text-xs flex items-center gap-1 px-3 py-1.5 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
+                            className="text-xs flex items-center gap-1 px-3 py-1.5 h-auto bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
                         >
                             <Wand2 size={12} /> Generate Title
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="ghost"
                             onClick={() => onAiGenerate?.('description')}
-                            className="text-xs flex items-center gap-1 px-3 py-1.5 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
+                            className="text-xs flex items-center gap-1 px-3 py-1.5 h-auto bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
                         >
                             <Wand2 size={12} /> Generate Meta Desc
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}
@@ -250,18 +256,20 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
             {activeTab === 'social' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <div className="flex gap-2 mb-4">
-                        <button
+                        <Button
+                            variant="ghost"
                             onClick={() => setSocialPlatform('facebook')}
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${socialPlatform === 'facebook' ? 'bg-blue-50 text-blue-600' : 'bg-gray-50 text-gray-500'}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === 'facebook' ? 'bg-blue-50 text-blue-600 hover:bg-blue-100' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}
                         >
                             <Facebook size={14} /> Facebook
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="ghost"
                             onClick={() => setSocialPlatform('twitter')}
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${socialPlatform === 'twitter' ? 'bg-sky-50 text-sky-500' : 'bg-gray-50 text-gray-500'}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === 'twitter' ? 'bg-sky-50 text-sky-500 hover:bg-sky-100' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}
                         >
                             <Twitter size={14} /> Twitter
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-200 dark:border-white/10">

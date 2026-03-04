@@ -11,6 +11,7 @@ import { signout } from "@/app/auth/actions";
 import { cn } from "@/lib/utils";
 import { AuthUser } from "@/lib/auth-types";
 import { FloatingQuickActions } from "@/components/dashboard/FloatingQuickActions";
+import { Button } from "@/components/ui/Button";
 
 interface DashboardLayoutClientProps {
     children: React.ReactNode;
@@ -54,12 +55,14 @@ export function DashboardLayoutClient({
                     <div className="absolute left-0 top-0 bottom-0 w-[85%] max-w-xs bg-white dark:bg-[#0B0E14] shadow-2xl p-4 flex flex-col animate-in slide-in-from-left duration-200">
                         <div className="flex items-center justify-between mb-8 px-2">
                             <Logo />
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                             >
                                 <X size={24} />
-                            </button>
+                            </Button>
                         </div>
 
                         <div className="flex-1 overflow-y-auto">
@@ -84,12 +87,14 @@ export function DashboardLayoutClient({
                         </div>
 
                         <div className="border-t border-gray-200 dark:border-white/10 pt-4">
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={() => signout()}
-                                className="flex items-center gap-4 px-4 py-3 w-full text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors font-medium">
+                                className="flex items-center justify-start gap-4 px-4 py-3 w-full text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors font-medium h-auto"
+                            >
                                 <LogOut size={20} />
                                 <span className="text-sm">Logout</span>
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

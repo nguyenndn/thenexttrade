@@ -6,7 +6,7 @@ import { AccountStatus } from "@prisma/client";
 import { TradingSystemsClient } from "@/components/dashboard/trading-systems/TradingSystemsClient";
 
 export const metadata: Metadata = {
-    title: "Trading Systems | GSN CRM",
+    title: "EA & Indicators | GSN CRM",
     description: "Download professional trading indicators and EAs",
 };
 

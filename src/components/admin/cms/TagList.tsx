@@ -118,18 +118,22 @@ export default function TagList() {
                                         <td className="px-6 py-4 text-gray-500 font-mono text-xs">{tag.slug}</td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
                                                     onClick={() => handleEdit(tag)}
-                                                    className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                    className="p-2 h-auto w-auto text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                                                 >
                                                     <Edit2 size={18} />
-                                                </button>
-                                                <button
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
                                                     onClick={() => handleDelete(tag.id)}
-                                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                                    className="p-2 h-auto w-auto text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                                                 >
                                                     <Trash2 size={18} />
-                                                </button>
+                                                </Button>
                                             </div>
                                         </td>
                                     </tr>

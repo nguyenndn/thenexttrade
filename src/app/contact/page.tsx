@@ -180,8 +180,8 @@ export default function ContactPage() {
                                 <Button 
                                     type="submit" 
                                     variant="primary" 
-                                    size="lg" 
-                                    className="w-full sm:w-auto px-10 py-4 text-base rounded-xl" 
+                                    size="md" 
+                                    className="w-full sm:w-auto rounded-xl" 
                                     isLoading={isPending}
                                 >
                                     <Send size={20} />

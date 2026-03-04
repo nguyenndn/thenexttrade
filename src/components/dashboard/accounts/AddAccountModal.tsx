@@ -190,13 +190,15 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                 {view === "verify_ib" && pendingData && (
                     <div className="p-8 relative">
                         {/* Close button at top right */}
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             type="button"
                             onClick={() => setView("form")}
                             className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                         >
                             <XCircle size={18} />
-                        </button>
+                        </Button>
 
                         <DialogHeader className="mb-8 mt-2 flex flex-row items-center justify-center space-y-0 pb-0">
                             <DialogTitle className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight text-center">
@@ -281,7 +283,9 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                 {view === "verify_balance" && pendingData && (
                     <div className="p-8 pt-6 relative">
                         {/* Top Back Button (Absolute positioning for exact alignment) */}
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             type="button"
                             onClick={() => setView("verify_ib")}
                             disabled={isSubmitting}
@@ -289,7 +293,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             className="absolute top-6 left-6 flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
                         >
                             <ArrowLeft size={20} />
-                        </button>
+                        </Button>
 
                         <DialogHeader className="mb-8 mt-2 flex flex-row items-center justify-center space-y-0 pb-0">
                             <DialogTitle className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight text-center">
@@ -372,13 +376,15 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                 {view === "insufficient_balance" && (
                     <div className="p-8 relative">
                         {/* Close button at top right */}
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             type="button"
                             onClick={() => setOpen(false)}
                             className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                         >
                             <XCircle size={18} />
-                        </button>
+                        </Button>
                         
                         <DialogHeader className="mb-8 mt-2 flex flex-col items-center justify-center space-y-0 pb-0">
                             <DialogTitle className="text-xl font-black text-gray-900 dark:text-white tracking-tight text-center">
@@ -541,10 +547,11 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 </div>
                             </div>
 
-                            <button
+                            <Button
+                                variant="outline"
                                 type="button"
                                 onClick={() => setView("register")}
-                                className="w-full py-3 px-4 rounded-xl border-2 border-dashed border-amber-200 dark:border-amber-500/20 bg-amber-50/50 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all group flex flex-col items-center justify-center"
+                                className="w-full h-auto py-3 px-4 rounded-xl border-2 border-dashed border-amber-200 dark:border-amber-500/20 bg-amber-50/50 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all group flex flex-col items-center justify-center"
                             >
                                 <p className="text-sm font-bold text-amber-600 dark:text-amber-400 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
                                     Don&apos;t have an account yet?
@@ -552,7 +559,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 <p className="text-[11px] text-amber-500/70 dark:text-amber-500/50 mt-0.5 font-medium">
                                     Register with our partner broker first
                                 </p>
-                            </button>
+                            </Button>
                         </form>
                     </div>
                 )}
@@ -562,13 +569,15 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                     <div className="p-6">
                         <DialogHeader>
                             <div className="flex items-center gap-2">
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => setView("form")}
-                                    className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                    className="p-1.5 h-auto w-auto rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                                     aria-label="Go back"
                                 >
                                     <ArrowLeft size={18} className="text-gray-500 dark:text-gray-400" />
-                                </button>
+                                </Button>
                                 <DialogTitle className="text-lg font-extrabold text-gray-900 dark:text-white">
                                     Create Your Trading Account
                                 </DialogTitle>
@@ -619,13 +628,14 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         </p>
 
                         {/* Back Button */}
-                        <button
+                        <Button
+                            variant="outline"
                             type="button"
                             onClick={() => setView("form")}
-                            className="w-full mt-4 py-3 px-4 rounded-xl border text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-2 font-bold text-sm"
+                            className="w-full h-auto mt-4 py-3 px-4 rounded-xl border text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-2 font-bold text-sm"
                         >
                             I already have an account
-                        </button>
+                        </Button>
                     </div>
                 )}
 
@@ -633,12 +643,15 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                 {view === "success" && (
                     <div className="p-10 relative flex flex-col items-center justify-center min-h-[320px]">
                         {/* Close button at top right */}
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             type="button"
                             onClick={() => setOpen(false)}
-                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors z-10"
+                            className="absolute h-auto w-auto top-4 right-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors z-10"
                         >
-                        </button>
+                            <XCircle size={18} />
+                        </Button>
 
                         <div className="flex flex-col items-center text-center space-y-6 animate-in zoom-in duration-500">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-wider">

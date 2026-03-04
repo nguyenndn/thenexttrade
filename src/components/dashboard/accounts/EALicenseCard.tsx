@@ -3,6 +3,7 @@ import { BROKERS } from "@/config/brokers";
 import { cn } from "@/lib/utils";
 import { AccountStatus } from "@prisma/client";
 import { GripVertical, Trash2, Clock } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface EALicenseCardProps {
     license: EALicense;
@@ -31,17 +32,19 @@ export function EALicenseCard({ license, onRemove, isRemoving }: EALicenseCardPr
             <div className="flex justify-between items-center mb-6 relative">
                 <GripVertical size={14} className="opacity-40 flex-shrink-0 text-gray-500" />
                 
-                <button 
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={(e) => {
                         e.stopPropagation();
                         onRemove?.(license.id);
                     }}
                     disabled={isRemoving}
-                    className="text-gray-400 hover:text-red-500 transition-colors bg-transparent border-0"
+                    className="text-gray-400 h-auto w-auto hover:text-red-500 transition-colors bg-transparent border-0"
                     aria-label="Remove Account"
                 >
                     <Trash2 size={12} strokeWidth={2.5} />
-                </button>
+                </Button>
             </div>
 
             {/* Centered Main Info (Replacing Ring) */}
@@ -58,9 +61,18 @@ export function EALicenseCard({ license, onRemove, isRemoving }: EALicenseCardPr
 
             {/* Warning for Pending Accounts */}
             {isPending && (
-                <div className="mb-6 flex gap-2 items-center px-3 py-2.5 rounded-lg bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400 text-[11px] font-medium leading-snug">
-                    <Clock size={16} className="flex-shrink-0" />
-                    <p>Your MT5 account is being reviewed. This usually takes 24-48 hours.</p>
+                <div className="mb-6 flex items-start gap-3 p-3.5 rounded-xl bg-[#EAB308]/5 dark:bg-[#EAB308]/10 border border-[#EAB308]/20 transition-all hover:bg-[#EAB308]/10">
+                    <div className="p-2 bg-[#EAB308]/10 dark:bg-[#EAB308]/20 rounded-lg flex-shrink-0">
+                        <Clock size={16} className="text-[#EAB308]" strokeWidth={2.5} />
+                    </div>
+                    <div className="flex flex-col gap-1 pt-0.5">
+                        <span className="text-xs font-black text-[#B45309] dark:text-[#EAB308] tracking-tight uppercase">
+                            Pending Review
+                        </span>
+                        <p className="text-[11px] font-medium text-[#B45309]/80 dark:text-[#EAB308]/80 leading-relaxed">
+                            Your MT5 account is being reviewed. This usually takes 24-48 hours.
+                        </p>
+                    </div>
                 </div>
             )}
 

@@ -9,6 +9,7 @@ import { TagInput } from "./TagInput";
 import { RichTextEditor } from "./RichTextEditor";
 import { SeoAnalysisPanel } from "./SeoAnalysisPanel";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Button } from "@/components/ui/Button";
 
 interface ArticleFormProps {
     initialData?: {
@@ -177,32 +178,35 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
 
                         {/* Delete Button (Always Visible in Edit Mode) */}
                         {isEditMode && (
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={handleDelete}
                                 disabled={isDeleting || isSubmitting}
-                                className="p-2 text-red-600 dark:text-red-400 font-medium bg-red-50 dark:bg-red-500/10 rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
+                                className="p-2 h-auto w-auto text-red-600 dark:text-red-400 font-medium bg-red-50 dark:bg-red-500/10 rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
                                 title="Delete Article"
                             >
                                 {isDeleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
-                            </button>
+                            </Button>
                         )}
 
-                        <button
-                            onClick={(e) => handleSubmit(e)}
+                        <Button
+                            variant="ghost"
+                            onClick={(e) => handleSubmit(e as unknown as React.FormEvent)}
                             disabled={isSubmitting}
-                            className="px-4 py-2 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors"
+                            className="px-4 py-2 h-auto text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors"
                         >
                             Save Draft
-                        </button>
+                        </Button>
 
-                        <button
+                        <Button
                             onClick={() => handleSubmit()}
                             disabled={isSubmitting}
-                            className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 active:scale-95 disabled:opacity-50"
+                            className="flex items-center h-auto gap-2 px-6 py-2 bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 active:scale-95 disabled:opacity-50"
                         >
                             {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                             {isEditMode ? "Update" : "Publish"}
-                        </button>
+                        </Button>
                     </div>
                 </div>
                 <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-14 hidden lg:block">
@@ -306,14 +310,16 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     <div className="bg-white dark:bg-[#151925] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
                         <div className="flex justify-between items-center">
                             <h3 className="font-bold text-gray-900 dark:text-white text-sm">Publish</h3>
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => {
                                     if (formData.slug) window.open(`/articles/${formData.slug}?preview=true`, '_blank');
                                 }}
-                                className="text-xs font-bold text-blue-500 hover:text-blue-600 border border-blue-500/20 px-2 py-1 rounded-lg"
+                                className="text-xs h-auto font-bold text-blue-500 hover:text-blue-600 border border-blue-500/20 px-2 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10"
                             >
                                 Preview
-                            </button>
+                            </Button>
                         </div>
 
                         <div className="flex items-center gap-2 py-2">

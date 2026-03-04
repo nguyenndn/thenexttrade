@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Camera, Loader2, Upload, Check, AlertCircle } from "lucide-react";
 import { updateSettings } from "@/app/dashboard/settings/account/actions";
+import { Button } from "@/components/ui/Button";
 
 interface SettingsFormProps {
     user: any;
@@ -152,20 +153,13 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
 
                 {/* Submit Button */}
                 <div className="mt-8 flex justify-end">
-                    <button
+                    <Button
                         type="submit"
-                        disabled={isLoading}
-                        className="px-8 h-12 bg-primary hover:bg-[#00b078] text-white font-bold rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-primary/20"
+                        isLoading={isLoading}
+                        className="px-8 h-12"
                     >
-                        {isLoading ? (
-                            <>
-                                <Loader2 size={18} className="animate-spin" />
-                                Saving...
-                            </>
-                        ) : (
-                            "Save Changes"
-                        )}
-                    </button>
+                        {isLoading ? "Saving..." : "Save Changes"}
+                    </Button>
                 </div>
             </form>
         </div>

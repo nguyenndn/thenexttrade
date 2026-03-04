@@ -25,19 +25,19 @@ export default async function RelatedArticlesBottom({ categoryId, currentArticle
     if (articles.length === 0) return null;
 
     return (
-        <div className="mt-16 pt-16 border-t font-serif border-gray-100 dark:border-white/10">
-            <h3 className="text-2xl font-bold font-serif text-gray-900 dark:text-white mb-8">
+        <div className="mt-16 pt-12 border-t border-gray-200 dark:border-white/10">
+            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
                 You Might Also Like
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {articles.map((article) => (
                     <Link
                         key={article.id}
                         href={`/articles/${article.slug}`}
-                        className="group flex flex-col"
+                        className="group bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                     >
-                        <div className="relative aspect-[4/3] w-full mb-4 overflow-hidden bg-gray-200 dark:bg-gray-800">
+                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-200 dark:bg-gray-800">
                             {article.thumbnail ? (
                                 <Image
                                     src={article.thumbnail}
@@ -50,11 +50,12 @@ export default async function RelatedArticlesBottom({ categoryId, currentArticle
                             )}
                         </div>
 
-                        <div className="flex-1 flex flex-col">
-                            <h4 className="font-serif font-bold text-lg text-gray-900 dark:text-gray-100 leading-snug group-hover:text-cyan-600 transition-colors mb-2">
+                        <div className="p-4">
+                            <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100 leading-snug group-hover:text-primary transition-colors mb-2 line-clamp-2">
                                 {article.title}
                             </h4>
-                            <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-gray-400 mt-auto">
+                            <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-gray-400">
+                                <Calendar size={12} />
                                 <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                             </div>
                         </div>

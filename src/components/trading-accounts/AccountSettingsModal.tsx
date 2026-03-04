@@ -155,12 +155,13 @@ export function AccountSettingsModal({
                             </label>
                             <div className="flex flex-wrap gap-2.5">
                                 {COLORS.map((c) => (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         type="button"
                                         key={c}
                                         onClick={() => setColor(c)}
                                         aria-label={`Select color ${c}`}
-                                        className={`w-9 h-9 rounded-full transition-all flex items-center justify-center relative shadow-sm ring-offset-2 ring-offset-white dark:ring-offset-[#151925] ${
+                                        className={`w-9 h-9 p-0 hover:bg-transparent hover:text-white rounded-full transition-all flex items-center justify-center relative shadow-sm ring-offset-2 ring-offset-white dark:ring-offset-[#151925] ${
                                             color === c ? "scale-110 z-10 ring-2 ring-current" : "hover:scale-105"
                                         }`}
                                         style={{ 
@@ -169,7 +170,7 @@ export function AccountSettingsModal({
                                         }}
                                     >
                                         {color === c && <Check size={16} strokeWidth={3} className="text-white drop-shadow-md" />}
-                                    </button>
+                                    </Button>
                                 ))}
                             </div>
                         </div>

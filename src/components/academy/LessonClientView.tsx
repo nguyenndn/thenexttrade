@@ -137,7 +137,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     {/* Completion Area */}
                     <div className="pt-10 border-t border-gray-200 dark:border-white/10 flex flex-col items-center gap-6">
                         <Button
-                            size="lg"
+                            size="md"
                             onClick={handleComplete}
                             disabled={isCompleted || completing}
                             className={cn(

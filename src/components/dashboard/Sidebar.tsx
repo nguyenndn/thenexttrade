@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { signout } from '@/app/auth/actions';
+import { Button } from "@/components/ui/Button";
 
 export interface SidebarItem {
     name: string;
@@ -55,25 +56,9 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
 
     // Handle Main Click
     const handleMainClick = (e: React.MouseEvent) => {
-        if (hasSubItems) {
-            if (isGroupLink) {
-                if (!isExpanded) {
-                    onToggle();
-                }
-            } else {
-                e.preventDefault();
-                onToggle();
-            }
-            if (collapsed) setCollapsed(false);
+        if (!isGroupLink && collapsed) {
+            setCollapsed(false);
         }
-    };
-
-    // Handle Chevron Click (Always Toggle)
-    const handleChevronClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation(); // Stop bubbling to Link
-        onToggle();
-        if (collapsed) setCollapsed(false);
     };
 
     const isActiveStyle = isBranchActive;
@@ -104,27 +89,9 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                 )} />
 
                 {!collapsed && (
-                    <>
-                        <span className="flex-1 text-sm relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis">{item.name}</span>
-                        {hasSubItems && (
-                            <div
-                                role="button"
-                                tabIndex={0}
-                                onClick={handleChevronClick}
-                                className={cn(
-                                    "relative z-20 p-1 -mr-1 rounded-lg transition-colors",
-                                    isBranchActive
-                                        ? "text-primary hover:bg-primary/20"
-                                        : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
-                                )}
-                            >
-                                <ChevronDown size={16} className={cn(
-                                    "transition-transform duration-200",
-                                    isExpanded ? "rotate-180" : ""
-                                )} />
-                            </div>
-                        )}
-                    </>
+                    <span className="flex-1 text-sm relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis">
+                        {item.name}
+                    </span>
                 )}
 
                 {collapsed && (
@@ -133,33 +100,6 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                     </div>
                 )}
             </div>
-
-            {/* Sub Menu */}
-            {!collapsed && hasSubItems && isExpanded && (
-                <div className="ml-4 pl-4 border-l-2 border-gray-200 dark:border-white/10 mt-1 space-y-1 animate-in slide-in-from-top-2 fade-in duration-200 hidden-scrollbar">
-                    {item.items?.map((subItem) => {
-                        const isSubActive = pathname === subItem.href || pathname?.startsWith(`${subItem.href}/`);
-                        return (
-                            <Link
-                                key={subItem.href}
-                                href={subItem.href}
-                                className={cn(
-                                    "flex items-center gap-2 px-3 py-2 mx-2 rounded-lg text-sm transition-colors relative",
-                                    isSubActive
-                                        ? "text-primary font-medium"
-                                        : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
-                                )}
-                            >
-                                <div className={cn(
-                                    "w-1.5 h-1.5 rounded-full bg-primary shrink-0 transition-opacity duration-200",
-                                    isSubActive ? "opacity-100" : "opacity-0"
-                                )} />
-                                <span className="whitespace-nowrap overflow-hidden text-ellipsis">{subItem.name}</span>
-                            </Link>
-                        );
-                    })}
-                </div>
-            )}
         </div>
     );
 }
@@ -194,32 +134,57 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
             {/* Navigation Items */}
             <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
 
-                {items.map((item: any) => (
-                    <SidebarItemComponent
-                        key={item.name}
-                        item={item}
-                        pathname={pathname}
-                        collapsed={isCollapsed}
-                        setCollapsed={setCollapsed || (() => { })}
-                        isExpanded={expandedGroup === item.name}
-                        onToggle={() => {
-                            setExpandedGroup(prev => prev === item.name ? null : item.name);
-                        }}
-                    />
-                ))}
+                {items.map((item: any) => {
+                    const sectionNames: Record<string, string> = {
+                        "Dashboard": "OPERATIONS",
+                        "Trading Journal": "EXECUTION",
+                        "Analytics Hub": "REVIEW",
+                        "Academy": "RESOURCES"
+                    };
+
+                    const sectionLabel = sectionNames[item.name];
+
+                    return (
+                        <div key={item.name}>
+                            {/* Section Label */}
+                            {sectionLabel && !isCollapsed && (
+                                <div className="px-5 py-2 mt-2">
+                                    <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 tracking-widest uppercase">{sectionLabel}</span>
+                                </div>
+                            )}
+
+                            {/* Divider for Collapsed State */}
+                            {sectionLabel && item.name !== "Dashboard" && isCollapsed && (
+                                <div className="mx-4 my-2 h-px bg-gray-200 dark:bg-white/10" />
+                            )}
+
+                            <SidebarItemComponent
+                                item={item}
+                                pathname={pathname}
+                                collapsed={isCollapsed}
+                                setCollapsed={setCollapsed || (() => { })}
+                                isExpanded={expandedGroup === item.name}
+                                onToggle={() => {
+                                    setExpandedGroup(prev => prev === item.name ? null : item.name);
+                                }}
+                            />
+                        </div>
+                    );
+                })}
             </div>
 
             {/* Bottom Actions */}
             <div className="p-4 border-t border-gray-200 dark:border-white/10 m-4 mt-auto">
-                <button
+                <Button
+                    variant="ghost"
                     onClick={() => signout()}
                     className={cn(
-                        "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group",
+                        "flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group justify-start font-normal",
                         isCollapsed && "justify-center px-0"
                     )}>
                     <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
                     {!isCollapsed && <span className="font-medium text-sm">Logout</span>}
-                </button>
+                </Button>
             </div>
         </aside>
     );

@@ -53,8 +53,9 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
                         </span>
                     ) : (
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
+                            aria-label="Add Strategy"
                             className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <Plus size={12} />
@@ -66,7 +67,7 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-white/10">
                     <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Strategy Tags</h4>
-                    <Button variant="ghost" size="icon" className="w-6 h-6 p-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <Button variant="outline" size="icon" aria-label="More Options" className="w-6 h-6 p-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                         <MoreVertical size={16} />
                     </Button>
                 </div>
@@ -77,7 +78,7 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
                         <div className="flex items-center justify-between">
                             <label className="text-xs font-medium text-gray-500">Current Strategy</label>
                             {entry.strategy && (
-                                <Button variant="ghost" size="sm" onClick={handleClear} className="h-4 px-1 text-[10px] text-red-500 hover:text-red-600 hover:underline bg-transparent">Remove</Button>
+                                <Button variant="outline" size="sm" onClick={handleClear} className="h-4 px-1 text-[10px] text-red-500 hover:text-red-600 hover:underline bg-transparent">Remove</Button>
                             )}
                         </div>
                         <div className="flex flex-wrap gap-2">

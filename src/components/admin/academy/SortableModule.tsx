@@ -57,17 +57,19 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
                 {/* Module Header */}
                 <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 border-b border-gray-100 dark:border-white/5">
                     <div className="flex items-center gap-3 flex-1">
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             {...attributes}
                             {...listeners}
-                            className="cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded"
+                            className="h-auto w-auto cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded bg-transparent hover:bg-transparent"
                         >
                             <GripVertical size={20} />
-                        </button>
+                        </Button>
 
-                        <button onClick={() => setIsExpanded(!isExpanded)} className="text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 rounded p-1">
+                        <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)} className="h-auto w-auto text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 rounded p-1.5">
                             {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-                        </button>
+                        </Button>
 
                         <div>
                             <h3 className="font-bold text-gray-900 dark:text-white text-sm">{module.title}</h3>
@@ -91,9 +93,9 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
                             {module.quiz ? "Edit Quiz" : "Add Quiz"}
                         </Button>
 
-                        <button onClick={() => onDelete(module.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
+                        <Button variant="ghost" size="icon" onClick={() => onDelete(module.id)} className="p-2 h-auto w-auto text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
                             <Trash size={16} />
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -104,13 +106,14 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
                             {children}
                         </div>
 
-                        <button
+                        <Button
+                            variant="outline"
                             onClick={() => onAddLesson(module.id)}
-                            className="mt-4 w-full py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-gray-500 border border-dashed border-gray-300 dark:border-white/10 rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group"
+                            className="mt-4 w-full h-auto py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-gray-500 border border-dashed border-gray-300 dark:border-white/10 rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group"
                         >
                             <Plus size={16} className="group-hover:scale-110 transition-transform" />
                             Add Lesson
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>

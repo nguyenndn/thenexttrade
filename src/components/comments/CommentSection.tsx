@@ -50,17 +50,44 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
 
     return (
         <section id="comments" className="py-12 border-t border-gray-100 dark:border-white/5">
-            <div className="flex items-center gap-3 mb-8">
-                <div className="p-2 bg-primary/10 rounded-xl text-primary">
-                    <MessageSquare size={24} />
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-xl text-primary">
+                        <MessageSquare size={24} />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        Discussion ({comments.length})
+                    </h2>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    Discussion ({comments.length})
-                </h2>
+                
+                {currentUser && (
+                    <button 
+                        onClick={() => document.getElementById('comment-form-box')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="text-sm font-bold text-primary hover:underline"
+                    >
+                        Write a comment &darr;
+                    </button>
+                )}
+            </div>
+
+            {/* Comments List */}
+            <div className="mb-12">
+                {isLoading ? (
+                    <div className="flex justify-center py-10">
+                        <Loader2 className="animate-spin text-primary" />
+                    </div>
+                ) : (
+                    <CommentList
+                        comments={comments}
+                        articleId={articleId}
+                        currentUser={currentUser}
+                        onRefresh={fetchComments}
+                    />
+                )}
             </div>
 
             {/* Main Comment Form */}
-            <div className="mb-10 bg-gray-50/50 dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5">
+            <div id="comment-form-box" className="bg-gray-50/50 dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 scroll-mt-32">
                 {currentUser ? (
                     <div className="flex gap-4">
                         <div className="flex-shrink-0">
@@ -85,7 +112,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
                     <div className="text-center py-6">
                         <p className="text-gray-500 mb-4">Log in to join the discussion</p>
                         <a
-                            href={`/auth/login?next=/articles/${articleId}`}
+                            href={`/auth/login?next=/articles/${articleId}#comment-form-box`}
                             className="inline-flex items-center justify-center px-6 py-2.5 bg-primary hover:bg-[#00B078] text-white rounded-xl font-medium transition-all shadow-lg shadow-primary/20"
                         >
                             Log In
@@ -93,20 +120,6 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
                     </div>
                 )}
             </div>
-
-            {/* Comments List */}
-            {isLoading ? (
-                <div className="flex justify-center py-10">
-                    <Loader2 className="animate-spin text-primary" />
-                </div>
-            ) : (
-                <CommentList
-                    comments={comments}
-                    articleId={articleId}
-                    currentUser={currentUser}
-                    onRefresh={fetchComments}
-                />
-            )}
         </section>
     );
 }

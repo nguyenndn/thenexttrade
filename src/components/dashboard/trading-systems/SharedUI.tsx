@@ -2,6 +2,7 @@
 
 import { SVGProps } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 export const CustomBotIcon = ({ size = 24, className, ...props }: { size?: number | string } & SVGProps<SVGSVGElement>) => (
     <svg
@@ -36,13 +37,14 @@ export interface FilterTabProps {
 
 export function FilterTab({ label, icon: Icon, count, active, onClick }: FilterTabProps) {
     return (
-        <button
+        <Button
+            variant="ghost"
             onClick={onClick}
             className={cn(
-                "group relative flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap",
+                "group relative flex items-center h-auto justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap",
                 active
-                    ? "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white shadow-sm border border-primary/30"
-                    : "text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    ? "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white shadow-sm border border-primary/30 hover:bg-white dark:hover:bg-[#1E2028]"
+                    : "text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-transparent border border-transparent"
             )}
         >
             <Icon size={16} className={cn("transition-colors", active ? "text-primary" : "opacity-50 group-hover:opacity-80")} />
@@ -57,6 +59,6 @@ export function FilterTab({ label, icon: Icon, count, active, onClick }: FilterT
                     {count}
                 </span>
             )}
-        </button>
+        </Button>
     );
 }

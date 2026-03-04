@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { buttonVariants } from '@/components/ui/Button';
 
 interface PaginationProps {
     totalPages: number;
@@ -28,11 +29,16 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
                 {/* Previous Button */}
                 <Link
                     href={createPageURL(currentPage - 1)}
-                    className={`p-2 rounded-xl transition-all ${currentPage <= 1
-                            ? 'text-gray-400 pointer-events-none'
-                            : 'text-gray-700 dark:text-gray-200 hover:bg-white/60 dark:hover:bg-white/10'
-                        }`}
+                    className={buttonVariants({
+                        variant: 'outline',
+                        size: 'icon',
+                        className: `rounded-xl border-white/20 dark:border-white/10 ${currentPage <= 1
+                            ? 'opacity-50 pointer-events-none'
+                            : 'hover:bg-white/60 dark:hover:bg-white/10'
+                            }`
+                    })}
                     aria-disabled={currentPage <= 1}
+                    aria-label="Previous Page"
                 >
                     <ChevronLeft size={20} />
                 </Link>
@@ -43,10 +49,15 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
                         <Link
                             key={page}
                             href={createPageURL(page)}
-                            className={`w-10 h-10 flex items-center justify-center rounded-xl font-bold text-sm transition-all ${page === currentPage
+                            className={buttonVariants({
+                                variant: page === currentPage ? 'primary' : 'outline',
+                                className: `w-10 h-10 p-0 flex items-center justify-center rounded-xl font-bold text-sm transition-all border-white/20 dark:border-white/10 ${page === currentPage
                                     ? 'bg-primary text-white shadow-lg shadow-primary/30'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-white/10'
-                                }`}
+                                    }`
+                            })}
+                            aria-label={`Page ${page}`}
+                            aria-current={page === currentPage ? "page" : undefined}
                         >
                             {page}
                         </Link>
@@ -56,11 +67,16 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
                 {/* Next Button */}
                 <Link
                     href={createPageURL(currentPage + 1)}
-                    className={`p-2 rounded-xl transition-all ${currentPage >= totalPages
-                            ? 'text-gray-400 pointer-events-none'
-                            : 'text-gray-700 dark:text-gray-200 hover:bg-white/60 dark:hover:bg-white/10'
-                        }`}
+                    className={buttonVariants({
+                        variant: 'outline',
+                        size: 'icon',
+                        className: `rounded-xl border-white/20 dark:border-white/10 ${currentPage >= totalPages
+                            ? 'opacity-50 pointer-events-none'
+                            : 'hover:bg-white/60 dark:hover:bg-white/10'
+                            }`
+                    })}
                     aria-disabled={currentPage >= totalPages}
+                    aria-label="Next Page"
                 >
                     <ChevronRight size={20} />
                 </Link>

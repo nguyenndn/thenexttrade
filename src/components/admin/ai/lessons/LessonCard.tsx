@@ -3,6 +3,7 @@
 import { PremiumCard } from "@/components/ui/PremiumCard";
 import { Clock, FileText, MoreVertical, PlayCircle } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
 interface LessonCardProps {
     lesson: {
@@ -22,9 +23,9 @@ export default function LessonCard({ lesson }: LessonCardProps) {
                     <div className="inline-flex items-center px-3 py-1 bg-blue-500/10 text-blue-500 text-xs font-bold rounded-full uppercase tracking-wider">
                         Lesson
                     </div>
-                    <button className="text-gray-400 hover:text-white p-1 rounded hover:bg-white/10 transition-colors">
+                    <Button variant="ghost" size="icon" className="w-auto h-auto text-gray-400 hover:text-white p-1 rounded hover:bg-white/10 transition-colors">
                         <MoreVertical size={16} />
-                    </button>
+                    </Button>
                 </div>
 
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-primary transition-colors">

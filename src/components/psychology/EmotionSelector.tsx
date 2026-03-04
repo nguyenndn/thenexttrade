@@ -2,6 +2,7 @@
 
 import psychologyData from "@/data/psychology.json";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 interface EmotionSelectorProps {
     value: string | null;
@@ -26,20 +27,21 @@ export function EmotionSelector({ value, onChange, label, phase = "before" }: Em
                 </p>
                 <div className="flex flex-wrap gap-2">
                     {emotions.positive.map((emotion: any) => (
-                        <button
+                        <Button
+                            variant="ghost"
                             key={emotion.label}
                             type="button"
                             onClick={() => onChange(emotion.label)}
                             className={cn(
-                                "px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1.5",
+                                "px-3 py-1.5 h-auto rounded-full text-sm font-medium transition-all flex items-center gap-1.5 border-none",
                                 value === emotion.label
-                                    ? "bg-green-500 text-white ring-2 ring-green-300 ring-offset-2 dark:ring-offset-gray-900"
+                                    ? "bg-green-500 text-white ring-2 ring-green-300 ring-offset-2 dark:ring-offset-gray-900 hover:bg-green-600 hover:text-white"
                                     : "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-500/20"
                             )}
                         >
                             <span>{emotion.icon}</span>
                             <span>{emotion.label}</span>
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>
@@ -51,20 +53,21 @@ export function EmotionSelector({ value, onChange, label, phase = "before" }: Em
                 </p>
                 <div className="flex flex-wrap gap-2">
                     {emotions.neutral.map((emotion: any) => (
-                        <button
+                        <Button
+                            variant="ghost"
                             key={emotion.label}
                             type="button"
                             onClick={() => onChange(emotion.label)}
                             className={cn(
-                                "px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1.5",
+                                "px-3 py-1.5 h-auto rounded-full text-sm font-medium transition-all flex items-center gap-1.5 border-none",
                                 value === emotion.label
-                                    ? "bg-gray-500 text-white ring-2 ring-gray-300 ring-offset-2 dark:ring-offset-gray-900"
+                                    ? "bg-gray-500 text-white ring-2 ring-gray-300 ring-offset-2 dark:ring-offset-gray-900 hover:bg-gray-600 hover:text-white"
                                     : "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-500/20"
                             )}
                         >
                             <span>{emotion.icon}</span>
                             <span>{emotion.label}</span>
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>
@@ -76,20 +79,21 @@ export function EmotionSelector({ value, onChange, label, phase = "before" }: Em
                 </p>
                 <div className="flex flex-wrap gap-2">
                     {emotions.negative.map((emotion: any) => (
-                        <button
+                        <Button
+                            variant="ghost"
                             key={emotion.label}
                             type="button"
                             onClick={() => onChange(emotion.label)}
                             className={cn(
-                                "px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1.5",
+                                "px-3 py-1.5 h-auto rounded-full text-sm font-medium transition-all flex items-center gap-1.5 border-none",
                                 value === emotion.label
-                                    ? "bg-red-500 text-white ring-2 ring-red-300 ring-offset-2 dark:ring-offset-gray-900"
+                                    ? "bg-red-500 text-white ring-2 ring-red-300 ring-offset-2 dark:ring-offset-gray-900 hover:bg-red-600 hover:text-white"
                                     : "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/20"
                             )}
                         >
                             <span>{emotion.icon}</span>
                             <span>{emotion.label}</span>
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>

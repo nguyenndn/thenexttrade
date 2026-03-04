@@ -7,6 +7,7 @@ import { deleteModule } from "@/app/admin/ai-studio/modules/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import EditModuleModal from "./EditModuleModal";
+import { Button } from "@/components/ui/Button";
 
 interface ModuleHeaderActionsProps {
     module: {
@@ -48,26 +49,28 @@ export default function ModuleHeaderActions({ module }: ModuleHeaderActionsProps
         <>
             <Popover>
                 <PopoverTrigger asChild>
-                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                         <MoreVertical size={20} />
-                    </button>
+                    </Button>
                 </PopoverTrigger>
                 <PopoverContent align="end" className="w-48 p-1">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => setIsEditing(true)}
-                        className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 rounded-md flex items-center transition-colors"
+                        className="w-full justify-start px-3 py-2 h-auto text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 rounded-md flex items-center transition-colors font-normal"
                     >
                         <Edit2 size={16} className="mr-2" />
                         Edit Module
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={handleDelete}
                         disabled={isDeleting}
-                        className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md flex items-center transition-colors"
+                        className="w-full justify-start px-3 py-2 h-auto text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md flex items-center transition-colors font-normal"
                     >
                         <Trash2 size={16} className="mr-2" />
                         {isDeleting ? "Deleting..." : "Delete Module"}
-                    </button>
+                    </Button>
                 </PopoverContent>
             </Popover>
 

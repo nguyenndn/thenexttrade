@@ -48,7 +48,8 @@ export async function submitContactForm(data: ContactFormData) {
         return { success: true };
     } catch (e: any) {
         if (e instanceof z.ZodError) {
-            return { success: false, error: e.errors[0].message };
+            const zodErr = e as any;
+            return { success: false, error: zodErr.errors?.[0]?.message || "Validation failed" };
         }
         return { success: false, error: "An unexpected error occurred." };
     }

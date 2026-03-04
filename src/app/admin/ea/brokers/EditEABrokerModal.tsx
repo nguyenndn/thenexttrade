@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
-import { ImageUploader } from "@/components/ui/ImageUploader";
+import { FileUpload } from "@/components/ui/FileUpload";
 import { updateEABroker, deleteEABroker } from "./actions";
 
 interface EABrokerData {
@@ -139,7 +139,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
 
                         <div>
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Logo</label>
-                            <ImageUploader
+                            <FileUpload
                                 value={logo}
                                 onChange={setLogo}
                                 className="bg-white dark:bg-black/20 w-32"

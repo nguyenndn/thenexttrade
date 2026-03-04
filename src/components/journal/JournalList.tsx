@@ -374,6 +374,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                         <Button
                                                             variant="outline"
                                                             size="icon"
+                                                            aria-label={`View Details for ${entry.symbol}`}
                                                             onClick={() => {
                                                                 setSelectedDetailEntry(entry);
                                                                 setIsDetailOpen(true);
@@ -469,6 +470,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                             <Button
                                                 variant="outline"
                                                 size="icon"
+                                                aria-label={`View Details for ${entry.symbol}`}
                                                 onClick={() => {
                                                     setSelectedDetailEntry(entry);
                                                     setIsDetailOpen(true);

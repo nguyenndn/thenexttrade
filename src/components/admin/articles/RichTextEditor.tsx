@@ -213,15 +213,15 @@ export function RichTextEditor({ content, onChange, editable = true, className =
                         <div className="flex flex-wrap items-center gap-2 p-2 bg-blue-50 dark:bg-blue-900/10 border-t border-blue-100 dark:border-blue-800 text-xs">
                             <span className="font-bold text-blue-600 dark:text-blue-400 px-2">Table:</span>
                             <div className="flex gap-1">
-                                <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => editor.chain().focus().addColumnBefore().run()}>+ Col Left</Button>
-                                <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editor.chain().focus().addColumnAfter().run()}>+ Col Right</Button>
-                                <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editor.chain().focus().deleteColumn().run()}>Del Col</Button>
+                                <Button size="sm" variant="outline" onClick={() => editor.chain().focus().addColumnBefore().run()}>+ Col Left</Button>
+                                <Button size="sm" variant="ghost" onClick={() => editor.chain().focus().addColumnAfter().run()}>+ Col Right</Button>
+                                <Button size="sm" variant="ghost" onClick={() => editor.chain().focus().deleteColumn().run()}>Del Col</Button>
                                 <div className="w-[1px] bg-blue-200 dark:bg-blue-800 mx-1"></div>
-                                <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editor.chain().focus().addRowBefore().run()}>+ Row Above</Button>
-                                <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editor.chain().focus().addRowAfter().run()}>+ Row Below</Button>
-                                <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editor.chain().focus().deleteRow().run()}>Del Row</Button>
+                                <Button size="sm" variant="ghost" onClick={() => editor.chain().focus().addRowBefore().run()}>+ Row Above</Button>
+                                <Button size="sm" variant="ghost" onClick={() => editor.chain().focus().addRowAfter().run()}>+ Row Below</Button>
+                                <Button size="sm" variant="ghost" onClick={() => editor.chain().focus().deleteRow().run()}>Del Row</Button>
                                 <div className="w-[1px] bg-blue-200 dark:bg-blue-800 mx-1"></div>
-                                <Button size="sm" variant="ghost" className="h-7 px-2 text-red-500 hover:text-red-600 hover:bg-red-50" onClick={() => editor.chain().focus().deleteTable().run()}>Delete Table</Button>
+                                <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-600 hover:bg-red-50" onClick={() => editor.chain().focus().deleteTable().run()}>Delete Table</Button>
                             </div>
                         </div>
                     )}
@@ -243,20 +243,21 @@ export function RichTextEditor({ content, onChange, editable = true, className =
 
 function ToolbarButton({ onClick, isActive, icon: Icon, title, disabled }: any) {
     return (
-        <button
+        <Button
+            variant="ghost"
+            size="icon"
             onClick={onClick}
             title={title}
-            type="button"
             disabled={disabled}
-            className={`p-1.5 rounded-lg transition-all group flex items-center justify-center
+            className={`rounded-lg transition-all group flex items-center justify-center
                 ${isActive
-                    ? 'bg-primary/10 text-primary ring-1 ring-primary/20'
+                    ? 'bg-primary/10 text-primary ring-1 ring-primary/20 hover:bg-primary/20 hover:text-primary'
                     : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white'
                 }
                 ${disabled ? 'opacity-30 cursor-not-allowed' : ''}
             `}
         >
             <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
-        </button>
+        </Button>
     );
 }

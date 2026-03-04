@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { X, Upload, Image as ImageIcon, Search, Trash2, Check, ExternalLink, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface Media {
     id: string;
@@ -125,25 +126,27 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <ImageIcon size={20} className="text-primary" /> Media Library
                     </h3>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors">
-                        <X size={20} />
-                    </button>
+                    <Button variant="ghost" size="icon" onClick={onClose} className="p-2 h-auto w-auto hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors">
+                        <X size={20} className="text-gray-500" />
+                    </Button>
                 </div>
 
                 {/* Tabs */}
                 <div className="px-4 pt-4 flex gap-4 border-b border-gray-100 dark:border-white/10 text-sm font-bold">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => setActiveTab('upload')}
-                        className={`pb-3 border-b-2 transition-colors ${activeTab === 'upload' ? 'border-primary text-primary' : 'border-transparent text-gray-500'}`}
+                        className={`pb-3 border-b-2 rounded-none h-auto transition-colors ${activeTab === 'upload' ? 'border-primary text-primary hover:bg-transparent' : 'border-transparent text-gray-500 hover:bg-transparent'}`}
                     >
                         Upload Files
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={() => setActiveTab('library')}
-                        className={`pb-3 border-b-2 transition-colors ${activeTab === 'library' ? 'border-primary text-primary' : 'border-transparent text-gray-500'}`}
+                        className={`pb-3 border-b-2 rounded-none h-auto transition-colors ${activeTab === 'library' ? 'border-primary text-primary hover:bg-transparent' : 'border-transparent text-gray-500 hover:bg-transparent'}`}
                     >
                         Media Library
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="flex flex-1 overflow-hidden">
@@ -252,18 +255,19 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                             </div>
 
                             <div className="pt-4 border-t border-gray-200 dark:border-white/10 flex flex-col gap-2">
-                                <button
+                                <Button
                                     onClick={() => onSelect(selectedMedia.url, selectedMedia)}
-                                    className="w-full py-2 bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl text-sm transition-all"
+                                    className="w-full py-2.5 h-auto bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl text-sm transition-all"
                                 >
                                     Insert Media
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    variant="ghost"
                                     onClick={handleDelete}
-                                    className="w-full py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 text-xs font-bold rounded-xl transition-all"
+                                    className="w-full py-2.5 h-auto text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 text-xs font-bold rounded-xl transition-all"
                                 >
                                     Delete Permanently
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     )}

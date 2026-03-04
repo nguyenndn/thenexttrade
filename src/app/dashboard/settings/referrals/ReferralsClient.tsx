@@ -2,6 +2,7 @@
 
 import { Users, Copy, DollarSign, TrendingUp, Gift } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from "@/components/ui/Button";
 
 export default function ReferralsClient() {
     const [copied, setCopied] = useState(false);
@@ -51,12 +52,12 @@ export default function ReferralsClient() {
                     <div className="flex-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 border-r-0 rounded-l-xl px-4 py-3 text-gray-500 text-sm font-mono truncate text-left">
                         {referralLink}
                     </div>
-                    <button
+                    <Button
                         onClick={handleCopy}
-                        className="bg-[#2F80ED] hover:bg-[#2563EB] text-white px-6 py-3 rounded-r-xl font-bold transition-all active:scale-95 flex items-center gap-2"
+                        className="bg-[#2F80ED] hover:bg-[#2563EB] text-white px-6 py-3 rounded-l-none rounded-r-xl font-bold transition-all active:scale-95 flex items-center gap-2 h-full min-h-[46px] border-none"
                     >
                         {copied ? 'Copied!' : <><Copy size={18} /> Copy</>}
-                    </button>
+                    </Button>
                 </div>
             </div>
 

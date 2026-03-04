@@ -60,7 +60,7 @@ export function SessionDashboard() {
     const [data, setData] = useState<SessionData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchData = async () => {
+    const fetchData = async (signal: AbortSignal) => {
         try {
             setIsLoading(true);
             const params = new URLSearchParams();
@@ -69,12 +69,13 @@ export function SessionDashboard() {
             if (toStr) params.append("endDate", toStr);
             if (accountId) params.append("accountId", accountId);
 
-            const res = await fetch(`/api/analytics/sessions?${params}`);
+            const res = await fetch(`/api/analytics/sessions?${params}`, { signal });
             if (!res.ok) throw new Error("Failed to fetch");
 
             const json = await res.json();
             setData(json);
-        } catch (error) {
+        } catch (error: any) {
+            if (error.name === 'AbortError') return;
             console.error(error);
             toast.error("Failed to load session data");
         } finally {
@@ -83,7 +84,12 @@ export function SessionDashboard() {
     };
 
     useEffect(() => {
-        fetchData();
+        const controller = new AbortController();
+        fetchData(controller.signal);
+
+        return () => {
+            controller.abort();
+        };
     }, [fromStr, toStr, accountId]);
 
     return (

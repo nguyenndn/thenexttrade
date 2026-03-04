@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { updatePassword, getTwoFactorStatus } from '@/app/dashboard/settings/account/actions';
 import { TwoFactorSetup } from "./TwoFactorSetup";
 import { ActiveSessionsList } from "./ActiveSessionsList";
+import { Button } from "@/components/ui/Button";
 
 export function SecuritySettings() {
     const [isLoading, setIsLoading] = useState(false);
@@ -95,13 +96,12 @@ export function SecuritySettings() {
                         </div>
                     </div>
                     <div className="pt-2">
-                        <button
+                        <Button
                             type="submit"
-                            disabled={isLoading}
-                            className="px-6 py-2 bg-primary hover:bg-[#00B078] disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                            isLoading={isLoading}
                         >
-                            {isLoading ? "Updating..." : "Update Password"}
-                        </button>
+                            Update Password
+                        </Button>
                     </div>
                 </form>
             </div>

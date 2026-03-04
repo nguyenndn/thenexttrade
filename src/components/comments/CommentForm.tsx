@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
-import { Send, Loader2 } from "lucide-react";
+import { SendHorizontal, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 // import { useAuth } from "@/hooks/useAuth";
 // Actually checking useAuth might be complex if not readily available.
@@ -91,7 +91,7 @@ export function CommentForm({
             <div className="relative">
                 <textarea
                     {...register("content")}
-                    className="w-full min-h-[100px] p-4 pr-12 rounded-xl bg-gray-50 dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
+                    className="w-full min-h-[120px] p-4 pb-16 rounded-xl bg-gray-50 dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
                     placeholder={placeholder}
                     autoFocus={autoFocus}
                     disabled={isLoading}
@@ -104,10 +104,13 @@ export function CommentForm({
                 ) : (
                     <Button
                         type="submit"
+                        variant="primary"
+                        size="md"
                         disabled={isLoading}
-                        className="absolute right-3 bottom-3 p-2 h-auto rounded-lg shadow-lg shadow-primary/30 transition-all active:translate-y-0"
+                        className="absolute right-3 bottom-3 rounded-full shadow-lg shadow-[#00C888]/20 transition-all active:scale-95 flex items-center justify-center gap-2 px-6 py-2.5 bg-[#00C888] hover:bg-[#00b37a]"
                     >
-                        <Send size={16} className="shrink-0" />
+                        <SendHorizontal size={18} className="text-white" />
+                        <span className="font-medium text-white text-base">Send</span>
                     </Button>
                 )}
             </div>

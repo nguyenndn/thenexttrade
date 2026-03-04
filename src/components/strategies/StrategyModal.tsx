@@ -125,12 +125,19 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
                             <label htmlFor="color" className="text-sm font-bold text-gray-700 dark:text-gray-300">Color Tag</label>
                             <div className="flex gap-3 flex-wrap">
                                 {COLORS.map((color) => (
-                                    <button
+                                    <div
                                         key={color}
-                                        type="button"
+                                        role="button"
+                                        tabIndex={0}
                                         aria-label={`Select color ${color}`}
                                         onClick={() => setFormData({ ...formData, color })}
-                                        className={`w-8 h-8 rounded-full transition-transform ${formData.color === color
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                setFormData({ ...formData, color });
+                                            }
+                                        }}
+                                        className={`w-8 h-8 rounded-full transition-transform cursor-pointer ${formData.color === color
                                             ? "scale-110 ring-2 ring-offset-2 ring-gray-900 dark:ring-white dark:ring-offset-[#1E2028]"
                                             : "hover:scale-105"
                                             }`}

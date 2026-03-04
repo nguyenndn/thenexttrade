@@ -199,19 +199,20 @@ export function DateRangePicker({
             `}</style>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <button
+                    <Button
+                        variant="ghost"
                         id="date"
                         className={cn(
-                            "flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
+                            "flex items-center justify-start h-auto gap-2 px-3 py-2 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
                             !value && "text-gray-500"
                         )}
                     >
-                        <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                        <div className="p-1.5 bg-primary/10 text-primary rounded-lg shrink-0">
                             <CalendarIcon size={16} />
                         </div>
                         <span className="flex-1 truncate text-left">{getDisplayText()}</span>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </button>
+                    </Button>
                 </PopoverTrigger>
                 <PopoverContent
                     className="w-auto p-0 bg-white border-gray-200 shadow-xl rounded-xl overflow-hidden"

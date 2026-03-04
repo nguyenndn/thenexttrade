@@ -17,6 +17,7 @@ import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 export default function AccountsClient() {
     const searchParams = useSearchParams();
@@ -95,13 +96,14 @@ export default function AccountsClient() {
                 title="Trading Accounts"
                 description="Manage your connected manual trading accounts."
             >
-                <button
+                <Button
                     onClick={openNewAccountModal}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/25 active:scale-95"
+                    className="flex items-center gap-2 text-white font-bold rounded-xl shadow-lg shadow-primary/25 active:scale-95 border-none"
+                    style={{ backgroundColor: 'hsl(var(--primary))' }}
                 >
                     <Plus size={18} />
                     Add Account
-                </button>
+                </Button>
             </PageHeader>
 
             {/* Account Grid */}
@@ -118,12 +120,12 @@ export default function AccountsClient() {
                             title="No Accounts Found"
                             description="Add a trading account to start tracking your portfolio performance."
                             action={
-                                <button
+                                <Button
                                     onClick={openNewAccountModal}
-                                    className="px-6 py-2.5 bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 font-bold rounded-xl transition-colors shadow-lg"
+                                    className="px-6 py-2.5 bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 font-bold rounded-xl transition-colors shadow-lg border-none"
                                 >
                                     Add Account
-                                </button>
+                                </Button>
                             }
                         />
                     </div>
@@ -155,9 +157,9 @@ export default function AccountsClient() {
                                     )}
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                                            <Button variant="ghost" size="icon" className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-0 m-0">
                                                 <MoreHorizontal size={16} />
-                                            </button>
+                                            </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-200 dark:border-white/10">
                                             <DropdownMenuItem onClick={() => handleEdit(account)} className="font-medium cursor-pointer rounded-lg mx-1 my-1">
@@ -197,13 +199,14 @@ export default function AccountsClient() {
                                     </div>
                                 </div>
 
-                                <button
+                                <Button
+                                    variant="outline"
                                     onClick={() => handleSync(account)}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white rounded-lg transition-colors font-bold text-xs group/sync"
+                                    className="flex items-center gap-1.5 h-auto px-3 py-1.5 bg-blue-500/10 border-transparent text-blue-500 hover:bg-blue-500 hover:text-white rounded-lg transition-colors font-bold text-xs group/sync"
                                 >
                                     <RotateCw size={12} className="group-hover/sync:rotate-180 transition-transform duration-500" />
                                     Sync
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     ))
@@ -211,15 +214,23 @@ export default function AccountsClient() {
 
                 {/* Add Button as last card if there are accounts */}
                 {accounts.length > 0 && (
-                    <button
+                    <div
+                        role="button"
+                        tabIndex={0}
                         onClick={openNewAccountModal}
-                        className="group flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-primary/50 dark:hover:border-primary/50 transition-all text-gray-400 hover:text-primary bg-transparent hover:bg-primary/5 min-h-[220px]"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                openNewAccountModal();
+                            }
+                        }}
+                        className="group flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-primary/50 dark:hover:border-primary/50 transition-all text-gray-400 hover:text-primary bg-transparent hover:bg-primary/5 min-h-[220px] cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     >
                         <div className="w-14 h-14 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-primary/10 transition-transform duration-300">
                             <Plus size={24} />
                         </div>
                         <span className="font-bold text-sm tracking-wide">Add New Account</span>
-                    </button>
+                    </div>
                 )}
             </div>
 

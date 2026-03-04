@@ -5,7 +5,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { deleteLevel } from "@/app/admin/ai-studio/levels/actions";
 import { toast } from "sonner";
 import { EditLevelModal } from "./EditLevelModal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
 
 interface LevelCardProps {
     level: {
@@ -20,23 +22,28 @@ interface LevelCardProps {
 
 export default function LevelCard({ level }: LevelCardProps) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
     const handleDelete = async () => {
-        const confirmed = window.confirm("Are you sure you want to delete this level? This action cannot be undone.");
-        if (confirmed) {
-            const toastId = toast.loading("Deleting level...");
-            try {
-                const res = await deleteLevel(level.id);
-                if (res.success) {
-                    toast.success("Level deleted successfully", { id: toastId });
-                    router.refresh();
-                } else {
-                    toast.error(`Delete failed: ${res.error}`, { id: toastId });
-                }
-            } catch (error) {
-                toast.error("An error occurred", { id: toastId });
+        setIsDeleting(true);
+        const toastId = toast.loading("Deleting level...");
+        try {
+            const res = await deleteLevel(level.id);
+            if (res.success) {
+                toast.success("Level deleted successfully", { id: toastId });
+                setIsConfirmOpen(false);
+                router.refresh();
+            } else {
+                toast.error(`Delete failed: ${res.error}`, { id: toastId });
+                setIsConfirmOpen(false);
             }
+        } catch (error) {
+            toast.error("An error occurred", { id: toastId });
+            setIsConfirmOpen(false);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -51,25 +58,27 @@ export default function LevelCard({ level }: LevelCardProps) {
                     <div onClick={(e) => e.stopPropagation()}>
                         <Popover>
                             <PopoverTrigger asChild>
-                                <button className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400">
+                                <Button variant="ghost" size="icon" className="p-2 w-auto h-auto hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400">
                                     <MoreVertical size={18} />
-                                </button>
+                                </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-40 p-1" align="end">
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={() => setIsEditModalOpen(true)}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-left"
+                                    className="w-full flex justify-start items-center gap-2 px-3 py-2 h-auto text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors font-normal"
                                 >
                                     <Edit size={14} />
                                     <span>Edit</span>
-                                </button>
-                                <button
-                                    onClick={handleDelete}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-left"
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => setIsConfirmOpen(true)}
+                                    className="w-full flex justify-start items-center gap-2 px-3 py-2 h-auto text-sm text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors font-normal"
                                 >
                                     <Trash size={14} />
                                     <span>Delete</span>
-                                </button>
+                                </Button>
                             </PopoverContent>
                         </Popover>
                     </div>
@@ -104,6 +113,18 @@ export default function LevelCard({ level }: LevelCardProps) {
                     title: level.title,
                     description: level.description
                 }}
+            />
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Level"
+                description="Are you sure you want to delete this level? This action cannot be undone."
+                confirmText="Delete Level"
+                onConfirm={handleDelete}
+                onCancel={() => {
+                    if (!isDeleting) setIsConfirmOpen(false);
+                }}
+                isLoading={isDeleting}
             />
         </>
     );

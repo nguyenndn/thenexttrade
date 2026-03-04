@@ -142,21 +142,22 @@ function VerifyEmailForm() {
             <div className="mt-8 text-center space-y-4">
                 <div className="flex items-center justify-center text-sm">
                     <span className="text-gray-500 dark:text-gray-400 mr-2">Didn't receive the code?</span>
-                    <button
+                    <Button
                         type="button"
+                        variant="link"
                         onClick={handleResend}
                         disabled={timer > 0 || resendLoading}
-                        className={`font-bold flex items-center gap-1 transition-colors ${
+                        className={`font-bold flex items-center gap-1 transition-colors p-0 h-auto ${
                             timer > 0 
-                                ? 'text-gray-400 cursor-not-allowed' 
-                                : 'text-primary hover:text-[#00b078]'
+                                ? 'text-gray-400 cursor-not-allowed hover:no-underline' 
+                                : 'text-primary hover:text-[#00b078] hover:no-underline'
                         }`}
                     >
                         {resendLoading ? (
                             <RefreshCcw size={14} className="animate-spin" />
                         ) : null}
                         {timer > 0 ? `Resend in ${timer}s` : 'Resend Code'}
-                    </button>
+                    </Button>
                 </div>
                 
                 <div className="pt-4 border-t border-gray-100 dark:border-white/5">

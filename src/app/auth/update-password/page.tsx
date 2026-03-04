@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { Logo } from '@/components/ui/Logo'
-import { ArrowLeft, Lock, Loader2, Check } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Lock, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { updatePassword } from '../actions'
 import { useRouter } from 'next/navigation'
@@ -71,17 +72,18 @@ export default function UpdatePasswordPage() {
                     </div>
                 )}
 
-                <button
+                <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-primary hover:bg-[#00b078] text-black font-bold py-3.5 rounded-xl transition-all hover:shadow-lg hover:shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full text-black font-bold h-[50px] rounded-xl transition-all hover:shadow-lg hover:shadow-primary/20 flex items-center justify-center"
+                    style={{ backgroundColor: 'hsl(var(--primary))' }}
                 >
                     {isLoading ? (
                         <Loader2 className="animate-spin" />
                     ) : (
                         "Reset Password"
                     )}
-                </button>
+                </Button>
             </form>
         </div>
     )

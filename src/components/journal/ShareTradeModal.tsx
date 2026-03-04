@@ -139,16 +139,16 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                             </Button>
                             <div className="flex items-center justify-center gap-1.5 bg-gray-100 dark:bg-black/20 p-1.5 rounded-[18px] w-[180px]">
                                 <Button
-                                    variant="ghost"
+                                    variant="outline"
                                     onClick={() => setMode("basic")}
-                                    className={`flex-1 rounded-[14px] font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm" : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-[14px] font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-500 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Basic
                                 </Button>
                                 <Button
-                                    variant="ghost"
+                                    variant="outline"
                                     onClick={() => setMode("full")}
-                                    className={`flex-1 rounded-[14px] font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm" : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-[14px] font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-500 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Full
                                 </Button>
@@ -163,16 +163,16 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
 
                     {/* Add Description Accordion */}
                     <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300 shadow-sm">
-                        <button 
-                            type="button"
+                        <Button 
+                            variant="outline"
                             onClick={() => setDescriptionOpen(!descriptionOpen)} 
-                            className="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="w-full flex items-center justify-between p-4 h-auto border-none bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors rounded-none"
                         >
                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Add Description (Optional)</span>
                             <div className={`transition-transform duration-300 ${descriptionOpen ? "rotate-180" : ""}`}>
                                 <ChevronDown size={16} className="text-gray-400" />
                             </div>
-                        </button>
+                        </Button>
                         
                         <div className={`grid transition-all duration-300 ease-in-out ${descriptionOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                             <div className="overflow-hidden">
@@ -224,7 +224,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                         <div className="text-sm text-gray-500 italic">
                             {isSaving ? "Saving changes..." : lastSaved ? "Changes saved" : ""}
                         </div>
-                        <Button onClick={onClose} className="px-8 font-bold rounded-xl">
+                        <Button onClick={onClose} className="font-bold rounded-xl">
                             Done
                         </Button>
                     </div>

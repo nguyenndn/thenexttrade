@@ -139,18 +139,20 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                     <div className="space-y-3">
                         {fields.map((field, index) => (
                             <div key={field.id} className="flex gap-2 items-center">
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => handleSetCorrect(index)}
                                     className={clsx(
-                                        "w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all shrink-0",
+                                        "w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all p-0 shrink-0",
                                         options[index]?.isCorrect
-                                            ? "bg-primary border-primary text-white"
-                                            : "border-gray-300 hover:border-primary text-gray-300"
+                                            ? "bg-primary border-primary text-white hover:bg-primary/90 hover:text-white"
+                                            : "border-gray-300 hover:border-primary text-gray-300 bg-transparent"
                                     )}
                                 >
-                                    <Check size={14} />
-                                </button>
+                                    <Check size={14} strokeWidth={options[index]?.isCorrect ? 3 : 2} />
+                                </Button>
 
                                 <div className="flex-1">
                                     <input
@@ -163,14 +165,16 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                                     )}
                                 </div>
 
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => remove(index)}
-                                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    className="p-2 h-auto w-auto text-gray-400 hover:text-red-500 transition-colors"
                                     disabled={fields.length <= 2}
                                 >
                                     <Trash size={16} />
-                                </button>
+                                </Button>
                             </div>
                         ))}
                     </div>

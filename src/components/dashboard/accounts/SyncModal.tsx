@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Copy, Check, Server, ShieldCheck } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 
 interface SyncModalProps {
     account: any;
@@ -53,12 +54,14 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
                             <code className="text-sm font-mono text-gray-700 dark:text-gray-300 truncate flex-1">
                                 {apiUrl}
                             </code>
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => copyToClipboard(apiUrl, "URL")}
-                                className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md transition-colors text-gray-400 hover:text-primary"
+                                className="p-1.5 h-auto w-auto hover:bg-white dark:hover:bg-white/10 rounded-md transition-colors text-gray-400 hover:text-primary"
                             >
                                 {copiedField === "URL" ? <Check size={14} /> : <Copy size={14} />}
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -70,12 +73,14 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
                             <code className="text-sm font-mono text-gray-700 dark:text-gray-300 truncate flex-1">
                                 {account.id}
                             </code>
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => copyToClipboard(account.id, "ID")}
-                                className="p-1.5 hover:bg-white dark:hover:bg-white/10 rounded-md transition-colors text-gray-400 hover:text-primary"
+                                className="p-1.5 h-auto w-auto hover:bg-white dark:hover:bg-white/10 rounded-md transition-colors text-gray-400 hover:text-primary"
                             >
                                 {copiedField === "ID" ? <Check size={14} /> : <Copy size={14} />}
-                            </button>
+                            </Button>
                         </div>
                         <p className="text-[10px] text-yellow-600 dark:text-yellow-500 bg-yellow-500/10 p-2 rounded border border-yellow-500/20">
                             Keep this ID safe. Anyone with this ID can upload trades to your journal.
@@ -84,12 +89,12 @@ export function SyncModal({ account, onClose }: SyncModalProps) {
                 </div>
 
                 <div className="border-t border-gray-200 dark:border-white/10 pt-4">
-                    <button
+                    <Button
                         onClick={onClose}
-                        className="w-full py-2.5 bg-primary hover:bg-[#00B377] text-white font-bold rounded-xl transition-all"
+                        className="w-full py-2.5 h-auto bg-primary hover:bg-[#00B377] text-white font-bold rounded-xl transition-all"
                     >
                         Done
-                    </button>
+                    </Button>
                 </div>
             </DialogContent>
         </Dialog>

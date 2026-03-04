@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/Button";
 
 interface TabsContextType {
     activeTab: string;
@@ -55,10 +56,11 @@ export function TabsTrigger({ value, children, className }: TabsTriggerProps) {
     const isActive = context.activeTab === value;
 
     return (
-        <button
+        <Button
+            variant="ghost"
             onClick={() => context.setActiveTab(value)}
             className={cn(
-                "relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 z-10",
+                "relative px-4 py-2 h-auto rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 z-10 hover:bg-transparent",
                 isActive
                     ? "text-gray-900 dark:text-white"
                     : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
@@ -73,7 +75,7 @@ export function TabsTrigger({ value, children, className }: TabsTriggerProps) {
                 />
             )}
             {children}
-        </button>
+        </Button>
     );
 }
 

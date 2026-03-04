@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, ChevronDown, AlertTriangle, Check } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { MISTAKES, MISTAKE_CATEGORIES, getMistakeSeverityColor, Mistake } from "@/lib/mistakes";
+import { Button } from "@/components/ui/Button";
 
 interface MistakeSelectorProps {
     value: string[];
@@ -60,13 +61,15 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
                                 >
                                     <span>{mistake.emoji}</span>
                                     <span>{mistake.name}</span>
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         type="button"
                                         onClick={() => removeMistake(code)}
-                                        className="hover:opacity-70 p-0.5"
+                                        className="hover:opacity-70 p-0.5 h-auto w-auto hover:bg-transparent"
                                     >
                                         <X size={12} />
-                                    </button>
+                                    </Button>
                                 </span>
                             );
                         } else {
@@ -81,15 +84,16 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
                     {trigger ? (
                         <div className="inline-block">{trigger}</div>
                     ) : (
-                        <button
+                        <Button
+                            variant="ghost"
                             type="button"
-                            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10 text-left hover:border-primary transition-colors focus:border-primary focus:outline-none"
+                            className="w-full h-auto flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10 text-left hover:border-primary transition-colors focus:border-primary focus:outline-none hover:bg-gray-50 dark:hover:bg-black/20 font-normal"
                         >
                             <span className="text-sm font-medium text-gray-500">
                                 {value.length === 0 ? "Select mistakes..." : `${value.length} mistake(s) logged`}
                             </span>
                             <ChevronDown size={16} className="text-gray-400" />
-                        </button>
+                        </Button>
                     )}
                 </PopoverTrigger>
                 <PopoverContent
@@ -111,14 +115,15 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
                                     </h4>
                                     <div className="space-y-1">
                                         {categoryMistakes.map(mistake => (
-                                            <button
+                                            <Button
+                                                variant="ghost"
                                                 key={mistake.code}
                                                 type="button"
                                                 onClick={() => toggleMistake(mistake.code)}
                                                 className={`
-                                                    w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors group
+                                                    w-full flex h-auto items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors group justify-start font-normal
                                                     ${value.includes(mistake.code)
-                                                        ? "bg-primary/10 text-primary"
+                                                        ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
                                                         : "hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300"
                                                     }
                                                 `}
@@ -143,7 +148,7 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
                                                 >
                                                     {mistake.severity}
                                                 </span>
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                 </div>

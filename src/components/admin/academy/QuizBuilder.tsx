@@ -104,12 +104,14 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                     <div>
                         <div className="flex items-center gap-3">
                             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{quiz.title}</h1>
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => setIsSettingsModalOpen(true)}
-                                className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
+                                className="p-1.5 h-auto w-auto text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" /></svg>
-                            </button>
+                            </Button>
                         </div>
                         <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
                             {quiz.description || "No description"} • {questions.length} Questions

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { menuItems } from "@/config/navigation";
 import { ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export function DesktopNav() {
     const { theme } = useTheme();
@@ -33,14 +34,15 @@ export function DesktopNav() {
                             onMouseEnter={() => setOpenDropdown(item.name)}
                             onMouseLeave={() => setOpenDropdown(null)}
                         >
-                            <button
-                                className={`flex items-center gap-1.5 ${isDark ? 'text-white hover:text-teal-400' : 'text-gray-900 hover:text-teal-600'} transition-colors font-medium text-base`}
+                            <Button
+                                variant="ghost"
+                                className={`flex items-center gap-1.5 h-[40px] p-0 hover:bg-transparent ${isDark ? 'text-white hover:text-teal-400' : 'text-gray-900 hover:text-teal-600'} transition-colors font-medium text-base`}
                             >
                                 {item.name}
                                 <ChevronDown
                                     className={`w-4 h-4 transition-transform ${openDropdown === item.name ? 'rotate-180' : ''}`}
                                 />
-                            </button>
+                            </Button>
                             {openDropdown === item.name && (
                                 <div
                                     className={`absolute top-full left-0 pt-2 w-56 z-50`}

@@ -27,11 +27,11 @@ export async function POST(request: Request) {
         // 3. Upload to Supabase Storage
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const filePath = `articles/${fileName}`; // Organize in 'articles' folder
+        const filePath = `${user.id}/${fileName}`; // Organize in user's folder to pass RLS policy
 
         const { data, error } = await supabase
             .storage
-            .from('uploads') // Bucket name
+            .from('avatars') // Use the existing 'avatars' bucket to guarantee RLS rules work
             .upload(filePath, file, {
                 cacheControl: '3600',
                 upsert: false
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         // 4. Get Public URL
         const { data: { publicUrl } } = supabase
             .storage
-            .from('uploads')
+            .from('avatars')
             .getPublicUrl(filePath);
 
         return NextResponse.json({ url: publicUrl });

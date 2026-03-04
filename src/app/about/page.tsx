@@ -3,6 +3,7 @@ import { Target, Shield, Zap, Users, Globe2, TrendingUp, ChevronRight, Activity,
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import Link from 'next/link';
+import { buttonVariants } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
     title: 'About Us | The Next Trade',
@@ -169,7 +170,14 @@ export default function AboutPage() {
                             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
                                 Join thousands of systematic traders who have discovered the power of data-driven decisions.
                             </p>
-                            <Link href="/register" className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-[#00B078] text-white font-bold px-8 py-4 rounded-xl shadow-xl hover:shadow-primary/25 transition-all text-lg active:scale-95">
+                            <Link 
+                                href="/register" 
+                                className={buttonVariants({
+                                    variant: 'primary',
+                                    size: 'lg',
+                                    className: "px-8 py-4 shadow-xl hover:shadow-primary/25 text-lg"
+                                })}
+                            >
                                 <span>Join The Next Trade</span>
                                 <ChevronRight size={20} />
                             </Link>

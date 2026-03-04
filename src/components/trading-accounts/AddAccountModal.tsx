@@ -160,17 +160,18 @@ export function AddAccountModal({
                                         "#EF4444", "#F97316", "#F59E0B", "#EAB308", "#84CC16",
                                         "#14B8A6", "#06B6D4", "#64748B", "#475569", "#1E293B"
                                     ].map((c) => (
-                                        <button
+                                        <Button
+                                            variant="ghost"
                                             type="button"
                                             key={c}
                                             onClick={() => setColor(c)}
                                             aria-label={`Select color ${c}`}
-                                            className={`w-9 h-9 rounded-full transition-all flex items-center justify-center ${color === c ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110" : "hover:scale-105"
+                                            className={`w-9 h-9 p-0 rounded-full transition-all flex items-center justify-center ${color === c ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110 hover:bg-transparent hover:text-white" : "hover:scale-105 hover:bg-transparent"
                                                 }`}
                                             style={{ backgroundColor: c, boxShadow: color === c ? `0 0 10px ${c}80` : "none" }}
                                         >
                                             {color === c && <Check size={14} className="text-white drop-shadow-md" />}
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                             </div>

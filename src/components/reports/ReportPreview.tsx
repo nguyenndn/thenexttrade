@@ -1,6 +1,7 @@
 "use client";
 
 import { Download } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface ReportPreviewProps {
     data: any;
@@ -16,13 +17,13 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                 <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                     Report Preview
                 </h3>
-                <button
+                <Button
                     onClick={onDownload}
-                    className="px-4 py-2 bg-primary text-white font-bold rounded-xl hover:bg-[#00B377] flex items-center gap-2 transition-all shadow-lg shadow-primary/20"
+                    className="flex items-center gap-2"
                 >
                     <Download size={18} />
                     Download PDF
-                </button>
+                </Button>
             </div>
 
             {/* Summary Card */}

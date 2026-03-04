@@ -119,10 +119,10 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                             {/* Left: Symbol & Type */}
                             <div className="flex items-center gap-6">
                                 <Button 
-                                    variant="ghost" 
+                                    variant="outline" 
                                     size="icon" 
                                     onClick={onPrev}
-                                    disabled={!hasPrev}
+                                    aria-label="Previous Trade"
                                     className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed"
                                 >
                                     <ChevronLeft size={24} />

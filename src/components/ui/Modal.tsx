@@ -4,6 +4,7 @@
 import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { Button } from "@/components/ui/Button";
 
 interface ModalProps {
     isOpen: boolean;
@@ -45,12 +46,14 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                         {title}
                     </h3>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
                         className="rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-500 transition-colors"
                     >
                         <X size={20} />
-                    </button>
+                    </Button>
                 </div>
                 <div className="p-6 overflow-y-auto">
                     {children}

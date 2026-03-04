@@ -446,14 +446,14 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 {strategies.length === 0 ? (
                                     /* Empty State — no strategies yet */
                                     <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10">
-                                        <span className="text-sm text-gray-400 flex-1">Chưa có strategy nào</span>
+                                        <span className="text-sm text-gray-400 flex-1">No strategies found</span>
                                         <a
                                             href="/dashboard/strategies"
                                             target="_blank"
                                             className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
                                         >
                                             <ExternalLink size={14} />
-                                            Tạo Strategy
+                                            Create Strategy
                                         </a>
                                     </div>
                                 ) : (
@@ -493,7 +493,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                     {(formData.tags || []).map((tag: string, idx: number) => (
                                         <span key={idx} className="px-2 py-1 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold border border-gray-200 dark:border-white/10 flex items-center gap-1">
                                             {tag}
-                                            <Button variant="ghost" size="icon" type="button" onClick={() => removeCustomTag(tag)} aria-label="Remove tag" className="w-4 h-4 hover:bg-transparent hover:text-red-500 p-0 text-gray-400">
+                                            <Button variant="outline" size="icon" type="button" onClick={() => removeCustomTag(tag)} aria-label={`Remove tag ${tag}`} className="w-4 h-4 hover:bg-transparent border-transparent hover:text-red-500 p-0 text-gray-400">
                                                 <X size={12} />
                                             </Button>
                                         </span>
@@ -623,7 +623,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         <Button
                                             key={level}
                                             type="button"
-                                            variant="ghost"
+                                            variant="outline"
                                             onClick={() => setFormData({ ...formData, confidenceLevel: level })}
                                             className={`
                                               w-12 h-12 rounded-xl font-bold text-lg transition-all border p-0
@@ -772,7 +772,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                                 setFormData(prev => ({ ...prev, images: [...(prev.images || []), directUrl] }));
                                                 input.value = "";
                                             } else {
-                                                toast.error("URL phải bắt đầu bằng http:// hoặc https://");
+                                                toast.error("URL must start with http:// or https://");
                                             }
                                         }
                                     }
@@ -790,7 +790,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                                         setFormData(prev => ({ ...prev, images: [...(prev.images || []), directUrl] }));
                                                         imageInputRef.current.value = "";
                                                     } else {
-                                                        toast.error("URL phải bắt đầu bằng http:// hoặc https://");
+                                                        toast.error("URL must start with http:// or https://");
                                                     }
                                                 }
                                             }

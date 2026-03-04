@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Camera, Loader2, Upload } from "lucide-react";
 import { updateProfile } from "./actions";
 import { Logo } from "@/components/ui/Logo";
+import { Button } from "@/components/ui/Button";
 
 export default function OnboardingPage() {
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -132,10 +133,10 @@ export default function OnboardingPage() {
                     </div>
 
                     {/* Submit Button */}
-                    <button
+                    <Button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full h-12 bg-[#2F80ED] hover:bg-[#2563eb] text-white font-semibold rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full h-12 bg-[#2F80ED] hover:bg-[#2563eb] text-white font-bold rounded-xl transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 border-none"
                     >
                         {isLoading ? (
                             <>
@@ -145,7 +146,7 @@ export default function OnboardingPage() {
                         ) : (
                             "Complete Profile"
                         )}
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>

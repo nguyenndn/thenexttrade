@@ -95,7 +95,7 @@ export default function CreateLevelModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0">
+                <Button className="w-full sm:w-auto rounded-xl shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0">
                     <Plus size={18} strokeWidth={2.5} />
                     New Level
                 </Button>
@@ -103,12 +103,14 @@ export default function CreateLevelModal() {
             <DialogContent hideCloseButton className="max-w-4xl bg-transparent border-none p-0 shadow-none">
                 <div className="relative">
                     {/* Close button outside for cleaner look */}
-                    <button
-                        onClick={() => setOpen(false)}
-                        className="absolute -top-10 right-0 text-white/50 hover:text-white transition-colors"
-                    >
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setOpen(false)}
+                            className="absolute -top-10 right-0 text-white/50 hover:text-white hover:bg-transparent transition-colors rounded-lg"
+                        >
                         <X size={24} />
-                    </button>
+                    </Button>
 
                     {step === "form" && (
                         <PremiumCard className="p-8 animate-in zoom-in-95 duration-200">

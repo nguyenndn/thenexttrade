@@ -119,10 +119,10 @@ export default async function MyLearningPage() {
                                     {course.progress > 0 ? "Continue Learning" : "Start Course"}
                                 </Link>
                             ) : (
-                                <button disabled className="w-full py-2.5 bg-green-500/10 text-green-500 font-bold rounded-xl flex items-center justify-center gap-2 cursor-default">
+                                <div className="w-full py-2.5 bg-green-500/10 text-green-500 font-bold rounded-xl flex items-center justify-center gap-2 cursor-default">
                                     <CheckCircle size={18} />
                                     Completed
-                                </button>
+                                </div>
                             )}
                         </div>
                     </div>

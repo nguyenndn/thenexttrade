@@ -5,6 +5,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, PlayCircle, FileText, Edit, Trash } from "lucide-react";
 import { clsx } from "clsx";
+import { Button } from "@/components/ui/Button";
 
 interface LessonProps {
     lesson: any;
@@ -38,13 +39,15 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
             )}
         >
             <div className="flex items-center gap-3">
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     {...attributes}
                     {...listeners}
-                    className="cursor-move text-gray-300 hover:text-gray-500 dark:hover:text-gray-200"
+                    className="h-auto w-auto p-1.5 cursor-move text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 bg-transparent hover:bg-transparent"
                 >
                     <GripVertical size={16} />
-                </button>
+                </Button>
 
                 <div className={clsx("p-1.5 rounded-md", lesson.videoUrl ? "bg-red-50 text-red-500" : "bg-blue-50 text-blue-500")}>
                     {lesson.videoUrl ? <PlayCircle size={16} /> : <FileText size={16} />}
@@ -57,12 +60,12 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
             </div>
 
             <div className="flex items-center gap-1">
-                <button onClick={() => onEdit(lesson)} className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded transition-colors">
+                <Button variant="ghost" size="icon" onClick={() => onEdit(lesson)} className="p-1.5 h-auto w-auto text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded transition-colors">
                     <Edit size={14} />
-                </button>
-                <button onClick={() => onDelete(lesson.id)} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded transition-colors">
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => onDelete(lesson.id)} className="p-1.5 h-auto w-auto text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded transition-colors">
                     <Trash size={14} />
-                </button>
+                </Button>
             </div>
         </div>
     );

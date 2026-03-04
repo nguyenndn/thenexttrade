@@ -2,6 +2,7 @@
 
 import { Search, Filter, Calendar as CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 
 interface PlaybookFiltersProps {
     search: string;
@@ -29,16 +30,17 @@ export function PlaybookFilters({ search, setSearch, filter, setFilter }: Playbo
             {/* Filter Tabs */}
             <div className="grid grid-cols-3 p-1 bg-gray-100 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl min-w-[300px]">
                 {(["ALL", "WIN", "LOSS"] as const).map((f) => (
-                    <button
+                    <Button
+                        variant="ghost"
                         key={f}
                         onClick={() => setFilter(f)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all text-center ${filter === f
-                            ? "bg-white dark:bg-[#2A2D36] text-gray-900 dark:text-white shadow-sm"
-                            : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                        className={`px-4 py-2 h-auto rounded-lg text-sm font-medium transition-all text-center ${filter === f
+                            ? "bg-white dark:bg-[#2A2D36] text-gray-900 dark:text-white shadow-sm hover:bg-white dark:hover:bg-[#2A2D36]"
+                            : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-transparent"
                             }`}
                     >
                         {f === "ALL" ? "All Trades" : f === "WIN" ? "Winning" : "Losing"}
-                    </button>
+                    </Button>
                 ))}
             </div>
         </div>

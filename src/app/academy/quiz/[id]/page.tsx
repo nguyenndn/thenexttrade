@@ -123,7 +123,7 @@ export default function QuizRunnerPage() {
                         </Link>
                         {!results.passed && (
                             <Button
-                                size="lg"
+                                size="md"
                                 onClick={() => {
                                     setAnswers({});
                                     setResults(null);
@@ -168,16 +168,24 @@ export default function QuizRunnerPage() {
                         {currentQ.options.map((opt: any) => {
                             const isActive = answers[currentQ.id] === opt.id;
                             return (
-                                <button
+                                <div
                                     key={opt.id}
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={() => handleSelectOption(opt.id)}
-                                    className={`w-full text-left p-6 rounded-xl border-2 transition-all flex items-center justify-between ${isActive
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            handleSelectOption(opt.id);
+                                        }
+                                    }}
+                                    className={`w-full text-left p-6 rounded-xl border-2 transition-all flex items-center justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary ${isActive
                                         ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
                                         : 'border-gray-100 dark:border-white/5 bg-white dark:bg-[#151925] hover:border-gray-200 dark:hover:border-white/10'}`}
                                 >
                                     <span className={isActive ? 'font-bold text-primary dark:text-primary' : 'font-medium'}>{opt.text}</span>
                                     {isActive && <CheckCircle size={20} className="text-primary" />}
-                                </button>
+                                </div>
                             );
                         })}
                     </div>
@@ -185,7 +193,7 @@ export default function QuizRunnerPage() {
 
                 <div className="flex justify-end mt-8">
                     <Button
-                        size="lg"
+                        size="md"
                         onClick={handleNext}
                         disabled={!isSelected || submitting}
                         className="group font-bold rounded-xl flex items-center gap-2 transition-all shadow-xl disabled:shadow-none"

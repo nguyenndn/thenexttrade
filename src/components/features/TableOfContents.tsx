@@ -61,33 +61,38 @@ export default function TableOfContents() {
     if (headings.length === 0) return null;
 
     return (
-        <div className="hidden lg:block sticky top-32 max-h-[80vh] overflow-y-auto pr-4">
-            <div className="flex items-center gap-2 mb-4 text-gray-900 dark:text-white font-bold text-sm uppercase tracking-wider">
-                <List size={16} />
-                <span>Table of Contents</span>
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-sm border border-gray-200 dark:border-white/10 overflow-hidden">
+            {/* Accent top stripe */}
+            <div className="h-1 bg-gradient-to-r from-primary to-cyan-400" />
+            
+            <div className="p-5 max-h-[60vh] overflow-y-auto">
+                <div className="flex items-center gap-2 mb-4 text-gray-900 dark:text-white font-bold text-sm uppercase tracking-wider">
+                    <List size={16} className="text-primary" />
+                    <span>Contents</span>
+                </div>
+                <nav className="space-y-0.5 relative border-l-2 border-gray-100 dark:border-white/10">
+                    {headings.map((heading) => (
+                        <a
+                            key={heading.id}
+                            href={`#${heading.id}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                document.getElementById(heading.id)?.scrollIntoView({ behavior: "smooth" });
+                                setActiveId(heading.id);
+                            }}
+                            className={`block text-[13px] py-1.5 pl-4 border-l-2 -ml-[2px] transition-all duration-200 
+                                ${activeId === heading.id
+                                    ? "border-primary text-primary font-bold bg-primary/5 rounded-r-lg"
+                                    : "border-transparent text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-300 hover:border-gray-300"
+                                }
+                                ${heading.level === 3 ? "ml-3 text-xs" : ""}
+                            `}
+                        >
+                            {heading.text}
+                        </a>
+                    ))}
+                </nav>
             </div>
-            <nav className="space-y-1 relative border-l border-gray-100 dark:border-white/10">
-                {headings.map((heading) => (
-                    <a
-                        key={heading.id}
-                        href={`#${heading.id}`}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            document.getElementById(heading.id)?.scrollIntoView({ behavior: "smooth" });
-                            setActiveId(heading.id);
-                        }}
-                        className={`block text-sm py-1.5 pl-4 border-l-2 transition-all duration-200 
-                            ${activeId === heading.id
-                                ? "border-primary text-primary font-medium"
-                                : "border-transparent text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-300"
-                            }
-                            ${heading.level === 3 ? "ml-4 text-xs" : ""}
-                        `}
-                    >
-                        {heading.text}
-                    </a>
-                ))}
-            </nav>
         </div>
     );
 }

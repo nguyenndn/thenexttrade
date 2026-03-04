@@ -21,6 +21,9 @@ import {
     BarChart3,
     Target,
     AlertTriangle,
+    FileSpreadsheet,
+    Clock,
+    Route
 } from "lucide-react";
 
 export const menuItems = [
@@ -51,44 +54,72 @@ export const menuItems = [
 ];
 
 export const dashboardMenuItems = [
+    // --- BƯỚC 1: VẬN HÀNH (OPERATIONS) ---
     {
         name: "Dashboard",
         href: "/dashboard",
         icon: LayoutDashboard,
-        items: [
-            { name: "Journal", href: "/dashboard/journal" },
-            { name: "Sessions", href: "/dashboard/sessions" },
-            { name: "Trading Accounts", href: "/dashboard/accounts" },
-        ]
     },
     {
-        name: "Analysis",
+        name: "Accounts & Props",
+        href: "/dashboard/accounts",
+        icon: Wallet,
+    },
+
+    // --- BƯỚC 2: TÁC CHIẾN (EXECUTION) ---
+    {
+        name: "Trading Journal",
+        href: "/dashboard/journal",
+        icon: FileText,
+    },
+    {
+        name: "Sessions",
+        href: "/dashboard/sessions",
+        icon: Clock,
+    },
+    {
+        name: "Strategies",
+        href: "/dashboard/strategies",
+        icon: Route,
+    },
+    {
+        name: "The Playbook",
+        href: "/dashboard/playbook",
+        icon: Target,
+    },
+
+    // --- BƯỚC 3: KIỂM ĐIỂM (REVIEW) ---
+    {
+        name: "Analytics Hub",
         href: "/dashboard/analytics",
         icon: BarChart3,
-        items: [
-            { name: "Analytics", href: "/dashboard/analytics" },
-            { name: "Reports", href: "/dashboard/reports" },
-            { name: "Mistakes", href: "/dashboard/mistakes" },
-        ]
     },
     {
-        name: "Strategy",
-        href: "/dashboard/strategies",
-        icon: Target,
-        items: [
-            { name: "Strategies", href: "/dashboard/strategies" },
-            { name: "Playbook", href: "/dashboard/playbook" },
-            { name: "Psychology", href: "/dashboard/psychology" },
-            { name: "Trading Systems", href: "/dashboard/trading-systems" },
-        ]
+        name: "Reports",
+        href: "/dashboard/reports",
+        icon: FileSpreadsheet,
     },
     {
-        name: "Resources",
+        name: "Mistakes",
+        href: "/dashboard/mistakes",
+        icon: AlertTriangle,
+    },
+    {
+        name: "Psychology",
+        href: "/dashboard/psychology",
+        icon: Activity,
+    },
+
+    // --- BƯỚC 4: TÀI NGUYÊN (RESOURCES) ---
+    {
+        name: "Academy",
         href: "/dashboard/academy",
-        icon: BookOpen,
-        items: [
-            { name: "Academy", href: "/dashboard/academy" },
-        ]
+        icon: GraduationCap,
+    },
+    {
+        name: "EA & Indicators",
+        href: "/dashboard/trading-systems",
+        icon: Bot,
     }
 ];
 

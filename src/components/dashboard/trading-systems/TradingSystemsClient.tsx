@@ -45,7 +45,7 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense, h
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Trading Systems
+                            EA & Indicators
                         </h1>
                     </div>
                 </div>

@@ -29,7 +29,7 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
     const renderEmotionItem = (e: any) => (
         <Button
             key={e.label}
-            variant="ghost"
+            variant="outline"
             onClick={(ev) => {
                 ev.stopPropagation();
                 handleSelect(e.label);
@@ -58,8 +58,9 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
                         </div>
                     ) : (
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
+                            aria-label="Set Mindset"
                             className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <Plus size={12} />

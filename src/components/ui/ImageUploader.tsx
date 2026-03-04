@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Link as LinkIcon } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 
 interface ImageUploaderProps {
     value?: string;
@@ -62,20 +63,21 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
                     onKeyDown={(e) => e.key === 'Enter' && handleUrlSubmit()}
                 />
                 <div className="flex gap-2 w-full">
-                    <button
+                    <Button
+                        variant="ghost"
                         type="button"
                         onClick={() => setIsInputVisible(false)}
-                        className="flex-1 py-1.5 text-xs font-bold text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg"
+                        className="flex-1 py-1.5 h-auto text-xs font-bold text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg hover:text-gray-500"
                     >
                         Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
                         onClick={handleUrlSubmit}
-                        className="flex-1 py-1.5 text-xs font-bold bg-primary text-white rounded-lg hover:bg-[#00a872]"
+                        className="flex-1 py-1.5 h-auto text-xs font-bold text-white rounded-lg border-none"
                     >
                         Add Link
-                    </button>
+                    </Button>
                 </div>
             </div>
         );
@@ -107,16 +109,18 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
                                 if (target.src.includes("placehold.co")) return;
 
                                 target.src = "https://placehold.co/600x400?text=Link+Error+-+Try+Copy+Image+Address";
-                                toast.error("Không tải được ảnh! Hãy chắc chắn link là 'Direct Link' (kết thúc bằng .png/.jpg)");
+                                toast.error("Failed to load image! Please make sure it's a Direct Link ending in .png/.jpg");
                             }}
                         />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <button
+                            <Button
+                                variant="destructive"
+                                size="icon"
                                 onClick={handleRemove}
-                                className="p-2 bg-red-500 rounded-full text-white hover:scale-110 transition-transform"
+                                className="h-10 w-10 p-2 bg-red-500 rounded-full text-white hover:scale-110 transition-transform"
                             >
                                 <X size={20} />
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </>

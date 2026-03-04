@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Edit2, Trash2, Plus, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { CategoryModal } from "./CategoryModal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
 
 interface Category {
@@ -22,6 +23,11 @@ export default function CategoryList() {
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState<Category | undefined>(undefined);
+    
+    // Confirm Dialog State
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const fetchCategories = async () => {
         try {
@@ -40,11 +46,17 @@ export default function CategoryList() {
         fetchCategories();
     }, []);
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure? This action cannot be undone.")) return;
+    const confirmDelete = (id: string) => {
+        setCategoryToDelete(id);
+        setIsConfirmOpen(true);
+    };
+
+    const handleDelete = async () => {
+        if (!categoryToDelete) return;
 
         try {
-            const res = await fetch(`/api/categories/${id}`, {
+            setIsDeleting(true);
+            const res = await fetch(`/api/categories/${categoryToDelete}`, {
                 method: "DELETE",
             });
 
@@ -54,9 +66,13 @@ export default function CategoryList() {
             }
 
             toast.success("Category deleted");
+            setIsConfirmOpen(false);
+            setCategoryToDelete(null);
             fetchCategories();
         } catch (error: any) {
             toast.error(error.message);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -131,18 +147,22 @@ export default function CategoryList() {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
                                                     onClick={() => handleEdit(category)}
-                                                    className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                    className="p-2 h-auto w-auto text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                                                 >
                                                     <Edit2 size={18} />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(category.id)}
-                                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => confirmDelete(category.id)}
+                                                    className="p-2 h-auto w-auto text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                                                 >
                                                     <Trash2 size={18} />
-                                                </button>
+                                                </Button>
                                             </div>
                                         </td>
                                     </tr>
@@ -158,6 +178,18 @@ export default function CategoryList() {
                 onClose={() => setIsModalOpen(false)}
                 onSuccess={fetchCategories}
                 category={editingCategory}
+            />
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Category"
+                description="Are you sure you want to delete this category? All articles inside will be uncategorized. This action cannot be undone."
+                confirmText="Delete Category"
+                onConfirm={handleDelete}
+                onCancel={() => {
+                    if (!isDeleting) setIsConfirmOpen(false);
+                }}
+                isLoading={isDeleting}
             />
         </div>
     );

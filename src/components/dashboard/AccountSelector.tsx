@@ -12,6 +12,7 @@ import {
     CommandList,
     CommandSeparator,
 } from "@/components/ui/command";
+import { Button } from "@/components/ui/Button";
 import {
     Popover,
     PopoverContent,
@@ -156,11 +157,12 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <button
+                <Button
+                    variant="ghost"
                     role="combobox"
                     aria-expanded={open}
                     className={cn(
-                        "flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
+                        "flex items-center h-auto gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
                         className
                     )}
                 >
@@ -171,7 +173,7 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                         {selectedAccount ? <AccountLabelDisplay account={selectedAccount} /> : (isLoading ? "Loading..." : "Select Account")}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </button>
+                </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[300px] sm:w-[360px] p-0" align="end">
                 <Command>

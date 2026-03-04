@@ -94,12 +94,14 @@ export function AccountModal({ account, onClose, onSave }: AccountModalProps) {
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                         {account ? "Edit Account" : "Connect Account"}
                     </h2>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
+                        className="p-2 h-auto w-auto hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
                     >
                         <X size={20} className="text-gray-500" />
-                    </button>
+                    </Button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">

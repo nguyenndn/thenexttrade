@@ -2,6 +2,7 @@
 
 import { Bell, Mail, Smartphone, Shield, Radio } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/Button';
 
 export default function NotificationsClient() {
     const [toggles, setToggles] = useState({
@@ -82,9 +83,9 @@ export default function NotificationsClient() {
                 </div>
 
                 <div className="mt-8 flex justify-end">
-                    <button className="px-6 py-2 bg-primary hover:bg-[#00b078] text-white font-bold rounded-xl transition-all shadow-lg active:scale-95">
+                    <Button className="px-6 py-2 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 border-none" style={{ backgroundColor: 'hsl(var(--primary))' }}>
                         Save Preferences
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

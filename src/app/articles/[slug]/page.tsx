@@ -171,8 +171,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         return `<h${level} id="${id}" class="scroll-mt-32"${attrs}>${content}</h${level}>`;
     });
 
+    // Get real comment count
+    const commentCount = await prisma.comment.count({
+        where: { articleId: article.id }
+    });
+
     return (
-        <main className="min-h-screen">
+        <main className="min-h-screen bg-slate-50 dark:bg-[#0F1117]">
             <ReadingProgressBar />
             <ViewCounter articleId={article.id} />
             <JsonLd
@@ -185,149 +190,193 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     dateModified: new Date(article.updatedAt).toISOString(),
                     author: {
                         name: article.author.name || "GSN Team",
-                        url: `${process.env.NEXT_PUBLIC_APP_URL}/author/${article.author.id}` // Placeholder URL
+                        url: `${process.env.NEXT_PUBLIC_APP_URL}/author/${article.author.id}`
                     }
                 }}
             />
 
-            <div className="bg-slate-50 dark:bg-[#0F1117] min-h-screen pb-24">
-                <PublicHeader user={authUser} />
+            <PublicHeader user={authUser} />
 
-                <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-32 sm:pt-40">
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
-
-                        {/* Featured Image Section */}
-                        {article.thumbnail && (
-                            <div className="relative w-full aspect-[21/9] md:aspect-[21/8] bg-gray-200 dark:bg-gray-800">
-                                <Image
-                                    src={article.thumbnail}
-                                    alt={article.title}
-                                    fill
-                                    className="object-cover"
-                                    priority
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
-                                />
-                                <div className="absolute top-6 left-6 z-10">
-                                    <span className="bg-[#FF2E5B] text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg">
-                                        {article.category.name}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="max-w-[1300px] mx-auto px-6 py-10 lg:px-12 lg:py-14">
-                            {/* Article Header */}
-                            <div className="border-b border-gray-100 dark:border-white/5 pb-8 mb-10">
-                                <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 dark:text-gray-400 mb-5">
-                                    <div className="flex items-center gap-2">
-                                        <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-200">
-                                            <Image
-                                                src={article.author.image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100"}
-                                                alt={article.author.name || "Author"}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                        <span className="font-bold text-gray-900 dark:text-white">{article.author.name || "Jonathan Doe"}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Calendar size={16} className="text-primary" />
-                                        <span>{formattedDate}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Clock size={16} className="text-[#FF2E5B]" />
-                                        <span>{Math.ceil(article.content.length / 1000)} min read</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <MessageSquare size={16} className="text-blue-500" />
-                                        <span>12 Comments</span>
-                                    </div>
-                                </div>
-
-                                <h1 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
-                                    {article.title}
-                                </h1>
-                            </div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                                {/* Left Sticky Share & TOC (2 cols) */}
-                                <div className="hidden lg:block lg:col-span-2">
-                                    <div className="sticky top-32 space-y-8">
-                                        <TableOfContents />
-                                        <div className="h-px bg-gray-100 dark:bg-white/10 w-1/2 mx-auto"></div>
-                                        <SocialShare title={article.title} slug={slug} vertical={true} />
-                                    </div>
-                                </div>
-
-                                {/* Main Content (7 cols) */}
-                                <div className="lg:col-span-7">
-                                    <div
-                                        className="prose dark:prose-invert prose-lg max-w-none 
-                                        prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-gray-900 dark:prose-headings:text-white 
-                                        prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
-                                        prose-a:text-primary dark:prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                                        prose-img:rounded-xl prose-img:shadow-md prose-blockquote:border-l-primary"
-                                        dangerouslySetInnerHTML={{ __html: processedContent }}
-                                    />
-
-                                    {/* Tags */}
-                                    {article.tags.length > 0 && (
-                                        <div className="mt-12 flex flex-wrap gap-2">
-                                            {article.tags.map(({ tag }) => (
-                                                <Link
-                                                    key={tag.id}
-                                                    href={`/articles/tags/${tag.slug}`}
-                                                    className="px-4 py-2 bg-gray-100 dark:bg-white/5 rounded-full text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white transition-colors"
-                                                >
-                                                    #{tag.name}
-                                                </Link>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    {/* Related Articles Bottom Grid (Suspended) */}
-                                    <Suspense fallback={<div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl mt-16" />}>
-                                        <RelatedArticlesBottom categoryId={article.categoryId} currentArticleId={article.id} initialArticles={relatedArticles} />
-                                    </Suspense>
-
-                                    {/* Comments (Streamed) */}
-                                    <div id="comments" className="mt-16">
-                                        <Suspense fallback={
-                                            <div className="py-12 border-t border-gray-100 dark:border-white/5 space-y-8">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
-                                                    <div className="h-8 w-40 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
-                                                </div>
-                                                <div className="space-y-6">
-                                                    {[1, 2, 3].map(i => (
-                                                        <div key={i} className="flex gap-4">
-                                                            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-white/5 animate-pulse" />
-                                                            <div className="flex-1 space-y-2">
-                                                                <div className="h-4 w-32 bg-gray-200 dark:bg-white/5 rounded animate-pulse" />
-                                                                <div className="h-20 w-full bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        }>
-                                            <CommentsFetcher articleId={article.id} currentUser={currentUser} />
-                                        </Suspense>
-                                    </div>
-                                </div>
-
-                                {/* Right Sidebar (3 cols) - Suspended */}
-                                <aside className="lg:col-span-3">
-                                    <Suspense fallback={<div className="space-y-8 sticky top-24"><div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl"></div><div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl"></div></div>}>
-                                        <SidebarWidgets />
-                                    </Suspense>
-                                </aside>
-                            </div>
+            {/* ===== HERO SECTION (Contained) ===== */}
+            {article.thumbnail && (
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
+                    <div className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden shadow-lg bg-gray-200 dark:bg-gray-800">
+                        <Image
+                            src={article.thumbnail}
+                            alt={article.title}
+                            fill
+                            className="object-cover"
+                            priority
+                            sizes="(max-width: 768px) 100vw, (max-width: 1400px) 90vw, 1280px"
+                        />
+                        {/* Subtle gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                        {/* Category badge */}
+                        <div className="absolute top-5 left-6">
+                            <span className="bg-primary text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg shadow-primary/20">
+                                {article.category.name}
+                            </span>
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* ===== MAIN CONTENT AREA ===== */}
+            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${article.thumbnail ? 'mt-8' : 'pt-28 sm:pt-32'}`}>
+                
+                {/* ===== BREADCRUMB ===== */}
+                <nav className={`flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 ${article.thumbnail ? 'mb-6' : 'mb-8'}`}>
+                    <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+                    <span>/</span>
+                    <Link href="/articles" className="hover:text-primary transition-colors">Knowledge</Link>
+                    <span>/</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-medium truncate max-w-[200px]">{article.category.name}</span>
+                </nav>
+
+                {/* ===== ARTICLE HEADER ===== */}
+                <div className="mb-10">
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white leading-[1.15] tracking-tight mb-6">
+                        {article.title}
+                    </h1>
+
+                    {/* Meta info row */}
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                        {/* Author */}
+                        <div className="flex items-center gap-2.5">
+                            <div className="relative w-9 h-9 rounded-full overflow-hidden bg-gray-200 dark:bg-white/10 ring-2 ring-white dark:ring-[#1E2028] shadow-sm">
+                                <Image
+                                    src={article.author.image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100"}
+                                    alt={article.author.name || "Author"}
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
+                            <span className="font-bold text-gray-800 dark:text-gray-200">{article.author.name || "GSN Team"}</span>
+                        </div>
+
+                        <span className="w-px h-4 bg-gray-200 dark:bg-white/10" />
+
+                        {/* Date */}
+                        <div className="flex items-center gap-1.5">
+                            <Calendar size={14} className="text-primary" />
+                            <span>{formattedDate}</span>
+                        </div>
+
+                        <span className="w-px h-4 bg-gray-200 dark:bg-white/10" />
+
+                        {/* Read time */}
+                        <div className="flex items-center gap-1.5">
+                            <Clock size={14} className="text-gray-400" />
+                            <span>{Math.ceil(article.content.length / 1000)} min read</span>
+                        </div>
+
+                        {commentCount > 0 && (
+                            <>
+                                <span className="w-px h-4 bg-gray-200 dark:bg-white/10" />
+                                <a href="#comments" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                                    <MessageSquare size={14} />
+                                    <span>{commentCount} Comments</span>
+                                </a>
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                {/* ===== 2-COLUMN LAYOUT ===== */}
+                <div className="flex items-start">
+                    
+                    {/* --- Sticky Social Share (overlaps card left border) --- */}
+                    <div className="hidden lg:block shrink-0 z-10 -mr-5">
+                        <div className="sticky top-24 pt-8">
+                            <SocialShare title={article.title} slug={slug} vertical={true} />
+                        </div>
+                    </div>
+
+                    {/* --- Main Content Column --- */}
+                    <article className="flex-1 min-w-0">
+                        {/* Content Card */}
+                        <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-sm border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-10">
+                            <div
+                                className="prose dark:prose-invert prose-lg max-w-none 
+                                prose-headings:font-black prose-headings:tracking-tight prose-headings:text-gray-900 dark:prose-headings:text-white 
+                                prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-gray-100 dark:prose-h2:border-white/5
+                                prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+                                prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
+                                prose-a:text-primary dark:prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold
+                                prose-img:rounded-xl prose-img:shadow-md 
+                                prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2
+                                prose-li:text-gray-600 dark:prose-li:text-gray-300
+                                prose-strong:text-gray-900 dark:prose-strong:text-white
+                                prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold"
+                                dangerouslySetInnerHTML={{ __html: processedContent }}
+                            />
+                        </div>
+
+                        {/* Tags */}
+                        {article.tags.length > 0 && (
+                            <div className="mt-8 flex flex-wrap gap-2">
+                                {article.tags.map(({ tag }) => (
+                                    <Link
+                                        key={tag.id}
+                                        href={`/articles/tags/${tag.slug}`}
+                                        className="px-4 py-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-full text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"
+                                    >
+                                        #{tag.name}
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+
+
+
+                        {/* Related Articles */}
+                        <Suspense fallback={<div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl mt-16" />}>
+                            <RelatedArticlesBottom categoryId={article.categoryId} currentArticleId={article.id} initialArticles={relatedArticles} />
+                        </Suspense>
+
+                        {/* Comments */}
+                        <div id="comments" className="mt-16">
+                            <Suspense fallback={
+                                <div className="py-12 border-t border-gray-200 dark:border-white/10 space-y-8">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
+                                        <div className="h-8 w-40 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
+                                    </div>
+                                    <div className="space-y-6">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="flex gap-4">
+                                                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-white/5 animate-pulse" />
+                                                <div className="flex-1 space-y-2">
+                                                    <div className="h-4 w-32 bg-gray-200 dark:bg-white/5 rounded animate-pulse" />
+                                                    <div className="h-20 w-full bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            }>
+                                <CommentsFetcher articleId={article.id} currentUser={currentUser} />
+                            </Suspense>
+                        </div>
+                    </article>
+
+                    {/* --- Sidebar Column --- */}
+                    <aside className="hidden lg:block w-80 shrink-0 ml-10">
+                        <div className="sticky top-24 space-y-6">
+                            {/* TOC */}
+                            <TableOfContents />
+                            {/* Sidebar Widgets */}
+                            <Suspense fallback={<div className="space-y-6"><div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl"></div><div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl"></div></div>}>
+                                <SidebarWidgets />
+                            </Suspense>
+                        </div>
+                    </aside>
+                </div>
             </div>
 
+
+
+            <div className="pb-24" />
             <MobileBottomNav />
             <SiteFooter />
         </main>

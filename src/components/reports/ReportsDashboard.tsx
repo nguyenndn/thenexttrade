@@ -12,6 +12,7 @@ import {
     Trash2
 } from "lucide-react";
 import { ReportPreview } from "./ReportPreview";
+import { Button } from "@/components/ui/Button";
 
 interface ReportType {
     id: string;
@@ -195,7 +196,8 @@ export function ReportsDashboard() {
             {/* Report Type Selection */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {REPORT_TYPES.map((report) => (
-                    <button
+                    <Button
+                        variant="ghost"
                         key={report.id}
                         onClick={() => {
                             setSelectedType(report.id);
@@ -203,14 +205,14 @@ export function ReportsDashboard() {
                             setCsvPreview(null);
                         }}
                         className={`
-              relative text-left p-6 rounded-xl border-2 transition-all duration-300 group
+              relative text-left p-6 h-auto rounded-xl border-2 transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal
               ${selectedType === report.id
-                                ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                                ? "border-primary bg-primary/5 shadow-md shadow-primary/10 hover:bg-primary/5"
                                 : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-md transition-shadow"
                             }
             `}
                     >
-                        <div className="flex items-start justify-between mb-6">
+                        <div className="flex items-start justify-between mb-6 w-full">
                             <div
                                 className={`
                   p-3.5 rounded-xl transition-all duration-300 shadow-sm
@@ -238,10 +240,10 @@ export function ReportsDashboard() {
                         <h3 className="font-black text-lg text-gray-900 dark:text-white mb-2 tracking-tight">
                             {report.name}
                         </h3>
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
+                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400 leading-relaxed text-left w-full">
                             {report.description}
                         </p>
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -281,23 +283,14 @@ export function ReportsDashboard() {
                     </div>
 
                     <div className="w-full xl:w-auto">
-                        <button
+                        <Button
                             onClick={handleGenerate}
-                            disabled={isGenerating}
-                            className="inline-flex items-center justify-center gap-2 w-full xl:w-auto px-6 py-2.5 h-auto text-sm font-bold rounded-xl bg-primary hover:bg-[#00B377] text-white shadow-lg hover:shadow-primary/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            isLoading={isGenerating}
+                            className="w-full xl:w-auto"
                         >
-                            {isGenerating ? (
-                                <>
-                                    <div className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
-                                    <span>Processing...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Download size={20} strokeWidth={2.5} />
-                                    <span>Generate Preview</span>
-                                </>
-                            )}
-                        </button>
+                            {!isGenerating && <Download size={20} strokeWidth={2.5} />}
+                            <span>{isGenerating ? "Processing..." : "Generate Preview"}</span>
+                        </Button>
                     </div>
                 </div>
 
@@ -311,13 +304,14 @@ export function ReportsDashboard() {
                             { label: "Last 3 Months", fn: () => ({ start: startOfMonth(subMonths(now, 2)), end: endOfMonth(now) }) },
                             { label: "YTD", fn: () => ({ start: new Date(now.getFullYear(), 0, 1), end: now }) },
                         ].map((preset) => (
-                            <button
+                            <Button
+                                variant="outline"
                                 key={preset.label}
                                 onClick={() => setDateRange(preset.fn())}
                                 className="px-4 py-2 text-[11px] font-black uppercase tracking-wider bg-transparent border-2 border-slate-200/80 dark:border-slate-800 hover:border-primary/60 dark:hover:border-primary/50 text-slate-500 dark:text-slate-400 hover:text-primary hover:dark:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-xl transition-all duration-300"
                             >
                                 {preset.label}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>
@@ -336,13 +330,13 @@ export function ReportsDashboard() {
                             <h3 className="font-black text-gray-900 dark:text-white text-lg tracking-tight">CSV Preview</h3>
                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Review data and remove unnecessary columns before downloading.</p>
                         </div>
-                        <button
+                        <Button
                             onClick={handleDownloadCustomCSV}
-                            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00B377] text-white font-bold rounded-xl shadow-lg hover:shadow-primary/25 transition-all w-full sm:w-auto"
+                            className="w-full sm:w-auto"
                         >
                             <Download size={18} strokeWidth={2.5} />
                             Download Final CSV
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10 custom-scrollbar">
@@ -353,13 +347,15 @@ export function ReportsDashboard() {
                                         <th key={index} className="p-4 text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap min-w-[120px] group">
                                             <div className="flex items-center justify-between gap-2">
                                                 <span>{header}</span>
-                                                <button 
+                                                <Button 
+                                                    variant="ghost"
+                                                    size="icon"
                                                     onClick={() => removeColumn(index)}
-                                                    className="p-1.5 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
+                                                    className="h-7 w-7 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10"
                                                     title="Remove Column"
                                                 >
                                                     <Trash2 size={14} />
-                                                </button>
+                                                </Button>
                                             </div>
                                         </th>
                                     ))}

@@ -33,24 +33,28 @@ export default function PreviewPanel({
                 </div>
                 <div className="flex space-x-2">
                     {onEdit && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={onEdit}
                             disabled={isLoading || isSaving}
-                            className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all disabled:opacity-50"
+                            className="p-2 h-auto w-auto rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
                             title="Edit Content"
                         >
                             <Edit2 size={18} />
-                        </button>
+                        </Button>
                     )}
                     {onRegenerate && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={onRegenerate}
                             disabled={isLoading || isSaving}
-                            className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all disabled:opacity-50"
+                            className="p-2 h-auto w-auto rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
                             title="Regenerate"
                         >
                             <RefreshCw size={18} className={isLoading ? "animate-spin" : ""} />
-                        </button>
+                        </Button>
                     )}
                     {onSave && (
                         <Button

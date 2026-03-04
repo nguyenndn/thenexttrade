@@ -120,14 +120,15 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
 
                 {/* Footer Actions */}
                 <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-gray-200 dark:border-white/10">
-                    <button
-                        className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-semibold transition-colors bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-lg"
+                    <Button
+                        variant="ghost"
+                        className="flex items-center gap-1.5 h-auto text-xs text-primary hover:text-primary/80 font-semibold transition-colors bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-lg"
                         onClick={() => setIsGuideModalOpen(true)}
                         aria-label={`View installation guide for ${product.name}`}
                     >
                         <Info size={13} />
                         <span>Guide</span>
-                    </button>
+                    </Button>
 
                     <div className="relative">
                         <Button
@@ -216,33 +217,38 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
 
                     {/* Zoom Controls - Bottom Center */}
                     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000] flex items-center gap-2 bg-black/50 backdrop-blur-md p-1.5 rounded-xl border border-white/10 shadow-2xl" onClick={e => e.stopPropagation()}>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             aria-label="Zoom Out"
-                            className="p-2.5 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                            className="p-2.5 h-auto w-auto text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
                             onClick={() => setZoomLevel(prev => Math.max(25, prev - 25))}
                             title="Zoom Out"
                         >
                             <span className="text-lg font-bold">−</span>
-                        </button>
+                        </Button>
                         <span className="min-w-[60px] text-center text-sm font-bold text-white font-mono">
                             {zoomLevel}%
                         </span>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             aria-label="Zoom In"
-                            className="p-2.5 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                            className="p-2.5 h-auto w-auto text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
                             onClick={() => setZoomLevel(prev => Math.min(400, prev + 25))}
                             title="Zoom In"
                         >
                             <span className="text-lg font-bold">+</span>
-                        </button>
+                        </Button>
                         <div className="w-px h-6 bg-white/20 mx-1"></div>
-                        <button
+                        <Button
+                            variant="ghost"
                             aria-label="Reset Zoom"
-                            className="px-3 py-1.5 text-xs font-bold text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors uppercase tracking-wider"
+                            className="px-3 py-1.5 h-auto text-xs font-bold text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors uppercase tracking-wider"
                             onClick={() => setZoomLevel(100)}
                         >
                             Reset
-                        </button>
+                        </Button>
                     </div>
 
                     <img

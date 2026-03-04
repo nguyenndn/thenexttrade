@@ -14,6 +14,7 @@ import { CommandPalette, CommandPaletteTrigger } from '@/components/search/Comma
 import { UserMenu } from "@/components/layout/UserMenu";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
+import { Button } from "@/components/ui/Button";
 
 export function Header({
     onMobileMenuClick,
@@ -60,21 +61,25 @@ export function Header({
                 {/* Left Section: Toggle + Logo */}
                 <div className="flex items-center gap-4">
                     {/* Mobile Menu Button */}
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         className="lg:hidden p-2 -ml-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         onClick={onMobileMenuClick}
                     >
                         <Menu size={20} />
-                    </button>
+                    </Button>
 
                     {/* Desktop Toggle + Logo (Toggle FIRST) */}
                     <div className="flex items-center gap-3">
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setCollapsed?.(!collapsed)}
                             className="hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
                             <Menu size={20} />
-                        </button>
+                        </Button>
                         <Logo />
                     </div>
                 </div>

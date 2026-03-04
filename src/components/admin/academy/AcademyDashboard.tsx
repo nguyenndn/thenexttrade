@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { deleteLevel } from "@/app/admin/ai-studio/levels/actions";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useRouter } from "next/navigation";
 
 interface Level {
@@ -30,23 +31,37 @@ interface AcademyDashboardProps {
 export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [editingLevel, setEditingLevel] = useState<Level | null>(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [levelToDelete, setLevelToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
-    const handleDelete = async (levelId: string) => {
-        const confirmed = window.confirm("Are you sure you want to delete this course level? All modules and lessons inside will be deleted.");
-        if (confirmed) {
-            const toastId = toast.loading("Deleting level...");
-            try {
-                const res = await deleteLevel(levelId);
-                if (res.success) {
-                    toast.success("Level deleted successfully", { id: toastId });
-                    router.refresh();
-                } else {
-                    toast.error(`Delete failed: ${res.error}`, { id: toastId });
-                }
-            } catch (error) {
-                toast.error("An error occurred", { id: toastId });
+    const confirmDelete = (levelId: string) => {
+        setLevelToDelete(levelId);
+        setIsConfirmOpen(true);
+    };
+
+    const handleDelete = async () => {
+        if (!levelToDelete) return;
+
+        setIsDeleting(true);
+        const toastId = toast.loading("Deleting level...");
+        try {
+            const res = await deleteLevel(levelToDelete);
+            if (res.success) {
+                toast.success("Level deleted successfully", { id: toastId });
+                setIsConfirmOpen(false);
+                setLevelToDelete(null);
+                router.refresh();
+            } else {
+                toast.error(`Delete failed: ${res.error}`, { id: toastId });
+                setIsConfirmOpen(false);
             }
+        } catch (error) {
+            toast.error("An error occurred", { id: toastId });
+            setIsConfirmOpen(false);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -64,7 +79,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                     </div>
                     <Button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 py-2.5 h-auto text-sm font-bold flex items-center gap-2 transition-all active:scale-95"
+                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-xl transition-all active:scale-95"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         Add New
@@ -89,25 +104,27 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                             <div className="relative" onClick={(e) => e.stopPropagation()}>
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <button className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400">
+                                        <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400">
                                             <MoreVertical size={18} />
-                                        </button>
+                                        </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-40 p-1" align="end">
-                                        <button
+                                        <Button
+                                            variant="ghost"
                                             onClick={() => setEditingLevel(level)}
-                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-left"
+                                            className="w-full flex items-center justify-start gap-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-left"
                                         >
                                             <Edit size={14} />
                                             <span>Edit</span>
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(level.id)}
-                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-left"
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            onClick={() => confirmDelete(level.id)}
+                                            className="w-full flex items-center justify-start gap-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors text-left"
                                         >
                                             <Trash size={14} />
                                             <span>Delete</span>
-                                        </button>
+                                        </Button>
                                     </PopoverContent>
                                 </Popover>
                             </div>
@@ -137,15 +154,16 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
 
                 {/* Empty State / Add New Placeholder */}
                 {initialLevels.length === 0 && (
-                    <button
+                    <Button
+                        variant="outline"
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="flex flex-col items-center justify-center gap-4 h-[250px] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl hover:border-primary hover:bg-primary/5 transition-all group"
+                        className="flex flex-col items-center justify-center gap-4 h-[250px] w-full border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl hover:border-primary hover:bg-primary/5 transition-all group p-0 bg-transparent hover:text-primary"
                     >
                         <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <Plus size={32} className="text-gray-400 group-hover:text-primary" />
                         </div>
                         <span className="font-bold text-gray-500 group-hover:text-primary">Create your first course</span>
-                    </button>
+                    </Button>
                 )}
             </div>
 
@@ -165,6 +183,18 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                     }}
                 />
             )}
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Course Level"
+                description="Are you sure you want to delete this course level? All modules and lessons inside will be deleted. This action cannot be undone."
+                confirmText="Delete Level"
+                onConfirm={handleDelete}
+                onCancel={() => {
+                    if (!isDeleting) setIsConfirmOpen(false);
+                }}
+                isLoading={isDeleting}
+            />
         </div>
     );
 }

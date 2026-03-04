@@ -44,6 +44,7 @@ export async function createEABroker(data: {
 }) {
     try {
         const broker = await prisma.eABroker.create({
+            data: {
                 name: data.name,
                 slug: data.slug.toUpperCase(),
                 logo: data.logo,
@@ -52,6 +53,7 @@ export async function createEABroker(data: {
                 color: data.color || "#00C888",
                 isActive: data.isActive ?? true,
                 order: data.order ?? 0,
+            }
         });
 
         revalidatePath("/admin/ea");

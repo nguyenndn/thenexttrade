@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { X, Plus, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface Tag {
     id: string;
@@ -105,9 +106,9 @@ export function TagInput({ value, onChange }: TagInputProps) {
                 {selectedTags.map(tag => (
                     <div key={tag.id} className="flex items-center gap-1 bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-md text-sm">
                         <span>{tag.name}</span>
-                        <button onClick={() => removeTag(tag.id)} className="text-gray-400 hover:text-red-500">
+                        <Button variant="ghost" size="icon" onClick={() => removeTag(tag.id)} className="h-auto w-auto p-0 text-gray-400 hover:text-red-500 hover:bg-transparent">
                             <X size={14} />
-                        </button>
+                        </Button>
                     </div>
                 ))}
             </div>
@@ -140,13 +141,14 @@ export function TagInput({ value, onChange }: TagInputProps) {
                 {suggestions.length > 0 && (
                     <div className="absolute z-10 w-full mt-1 bg-white dark:bg-[#1A1D24] border border-gray-100 dark:border-white/10 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                         {suggestions.map(tag => (
-                            <button
+                            <Button
                                 key={tag.id}
+                                variant="ghost"
                                 onClick={() => addTag(tag)}
-                                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-white/5"
+                                className="w-full text-left justify-start px-4 py-2 h-auto text-sm hover:bg-gray-50 dark:hover:bg-white/5 font-normal rounded-none"
                             >
                                 {tag.name}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 )}

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { signout } from "@/app/auth/actions";
 import { AuthUser } from "@/lib/auth-types";
+import { Button } from "@/components/ui/Button";
 
 interface UserMenuProps {
     user: AuthUser | null;
@@ -73,9 +74,11 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <button
+            <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#00C888]/10 dark:bg-slate-800 border border-[#00C888]/20 dark:border-slate-700 hover:bg-[#00C888]/20 dark:hover:bg-slate-700 transition-all group shadow-sm"
+                className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#00C888]/10 dark:bg-slate-800 border-none sm:border-solid border-[#00C888]/20 dark:border-slate-700 hover:bg-[#00C888]/20 dark:hover:bg-slate-700 transition-all group shadow-sm !h-auto"
                 aria-label="User menu"
             >
                 {/* Avatar Circle */}
@@ -100,7 +103,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                     size={20}
                     className="text-[#00C888] dark:text-[#00C888] group-hover:rotate-90 transition-transform duration-500"
                 />
-            </button>
+            </Button>
 
             {/* Dropdown Menu */}
             {isOpen && (
@@ -142,13 +145,14 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                     </div>
 
                     <div className="p-2 border-t border-gray-200 dark:border-white/10">
-                        <button
+                        <Button
+                            variant="ghost"
                             onClick={() => signout()}
-                            className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                            className="flex w-full justify-start items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                         >
                             <LogOut size={18} />
                             Log Out
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

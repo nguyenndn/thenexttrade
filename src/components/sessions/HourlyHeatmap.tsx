@@ -73,9 +73,18 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                     <Tooltip key={hour.hour} delayDuration={0}>
                         <TooltipTrigger asChild>
                             <div
+                                role="button"
+                                tabIndex={0}
+                                aria-label={`${hour.hourLabel} UTC. ${hour.totalTrades} trades. P&L: ${hour.totalPnL.toFixed(2)}`}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        // Activate tooltip if needed, or trigger click
+                                    }
+                                }}
                                 className={`
                                     w-full h-[80px] rounded-lg flex flex-col items-center justify-center
-                                    cursor-pointer transition-all hover:scale-105 relative shadow-sm border border-transparent hover:border-white/20 hover:z-20
+                                    cursor-pointer transition-all hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 relative shadow-sm border border-transparent hover:border-white/20 hover:z-20 focus:z-20
                                     ${getColor(hour)}
                                 `}
                             >
@@ -137,7 +146,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
             {/* Heatmap Grid */}
             <TooltipProvider>
                 <div className="overflow-x-auto pb-6 custom-scrollbar">
-                    <div className="min-w-[500px] space-y-8 pr-4">
+                    <div className="min-w-[700px] md:min-w-full space-y-8 pr-6 pl-1 md:pr-1 md:pl-0">
                         {renderHourBlock(amHours, true)}
                         {renderHourBlock(pmHours, false)}
                     </div>

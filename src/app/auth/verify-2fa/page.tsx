@@ -4,6 +4,7 @@ import { useState } from "react";
 import { verifyLogin2FA } from "@/app/auth/actions";
 import { Shield, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 
 export default function Verify2FAPage() {
     const [code, setCode] = useState("");
@@ -52,18 +53,19 @@ export default function Verify2FAPage() {
                         />
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
                         disabled={loading || code.length < 6}
-                        className="w-full h-12 bg-primary hover:bg-[#00B078] text-black font-bold text-lg rounded-xl transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full h-12 text-black font-bold text-lg rounded-xl transition-all shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                        style={{ backgroundColor: 'hsl(var(--primary))' }}
                     >
                         {loading ? <Loader2 size={24} className="animate-spin" /> : "Verify Identity"}
-                    </button>
+                    </Button>
                 </form>
 
-                <button onClick={() => window.location.href = '/auth/login'} className="w-full text-center mt-6 text-sm text-gray-500 hover:text-white transition-colors">
+                <Button variant="ghost" onClick={() => window.location.href = '/auth/login'} className="w-full text-center mt-6 text-sm text-gray-500 hover:text-white transition-colors hover:bg-transparent">
                     Back to Login
-                </button>
+                </Button>
             </div>
         </div>
     );

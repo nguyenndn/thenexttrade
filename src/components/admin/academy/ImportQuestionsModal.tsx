@@ -135,17 +135,18 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                     <p className="text-center text-gray-500 py-8">No quizzes found.</p>
                                 ) : (
                                     filteredQuizzes.map(quiz => (
-                                        <button
+                                        <Button
                                             key={quiz.id}
+                                            variant="ghost"
                                             onClick={() => handleQuizSelect(quiz)}
-                                            className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary hover:bg-primary/5 transition-all group text-left"
+                                            className="w-full flex items-center justify-between p-4 h-auto rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary hover:bg-primary/5 transition-all group text-left"
                                         >
-                                            <div>
-                                                <h4 className="font-bold text-gray-900 dark:text-white">{quiz.title}</h4>
-                                                <p className="text-xs text-gray-500 mt-1">{quiz._count?.questions || 0} Questions</p>
+                                            <div className="flex flex-col items-start text-left">
+                                                <h4 className="font-bold text-gray-900 dark:text-white text-base">{quiz.title}</h4>
+                                                <p className="text-xs text-gray-500 font-normal mt-0.5">{quiz._count?.questions || 0} Questions</p>
                                             </div>
-                                            <ChevronRight className="text-gray-300 group-hover:text-primary" size={20} />
-                                        </button>
+                                            <ChevronRight className="text-gray-300 group-hover:text-primary transition-colors" size={20} />
+                                        </Button>
                                     ))
                                 )}
                             </div>
@@ -156,12 +157,13 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                 <div className="text-sm font-bold text-gray-400 uppercase tracking-wider">
                                     Select Questions ({selectedQuestionIds.size})
                                 </div>
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={() => setStep("quiz-select")}
-                                    className="px-4 py-2 rounded-xl text-sm font-bold text-primary hover:bg-primary/10 transition-all"
+                                    className="px-4 py-2 h-auto rounded-xl text-sm font-bold text-primary hover:bg-primary/10 transition-all"
                                 >
                                     Change Quiz
-                                </button>
+                                </Button>
                             </div>
 
                             <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-3">
@@ -213,20 +215,21 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                             </div>
 
                             <div className="p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 flex justify-end gap-3">
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={() => setStep("quiz-select")}
-                                    className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                    className="px-6 py-3 h-auto rounded-xl font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                                 >
                                     Back
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={handleImport}
                                     disabled={selectedQuestionIds.size === 0 || isLoading}
-                                    className="px-6 py-3 rounded-xl font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-6 py-3 h-auto rounded-xl font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isLoading && <Loader2 className="animate-spin" size={20} />}
                                     <span>Import {selectedQuestionIds.size} Questions</span>
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     )}
