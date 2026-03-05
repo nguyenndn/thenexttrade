@@ -49,7 +49,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
     }, [articleId]);
 
     return (
-        <section id="comments" className="py-12 border-t border-gray-100 dark:border-white/5">
+        <section id="comments" className="mt-16 py-10 px-6 sm:px-8 bg-white dark:bg-[#15171E] border border-gray-200 dark:border-white/5 rounded-2xl shadow-sm">
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-xl text-primary">
@@ -87,7 +87,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
             </div>
 
             {/* Main Comment Form */}
-            <div id="comment-form-box" className="bg-gray-50/50 dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 scroll-mt-32">
+            <div id="comment-form-box" className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/5 scroll-mt-32 shadow-sm">
                 {currentUser ? (
                     <div className="flex gap-4">
                         <div className="flex-shrink-0">

@@ -107,7 +107,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-[#151925] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                <div className="absolute right-0 mt-3 w-60 bg-white dark:bg-[#151925] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
 
                     {/* Header Info */}
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5">

@@ -25,11 +25,15 @@ vi.mock('next/navigation', () => ({
 // ============================================
 // Mock Next.js Link
 // ============================================
-vi.mock('next/link', () => ({
-    default: ({ children, href }: { children: React.ReactNode; href: string }) => {
-        return { type: 'a', props: { href, children } };
-    },
-}));
+vi.mock('next/link', () => {
+    const React = require('react');
+    return {
+        default: ({ children, href, ...rest }: { children: React.ReactNode; href: string; [key: string]: any }) => {
+            return React.createElement('a', { href, ...rest }, children);
+        },
+    };
+});
+
 
 // ============================================
 // Mock Sonner Toast

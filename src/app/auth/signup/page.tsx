@@ -156,8 +156,8 @@ export default function SignupPage() {
                 <div className="space-y-4">
                     <Button
                         type="submit"
-                        className="w-full h-14 text-white dark:text-black font-bold text-base hover:opacity-90 border-none rounded-xl"
-                        style={{ backgroundColor: 'hsl(var(--primary))', backgroundImage: 'none' }}
+                        variant="primary"
+                        className="w-full h-14 font-bold text-base hover:opacity-90 border-none rounded-xl"
                         isLoading={loading}
                     >
                         Create My Account

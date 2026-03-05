@@ -3,9 +3,12 @@ import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 
-// Schema for creating a comment
+// Schema for creating a comment - enhanced for security and anti-spam
 const createCommentSchema = z.object({
-    content: z.string().min(1, "Comment cannot be empty"),
+    content: z.string()
+        .trim()
+        .min(2, "Comment must be at least 2 characters long")
+        .max(2000, "Comment cannot exceed 2000 characters"),
     parentId: z.string().optional().nullable(),
 });
 

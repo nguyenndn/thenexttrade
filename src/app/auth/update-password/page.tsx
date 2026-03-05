@@ -75,8 +75,8 @@ export default function UpdatePasswordPage() {
                 <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full text-black font-bold h-[50px] rounded-xl transition-all hover:shadow-lg hover:shadow-primary/20 flex items-center justify-center"
-                    style={{ backgroundColor: 'hsl(var(--primary))' }}
+                    variant="primary"
+                    className="w-full font-bold h-[50px] rounded-xl transition-all hover:shadow-lg hover:shadow-primary/20 flex items-center justify-center"
                 >
                     {isLoading ? (
                         <Loader2 className="animate-spin" />

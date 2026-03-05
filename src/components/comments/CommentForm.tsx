@@ -15,7 +15,10 @@ import { toast } from "sonner";
 // For now, I'll assume the parent passes `user` or handles auth check, OR just show login prompt if API 401s.
 
 const schema = z.object({
-    content: z.string().min(1, "Comment cannot be empty"),
+    content: z.string()
+        .trim()
+        .min(2, "Comment must be at least 2 characters long")
+        .max(2000, "Comment cannot exceed 2000 characters"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -91,7 +94,7 @@ export function CommentForm({
             <div className="relative">
                 <textarea
                     {...register("content")}
-                    className="w-full min-h-[120px] p-4 pb-16 rounded-xl bg-gray-50 dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
+                    className="w-full min-h-[120px] p-4 pb-16 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
                     placeholder={placeholder}
                     autoFocus={autoFocus}
                     disabled={isLoading}

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 
-import { MessageSquare, Calendar, Clock } from "lucide-react";
+import { MessageSquare, Calendar, Clock, Home, ChevronRight, Share2, Link as LinkIcon } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { CommentsFetcher } from "@/components/comments/CommentsFetcher";
@@ -177,7 +177,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     });
 
     return (
-        <main className="min-h-screen bg-slate-50 dark:bg-[#0F1117]">
+        <main className="min-h-screen dark:bg-[#0F1117]" style={{ background: 'linear-gradient(to bottom, #ffffff 0%, #ffffff 80px, #f8fafc 400px)' }}>
             <ReadingProgressBar />
             <ViewCounter articleId={article.id} />
             <JsonLd
@@ -197,10 +197,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
             <PublicHeader user={authUser} />
 
-            {/* ===== HERO SECTION (Contained) ===== */}
-            {article.thumbnail && (
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
-                    <div className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden shadow-lg bg-gray-200 dark:bg-gray-800">
+            {/* ===== HERO SECTION ===== */}
+            <div className="relative w-full mt-24">
+
+                {article.thumbnail && (
+                    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden shadow-lg bg-gray-200 dark:bg-gray-800">
                         <Image
                             src={article.thumbnail}
                             alt={article.title}
@@ -217,21 +219,35 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                 {article.category.name}
                             </span>
                         </div>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
             {/* ===== MAIN CONTENT AREA ===== */}
-            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${article.thumbnail ? 'mt-8' : 'pt-28 sm:pt-32'}`}>
+            <div className={`max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 ${article.thumbnail ? 'mt-8' : 'pt-28 sm:pt-32'}`}>
                 
-                {/* ===== BREADCRUMB ===== */}
-                <nav className={`flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 ${article.thumbnail ? 'mb-6' : 'mb-8'}`}>
-                    <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-                    <span>/</span>
-                    <Link href="/articles" className="hover:text-primary transition-colors">Knowledge</Link>
-                    <span>/</span>
-                    <span className="text-gray-600 dark:text-gray-300 font-medium truncate max-w-[200px]">{article.category.name}</span>
-                </nav>
+                {/* ===== BREADCRUMB BAR ===== */}
+                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-xl px-5 py-3 ${article.thumbnail ? 'mb-6' : 'mb-8'} shadow-sm border border-[#00C888]/20`}>
+                    <div className="flex items-center gap-2 text-sm text-gray-100 dark:text-gray-400 font-medium">
+                        <Home size={14} className="shrink-0" />
+                        <Link href="/" className="hover:text-white transition-colors shrink-0">Home</Link>
+                        <ChevronRight size={14} className="text-white/40 shrink-0" />
+                        <Link href="/articles" className="hover:text-white transition-colors shrink-0">Knowledge</Link>
+                        <ChevronRight size={14} className="text-white/40 shrink-0" />
+                        <span className="text-white font-semibold truncate max-w-[150px] sm:max-w-[300px]">{article.title}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 shrink-0 bg-white/15 dark:bg-white/10 rounded-lg px-3 py-1.5">
+                        <span className="text-sm text-white font-semibold">Share:</span>
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors" title="Share via Social">
+                            <Share2 size={14} />
+                        </button>
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors" title="Copy Link">
+                            <LinkIcon size={14} />
+                        </button>
+                    </div>
+                </div>
 
                 {/* ===== ARTICLE HEADER ===== */}
                 <div className="mb-10">
@@ -283,10 +299,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 </div>
 
                 {/* ===== 2-COLUMN LAYOUT ===== */}
-                <div className="flex items-start">
+                <div className="flex items-stretch">
                     
                     {/* --- Sticky Social Share (overlaps card left border) --- */}
-                    <div className="hidden lg:block shrink-0 z-10 -mr-5">
+                    <div className="hidden lg:block shrink-0 z-10 -mr-[26px]">
                         <div className="sticky top-24 pt-8">
                             <SocialShare title={article.title} slug={slug} vertical={true} />
                         </div>
@@ -361,7 +377,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     </article>
 
                     {/* --- Sidebar Column --- */}
-                    <aside className="hidden lg:block w-80 shrink-0 ml-10">
+                    <aside className="hidden lg:block w-[340px] lg:w-[360px] shrink-0 ml-6 xl:ml-8">
                         <div className="sticky top-24 space-y-6">
                             {/* TOC */}
                             <TableOfContents />

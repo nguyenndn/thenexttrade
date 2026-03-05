@@ -268,7 +268,7 @@ async function HomeFeed() {
                   ) : (
                     <div className="w-full h-full bg-gray-200 dark:bg-gray-800" />
                   )}
-                  <div className="absolute top-2 left-2 bg-gradient-to-r from-primary to-[#00A570] shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-black">
+                  <div className="absolute top-2 left-2 bg-gradient-to-r from-primary to-[#00A570] shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-white">
                     #{idx + 1} Trending
                   </div>
                 </div>
@@ -345,7 +345,7 @@ async function HomeFeed() {
             <Link href="/academy">
               <Button 
                 size="lg" 
-                className="relative overflow-hidden rounded-full bg-gradient-to-r from-primary to-[#00A570] text-black font-black shadow-[0_0_20px_rgba(0,200,136,0.3)] hover:shadow-[0_0_30px_rgba(0,200,136,0.5)] transform hover:scale-105 transition-all duration-300 px-10 py-6 text-lg group"
+                className="relative overflow-hidden rounded-full bg-gradient-to-r from-primary to-[#00A570] text-white font-black shadow-[0_0_20px_rgba(0,200,136,0.3)] hover:shadow-[0_0_30px_rgba(0,200,136,0.5)] transform hover:scale-105 transition-all duration-300 px-10 py-6 text-lg group"
               >
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <span className="flex items-center gap-2 relative z-10">

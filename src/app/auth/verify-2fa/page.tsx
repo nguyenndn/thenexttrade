@@ -56,8 +56,8 @@ export default function Verify2FAPage() {
                     <Button
                         type="submit"
                         disabled={loading || code.length < 6}
-                        className="w-full h-12 text-black font-bold text-lg rounded-xl transition-all shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center gap-2"
-                        style={{ backgroundColor: 'hsl(var(--primary))' }}
+                        variant="primary"
+                        className="w-full h-12 font-bold text-lg rounded-xl transition-all shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                         {loading ? <Loader2 size={24} className="animate-spin" /> : "Verify Identity"}
                     </Button>
