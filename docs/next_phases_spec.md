@@ -4,11 +4,37 @@ Tài liệu này đóng vai trò là **Specification (Đặc tả chi tiết)** 
 
 ---
 
-## Phase 1: Mở rộng Admin Dashboard (Core Management)
+## Phase 1: Chuẩn Hoá UI & Mở Rộng Admin Dashboard (Core Management)
 
-**Mục tiêu:** Xây dựng một khu trung tâm chỉ huy (Command Center) hiện đại, bảo mật cao để quản lý toàn bộ hệ sinh thái Users và Academy.
+**Mục tiêu:** Đồng bộ lại giao diện Admin tuân thủ tuyệt đối `design/ui-guide.md` (giống chuẩn User) và xây dựng trung tâm chỉ huy hiện đại, bảo mật cao.
 
-### 1.1 Quản Lý Người Dùng (User Management)
+### 1.1 Chuẩn Hoá Giao Diện Admin (UI Standardization)
+
+Đây là bước dọn dẹp và đồng bộ tiên quyết. Toàn bộ Admin phải mang "Hơi thở Breek Premium" y hệt ngoại cảnh User Dashboard.
+
+**A. Chuẩn hoá Layout & Shell (Khung viền):**
+- **Admin Layout (`src/app/admin/layout.tsx`):** Bo lại khung `max-w-[1400px]`, canh lề `px-4 sm:px-6 lg:px-8` chuẩn như bên User.
+- **Menu Sidebar (Left-Nav):**
+  - Mở rộng vùng click (Padding to hơn), thay đổi hiệu ứng Hover (Highlight bằng `bg-primary/10 text-primary` thay vì đổi màu tuỳ tiện).
+  - Phân tách Group rõ ràng (Dashboard | Core Management | Content | Settings).
+- **Header Top-bar:** 
+  - Gắn lại Breadcrumbs tinh gọn.
+  - Avatar User dropdown, Nút Notification Bell phải bo cong `rounded-full` hoặc `rounded-xl`, đổ bóng (shadow) mượt mà như `PublicHeader` của User.
+
+**B. Chuẩn hoá Spacing (Khoảng cách) & Container:**
+- Khoảng cách giữa các Section/Tab phải giãn chuẩn (Ví dụ: Margin bottom giữa Header bảng và Bảng là `mb-6`, Padding trong Card là `p-6` hoặc `p-8`).
+- Màu nền và Viền (Border): Đồng bộ Light mode dùng `bg-white border-gray-100`, Dark mode dùng `bg-[#0B0E14] border-white/5` (hoặc `bg-[#15171E]`).
+- Thẻ Tab (Tabs Interface): Chép chuẩn phong cách Tab từ `AccountSettingsTabs.tsx` của User sang cho tất cả các trang Admin có nhiều phân hệ cấu hình.
+
+**C. Danh Sách Các Menu Component Cần Đập Đi Xây Lại (Chuẩn Hoá UI):**
+1. **Admin Dashboard (Overview):** Cân lại kích thước các thẻ Thống kê (Stat Cards) và Biểu đồ (Charts) cho thẳng hàng, bo góc `rounded-2xl`.
+2. **Quản Lý User (`/admin/users`):** Áp dụng thiết kế Bảng (Table) có highlight khi hover dòng, bo tròn Avatar của Use trong cột, thẻ trạng thái (Badge `Active/Banned`) dùng màu sắc chuẩn (Xanh/Đỏ pastel).
+3. **Quản Lý Academy (`/admin/academy/levels`, `/courses`):** Chuẩn hoá dạng hiển thị lưới (Grid Card) hoặc danh sách kéo thả để sắp xếp bài học. Form tạo khoá học phải chia Tab (Thông tin chung - Nội dung - Cấu hình).
+4. **Quản Lý Content (`/admin/articles`, `categories`, `tags`):** Chuẩn hoá khung soạn thảo (Rich Text Editor). Vùng nhập nháy chữ, border focus phải lên màu `ring-primary`.
+5. **Quản Lý EA/Trading Systems (`/admin/ea`):** Danh sách dạng Card, form upload avatar và file version rành mạch.
+6. **Master Settings & System (`/admin/settings`, `system`):** Chia layout Tab dọc (Vertical Tabs) chống cuộn tay mỏi mệt khi cấu hình các biến số chung.
+
+### 1.2 Quản Lý Người Dùng (User Management)
 - **Giao diện Danh sách:**
   - Bảng dữ liệu (Data Table) hiển thị người dùng (Avatar, Email, Tên, Ngày tham gia, Trạng thái hoạt động).
   - Phân trang (Pagination) xử lý từ server.
