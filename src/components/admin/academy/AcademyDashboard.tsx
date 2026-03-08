@@ -68,26 +68,26 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
     return (
         <div className="space-y-10 pb-10">
             {/* Header */}
-            {/* Header */}
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
-                <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+                <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             Academy Management
                         </h1>
                     </div>
+                    <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+                        Manage your courses, modules, and lessons.
+                    </p>
+                </div>
+                <div className="flex items-center gap-3">
                     <Button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-primary hover:bg-[#00a872] text-white border-none shadow-lg shadow-primary/30 rounded-xl transition-all active:scale-95"
+                        className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
                     >
-                        <Plus size={18} strokeWidth={2.5} />
-                        Add New
+                        <Plus size={18} strokeWidth={2.5} /> Add New
                     </Button>
                 </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-                    Manage your courses, modules, and lessons.
-                </p>
             </div>
 
             {/* Level Grid */}

@@ -41,6 +41,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                     href={shareLinks.facebook} target="_blank" rel="noopener noreferrer"
                     className="text-[#3b5998] hover:scale-125 transition-transform"
                     title="Share on Facebook"
+                    aria-label="Share on Facebook"
                 >
                     <Facebook size={20} strokeWidth={2.5} />
                 </a>
@@ -48,6 +49,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                     href={shareLinks.twitter} target="_blank" rel="noopener noreferrer"
                     className="text-[#1da1f2] hover:scale-125 transition-transform"
                     title="Share on Twitter"
+                    aria-label="Share on Twitter"
                 >
                     <Twitter size={20} strokeWidth={2.5} />
                 </a>
@@ -55,6 +57,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                     href={shareLinks.linkedin} target="_blank" rel="noopener noreferrer"
                     className="text-[#0077b5] hover:scale-125 transition-transform"
                     title="Share on LinkedIn"
+                    aria-label="Share on LinkedIn"
                 >
                     <Linkedin size={20} strokeWidth={2.5} />
                 </a>
@@ -62,6 +65,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                     href={shareLinks.telegram} target="_blank" rel="noopener noreferrer"
                     className="text-[#0088cc] hover:scale-125 transition-transform"
                     title="Share on Telegram"
+                    aria-label="Share on Telegram"
                 >
                     <Send size={20} strokeWidth={2.5} className="-ml-0.5 mt-0.5" />
                 </a>
@@ -70,6 +74,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                     onClick={copyToClipboard}
                     className="text-gray-400 hover:text-primary hover:scale-125 transition-transform"
                     title="Copy Link"
+                    aria-label="Copy Link"
                 >
                     {copied ? <Check size={20} strokeWidth={3} className="text-primary" /> : <LinkIcon size={20} strokeWidth={2.5} />}
                 </button>
@@ -88,6 +93,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                     rel="noopener noreferrer"
                     className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#3b5998] hover:text-white hover:border-[#3b5998] text-gray-400 transition-all rounded-full"
                     title="Share on Facebook"
+                    aria-label="Share on Facebook"
                 >
                     <Facebook size={16} />
                 </a>
@@ -97,6 +103,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                     rel="noopener noreferrer"
                     className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#1da1f2] hover:text-white hover:border-[#1da1f2] text-gray-400 transition-all rounded-full"
                     title="Share on Twitter"
+                    aria-label="Share on Twitter"
                 >
                     <Twitter size={16} />
                 </a>
@@ -106,6 +113,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                     rel="noopener noreferrer"
                     className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] text-gray-400 transition-all rounded-full"
                     title="Share on LinkedIn"
+                    aria-label="Share on LinkedIn"
                 >
                     <Linkedin size={16} />
                 </a>
@@ -115,6 +123,7 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                     rel="noopener noreferrer"
                     className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#0088cc] hover:text-white hover:border-[#0088cc] text-gray-400 transition-all rounded-full"
                     title="Share on Telegram"
+                    aria-label="Share on Telegram"
                 >
                     <Send size={16} className="-ml-0.5" />
                 </a>

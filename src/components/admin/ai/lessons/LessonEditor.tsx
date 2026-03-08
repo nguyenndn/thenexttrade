@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { updateLesson, deleteLesson } from "@/app/actions/ai";
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import Link from "next/link";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface LessonEditorProps {
     lesson: any;
@@ -18,6 +19,7 @@ interface LessonEditorProps {
 export default function LessonEditor({ lesson }: LessonEditorProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [formData, setFormData] = useState({
         title: lesson.title,
         duration: lesson.duration || 10,
@@ -61,9 +63,11 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
         }
     };
 
-    const handleDelete = async () => {
-        if (!confirm("Are you sure you want to delete this lesson?")) return;
+    const confirmDelete = () => {
+        setIsConfirmOpen(true);
+    };
 
+    const handleDelete = async () => {
         setIsLoading(true);
         try {
             const res = await deleteLesson(lesson.id);
@@ -72,10 +76,12 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
                 router.push(`/admin/ai-studio/modules/${lesson.moduleId}`);
             } else {
                 toast.error(res.error || "Failed to delete lesson");
+                setIsConfirmOpen(false);
                 setIsLoading(false);
             }
         } catch (e) {
             toast.error("An error occurred");
+            setIsConfirmOpen(false);
             setIsLoading(false);
         }
     };
@@ -171,7 +177,7 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
                             <Button
                                 variant="ghost"
                                 className="flex-1 text-red-500 bg-red-50 hover:bg-red-100 hover:text-red-600 dark:bg-red-900/10 dark:hover:bg-red-900/20 rounded-xl font-bold transition-all"
-                                onClick={handleDelete}
+                                onClick={confirmDelete}
                                 disabled={isLoading}
                             >
                                 <Trash2 size={18} className="mr-2" />
@@ -190,6 +196,18 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
                     </div>
                 </div>
             </div>
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Lesson"
+                description="Are you sure you want to delete this lesson? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                isLoading={isLoading}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
+            />
         </div>
     );
 }

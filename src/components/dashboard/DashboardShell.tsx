@@ -12,11 +12,34 @@ import { AuthUser } from "@/lib/auth-types";
 
 export function DashboardShell({ children, user, bell }: { children: React.ReactNode; user?: AuthUser | null; bell?: React.ReactNode }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
     return (
-        <div className="flex min-h-screen bg-gray-50 dark:bg-[#0F1117] font-sans">
-            {/* Desktop Sidebar */}
-            <Sidebar items={adminMenuItems} />
+        <div className="h-screen font-sans flex flex-col overflow-hidden bg-gray-50 dark:bg-[#0F1117]">
+            {/* Top Header - Full Width */}
+            <Header
+                onMobileMenuClick={() => setIsMobileMenuOpen(true)}
+                searchRoute="/admin/search" // Specifically for Admin
+                showAccountSelector={false}
+                user={user}
+                bell={bell}
+                collapsed={collapsed}
+                setCollapsed={setCollapsed}
+            />
+
+            <div className="flex flex-1 overflow-hidden">
+                {/* Desktop Sidebar */}
+                <Sidebar 
+                    items={adminMenuItems} 
+                    collapsed={collapsed}
+                    setCollapsed={setCollapsed}
+                />
+
+                {/* Main Content Area */}
+                <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full custom-scrollbar">
+                    {children}
+                </main>
+            </div>
 
             {/* Mobile Sidebar */}
             <MobileSidebar
@@ -24,19 +47,6 @@ export function DashboardShell({ children, user, bell }: { children: React.React
                 onClose={() => setIsMobileMenuOpen(false)}
                 items={adminMenuItems}
             />
-
-            <div className="flex-1 flex flex-col min-w-0">
-                <Header
-                    onMobileMenuClick={() => setIsMobileMenuOpen(true)}
-                    searchRoute="/admin/search" // Specifically for Admin
-                    showAccountSelector={false}
-                    user={user}
-                    bell={bell}
-                />
-                <main className="flex-1 p-6 md:p-8 w-full max-w-[100vw] overflow-x-hidden">
-                    {children}
-                </main>
-            </div>
         </div>
     );
 }

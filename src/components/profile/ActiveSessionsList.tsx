@@ -6,11 +6,14 @@ import { Loader2, Smartphone, Monitor, Globe, Trash2, LogOut } from "lucide-reac
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export function ActiveSessionsList() {
     const [sessions, setSessions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [revokingId, setRevokingId] = useState<string | null>(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [sessionToRevoke, setSessionToRevoke] = useState<string | null>(null);
 
     const loadSessions = async () => {
         try {
@@ -27,19 +30,26 @@ export function ActiveSessionsList() {
         loadSessions();
     }, []);
 
-    const handleRevoke = async (id: string) => {
-        // Confirmation
-        if (!confirm("Are you sure you want to revoke this session? The user will be logged out.")) return;
+    const confirmRevoke = (id: string) => {
+        setSessionToRevoke(id);
+        setIsConfirmOpen(true);
+    };
 
-        setRevokingId(id);
-        const res = await deleteSession(id);
+    const handleRevoke = async () => {
+        if (!sessionToRevoke) return;
+
+        setRevokingId(sessionToRevoke);
+        setIsConfirmOpen(false); // Close modal early or keep it? Custom is to keep loading state inside ConfirmDialog.
+        
+        const res = await deleteSession(sessionToRevoke);
         setRevokingId(null);
+        setSessionToRevoke(null);
 
         if (res.error) {
             toast.error(res.error);
         } else {
             toast.success("Session revoked successfully");
-            setSessions(prev => prev.filter(s => s.id !== id));
+            setSessions(prev => prev.filter(s => s.id !== sessionToRevoke));
         }
     };
 
@@ -104,7 +114,7 @@ export function ActiveSessionsList() {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => handleRevoke(session.id)}
+                                    onClick={() => confirmRevoke(session.id)}
                                     isLoading={revokingId === session.id}
                                     className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
                                     title="Revoke Session"
@@ -120,6 +130,18 @@ export function ActiveSessionsList() {
                     );
                 })}
             </div>
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Revoke Session"
+                description="Are you sure you want to revoke this session? The user will be logged out."
+                confirmText="Revoke"
+                cancelText="Cancel"
+                isLoading={!!revokingId}
+                onConfirm={handleRevoke}
+                onCancel={() => { setIsConfirmOpen(false); setSessionToRevoke(null); }}
+                variant="danger"
+            />
         </div>
     );
 }

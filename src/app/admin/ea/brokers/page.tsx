@@ -8,7 +8,7 @@ export default async function EABrokersPage() {
     const { data: brokers } = await getEABrokers();
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 pb-10">
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
@@ -32,7 +32,7 @@ export default async function EABrokersPage() {
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-white/5 text-left">
                         <tr>
@@ -44,7 +44,7 @@ export default async function EABrokersPage() {
                             <th className="p-4 text-xs font-bold text-gray-400 uppercase text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                    <tbody className="divide-y divide-gray-200 dark:divide-white/10">
                         {brokers?.map((broker: any) => (
                             <tr key={broker.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                                 <td className="p-4">

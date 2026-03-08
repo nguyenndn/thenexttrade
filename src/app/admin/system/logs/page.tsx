@@ -18,8 +18,8 @@ export default async function SystemLogsPage() {
     });
 
     return (
-        <div className="space-y-10 pb-10">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
+        <div className="space-y-4 pb-10">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
@@ -33,7 +33,7 @@ export default async function SystemLogsPage() {
                 </div>
             </div>
 
-            <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden bg-white dark:bg-slate-900">
+            <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-shadow">
                 <table className="w-full text-sm">
                     <thead className="bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-gray-400 text-left">
                         <tr>
@@ -43,7 +43,7 @@ export default async function SystemLogsPage() {
                             <th className="p-4 font-medium text-right">Time</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                    <tbody className="divide-y divide-gray-200 dark:divide-white/10">
                         {logs.map((log) => (
                             <tr key={log.id} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/50 transition-colors">
                                 <td className="p-4">

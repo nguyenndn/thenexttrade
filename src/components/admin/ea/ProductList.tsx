@@ -11,6 +11,13 @@ import { EAProduct } from "@/types/ea-license";
 import { EAType, PlatformType } from "@prisma/client";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Card } from "@/components/ui/Card";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 interface ProductListProps {
     products: EAProduct[];
@@ -27,18 +34,35 @@ export function ProductList({ products }: ProductListProps) {
     const [sortField, setSortField] = useState<SortField>("createdAt");
     const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
-    const handleDelete = async (productId: string) => {
-        if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) return;
+    // Confirm Dialog State
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [productToDeleteId, setProductToDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
+    const confirmDelete = (productId: string) => {
+        setProductToDeleteId(productId);
+        setIsConfirmOpen(true);
+    };
+
+    const handleDelete = async () => {
+        if (!productToDeleteId) return;
+
+        setIsDeleting(true);
         try {
-            const result = await deleteEAProduct(productId);
+            const result = await deleteEAProduct(productToDeleteId);
             if (result.success) {
                 toast.success("Product deleted successfully");
+                setIsConfirmOpen(false);
+                setProductToDeleteId(null);
             } else {
                 toast.error(result.error);
+                setIsConfirmOpen(false);
             }
         } catch (error) {
             toast.error("Failed to delete product");
+            setIsConfirmOpen(false);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -92,11 +116,9 @@ export function ProductList({ products }: ProductListProps) {
                 {/* Search */}
                 <div className="relative w-full md:w-96 group">
                     <div className="absolute inset-x-0 -bottom-2 h-2 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" size={20} />
-                    <input
-                        type="text"
+                    <PremiumInput
+                        icon={Search}
                         placeholder="Search products..."
-                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-black/20 border-transparent focus:bg-white dark:focus:bg-[#1E2028] border focus:border-primary/50 rounded-xl shadow-inner focus:shadow-lg focus:ring-0 outline-none transition-all placeholder:text-gray-400 text-gray-700 dark:text-gray-200"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -106,17 +128,23 @@ export function ProductList({ products }: ProductListProps) {
                 <div className="flex gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
                     <div className="relative group">
                         <div className="absolute inset-0 bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
-                        <select
-                            className="relative w-full md:w-48 px-5 py-3 bg-gray-50 dark:bg-black/20 hover:bg-white dark:hover:bg-[#1E2028] border border-transparent hover:border-gray-100 dark:hover:border-white/5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 outline-none cursor-pointer focus:border-primary/50 shadow-sm transition-all appearance-none"
-                            value={filterType}
-                            onChange={(e) => setFilterType(e.target.value as any)}
-                        >
-                            <option value="ALL">All Types</option>
-                            <option value="AUTO_TRADE">Auto Trade</option>
-                            <option value="MANUAL_ASSIST">Manual Assist</option>
-                            <option value="INDICATOR">Indicator</option>
-                        </select>
-                        <Filter className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="relative w-full md:w-48 px-5 py-3 bg-gray-50 dark:bg-black/20 hover:bg-white dark:hover:bg-[#1E2028] border border-transparent hover:border-gray-100 dark:hover:border-white/5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 outline-none cursor-pointer hover:border-primary/50 shadow-sm transition-all flex justify-between items-center h-auto"
+                                >
+                                    {filterType === "ALL" ? "All Types" : filterType.replace("_", " ")}
+                                    <Filter className="text-gray-400 group-hover:text-primary transition-colors" size={16} />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-full md:w-48">
+                                <DropdownMenuItem onClick={() => setFilterType("ALL")}>All Types</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setFilterType("AUTO_TRADE")}>Auto Trade</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setFilterType("MANUAL_ASSIST")}>Manual Assist</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setFilterType("INDICATOR")}>Indicator</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
             </Card>
@@ -215,7 +243,7 @@ export function ProductList({ products }: ProductListProps) {
                                                         size="sm"
                                                         variant="ghost"
                                                         className="h-9 w-9 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors"
-                                                        onClick={() => handleDelete(product.id)}
+                                                        onClick={() => confirmDelete(product.id)}
                                                     >
                                                         <Trash2 size={18} />
                                                     </Button>
@@ -229,6 +257,22 @@ export function ProductList({ products }: ProductListProps) {
                     </div>
                 )}
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Product"
+                description="Are you sure you want to delete this product? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => {
+                    setIsConfirmOpen(false);
+                    setProductToDeleteId(null);
+                }}
+                variant="danger"
+            />
         </div>
     );
 }

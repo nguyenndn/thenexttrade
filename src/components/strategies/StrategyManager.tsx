@@ -14,6 +14,7 @@ import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useRouter } from "next/navigation";
 import { deleteStrategy, getStrategyPerformance, untagStrategy } from "@/actions/strategies";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export interface Strategy {
     id: string;
@@ -56,6 +57,10 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
     const [isLoadingPerformance, setIsLoadingPerformance] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingStrategy, setEditingStrategy] = useState<Strategy | null>(null);
+
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [strategyToDelete, setStrategyToDelete] = useState<{ id: string, name: string } | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState<"name" | "pnl" | "winRate" | "trades">("name");
@@ -126,20 +131,26 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
         });
     }, [allStrategies, searchQuery, sortBy, enrichedPerformance]);
 
-    const handleDelete = async (id: string, name: string) => {
-        if (!confirm(`Delete strategy "${name}"? This will untag all associated trades.`)) return;
+    const confirmDelete = (id: string, name: string) => {
+        setStrategyToDelete({ id, name });
+        setIsConfirmOpen(true);
+    };
+
+    const handleDelete = async () => {
+        if (!strategyToDelete) return;
+        setIsDeleting(true);
 
         try {
             // Check if it's a temporary strategy (ghost)
-            if (id.startsWith("temp-")) {
-                const result = await untagStrategy(name);
+            if (strategyToDelete.id.startsWith("temp-")) {
+                const result = await untagStrategy(strategyToDelete.name);
                 if (result.error) throw new Error(result.error);
 
                 router.refresh(); // Refresh to update list if needed
                 fetchPerformance(); // Re-fetch performance to clear ghost
             } else {
                 // Real strategy deletion via Server Action
-                const result = await deleteStrategy(id);
+                const result = await deleteStrategy(strategyToDelete.id);
                 if (result.error) throw new Error(result.error);
                 toast.success("Strategy deleted");
                 // No need to manually fetchStrategies, revalidatePath in action handles it.
@@ -149,6 +160,10 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
             }
         } catch (error: any) {
             toast.error(error.message || "Failed to delete strategy");
+        } finally {
+            setIsDeleting(false);
+            setIsConfirmOpen(false);
+            setStrategyToDelete(null);
         }
     };
 
@@ -240,7 +255,7 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
                                     setEditingStrategy(strategy);
                                     setShowModal(true);
                                 }}
-                                onDelete={() => handleDelete(strategy.id, strategy.name)}
+                                onDelete={() => confirmDelete(strategy.id, strategy.name)}
                             />
                         );
                     })}
@@ -272,6 +287,18 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
                     onSave={handleSave}
                 />
             )}
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Strategy"
+                description={`Delete strategy "${strategyToDelete?.name}"? This will untag all associated trades.`}
+                confirmText="Delete Strategy"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => { setIsConfirmOpen(false); setStrategyToDelete(null); }}
+                variant="danger"
+            />
         </>
     );
 }

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Plus, Eye, BarChart2, Globe, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { ArticleList } from "@/components/admin/articles/ArticleList";
+import { StatCard } from "@/components/admin/widgets/StatCard";
 
 export const dynamic = 'force-dynamic';
 
@@ -95,20 +96,16 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
         prisma.article.count({ where })
     ]);
 
-    // Fetch Authors for filter (Optimized: only fetch ID/Name)
-    const authors = await prisma.user.findMany({
-        where: { profile: { role: { in: ["ADMIN", "EDITOR"] } } },
-        select: { id: true, name: true }
-    });
+
 
     const totalPages = Math.ceil(totalArticlesCount / limit);
 
     return (
-        <div className="space-y-10 pb-10">
+        <div className="space-y-4 pb-10">
             {/* Header */}
             {/* ... */}
             {/* Using strict select means we might miss 'content', casting to any as List doesn't need content */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-100 dark:border-white/5 pb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
                 {/* ... Header Content ... */}
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
@@ -133,57 +130,36 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
             </div>
 
             {/* Stats Grid - Premium Style */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-sm font-bold text-indigo-500 uppercase tracking-wider">Total Views</p>
-                            <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.totalViews.toLocaleString()}</h3>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 ring-1 ring-indigo-500/20">
-                            <Eye size={24} strokeWidth={2.5} />
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-sm font-bold text-orange-500 uppercase tracking-wider">Avg. Read</p>
-                            <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.avgViews.toLocaleString()}</h3>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400 ring-1 ring-orange-500/20">
-                            <BarChart2 size={24} strokeWidth={2.5} />
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-sm font-bold text-emerald-500 uppercase tracking-wider">Published</p>
-                            <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.publishedArticles} <span className="text-lg text-gray-400 font-medium">/ {stats.totalArticles}</span></h3>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 ring-1 ring-emerald-500/20">
-                            <Globe size={24} strokeWidth={2.5} />
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-sm font-bold text-amber-500 uppercase tracking-wider">Pending</p>
-                            <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.pendingArticles}</h3>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 ring-1 ring-amber-500/20">
-                            <Clock size={24} strokeWidth={2.5} />
-                        </div>
-                    </div>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatCard
+                    title="Total Views"
+                    value={stats.totalViews.toLocaleString()}
+                    icon={Eye}
+                    color="indigo"
+                />
+                <StatCard
+                    title="Avg. Read"
+                    value={stats.avgViews.toLocaleString()}
+                    icon={BarChart2}
+                    color="amber"
+                />
+                <StatCard
+                    title="Published"
+                    value={`${stats.publishedArticles} / ${stats.totalArticles}`}
+                    icon={Globe}
+                    color="emerald"
+                />
+                <StatCard
+                    title="Pending"
+                    value={stats.pendingArticles}
+                    icon={Clock}
+                    color="amber"
+                />
             </div>
 
             {/* List with Filters & Bulk Actions */}
             <ArticleList
                 initialArticles={articles as any}
-                authors={authors.map(a => ({ id: a.id, name: a.name || "Unknown" }))}
                 pagination={{ currentPage: page, totalPages }}
             />
         </div>

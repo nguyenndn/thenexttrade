@@ -8,6 +8,7 @@ import { EALicenseCard } from "@/components/dashboard/accounts/EALicenseCard";
 import { AddAccountModal } from "@/components/dashboard/accounts/AddAccountModal";
 import { cancelAccountRequest, removeAccount } from "@/app/dashboard/trading-systems/actions";
 import { AccountStatus } from "@prisma/client";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface AccountsListProps {
     licenses: EALicense[];
@@ -18,20 +19,24 @@ const MAX_ACCOUNTS = 3;
 
 export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
     const [removingId, setRemovingId] = useState<string | null>(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [accountToRemove, setAccountToRemove] = useState<EALicense | null>(null);
 
-    const handleRemoveAccount = async (license: EALicense) => {
-        const isPending = license.status === AccountStatus.PENDING;
-        const confirmMsg = isPending 
-            ? "Are you sure you want to cancel this request?" 
-            : "Are you sure you want to remove this account from the list?";
-            
-        if (!confirm(confirmMsg)) return;
+    const confirmRemoveAccount = (license: EALicense) => {
+        setAccountToRemove(license);
+        setIsConfirmOpen(true);
+    };
 
-        setRemovingId(license.id);
+    const handleRemoveAccount = async () => {
+        if (!accountToRemove) return;
+
+        const isPending = accountToRemove.status === AccountStatus.PENDING;
+
+        setRemovingId(accountToRemove.id);
         try {
             const result = isPending 
-                ? await cancelAccountRequest(license.id)
-                : await removeAccount(license.id);
+                ? await cancelAccountRequest(accountToRemove.id)
+                : await removeAccount(accountToRemove.id);
                 
             if (result.success) {
                 toast.success(isPending ? "Request cancelled successfully" : "Account removed successfully");
@@ -42,6 +47,8 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
             toast.error("An error occurred");
         } finally {
             setRemovingId(null);
+            setIsConfirmOpen(false);
+            setAccountToRemove(null);
         }
     };
 
@@ -82,7 +89,7 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
                             <EALicenseCard
                                 key={license.id}
                                 license={license}
-                                onRemove={() => handleRemoveAccount(license)}
+                                onRemove={() => confirmRemoveAccount(license)}
                                 isRemoving={removingId === license.id}
                             />
                         ))}
@@ -92,6 +99,20 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
                     </div>
                 </div>
             )}
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title={accountToRemove?.status === AccountStatus.PENDING ? "Cancel Request" : "Remove Account"}
+                description={accountToRemove?.status === AccountStatus.PENDING 
+                    ? "Are you sure you want to cancel this request?" 
+                    : "Are you sure you want to remove this account from the list? This action cannot be undone."}
+                confirmText={accountToRemove?.status === AccountStatus.PENDING ? "Cancel Request" : "Remove Account"}
+                cancelText="Keep"
+                isLoading={!!removingId}
+                onConfirm={handleRemoveAccount}
+                onCancel={() => { setIsConfirmOpen(false); setAccountToRemove(null); }}
+                variant="danger"
+            />
         </div>
     );
 }

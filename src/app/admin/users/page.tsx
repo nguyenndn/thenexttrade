@@ -94,11 +94,9 @@ export default async function AdminUsersPage() {
     ]);
 
     return (
-        <div className="space-y-10 pb-10">
+        <div className="space-y-4 pb-10">
             {/* Header */}
-            {/* Header */}
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-100 dark:border-white/5 pb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
@@ -110,17 +108,19 @@ export default async function AdminUsersPage() {
                         Manage registered members, analyze growth and activity.
                     </p>
                 </div>
-                <Button
-                    variant="primary"
-                    className="shadow-lg shadow-blue-500/30 bg-[#2F80ED] hover:bg-[#2563EB] text-base font-bold px-6 py-2.5 h-auto rounded-xl"
-                >
-                    Export User Data
-                </Button>
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="primary"
+                        className="bg-[#2F80ED] hover:bg-[#2563EB] text-white shadow-lg shadow-blue-500/30 flex items-center gap-2 font-bold px-6 py-2.5 h-auto rounded-xl active:scale-95 active:translate-y-0 transition-all"
+                    >
+                        Export Data
+                    </Button>
+                </div>
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Users</p>
@@ -159,8 +159,8 @@ export default async function AdminUsersPage() {
             <UserCharts roleData={stats.roleData} activityData={stats.activityData} />
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden shadow-sm">
-                <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div className="p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">All Members</h3>
                     <div className="flex gap-2">
                         {/* Filters could go here */}
@@ -169,7 +169,7 @@ export default async function AdminUsersPage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
+                            <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-500 font-bold tracking-wider">
                                 <th className="px-6 py-5">User</th>
                                 <th className="px-6 py-5">Role</th>
                                 <th className="px-6 py-5">Joined</th>
@@ -177,12 +177,12 @@ export default async function AdminUsersPage() {
                                 <th className="px-6 py-5 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                        <tbody className="divide-y divide-gray-200 dark:divide-white/10">
                             {users.map((user) => (
                                 <tr key={user.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors">
                                     <td className="px-6 py-5">
                                         <div className="flex items-center gap-4">
-                                            <Avatar className="w-10 h-10 border border-gray-100 dark:border-white/10">
+                                            <Avatar className="w-10 h-10 border border-gray-200 dark:border-white/10">
                                                 <AvatarImage src={user.image || ""} alt={user.name || "User"} />
                                                 <AvatarFallback className="bg-gradient-to-tr from-cyan-400 to-blue-500 text-white font-bold text-sm">
                                                     {user.name?.[0]?.toUpperCase() || <Users size={16} />}
@@ -221,11 +221,11 @@ export default async function AdminUsersPage() {
                                     </td>
                                     <td className="px-6 py-5">
                                         <div className="flex gap-2">
-                                            <div className="flex flex-col items-center justify-center min-w-[60px] p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                                            <div className="flex flex-col items-center justify-center min-w-[60px] p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
                                                 <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Lessons</span>
                                                 <span className="text-base font-bold text-gray-900 dark:text-white">{user._count.progress}</span>
                                             </div>
-                                            <div className="flex flex-col items-center justify-center min-w-[60px] p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                                            <div className="flex flex-col items-center justify-center min-w-[60px] p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
                                                 <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Quizzes</span>
                                                 <span className="text-base font-bold text-gray-900 dark:text-white">{user._count.quizAttempts}</span>
                                             </div>

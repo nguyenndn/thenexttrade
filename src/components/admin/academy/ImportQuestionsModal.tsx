@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { PremiumInput } from "@/components/ui/PremiumInput";
 
 interface ImportQuestionsModalProps {
     isOpen: boolean;
@@ -116,16 +117,13 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                     {step === "quiz-select" ? (
                         <div className="flex flex-col h-full">
                             <div className="px-6 mb-4">
-                                <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                    <input
-                                        className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border-none focus:ring-2 focus:ring-primary/20 outline-none"
-                                        placeholder="Search quizzes..."
-                                        value={searchQuiz}
-                                        onChange={e => setSearchQuiz(e.target.value)}
-                                        autoFocus
-                                    />
-                                </div>
+                                <PremiumInput
+                                    icon={Search}
+                                    placeholder="Search quizzes..."
+                                    value={searchQuiz}
+                                    onChange={e => setSearchQuiz(e.target.value)}
+                                    autoFocus
+                                />
                             </div>
 
                             <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-2">

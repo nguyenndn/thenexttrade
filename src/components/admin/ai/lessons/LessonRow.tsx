@@ -7,6 +7,7 @@ import { deleteLesson } from "@/app/actions/ai";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface LessonRowProps {
     lesson: {
@@ -20,13 +21,15 @@ interface LessonRowProps {
 export default function LessonRow({ lesson, index }: LessonRowProps) {
     const router = useRouter();
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-    const handleDelete = async (e: React.MouseEvent) => {
+    const confirmDelete = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        setIsConfirmOpen(true);
+    };
 
-        if (!confirm("Are you sure you want to delete this lesson?")) return;
-
+    const handleDelete = async () => {
         setIsDeleting(true);
         try {
             const res = await deleteLesson(lesson.id);
@@ -35,10 +38,12 @@ export default function LessonRow({ lesson, index }: LessonRowProps) {
                 router.refresh();
             } else {
                 toast.error("Failed to delete lesson");
+                setIsConfirmOpen(false);
                 setIsDeleting(false);
             }
         } catch (error) {
             toast.error("An error occurred");
+            setIsConfirmOpen(false);
             setIsDeleting(false);
         }
     };
@@ -68,7 +73,7 @@ export default function LessonRow({ lesson, index }: LessonRowProps) {
                         variant="ghost"
                         size="sm"
                         className="h-8 w-8 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10"
-                        onClick={handleDelete}
+                        onClick={confirmDelete}
                         disabled={isDeleting}
                     >
                         <Trash2 size={14} />
@@ -77,6 +82,18 @@ export default function LessonRow({ lesson, index }: LessonRowProps) {
                     <ChevronRight size={16} className="text-gray-300 group-hover:text-primary" />
                 </div>
             </div>
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Lesson"
+                description="Are you sure you want to delete this lesson? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
+            />
         </Link>
     );
 }

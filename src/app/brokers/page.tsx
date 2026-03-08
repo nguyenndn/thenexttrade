@@ -54,7 +54,7 @@ export default async function BrokersPage() {
 
                     {/* Brokers Grid or Empty State */}
                     {brokers.length === 0 ? (
-                        <div className="text-center py-20 bg-white/50 dark:bg-white/5 rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                        <div className="text-center py-20 bg-white/50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                             <ShieldCheck size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-4" />
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Trusted Brokers Listed Yet</h3>
                             <p className="text-gray-500 dark:text-gray-400">Our team is currently reviewing and verifying partners. Please check back soon.</p>

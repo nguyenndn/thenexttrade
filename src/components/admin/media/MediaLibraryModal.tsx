@@ -4,6 +4,9 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Upload, Image as ImageIcon, Search, Trash2, Check, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { toast } from "sonner";
+import { PremiumInput } from "@/components/ui/PremiumInput";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface Media {
     id: string;
@@ -31,6 +34,10 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
     const [isLoading, setIsLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [search, setSearch] = useState("");
+    
+    // Confirm Dialog State
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Fetch Media
     useEffect(() => {
@@ -82,21 +89,31 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                 setSelectedMedia(newMedia);
             }
         } catch (error) {
-            alert("Upload failed");
+            toast.error("Upload failed");
         } finally {
             setIsUploading(false);
         }
     };
 
-    const handleDelete = async () => {
-        if (!selectedMedia || !confirm("Delete this image?")) return;
+    const confirmDelete = () => {
+        if (!selectedMedia) return;
+        setIsConfirmOpen(true);
+    };
 
+    const handleDelete = async () => {
+        if (!selectedMedia) return;
+        
+        setIsDeleting(true);
         try {
             await fetch(`/api/media/${selectedMedia.id}`, { method: 'DELETE' });
             setMediaList(prev => prev.filter(m => m.id !== selectedMedia.id));
             setSelectedMedia(null);
+            setIsConfirmOpen(false);
         } catch (error) {
-            alert("Delete failed");
+            toast.error("Delete failed");
+            setIsConfirmOpen(false);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -177,13 +194,11 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                 {/* Toolbar */}
                                 <div className="flex items-center gap-2">
                                     <div className="relative flex-1 max-w-md">
-                                        <Search size={16} className="absolute left-3 top-2.5 text-gray-400" />
-                                        <input
-                                            type="text"
+                                        <PremiumInput
+                                            icon={Search}
                                             placeholder="Search by filename..."
                                             value={search}
                                             onChange={(e) => setSearch(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                         />
                                     </div>
                                 </div>
@@ -263,7 +278,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                 </Button>
                                 <Button
                                     variant="ghost"
-                                    onClick={handleDelete}
+                                    onClick={confirmDelete}
                                     className="w-full py-2.5 h-auto text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 text-xs font-bold rounded-xl transition-all"
                                 >
                                     Delete Permanently
@@ -273,6 +288,19 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                     )}
                 </div>
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Media"
+                description="Are you sure you want to permanently delete this media file? It will be removed from all associated content."
+                confirmText="Delete"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
+            />
         </div>
     );
 }

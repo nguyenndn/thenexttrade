@@ -7,6 +7,7 @@ import { Reply, Trash2, MoreHorizontal } from "lucide-react";
 import { CommentForm } from "./CommentForm";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 // Checking file list, I passed `Button.tsx`, `Modal.tsx`. I don't see Dropdown.
 // I'll stick to a simple Delete button if it's my own comment.
 
@@ -64,14 +65,17 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
 }) {
     const [isReplying, setIsReplying] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
     const isAuthor = currentUser?.id === comment.user.id;
     // We can't easily check for Admin here without passing 'role' in currentUser.
     // For now, only Author can delete on UI side, API handles the rest.
 
-    const handleDelete = async () => {
-        if (!confirm("Are you sure you want to delete this comment?")) return;
+    const confirmDelete = () => {
+        setIsConfirmOpen(true);
+    };
 
+    const handleDelete = async () => {
         setIsDeleting(true);
         try {
             const res = await fetch(`/api/comments/${comment.id}`, {
@@ -86,6 +90,7 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
             toast.error("Could not delete comment");
         } finally {
             setIsDeleting(false);
+            setIsConfirmOpen(false);
         }
     };
 
@@ -135,7 +140,7 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
                     {isAuthor && (
                         <Button
                             variant="ghost"
-                            onClick={handleDelete}
+                            onClick={confirmDelete}
                             disabled={isDeleting}
                             className="flex items-center gap-1.5 h-auto px-2 py-1 text-gray-400 hover:text-red-500 transition-colors font-medium"
                         >
@@ -176,6 +181,18 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
                     </div>
                 )}
             </div>
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Comment"
+                description="Are you sure you want to delete this comment? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
+            />
         </div>
     );
 }

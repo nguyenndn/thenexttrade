@@ -23,7 +23,8 @@ import {
     AlertTriangle,
     FileSpreadsheet,
     Clock,
-    Route
+    Route,
+    Zap
 } from "lucide-react";
 
 export const menuItems = [
@@ -124,17 +125,25 @@ export const dashboardMenuItems = [
 ];
 
 export const adminMenuItems = [
+    // --- (No label — first item) ---
     { name: "Overview", href: "/admin", icon: LayoutDashboard },
+
+    // --- CONTENT ---
     { name: "Articles", href: "/admin/articles", icon: FileText },
+    { name: "Shortcuts", href: "/admin/articles/shortcuts", icon: Zap },
     { name: "Comments", href: "/admin/comments", icon: MessageSquare },
     { name: "Categories", href: "/admin/categories", icon: List },
     { name: "Tags", href: "/admin/tags", icon: Tag },
-    { name: "Brokers", href: "/admin/brokers", icon: Briefcase },
-    { name: "Users", href: "/admin/users", icon: Users },
+
+    // --- EDUCATION ---
     { name: "Academy", href: "/admin/academy", icon: GraduationCap },
     { name: "Quizzes", href: "/admin/quizzes", icon: ListChecks },
     { name: "AI Studio", href: "/admin/ai-studio", icon: Sparkles },
+
+    // --- SYSTEM ---
     { name: "EA Management", href: "/admin/ea", icon: Bot },
+    { name: "Users", href: "/admin/users", icon: Users },
+    { name: "Brokers", href: "/admin/brokers", icon: Briefcase },
     { name: "System Logs", href: "/admin/system/logs", icon: Activity },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];

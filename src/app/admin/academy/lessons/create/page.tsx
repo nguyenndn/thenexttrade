@@ -8,6 +8,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
+import { toast } from "sonner";
 
 function LessonForm() {
     const router = useRouter();
@@ -53,7 +54,7 @@ function LessonForm() {
             router.push("/admin/academy");
             router.refresh();
         } catch (error: any) {
-            alert(error.message);
+            toast.error(error.message);
         } finally {
             setIsSubmitting(false);
         }

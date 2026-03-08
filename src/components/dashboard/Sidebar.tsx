@@ -134,13 +134,24 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
             {/* Navigation Items */}
             <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
 
-                {items.map((item: any) => {
-                    const sectionNames: Record<string, string> = {
-                        "Dashboard": "OPERATIONS",
-                        "Trading Journal": "EXECUTION",
-                        "Analytics Hub": "REVIEW",
-                        "Academy": "RESOURCES"
-                    };
+                {items.map((item: any, index: number) => {
+                    // Detect if we're in Admin sidebar by checking first item href
+                    const isAdmin = items[0]?.href === "/admin";
+
+                    const sectionNames: Record<string, string> = isAdmin
+                        ? {
+                            // Admin groups
+                            "Articles": "CONTENT",
+                            "Academy": "EDUCATION",
+                            "EA Management": "SYSTEM",
+                        }
+                        : {
+                            // User Dashboard groups
+                            "Dashboard": "OPERATIONS",
+                            "Trading Journal": "EXECUTION",
+                            "Analytics Hub": "REVIEW",
+                            "Academy": "RESOURCES",
+                        };
 
                     const sectionLabel = sectionNames[item.name];
 
@@ -154,7 +165,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                             )}
 
                             {/* Divider for Collapsed State */}
-                            {sectionLabel && item.name !== "Dashboard" && isCollapsed && (
+                            {sectionLabel && index > 0 && isCollapsed && (
                                 <div className="mx-4 my-2 h-px bg-gray-200 dark:bg-white/10" />
                             )}
 

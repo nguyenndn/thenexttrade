@@ -27,7 +27,7 @@ export default async function EAProductsPage() {
     });
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 pb-10">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Link href="/admin/ea" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-500 transition-colors">

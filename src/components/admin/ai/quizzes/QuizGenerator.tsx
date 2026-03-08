@@ -8,7 +8,13 @@ import PreviewPanel from "@/components/admin/ai/shared/PreviewPanel";
 import AIGenerationStatus from "@/components/admin/ai/shared/AIGenerationStatus";
 import { QuizGenerationResponse } from "@/lib/ai/types";
 import { toast } from "sonner";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 
 export default function QuizGenerator() {
@@ -116,23 +122,27 @@ export default function QuizGenerator() {
                     <div className="space-y-6">
                         <div>
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Save to Module</label>
-                            <div className="relative">
-                                <select
-                                    className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
-                                    value={selectedModule}
-                                    onChange={(e) => setSelectedModule(e.target.value)}
-                                >
-                                    <option value="">-- Select a Module --</option>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-between bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 h-auto hover:bg-gray-100 dark:hover:bg-white/10 shadow-none border border-solid"
+                                    >
+                                        <span className="truncate flex-1 text-left">
+                                            {selectedModule ? modules.find(m => m.id === selectedModule)?.title || "Selected" : "-- Select a Module --"}
+                                        </span>
+                                        <ChevronDown size={14} className="opacity-50 ml-2 shrink-0" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-[300px] overflow-y-auto">
+                                    <DropdownMenuItem onClick={() => setSelectedModule("")}>-- Select a Module --</DropdownMenuItem>
                                     {modules.map(m => (
-                                        <option key={m.id} value={m.id}>
+                                        <DropdownMenuItem key={m.id} onClick={() => setSelectedModule(m.id)}>
                                             {m.level?.title} - {m.title}
-                                        </option>
+                                        </DropdownMenuItem>
                                     ))}
-                                </select>
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none border-l border-gray-300 dark:border-gray-700 pl-3">
-                                    <span className="text-gray-400 text-[10px]">▼</span>
-                                </div>
-                            </div>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
 
                         <PremiumInput
@@ -155,17 +165,22 @@ export default function QuizGenerator() {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Difficulty</label>
-                                <div className="relative">
-                                    <select
-                                        className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
-                                        value={formData.difficulty}
-                                        onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as any })}
-                                    >
-                                        <option value="easy">Easy</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="hard">Hard</option>
-                                    </select>
-                                </div>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-between bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 h-auto hover:bg-gray-100 dark:hover:bg-white/10 shadow-none border border-solid capitalize"
+                                        >
+                                            {formData.difficulty}
+                                            <ChevronDown size={14} className="opacity-50 ml-2" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                                        <DropdownMenuItem onClick={() => setFormData({ ...formData, difficulty: "easy" })}>Easy</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setFormData({ ...formData, difficulty: "medium" })}>Medium</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setFormData({ ...formData, difficulty: "hard" })}>Hard</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
                             <PremiumInput
                                 label="Num Questions"

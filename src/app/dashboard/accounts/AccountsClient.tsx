@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -31,6 +32,10 @@ export default function AccountsClient() {
     const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<any | null>(null);
     const [meta, setMeta] = useState({ total: 0, totalPages: 1 });
+
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const fetchAccounts = async () => {
         try {
@@ -66,11 +71,17 @@ export default function AccountsClient() {
         setIsSyncModalOpen(true);
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this account? Associated trades will be unlinked.")) return;
+    const confirmDelete = (id: string) => {
+        setAccountToDelete(id);
+        setIsConfirmOpen(true);
+    };
+
+    const handleDelete = async () => {
+        if (!accountToDelete) return;
+        setIsDeleting(true);
 
         try {
-            const res = await fetch(`/api/trading-accounts/${id}`, {
+            const res = await fetch(`/api/trading-accounts/${accountToDelete}`, {
                 method: "DELETE",
             });
 
@@ -80,6 +91,10 @@ export default function AccountsClient() {
             fetchAccounts();
         } catch (error) {
             toast.error("Failed to delete account");
+        } finally {
+            setIsDeleting(false);
+            setIsConfirmOpen(false);
+            setAccountToDelete(null);
         }
     };
 
@@ -165,7 +180,7 @@ export default function AccountsClient() {
                                             <DropdownMenuItem onClick={() => handleEdit(account)} className="font-medium cursor-pointer rounded-lg mx-1 my-1">
                                                 <Edit2 size={14} className="mr-2 text-gray-400" /> Edit Details
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => handleDelete(account.id)} className="text-red-500 focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1">
+                                            <DropdownMenuItem onClick={() => confirmDelete(account.id)} className="text-red-500 focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1">
                                                 <Trash2 size={14} className="mr-2" /> Delete Account
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
@@ -263,6 +278,18 @@ export default function AccountsClient() {
                     onClose={() => setIsSyncModalOpen(false)}
                 />
             )}
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Account"
+                description="Are you sure you want to delete this account? Associated trades will be permanently unlinked."
+                confirmText="Delete Account"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => { setIsConfirmOpen(false); setAccountToDelete(null); }}
+                variant="danger"
+            />
         </>
     );
 }

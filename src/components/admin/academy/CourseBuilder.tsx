@@ -27,6 +27,7 @@ import { SortableModule } from "./SortableModule";
 import { SortableLesson } from "./SortableLesson";
 import { CreateModuleModal } from "./CreateModuleModal";
 import { CreateLessonModal } from "./CreateLessonModal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface CourseBuilderProps {
     level: any;
@@ -41,10 +42,18 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
         setModules(level.modules || []);
     }, [level.modules]);
 
-    // Modals State
     const [isModuleModalOpen, setIsModuleModalOpen] = useState(false);
     const [isLessonModalOpen, setIsLessonModalOpen] = useState(false);
     const [activeModuleId, setActiveModuleId] = useState<string>("");
+
+    // Confirm Dialog States
+    const [isModuleConfirmOpen, setIsModuleConfirmOpen] = useState(false);
+    const [moduleToDelete, setModuleToDelete] = useState<string | null>(null);
+    const [isDeletingModule, setIsDeletingModule] = useState(false);
+
+    const [isLessonConfirmOpen, setIsLessonConfirmOpen] = useState(false);
+    const [lessonToDelete, setLessonToDelete] = useState<{ lessonId: string, moduleId: string } | null>(null);
+    const [isDeletingLesson, setIsDeletingLesson] = useState(false);
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -113,30 +122,46 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
     };
 
     // --- Delete Handlers ---
-    const handleDeleteModule = async (moduleId: string) => {
-        if (!confirm("Are you sure you want to delete this module? All lessons inside will also be deleted.")) return;
+    const confirmDeleteModule = (moduleId: string) => {
+        setModuleToDelete(moduleId);
+        setIsModuleConfirmOpen(true);
+    };
+
+    const handleDeleteModule = async () => {
+        if (!moduleToDelete) return;
+        setIsDeletingModule(true);
 
         try {
-            const res = await fetch(`/api/academy/modules/${moduleId}`, {
+            const res = await fetch(`/api/academy/modules/${moduleToDelete}`, {
                 method: "DELETE",
             });
 
             if (!res.ok) throw new Error("Failed to delete module");
 
-            setModules((prev: any[]) => prev.filter((m) => m.id !== moduleId));
+            setModules((prev: any[]) => prev.filter((m) => m.id !== moduleToDelete));
             toast.success("Module deleted");
             router.refresh();
         } catch (error) {
             console.error(error);
             toast.error("Failed to delete module");
+        } finally {
+            setIsDeletingModule(false);
+            setIsModuleConfirmOpen(false);
+            setModuleToDelete(null);
         }
     };
 
-    const handleDeleteLesson = async (lessonId: string, moduleId: string) => {
-        if (!confirm("Are you sure you want to delete this lesson?")) return;
+    const confirmDeleteLesson = (lessonId: string, moduleId: string) => {
+        setLessonToDelete({ lessonId, moduleId });
+        setIsLessonConfirmOpen(true);
+    };
+
+    const handleDeleteLesson = async () => {
+        if (!lessonToDelete) return;
+        setIsDeletingLesson(true);
 
         try {
-            const res = await fetch(`/api/academy/lessons/${lessonId}`, {
+            const res = await fetch(`/api/academy/lessons/${lessonToDelete.lessonId}`, {
                 method: "DELETE",
             });
 
@@ -145,8 +170,8 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
             // Update local state
             setModules((prev: any[]) =>
                 prev.map((m) =>
-                    m.id === moduleId
-                        ? { ...m, lessons: m.lessons.filter((l: any) => l.id !== lessonId) }
+                    m.id === lessonToDelete.moduleId
+                        ? { ...m, lessons: m.lessons.filter((l: any) => l.id !== lessonToDelete.lessonId) }
                         : m
                 )
             );
@@ -155,6 +180,10 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
         } catch (error) {
             console.error(error);
             toast.error("Failed to delete lesson");
+        } finally {
+            setIsDeletingLesson(false);
+            setIsLessonConfirmOpen(false);
+            setLessonToDelete(null);
         }
     };
 
@@ -265,7 +294,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
                                 }}
                                 onManageQuiz={handleManageQuiz}
 
-                                onDelete={() => handleDeleteModule(module.id)}
+                                onDelete={() => confirmDeleteModule(module.id)}
                             >
                                 {/* Nested Dnd Context for Lessons */}
                                 {/* Note: Nested DndContext is discouraged. Better to use one context. 
@@ -289,7 +318,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
                                                         key={lesson.id}
                                                         lesson={lesson}
                                                         onEdit={() => handleEditLesson(lesson.id)}
-                                                        onDelete={() => handleDeleteLesson(lesson.id, module.id)}
+                                                        onDelete={() => confirmDeleteLesson(lesson.id, module.id)}
                                                     />
                                                 ))
                                             ) : (
@@ -330,6 +359,31 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
                 onClose={() => setIsLessonModalOpen(false)}
                 moduleId={activeModuleId}
                 onSuccess={handleLessonCreated}
+            />
+
+            {/* Confirm Dialogs */}
+            <ConfirmDialog
+                isOpen={isModuleConfirmOpen}
+                title="Delete Module"
+                description="Are you sure you want to delete this module? All lessons inside will also be permanently deleted."
+                confirmText="Delete Module"
+                cancelText="Cancel"
+                isLoading={isDeletingModule}
+                onConfirm={handleDeleteModule}
+                onCancel={() => { setIsModuleConfirmOpen(false); setModuleToDelete(null); }}
+                variant="danger"
+            />
+
+            <ConfirmDialog
+                isOpen={isLessonConfirmOpen}
+                title="Delete Lesson"
+                description="Are you sure you want to delete this lesson? This action cannot be undone."
+                confirmText="Delete Lesson"
+                cancelText="Cancel"
+                isLoading={isDeletingLesson}
+                onConfirm={handleDeleteLesson}
+                onCancel={() => { setIsLessonConfirmOpen(false); setLessonToDelete(null); }}
+                variant="danger"
             />
         </div>
     );

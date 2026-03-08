@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { EditLevelModal } from "@/components/admin/ai/levels/EditLevelModal";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface LevelHeaderActionsProps {
     level: {
@@ -20,13 +21,14 @@ interface LevelHeaderActionsProps {
 export default function LevelHeaderActions({ level }: LevelHeaderActionsProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const router = useRouter();
 
-    const handleDelete = async () => {
-        if (!confirm("Are you sure you want to delete this level? All modules and lessons inside it will be permanently removed.")) {
-            return;
-        }
+    const confirmDelete = () => {
+        setIsConfirmOpen(true);
+    };
 
+    const handleDelete = async () => {
         setIsDeleting(true);
         try {
             const result = await deleteLevel(level.id);
@@ -36,10 +38,12 @@ export default function LevelHeaderActions({ level }: LevelHeaderActionsProps) {
                 router.push(`/admin/ai-studio/levels`);
             } else {
                 toast.error(result.error || "Failed to delete level");
+                setIsConfirmOpen(false);
                 setIsDeleting(false);
             }
         } catch (error) {
             toast.error("An error occurred");
+            setIsConfirmOpen(false);
             setIsDeleting(false);
         }
     };
@@ -63,7 +67,7 @@ export default function LevelHeaderActions({ level }: LevelHeaderActionsProps) {
                     </Button>
                     <Button
                         variant="ghost"
-                        onClick={handleDelete}
+                        onClick={confirmDelete}
                         disabled={isDeleting}
                         className="w-full justify-start px-3 py-2 h-auto text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md flex items-center transition-colors font-normal"
                     >
@@ -81,6 +85,18 @@ export default function LevelHeaderActions({ level }: LevelHeaderActionsProps) {
                     title: level.title,
                     description: level.description
                 }}
+            />
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Level"
+                description="Are you sure you want to delete this level? All modules and lessons inside it will be permanently removed. This action cannot be undone."
+                confirmText="Delete Level"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
             />
         </>
     );

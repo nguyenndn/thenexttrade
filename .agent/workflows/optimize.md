@@ -21,7 +21,7 @@ Tự động hóa luồng suy nghĩ (chain of thought) để rà soát, đề xu
 
 3. **Phân tích Đa chiều (Lên kịch bản "Bắt bệnh")**
     AI phải tự đặt và trả lời 5 lăng kính sau dựa trên file code vừa đọc:
-    - **Aesthetics & The LAW Premium:** Đã đủ "Breek Premium" chưa? Đặc biệt rà soát và càn quét tiêu diệt bất cứ **thẻ HTML `<button>`** thô ráp nào, ép đổi hết sang Component `<Button>` chuẩn hệ thống.
+    - **Aesthetics & The LAW Premium:** Đã đủ "Breek Premium" chưa? Đặc biệt rà soát và càn quét tiêu diệt bất cứ **thẻ HTML `<button>`** thô ráp hoặc **thẻ `<select>` native** xấu xí nào, ép đổi hết sang Component `<Button>` và Component `<DropdownMenu>` chuẩn hệ thống.
     - **Language & Localization:** Rà soát và nhổ bỏ tận gốc mọi tàn dư text Tiếng Việt lọt thỏm trong UI (Toast, Alert, Text). Tự động ép đồng bộ toàn bộ giao diện thành Tiếng Anh.
     - **Accessibility (A11y) & Usability:** Các nút bấm Icon UI nhỏ lẻ có bị mồ côi thuộc tính `aria-label` không? Web có bị vi phạm chuẩn UX Screen Reader khuyết tật không?
     - **UX & Cấu trúc (Features/Reusability):** Có điểm đau (pain point) nào cho user không? Logic UI lặp lại có cần gộp thành Shared Component không (ưu tiên `src/components/ui/`)? Giao diện tab có cần gom gọn không?

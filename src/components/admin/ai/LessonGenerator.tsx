@@ -9,6 +9,13 @@ import PreviewPanel from "./PreviewPanel";
 import { LessonGenerationResponse } from "@/lib/ai/types";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import { ChevronDown } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export default function LessonGenerator() {
     const [formData, setFormData] = useState({
@@ -104,24 +111,27 @@ export default function LessonGenerator() {
                 <div className="space-y-6">
                     <div>
                         <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Save to Module</label>
-                        <div className="relative">
-                            <input type="text" className="sr-only" /> {/* Focus trap mock */}
-                            <select
-                                className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
-                                value={selectedModule}
-                                onChange={(e) => setSelectedModule(e.target.value)}
-                            >
-                                <option value="">-- Select a Module --</option>
-                                {modules.map(m => (
-                                    <option key={m.id} value={m.id}>
-                                        {m.level?.title} - {m.title}
-                                    </option>
-                                ))}
-                            </select>
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none border-l border-gray-300 dark:border-gray-700 pl-3">
-                                <span className="text-gray-400 text-[10px]">▼</span>
-                            </div>
-                        </div>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-between bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 h-auto hover:bg-gray-100 dark:hover:bg-white/10 shadow-none border border-solid"
+                                    >
+                                        <span className="truncate flex-1 text-left">
+                                            {selectedModule ? modules.find(m => m.id === selectedModule)?.title || "Selected" : "-- Select a Module --"}
+                                        </span>
+                                        <ChevronDown size={14} className="opacity-50 ml-2 shrink-0" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-[300px] overflow-y-auto">
+                                    <DropdownMenuItem onClick={() => setSelectedModule("")}>-- Select a Module --</DropdownMenuItem>
+                                    {modules.map(m => (
+                                        <DropdownMenuItem key={m.id} onClick={() => setSelectedModule(m.id)}>
+                                            {m.level?.title} - {m.title}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                     </div>
 
                     <PremiumInput
@@ -144,31 +154,41 @@ export default function LessonGenerator() {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Level</label>
-                            <div className="relative">
-                                <select
-                                    className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
-                                    value={formData.level}
-                                    onChange={(e) => setFormData({ ...formData, level: e.target.value as any })}
-                                >
-                                    <option value="beginner">Beginner</option>
-                                    <option value="intermediate">Intermediate</option>
-                                    <option value="advanced">Advanced</option>
-                                </select>
-                            </div>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-between bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 h-auto hover:bg-gray-100 dark:hover:bg-white/10 shadow-none border border-solid capitalize"
+                                    >
+                                        {formData.level}
+                                        <ChevronDown size={14} className="opacity-50 ml-2 shrink-0" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                                    <DropdownMenuItem onClick={() => setFormData({ ...formData, level: "beginner" })}>Beginner</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setFormData({ ...formData, level: "intermediate" })}>Intermediate</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setFormData({ ...formData, level: "advanced" })}>Advanced</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Length</label>
-                            <div className="relative">
-                                <select
-                                    className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
-                                    value={formData.length}
-                                    onChange={(e) => setFormData({ ...formData, length: e.target.value as any })}
-                                >
-                                    <option value="short">Short (~5 mins)</option>
-                                    <option value="medium">Medium (~10 mins)</option>
-                                    <option value="long">Long (~20 mins)</option>
-                                </select>
-                            </div>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-between bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 h-auto hover:bg-gray-100 dark:hover:bg-white/10 shadow-none border border-solid"
+                                    >
+                                        {formData.length === "short" ? "Short (~5 mins)" : formData.length === "medium" ? "Medium (~10 mins)" : "Long (~20 mins)"}
+                                        <ChevronDown size={14} className="opacity-50 ml-2 shrink-0" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                                    <DropdownMenuItem onClick={() => setFormData({ ...formData, length: "short" })}>Short (~5 mins)</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setFormData({ ...formData, length: "medium" })}>Medium (~10 mins)</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setFormData({ ...formData, length: "long" })}>Long (~20 mins)</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
 

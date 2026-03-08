@@ -76,9 +76,9 @@ export default function AdminSearchPage() {
     };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-4 pb-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
@@ -100,7 +100,7 @@ export default function AdminSearchPage() {
                     </div>
                 ) : (hasSearched && query) ? (
                     <>
-                        <h2 className="text-sm font-bold text-gray-500 mb-4 border-b pb-2 border-gray-100 dark:border-white/5">
+                        <h2 className="text-sm font-bold text-gray-500 mb-4 border-b pb-2 border-gray-200 dark:border-white/10">
                             Results for "{query}"
                         </h2>
 
@@ -110,7 +110,7 @@ export default function AdminSearchPage() {
                                     <Link
                                         key={`${result.type}-${result.id}`}
                                         href={result.slug}
-                                        className="flex bg-white dark:bg-[#151925] p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary dark:hover:border-primary transition-all group shadow-sm"
+                                        className="flex bg-white dark:bg-[#151925] p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary hover:shadow-md transition-all group shadow-sm"
                                     >
                                         <div className={`p-3 rounded-lg shrink-0 mr-4 h-fit ${result.type === 'article'
                                             ? 'bg-blue-50 text-blue-500 dark:bg-blue-500/10'
@@ -149,7 +149,7 @@ export default function AdminSearchPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5">
+                            <div className="text-center py-12 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
                                 <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
                             </div>

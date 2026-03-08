@@ -27,6 +27,7 @@ import { SortableQuestion } from "@/components/admin/academy/SortableQuestion";
 import { QuestionModal } from "@/components/admin/academy/QuestionModal";
 import { ImportQuestionsModal } from "@/components/admin/academy/ImportQuestionsModal";
 import { QuizSettingsModal } from "@/components/admin/academy/QuizSettingsModal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface QuizBuilderProps {
     quiz: any;
@@ -38,6 +39,9 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
     const [questions, setQuestions] = useState(quiz.questions || []);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState<any>(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [questionToDelete, setQuestionToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -77,15 +81,25 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
         }
     };
 
-    const handleDeleteQuestion = async (id: string) => {
-        if (!confirm("Delete this question?")) return;
+    const confirmDeleteQuestion = (id: string) => {
+        setQuestionToDelete(id);
+        setIsConfirmOpen(true);
+    };
 
+    const handleDeleteQuestion = async () => {
+        if (!questionToDelete) return;
+
+        setIsDeleting(true);
         try {
-            await fetch(`/api/academy/questions/${id}`, { method: "DELETE" });
-            setQuestions(questions.filter((q: any) => q.id !== id));
+            await fetch(`/api/academy/questions/${questionToDelete}`, { method: "DELETE" });
+            setQuestions(questions.filter((q: any) => q.id !== questionToDelete));
             toast.success("Question deleted");
         } catch (error) {
             toast.error("Failed to delete question");
+        } finally {
+            setIsDeleting(false);
+            setIsConfirmOpen(false);
+            setQuestionToDelete(null);
         }
     };
 
@@ -155,7 +169,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                                 key={question.id}
                                 question={question}
                                 onEdit={() => { setEditingQuestion(question); setIsModalOpen(true); }}
-                                onDelete={() => handleDeleteQuestion(question.id)}
+                                onDelete={() => confirmDeleteQuestion(question.id)}
                             />
                         ))}
                     </div>
@@ -202,6 +216,18 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                 onClose={() => setIsSettingsModalOpen(false)}
                 quiz={quiz}
                 onSaved={refreshQuiz}
+            />
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Question"
+                description="Are you sure you want to delete this question? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDeleteQuestion}
+                onCancel={() => { setIsConfirmOpen(false); setQuestionToDelete(null); }}
+                variant="danger"
             />
         </div>
     );

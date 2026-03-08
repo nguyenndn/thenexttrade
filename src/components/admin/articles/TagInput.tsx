@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { toast } from "sonner";
 
 interface Tag {
     id: string;
@@ -94,7 +95,7 @@ export function TagInput({ value, onChange }: TagInputProps) {
                 addTag(tag);
             }
         } catch (error) {
-            alert("Failed to create tag");
+            toast.error("Failed to create tag");
         } finally {
             setIsCreating(false);
         }

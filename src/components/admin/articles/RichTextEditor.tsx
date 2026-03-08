@@ -28,10 +28,11 @@ import {
     List, ListOrdered, CheckSquare,
     Link as LinkIcon, Image as ImageIcon, Youtube as YoutubeIcon, Table as TableIcon,
     Code, Quote, Undo, Redo,
-    Palette, Columns, Rows, Trash2, CheckCircle2
+    Palette, Columns, Rows, Trash2, CheckCircle2, Zap
 } from 'lucide-react';
 
 import { MediaLibraryModal } from "@/components/admin/media/MediaLibraryModal";
+import { ShortcutsMenuModal } from "./ShortcutsMenuModal";
 import { Button } from "@/components/ui/Button";
 
 interface RichTextEditorProps {
@@ -44,6 +45,7 @@ interface RichTextEditorProps {
 
 export function RichTextEditor({ content, onChange, editable = true, className = "", editorClassName = "" }: RichTextEditorProps) {
     const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
+    const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
     const editor = useEditor({
         extensions: [
@@ -204,6 +206,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
                             <ToolbarButton onClick={() => setIsMediaModalOpen(true)} icon={ImageIcon} title="Image" />
                             <ToolbarButton onClick={addYoutube} icon={YoutubeIcon} title="Youtube" />
                             <ToolbarButton onClick={addTable} icon={TableIcon} title="Table" />
+                            <ToolbarButton onClick={() => setIsShortcutsOpen(true)} icon={Zap} title="Shortcuts" className="text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-500/10" />
                             <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} isActive={editor.isActive('blockquote')} icon={Quote} title="Quote" />
                         </div>
                     </div>
@@ -236,6 +239,15 @@ export function RichTextEditor({ content, onChange, editable = true, className =
                 isOpen={isMediaModalOpen}
                 onClose={() => setIsMediaModalOpen(false)}
                 onSelect={handleImageSelect}
+            />
+
+            <ShortcutsMenuModal
+                isOpen={isShortcutsOpen}
+                onClose={() => setIsShortcutsOpen(false)}
+                onSelect={(htmlContent: string) => {
+                    editor.chain().focus().insertContent(htmlContent).run();
+                    setIsShortcutsOpen(false);
+                }}
             />
         </div>
     );

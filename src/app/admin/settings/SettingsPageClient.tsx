@@ -24,7 +24,7 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
@@ -89,16 +89,17 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
 
 function NavButton({ icon: Icon, label, active, onClick }: any) {
     return (
-        <button
+        <Button
+            variant="ghost"
             onClick={onClick}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm ${active
-                ? "bg-primary text-white shadow-lg shadow-emerald-500/20"
+            className={`w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm h-auto ${active
+                ? "bg-primary hover:bg-primary/90 text-white shadow-lg shadow-emerald-500/20"
                 : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                 }`}
         >
             <Icon size={18} />
             {label}
-        </button>
+        </Button>
     );
 }
 

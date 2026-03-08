@@ -193,6 +193,58 @@ Clean, spacious tables with "transparent" headers.
 </span>
 ```
 
+### 2.6 Select Dropdowns (Filters & Choices)
+**NGHIÊM CẤM** sử dụng thẻ `<select>` native của HTML trên Admin Sidebar hoặc Table Filters (trừ các form quá cơ bản). Thay vào đó, BẮT BUỘC sử dụng component `DropdownMenu` với Trigger là `Button variant="outline"`.
+
+**Standard Filter Dropdown:**
+```tsx
+<DropdownMenu>
+    <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="md" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
+            Status: <span className="text-primary">{status === "ALL" ? "All" : status}</span>
+            <ChevronDown size={14} aria-hidden="true" />
+        </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="start">
+        <DropdownMenuItem onClick={() => setStatus("ALL")}>All Status</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setStatus("ACTIVE")}>Active</DropdownMenuItem>
+    </DropdownMenuContent>
+</DropdownMenu>
+```
+
+### 2.7 Custom Checkboxes
+Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duyệt khác nhau. Sử dụng `Button` ghost component với icon `CheckSquare` / `Square` của Lucide.
+
+**Standard Table / Form Checkbox:**
+```tsx
+<Button 
+    type="button"
+    variant="ghost" 
+    size="icon" 
+    onClick={() => setChecked(!checked)} 
+    className={`w-auto h-auto p-0 hover:bg-transparent transition-colors ${checked ? 'text-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+    aria-label="Toggle Selection"
+>
+    {checked ? <CheckSquare size={20} aria-hidden="true" /> : <Square size={20} aria-hidden="true" />}
+</Button>
+```
+*Note for Tables:* Cột checkbox ở Header và Row phải đồng nhất class (Ví dụ: `w-14 pl-6 pr-4 py-5`) để đảm bảo các ô tự do thẳng hàng.
+
+### 2.8 Toolbar Search Input (Height Sync)
+Để ô Input Search có chiều cao đồng nhất tuyệt đối (38px) với các nút `DropdownMenu` (Button size="md") nằm kế bên, **NGHIÊM CẤM** set border và padding trực tiếp lên thẻ `<input>`. Thay vào đó, phải dùng một thẻ `div` wrapping như sau:
+
+```tsx
+<div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
+    <Search size={18} className="text-gray-400" />
+    <input
+        type="text"
+        placeholder="Search..."
+        className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
+    />
+</div>
+```
+*Key features: Thẻ Div bọc ngoài nhận các class `px-4 py-2`, `rounded-xl`, và quản lý `focus-within:border-primary`. Thẻ input bên trong dùng `bg-transparent text-sm`.*
+
 ---
 
 ## 3. Typography
@@ -241,24 +293,33 @@ For Admin and Dashboard pages, content should be **left-aligned** and utilize th
 All admin pages must follow the "AI Studio" header style to ensure consistency:
 
 **Structure:**
-- **Container:** `flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8`
+- **Container:** `flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8`
+- **Title Block Wrapper:** `flex flex-col gap-2`
 - **Title Row:** `flex items-center gap-3`
-- **Accent Bar:** `w-1.5 h-8 bg-[#00C888] rounded-full`
+- **Accent Bar:** `w-1.5 h-8 bg-primary rounded-full`
 - **Title Text:** `text-2xl font-black text-gray-900 dark:text-white tracking-tighter`
 - **Subtitle:** `text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5`
+- **Action Button Wrapper:** `flex items-center gap-3` (for standard action buttons with `shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0`)
 
 **Example:**
 ```tsx
-<div className="flex flex-col gap-2 border-b border-gray-200 dark:border-white/10 pb-8">
-    <div className="flex items-center gap-3">
-        <div className="w-1.5 h-8 bg-[#00C888] rounded-full"></div>
-        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-            Page Title
-        </h1>
+<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+    <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+            <div className="w-1.5 h-8 bg-primary rounded-full"></div>
+            <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
+                Page Title
+            </h1>
+        </div>
+        <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+            Page description goes here.
+        </p>
     </div>
-    <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-        Page description goes here.
-    </p>
+    <div className="flex items-center gap-3">
+        <Button className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all">
+            <Plus size={18} strokeWidth={2.5} /> Add New
+        </Button>
+    </div>
 </div>
 ```
 

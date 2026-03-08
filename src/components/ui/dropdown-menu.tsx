@@ -8,9 +8,10 @@ interface DropdownMenuProps {
     children: React.ReactNode;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
+    className?: string;
 }
 
-export function DropdownMenu({ children, open, onOpenChange }: DropdownMenuProps) {
+export function DropdownMenu({ children, open, onOpenChange, className }: DropdownMenuProps) {
     const [isInternalOpen, setIsInternalOpen] = React.useState(false);
     const ref = React.useRef<HTMLDivElement>(null);
 
@@ -42,7 +43,7 @@ export function DropdownMenu({ children, open, onOpenChange }: DropdownMenuProps
 
     return (
         <DropdownMenuContext.Provider value={{ isOpen, setIsOpen }}>
-            <div ref={ref} className="relative inline-block text-left">
+            <div ref={ref} className={cn("relative text-left", className || "inline-block")}>
                 {children}
             </div>
         </DropdownMenuContext.Provider>
@@ -118,7 +119,7 @@ interface DropdownMenuItemProps extends React.ButtonHTMLAttributes<HTMLButtonEle
     inset?: boolean;
 }
 
-export function DropdownMenuItem({ className, inset, children, ...props }: DropdownMenuItemProps) {
+export function DropdownMenuItem({ className, inset, children, onClick, ...props }: DropdownMenuItemProps) {
     const { setIsOpen } = React.useContext(DropdownMenuContext);
 
     return (
@@ -129,11 +130,11 @@ export function DropdownMenuItem({ className, inset, children, ...props }: Dropd
                 inset && "pl-8",
                 className
             )}
+            {...props}
             onClick={(e) => {
-                props.onClick?.(e);
+                onClick?.(e);
                 setIsOpen(false);
             }}
-            {...props}
         >
             {children}
         </Button>

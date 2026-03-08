@@ -132,23 +132,23 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                                 variant="outline"
                                 onClick={handleDownload}
                                 disabled={isCapturing}
-                                className="h-10 px-4 rounded-[14px] font-bold text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 transition-all flex items-center gap-2"
+                                className="h-10 px-4 rounded-xl font-bold text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 transition-all flex items-center gap-2"
                             >
                                 {isCapturing ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
                                 Download
                             </Button>
-                            <div className="flex items-center justify-center gap-1.5 bg-gray-100 dark:bg-black/20 p-1.5 rounded-[18px] w-[180px]">
+                            <div className="flex items-center justify-center gap-1.5 bg-gray-100 dark:bg-black/20 p-1.5 rounded-xl w-[180px]">
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("basic")}
-                                    className={`flex-1 rounded-[14px] font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-500 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-500 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Basic
                                 </Button>
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("full")}
-                                    className={`flex-1 rounded-[14px] font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-500 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-500 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Full
                                 </Button>

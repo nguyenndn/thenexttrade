@@ -38,17 +38,17 @@ export function QuickActionsWidget() {
     ];
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
             <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Quick Actions</h3>
             <div className="grid grid-cols-1 gap-4">
                 {actions.map((action, idx) => (
                     <Link
                         key={idx}
                         href={action.href}
-                        className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border border-transparent hover:border-gray-100 dark:hover:border-white/5 group"
+                        className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border border-transparent hover:border-gray-200 dark:hover:border-white/10 group"
                     >
-                        <div className={`p-3 rounded-lg ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform`}>
-                            <action.icon size={20} />
+                        <div className={`p-3 rounded-xl ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform`}>
+                            <action.icon size={20} aria-hidden="true" />
                         </div>
                         <div>
                             <div className="font-bold text-gray-900 dark:text-white text-sm">{action.title}</div>

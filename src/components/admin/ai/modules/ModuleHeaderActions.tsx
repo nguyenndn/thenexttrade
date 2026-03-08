@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import EditModuleModal from "./EditModuleModal";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface ModuleHeaderActionsProps {
     module: {
@@ -21,13 +22,14 @@ interface ModuleHeaderActionsProps {
 export default function ModuleHeaderActions({ module }: ModuleHeaderActionsProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const router = useRouter();
 
-    const handleDelete = async () => {
-        if (!confirm("Are you sure you want to delete this module? All lessons and quizzes inside it will be permanently removed.")) {
-            return;
-        }
+    const confirmDelete = () => {
+        setIsConfirmOpen(true);
+    };
 
+    const handleDelete = async () => {
         setIsDeleting(true);
         try {
             const result = await deleteModule(module.id);
@@ -37,10 +39,12 @@ export default function ModuleHeaderActions({ module }: ModuleHeaderActionsProps
                 router.push(`/admin/ai-studio/levels/${module.levelId}`);
             } else {
                 toast.error(result.error || "Failed to delete module");
+                setIsConfirmOpen(false);
                 setIsDeleting(false);
             }
         } catch (error) {
             toast.error("An error occurred");
+            setIsConfirmOpen(false);
             setIsDeleting(false);
         }
     };
@@ -64,7 +68,7 @@ export default function ModuleHeaderActions({ module }: ModuleHeaderActionsProps
                     </Button>
                     <Button
                         variant="ghost"
-                        onClick={handleDelete}
+                        onClick={confirmDelete}
                         disabled={isDeleting}
                         className="w-full justify-start px-3 py-2 h-auto text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md flex items-center transition-colors font-normal"
                     >
@@ -82,6 +86,18 @@ export default function ModuleHeaderActions({ module }: ModuleHeaderActionsProps
                     title: module.title,
                     description: module.description
                 }}
+            />
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Module"
+                description="Are you sure you want to delete this module? All lessons and quizzes inside it will be permanently removed."
+                confirmText="Delete Module"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
             />
         </>
     );

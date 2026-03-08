@@ -213,6 +213,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                     {/* AI Generators */}
                     <div className="flex gap-2">
                         <Button
+                            type="button"
                             variant="ghost"
                             onClick={() => onAiGenerate?.('title')}
                             className="text-xs flex items-center gap-1 px-3 py-1.5 h-auto bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
@@ -220,6 +221,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                             <Wand2 size={12} /> Generate Title
                         </Button>
                         <Button
+                            type="button"
                             variant="ghost"
                             onClick={() => onAiGenerate?.('description')}
                             className="text-xs flex items-center gap-1 px-3 py-1.5 h-auto bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"

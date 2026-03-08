@@ -7,6 +7,7 @@ import { updateLevel, deleteLevel } from "@/app/admin/ai-studio/levels/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { BookOpen, FileText, Save, AlertTriangle, Trash2 } from "lucide-react";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface LevelSettingsTabProps {
     level: {
@@ -22,6 +23,7 @@ export default function LevelSettingsTab({ level }: LevelSettingsTabProps) {
     const [description, setDescription] = useState(level.description || "");
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const router = useRouter();
 
     const handleSave = async () => {
@@ -46,11 +48,11 @@ export default function LevelSettingsTab({ level }: LevelSettingsTabProps) {
         }
     };
 
-    const handleDelete = async () => {
-        if (!confirm(`Are you sure you want to delete "${level.title}"? This will permanently delete ${level.modulesCount} modules and their lessons.`)) {
-            return;
-        }
+    const confirmDelete = () => {
+        setIsConfirmOpen(true);
+    };
 
+    const handleDelete = async () => {
         setIsDeleting(true);
         try {
             const res = await deleteLevel(level.id);
@@ -59,10 +61,12 @@ export default function LevelSettingsTab({ level }: LevelSettingsTabProps) {
                 router.push("/admin/ai-studio/levels");
             } else {
                 toast.error("Failed to delete level");
+                setIsConfirmOpen(false);
                 setIsDeleting(false);
             }
         } catch (error) {
             toast.error("An error occurred");
+            setIsConfirmOpen(false);
             setIsDeleting(false);
         }
     };
@@ -129,7 +133,7 @@ export default function LevelSettingsTab({ level }: LevelSettingsTabProps) {
                 </p>
                 <div className="flex justify-end">
                     <Button
-                        onClick={handleDelete}
+                        onClick={confirmDelete}
                         isLoading={isDeleting}
                         variant="outline"
                         className="border-red-200 hover:bg-red-100 text-red-600 dark:border-red-500/20 dark:hover:bg-red-500/10 dark:text-red-400"
@@ -139,6 +143,18 @@ export default function LevelSettingsTab({ level }: LevelSettingsTabProps) {
                     </Button>
                 </div>
             </div>
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Level"
+                description={`Are you sure you want to delete "${level.title}"? This will permanently delete ${level.modulesCount} modules and their lessons.`}
+                confirmText="Delete Level"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
+            />
         </div>
     );
 }

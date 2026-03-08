@@ -5,7 +5,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2, Send, Calendar } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, Loader2, Send, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
@@ -30,6 +36,7 @@ export default function CreateBroadcastPage() {
         register,
         handleSubmit,
         watch,
+        setValue,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(formSchema),
@@ -38,6 +45,9 @@ export default function CreateBroadcastPage() {
             priority: NotificationPriority.NORMAL,
         }
     });
+
+    const typeValue = watch("type");
+    const priorityValue = watch("priority");
 
     const onSubmit = async (data: any) => {
         setIsSubmitting(true);
@@ -96,30 +106,46 @@ export default function CreateBroadcastPage() {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">Type</label>
-                            <div className="relative">
-                                <select {...register("type")} className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-gray-900 dark:text-white font-medium appearance-none">
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Type</label>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-900 dark:text-white font-medium capitalize"
+                                    >
+                                        <span>{typeValue.toLowerCase()}</span>
+                                        <ChevronDown size={14} className="opacity-50" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-[var(--radix-dropdown-menu-trigger-width)]">
                                     {Object.values(NotificationType).map((t: string) => (
-                                        <option key={t} value={t}>{t}</option>
+                                        <DropdownMenuItem key={t} onClick={() => setValue("type", t as any)} className="capitalize">
+                                            {t.toLowerCase()}
+                                        </DropdownMenuItem>
                                     ))}
-                                </select>
-                                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </div>
-                            </div>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">Priority</label>
-                            <div className="relative">
-                                <select {...register("priority")} className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-gray-900 dark:text-white font-medium appearance-none">
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Priority</label>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-900 dark:text-white font-medium capitalize"
+                                    >
+                                        <span>{priorityValue.toLowerCase()}</span>
+                                        <ChevronDown size={14} className="opacity-50" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-[var(--radix-dropdown-menu-trigger-width)]">
                                     {Object.values(NotificationPriority).map((p: string) => (
-                                        <option key={p} value={p}>{p}</option>
+                                        <DropdownMenuItem key={p} onClick={() => setValue("priority", p as any)} className="capitalize">
+                                            {p.toLowerCase()}
+                                        </DropdownMenuItem>
                                     ))}
-                                </select>
-                                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </div>
-                            </div>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
 

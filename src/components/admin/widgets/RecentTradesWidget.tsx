@@ -17,9 +17,9 @@ interface Trade {
 
 export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
     return (
-        <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-blue-500" />
+                <Clock className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Recent Trading Activity
             </h3>
 
@@ -31,7 +31,7 @@ export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
                         <div key={trade.id} className="flex items-center justify-between group p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className={cn(
-                                    "w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xs border border-white/10 shadow-sm",
+                                    "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs border border-white/10 shadow-sm",
                                     trade.type === "BUY"
                                         ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
                                         : "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"

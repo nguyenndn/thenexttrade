@@ -29,7 +29,9 @@ export default async function EditArticlePage(props: { params: Promise<{ id: str
         metaTitle: article.metaTitle || "",
         metaDescription: article.metaDescription || "",
         focusKeyword: article.focusKeyword || "",
-        publishedAt: article.publishedAt ? article.publishedAt.toISOString() : ""
+        publishedAt: article.publishedAt ? article.publishedAt.toISOString() : "",
+        createdAt: article.createdAt ? article.createdAt.toISOString() : undefined,
+        updatedAt: article.updatedAt ? article.updatedAt.toISOString() : undefined
     };
 
     return (

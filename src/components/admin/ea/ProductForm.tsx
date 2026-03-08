@@ -11,7 +11,13 @@ import { uploadEAFile } from "@/app/admin/ea/products/actions";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Card } from "@/components/ui/Card";
-import { ArrowLeft, Save, Upload, Info, FileCode, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Save, Upload, Info, FileCode, Image as ImageIcon, ChevronDown } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { EAType, PlatformType } from "@prisma/client";
 
@@ -52,6 +58,9 @@ export function ProductForm({ initialData }: ProductFormProps) {
             isFree: initialData?.isFree ?? false,
         },
     });
+
+    const typeValue = form.watch("type");
+    const isFreeValue = form.watch("isFree");
 
     // Helper to upload files
     const handleFileUploads = async (productId: string) => {
@@ -213,29 +222,42 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Type</label>
-                            <select
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
-                                {...form.register("type")}
-                            >
-                                <option value="AUTO_TRADE">Auto Trade (Robot)</option>
-                                <option value="MANUAL_ASSIST">Manual Assist (Tool)</option>
-                                <option value="INDICATOR">Indicator</option>
-                            </select>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl outline-none hover:bg-gray-100 dark:hover:bg-white/10 transition-all justify-between text-left font-normal shadow-none h-auto"
+                                    >
+                                        <span>{typeValue === EAType.AUTO_TRADE ? "Auto Trade (Robot)" : typeValue === EAType.MANUAL_ASSIST ? "Manual Assist (Tool)" : "Indicator"}</span>
+                                        <ChevronDown size={14} className="opacity-50" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                                    <DropdownMenuItem onClick={() => form.setValue("type", EAType.AUTO_TRADE, { shouldValidate: true })}>Auto Trade (Robot)</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => form.setValue("type", EAType.MANUAL_ASSIST, { shouldValidate: true })}>Manual Assist (Tool)</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => form.setValue("type", EAType.INDICATOR, { shouldValidate: true })}>Indicator</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
 
                         {/* Access Type: Replaces Platform */}
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Access Tier</label>
-                            <select
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
-                                value={form.watch("isFree") ? "FREE" : "VERIFY"}
-                                onChange={(e) => {
-                                    form.setValue("isFree", e.target.value === "FREE", { shouldValidate: true });
-                                }}
-                            >
-                                <option value="VERIFY">Require Verification (Standard)</option>
-                                <option value="FREE">Free Download</option>
-                            </select>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl outline-none hover:bg-gray-100 dark:hover:bg-white/10 transition-all justify-between text-left font-normal shadow-none h-auto"
+                                    >
+                                        <span>{isFreeValue ? "Free Download" : "Require Verification (Standard)"}</span>
+                                        <ChevronDown size={14} className="opacity-50" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                                    <DropdownMenuItem onClick={() => form.setValue("isFree", false, { shouldValidate: true })}>Require Verification (Standard)</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => form.setValue("isFree", true, { shouldValidate: true })}>Free Download</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
 

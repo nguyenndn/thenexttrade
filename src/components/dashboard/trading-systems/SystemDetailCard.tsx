@@ -170,7 +170,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                     onClick={() => setIsGuideModalOpen(false)}
                 >
                     <div 
-                        className="bg-white dark:bg-[#0B0E14] w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-gray-200 dark:border-white/10 relative"
+                        className="bg-white dark:bg-[#0B0E14] w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-gray-200 dark:border-white/10 relative"
                         onClick={e => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { MessageSquare, Search, Trash2, ExternalLink, MoreVertical, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface Comment {
     id: string;
@@ -32,6 +33,8 @@ export default function AdminCommentsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [isDeleting, setIsDeleting] = useState<string | null>(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [commentToDelete, setCommentToDelete] = useState<Comment | null>(null);
 
     const fetchComments = async () => {
         setIsLoading(true);
@@ -55,18 +58,24 @@ export default function AdminCommentsPage() {
         fetchComments();
     }, []);
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this comment?")) return;
+    const confirmDelete = (comment: Comment) => {
+        setCommentToDelete(comment);
+        setIsConfirmOpen(true);
+    };
 
-        setIsDeleting(id);
+    const handleDelete = async () => {
+        if (!commentToDelete) return;
+
+        setIsDeleting(commentToDelete.id);
+        setIsConfirmOpen(false);
         try {
-            const res = await fetch(`/api/comments/${id}`, {
+            const res = await fetch(`/api/comments/${commentToDelete.id}`, {
                 method: "DELETE" // Reusing the existing delete API which checks for Admin role
             });
 
             if (res.ok) {
                 toast.success("Comment deleted");
-                setComments(comments.filter(c => c.id !== id));
+                setComments(comments.filter(c => c.id !== commentToDelete.id));
             } else {
                 const error = await res.json();
                 toast.error(error.error || "Failed to delete");
@@ -76,20 +85,23 @@ export default function AdminCommentsPage() {
             toast.error("Error deleting comment");
         } finally {
             setIsDeleting(null);
+            setCommentToDelete(null);
         }
     };
 
     // Filter comments locally for now (can move to API if list gets huge)
-    const filteredComments = comments.filter(c =>
-        c.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.article?.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredComments = useMemo(() => {
+        return comments.filter(c =>
+            c.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            c.user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            c.article?.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [comments, searchQuery]);
 
     return (
-        <div className="space-y-8 pb-10">
+        <div className="space-y-4 pb-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full"></div>
@@ -116,32 +128,58 @@ export default function AdminCommentsPage() {
             </div>
 
             {/* List */}
-            {isLoading ? (
-                <div className="flex justify-center py-20">
-                    <Loader2 className="animate-spin text-primary" size={32} />
-                </div>
-            ) : filteredComments.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-[#0B0E14] rounded-xl border border-dashed border-gray-200 dark:border-white/10">
-                    <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
-                        <MessageSquare size={32} />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No comments found</h3>
-                    <p className="text-gray-500 dark:text-gray-400">Try adjusting your search or check back later.</p>
-                </div>
-            ) : (
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
-                                    <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Author</th>
-                                    <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider w-1/2">Comment</th>
-                                    <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Context</th>
-                                    <th className="text-right py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead>
+                            <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
+                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Author</th>
+                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider w-1/2">Comment</th>
+                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Context</th>
+                                <th className="text-right py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                            {isLoading ? (
+                                Array.from({ length: 5 }).map((_, i) => (
+                                    <tr key={i} className="animate-pulse">
+                                        <td className="py-4 px-6">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-white/10" />
+                                                <div className="space-y-2">
+                                                    <div className="h-4 w-24 bg-gray-200 dark:bg-white/10 rounded-md" />
+                                                    <div className="h-3 w-32 bg-gray-100 dark:bg-white/5 rounded-md" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <div className="space-y-2">
+                                                <div className="h-4 w-full bg-gray-100 dark:bg-white/5 rounded-md" />
+                                                <div className="h-4 w-3/4 bg-gray-100 dark:bg-white/5 rounded-md" />
+                                            </div>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <div className="h-4 w-24 bg-gray-200 dark:bg-white/10 rounded-md" />
+                                        </td>
+                                        <td className="py-4 px-6 text-right">
+                                            <div className="h-8 w-8 ml-auto bg-gray-200 dark:bg-white/10 rounded-lg" />
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : filteredComments.length === 0 ? (
+                                <tr>
+                                    <td colSpan={4} className="py-20 text-center">
+                                        <div className="flex flex-col items-center justify-center text-gray-500">
+                                            <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                                                <MessageSquare size={32} />
+                                            </div>
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No comments found</h3>
+                                            <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">Try adjusting your search or check back later.</p>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                                {filteredComments.map((comment) => (
+                            ) : (
+                                filteredComments.map((comment) => (
                                     <tr
                                         key={comment.id}
                                         className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors group"
@@ -196,23 +234,39 @@ export default function AdminCommentsPage() {
                                         </td>
                                         <td className="py-4 px-6 text-right">
                                             <Button
-                                                onClick={() => handleDelete(comment.id)}
+                                                onClick={() => confirmDelete(comment)}
                                                 disabled={isDeleting === comment.id}
                                                 isLoading={isDeleting === comment.id}
                                                 variant="ghost"
                                                 className="hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400"
                                                 title="Delete Comment"
+                                                aria-label={`Delete comment from ${comment.user.name || "Unknown"}`}
                                             >
-                                                {isDeleting !== comment.id && <Trash2 size={18} />}
+                                                {isDeleting !== comment.id && <Trash2 size={18} aria-hidden="true" />}
                                             </Button>
                                         </td>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
                 </div>
-            )}
+            </div>
+
+            {/* Delete Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Comment"
+                description={`Are you sure you want to delete the comment by ${commentToDelete?.user.name || "this user"}? This action cannot be undone.`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={handleDelete}
+                onCancel={() => {
+                    setIsConfirmOpen(false);
+                    setCommentToDelete(null);
+                }}
+                variant="danger"
+            />
         </div>
     );
 }

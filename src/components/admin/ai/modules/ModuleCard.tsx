@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import EditModuleModal from "./EditModuleModal";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface ModuleCardProps {
     module: {
@@ -25,13 +26,14 @@ interface ModuleCardProps {
 export default function ModuleCard({ module, levelId }: ModuleCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const router = useRouter();
 
-    const handleDelete = async () => {
-        if (!confirm("Are you sure you want to delete this module? All lessons and quizzes inside it will be permanently removed.")) {
-            return;
-        }
+    const confirmDelete = () => {
+        setIsConfirmOpen(true);
+    };
 
+    const handleDelete = async () => {
         setIsDeleting(true);
         try {
             const result = await deleteModule(module.id);
@@ -40,10 +42,12 @@ export default function ModuleCard({ module, levelId }: ModuleCardProps) {
                 router.refresh();
             } else {
                 toast.error(result.error || "Failed to delete module");
+                setIsConfirmOpen(false);
                 setIsDeleting(false);
             }
         } catch (error) {
             toast.error("An error occurred");
+            setIsConfirmOpen(false);
             setIsDeleting(false);
         }
     };
@@ -74,7 +78,7 @@ export default function ModuleCard({ module, levelId }: ModuleCardProps) {
                                 </Button>
                                 <Button
                                     variant="ghost"
-                                    onClick={handleDelete}
+                                    onClick={confirmDelete}
                                     disabled={isDeleting}
                                     className="w-full flex justify-start items-center gap-2 px-3 py-2 h-auto text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors font-normal"
                                 >
@@ -115,6 +119,18 @@ export default function ModuleCard({ module, levelId }: ModuleCardProps) {
                     title: module.title,
                     description: module.description
                 }}
+            />
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Module"
+                description="Are you sure you want to delete this module? All lessons and quizzes inside it will be permanently removed."
+                confirmText="Delete Module"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
             />
         </>
     );

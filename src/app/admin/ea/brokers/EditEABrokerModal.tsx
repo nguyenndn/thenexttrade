@@ -10,6 +10,8 @@ import {
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { FileUpload } from "@/components/ui/FileUpload";
+import { Switch } from "@/components/ui/switch";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { updateEABroker, deleteEABroker } from "./actions";
 
 interface EABrokerData {
@@ -33,6 +35,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
     const [open, setOpen] = useState(false);
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
     const [name, setName] = useState(broker.name);
     const [logo, setLogo] = useState(broker.logo);
@@ -74,21 +77,26 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
         }
     };
 
-    const handleDelete = async () => {
-        if (!confirm(`Are you sure you want to delete "${broker.name}"? This cannot be undone.`)) return;
+    const confirmDelete = () => {
+        setIsConfirmOpen(true);
+    };
 
+    const handleDelete = async () => {
         setDeleting(true);
         try {
             const result = await deleteEABroker(broker.id);
             if (result.success) {
                 toast.success("Broker deleted successfully");
+                setIsConfirmOpen(false);
                 setOpen(false);
                 router.refresh();
             } else {
                 toast.error(result.error || "Failed to delete");
+                setIsConfirmOpen(false);
             }
         } catch {
             toast.error("An unexpected error occurred");
+            setIsConfirmOpen(false);
         } finally {
             setDeleting(false);
         }
@@ -109,13 +117,15 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
     return (
         <>
             {/* Trigger: Edit icon button */}
-            <button
+            <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleOpen}
-                className="p-2 hover:bg-blue-500/10 text-blue-500 rounded-lg transition-colors"
+                className="w-auto h-auto p-2 hover:bg-blue-500/10 text-blue-500 hover:text-blue-600 rounded-lg transition-colors"
                 aria-label={`Edit ${broker.name}`}
             >
                 <Edit size={16} />
-            </button>
+            </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border dark:border-white/5 max-w-md">
@@ -185,13 +195,11 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                                     {isActive ? "Active" : "Inactive"}
                                 </span>
                             </div>
-                            <button
-                                type="button"
-                                onClick={() => setIsActive(!isActive)}
-                                className={`relative w-11 h-6 rounded-full transition-colors ${isActive ? "bg-primary" : "bg-gray-300 dark:bg-gray-600"}`}
-                            >
-                                <span className={`block w-5 h-5 bg-white rounded-full shadow transition-transform ${isActive ? "translate-x-[22px]" : "translate-x-[2px]"}`} />
-                            </button>
+                            <Switch
+                                checked={isActive}
+                                onCheckedChange={setIsActive}
+                                aria-label="Toggle Active Status"
+                            />
                         </div>
                     </div>
 
@@ -200,9 +208,10 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                         <Button
                             type="button"
                             variant="ghost"
-                            onClick={handleDelete}
+                            onClick={confirmDelete}
                             disabled={saving || deleting}
                             className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-600"
+                            aria-label="Delete Broker"
                         >
                             {deleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                         </Button>
@@ -230,6 +239,18 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                     </div>
                 </DialogContent>
             </Dialog>
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Broker"
+                description={`Are you sure you want to delete "${broker.name}"? This cannot be undone.`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                isLoading={deleting}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
+            />
         </>
     );
 }

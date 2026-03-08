@@ -10,6 +10,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { BrokerLogo } from "@/components/ui/BrokerLogo";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 // Wait, checking popover.tsx in comp/ui from earlier list_dir.
 // I don't see DropdownMenu.tsx. popover.tsx exists.
@@ -30,6 +31,11 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
     const [selectedLicense, setSelectedLicense] = useState<EALicenseWithUser | null>(null);
     const [modalType, setModalType] = useState<"APPROVE" | "REJECT" | null>(null);
 
+    // Confirm Dialog State
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [licenseToDelete, setLicenseToDelete] = useState<EALicenseWithUser | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
     const handleApprove = (license: EALicenseWithUser) => {
         setSelectedLicense(license);
         setModalType("APPROVE");
@@ -40,18 +46,30 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
         setModalType("REJECT");
     };
 
-    const handleDelete = async (license: EALicenseWithUser) => {
-        if (!confirm(`Are you sure you want to delete account ${license.accountNumber}? This action cannot be undone.`)) return;
+    const confirmDelete = (license: EALicenseWithUser) => {
+        setLicenseToDelete(license);
+        setIsConfirmOpen(true);
+    };
 
+    const handleDelete = async () => {
+        if (!licenseToDelete) return;
+        
+        setIsDeleting(true);
         try {
-            const result = await deleteLicense(license.id);
+            const result = await deleteLicense(licenseToDelete.id);
             if (result.success) {
                 toast.success("License deleted successfully");
+                setIsConfirmOpen(false);
+                setLicenseToDelete(null);
             } else {
                 toast.error(result.error);
+                setIsConfirmOpen(false);
             }
         } catch (error) {
             toast.error("Failed to delete license");
+            setIsConfirmOpen(false);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -114,7 +132,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                                                 </>
                                             )}
 
-                                            <Button size="sm" variant="ghost" onClick={() => handleDelete(license)} className="text-gray-400 hover:text-red-500 hover:bg-red-50 h-8 w-8 p-0">
+                                            <Button size="sm" variant="ghost" onClick={() => confirmDelete(license)} className="text-gray-400 hover:text-red-500 hover:bg-red-50 h-8 w-8 p-0">
                                                 <Trash2 size={16} />
                                             </Button>
                                         </div>
@@ -135,6 +153,21 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
 
             <ApproveModal license={selectedLicense} isOpen={modalType === "APPROVE"} onClose={closeModal} />
             <RejectModal license={selectedLicense} isOpen={modalType === "REJECT"} onClose={closeModal} />
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete License"
+                description={`Are you sure you want to delete account ${licenseToDelete?.accountNumber}? This action cannot be undone.`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                isLoading={isDeleting}
+                onConfirm={handleDelete}
+                onCancel={() => {
+                    setIsConfirmOpen(false);
+                    setLicenseToDelete(null);
+                }}
+                variant="danger"
+            />
         </>
     );
 }

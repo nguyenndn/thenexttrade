@@ -9,6 +9,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { SortableItem } from "@/components/ui/SortableItem";
 import { Button } from "@/components/ui/Button";
+import { toast } from "sonner";
 
 // Unique ID generator for drag items
 const getUniqueId = () => `id-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -86,7 +87,7 @@ export default function CreateQuizPage() {
     };
 
     const handleSubmit = async () => {
-        if (!title) return alert("Title required");
+        if (!title) return toast.warning("Title required");
 
         setIsSubmitting(true);
         try {
@@ -111,7 +112,7 @@ export default function CreateQuizPage() {
 
             router.push("/admin/quizzes");
         } catch (e: any) {
-            alert("Error creating quiz: " + e.message);
+            toast.error("Error creating quiz: " + e.message);
         } finally {
             setIsSubmitting(false);
         }
@@ -186,12 +187,15 @@ export default function CreateQuizPage() {
                                     <div className="space-y-3 pl-10">
                                         {q.options.map((opt, oIndex) => (
                                             <div key={oIndex} className="flex items-center gap-3">
-                                                <button
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    aria-label={opt.isCorrect ? "Marked as correct" : "Mark as correct"}
                                                     onClick={() => toggleCorrect(qIndex, oIndex)}
-                                                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${opt.isCorrect ? 'border-primary bg-primary text-white' : 'border-gray-200 dark:border-white/20'}`}
+                                                    className={`w-6 h-6 p-0 rounded-full border-2 flex items-center justify-center transition-colors hover:bg-transparent ${opt.isCorrect ? 'border-primary bg-primary text-white hover:text-white hover:bg-primary hover:border-primary' : 'border-gray-200 dark:border-white/20'}`}
                                                 >
                                                     {opt.isCorrect && <CheckCircle size={14} />}
-                                                </button>
+                                                </Button>
                                                 <input
                                                     className="flex-1 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-lg text-sm border-transparent focus:outline-none focus:border-cyan-500 border"
                                                     placeholder={`Option ${oIndex + 1}`}

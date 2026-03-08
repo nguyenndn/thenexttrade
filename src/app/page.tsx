@@ -149,7 +149,7 @@ async function HomeFeed() {
       <FadeIn delay={0.1}>
       {/* Hero Section */}
       <div className="pt-24 pb-8 dark:bg-[#0B0E14]">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {/* Big Card - Carousel */}
@@ -245,7 +245,7 @@ async function HomeFeed() {
       <FadeIn delay={0.1} direction="up">
       {/* Popular Guides Section */}
       <section className="py-16 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             title="Popular Guides"
             align="left"

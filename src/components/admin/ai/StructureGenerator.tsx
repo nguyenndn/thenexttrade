@@ -6,10 +6,16 @@ import { useState } from "react";
 import { PremiumCard } from "@/components/ui/PremiumCard";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
-import { BookOpen, Users, Hash } from "lucide-react";
+import { BookOpen, Users, Hash, ChevronDown } from "lucide-react";
 import PreviewPanel from "./PreviewPanel";
 import { StructureGenerationResponse } from "@/lib/ai/types";
 import { toast } from "sonner"; // Assuming sonner is installed from package.json
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export default function StructureGenerator() {
     const [formData, setFormData] = useState({
@@ -125,18 +131,22 @@ export default function StructureGenerator() {
                         <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Target Audience</label>
                         <div className="relative">
                             <Users size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                            <select
-                                className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2.5 focus:border-primary outline-none appearance-none transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
-                                value={formData.targetAudience}
-                                onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value as any })}
-                            >
-                                <option value="beginner">Beginner</option>
-                                <option value="intermediate">Intermediate</option>
-                                <option value="advanced">Advanced</option>
-                            </select>
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none border-l border-gray-300 dark:border-gray-700 pl-3">
-                                <span className="text-gray-400 text-[10px]">▼</span>
-                            </div>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white font-medium text-sm border border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2.5 h-auto justify-between hover:bg-gray-100 dark:hover:bg-white/10 shadow-none border-solid"
+                                    >
+                                        <span className="capitalize">{formData.targetAudience}</span>
+                                        <ChevronDown size={14} className="opacity-50" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-full mt-1">
+                                    <DropdownMenuItem onClick={() => setFormData({ ...formData, targetAudience: "beginner" })}>Beginner</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setFormData({ ...formData, targetAudience: "intermediate" })}>Intermediate</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setFormData({ ...formData, targetAudience: "advanced" })}>Advanced</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
 

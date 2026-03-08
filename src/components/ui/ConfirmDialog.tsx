@@ -78,7 +78,7 @@ export function ConfirmDialog({
             {/* Dialog Box */}
             <div 
                 className={cn(
-                    "relative w-full max-w-md bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10",
+                    "relative w-full max-w-md bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10",
                     isOpen ? "animate-in zoom-in-95 slide-in-from-bottom-4 duration-300" : "animate-out zoom-out-95 slide-out-to-bottom-4 duration-200"
                 )}
                 role="alertdialog"

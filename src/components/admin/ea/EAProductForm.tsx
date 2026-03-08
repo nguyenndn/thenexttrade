@@ -11,6 +11,13 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
+import {
     createEAProductSchema,
     updateEAProductSchema
 } from "@/lib/validations/ea-license";
@@ -48,6 +55,8 @@ export function EAProductForm({ product }: EAProductFormProps) {
     });
 
     const name = watch("name");
+    const typeValue = watch("type");
+    const platformValue = watch("platform");
 
     // Auto-slugify
     useEffect(() => {
@@ -113,42 +122,48 @@ export function EAProductForm({ product }: EAProductFormProps) {
 
                 {/* Type */}
                 <div className="space-y-2">
-                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                         Type
                     </label>
-                    <div className="relative">
-                        <select
-                            {...register("type")}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-gray-900 dark:text-white font-medium appearance-none"
-                        >
-                            <option value={EAType.AUTO_TRADE}>Auto Trade</option>
-                            <option value={EAType.MANUAL_ASSIST}>Manual Assist</option>
-                            <option value={EAType.INDICATOR}>Indicator</option>
-                        </select>
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-900 dark:text-white font-medium"
+                            >
+                                <span>{typeValue === EAType.AUTO_TRADE ? "Auto Trade" : typeValue === EAType.MANUAL_ASSIST ? "Manual Assist" : "Indicator"}</span>
+                                <ChevronDown size={14} className="opacity-50" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-full min-w-[var(--radix-dropdown-menu-trigger-width)]">
+                            <DropdownMenuItem onClick={() => setValue("type", EAType.AUTO_TRADE)}>Auto Trade</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setValue("type", EAType.MANUAL_ASSIST)}>Manual Assist</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setValue("type", EAType.INDICATOR)}>Indicator</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
 
                 {/* Platform */}
                 <div className="space-y-2">
-                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                         Platform
                     </label>
-                    <div className="relative">
-                        <select
-                            {...register("platform")}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-gray-900 dark:text-white font-medium appearance-none"
-                        >
-                            <option value={PlatformType.BOTH}>Both (MT4 & MT5)</option>
-                            <option value={PlatformType.MT4}>MT4 Only</option>
-                            <option value={PlatformType.MT5}>MT5 Only</option>
-                        </select>
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-900 dark:text-white font-medium"
+                            >
+                                <span>{platformValue === PlatformType.BOTH ? "Both (MT4 & MT5)" : platformValue === PlatformType.MT4 ? "MT4 Only" : "MT5 Only"}</span>
+                                <ChevronDown size={14} className="opacity-50" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-full min-w-[var(--radix-dropdown-menu-trigger-width)]">
+                            <DropdownMenuItem onClick={() => setValue("platform", PlatformType.BOTH)}>Both (MT4 & MT5)</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setValue("platform", PlatformType.MT4)}>MT4 Only</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setValue("platform", PlatformType.MT5)}>MT5 Only</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
 

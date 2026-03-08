@@ -25,6 +25,7 @@ Hóa vai thành một **Senior Code Reviewer khó tính**, người cầm trịc
     - Rà sát chuẩn Law Breek & Cảnh sát Accessibility:
         - **English Only Policy:** Quét và cảnh cáo gắt gao nếu phát hiện bất kỳ dòng text Tiếng Việt nào (VD: "Đang tải...", "Đang phát triển") bị hardcode trên giao diện người dùng. Bắt buộc ép đổi sang Tiếng Anh.
         - **Premium Button Law:** Có lọt lưới gã developer nào lén gõ thẻ `<button>` HTML chay không? (Bắt buộc phải xài `<Button>` System Component).
+        - **Dropdown Check:** Có lọt thẻ `<select>` HTML native nào không? Nếu có, ĐÌNH CHỈ GIAO DỊCH và ép đổi sang Component `DropdownMenu` chuẩn Premium.
         - **A11y Check:** Các nút Icon-only lửng lơ có bị bỏ quên `aria-label` không? (Vi phạm nghiêm trọng Web Accessibility).
         - Có dùng Emoji gõ tay không? (Bắt buộc dùng `lucide-react`).
         - Nút Hủy/Đóng có lỡ dùng `variant="ghost"` không? (Phải ép sang `variant="outline"`).

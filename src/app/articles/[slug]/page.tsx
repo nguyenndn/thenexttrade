@@ -201,8 +201,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <div className="relative w-full mt-24">
 
                 {article.thumbnail && (
-                    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden shadow-lg bg-gray-200 dark:bg-gray-800">
+                    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="relative w-full aspect-[21/9] rounded-xl overflow-hidden shadow-lg bg-gray-200 dark:bg-gray-800">
                         <Image
                             src={article.thumbnail}
                             alt={article.title}
@@ -225,7 +225,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </div>
 
             {/* ===== MAIN CONTENT AREA ===== */}
-            <div className={`max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 ${article.thumbnail ? 'mt-8' : 'pt-28 sm:pt-32'}`}>
+            <div className={`max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 ${article.thumbnail ? 'mt-8' : 'pt-28 sm:pt-32'}`}>
                 
                 {/* ===== BREADCRUMB BAR ===== */}
                 <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-xl px-5 py-3 ${article.thumbnail ? 'mb-6' : 'mb-8'} shadow-sm border border-[#00C888]/20`}>
@@ -240,10 +240,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     
                     <div className="flex items-center gap-2 shrink-0 bg-white/15 dark:bg-white/10 rounded-lg px-3 py-1.5">
                         <span className="text-sm text-white font-semibold">Share:</span>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors" title="Share via Social">
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors" title="Share via Social" aria-label="Share via Social">
                             <Share2 size={14} />
                         </button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors" title="Copy Link">
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors" title="Copy Link" aria-label="Copy Link">
                             <LinkIcon size={14} />
                         </button>
                     </div>

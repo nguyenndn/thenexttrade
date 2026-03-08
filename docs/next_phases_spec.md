@@ -13,7 +13,7 @@ Tài liệu này đóng vai trò là **Specification (Đặc tả chi tiết)** 
 Đây là bước dọn dẹp và đồng bộ tiên quyết. Toàn bộ Admin phải mang "Hơi thở Breek Premium" y hệt ngoại cảnh User Dashboard.
 
 **A. Chuẩn hoá Layout & Shell (Khung viền):**
-- **Admin Layout (`src/app/admin/layout.tsx`):** Bo lại khung `max-w-[1400px]`, canh lề `px-4 sm:px-6 lg:px-8` chuẩn như bên User.
+- **Admin Layout (`src/app/admin/layout.tsx`):** Bo lại khung ``, canh lề `px-4 sm:px-6 lg:px-8` chuẩn như bên User.
 - **Menu Sidebar (Left-Nav):**
   - Mở rộng vùng click (Padding to hơn), thay đổi hiệu ứng Hover (Highlight bằng `bg-primary/10 text-primary` thay vì đổi màu tuỳ tiện).
   - Phân tách Group rõ ràng (Dashboard | Core Management | Content | Settings).

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Trash2, Clock, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface LicenseCardProps {
     license: any;
@@ -17,13 +18,16 @@ interface LicenseCardProps {
 export function LicenseCard({ license }: LicenseCardProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+    const isPending = license.status === "PENDING";
+    const action = isPending ? "Cancel Request" : "Remove Account";
+
+    const confirmDelete = () => {
+        setIsConfirmOpen(true);
+    };
 
     const handleDelete = async () => {
-        const isPending = license.status === "PENDING";
-        const action = isPending ? "Cancel Request" : "Remove Account";
-
-        if (!confirm(`Are you sure you want to ${action.toLowerCase()}?`)) return;
-
         setIsLoading(true);
         try {
             const func = isPending ? cancelAccountRequest : removeAccount;
@@ -39,6 +43,7 @@ export function LicenseCard({ license }: LicenseCardProps) {
             toast.error("Something went wrong");
         } finally {
             setIsLoading(false);
+            setIsConfirmOpen(false);
         }
     };
 
@@ -97,7 +102,7 @@ export function LicenseCard({ license }: LicenseCardProps) {
 
                 <div className="flex justify-end pt-2">
                     <Button
-                        onClick={handleDelete}
+                        onClick={confirmDelete}
                         disabled={isLoading}
                         variant="outline"
                         size="sm"
@@ -110,6 +115,18 @@ export function LicenseCard({ license }: LicenseCardProps) {
                     </Button>
                 </div>
             </div>
+
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title={action}
+                description={`Are you sure you want to ${action.toLowerCase()}? This action cannot be undone.`}
+                confirmText={isPending ? "Cancel Request" : "Remove"}
+                cancelText="Keep"
+                isLoading={isLoading}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+                variant="danger"
+            />
         </Card >
     );
 }
