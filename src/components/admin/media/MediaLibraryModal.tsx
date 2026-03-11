@@ -88,8 +88,8 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                 setMediaList([newMedia, ...mediaList]);
                 setSelectedMedia(newMedia);
             }
-        } catch (error) {
-            toast.error("Upload failed");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Upload failed"));
         } finally {
             setIsUploading(false);
         }
@@ -109,8 +109,8 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
             setMediaList(prev => prev.filter(m => m.id !== selectedMedia.id));
             setSelectedMedia(null);
             setIsConfirmOpen(false);
-        } catch (error) {
-            toast.error("Delete failed");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Delete failed"));
             setIsConfirmOpen(false);
         } finally {
             setIsDeleting(false);

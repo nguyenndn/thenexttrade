@@ -51,8 +51,8 @@ export default function EditModuleModal({ isOpen, onClose, module }: EditModuleM
             } else {
                 toast.error(result.error || "Failed to update module");
             }
-        } catch (error) {
-            toast.error("An unexpected error occurred");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An unexpected error occurred"));
             console.error(error);
         } finally {
             setIsSaving(false);

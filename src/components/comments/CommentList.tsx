@@ -86,8 +86,8 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
 
             toast.success("Comment deleted");
             onRefresh();
-        } catch (error) {
-            toast.error("Could not delete comment");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Could not delete comment"));
         } finally {
             setIsDeleting(false);
             setIsConfirmOpen(false);

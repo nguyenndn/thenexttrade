@@ -11,20 +11,15 @@ export const metadata: Metadata = {
 };
 
 export default async function AllAccountsPage() {
-    const licenses = await prisma.eALicense.findMany({
-        include: {
-            user: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    image: true,
-                    createdAt: true,
-                },
-            },
-        },
-        orderBy: { createdAt: "desc" },
-    });
+    let licenses: any[] = [];
+    try {
+        licenses = await prisma.eALicense.findMany({
+            include: { user: { select: { id: true, name: true, email: true, image: true, createdAt: true } } },
+            orderBy: { createdAt: "desc" },
+        });
+    } catch (error) {
+        console.error("Failed to fetch all EA accounts:", error);
+    }
 
     return (
         <div className="space-y-6">

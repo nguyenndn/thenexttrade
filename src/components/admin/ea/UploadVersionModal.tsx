@@ -63,14 +63,20 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
                 const formData = new FormData();
                 formData.append("file", fileMT4);
                 const upRes = await uploadEAFile(product.id, "MT4", formData);
-                if (!upRes.success) toast.error("MT4 upload failed: " + upRes.error);
+                if (!upRes.success) {
+                    toast.error(upRes.error || "MT4 upload failed");
+                    return;
+                }
             }
 
             if (fileMT5) {
                 const formData = new FormData();
                 formData.append("file", fileMT5);
                 const upRes = await uploadEAFile(product.id, "MT5", formData);
-                if (!upRes.success) toast.error("MT5 upload failed: " + upRes.error);
+                if (!upRes.success) {
+                    toast.error(upRes.error || "MT5 upload failed");
+                    return;
+                }
             }
 
             toast.success("Version updated successfully");

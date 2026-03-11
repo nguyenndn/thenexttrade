@@ -62,9 +62,9 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
             document.body.removeChild(link);
             
             toast.success("Trade image saved successfully!");
-        } catch (error) {
+        } catch (error: any) {
             console.error("Screenshot error:", error);
-            toast.error("Failed to capture image");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to capture image"));
         } finally {
             setIsCapturing(false);
         }

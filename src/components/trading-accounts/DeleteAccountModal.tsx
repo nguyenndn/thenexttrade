@@ -25,8 +25,8 @@ export function DeleteAccountModal({ isOpen, onClose, accountId, onSuccess }: De
             toast.success("Account deleted");
             onSuccess();
             onClose();
-        } catch (e) {
-            toast.error("Failed to delete account");
+        } catch (e: any) {
+            toast.error(e instanceof Error ? e.message : (e?.message || "Failed to delete account"));
         } finally {
             setIsDeleting(false);
         }

@@ -12,21 +12,16 @@ export const metadata: Metadata = {
 };
 
 export default async function PendingAccountsPage() {
-    const licenses = await prisma.eALicense.findMany({
-        where: { status: AccountStatus.PENDING },
-        include: {
-            user: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    image: true,
-                    createdAt: true,
-                },
-            },
-        },
-        orderBy: { createdAt: "asc" }, // Oldest first for queue
-    });
+    let licenses: any[] = [];
+    try {
+        licenses = await prisma.eALicense.findMany({
+            where: { status: AccountStatus.PENDING },
+            include: { user: { select: { id: true, name: true, email: true, image: true, createdAt: true } } },
+            orderBy: { createdAt: "asc" }, // Oldest first for queue
+        });
+    } catch (error) {
+        console.error("Failed to fetch pending EA requests:", error);
+    }
 
     return (
         <div className="space-y-6">

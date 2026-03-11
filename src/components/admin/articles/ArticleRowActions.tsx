@@ -37,9 +37,9 @@ export function ArticleRowActions({ article }: { article: { id: string, slug: st
                 toast.error("Failed to delete article");
                 setIsConfirmOpen(false);
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error("Error deleting article");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Error deleting article"));
             setIsConfirmOpen(false);
         } finally {
             setIsDeleting(false);
@@ -50,7 +50,7 @@ export function ArticleRowActions({ article }: { article: { id: string, slug: st
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    <Button variant="ghost" size="icon" aria-label="Article Actions" className="h-8 w-8 p-0 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <MoreHorizontal size={18} />
                     </Button>
                 </DropdownMenuTrigger>

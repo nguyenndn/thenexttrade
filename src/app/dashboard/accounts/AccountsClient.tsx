@@ -48,9 +48,9 @@ export default function AccountsClient() {
                     totalPages: data.meta?.totalPages || 1
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to fetch accounts", error);
-            toast.error("Failed to load accounts");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to load accounts"));
         } finally {
             setIsLoading(false);
         }
@@ -89,8 +89,8 @@ export default function AccountsClient() {
 
             toast.success("Account deleted");
             fetchAccounts();
-        } catch (error) {
-            toast.error("Failed to delete account");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to delete account"));
         } finally {
             setIsDeleting(false);
             setIsConfirmOpen(false);

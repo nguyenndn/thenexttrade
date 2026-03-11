@@ -123,29 +123,7 @@ We use large border radius for a "friendly but premium" feel, along with strict 
 ```
 
 ### 2.3 Form Inputs
-Inputs should be chunky, accessible, and clean.
-
-**Standard Premium Input (Admin/Modals)**
-**Standard Premium Input (Admin/Modals)**
-Used in all admin forms, modals, and settings pages.
-```tsx
-<div className="group">
-    <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
-        Label <span className="font-normal text-gray-400">(Optional)</span>
-    </label>
-    <input
-        type="text"
-        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
-        placeholder="Placeholder text..."
-    />
-    <p className="text-red-500 text-xs mt-1">Error message here</p>
-</div>
-```
-
-> **Note on Modal Spacing:**
-> - Use `space-y-5` for the main form container.
-> - Use `-mt-4` on the form container to pull content closer to the modal header.
-> - Do NOT use `space-y-1.5` on individual field groups; use `mb-2` on the label instead.
+*(For Admin-specific standard input and search rules, see **Section 13**).*
 
 **Hero Input (Login/Landing)**
 For high-impact areas requiring extra visual weight.
@@ -160,27 +138,8 @@ For high-impact areas requiring extra visual weight.
     />
 </div>
 ```
-*Key features: Tall inputs (`py-4`), `rounded-xl`, `border-transparent` -> `focus:border-[#00C888]`.*
 
-### 2.4 Tables
-Clean, spacious tables with "transparent" headers.
-
-```tsx
-<table className="w-full text-left text-sm">
-    <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
-        <tr>
-            <th className="px-6 py-4">Column</th>
-        </tr>
-    </thead>
-    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-        <tr className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-            <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">Data</td>
-        </tr>
-    </tbody>
-</table>
-```
-
-### 2.5 Badges / Status Chips
+### 2.4 Badges / Status Chips
 ```tsx
 // Success (Green)
 <span className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-1 rounded text-xs font-bold">
@@ -193,26 +152,7 @@ Clean, spacious tables with "transparent" headers.
 </span>
 ```
 
-### 2.6 Select Dropdowns (Filters & Choices)
-**NGHIÊM CẤM** sử dụng thẻ `<select>` native của HTML trên Admin Sidebar hoặc Table Filters (trừ các form quá cơ bản). Thay vào đó, BẮT BUỘC sử dụng component `DropdownMenu` với Trigger là `Button variant="outline"`.
-
-**Standard Filter Dropdown:**
-```tsx
-<DropdownMenu>
-    <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="md" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
-            Status: <span className="text-primary">{status === "ALL" ? "All" : status}</span>
-            <ChevronDown size={14} aria-hidden="true" />
-        </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="start">
-        <DropdownMenuItem onClick={() => setStatus("ALL")}>All Status</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setStatus("ACTIVE")}>Active</DropdownMenuItem>
-    </DropdownMenuContent>
-</DropdownMenu>
-```
-
-### 2.7 Custom Checkboxes
+### 2.5 Custom Checkboxes
 Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duyệt khác nhau. Sử dụng `Button` ghost component với icon `CheckSquare` / `Square` của Lucide.
 
 **Standard Table / Form Checkbox:**
@@ -229,21 +169,6 @@ Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duy
 </Button>
 ```
 *Note for Tables:* Cột checkbox ở Header và Row phải đồng nhất class (Ví dụ: `w-14 pl-6 pr-4 py-5`) để đảm bảo các ô tự do thẳng hàng.
-
-### 2.8 Toolbar Search Input (Height Sync)
-Để ô Input Search có chiều cao đồng nhất tuyệt đối (38px) với các nút `DropdownMenu` (Button size="md") nằm kế bên, **NGHIÊM CẤM** set border và padding trực tiếp lên thẻ `<input>`. Thay vào đó, phải dùng một thẻ `div` wrapping như sau:
-
-```tsx
-<div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
-    <Search size={18} className="text-gray-400" />
-    <input
-        type="text"
-        placeholder="Search..."
-        className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
-    />
-</div>
-```
-*Key features: Thẻ Div bọc ngoài nhận các class `px-4 py-2`, `rounded-xl`, và quản lý `focus-within:border-primary`. Thẻ input bên trong dùng `bg-transparent text-sm`.*
 
 ---
 
@@ -262,8 +187,9 @@ Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duy
 ---
 
 ## 4. Layout Patterns
+*(For strictly enforced Admin structural standards, see **Section 13**).*
 
-### 4.1 Page Wrapper
+### 4.1 Page Wrapper (General / Marketing)
 ```tsx
 <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-900 dark:text-white">
   <PublicHeader />
@@ -276,59 +202,11 @@ Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duy
 </div>
 ```
 
-### 4.2 Admin/Dashboard Layout
-For Admin and Dashboard pages, content should be **left-aligned** and utilize the available width, rather than being centered.
-
-```tsx
-// Correct Admin Layout
-<div className="w-full max-w-full py-6 pr-6">
-  {/* Content */}
-</div>
-
-// INCORRECT (Marketing style)
-<div className="max-w-4xl mx-auto"> ... </div>
-```
-
-### 4.3 Admin Page Header (Standard)
-All admin pages must follow the "AI Studio" header style to ensure consistency:
-
-**Structure:**
-- **Container:** `flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8`
-- **Title Block Wrapper:** `flex flex-col gap-2`
-- **Title Row:** `flex items-center gap-3`
-- **Accent Bar:** `w-1.5 h-8 bg-primary rounded-full`
-- **Title Text:** `text-2xl font-black text-gray-900 dark:text-white tracking-tighter`
-- **Subtitle:** `text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5`
-- **Action Button Wrapper:** `flex items-center gap-3` (for standard action buttons with `shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0`)
-
-**Example:**
-```tsx
-<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
-    <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-3">
-            <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-            <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                Page Title
-            </h1>
-        </div>
-        <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-            Page description goes here.
-        </p>
-    </div>
-    <div className="flex items-center gap-3">
-        <Button className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all">
-            <Plus size={18} strokeWidth={2.5} /> Add New
-        </Button>
-    </div>
-</div>
-```
-
-### 4.4 Page Spacing & Section Gaps
+### 4.2 Page Spacing & Section Gaps
 - **Top Padding**: Do NOT add `pt-` or `py-` to your page wrapper. The main layout already handles the top offset from the navbar.
-- **Horizontal Padding**: Use `w-full` for admin pages. Avoid extra side padding unless necessary for specific containment.
-- **Section Gaps (CRITICAL)**: Always use `16px` (`gap-4` or `space-y-4`) as the standard spacing between major sections, grids, and dashboard widgets. Do NOT use `gap-6` or `space-y-6` to ensure consistency with the main Dashboard layout.
+- **Section Gaps (CRITICAL)**: Always use `16px` (`gap-4` or `space-y-4`) as the standard spacing between major sections, grids, and widgets. Do NOT use `gap-6` or `space-y-6` unless separating the root list wrappers.
 
-### 4.5 Decorative Icons
+### 4.3 Decorative Icons
 Used in headers or empty states.
 ```tsx
 <div className="inline-flex items-center justify-center p-3 rounded-xl bg-cyan-500/10 text-cyan-500 mb-6 ring-4 ring-cyan-500/5">
@@ -379,33 +257,6 @@ To implement this cleanly, separate the backdrop and the modal box into sibling 
         <div className="p-6">Content here</div>
     </div>
 </div>
-```
-
-### 6.3 Loading States (Instant Feedback)
-All Admin pages must use `loading.tsx` to provide instant feedback. Use a tailored Skeleton structure.
-
-**Standard Page Skeleton:**
-```tsx
-export default function Loading() {
-    return (
-        <div className="space-y-10 pb-10 animate-in fade-in max-w-5xl mx-auto pt-10">
-            {/* Header Skeleton */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-               <div className="space-y-2">
-                   <div className="h-8 w-64 bg-gray-200 dark:bg-white/5 rounded animate-pulse" />
-                   <div className="h-4 w-48 bg-gray-200 dark:bg-white/5 rounded animate-pulse" />
-               </div>
-            </div>
-
-            {/* Content Skeleton */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-40 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 animate-pulse" />
-                ))}
-            </div>
-        </div>
-    )
-}
 ```
 
 ---
@@ -518,3 +369,156 @@ Mọi nút chỉ chứa icon (không có text) **BẮT BUỘC** có `aria-label`
 </Button>
 ```
 
+---
+
+## 13. Admin Dashboard UI Standards (Consolidated)
+
+Khu vực này tổng hợp TOÀN BỘ các tiêu chuẩn thiết kế cấu trúc tĩnh TRỰC QUAN NHẤT dành riêng cho Admin Dashboard & Bảng dữ liệu. Chống chỉ định làm sai trên mọi trang `/admin/*`.
+
+### 13.1 General Admin Layout
+- **Full Width Content:** Nội dung trang Admin phải được **căn trái** và trải dài thẳng thắn theo container, không được giới hạn chiều rộng kiểu báo chí hay canh giữa như các trang public.
+- **Padding:** Dùng `<div className="w-full max-w-full py-6 pr-6">` (hoặc cấu trúc có sẵn từ admin layout bọc sẵn) để thiết lập không gian. NGHIÊM CẤM dùng `max-w-4xl mx-auto`.
+
+### 13.2 Admin Page Header
+Luôn sử dụng style "AI Studio" cho Header cao cấp của mọi trang Admin.
+- **Yếu tố Trang Trí:** Thanh phân tách dọc `w-1.5 h-8 bg-primary rounded-full`.
+- **Title Block:** Component Flex dọc có Title lớn (text 2xl) và mô tả.
+- **Primary Actions:** Cụm khối Button lớn phía tay phải có Shadow hắt.
+
+```tsx
+<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+    <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+            <div className="w-1.5 h-8 bg-primary rounded-full"></div>
+            <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
+                [Tên Trang]
+            </h1>
+        </div>
+        <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+            [Mô tả trang ngắn gọn]
+        </p>
+    </div>
+    <div className="flex items-center gap-3">
+        {/* Nút hành động chính */}
+        <Link href="..." className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00C888] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0">
+            <Plus size={18} strokeWidth={2.5} /> Add New
+        </Link>
+    </div>
+</div>
+```
+
+### 13.3 Standard Premium Input (Admin/Modals)
+Cho mọi form nội bộ, sử dụng Component Input sau (thay thế cho thẻ input lỏng lẻo):
+
+```tsx
+<div className="group">
+    <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
+        Label <span className="font-normal text-gray-400">(Optional)</span>
+    </label>
+    <input
+        type="text"
+        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+        placeholder="Placeholder text..."
+    />
+    <p className="text-red-500 text-xs mt-1">Error message here</p>
+</div>
+```
+*Ghi chú Căn lề Form Modal:*
+- Form parent wrap: `space-y-5`. Wrap gần Header: `-mt-4`. Label dùng: `mb-2`. Tuyệt đối không xài lẻn xen kẽ `space-y-1.5`.
+
+### 13.4 Toolbar Search Inputs (Height Sync)
+Trên thanh công cụ Toolbar chứa Data Table, Input Search phải **chính xác 38px** (cao tương đương DropdownMenu size md). Bắt buộc phải **bọc Div và Reset CSS cho the Input nội bộ**:
+
+```tsx
+<div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
+    <Search size={18} className="text-gray-400" />
+    <input
+        type="text"
+        placeholder="Search..."
+        className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
+    />
+</div>
+```
+
+### 13.5 Dropdowns Filters (Strict Rule)
+**NGHIÊM CẤM** dùng `<select>` HTML Native trên Admin Table Filters. **BẮT BUỘC** thay bằng Radix UI `DropdownMenu` với Trigger là `Button variant="outline" size="md"`.
+
+```tsx
+<DropdownMenu>
+    <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="md" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
+            Status: <span className="text-primary">All</span>
+            <ChevronDown size={14} aria-hidden="true" />
+        </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="start">
+        <DropdownMenuItem>All Status</DropdownMenuItem>
+    </DropdownMenuContent>
+</DropdownMenu>
+```
+
+### 13.6 Data Page Format Architecture (Toolbar & Table Cards)
+BẮT BUỘC tách Data Table List Overview ra thành 2 cục (Card) riêng biệt. Tuân theo mẫu HTML tham chiếu tuyệt đối của `/admin/articles` dưới đây:
+
+```tsx
+<div className="space-y-4 pb-10">
+    {/* 1. Header Array (như 13.2) */}
+    {/* 2. Stats Grid (Tùy chọn) */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Total" value="100" icon={IconName} color="indigo" />
+    </div>
+
+    {/* 3. Data Wrapper */}
+    <div className="space-y-6">
+        
+        {/* 3.1 Toolbar Card */}
+        <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
+            {/* Lưới flexbox chứa Search Input (13.4), Dropdown (13.5), Bulk Actions... */}
+        </div>
+
+        {/* 3.2 Data Table Card */}
+        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto custom-scrollbar">
+                <table className="w-full text-left border-collapse">
+                    <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+                        <tr><th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Column 1</th></tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                        <tr className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors">
+                            <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">Data</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {/* Pagination Footer Component here */}
+        </div>
+
+    </div>
+</div>
+```
+
+### 13.7 Admin Loading Skeleton States
+Mọi trang Admin thay vì xoay vòng tròn trắng thì **BẮT BUỘC** gọi Next.js `loading.tsx` sử dụng Skeleton Block chống nháy màn hình.
+
+```tsx
+export default function Loading() {
+    return (
+        <div className="space-y-10 pb-10 animate-in fade-in max-w-5xl mx-auto pt-10">
+            {/* Admin Header Skeleton */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+               <div className="space-y-2">
+                   <div className="h-8 w-64 bg-gray-200 dark:bg-white/5 rounded animate-pulse" />
+                   <div className="h-4 w-48 bg-gray-200 dark:bg-white/5 rounded animate-pulse" />
+               </div>
+            </div>
+            
+            {/* Content Cards Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-40 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 animate-pulse" />
+                ))}
+            </div>
+        </div>
+    )
+}
+```

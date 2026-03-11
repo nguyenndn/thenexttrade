@@ -43,8 +43,8 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
             } else {
                 toast.error(res.error || "Failed to approve");
             }
-        } catch (error) {
-            toast.error("Something went wrong");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Something went wrong"));
         } finally {
             setIsLoading(false);
         }

@@ -42,8 +42,8 @@ export default function ModuleHeaderActions({ module }: ModuleHeaderActionsProps
                 setIsConfirmOpen(false);
                 setIsDeleting(false);
             }
-        } catch (error) {
-            toast.error("An error occurred");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An error occurred"));
             setIsConfirmOpen(false);
             setIsDeleting(false);
         }

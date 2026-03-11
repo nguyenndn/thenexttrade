@@ -141,9 +141,9 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
             setModules((prev: any[]) => prev.filter((m) => m.id !== moduleToDelete));
             toast.success("Module deleted");
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error("Failed to delete module");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to delete module"));
         } finally {
             setIsDeletingModule(false);
             setIsModuleConfirmOpen(false);
@@ -177,9 +177,9 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
             );
             toast.success("Lesson deleted");
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error("Failed to delete lesson");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to delete lesson"));
         } finally {
             setIsDeletingLesson(false);
             setIsLessonConfirmOpen(false);
@@ -236,9 +236,9 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
             toast.dismiss(toastId);
             toast.success("Quiz created!");
             router.push(`/admin/academy/quiz/${quiz.id}`);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error("Failed to create quiz");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to create quiz"));
         }
     };
 

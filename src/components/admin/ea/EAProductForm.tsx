@@ -89,8 +89,8 @@ export function EAProductForm({ product }: EAProductFormProps) {
                     toast.error(result.error);
                 }
             }
-        } catch (error) {
-            toast.error("An error occurred");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An error occurred"));
         } finally {
             setIsSubmitting(false);
         }
@@ -185,7 +185,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                 <Button variant="outline" type="button" onClick={() => router.back()}>
                     Cancel
                 </Button>
-                <Button variant="primary" type="submit" disabled={isSubmitting} className="bg-primary hover:bg-[#00B078] text-white">
+                <Button variant="primary" type="submit" disabled={isSubmitting}>
                     {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {isEdit ? "Update Product" : "Create Product"}
                 </Button>

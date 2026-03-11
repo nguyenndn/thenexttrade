@@ -94,8 +94,8 @@ export function TagInput({ value, onChange }: TagInputProps) {
                 const tag = await res.json();
                 addTag(tag);
             }
-        } catch (error) {
-            toast.error("Failed to create tag");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to create tag"));
         } finally {
             setIsCreating(false);
         }
@@ -107,7 +107,7 @@ export function TagInput({ value, onChange }: TagInputProps) {
                 {selectedTags.map(tag => (
                     <div key={tag.id} className="flex items-center gap-1 bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-md text-sm">
                         <span>{tag.name}</span>
-                        <Button variant="ghost" size="icon" onClick={() => removeTag(tag.id)} className="h-auto w-auto p-0 text-gray-400 hover:text-red-500 hover:bg-transparent">
+                        <Button variant="ghost" size="icon" aria-label="Remove Tag" onClick={() => removeTag(tag.id)} className="h-auto w-auto p-0 text-gray-400 hover:text-red-500 hover:bg-transparent">
                             <X size={14} />
                         </Button>
                     </div>

@@ -79,6 +79,16 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     const accountId = searchParams?.accountId as string; // Guaranteed to be set or empty if no accounts
     const accountFilter = accountId ? { userId: user.id, id: accountId } : { userId: user.id };
 
+    // Fetch account timezone for date boundary alignment
+    let accountTimezone: string | undefined;
+    if (accountId) {
+        const acc = await prisma.tradingAccount.findFirst({
+            where: { id: accountId, userId: user.id },
+            select: { timezone: true }
+        });
+        accountTimezone = acc?.timezone || undefined;
+    }
+
     let fromParam = typeof searchParams?.from === 'string' ? searchParams.from : undefined;
     let toParam = typeof searchParams?.to === 'string' ? searchParams.to : undefined;
 
@@ -102,8 +112,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         redirect(`/dashboard?${newParams.toString()}`);
     }
 
-    const startDate = parseLocalStartOfDay(fromParam);
-    const endDate = parseLocalEndOfDay(toParam);
+    const startDate = parseLocalStartOfDay(fromParam, accountTimezone);
+    const endDate = parseLocalEndOfDay(toParam, accountTimezone);
 
     // 2. Optimized Data Fetching (Parallel)
     const [

@@ -56,8 +56,8 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
             } else {
                 toast.error(res.error || "Failed to update lesson");
             }
-        } catch (e) {
-            toast.error("An error occurred");
+        } catch (e: any) {
+            toast.error(e instanceof Error ? e.message : (e?.message || "An error occurred"));
         } finally {
             setIsLoading(false);
         }
@@ -79,8 +79,8 @@ export default function LessonEditor({ lesson }: LessonEditorProps) {
                 setIsConfirmOpen(false);
                 setIsLoading(false);
             }
-        } catch (e) {
-            toast.error("An error occurred");
+        } catch (e: any) {
+            toast.error(e instanceof Error ? e.message : (e?.message || "An error occurred"));
             setIsConfirmOpen(false);
             setIsLoading(false);
         }

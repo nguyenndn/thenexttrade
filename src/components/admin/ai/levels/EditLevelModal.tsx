@@ -38,8 +38,8 @@ export function EditLevelModal({ isOpen, onClose, level }: EditLevelModalProps) 
             } else {
                 toast.error("Failed to update level");
             }
-        } catch (error) {
-            toast.error("An error occurred");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An error occurred"));
         } finally {
             setIsLoading(false);
         }

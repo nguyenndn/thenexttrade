@@ -80,8 +80,8 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
             } else {
                 toast.error(result.error || "An error occurred, please try again");
             }
-        } catch (error) {
-            toast.error("An error occurred, please try again");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An error occurred, please try again"));
         } finally {
             setIsSubmitting(false);
         }

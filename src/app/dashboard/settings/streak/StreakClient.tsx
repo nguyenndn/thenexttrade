@@ -89,8 +89,8 @@ export default function StreakClient() {
             } else {
                 toast.error(data.error);
             }
-        } catch (error) {
-            toast.error("Failed to check in");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to check in"));
         } finally {
             setIsCheckingIn(false);
         }

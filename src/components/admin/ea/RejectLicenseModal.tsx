@@ -48,8 +48,8 @@ export function RejectLicenseModal({ isOpen, onClose, license, adminId }: Reject
             } else {
                 toast.error(res.error || "Failed to reject");
             }
-        } catch (error) {
-            toast.error("Something went wrong");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Something went wrong"));
         } finally {
             setIsLoading(false);
         }

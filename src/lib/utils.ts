@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { parseISO, endOfDay } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -19,29 +20,48 @@ export function shuffleArray<T>(array: T[]): T[] {
 }
 
 /**
- * Parses an ISO date string into a Date object (Start of Day in Local Time).
- * Equivalent to parsing "2024-01-01".
+ * Parses an ISO date string into a Date object (Start of Day).
+ * If timezone is provided (e.g. "Europe/Athens"), returns midnight in that timezone (as UTC Date).
+ * This ensures "Today" boundaries match the broker's MT5 server time.
  */
-export function parseLocalStartOfDay(dateString?: string): Date | undefined {
-    return dateString ? parseISO(dateString) : undefined;
+export function parseLocalStartOfDay(dateString?: string, timezone?: string): Date | undefined {
+    if (!dateString) return undefined;
+    // Parse as a "wall clock" date: "2026-03-11" => year=2026, month=3, day=11
+    const parsed = parseISO(dateString);
+    if (timezone) {
+        // Create midnight in the broker's timezone, return as UTC Date
+        // fromZonedTime("2026-03-11T00:00:00", "Europe/Athens") => UTC equivalent of midnight Athens
+        const midnightInTz = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate(), 0, 0, 0, 0);
+        return fromZonedTime(midnightInTz, timezone);
+    }
+    return parsed;
 }
 
 /**
- * Parses an ISO date string and forces it to the end of the day (23:59:59.999) in Local Time.
+ * Parses an ISO date string and forces it to the end of the day (23:59:59.999).
+ * If timezone is provided, returns end-of-day in that timezone (as UTC Date).
  */
-export function parseLocalEndOfDay(dateString?: string): Date | undefined {
-    return dateString ? endOfDay(parseISO(dateString)) : undefined;
+export function parseLocalEndOfDay(dateString?: string, timezone?: string): Date | undefined {
+    if (!dateString) return undefined;
+    const parsed = parseISO(dateString);
+    if (timezone) {
+        // Create 23:59:59.999 in the broker's timezone, return as UTC Date
+        const endInTz = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate(), 23, 59, 59, 999);
+        return fromZonedTime(endInTz, timezone);
+    }
+    return endOfDay(parsed);
 }
 
 /**
  * Builds a Prisma-compatible date range filter object.
+ * Accepts an optional timezone to align day boundaries with broker time.
  */
-export function buildDateRangeFilter(dateFrom?: string, dateTo?: string): { gte?: Date; lte?: Date } | undefined {
+export function buildDateRangeFilter(dateFrom?: string, dateTo?: string, timezone?: string): { gte?: Date; lte?: Date } | undefined {
     if (!dateFrom && !dateTo) return undefined;
     
     const filter: { gte?: Date; lte?: Date } = {};
-    if (dateFrom) filter.gte = parseLocalStartOfDay(dateFrom);
-    if (dateTo) filter.lte = parseLocalEndOfDay(dateTo);
+    if (dateFrom) filter.gte = parseLocalStartOfDay(dateFrom, timezone);
+    if (dateTo) filter.lte = parseLocalEndOfDay(dateTo, timezone);
     
     return filter;
 }

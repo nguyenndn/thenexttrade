@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import { Edit2, Trash2, Plus, Tag as TagIcon, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
@@ -14,6 +15,13 @@ import { TagModal } from "./TagModal";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
+const fetcher = async (url: string) => {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Failed to load tags");
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+};
+
 interface Tag {
     id: string;
     name: string;
@@ -21,8 +29,12 @@ interface Tag {
 }
 
 export default function TagList() {
-    const [tags, setTags] = useState<Tag[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { data: tags = [], isLoading, mutate } = useSWR("/api/tags", fetcher, {
+        onError: (err) => {
+            toast.error(err.message || "Failed to load tags");
+        }
+    });
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTag, setEditingTag] = useState<Tag | undefined>(undefined);
 
@@ -30,23 +42,6 @@ export default function TagList() {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [tagToDeleteId, setTagToDeleteId] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
-
-    const fetchTags = async () => {
-        try {
-            setIsLoading(true);
-            const res = await fetch("/api/tags");
-            const data = await res.json();
-            setTags(Array.isArray(data) ? data : []);
-        } catch (error) {
-            toast.error("Failed to load tags");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchTags();
-    }, []);
 
     const confirmDelete = (id: string) => {
         setTagToDeleteId(id);
@@ -70,7 +65,7 @@ export default function TagList() {
             toast.success("Tag deleted");
             setIsConfirmOpen(false);
             setTagToDeleteId(null);
-            fetchTags();
+            await mutate();
         } catch (error: any) {
             toast.error(error.message);
             setIsConfirmOpen(false);
@@ -90,7 +85,7 @@ export default function TagList() {
     };
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
                 <div className="flex flex-col gap-2">
@@ -114,14 +109,14 @@ export default function TagList() {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 shadow-sm border border-gray-100 dark:border-white/5">
-                <div className="w-full">
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left border-collapse">
+                        <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
                             <tr>
-                                <th className="px-6 py-4 rounded-l-xl">Name</th>
-                                <th className="px-6 py-4">Slug</th>
-                                <th className="px-6 py-4 rounded-r-xl text-right">Actions</th>
+                                <th className="px-6 py-5">Name</th>
+                                <th className="px-6 py-5">Slug</th>
+                                <th className="px-6 py-5 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -130,7 +125,7 @@ export default function TagList() {
                                     <td colSpan={3} className="px-6 py-12 text-center">
                                         <div className="flex items-center justify-center gap-3 text-gray-500">
                                             <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                                            <span className="font-medium text-sm">Loading tags...</span>
+                                            <span className="font-medium text-sm">Loading...</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -149,12 +144,12 @@ export default function TagList() {
                                 </tr>
                             ) : (
                                 tags.map((tag) => (
-                                    <tr key={tag.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                                        <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">
+                                    <tr key={tag.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors">
+                                        <td className="px-6 py-5 font-bold text-gray-900 dark:text-white">
                                             {tag.name}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-500 font-mono text-xs">{tag.slug}</td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-6 py-5 text-gray-500 font-mono text-xs">{tag.slug}</td>
+                                        <td className="px-6 py-5 text-right">
                                             <div className="flex justify-end">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
@@ -198,7 +193,7 @@ export default function TagList() {
             <TagModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onSuccess={fetchTags}
+                onSuccess={() => mutate()}
                 tag={editingTag}
             />
 
@@ -207,7 +202,7 @@ export default function TagList() {
                 isOpen={isConfirmOpen}
                 title="Delete Tag"
                 description="Are you sure you want to delete this tag? This action cannot be undone."
-                confirmText="Delete"
+                confirmText={isDeleting ? "Deleting..." : "Delete"}
                 cancelText="Cancel"
                 isLoading={isDeleting}
                 onConfirm={handleDelete}

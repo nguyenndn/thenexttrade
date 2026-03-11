@@ -109,8 +109,8 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
             toast.success(question ? "Question updated" : "Question added");
             onSaved();
             onClose();
-        } catch (error) {
-            toast.error("Something went wrong");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Something went wrong"));
             console.error(error);
         } finally {
             setIsLoading(false);

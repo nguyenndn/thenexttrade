@@ -43,9 +43,9 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
             id="site-header"
             className="fixed top-0 inset-x-0 z-[60] backdrop-blur-2xl"
         >
-            <div className="px-0 lg-plus:px-4 py-2 flex justify-center">
+            <div className="px-0 lg:px-4 py-2 flex justify-center">
                 <div
-                    className="flex w-full lg-plus:w-4/5 items-center justify-between gap-2 sm:gap-4 md:gap-6 rounded-xl border px-3 sm:px-4 md:px-6 h-16 shadow-lg bg-white dark:bg-[#151925]/90 border-gray-200 dark:border-white/10"
+                    className="flex w-full lg:max-w-[1440px] items-center justify-between gap-2 sm:gap-4 md:gap-6 rounded-none lg:rounded-xl border-b lg:border px-3 sm:px-4 md:px-6 h-16 shadow-lg bg-white dark:bg-[#151925]/90 border-gray-200 dark:border-white/10"
                 >
                     {/* Logo */}
                     <div className="flex-shrink-0">

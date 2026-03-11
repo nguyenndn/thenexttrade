@@ -24,7 +24,9 @@ import {
     FileSpreadsheet,
     Clock,
     Route,
-    Zap
+    Zap,
+    Bookmark,
+    FolderTree
 } from "lucide-react";
 
 export const menuItems = [
@@ -130,9 +132,9 @@ export const adminMenuItems = [
 
     // --- CONTENT ---
     { name: "Articles", href: "/admin/articles", icon: FileText },
-    { name: "Shortcuts", href: "/admin/articles/shortcuts", icon: Zap },
+    { name: "Shortcuts", href: "/admin/articles/shortcuts", icon: Bookmark },
     { name: "Comments", href: "/admin/comments", icon: MessageSquare },
-    { name: "Categories", href: "/admin/categories", icon: List },
+    { name: "Categories", href: "/admin/categories", icon: FolderTree },
     { name: "Tags", href: "/admin/tags", icon: Tag },
 
     // --- EDUCATION ---

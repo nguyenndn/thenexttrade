@@ -71,9 +71,9 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
             const result = await getStrategyPerformance();
             if (result.error) throw new Error(result.error);
             setPerformance(result.performance || []);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error("Failed to load strategy performance");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to load strategy performance"));
         } finally {
             setIsLoadingPerformance(false);
         }

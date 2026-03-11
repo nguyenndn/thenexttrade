@@ -149,7 +149,7 @@ async function HomeFeed() {
       <FadeIn delay={0.1}>
       {/* Hero Section */}
       <div className="pt-24 pb-8 dark:bg-[#0B0E14]">
-        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {/* Big Card - Carousel */}
@@ -218,7 +218,7 @@ async function HomeFeed() {
         {/* Fireflies Effect */}
         <FireflyBackground />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <SectionHeader
             title="Trending Topics"
             align="center"
@@ -245,7 +245,7 @@ async function HomeFeed() {
       <FadeIn delay={0.1} direction="up">
       {/* Popular Guides Section */}
       <section className="py-16 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
-        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             title="Popular Guides"
             align="left"
@@ -308,7 +308,7 @@ async function HomeFeed() {
         {/* Grid Pattern Background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/20 via-transparent to-transparent dark:from-blue-900/10 dark:via-transparent dark:to-transparent"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="mb-16 text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
               Your Journey to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Pro Trader</span> status

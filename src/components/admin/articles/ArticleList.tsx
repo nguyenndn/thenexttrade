@@ -220,9 +220,9 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
             setSelectedIds(new Set());
             toast.success(`Successfully processed ${selectedIds.size} articles`);
             if (action === "delete") setIsBulkConfirmOpen(false);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error("Action failed. Please try again.");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Action failed. Please try again."));
             if (action === "delete") setIsBulkConfirmOpen(false);
         } finally {
             setIsBulkLoading(false);
@@ -254,8 +254,8 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
             setQuickEditId(null);
             router.refresh();
             toast.success("Article updated successfully");
-        } catch (err) {
-            toast.error("Failed to update article");
+        } catch (err: any) {
+            toast.error(err instanceof Error ? err.message : (err?.message || "Failed to update article"));
         } finally {
             setIsSavingQuickEdit(false);
         }
@@ -404,7 +404,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                                     <Button
                                                         onClick={saveQuickEdit}
                                                         disabled={isSavingQuickEdit}
-                                                        className="px-3 py-2 h-auto bg-primary text-white rounded-md hover:bg-[#00a872]"
+                                                        className="px-3 py-2 h-auto bg-primary text-white rounded-md hover:bg-[#00C888]"
                                                     >
                                                         {isSavingQuickEdit ? <Loader2 size={16} className="animate-spin" /> : "Save"}
                                                     </Button>
@@ -440,7 +440,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                                                 variant="ghost"
                                                                 size="sm"
                                                                 onClick={() => startQuickEdit(article)}
-                                                                className="text-[10px] items-center gap-1 text-blue-500 hidden group-hover:flex h-auto p-0 hover:bg-transparent"
+                                                                className="text-[10px] flex items-center gap-1 text-blue-500 opacity-0 pointer-events-none group-hover:opacity-100 focus-within:opacity-100 group-hover:pointer-events-auto focus-within:pointer-events-auto transition-opacity duration-200 h-auto p-0 hover:bg-transparent"
                                                                 aria-label="Quick Edit"
                                                             >
                                                                 <Edit2 size={10} aria-hidden="true" /> Quick Edit

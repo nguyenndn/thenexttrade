@@ -94,8 +94,8 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
             await fetch(`/api/academy/questions/${questionToDelete}`, { method: "DELETE" });
             setQuestions(questions.filter((q: any) => q.id !== questionToDelete));
             toast.success("Question deleted");
-        } catch (error) {
-            toast.error("Failed to delete question");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to delete question"));
         } finally {
             setIsDeleting(false);
             setIsConfirmOpen(false);

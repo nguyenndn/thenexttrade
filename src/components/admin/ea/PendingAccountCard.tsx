@@ -76,8 +76,8 @@ export function PendingAccountCard({ license, onApprove, onReject }: PendingAcco
                 {/* Approve - Full Width */}
                 <Button
                     variant="primary"
-                    size="sm"
-                    className="col-span-2 h-11 bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/20 rounded-xl text-sm font-bold uppercase tracking-wide"
+                    size="md"
+                    className="col-span-2 shadow-primary/20 uppercase tracking-wide w-full"
                     onClick={() => onApprove(license)}
                 >
                     <Check size={18} className="mr-2" />

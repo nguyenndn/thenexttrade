@@ -30,8 +30,8 @@ export function ProductFiles({ product }: ProductFilesProps) {
             } else {
                 toast.error(result.error);
             }
-        } catch (error) {
-            toast.error("Upload failed");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Upload failed"));
         } finally {
             setUploading(false);
         }

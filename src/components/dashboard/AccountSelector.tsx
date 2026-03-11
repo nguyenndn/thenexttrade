@@ -83,9 +83,9 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                     const accs = Array.isArray(data) ? data : (data.accounts || []);
                     setAccounts(accs);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Failed to load accounts", error);
-                toast.error("Could not load trading accounts");
+                toast.error(error instanceof Error ? error.message : (error?.message || "Could not load trading accounts"));
             } finally {
                 setIsLoading(false);
             }

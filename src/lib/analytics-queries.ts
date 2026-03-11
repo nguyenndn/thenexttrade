@@ -13,22 +13,18 @@ import { unstable_cache } from "next/cache";
  * Get aggregated Monthly Performance for a user
  * Returns { date, profit, tradeCount }
  */
-export async function getMonthlyAnalytics(userId: string, accountId?: string) {
-    // Determine the WHERE clause
-    // Note: We use template literals for trusted values, but be careful with strings.
-    // Prisma.sql is safer for preventing injection.
+export async function getMonthlyAnalytics(userId: string, accountId?: string, timezone?: string) {
+    const tz = timezone || 'Etc/UTC';
 
-    // We fetch last 12 months by default
     const result = await prisma.$queryRaw`
         SELECT 
-            TO_CHAR("exitDate", 'YYYY-MM') as "date",
+            TO_CHAR("exitDate" AT TIME ZONE ${tz}, 'YYYY-MM') as "date",
             SUM("pnl") as "profit",
             COUNT(*) as "tradeCount",
             SUM(CASE WHEN "pnl" > 0 THEN 1 ELSE 0 END) as "winCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
         AND "status" = 'CLOSED'
-        -- Optional Account Filter
         AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
         AND "exitDate" >= NOW() - INTERVAL '12 months'
         GROUP BY 1
@@ -118,7 +114,8 @@ export const getCachedDashboardStats = unstable_cache(
 /**
  * Get Daily Performance for Chart
  */
-export async function getDailyPerformance(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
+export async function getDailyPerformance(userId: string, accountId?: string, startDate?: Date, endDate?: Date, timezone?: string) {
+    const tz = timezone || 'Etc/UTC';
     // Build date filter
     const dateFilter = startDate && endDate
         ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
@@ -126,7 +123,7 @@ export async function getDailyPerformance(userId: string, accountId?: string, st
 
     const result = await prisma.$queryRaw`
         SELECT 
-            TO_CHAR("exitDate", 'YYYY-MM-DD') as "date",
+            TO_CHAR("exitDate" AT TIME ZONE ${tz}, 'YYYY-MM-DD') as "date",
             SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "profit",
             COUNT(*) as "tradeCount",
             SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount"
@@ -270,27 +267,22 @@ export async function getLotDistribution(userId: string, accountId?: string, sta
  * Get Day of Week Performance
  * Returns { day, dayIndex, pnl, tradeCount, winRate }
  */
-export async function getDayOfWeekPerformance(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
+export async function getDayOfWeekPerformance(userId: string, accountId?: string, startDate?: Date, endDate?: Date, timezone?: string) {
+    const tz = timezone || 'Etc/UTC';
     // Build date filter
     const dateFilter = startDate && endDate
         ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
         : Prisma.empty;
 
-    // We use EXTRACT(DOW from "exitDate") which returns 0-6 (Sun-Sat)
-    // Adjust for Broker Time offset if necessary. Assuming UTC for now.
-    // If BROKER_OFFSET_HOURS is needed, we'd add it before extracting.
-    // For simplicity V1, we use UTC.
-
     const result = await prisma.$queryRaw`
         SELECT 
-            EXTRACT(DOW FROM "exitDate") as "dayIndex",
+            EXTRACT(DOW FROM "exitDate" AT TIME ZONE ${tz}) as "dayIndex",
             COUNT(*) as "tradeCount",
             SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
             SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
         AND "status" = 'CLOSED'
-        -- Optional Account Filter
         AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
         ${dateFilter}
         GROUP BY 1

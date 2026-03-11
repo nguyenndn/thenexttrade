@@ -1226,6 +1226,9 @@ void SendHeartbeat() {
   Print("Sending heartbeat to: ", url); // Debug log
 
   //--- Collect all account info to send to server (auto-collect)
+  //--- Calculate broker GMT offset (seconds): TimeCurrent = Broker Server Time
+  int gmtOffsetSeconds = (int)(TimeCurrent() - TimeGMT());
+  
   string body = StringFormat(
       "{"
       "\"eaVersion\":\"1.05\","
@@ -1235,14 +1238,16 @@ void SendHeartbeat() {
       "\"broker\":\"%s\","
       "\"server\":\"%s\","
       "\"currency\":\"%s\","
-      "\"leverage\":%d"
+      "\"leverage\":%d,"
+      "\"gmtOffset\":%d"
       "}",
       g_AccountNumber, AccountInfoDouble(ACCOUNT_BALANCE),
       AccountInfoDouble(ACCOUNT_EQUITY),
       EscapeJsonString(AccountInfoString(ACCOUNT_COMPANY)), // Broker name
       EscapeJsonString(AccountInfoString(ACCOUNT_SERVER)),  // Server name
       AccountInfoString(ACCOUNT_CURRENCY),                  // Account currency
-      (int)AccountInfoInteger(ACCOUNT_LEVERAGE)             // Leverage
+      (int)AccountInfoInteger(ACCOUNT_LEVERAGE),            // Leverage
+      gmtOffsetSeconds                                      // GMT offset (seconds)
   );
 
   //--- Prepare request data

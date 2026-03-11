@@ -8,8 +8,8 @@ import {
     Download,
     Bot,
     ArrowRight,
-    AlertCircle,
-    Briefcase
+    Briefcase,
+    Settings
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -26,43 +26,61 @@ export const metadata: Metadata = {
 };
 
 async function getStats() {
-    // OPTIMIZED: Parallel fetch with Promise.all()
-    const [pendingCount, approvedCount, productsCount, downloadsAggregate] = await Promise.all([
-        prisma.eALicense.count({ where: { status: AccountStatus.PENDING } }),
-        prisma.eALicense.count({ where: { status: AccountStatus.APPROVED } }),
-        prisma.eAProduct.count({ where: { isActive: true } }),
-        prisma.eADownload.count()
-    ]);
+    try {
+        const [pendingCount, approvedCount, productsCount, downloadsAggregate] = await Promise.all([
+            prisma.eALicense.count({ where: { status: AccountStatus.PENDING } }),
+            prisma.eALicense.count({ where: { status: AccountStatus.APPROVED } }),
+            prisma.eAProduct.count({ where: { isActive: true } }),
+            prisma.eADownload.count()
+        ]);
 
-    return {
-        pendingCount,
-        approvedCount,
-        productsCount,
-        totalDownloads: downloadsAggregate,
-    };
+        return {
+            pendingCount,
+            approvedCount,
+            productsCount,
+            totalDownloads: downloadsAggregate,
+        };
+    } catch (error) {
+        console.error("Error fetching EA stats:", error);
+        return { pendingCount: 0, approvedCount: 0, productsCount: 0, totalDownloads: 0 };
+    }
 }
 
 async function getRecentPending() {
-    return prisma.eALicense.findMany({
-        where: { status: AccountStatus.PENDING },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-        include: {
-            user: {
-                select: {
-                    email: true,
-                    name: true,
-                },
-            },
-        },
-    });
+    try {
+        return await prisma.eALicense.findMany({
+            where: { status: AccountStatus.PENDING },
+            orderBy: { createdAt: "desc" },
+            take: 5,
+            include: { user: { select: { email: true, name: true } } },
+        });
+    } catch (error) {
+        console.error("Error fetching recent pending EA licenses:", error);
+        return [];
+    }
+}
+
+async function getLicensesByBroker() {
+    try {
+        const data = await prisma.eALicense.groupBy({
+            by: ['broker'],
+            where: { status: AccountStatus.APPROVED },
+            _count: { id: true },
+            orderBy: { _count: { id: 'desc' } }
+        });
+        return data;
+    } catch (error) {
+        console.error("Error fetching broker stats:", error);
+        return [];
+    }
 }
 
 export default async function EADashboardPage() {
     // OPTIMIZED: Fetch stats and pending in parallel
-    const [stats, recentPending] = await Promise.all([
+    const [stats, recentPending, brokerStats] = await Promise.all([
         getStats(),
-        getRecentPending()
+        getRecentPending(),
+        getLicensesByBroker()
     ]);
 
     return (
@@ -82,15 +100,12 @@ export default async function EADashboardPage() {
                 </div>
                 <div className="flex items-center gap-3">
                     <Link href="/admin/ea/products/create">
-                        <Button
-                            variant="primary"
-                            className="bg-[#2F80ED] hover:bg-[#2563EB] shadow-lg shadow-blue-500/30 flex items-center gap-2 font-bold px-6 py-2.5 active:scale-95 active:translate-y-0 transition-all"
-                        >
+                        <Button variant="primary" className="shadow-primary/30">
                             <Bot size={18} aria-hidden="true" /> New Product
                         </Button>
                     </Link>
                     <Link href="/admin/ea/accounts/pending">
-                        <Button variant="primary" className="bg-primary hover:bg-[#00B078] shadow-lg shadow-primary/30 flex items-center gap-2 font-bold px-6 py-2.5 active:scale-95 active:translate-y-0 transition-all">
+                        <Button variant="outline">
                             Manage Requests
                         </Button>
                     </Link>
@@ -128,7 +143,7 @@ export default async function EADashboardPage() {
             {/* Recent Pending Requests */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Pending Requests */}
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Clock className="text-yellow-500" size={24} />
@@ -178,7 +193,7 @@ export default async function EADashboardPage() {
                 </div>
 
                 {/* Quick Links / Info */}
-                <div className="space-y-6">
+                <div className="space-y-6 flex flex-col h-full">
                     {/* Navigation Card */}
                     <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Quick Navigation</h2>
@@ -204,21 +219,60 @@ export default async function EADashboardPage() {
                                     <p className="text-sm text-gray-500 mt-1">Manage supported brokers</p>
                                 </div>
                             </Link>
+                            <Link href="/admin/ea/settings" className="block">
+                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-200 dark:border-white/10">
+                                    <Settings className="mb-3 text-slate-500" size={24} aria-hidden="true" />
+                                    <h3 className="font-bold text-gray-900 dark:text-white">System Settings</h3>
+                                    <p className="text-sm text-gray-500 mt-1">Configure global EA options</p>
+                                </div>
+                            </Link>
                         </div>
                     </div>
 
-                    {/* Alert/Maintenance (Placeholder) */}
-                    <div className="bg-blue-50 dark:bg-blue-900/10 rounded-xl p-8 border border-blue-100 dark:border-blue-900/20">
-                        <div className="flex items-start gap-4">
-                            <AlertCircle className="text-blue-500 shrink-0" size={24} aria-hidden="true" />
-                            <div>
-                                <h3 className="font-bold text-blue-900 dark:text-blue-100">System Status</h3>
-                                <p className="text-sm text-blue-700 dark:text-blue-300 mt-2">
-                                    Notification system is active. Automated emails are enabled.
-                                </p>
-                            </div>
+                    {/* Active Licenses by Broker Widget */}
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm flex-1">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
+                            <Briefcase className="text-primary" size={24} aria-hidden="true" />
+                            Active by Broker
+                        </h2>
+                        
+                        <div className="space-y-5">
+                            {brokerStats.length === 0 ? (
+                                <p className="text-sm text-gray-500 text-center py-4">No active licenses found.</p>
+                            ) : (
+                                brokerStats.map((stat, index) => {
+                                    // Calculate percentage for progress bar
+                                    const maxCount = brokerStats[0]._count.id || 1;
+                                    const percentage = (stat._count.id / maxCount) * 100;
+                                    
+                                    return (
+                                        <div key={stat.broker} className="space-y-2 group">
+                                            <div className="flex justify-between items-center text-sm">
+                                                <div className="flex items-center gap-3">
+                                                    <BrokerLogo broker={stat.broker} size={36} />
+                                                    <span className="font-bold text-gray-900 dark:text-white capitalize group-hover:text-primary transition-colors text-base">
+                                                        {stat.broker.toLowerCase()}
+                                                    </span>
+                                                </div>
+                                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase inline-flex items-center gap-1.5 select-none bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/50">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                    {stat._count.id} ACTIVE
+                                                </span>
+                                            </div>
+                                            <div className="h-1.5 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                                <div 
+                                                    className="h-full bg-primary rounded-full transition-all duration-1000" 
+                                                    style={{ width: `${percentage}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
                         </div>
                     </div>
+
+
                 </div>
             </div>
         </div>

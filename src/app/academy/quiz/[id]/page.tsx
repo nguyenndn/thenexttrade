@@ -91,8 +91,8 @@ export default function QuizRunnerPage() {
                 });
             }
 
-        } catch (error) {
-            toast.error("Error submitting quiz. Please try again.");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Error submitting quiz. Please try again."));
         } finally {
             setSubmitting(false);
         }

@@ -4,6 +4,8 @@ import { getJournalEntries, getUserTags } from "@/actions/journal";
 import { getStrategies } from "@/actions/strategies";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
+import { prisma } from "@/lib/prisma";
+import { getAuthUser } from "@/lib/auth-cache";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +55,17 @@ export default async function JournalPage({
     const sortBy = typeof resolvedParams.sort === "string" ? resolvedParams.sort : undefined;
     const sortOrder = typeof resolvedParams.dir === "string" && (resolvedParams.dir === "asc" || resolvedParams.dir === "desc") ? resolvedParams.dir : undefined;
 
+    // Fetch account timezone for broker-aligned day boundaries
+    let accountTimezone: string | undefined;
+    const user = await getAuthUser();
+    if (user && accountId) {
+        const acc = await prisma.tradingAccount.findFirst({
+            where: { id: accountId, userId: user.id },
+            select: { timezone: true }
+        });
+        accountTimezone = acc?.timezone || undefined;
+    }
+
     const [{ entries, meta, stats }, { strategies }, userTags] = await Promise.all([
         getJournalEntries(page, limit, {
             accountId,
@@ -63,6 +76,7 @@ export default async function JournalPage({
             dateTo,
             sortBy,
             sortOrder,
+            timezone: accountTimezone,
         }),
         getStrategies(),
         getUserTags()

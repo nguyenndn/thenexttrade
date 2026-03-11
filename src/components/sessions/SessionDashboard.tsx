@@ -77,7 +77,7 @@ export function SessionDashboard() {
         } catch (error: any) {
             if (error.name === 'AbortError') return;
             console.error(error);
-            toast.error("Failed to load session data");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to load session data"));
         } finally {
             setIsLoading(false);
         }

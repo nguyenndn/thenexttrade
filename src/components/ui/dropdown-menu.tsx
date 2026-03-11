@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
@@ -13,7 +14,14 @@ interface DropdownMenuProps {
 
 export function DropdownMenu({ children, open, onOpenChange, className }: DropdownMenuProps) {
     const [isInternalOpen, setIsInternalOpen] = React.useState(false);
+    const [mounted, setMounted] = React.useState(false);
     const ref = React.useRef<HTMLDivElement>(null);
+    const triggerRef = React.useRef<HTMLButtonElement>(null);
+    const contentRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const isOpen = open !== undefined ? open : isInternalOpen;
     const setIsOpen = React.useCallback((value: boolean) => {
@@ -27,7 +35,10 @@ export function DropdownMenu({ children, open, onOpenChange, className }: Dropdo
 
     React.useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
+            const isClickInsideTrigger = ref.current?.contains(event.target as Node);
+            const isClickInsideContent = contentRef.current?.contains(event.target as Node);
+            
+            if (!isClickInsideTrigger && !isClickInsideContent) {
                 setIsOpen(false);
             }
         };
@@ -42,7 +53,7 @@ export function DropdownMenu({ children, open, onOpenChange, className }: Dropdo
     }, [isOpen, setIsOpen]);
 
     return (
-        <DropdownMenuContext.Provider value={{ isOpen, setIsOpen }}>
+        <DropdownMenuContext.Provider value={{ isOpen, setIsOpen, triggerRef, contentRef, mounted }}>
             <div ref={ref} className={cn("relative text-left", className || "inline-block")}>
                 {children}
             </div>
@@ -53,7 +64,10 @@ export function DropdownMenu({ children, open, onOpenChange, className }: Dropdo
 const DropdownMenuContext = React.createContext<{
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
-}>({ isOpen: false, setIsOpen: () => { } });
+    triggerRef: React.RefObject<HTMLButtonElement | null>;
+    contentRef: React.RefObject<HTMLDivElement | null>;
+    mounted: boolean;
+}>({ isOpen: false, setIsOpen: () => { }, triggerRef: { current: null }, contentRef: { current: null }, mounted: false });
 
 interface DropdownMenuTriggerProps {
     asChild?: boolean;
@@ -61,7 +75,7 @@ interface DropdownMenuTriggerProps {
 }
 
 export function DropdownMenuTrigger({ asChild, children }: DropdownMenuTriggerProps) {
-    const { isOpen, setIsOpen } = React.useContext(DropdownMenuContext);
+    const { isOpen, setIsOpen, triggerRef } = React.useContext(DropdownMenuContext);
 
     // If asChild is true, we clone the child and add onClick
     // Otherwise we wrap in a button
@@ -70,7 +84,9 @@ export function DropdownMenuTrigger({ asChild, children }: DropdownMenuTriggerPr
 
     if (asChild && React.isValidElement(children)) {
         return React.cloneElement(children as React.ReactElement<any>, {
+            ref: triggerRef,
             onClick: (e: React.MouseEvent) => {
+                e.preventDefault();
                 e.stopPropagation();
                 (children as React.ReactElement<any>).props.onClick?.(e);
                 toggle();
@@ -79,7 +95,11 @@ export function DropdownMenuTrigger({ asChild, children }: DropdownMenuTriggerPr
     }
 
     return (
-        <Button variant="ghost" className="p-0 h-auto font-normal hover:bg-transparent" onClick={toggle} type="button">
+        <Button ref={triggerRef as any} variant="ghost" className="p-0 h-auto font-normal hover:bg-transparent" onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggle();
+        }} type="button">
             {children}
         </Button>
     );
@@ -91,27 +111,62 @@ interface DropdownMenuContentProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 
 export function DropdownMenuContent({ children, align = "center", className, ...props }: DropdownMenuContentProps) {
-    const { isOpen } = React.useContext(DropdownMenuContext);
+    const { isOpen, triggerRef, contentRef, mounted } = React.useContext(DropdownMenuContext);
+    const [position, setPosition] = React.useState({ top: 0, left: 0 });
 
-    if (!isOpen) return null;
+    React.useEffect(() => {
+        if (isOpen && triggerRef.current) {
+            const updatePosition = () => {
+                const triggerRect = triggerRef.current!.getBoundingClientRect();
+                const scrollY = window.scrollY;
+                const scrollX = window.scrollX;
+                
+                let top = triggerRect.bottom + scrollY + 4; // 4px margin
+                let left = triggerRect.left + scrollX;
+                
+                if (contentRef.current) {
+                    const contentRect = contentRef.current.getBoundingClientRect();
+                    if (align === "end") {
+                        left = triggerRect.right + scrollX - contentRect.width;
+                    } else if (align === "center") {
+                        left = triggerRect.left + scrollX + (triggerRect.width / 2) - (contentRect.width / 2);
+                    }
+                }
+                
+                setPosition({ top, left });
+            };
+            
+            updatePosition();
+            // Re-calc after a tiny delay in case content width wasn't ready
+            setTimeout(updatePosition, 0);
 
-    const alignmentClasses = {
-        start: "left-0",
-        end: "right-0",
-        center: "left-1/2 -translate-x-1/2",
-    };
+            window.addEventListener('resize', updatePosition);
+            window.addEventListener('scroll', updatePosition, true); // true for capturing scrolling events anywhere
+            return () => {
+                window.removeEventListener('resize', updatePosition);
+                window.removeEventListener('scroll', updatePosition, true);
+            };
+        }
+    }, [isOpen, triggerRef, align]);
 
-    return (
+    if (!isOpen || !mounted) return null;
+
+    return createPortal(
         <div
+            ref={contentRef}
             className={cn(
-                "absolute z-[150] mt-2 min-w-[8rem] overflow-hidden rounded-md border border-gray-100 bg-white p-1 text-gray-950 shadow-md dark:border-white/10 dark:bg-[#1E2028] dark:text-gray-50",
-                alignmentClasses[align],
+                "fixed z-[200] min-w-[8rem] overflow-hidden rounded-md border border-gray-100 bg-white p-1 text-gray-950 shadow-md dark:border-white/10 dark:bg-[#1E2028] dark:text-gray-50",
                 className
             )}
+            style={{
+                top: `${position.top}px`,
+                left: `${position.left}px`,
+            }}
             {...props}
         >
             {children}
-        </div>
+        </div>,
+        document.body
     );
 }
 

@@ -72,8 +72,8 @@ export function PsychologyDashboard() {
 
             const json = await res.json();
             setData(json);
-        } catch (error) {
-            toast.error("Failed to load psychology data");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to load psychology data"));
         } finally {
             setIsLoading(false);
         }

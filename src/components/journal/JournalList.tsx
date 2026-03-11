@@ -270,10 +270,10 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
         try {
             const res = await updateJournalEntry(id, data);
             if (res.error) throw new Error(res.error);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Update failed", error);
             setEntries(previousEntries);
-            toast.error("Failed to update entry");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to update entry"));
         }
     };
 

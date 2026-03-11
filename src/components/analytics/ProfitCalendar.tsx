@@ -61,8 +61,8 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                     endBalance
                 });
             }
-        } catch (err) {
-            toast.error("Failed to load details for this day.");
+        } catch (err: any) {
+            toast.error(err instanceof Error ? err.message : (err?.message || "Failed to load details for this day."));
         } finally {
             setLoadingDay(null);
         }
@@ -121,9 +121,9 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
             document.body.removeChild(link);
             
             toast.success("Screenshot saved successfully!");
-        } catch (error) {
+        } catch (error: any) {
             console.error("Screenshot error:", error);
-            toast.error("Failed to capture screenshot");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to capture screenshot"));
         } finally {
             setIsCapturing(false);
         }

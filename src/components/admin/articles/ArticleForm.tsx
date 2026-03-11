@@ -303,7 +303,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     <Button
                         onClick={() => handleSubmit()}
                         disabled={isSubmitting}
-                        className="flex items-center h-auto gap-2 px-6 py-2 bg-primary hover:bg-[#00B078] shadow-lg shadow-primary/30 text-white font-bold rounded-xl active:scale-95 active:translate-y-0 transition-all disabled:opacity-50"
+                        className="flex items-center h-auto gap-2 px-6 py-2 bg-primary hover:bg-[#00C888] shadow-lg shadow-primary/30 text-white font-bold rounded-xl active:scale-95 active:translate-y-0 transition-all disabled:opacity-50"
                     >
                         {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                         {isEditMode ? "Update" : "Publish"}

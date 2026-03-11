@@ -1,10 +1,17 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+import useSWR from "swr";
 import { Plus, Edit2, Trash2, Zap, Search, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import Link from "next/link";
+
 import { toast } from "sonner";
+
+const fetcher = async (url: string) => {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Failed to load data");
+    return res.json();
+};
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -18,8 +25,14 @@ interface Shortcut {
 }
 
 export default function ShortcutsManagerPage() {
-    const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { data, error, isLoading, mutate } = useSWR("/api/articles/shortcuts", fetcher, {
+        onError: (err) => {
+            toast.error(err.message || "Failed to load shortcuts");
+        }
+    });
+
+    const shortcuts: Shortcut[] = data || [];
+
     const [searchQuery, setSearchQuery] = useState("");
     
     // Modal State
@@ -33,24 +46,7 @@ export default function ShortcutsManagerPage() {
     const [shortcutToDelete, setShortcutToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    useEffect(() => {
-        fetchShortcuts();
-    }, []);
 
-    const fetchShortcuts = async () => {
-        setIsLoading(true);
-        try {
-            const res = await fetch("/api/articles/shortcuts");
-            if (res.ok) {
-                const data = await res.json();
-                setShortcuts(data);
-            }
-        } catch (error) {
-            toast.error("Failed to load shortcuts");
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const handleOpenModal = (shortcut?: Shortcut) => {
         if (shortcut) {
@@ -94,10 +90,10 @@ export default function ShortcutsManagerPage() {
             if (!res.ok) throw new Error("API Error");
 
             toast.success(editingId ? "Shortcut updated!" : "Shortcut created!");
-            fetchShortcuts();
+            await mutate(); // Revalidate SWR data
             handleCloseModal();
-        } catch (error) {
-            toast.error("An error occurred preserving the shortcut.");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An error occurred preserving the shortcut."));
         } finally {
             setIsSubmitting(false);
         }
@@ -116,9 +112,9 @@ export default function ShortcutsManagerPage() {
             const res = await fetch(`/api/articles/shortcuts/${shortcutToDelete}`, { method: "DELETE" });
             if (!res.ok) throw new Error("Delete failed");
             toast.success("Shortcut deleted successfully.");
-            fetchShortcuts();
-        } catch (error) {
-            toast.error("Failed to delete shortcut.");
+            await mutate();
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to delete shortcut."));
         } finally {
             setIsDeleting(false);
             setIsConfirmOpen(false);
@@ -156,10 +152,10 @@ export default function ShortcutsManagerPage() {
             </div>
 
             {/* Main Content */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+            <div className="space-y-6">
                 
-                {/* Search Bar - Height Sync Fixed */}
-                <div className="p-6 border-b border-gray-200 dark:border-white/10">
+                {/* Search Bar Toolbar Card */}
+                <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
                     <div className="flex-1 w-full max-w-md">
                         <PremiumInput
                             icon={Search}
@@ -170,12 +166,12 @@ export default function ShortcutsManagerPage() {
                     </div>
                 </div>
 
-                {/* List */}
-                <div className="p-6 flex-1">
+                {/* List Card */}
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm p-6 min-h-[400px]">
                     {isLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                             {[1, 2, 3, 4, 5, 6].map((i) => (
-                                <div key={i} className="flex flex-col p-6 bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-xl h-[160px] animate-pulse">
+                                <div key={i} className="flex flex-col p-6 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl h-[160px] animate-pulse">
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10" />
                                         <div className="h-5 bg-gray-200 dark:bg-white/10 rounded-md w-1/2" />
@@ -184,7 +180,7 @@ export default function ShortcutsManagerPage() {
                                         <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-full" />
                                         <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-3/4" />
                                     </div>
-                                    <div className="mt-auto pt-4 border-t border-gray-100 dark:border-white/5 flex justify-between">
+                                    <div className="mt-auto pt-4 border-t border-gray-200 dark:border-white/10 flex justify-between">
                                         <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-24" />
                                         <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-16" />
                                     </div>
@@ -240,9 +236,6 @@ export default function ShortcutsManagerPage() {
                             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                                 You haven't created any reusable snippets yet. Create your first shortcut to start saving time while writing articles.
                             </p>
-                            <Button onClick={() => handleOpenModal()}>
-                                <Plus size={18} className="mr-2" /> Create First Shortcut
-                            </Button>
                         </div>
                     )}
                 </div>
@@ -256,14 +249,14 @@ export default function ShortcutsManagerPage() {
                         <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-white/10">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <Zap className="text-yellow-500" size={24} />
-                                {editingId ? "Edit Shortcut" : "Create New Shortcut"}
+                                <span>{editingId ? "Edit Shortcut" : "Create New Shortcut"}</span>
                             </h2>
                         </div>
 
-                        <div className="p-6 overflow-y-auto flex-1 bg-gray-50/50 dark:bg-black/20">
-                            <form id="shortcut-form" onSubmit={handleSubmit} className="space-y-6">
+                        <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-[#1E2028]">
+                            <form id="shortcut-form" onSubmit={handleSubmit} className="-mt-4 space-y-5">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="md:col-span-1 space-y-4">
+                                    <div className="md:col-span-1 space-y-5">
                                         <div className="group">
                                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                                                 Shortcut Name <span className="text-red-500">*</span>
@@ -293,11 +286,13 @@ export default function ShortcutsManagerPage() {
                                         <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                                             Snippet Content <span className="text-red-500">*</span>
                                         </label>
-                                        <RichTextEditor
-                                            content={formData.content}
-                                            onChange={content => setFormData({ ...formData, content })}
-                                            className="h-[300px] shadow-sm rounded-xl border border-gray-200 dark:border-white/10"
-                                        />
+                                        <div className="-mt-1">
+                                            <RichTextEditor
+                                                content={formData.content}
+                                                onChange={content => setFormData({ ...formData, content })}
+                                                className="h-[300px] shadow-sm rounded-xl border border-gray-200 dark:border-white/10"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </form>

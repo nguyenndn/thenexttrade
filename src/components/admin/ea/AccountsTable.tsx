@@ -65,8 +65,8 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                 toast.error(result.error);
                 setIsConfirmOpen(false);
             }
-        } catch (error) {
-            toast.error("Failed to delete license");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to delete license"));
             setIsConfirmOpen(false);
         } finally {
             setIsDeleting(false);

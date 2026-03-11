@@ -73,8 +73,18 @@ export default async function AnalyticsPage({
     const startDateParam = resolvedParams?.from as string;
     const endDateParam = resolvedParams?.to as string;
 
-    const startDate = parseLocalStartOfDay(startDateParam);
-    const endDate = parseLocalEndOfDay(endDateParam);
+    // Fetch account timezone for date boundary alignment
+    let accountTimezone: string | undefined;
+    if (accountId) {
+        const acc = await prisma.tradingAccount.findFirst({
+            where: { id: accountId, userId: user.id },
+            select: { timezone: true }
+        });
+        accountTimezone = acc?.timezone || undefined;
+    }
+
+    const startDate = parseLocalStartOfDay(startDateParam, accountTimezone);
+    const endDate = parseLocalEndOfDay(endDateParam, accountTimezone);
 
     return (
         <div className="space-y-4">
@@ -91,14 +101,15 @@ export default async function AnalyticsPage({
                     user={user} 
                     accountId={accountId} 
                     startDate={startDate} 
-                    endDate={endDate} 
+                    endDate={endDate}
+                    timezone={accountTimezone}
                 />
             </Suspense>
         </div>
     );
 }
 
-async function AnalyticsDataWrapper({ user, accountId, startDate, endDate }: any) {
+async function AnalyticsDataWrapper({ user, accountId, startDate, endDate, timezone }: any) {
     // 2. Parallel Data Fetching
     const [
         stats,
@@ -108,9 +119,9 @@ async function AnalyticsDataWrapper({ user, accountId, startDate, endDate }: any
         streak,
     ] = await Promise.all([
         getKeyStats(user.id, accountId, startDate, endDate),
-        getDailyPerformance(user.id, accountId, startDate, endDate),
+        getDailyPerformance(user.id, accountId, startDate, endDate, timezone),
         getSymbolPerformance(user.id, accountId, startDate, endDate),
-        getDayOfWeekPerformance(user.id, accountId, startDate, endDate),
+        getDayOfWeekPerformance(user.id, accountId, startDate, endDate, timezone),
         getCurrentStreak(user.id, accountId)
     ]);
 

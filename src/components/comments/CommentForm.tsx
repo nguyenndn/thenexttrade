@@ -81,8 +81,8 @@ export function CommentForm({
             toast.success("Comment posted!");
             reset();
             onSuccess?.();
-        } catch (error) {
-            toast.error("Something went wrong");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Something went wrong"));
             console.error(error);
         } finally {
             setIsLoading(false);

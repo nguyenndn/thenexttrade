@@ -425,6 +425,7 @@ model TradingAccount {
   totalTrades     Int       @default(0) @map("total_trades")
   autoSync        Boolean   @default(true) @map("auto_sync")
   syncOpenTrades  Boolean   @default(false) @map("sync_open_trades")
+  timezone        String    @default("Etc/UTC") @map("timezone") @db.VarChar(50) // IANA timezone e.g. "Europe/Athens", "Etc/UTC"
 
   // Spec 1.1 & Enhanced Features
   equity          Float?   @default(0)

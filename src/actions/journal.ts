@@ -40,12 +40,13 @@ export async function getJournalEntries(
         sortBy?: string;
         sortOrder?: "asc" | "desc";
         hasImages?: boolean;
+        timezone?: string;
     } = {}
 ) {
     const user = await getAuthUser();
     if (!user) return { entries: [], meta: { total: 0, page, limit, totalPages: 0 } };
 
-    const { accountId, symbol, type, status, tag, dateFrom, dateTo, sortBy, sortOrder, hasImages } = filters;
+    const { accountId, symbol, type, status, tag, dateFrom, dateTo, sortBy, sortOrder, hasImages, timezone } = filters;
     const skip = (page - 1) * limit;
 
     const where: any = { userId: user.id };
@@ -61,9 +62,9 @@ export async function getJournalEntries(
         }
     }
 
-    const dateFilter = buildDateRangeFilter(dateFrom, dateTo);
+    const dateFilter = buildDateRangeFilter(dateFrom, dateTo, timezone);
     if (dateFilter) {
-        where.entryDate = dateFilter;
+        where.exitDate = dateFilter;
     }
 
     if (hasImages) {
@@ -343,7 +344,7 @@ export async function exportJournalEntries(filters: {
 
     const dateFilter = buildDateRangeFilter(dateFrom, dateTo);
     if (dateFilter) {
-        where.entryDate = dateFilter;
+        where.exitDate = dateFilter;
     }
 
     if (tag) {

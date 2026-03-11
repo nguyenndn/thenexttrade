@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import { Edit2, Trash2, Plus, FolderOpen, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
@@ -14,6 +15,13 @@ import { CategoryModal } from "./CategoryModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
 
+const fetcher = async (url: string) => {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Failed to load categories");
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+};
+
 interface Category {
     id: string;
     name: string;
@@ -25,8 +33,12 @@ interface Category {
 }
 
 export default function CategoryList() {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { data: categories = [], isLoading, mutate } = useSWR("/api/categories", fetcher, {
+        onError: (err) => {
+            toast.error(err.message || "Failed to load categories");
+        }
+    });
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState<Category | undefined>(undefined);
     
@@ -34,23 +46,6 @@ export default function CategoryList() {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
-
-    const fetchCategories = async () => {
-        try {
-            setIsLoading(true);
-            const res = await fetch("/api/categories");
-            const data = await res.json();
-            setCategories(Array.isArray(data) ? data : []);
-        } catch (error) {
-            toast.error("Failed to load categories");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchCategories();
-    }, []);
 
     const confirmDelete = (id: string) => {
         setCategoryToDelete(id);
@@ -74,7 +69,7 @@ export default function CategoryList() {
             toast.success("Category deleted");
             setIsConfirmOpen(false);
             setCategoryToDelete(null);
-            fetchCategories();
+            await mutate();
         } catch (error: any) {
             toast.error(error.message);
         } finally {
@@ -93,7 +88,7 @@ export default function CategoryList() {
     };
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
                 <div className="flex flex-col gap-2">
@@ -117,15 +112,15 @@ export default function CategoryList() {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 shadow-sm border border-gray-100 dark:border-white/5">
-                <div className="w-full">
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left border-collapse">
+                        <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
                             <tr>
-                                <th className="px-6 py-4 rounded-l-xl">Name</th>
-                                <th className="px-6 py-4">Slug</th>
-                                <th className="px-6 py-4">Articles</th>
-                                <th className="px-6 py-4 rounded-r-xl text-right">Actions</th>
+                                <th className="px-6 py-5">Name</th>
+                                <th className="px-6 py-5">Slug</th>
+                                <th className="px-6 py-5">Articles</th>
+                                <th className="px-6 py-5 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -134,7 +129,7 @@ export default function CategoryList() {
                                     <td colSpan={4} className="px-6 py-12 text-center">
                                         <div className="flex items-center justify-center gap-3 text-gray-500">
                                             <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                                            <span className="font-medium text-sm">Loading categories...</span>
+                                            <span className="font-medium text-sm">Loading...</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -153,20 +148,20 @@ export default function CategoryList() {
                                 </tr>
                             ) : (
                                 categories.map((category) => (
-                                    <tr key={category.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                                        <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">
+                                    <tr key={category.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors">
+                                        <td className="px-6 py-5 font-bold text-gray-900 dark:text-white">
                                             {category.name}
                                             {category.description && (
                                                 <div className="text-xs text-gray-500 font-normal mt-1">{category.description}</div>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-500 font-mono text-xs">{category.slug}</td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-5 text-gray-500 font-mono text-xs">{category.slug}</td>
+                                        <td className="px-6 py-5">
                                             <span className="bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-lg text-xs font-bold">
                                                 {category._count?.articles || 0}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-6 py-5 text-right">
                                             <div className="flex justify-end">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
@@ -210,7 +205,7 @@ export default function CategoryList() {
             <CategoryModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onSuccess={fetchCategories}
+                onSuccess={() => mutate()}
                 category={editingCategory}
             />
 
@@ -218,7 +213,7 @@ export default function CategoryList() {
                 isOpen={isConfirmOpen}
                 title="Delete Category"
                 description="Are you sure you want to delete this category? All articles inside will be uncategorized. This action cannot be undone."
-                confirmText="Delete Category"
+                confirmText={isDeleting ? "Deleting..." : "Delete Category"}
                 onConfirm={handleDelete}
                 onCancel={() => {
                     if (!isDeleting) setIsConfirmOpen(false);

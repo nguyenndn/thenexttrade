@@ -107,8 +107,8 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
             title={tag ? "Edit Tag" : "Create Tag"}
         >
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <div className="space-y-1.5">
-                    <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Name</label>
+                <div className="group">
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Name</label>
                     <input
                         {...register("name")}
                         className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
@@ -117,8 +117,8 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
                     {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
                 </div>
 
-                <div className="space-y-1.5">
-                    <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                <div className="group">
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                         Slug <span className="font-normal text-gray-400">(Optional)</span>
                     </label>
                     <input
@@ -140,7 +140,7 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
                     <Button
                         type="submit"
                         isLoading={isSubmitting}
-                        className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold"
+                        className="bg-primary hover:bg-[#00C888] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold"
                     >
                         {tag ? "Save Changes" : "Create Tag"}
                     </Button>

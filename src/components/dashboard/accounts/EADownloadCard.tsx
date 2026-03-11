@@ -37,8 +37,8 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
             } else {
                 toast.error(data.error || "Cannot download file. Please try again.");
             }
-        } catch (error) {
-            toast.error("An error occurred while downloading.");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An error occurred while downloading."));
         } finally {
             setIsDownloading(null);
         }

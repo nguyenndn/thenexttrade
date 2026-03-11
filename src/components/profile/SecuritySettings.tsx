@@ -48,8 +48,8 @@ export function SecuritySettings() {
                             const form = document.querySelector('form');
                             form?.reset();
                         }
-                    } catch (e) {
-                        toast.error("Something went wrong");
+                    } catch (e: any) {
+                        toast.error(e instanceof Error ? e.message : (e?.message || "Something went wrong"));
                     } finally {
                         setIsLoading(false);
                     }

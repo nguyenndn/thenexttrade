@@ -72,9 +72,9 @@ export default function LessonView({
                 toast.success("Great! You've completed this lesson.");
                 setTimeout(moveToNext, 1500);
             }
-        } catch (error) {
+        } catch (error: any) {
 
-            toast.error("Failed to save progress.");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to save progress."));
         } finally {
             setCompleting(false);
         }

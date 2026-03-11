@@ -100,8 +100,8 @@ export function AccountSettingsModal({
                 setApiKey(result.apiKey ?? null);
                 setShowApiKey(true);
             }
-        } catch (error) {
-            toast.error("Could not retrieve API key");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Could not retrieve API key"));
         } finally {
             setIsLoadingKey(false);
         }

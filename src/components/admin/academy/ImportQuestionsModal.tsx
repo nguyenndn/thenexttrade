@@ -93,8 +93,8 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
             onImportSuccess();
             onClose();
             setStep("quiz-select");
-        } catch (error) {
-            toast.error("Failed to import questions");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to import questions"));
         } finally {
             setIsLoading(false);
         }

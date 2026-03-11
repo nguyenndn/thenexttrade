@@ -147,9 +147,9 @@ export function ProductForm({ initialData }: ProductFormProps) {
                 }
             }
 
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            toast.error("Something went wrong");
+            toast.error(err instanceof Error ? err.message : (err?.message || "Something went wrong"));
         } finally {
             setIsLoading(false);
         }
@@ -174,9 +174,9 @@ export function ProductForm({ initialData }: ProductFormProps) {
                             <Button variant="outline" type="button">Cancel</Button>
                         </Link>
                         <Button
+                            variant="primary"
                             type="submit"
                             disabled={isLoading}
-                            className="bg-primary hover:bg-[#00B078] text-white border-none shadow-lg shadow-primary/40 rounded-xl px-6 font-bold"
                         >
                             {isLoading ? (
                                 <span className="flex items-center gap-2">Processing...</span>
@@ -226,7 +226,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl outline-none hover:bg-gray-100 dark:hover:bg-white/10 transition-all justify-between text-left font-normal shadow-none h-auto"
+                                        className="w-full bg-gray-50 dark:bg-white/5 justify-between text-left font-normal shadow-none"
                                     >
                                         <span>{typeValue === EAType.AUTO_TRADE ? "Auto Trade (Robot)" : typeValue === EAType.MANUAL_ASSIST ? "Manual Assist (Tool)" : "Indicator"}</span>
                                         <ChevronDown size={14} className="opacity-50" />
@@ -247,7 +247,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl outline-none hover:bg-gray-100 dark:hover:bg-white/10 transition-all justify-between text-left font-normal shadow-none h-auto"
+                                        className="w-full bg-gray-50 dark:bg-white/5 justify-between text-left font-normal shadow-none"
                                     >
                                         <span>{isFreeValue ? "Free Download" : "Require Verification (Standard)"}</span>
                                         <ChevronDown size={14} className="opacity-50" />

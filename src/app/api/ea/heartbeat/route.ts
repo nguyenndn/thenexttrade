@@ -2,6 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { detectBroker } from "@/lib/ea/broker-detection";
 
+/**
+ * Maps a GMT hour offset from the EA to the most appropriate IANA timezone.
+ * Covers all common MT4/MT5 broker server timezones.
+ */
+function mapGmtOffsetToTimezone(offsetHours: number): string {
+    const map: Record<number, string> = {
+        [-5]: "America/New_York",   // US Eastern (some US brokers)
+        [-4]: "America/New_York",   // US Eastern (DST)
+        [-3]: "America/Sao_Paulo",  // Brazil
+        0: "Etc/UTC",               // Exness, some FXCM
+        1: "Europe/London",         // UK (BST / DST)
+        2: "Europe/Athens",         // EET - Vantage, IC Markets, FTMO (Winter)
+        3: "Europe/Athens",         // EEST - Vantage, IC Markets, FTMO (Summer / DST)
+    };
+    return map[offsetHours] || `Etc/GMT${offsetHours <= 0 ? '+' : '-'}${Math.abs(offsetHours)}`;
+}
+
 export async function POST(request: NextRequest) {
     try {
         const apiKey = request.headers.get("X-API-Key");
@@ -20,6 +37,7 @@ export async function POST(request: NextRequest) {
             server,      // ACCOUNT_SERVER  
             currency,    // ACCOUNT_CURRENCY
             leverage,    // ACCOUNT_LEVERAGE
+            gmtOffset,   // GMT offset in seconds (TimeCurrent - TimeGMT)
         } = body;
 
         const account = await prisma.tradingAccount.findUnique({
@@ -56,6 +74,13 @@ export async function POST(request: NextRequest) {
         // Auto-detect broker
         const detectedBroker = detectBroker(server || "", broker || "");
 
+        // Auto-detect timezone from GMT offset (seconds -> IANA timezone)
+        let detectedTimezone: string | undefined;
+        if (gmtOffset !== undefined && gmtOffset !== null) {
+            const offsetHours = Math.round(Number(gmtOffset) / 3600);
+            detectedTimezone = mapGmtOffsetToTimezone(offsetHours);
+        }
+
         // Update heartbeat, status, and EA-collected info
         await prisma.tradingAccount.update({
             where: { id: account.id },
@@ -77,6 +102,9 @@ export async function POST(request: NextRequest) {
                 ...(server ? { server } : {}),
                 ...(currency ? { currency } : {}),
                 ...(leverage ? { leverage: String(leverage) } : {}),
+
+                // Auto-detect timezone from EA
+                ...(detectedTimezone ? { timezone: detectedTimezone } : {}),
             },
         });
 

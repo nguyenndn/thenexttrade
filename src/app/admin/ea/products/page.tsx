@@ -22,9 +22,14 @@ export const metadata: Metadata = {
 };
 
 export default async function EAProductsPage() {
-    const products = await prisma.eAProduct.findMany({
-        orderBy: { createdAt: "desc" },
-    });
+    let products: any[] = [];
+    try {
+        products = await prisma.eAProduct.findMany({
+            orderBy: { createdAt: "desc" },
+        });
+    } catch (error) {
+        console.error("Failed to load EA products:", error);
+    }
 
     return (
         <div className="space-y-4 pb-10">
@@ -43,8 +48,8 @@ export default async function EAProductsPage() {
                     </div>
                 </div>
                 <Link href="/admin/ea/products/create">
-                    <Button variant="primary" className="bg-primary hover:bg-[#00B078] text-white">
-                        <Plus size={18} className="mr-2" />
+                    <Button variant="primary">
+                        <Plus size={18} />
                         Create Product
                     </Button>
                 </Link>

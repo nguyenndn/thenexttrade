@@ -123,9 +123,9 @@ export function ReportsDashboard() {
                 setPreviewData(data);
                 toast.success("Ready to preview");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error("Failed to generate report");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to generate report"));
         } finally {
             setIsGenerating(false);
         }
@@ -137,9 +137,9 @@ export function ReportsDashboard() {
             const { generatePDF } = await import("@/lib/pdf-utils");
             await generatePDF(previewData);
             toast.success("PDF Downloaded");
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            toast.error("Failed to generate PDF");
+            toast.error(e instanceof Error ? e.message : (e?.message || "Failed to generate PDF"));
         }
     };
 

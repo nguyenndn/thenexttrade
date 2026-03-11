@@ -58,8 +58,8 @@ export function ProductList({ products }: ProductListProps) {
                 toast.error(result.error);
                 setIsConfirmOpen(false);
             }
-        } catch (error) {
-            toast.error("Failed to delete product");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to delete product"));
             setIsConfirmOpen(false);
         } finally {
             setIsDeleting(false);
@@ -132,7 +132,7 @@ export function ProductList({ products }: ProductListProps) {
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="outline"
-                                    className="relative w-full md:w-48 px-5 py-3 bg-gray-50 dark:bg-black/20 hover:bg-white dark:hover:bg-[#1E2028] border border-transparent hover:border-gray-100 dark:hover:border-white/5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 outline-none cursor-pointer hover:border-primary/50 shadow-sm transition-all flex justify-between items-center h-auto"
+                                    className="relative w-full md:w-48 bg-gray-50 dark:bg-black/20 hover:bg-white dark:hover:bg-[#1E2028] border border-transparent hover:border-gray-100 dark:hover:border-white/5 text-gray-700 dark:text-gray-200 shadow-sm justify-between group"
                                 >
                                     {filterType === "ALL" ? "All Types" : filterType.replace("_", " ")}
                                     <Filter className="text-gray-400 group-hover:text-primary transition-colors" size={16} />

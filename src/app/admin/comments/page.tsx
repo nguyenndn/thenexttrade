@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+import useSWR from "swr";
 import Link from "next/link";
 import { MessageSquare, Search, Trash2, ExternalLink, MoreVertical, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -8,6 +9,12 @@ import { formatDistanceToNow } from "date-fns";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+
+const fetcher = async (url: string) => {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Failed to load data");
+    return res.json();
+};
 
 interface Comment {
     id: string;
@@ -29,34 +36,19 @@ interface Comment {
 }
 
 export default function AdminCommentsPage() {
-    const [comments, setComments] = useState<Comment[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { data, error, isLoading, mutate } = useSWR("/api/admin/comments", fetcher, {
+        onError: (err) => {
+            console.error(err);
+            toast.error(err.message || "Error fetching comments");
+        }
+    });
+
+    const comments: Comment[] = data?.comments || [];
+
     const [searchQuery, setSearchQuery] = useState("");
     const [isDeleting, setIsDeleting] = useState<string | null>(null);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [commentToDelete, setCommentToDelete] = useState<Comment | null>(null);
-
-    const fetchComments = async () => {
-        setIsLoading(true);
-        try {
-            const res = await fetch("/api/admin/comments");
-            if (res.ok) {
-                const data = await res.json();
-                setComments(data.comments);
-            } else {
-                toast.error("Failed to load comments");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Error fetching comments");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchComments();
-    }, []);
 
     const confirmDelete = (comment: Comment) => {
         setCommentToDelete(comment);
@@ -75,14 +67,14 @@ export default function AdminCommentsPage() {
 
             if (res.ok) {
                 toast.success("Comment deleted");
-                setComments(comments.filter(c => c.id !== commentToDelete.id));
+                await mutate(); // Revalidate SWR cache
             } else {
                 const error = await res.json();
                 toast.error(error.error || "Failed to delete");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error("Error deleting comment");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Error deleting comment"));
         } finally {
             setIsDeleting(null);
             setCommentToDelete(null);
@@ -115,30 +107,32 @@ export default function AdminCommentsPage() {
                 </div>
             </div>
 
-            {/* Controls */}
-            <div className="flex items-center gap-4 bg-white dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-                <div className="relative flex-1 max-w-md">
-                    <PremiumInput
-                        icon={Search}
-                        placeholder="Search comments..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
+            {/* Data Wrapper */}
+            <div className="space-y-6">
+                {/* 1. Toolbar Card */}
+                <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
+                    <div className="flex-1 w-full max-w-md">
+                        <PremiumInput
+                            icon={Search}
+                            placeholder="Search comments..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
                 </div>
-            </div>
 
-            {/* List */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
-                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Author</th>
-                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider w-1/2">Comment</th>
-                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Context</th>
-                                <th className="text-right py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
+                {/* 2. Data Table Card */}
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                    <div className="overflow-x-auto custom-scrollbar">
+                        <table className="w-full text-left border-collapse">
+                            <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+                                <tr>
+                                    <th className="py-4 px-6 border-b border-gray-100 dark:border-white/5">Author</th>
+                                    <th className="py-4 px-6 border-b border-gray-100 dark:border-white/5 w-1/2">Comment</th>
+                                    <th className="py-4 px-6 border-b border-gray-100 dark:border-white/5">Context</th>
+                                    <th className="py-4 px-6 border-b border-gray-100 dark:border-white/5 text-right">Actions</th>
+                                </tr>
+                            </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {isLoading ? (
                                 Array.from({ length: 5 }).map((_, i) => (
@@ -182,7 +176,7 @@ export default function AdminCommentsPage() {
                                 filteredComments.map((comment) => (
                                     <tr
                                         key={comment.id}
-                                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors group"
+                                        className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors"
                                     >
                                         <td className="py-4 px-6">
                                             <div className="flex items-center gap-3">
@@ -238,8 +232,8 @@ export default function AdminCommentsPage() {
                                                 disabled={isDeleting === comment.id}
                                                 isLoading={isDeleting === comment.id}
                                                 variant="ghost"
-                                                className="hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400"
-                                                title="Delete Comment"
+                                                size="icon"
+                                                className="w-8 h-8 p-0 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400"
                                                 aria-label={`Delete comment from ${comment.user.name || "Unknown"}`}
                                             >
                                                 {isDeleting !== comment.id && <Trash2 size={18} aria-hidden="true" />}
@@ -251,6 +245,8 @@ export default function AdminCommentsPage() {
                         </tbody>
                     </table>
                 </div>
+            </div>
+            
             </div>
 
             {/* Delete Confirmation Dialog */}

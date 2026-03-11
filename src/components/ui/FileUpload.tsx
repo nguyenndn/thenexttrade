@@ -49,8 +49,8 @@ export function FileUpload({ value, onChange, className, label = "Upload Image" 
             } else {
                 toast.error(data.error || "Failed to upload image");
             }
-        } catch (error) {
-            toast.error("An unexpected error occurred during upload");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An unexpected error occurred during upload"));
             console.error(error);
         } finally {
             setIsUploading(false);

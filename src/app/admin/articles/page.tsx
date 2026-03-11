@@ -121,7 +121,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                 <div className="flex items-center gap-3">
                     <Link
                         href="/admin/articles/create"
-                        className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0"
+                        className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00C888] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         Add New

@@ -25,8 +25,8 @@ export function RegenerateKeyModal({ isOpen, onClose, accountId }: RegenerateKey
             if (result.error) throw new Error(result.error);
             setNewKey(result.apiKey || null);
             toast.success("New API Key generated");
-        } catch (e) {
-            toast.error("Failed to regenerate key");
+        } catch (e: any) {
+            toast.error(e instanceof Error ? e.message : (e?.message || "Failed to regenerate key"));
         } finally {
             setIsGenerating(false);
         }

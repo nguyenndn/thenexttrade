@@ -38,8 +38,8 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
             } else {
                 toast.error(res.error || "Failed to submit");
             }
-        } catch (error) {
-            toast.error("Something went wrong");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Something went wrong"));
         } finally {
             setIsLoading(false);
         }

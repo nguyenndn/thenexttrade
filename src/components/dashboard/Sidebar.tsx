@@ -10,7 +10,7 @@ import {
     LogOut,
     ChevronDown
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { signout } from '@/app/auth/actions';
 import { Button } from "@/components/ui/Button";
 
@@ -35,22 +35,21 @@ interface SidebarItemComponentProps {
     setCollapsed: (value: boolean) => void;
     isExpanded: boolean;
     onToggle: () => void;
+    activeHref: string | null;
 }
 
 // Extracted component to follow Rules of Hooks
-function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpanded, onToggle }: SidebarItemComponentProps) {
+function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpanded, onToggle, activeHref }: SidebarItemComponentProps) {
     const Icon = item.icon;
     const hasSubItems = item.items && item.items.length > 0;
     const isGroupLink = hasSubItems && item.href !== "#"; // e.g. Dashboard
 
     // Active Logic
-    // Exact match for the item itself
-    const isSelfActive = item.href !== "#" && pathname === item.href;
+    // Exact match determined by the parent's longest prefix match
+    const isSelfActive = item.href !== "#" && item.href === activeHref;
 
-    // Check if any child is active
-    const isChildActive = item.items && item.items.some(sub =>
-        pathname === sub.href || pathname?.startsWith(`${sub.href}/`)
-    );
+    // Check if any child is precisely the active one
+    const isChildActive = item.items && item.items.some(sub => sub.href === activeHref);
 
     const isBranchActive = isSelfActive || isChildActive;
 
@@ -109,6 +108,29 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     const isCollapsed = collapsed ?? false;
     // const [collapsed, setCollapsed] = useState(false); // Removed local state
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+
+    // Calculate the most specific active route using longest prefix match
+    const activeHref = useMemo(() => {
+        if (!pathname) return null;
+        let bestMatch = "";
+        
+        const checkMatch = (href: string) => {
+             if (href && href !== "#" && (pathname === href || pathname.startsWith(`${href}/`))) {
+                 if (href.length > bestMatch.length) {
+                     bestMatch = href;
+                 }
+             }
+        }
+        
+        items.forEach((item: any) => {
+            checkMatch(item.href);
+            if (item.items) {
+                item.items.forEach((sub: any) => checkMatch(sub.href));
+            }
+        });
+        
+        return bestMatch || null;
+    }, [pathname, items]);
 
     useEffect(() => {
         if (!pathname) return;
@@ -178,6 +200,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                                 onToggle={() => {
                                     setExpandedGroup(prev => prev === item.name ? null : item.name);
                                 }}
+                                activeHref={activeHref}
                             />
                         </div>
                     );

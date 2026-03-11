@@ -58,8 +58,8 @@ export default function CreateBrokerPage() {
             } else {
                 toast.error(result.error || 'Failed to create broker');
             }
-        } catch (error) {
-            toast.error('An unexpected error occurred');
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || 'An unexpected error occurred'));
         } finally {
             setLoading(false);
         }

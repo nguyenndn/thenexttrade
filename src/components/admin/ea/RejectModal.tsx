@@ -46,8 +46,8 @@ export function RejectModal({ license, isOpen, onClose }: RejectModalProps) {
             } else {
                 toast.error(result.error);
             }
-        } catch (error) {
-            toast.error("An error occurred");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An error occurred"));
         } finally {
             setIsSubmitting(false);
         }
@@ -92,8 +92,7 @@ export function RejectModal({ license, isOpen, onClose }: RejectModalProps) {
                         </Button>
                         <Button
                             type="submit"
-                            variant="primary"
-                            className="bg-red-500 hover:bg-red-600 text-white shadow-red-500/20"
+                            variant="destructive"
                             disabled={isSubmitting}
                         >
                             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

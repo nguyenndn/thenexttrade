@@ -43,8 +43,8 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
             } else {
                 toast.error(result.error || "Failed to remove account");
             }
-        } catch (error) {
-            toast.error("An error occurred");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "An error occurred"));
         } finally {
             setRemovingId(null);
             setIsConfirmOpen(false);

@@ -34,8 +34,8 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
             toast.success("Quiz updated successfully");
             onSaved();
             onClose();
-        } catch (error) {
-            toast.error("Error updating quiz");
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : (error?.message || "Error updating quiz"));
         } finally {
             setIsLoading(false);
         }

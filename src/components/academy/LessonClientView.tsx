@@ -50,9 +50,9 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     else if (isLastLesson && quiz) router.push(`/academy/quiz/${quiz.id}`);
                 }, 1500);
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error("Failed to save progress.");
+            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to save progress."));
         } finally {
             setCompleting(false);
         }

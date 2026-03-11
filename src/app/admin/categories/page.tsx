@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function CategoriesPage() {
     return (
-        <div className="space-y-10">
+        <div className="space-y-4 pb-10">
             <CategoryList />
         </div>
     );

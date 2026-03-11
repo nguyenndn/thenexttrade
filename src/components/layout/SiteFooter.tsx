@@ -11,7 +11,7 @@ export function SiteFooter() {
             <div className="absolute -top-[200px] -left-[200px] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute top-[20%] right-[-100px] w-[300px] h-[300px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-            <div className="w-full lg-plus:w-4/5 mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 relative z-10">
+            <div className="w-full lg:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 relative z-10">
                 {/* Top Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 mb-12">
                     {/* Brand Section */}
