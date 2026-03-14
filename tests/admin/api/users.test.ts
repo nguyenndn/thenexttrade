@@ -162,7 +162,7 @@ describe('Users API', () => {
                 ok: true,
                 json: () => Promise.resolve({
                     success: true,
-                    data: { users: mockUsers.filter(u => u.status === 'ACTIVE'), total: 2 },
+                    data: { users: mockUsers.filter(u => (u as any).status === 'ACTIVE'), total: 2 },
                 }),
             });
 

@@ -57,7 +57,7 @@ function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
     const handleDelete = async (levelId: string) => {
         const confirmed = window.confirm('Are you sure you want to delete this course level?');
         if (confirmed) {
-            mockToast.loading('Deleting level...');
+            mockToast.loading();
             try {
                 const res = await mockDeleteLevel(levelId);
                 if (res.success) {

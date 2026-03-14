@@ -3,7 +3,7 @@
  * @module tests/admin/components/ea/EAProductManager.test
  */
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockEAProducts } from '../../__mocks__/data';
@@ -394,7 +394,7 @@ describe('EAProductManager Component', () => {
 
         it('should not delete when cancelled', async () => {
             const user = userEvent.setup();
-            (global.confirm as jest.Mock).mockReturnValueOnce(false);
+            (global.confirm as Mock).mockReturnValueOnce(false);
             render(<EAProductManager onDelete={mockOnDelete} />);
 
             await user.click(screen.getByTestId(`delete-${mockEAProducts[0].id}`));

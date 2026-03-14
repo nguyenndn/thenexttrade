@@ -111,51 +111,52 @@ export function ProductList({ products }: ProductListProps) {
 
     return (
         <div className="flex flex-col h-full">
-            {/* Premium Filters Card - Completely Separated */}
-            <Card className="p-5 mb-8 bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-xl shadow-xl shadow-gray-100/50 dark:shadow-none flex flex-col md:flex-row gap-6 items-center justify-between relative z-10">
+            {/* Toolbar Card */}
+            <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
                 {/* Search */}
-                <div className="relative w-full md:w-96 group">
-                    <div className="absolute inset-x-0 -bottom-2 h-2 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
-                    <PremiumInput
-                        icon={Search}
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
+                    <Search size={16} className="text-gray-400" aria-hidden="true" />
+                    <input
+                        type="text"
                         placeholder="Search products..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
                     />
                 </div>
 
                 {/* Filters */}
-                <div className="flex gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
-                    <div className="relative group">
-                        <div className="absolute inset-0 bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className="relative w-full md:w-48 bg-gray-50 dark:bg-black/20 hover:bg-white dark:hover:bg-[#1E2028] border border-transparent hover:border-gray-100 dark:hover:border-white/5 text-gray-700 dark:text-gray-200 shadow-sm justify-between group"
-                                >
-                                    {filterType === "ALL" ? "All Types" : filterType.replace("_", " ")}
-                                    <Filter className="text-gray-400 group-hover:text-primary transition-colors" size={16} />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-full md:w-48">
-                                <DropdownMenuItem onClick={() => setFilterType("ALL")}>All Types</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setFilterType("AUTO_TRADE")}>Auto Trade</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setFilterType("MANUAL_ASSIST")}>Manual Assist</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setFilterType("INDICATOR")}>Indicator</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                <div className="flex gap-4 w-full md:w-auto overflow-x-auto">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="md"
+                                className="h-[38px] flex items-center justify-between gap-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 w-full md:w-48 group hover:bg-gray-50 dark:hover:bg-white/5"
+                            >
+                                <span className="whitespace-nowrap flex items-center gap-1.5 font-medium">
+                                    Type: <span className="text-primary font-bold">{filterType === "ALL" ? "All" : filterType.replace("_", " ")}</span>
+                                </span>
+                                <ChevronDown size={14} className="text-gray-400 group-hover:text-primary transition-colors" aria-hidden="true" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-full md:w-48">
+                            <DropdownMenuItem onClick={() => setFilterType("ALL")}>All Types</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setFilterType("AUTO_TRADE")}>Auto Trade</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setFilterType("MANUAL_ASSIST")}>Manual Assist</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setFilterType("INDICATOR")}>Indicator</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
-            </Card>
+            </div>
 
-            {/* Content Section */}
-            <div className="flex-1 relative">
+            {/* Content Section - Data Table Card */}
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
                 {/* Empty State */}
                 {sortedProducts.length === 0 ? (
-                    <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-xl">
                         <div className="w-20 h-20 mx-auto bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6">
-                            <Bot size={40} className="text-gray-300 dark:text-gray-600" />
+                            <Bot size={40} className="text-gray-300 dark:text-gray-600" aria-hidden="true" />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Products Found</h3>
                         <p className="text-gray-500 dark:text-gray-400">
@@ -165,87 +166,86 @@ export function ProductList({ products }: ProductListProps) {
                         </p>
                     </div>
                 ) : (
-                    <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-white/5 bg-white dark:bg-[#1E2028] shadow-xl shadow-gray-100/50 dark:shadow-none">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left text-sm">
-                                <thead className="bg-gray-50/50 dark:bg-white/5 text-xs uppercase text-gray-500 dark:text-gray-400 font-bold tracking-wider backdrop-blur-sm">
+                    <>
+                        <div className="overflow-x-auto custom-scrollbar flex-1">
+                            <table className="w-full text-left text-sm border-collapse">
+                                <thead className="bg-gray-50/50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider backdrop-blur-sm sticky top-0 z-10">
                                     <tr>
-                                        <th className="px-8 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("name")}>
+                                        <th className="px-8 py-4 border-b border-gray-200 dark:border-white/5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("name")}>
                                             <div className="flex items-center">Product <SortIcon field="name" /></div>
                                         </th>
-                                        <th className="px-6 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("type")}>
+                                        <th className="px-6 py-4 border-b border-gray-200 dark:border-white/5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("type")}>
                                             <div className="flex items-center">Type <SortIcon field="type" /></div>
                                         </th>
-                                        <th className="px-6 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("version")}>
+                                        <th className="px-6 py-4 border-b border-gray-200 dark:border-white/5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("version")}>
                                             <div className="flex items-center">Version <SortIcon field="version" /></div>
                                         </th>
-                                        <th className="px-6 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("totalDownloads")}>
+                                        <th className="px-6 py-4 border-b border-gray-200 dark:border-white/5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("totalDownloads")}>
                                             <div className="flex items-center">Downloads <SortIcon field="totalDownloads" /></div>
                                         </th>
-                                        <th className="px-6 py-5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("isActive")}>
+                                        <th className="px-6 py-4 border-b border-gray-200 dark:border-white/5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("isActive")}>
                                             <div className="flex items-center">Status <SortIcon field="isActive" /></div>
                                         </th>
-                                        <th className="px-6 py-5 text-right w-24">Actions</th>
+                                        <th className="px-6 py-4 border-b border-gray-200 dark:border-white/5 text-right w-24">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                     {sortedProducts.map((product) => (
-                                        <tr key={product.id} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
+                                        <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors group">
                                             <td className="px-8 py-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-16 h-16 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 group-hover:shadow-md transition-all duration-300">
+                                                    <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-gray-100 dark:border-white/5 group-hover:shadow-md transition-all">
                                                         {product.thumbnail ? (
-                                                            <img src={product.thumbnail} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                            <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                                         ) : (
-                                                            <Bot size={24} className="text-gray-300 dark:text-gray-600" />
+                                                            <Bot size={20} className="text-gray-400" aria-hidden="true" />
                                                         )}
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-gray-900 dark:text-white text-base group-hover:text-primary transition-colors">{product.name}</p>
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{format(new Date(product.createdAt), "dd MMM yyyy")}</p>
+                                                        <p className="text-xs text-gray-500 mt-0.5">{format(new Date(product.createdAt), "dd MMM yyyy")}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="bg-gray-100 dark:bg-white/10 px-3 py-1.5 rounded-xl text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide border border-transparent group-hover:border-gray-200 dark:group-hover:border-white/10 transition-colors">
+                                                <span className="bg-gray-100 dark:bg-white/10 px-2.5 py-1 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-widest border border-gray-200 dark:border-white/5">
                                                     {product.type.replace("_", " ")}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 px-2 py-1 rounded text-xs font-bold font-mono">
-                                                        v{product.version}
-                                                    </span>
-                                                </div>
+                                                <span className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg text-xs font-bold font-mono">
+                                                    v{product.version}
+                                                </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 font-medium">
-                                                    <Download size={16} className="text-gray-400" />
+                                                <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 font-medium text-sm">
+                                                    <Download size={16} className="text-gray-400" aria-hidden="true" />
                                                     {product.totalDownloads}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
-                                                    <div className={`w-2 h-2 rounded-full ${product.isActive ? "bg-primary shadow-[0_0_10px_hsl(var(--primary))]" : "bg-gray-300 dark:bg-gray-600"}`} />
-                                                    <span className={`text-sm font-medium ${product.isActive ? "text-gray-900 dark:text-white" : "text-gray-500"}`}>
+                                                    <div className={`w-2 h-2 rounded-full ${product.isActive ? "bg-emerald-500 shadow-[0_0_8px_hsl(var(--primary))]" : "bg-gray-300 dark:bg-gray-600"}`} />
+                                                    <span className={`text-sm font-medium ${product.isActive ? "text-gray-900 dark:text-gray-200" : "text-gray-500"}`}>
                                                         {product.isActive ? "Active" : "Disabled"}
                                                     </span>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
+                                                <div className="flex items-center justify-end gap-1">
                                                     <Link href={`/admin/ea/products/${product.id}`}>
-                                                        <Button size="sm" variant="ghost" className="h-9 w-9 p-0 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/10 rounded-xl transition-colors">
-                                                            <Edit size={18} />
+                                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" aria-label={`Edit ${product.name}`}>
+                                                            <Edit size={16} />
                                                         </Button>
                                                     </Link>
                                                     <Button
-                                                        size="sm"
+                                                        size="icon"
                                                         variant="ghost"
-                                                        className="h-9 w-9 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors"
+                                                        className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                                         onClick={() => confirmDelete(product.id)}
+                                                        aria-label={`Delete ${product.name}`}
                                                     >
-                                                        <Trash2 size={18} />
+                                                        <Trash2 size={16} />
                                                     </Button>
                                                 </div>
                                             </td>
@@ -254,7 +254,15 @@ export function ProductList({ products }: ProductListProps) {
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                        {/* Pagination Placeholder */}
+                        <div className="border-t border-gray-200 dark:border-white/5 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-500">
+                            <span>Showing 1 - {sortedProducts.length} of {sortedProducts.length} products</span>
+                            <div className="flex items-center gap-2 opacity-50 pointer-events-none">
+                                <Button variant="outline" size="sm" className="h-8 text-xs">Previous</Button>
+                                <Button variant="outline" size="sm" className="h-8 text-xs">Next</Button>
+                            </div>
+                        </div>
+                    </>
                 )}
             </div>
 

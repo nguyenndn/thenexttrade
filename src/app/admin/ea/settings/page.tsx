@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -11,7 +12,8 @@ import {
     ShieldAlert, 
     Bell, 
     MessageCircle,
-    Loader2
+    Loader2,
+    ArrowLeft
 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -103,29 +105,30 @@ export default function EASettingsPage() {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl pb-10">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-8 bg-slate-500 rounded-full"></div>
-                    <div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter flex items-center gap-2">
-                            <Settings size={28} className="text-slate-500" />
+        <div className="w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pb-10 max-w-4xl">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+                    <div className="flex items-center gap-3">
+                        <Link href="/admin/ea" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0" title="Back to EA Dashboard">
+                            <ArrowLeft size={20} className="text-gray-500" />
+                        </Link>
+                        <div className="w-1.5 h-8 bg-primary rounded-full shrink-0" aria-hidden="true"></div>
+                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                             System Settings
                         </h1>
-                        <p className="text-sm text-gray-500 font-medium">Global configuration for EA Management</p>
                     </div>
+                    <div className="flex items-center gap-3">
+                    <Button 
+                        type="submit" 
+                        variant="primary" 
+                        disabled={isSaving || !isValid}
+                        className="flex items-center gap-2"
+                    >
+                        {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                        {isSaving ? "Saving..." : "Save Changes"}
+                    </Button>
                 </div>
-                
-                <Button 
-                    type="submit" 
-                    variant="primary" 
-                    disabled={isSaving || !isValid}
-                    className="flex items-center gap-2"
-                >
-                    {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                    {isSaving ? "Saving..." : "Save Changes"}
-                </Button>
             </div>
 
             {/* General Settings */}
@@ -267,7 +270,8 @@ export default function EASettingsPage() {
                 </div>
             </div>
             
-            <div className="py-4"></div>
-        </form>
+                <div className="py-4"></div>
+            </form>
+        </div>
     );
 }

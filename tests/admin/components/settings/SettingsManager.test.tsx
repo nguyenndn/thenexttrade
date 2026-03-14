@@ -3,7 +3,7 @@
  * @module tests/admin/components/settings/SettingsManager.test
  */
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockSettings, mockAuditLogs } from '../../__mocks__/data';
@@ -373,7 +373,7 @@ describe('SettingsManager Component', () => {
 
         it('should not reset when cancelled', async () => {
             const user = userEvent.setup();
-            (global.confirm as jest.Mock).mockReturnValueOnce(false);
+            (global.confirm as Mock).mockReturnValueOnce(false);
             render(<SettingsManager onResetSettings={mockOnResetSettings} />);
 
             await user.click(screen.getByTestId('reset-button'));
@@ -441,7 +441,7 @@ describe('SettingsManager Component', () => {
                 ...mockSettings,
                 { key: 'empty_cat_setting', value: 'test', category: 'empty_category' },
             ];
-            render(<SettingsManager settings={[{ key: 'test', value: 'val', category: 'other' }]} />);
+            render(<SettingsManager settings={[{ key: 'test', value: 'val', category: 'other', description: 'desc' }]} />);
 
             // If only one category, switch to another tab that doesn't exist
             // This test assumes the component handles this case

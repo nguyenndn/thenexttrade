@@ -66,33 +66,26 @@ export function ProductForm({ initialData }: ProductFormProps) {
     const handleFileUploads = async (productId: string) => {
         const promises = [];
 
-        console.log("[Upload] Starting uploads. mt5File:", mt5File?.name, "thumbnailFile:", thumbnailFile?.name);
-
         if (mt5File) {
             const formData = new FormData();
             formData.append("file", mt5File);
-            console.log("[Upload] Uploading MT5 file:", mt5File.name, "size:", mt5File.size);
             promises.push(uploadEAFile(productId, "MT5", formData));
         }
 
         if (thumbnailFile) {
             const formData = new FormData();
             formData.append("file", thumbnailFile);
-            console.log("[Upload] Uploading thumbnail:", thumbnailFile.name);
             promises.push(uploadEAFile(productId, "THUMBNAIL", formData));
         }
 
         if (promises.length > 0) {
             const results = await Promise.all(promises);
-            console.log("[Upload] Results:", JSON.stringify(results));
             const failed = results.filter(r => !r.success);
             if (failed.length > 0) {
                 console.error("[Upload] Failed uploads:", JSON.stringify(failed));
                 toast.error(`Failed to upload ${failed.length} file(s): ${failed.map(f => f.error).join(', ')}`);
                 return false;
             }
-        } else {
-            console.log("[Upload] No files to upload");
         }
         return true;
     };
@@ -137,9 +130,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
             }
 
             if (success && productId) {
-                console.log("[Submit] Product saved, starting file uploads for:", productId);
                 const uploadSuccess = await handleFileUploads(productId);
-                console.log("[Submit] Upload result:", uploadSuccess);
                 if (uploadSuccess) {
                     toast.success(initialData ? "Product updated successfully" : "Product created successfully");
                     router.push("/admin/ea/products");
@@ -158,40 +149,35 @@ export function ProductForm({ initialData }: ProductFormProps) {
     return (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pb-20">
             {/* Header */}
-            <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <Link href="/admin/ea/products" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-500 transition-colors">
-                            <ArrowLeft size={20} />
-                        </Link>
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            {initialData ? `Edit ${initialData.name}` : "New EA Product"}
-                        </h1>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <Link href="/admin/ea/products">
-                            <Button variant="outline" type="button">Cancel</Button>
-                        </Link>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <span className="flex items-center gap-2">Processing...</span>
-                            ) : (
-                                <span className="flex items-center gap-2">
-                                    <Save size={18} />
-                                    {initialData ? "Save Changes" : "Create Product"}
-                                </span>
-                            )}
-                        </Button>
-                    </div>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+                <div className="flex items-center gap-3">
+                    <Link href="/admin/ea/products" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0" title="Back to Products">
+                        <ArrowLeft size={20} className="text-gray-500" />
+                    </Link>
+                    <div className="w-1.5 h-8 bg-primary rounded-full shrink-0" aria-hidden="true"></div>
+                    <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
+                        {initialData ? `Edit ${initialData.name}` : "New EA Product"}
+                    </h1>
                 </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-14">
-                    {initialData ? "Update product details and files" : "Add a new expert advisor to the library"}
-                </p>
+                <div className="flex items-center gap-3">
+                    <Link href="/admin/ea/products">
+                        <Button variant="outline" type="button">Cancel</Button>
+                    </Link>
+                    <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <span className="flex items-center gap-2">Processing...</span>
+                        ) : (
+                            <span className="flex items-center gap-2">
+                                <Save size={18} />
+                                {initialData ? "Save Changes" : "Create Product"}
+                            </span>
+                        )}
+                    </Button>
+                </div>
             </div>
 
             <div className="space-y-8">

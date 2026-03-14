@@ -3,7 +3,7 @@
  * @module tests/admin/components/academy/LevelManager.test
  */
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockLevels, mockModules } from '../../__mocks__/data';
@@ -398,7 +398,7 @@ describe('LevelManager Component', () => {
 
         it('should not delete when cancelled', async () => {
             const user = userEvent.setup();
-            (global.confirm as jest.Mock).mockReturnValueOnce(false);
+            (global.confirm as Mock).mockReturnValueOnce(false);
             render(<LevelManager onDeleteLevel={mockOnDeleteLevel} />);
 
             await user.click(screen.getByTestId(`delete-${mockLevels[0].id}`));

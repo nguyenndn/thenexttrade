@@ -32,27 +32,26 @@ export default async function EAProductsPage() {
     }
 
     return (
-        <div className="space-y-4 pb-10">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Link href="/admin/ea" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-500 transition-colors">
-                        <ArrowLeft size={24} />
+        <div className="space-y-6 pb-10">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+                <div className="flex items-center gap-3">
+                    <Link href="/admin/ea" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0" title="Back to EA Dashboard">
+                        <ArrowLeft size={20} className="text-gray-500" />
                     </Link>
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                            EA Products
-                        </h1>
-                        <p className="text-gray-500 dark:text-gray-400 mt-1">
-                            Manage trading robots and indicators
-                        </p>
-                    </div>
+                    <div className="w-1.5 h-8 bg-primary rounded-full shrink-0" aria-hidden="true"></div>
+                    <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
+                        EA Products
+                    </h1>
                 </div>
-                <Link href="/admin/ea/products/create">
-                    <Button variant="primary">
-                        <Plus size={18} />
-                        Create Product
-                    </Button>
-                </Link>
+                <div className="flex items-center gap-3">
+                    <Link href="/admin/ea/products/create">
+                        <Button variant="primary" className="shadow-lg shadow-primary/30">
+                            <Plus size={18} strokeWidth={2.5} />
+                            Create Product
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             <ProductList products={products} />

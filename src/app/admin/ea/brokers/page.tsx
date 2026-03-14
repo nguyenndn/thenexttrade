@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Briefcase, Plus, ExternalLink, Power } from "lucide-react";
+import { Briefcase, Plus, ExternalLink, Power, ArrowLeft } from "lucide-react";
 import { getEABrokers } from "./actions";
 import { Button } from "@/components/ui/Button";
 import { EditEABrokerModal } from "./EditEABrokerModal";
@@ -10,25 +10,27 @@ export default async function EABrokersPage() {
     return (
         <div className="space-y-4 pb-10">
             {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold dark:text-white flex items-center gap-2">
-                        <Briefcase className="text-primary" />
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+                <div className="flex items-center gap-3">
+                    <Link href="/admin/ea" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0" title="Back to EA Dashboard">
+                        <ArrowLeft size={20} className="text-gray-500" />
+                    </Link>
+                    <div className="w-1.5 h-8 bg-primary rounded-full shrink-0" aria-hidden="true"></div>
+                    <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                         EA Supported Brokers
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400">
-                        Manage brokers available in the Trading Systems AddAccount modal.
-                    </p>
                 </div>
-                <Link href="/admin/ea/brokers/create">
-                    <Button
-                        variant="primary"
-                        className="bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/25 px-6 py-2.5 h-auto text-base font-bold rounded-xl border-0"
-                    >
-                        <Plus size={20} className="mr-2" />
-                        Add EA Broker
-                    </Button>
-                </Link>
+                <div className="flex items-center gap-3">
+                    <Link href="/admin/ea/brokers/create">
+                        <Button
+                            variant="primary"
+                            className="bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/25 px-6 py-2.5 h-auto text-base font-bold rounded-xl border-0"
+                        >
+                            <Plus size={20} className="mr-2" />
+                            Add EA Broker
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             {/* Table */}
