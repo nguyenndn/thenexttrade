@@ -197,7 +197,7 @@ async function HomeFeed() {
                       </h4>
                       <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
                         <Clock size={12} />
-                        <span>{new Date(article.createdAt).toLocaleDateString()}</span>
+                        <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                       </div>
                     </div>
                   </Link>
@@ -282,7 +282,7 @@ async function HomeFeed() {
                       <TrendingUp size={14} className="text-green-500" />
                       {article.views} Views
                     </span>
-                    <span>{new Date(article.createdAt).toLocaleDateString()}</span>
+                    <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                   </div>
                 </div>
               </Link>

@@ -29,15 +29,17 @@ export function DashboardShell({ children, user, bell }: { children: React.React
 
             <div className="flex flex-1 overflow-hidden">
                 {/* Desktop Sidebar */}
-                <Sidebar 
-                    items={adminMenuItems} 
+                <Sidebar
+                    items={adminMenuItems}
                     collapsed={collapsed}
                     setCollapsed={setCollapsed}
                 />
 
                 {/* Main Content Area */}
-                <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full custom-scrollbar">
-                    {children}
+                <main className="flex-1 overflow-y-auto overflow-x-hidden pt-0 p-4 w-full custom-scrollbar">
+                    <div className="w-full max-w-full">
+                        {children}
+                    </div>
                 </main>
             </div>
 

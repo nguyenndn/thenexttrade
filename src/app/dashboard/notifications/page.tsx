@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { Lock, Bell, CheckCircle } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/Button";
 
@@ -14,11 +14,10 @@ export const metadata: Metadata = {
 };
 
 export default async function NotificationsPage() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getAuthUser();
 
     if (!user) {
-        redirect("/auth/login");
+        redirect("/auth/signin");
     }
 
     const notifications = await prisma.notification.findMany({
@@ -29,11 +28,8 @@ export default async function NotificationsPage() {
 
     return (
         <div className="w-full">
-            <div className="flex items-center justify-between mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    Notifications
-                </h1>
-                {/* Helper for marking read could generally be a client component button calling API, skipping here for simplicity as spec focus is on list */}
+            <div className="mb-4">
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Your latest notifications and account updates.</p>
             </div>
 
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">

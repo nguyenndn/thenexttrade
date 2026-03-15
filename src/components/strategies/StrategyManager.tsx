@@ -11,7 +11,6 @@ import { StrategyCard } from "./StrategyCard";
 import { StrategyEmptyState } from "./StrategyEmptyState";
 import { StrategiesLoadingSkeleton } from "./StrategiesLoadingSkeleton";
 import { PaginationControl } from "@/components/ui/PaginationControl";
-import { PageHeader } from "@/components/ui/PageHeader";
 import { useRouter } from "next/navigation";
 import { deleteStrategy, getStrategyPerformance, untagStrategy } from "@/actions/strategies";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -177,11 +176,8 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
     return (
 
         <>
-            {/* Header */}
-            <PageHeader 
-                title="Strategies"
-                description="Track performance by trading strategy."
-            >
+            {/* Action button — description & tabs handled by parent page */}
+            <div className="flex justify-end mb-4">
                 <Button
                     variant="primary"
                     onClick={() => setShowModal(true)}
@@ -190,10 +186,10 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
                     <Plus size={18} strokeWidth={2.5} />
                     New Strategy
                 </Button>
-            </PageHeader>
+            </div>
 
             {/* Performance Chart - Only show when strategies exist */}
-            <div className="space-y-6 mt-6">
+            <div className="space-y-4 mt-4">
                 {strategies.length > 0 && (
                     isLoadingPerformance ? (
                         <StrategiesLoadingSkeleton />

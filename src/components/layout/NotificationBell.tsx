@@ -32,7 +32,7 @@ export function NotificationBell() {
                     )}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0 rounded-xl bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 shadow-xl" align="end">
+            <PopoverContent className="w-[calc(100vw-2rem)] sm:w-80 p-0 rounded-xl bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 shadow-xl" align="end" sideOffset={8}>
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
                     <h3 className="font-bold text-gray-900 dark:text-white">Notifications</h3>
                     {unreadCount > 0 && (

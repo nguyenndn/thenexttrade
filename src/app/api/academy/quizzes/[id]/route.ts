@@ -1,13 +1,6 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { z } from "zod";
-
-const quizUpdateSchema = z.object({
-    title: z.string().min(1).optional(),
-    description: z.string().optional(),
-    moduleId: z.string().optional().nullable(),
-});
 
 // GET: Get single quiz with questions
 export async function GET(
@@ -42,7 +35,7 @@ export async function GET(
     }
 }
 
-// PUT: Update quiz details
+// PUT: Update quiz details + questions
 export async function PUT(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -50,18 +43,48 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await req.json();
-        const validation = quizUpdateSchema.safeParse(body);
+        const { title, description, moduleId, questions } = body;
 
-        if (!validation.success) {
-            return NextResponse.json(
-                { error: validation.error.issues[0].message },
-                { status: 400 }
-            );
+        if (!title) {
+            return NextResponse.json({ error: "Title is required" }, { status: 400 });
         }
 
-        const quiz = await prisma.quiz.update({
-            where: { id },
-            data: validation.data,
+        // Use transaction to atomically update quiz + questions
+        const quiz = await prisma.$transaction(async (tx) => {
+            // 1. Update quiz info
+            const updated = await tx.quiz.update({
+                where: { id },
+                data: {
+                    title,
+                    description: description || null,
+                    ...(moduleId !== undefined && { moduleId: moduleId || null }),
+                },
+            });
+
+            // 2. If questions provided, replace all questions + options
+            if (questions && Array.isArray(questions)) {
+                // Delete existing questions (cascade deletes options)
+                await tx.question.deleteMany({ where: { quizId: id } });
+
+                // Create new questions with options
+                for (const q of questions) {
+                    await tx.question.create({
+                        data: {
+                            quizId: id,
+                            text: q.text,
+                            order: q.order || 0,
+                            options: {
+                                create: q.options.map((o: any) => ({
+                                    text: o.text,
+                                    isCorrect: o.isCorrect || false,
+                                }))
+                            }
+                        }
+                    });
+                }
+            }
+
+            return updated;
         });
 
         return NextResponse.json(quiz);

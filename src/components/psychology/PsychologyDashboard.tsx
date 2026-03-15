@@ -117,24 +117,15 @@ export function PsychologyDashboard() {
 
         <>
             {/* Header */}
-            <div className="flex flex-col gap-4 border-b border-gray-200 dark:border-white/10 pb-8">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Psychology Analysis
-                        </h1>
-                    </div>
-                    <div className="w-full md:w-auto">
-                        <DateRangePicker
-                            value={dateRange}
-                            onChange={setDateRange}
-                        />
-                    </div>
-                </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+            <h1 className="sr-only">Psychology Analysis</h1>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">
                     Understand how emotions affect your trading
                 </p>
+                <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                />
             </div>
 
             {/* Tilt Warning Banner */}

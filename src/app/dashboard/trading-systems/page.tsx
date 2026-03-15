@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { AccountStatus } from "@prisma/client";
 import { TradingSystemsClient } from "@/components/dashboard/trading-systems/TradingSystemsClient";
@@ -11,11 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default async function TradingSystemsPage() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getAuthUser();
 
     if (!user) {
-        redirect("/auth/login");
+        redirect("/auth/signin");
     }
 
     // OPTIMIZED: Fetch all data in parallel
@@ -43,7 +42,7 @@ export default async function TradingSystemsPage() {
     );
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <TradingSystemsClient
                 licenses={licenses}
                 products={products}

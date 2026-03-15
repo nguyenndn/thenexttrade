@@ -1,5 +1,8 @@
 "use client";
 
+import { TabBar } from "@/components/ui/TabBar";
+import { FileText, Clock } from "lucide-react";
+
 import { useState, useEffect } from "react";
 import { Edit2, ArrowUpDown, ScrollText } from "lucide-react";
 import { toast } from "sonner";
@@ -295,17 +298,21 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
 
 
 
+    const journalTabs = [
+        { label: "Trades", href: "/dashboard/journal", icon: FileText },
+        { label: "Sessions", href: "/dashboard/sessions", icon: Clock },
+    ];
+
     return (
         <>
-            {/* Header */}
-            {/* Header */}
-            <PageHeader 
-                title="Trading Journal" 
-                description="Track your trades and analyze your performance."
-            >
-                {/* Filter (Account + Date) - Matched to Dashboard Layout */}
+            {/* Compact Header: Description + TabBar + Filters */}
+            <div className="mb-4">
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Track your trades and analyze your performance.</p>
+            </div>
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+                <TabBar tabs={journalTabs} />
                 <DashboardFilter currentAccountId={accountId || undefined} />
-            </PageHeader>
+            </div>
 
             {stats && <JournalStats stats={stats} />}
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Lock, Star, Trophy, ChevronRight, BookOpen } from "lucide-react";
+import { Lock, Star, Trophy, ChevronRight, BookOpen, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -10,7 +10,12 @@ interface Module {
     id: string;
     title: string;
     description: string | null;
-    lessons: { slug: string }[];
+    lessons: { slug: string; progress: { isCompleted: boolean }[] }[];
+    quiz: {
+        id: string;
+        title: string;
+        attempts: { score: number; passed: boolean }[];
+    } | null;
 }
 
 interface Level {
@@ -95,6 +100,23 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                     const levelData = levels.find(l => l.order === index + 1);
                     const isLocked = !levelData;
 
+                    // Compute level-wide status from modules
+                    const levelModuleStatuses = levelData?.modules.map(m => {
+                        const totalLessons = m.lessons.length;
+                        const completedLessons = m.lessons.filter(l => l.progress?.some(p => p.isCompleted)).length;
+                        const allLessonsDone = totalLessons > 0 && completedLessons === totalLessons;
+                        const quizPassed = m.quiz?.attempts?.[0]?.passed ?? false;
+                        const hasStarted = completedLessons > 0;
+
+                        if (allLessonsDone && (!m.quiz || quizPassed)) return 'complete' as const;
+                        if (allLessonsDone && m.quiz && !quizPassed) return 'awaiting-quiz' as const;
+                        if (hasStarted) return 'in-progress' as const;
+                        return 'not-started' as const;
+                    }) ?? [];
+
+                    const levelComplete = levelModuleStatuses.length > 0 && levelModuleStatuses.every(s => s === 'complete');
+                    const levelActive = !levelComplete && levelModuleStatuses.some(s => s !== 'not-started');
+
                     return (
                         <div key={index} className={cn("relative flex flex-col md:flex-row items-center gap-8",
                             index % 2 === 0 ? "md:flex-row md:text-right" : "md:flex-row-reverse md:text-left",
@@ -131,16 +153,34 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                     "w-20 h-20 rounded-full flex items-center justify-center border-4 shadow-lg transition-all duration-500 group relative",
                                     isLocked
                                         ? "bg-gray-100 border-gray-200 text-gray-400 dark:bg-gray-900 dark:border-white/10 dark:text-gray-600 grayscale"
-                                        : `bg-white dark:bg-gray-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white shadow-${phase.color.split('-')[1]}-500/20`
+                                        : levelComplete
+                                            ? "bg-white dark:bg-gray-900 border-primary text-gray-900 dark:text-white shadow-primary/30"
+                                            : levelActive
+                                                ? "bg-white dark:bg-gray-900 border-cyan-500 text-gray-900 dark:text-white shadow-cyan-500/20"
+                                                : `bg-white dark:bg-gray-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white`
                                 )}>
-                                    {/* Glow Effect for Active Planet */}
+                                    {/* Glow Effect */}
                                     {!isLocked && (
-                                        <div className={cn("absolute inset-0 rounded-full blur-xl opacity-40 bg-gradient-to-r", phase.color)} />
+                                        <div className={cn(
+                                            "absolute inset-0 rounded-full blur-xl opacity-40",
+                                            levelComplete
+                                                ? "bg-primary"
+                                                : levelActive
+                                                    ? "bg-cyan-500"
+                                                    : cn("bg-gradient-to-r", phase.color)
+                                        )} />
                                     )}
 
                                     {/* Spinner */}
                                     {!isLocked && (
                                         <div className="absolute inset-0 rounded-full border border-current opacity-20 animate-spin-slow" />
+                                    )}
+
+                                    {/* Complete checkmark overlay */}
+                                    {levelComplete && (
+                                        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center z-20 shadow-lg">
+                                            <CheckCircle size={14} className="text-white" />
+                                        </div>
                                     )}
 
                                     <phase.icon size={32} className={cn("relative z-10", isLocked ? "text-gray-400 dark:text-gray-700" : "text-gray-900 dark:text-white")} />
@@ -156,26 +196,72 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                     <div className={cn("space-y-3 flex flex-col",
                                         index % 2 === 0 ? "items-center md:items-start" : "items-center md:items-end"
                                     )}>
-                                        {levelData.modules.map((module) => (
-                                            <Link
-                                                key={module.id}
-                                                href={module.lessons[0] ? `${basePath}/lessons/${module.lessons[0].slug}` : '#'}
-                                                className={cn("block group w-full max-w-sm", !module.lessons[0] && "pointer-events-none opacity-50")}
-                                            >
-                                                <div className={cn(
-                                                    "inline-flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
-                                                    index % 2 !== 0 && "md:flex-row-reverse"
-                                                )}>
-                                                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-black/50 flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:bg-primary group-hover:text-white transition-colors flex-shrink-0">
-                                                        {module.title.charAt(0)}
+                                        {levelData.modules.map((module, mIdx) => {
+                                            const totalLessons = module.lessons.length;
+                                            const completedLessons = module.lessons.filter(l => l.progress?.some(p => p.isCompleted)).length;
+                                            const allLessonsDone = totalLessons > 0 && completedLessons === totalLessons;
+                                            const quizPassed = module.quiz?.attempts?.[0]?.passed ?? false;
+                                            const hasStarted = completedLessons > 0;
+
+                                            // Module status
+                                            const isComplete = allLessonsDone && (!module.quiz || quizPassed);
+                                            const isAwaitingQuiz = allLessonsDone && module.quiz && !quizPassed;
+                                            const isInProgress = hasStarted && !allLessonsDone;
+
+                                            return (
+                                                <Link
+                                                    key={module.id}
+                                                    href={module.lessons[0] ? `${basePath}/lessons/${module.lessons[0].slug}` : '#'}
+                                                    className={cn("block group w-full max-w-sm", !module.lessons[0] && "pointer-events-none opacity-50")}
+                                                >
+                                                    <div className={cn(
+                                                        "inline-flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
+                                                        isComplete
+                                                            ? "bg-green-50 dark:bg-green-500/5 border-primary/30 dark:border-primary/20 hover:border-primary"
+                                                            : isAwaitingQuiz
+                                                                ? "bg-amber-50 dark:bg-amber-500/5 border-amber-300 dark:border-amber-500/20 hover:border-amber-400"
+                                                                : isInProgress
+                                                                    ? "bg-cyan-50 dark:bg-cyan-500/5 border-cyan-400 dark:border-cyan-500/20 hover:border-cyan-500"
+                                                                    : "bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-white/20",
+                                                        index % 2 !== 0 && "md:flex-row-reverse"
+                                                    )}>
+                                                        <div className={cn(
+                                                            "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 transition-colors",
+                                                            isComplete
+                                                                ? "bg-primary text-white"
+                                                                : isAwaitingQuiz
+                                                                    ? "bg-amber-400 text-white"
+                                                                    : isInProgress
+                                                                        ? "bg-cyan-500 text-white"
+                                                                        : "bg-gray-100 dark:bg-black/50 text-gray-500 dark:text-gray-400 group-hover:bg-primary group-hover:text-white"
+                                                        )}>
+                                                            {isComplete ? <CheckCircle size={14} /> : module.title.charAt(0)}
+                                                        </div>
+                                                        <span className={cn(
+                                                            "text-sm font-medium transition-colors truncate",
+                                                            isComplete
+                                                                ? "text-green-700 dark:text-green-400"
+                                                                : isAwaitingQuiz
+                                                                    ? "text-amber-700 dark:text-amber-300"
+                                                                    : isInProgress
+                                                                        ? "text-cyan-700 dark:text-cyan-300"
+                                                                        : "text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+                                                        )}>
+                                                            {module.title}
+                                                        </span>
+                                                        {isComplete ? (
+                                                            <CheckCircle size={14} className={cn("text-primary ml-auto", index % 2 !== 0 && "mr-auto ml-0")} />
+                                                        ) : isInProgress ? (
+                                                            <span className={cn("text-[10px] font-bold text-cyan-600 dark:text-cyan-400 ml-auto whitespace-nowrap", index % 2 !== 0 && "mr-auto ml-0")}>
+                                                                {completedLessons}/{totalLessons}
+                                                            </span>
+                                                        ) : (
+                                                            <ChevronRight size={14} className={cn("text-gray-400 group-hover:text-primary dark:group-hover:text-white transition-colors ml-auto", index % 2 !== 0 && "rotate-180 mr-auto ml-0")} />
+                                                        )}
                                                     </div>
-                                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors truncate">
-                                                        {module.title}
-                                                    </span>
-                                                    <ChevronRight size={14} className={cn("text-gray-400 group-hover:text-primary dark:group-hover:text-white transition-colors ml-auto", index % 2 !== 0 && "rotate-180 mr-auto ml-0")} />
-                                                </div>
-                                            </Link>
-                                        ))}
+                                                </Link>
+                                            );
+                                        })}
                                     </div>
                                 ) : (
                                     <div className="text-xs font-mono text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-white/10 rounded-lg p-3 inline-block">

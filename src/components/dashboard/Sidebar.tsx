@@ -109,13 +109,26 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     // const [collapsed, setCollapsed] = useState(false); // Removed local state
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
+    // Map child tab routes to their parent menu item routes
+    // (These routes are accessed via TabBar but not shown in sidebar)
+    const childRouteMap: Record<string, string> = {
+        "/dashboard/sessions": "/dashboard/journal",
+        "/dashboard/strategies": "/dashboard/playbook",
+        "/dashboard/reports": "/dashboard/analytics",
+        "/dashboard/mistakes": "/dashboard/analytics",
+    };
+
     // Calculate the most specific active route using longest prefix match
     const activeHref = useMemo(() => {
         if (!pathname) return null;
+
+        // Resolve child routes to their parent menu item
+        const effectivePath = childRouteMap[pathname] || pathname;
+
         let bestMatch = "";
         
         const checkMatch = (href: string) => {
-             if (href && href !== "#" && (pathname === href || pathname.startsWith(`${href}/`))) {
+             if (href && href !== "#" && (effectivePath === href || effectivePath.startsWith(`${href}/`))) {
                  if (href.length > bestMatch.length) {
                      bestMatch = href;
                  }

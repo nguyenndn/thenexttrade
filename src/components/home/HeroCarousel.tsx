@@ -83,7 +83,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                                 <span>•</span>
                                 <span className="flex items-center gap-1.5">
                                     <Clock size={14} />
-                                    {new Date(article.createdAt).toLocaleDateString()}
+                                    {new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                 </span>
                             </div>
                         </Link>

@@ -72,7 +72,7 @@ export default function CreateBroadcastPage() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-2xl mx-auto space-y-4">
             <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                     Create Broadcast

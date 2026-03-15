@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function PsychologyPage() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <PsychologyDashboard />
         </div>
     );

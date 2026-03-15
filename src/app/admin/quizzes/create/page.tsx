@@ -119,14 +119,14 @@ export default function CreateQuizPage() {
     };
 
     return (
-        <div className="w-full space-y-8 pb-20">
+        <div className="w-full space-y-4 pb-20">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Link href="/admin/quizzes" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl">
                         <ArrowLeft />
                     </Link>
-                    <h1 className="text-2xl font-bold">Create Quiz</h1>
+                    <h1 className="text-xl font-bold">Create Quiz</h1>
                 </div>
                 <Button
                     onClick={handleSubmit}

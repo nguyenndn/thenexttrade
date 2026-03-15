@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { AnalyticsDashboard, AnalyticsData, AnalyticsLoadingSkeleton } from "@/components/analytics/AnalyticsDashboard";
-import { PageHeader } from "@/components/ui/PageHeader";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
@@ -18,12 +17,20 @@ import {
     getCurrentStreak
 } from "@/lib/analytics-queries";
 
+import { TabBar } from "@/components/ui/TabBar";
+
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
     title: "Analytics | Trading Dashboard",
     description: "Analyze your trading performance",
 };
+
+const analyticsTabs = [
+    { label: "Analytics", href: "/dashboard/analytics" },
+    { label: "Reports", href: "/dashboard/reports" },
+    { label: "Mistakes", href: "/dashboard/mistakes" },
+];
 
 export default async function AnalyticsPage({
     searchParams,
@@ -88,14 +95,13 @@ export default async function AnalyticsPage({
 
     return (
         <div className="space-y-4">
-            <PageHeader 
-                title="Analytics" 
-                description="Analyze your trading performance"
-            >
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
-                    <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
-                </div>
-            </PageHeader>
+            <div className="mb-4">
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Analyze your trading performance.</p>
+            </div>
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+                <TabBar tabs={analyticsTabs} />
+                <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
+            </div>
             <Suspense key={JSON.stringify(resolvedParams)} fallback={<AnalyticsLoadingSkeleton />}>
                 <AnalyticsDataWrapper 
                     user={user} 
@@ -110,43 +116,44 @@ export default async function AnalyticsPage({
 }
 
 async function AnalyticsDataWrapper({ user, accountId, startDate, endDate, timezone }: any) {
-    // 2. Parallel Data Fetching
+    // 2. Parallel Data Fetching — ALL queries in one Promise.all
     const [
         stats,
         dailyPerformance,
         pairPerformance,
         dayOfWeekPerformance,
         streak,
+        accounts,
+        recentTradesRaw,
     ] = await Promise.all([
         getKeyStats(user.id, accountId, startDate, endDate),
         getDailyPerformance(user.id, accountId, startDate, endDate, timezone),
         getSymbolPerformance(user.id, accountId, startDate, endDate),
         getDayOfWeekPerformance(user.id, accountId, startDate, endDate, timezone),
-        getCurrentStreak(user.id, accountId)
+        getCurrentStreak(user.id, accountId),
+        prisma.tradingAccount.findMany({
+            where: { userId: user.id, ...(accountId ? { id: accountId } : {}) },
+            select: { balance: true }
+        }),
+        prisma.journalEntry.findMany({
+            where: {
+                userId: user.id,
+                status: "CLOSED",
+                ...(accountId ? { accountId } : {}),
+                exitDate: { gte: startDate, lte: endDate }
+            },
+            orderBy: { exitDate: "desc" },
+            take: 10,
+            select: { id: true, symbol: true, type: true, pnl: true, entryDate: true, exitDate: true, result: true }
+        }),
     ]);
 
-    // 3. Transform Data to match AnalyticsData Interface
-
-    // Equity Curve: Needs to be calculated from Daily Performance + Current Balance?
-    // The previous API calculated it by backtracking from current balance.
-    // Let's query Current Balance to do the same.
-    const accounts = await prisma.tradingAccount.findMany({
-        where: { userId: user.id, ...(accountId ? { id: accountId } : {}) },
-        select: { balance: true }
-    });
+    // 3. Transform Data
     const currentBalance = accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
-
-    // Calculate Equity Curve (Backtracking method similar to API)
-    // Daily Performance returns { date, value (pnl) }
-    // Sort descending by date to backtrack? DailyPerformance is sorted ASC by default.
-
-    // We need TOTAL PnL for the period to find Starting Balance.
     const totalPeriodPnL = stats.totalPnL;
-    let runningBalance = currentBalance - totalPeriodPnL; // Approx start balance (excluding deposits/withdrawals)
 
-    // Note: This is an approximation if deposits/withdrawals occurred. 
-    // Ideally we'd have a Transaction table. For now, we stick to PnL based curve.
-
+    // Equity Curve (backtracking from current balance)
+    let runningBalance = currentBalance - totalPeriodPnL;
     const equityCurve = dailyPerformance.map((day: any) => {
         runningBalance += day.value;
         return {
@@ -154,20 +161,6 @@ async function AnalyticsDataWrapper({ user, accountId, startDate, endDate, timez
             balance: Number(runningBalance.toFixed(2)),
             pnl: day.value
         };
-    });
-
-    // Recent Trades
-    // We need a specific query for this or reuse getTopTrades but we need generic recent list
-    const recentTradesRaw = await prisma.journalEntry.findMany({
-        where: {
-            userId: user.id,
-            status: "CLOSED",
-            ...(accountId ? { accountId } : {}),
-            exitDate: { gte: startDate, lte: endDate }
-        },
-        orderBy: { exitDate: "desc" },
-        take: 10,
-        select: { id: true, symbol: true, type: true, pnl: true, entryDate: true, exitDate: true, result: true }
     });
 
     const recentTrades = recentTradesRaw.map((t: any) => ({

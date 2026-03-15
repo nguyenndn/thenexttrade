@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Plus, RefreshCw, Search, Wallet } from "lucide-react";
+import { Plus, RefreshCw, Wallet } from "lucide-react";
 import { AccountCard } from "./AccountCard";
 import { AddAccountModal } from "./AddAccountModal";
 import { AccountSettingsModal } from "./AccountSettingsModal";
@@ -50,9 +50,7 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
     // However, for immediate UI feedback we might want state. But router.refresh() with server actions is the "Vercel way".
     // Let's us initialAccounts directly.
     const [isPending, startTransition] = useTransition();
-    const [searchQuery, setSearchQuery] = useState("");
-    
-    type ModalState = 
+    type ModalState =
         | { type: "NONE" }
         | { type: "ADD" }
         | { type: "SETTINGS"; account: TradingAccount }
@@ -61,58 +59,38 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
 
     const [activeModal, setActiveModal] = useState<ModalState>({ type: "NONE" });
 
-    // Lọc accounts theo search query
-    const filteredAccounts = initialAccounts.filter(account => {
-        const query = searchQuery.toLowerCase();
-        return (account.name?.toLowerCase().includes(query) || account.accountNumber?.toLowerCase().includes(query));
-    });
-
     return (
-        <div>
-            <div className="space-y-8">
-            {/* Page Header */}
-            <PageHeader 
-                title="Trading Accounts"
-                description="Manage your connected MT4/MT5 trading accounts"
-            >
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
-                    <div className="relative group w-full sm:w-64 order-last sm:order-first mt-2 sm:mt-0">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Search size={16} className="text-gray-400 group-focus-within:text-primary transition-colors" />
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Search by name or number..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-inset focus:ring-primary/50 focus:border-primary block w-full pl-10 p-2.5 transition-all outline-none"
-                        />
+        <div className="space-y-4">
+                {/* Page Header */}
+                <PageHeader
+                    title="Trading Accounts"
+                    description="Manage your connected MT5 trading accounts"
+                >
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
+
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                startTransition(() => {
+                                    router.refresh();
+                                });
+                            }}
+                            disabled={isPending}
+                            className="flex items-center justify-center gap-2 sm:mr-2 flex-1 sm:flex-none"
+                        >
+                            <RefreshCw size={16} className={isPending ? "animate-spin text-primary" : ""} />
+                            Refresh
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => setActiveModal({ type: "ADD" })}
+                            className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
+                        >
+                            <Plus size={18} />
+                            Add Account
+                        </Button>
                     </div>
-                    
-                    <Button
-                        variant="outline"
-                        onClick={() => {
-                            startTransition(() => {
-                                router.refresh();
-                            });
-                        }}
-                        disabled={isPending}
-                        className="flex items-center justify-center gap-2 sm:mr-2 flex-1 sm:flex-none"
-                    >
-                        <RefreshCw size={16} className={isPending ? "animate-spin text-primary" : ""} />
-                        Refresh
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() => setActiveModal({ type: "ADD" })}
-                        className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
-                    >
-                        <Plus size={18} />
-                        Add Account
-                    </Button>
-                </div>
-            </PageHeader>
-            </div>
+                </PageHeader>
 
             {/* Account Grid */}
             {isPending && initialAccounts.length === 0 ? (
@@ -126,7 +104,7 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                 </div>
             ) : initialAccounts.length === 0 ? (
                 <div className="py-20">
-                    <EmptyState 
+                    <EmptyState
                         icon={Wallet}
                         title="No Trading Accounts"
                         description="Connect your MetaTrader account to automatically sync your trading history and analyze your performance."
@@ -141,17 +119,9 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                         }
                     />
                 </div>
-            ) : filteredAccounts.length === 0 ? (
-                <div className="py-20 flex flex-col items-center justify-center gap-4 text-center">
-                    <Search size={48} className="text-gray-300 dark:text-gray-700" />
-                    <div>
-                        <p className="text-gray-900 dark:text-white font-bold text-lg mb-1">No accounts match your search</p>
-                        <p className="text-gray-500 text-sm max-w-sm mx-auto">Try typing a different name or account number to find what you are looking for.</p>
-                    </div>
-                </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
-                    {filteredAccounts.map((account) => (
+                    {initialAccounts.map((account) => (
                         <div key={account.id} className="min-w-0 h-full">
                             <AccountCard
                                 account={account}

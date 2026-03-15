@@ -96,15 +96,10 @@ export default async function AdminUsersPage() {
     return (
         <div className="space-y-4 pb-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
                 <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Users Management
-                        </h1>
-                    </div>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+                    <h1 className="sr-only">Users Management</h1>
+                <p className="text-base text-primary font-bold">
                         Manage registered members, analyze growth and activity.
                     </p>
                 </div>
@@ -212,10 +207,10 @@ export default async function AdminUsersPage() {
                                     <td className="px-6 py-5">
                                         <div className="flex flex-col">
                                             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                {new Date(user.createdAt).toLocaleDateString()}
+                                                {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </span>
                                             <span className="text-xs text-gray-400">
-                                                {new Date(user.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                {new Date(user.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                             </span>
                                         </div>
                                     </td>

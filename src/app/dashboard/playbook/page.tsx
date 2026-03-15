@@ -32,7 +32,7 @@ export default async function PlaybookPage({
     });
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <PlaybookDashboard initialEntries={entries as any} meta={meta} />
         </div>
     );

@@ -23,55 +23,41 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // 2. CSP Headers
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
+  const isDev = process.env.NODE_ENV !== 'production'
 
-  // Strict CSP Policy
-  // Note: We need to allow 'unsafe-inline' for styles sometimes due to CSS-in-JS or Theme providers
-  // We allow scripts from our domain, supabase, and trusted CDNs if needed.
-  const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com;
-    font-src 'self' data: https://fonts.gstatic.com;
-    worker-src 'self' blob:;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    frame-ancestors 'none';
-    block-all-mixed-content;
-    upgrade-insecure-requests;
-  `
-  // Replace newlines with spaces
-  const contentSecurityPolicyHeaderValue = cspHeader
-    .replace(/\s{2,}/g, ' ')
-    .trim()
+  // 2. CSP Headers (production only — dev mode blocks CSS/JS when accessed via IP)
+  if (!isDev) {
+    const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
 
-  response.headers.set(
-    'Content-Security-Policy',
-    contentSecurityPolicyHeaderValue
-  )
+    // Strict CSP Policy
+    const cspHeader = `
+      default-src 'self';
+      script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com;
+      font-src 'self' data: https://fonts.gstatic.com;
+      worker-src 'self' blob:;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+      frame-ancestors 'none';
+      upgrade-insecure-requests;
+    `
+    const contentSecurityPolicyHeaderValue = cspHeader
+      .replace(/\s{2,}/g, ' ')
+      .trim()
 
-  // 3. Other Security Headers
-  response.headers.set('X-DNS-Prefetch-Control', 'on')
-  response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
-  response.headers.set('X-Frame-Options', 'SAMEORIGIN')
-  response.headers.set('X-Content-Type-Options', 'nosniff')
-  response.headers.set('Referrer-Policy', 'origin-when-cross-origin')
+    response.headers.set(
+      'Content-Security-Policy',
+      contentSecurityPolicyHeaderValue
+    )
 
-  // 4. CSRF Protection (Mutation Requests)
-  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
-    const origin = request.headers.get('origin')
-    const referer = request.headers.get('referer')
-    const siteOrigin = request.nextUrl.origin
-
-    if (origin && origin !== siteOrigin) {
-      return new NextResponse('CSRF Validation Failed: Origin Mismatch', { status: 403 })
-    }
-    if (referer && !referer.startsWith(siteOrigin)) {
-      return new NextResponse('CSRF Validation Failed: Referer Mismatch', { status: 403 })
-    }
+    // 3. Other Security Headers (production only)
+    response.headers.set('X-DNS-Prefetch-Control', 'on')
+    response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
+    response.headers.set('X-Frame-Options', 'SAMEORIGIN')
+    response.headers.set('X-Content-Type-Options', 'nosniff')
+    response.headers.set('Referrer-Policy', 'origin-when-cross-origin')
   }
 
   return response

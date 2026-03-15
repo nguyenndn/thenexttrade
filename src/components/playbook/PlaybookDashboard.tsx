@@ -7,6 +7,8 @@ import { PlaybookFilters } from "./PlaybookFilters";
 import { PlaybookGrid } from "./PlaybookGrid";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { TabBar } from "@/components/ui/TabBar";
+import { Target, Route } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -115,13 +117,20 @@ export function PlaybookDashboard({ initialEntries, meta }: PlaybookDashboardPro
         }
     };
 
+    const playbookTabs = [
+        { label: "Playbook", href: "/dashboard/playbook", icon: Target },
+        { label: "Strategies", href: "/dashboard/strategies", icon: Route },
+    ];
+
     return (
         <div className="min-h-screen pb-20">
-            <PageHeader 
-                title="Trading Playbook" 
-                description="Visual library of your past setups."
-                className="mb-8"
-            />
+            {/* Compact Header: Description + TabBar */}
+            <div className="mb-4">
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Visual library of your past setups.</p>
+            </div>
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+                <TabBar tabs={playbookTabs} />
+            </div>
 
             <PlaybookFilters
                 search={localSearch}

@@ -83,7 +83,7 @@ export default async function JournalPage({
     ]);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <JournalList initialEntries={entries} meta={meta} initialStats={stats} strategies={strategies} userTags={userTags} />
         </div>
     );

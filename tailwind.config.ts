@@ -10,11 +10,11 @@ const config: Config = {
 		extend: {
 			fontFamily: {
 				sans: [
-					'var(--font-inter)',
+					'var(--font-source-sans)',
 					'sans-serif'
 				],
 				heading: [
-					'var(--font-outfit)',
+					'var(--font-lexend)',
 					'sans-serif'
 				]
 			},

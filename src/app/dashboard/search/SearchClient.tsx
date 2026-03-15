@@ -76,7 +76,7 @@ export default function SearchClient() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Search Results</h1>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Search Results</h1>
                 <p className="text-gray-500 text-sm mt-1">Found {results.length} results for "{query}"</p>
             </div>
 

@@ -25,7 +25,7 @@ const nextConfig = {
       static: 180,
     },
   },
-  turbopack: {},
+  //turbopack: {},
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
@@ -41,6 +41,21 @@ const nextConfig = {
     ],
   },
   async headers() {
+    // In dev mode: send HSTS max-age=0 to clear any cached HSTS from browser
+    // This is needed because HSTS from previous runs forces HTTPS on HTTP-only dev server
+    if (process.env.NODE_ENV !== 'production') {
+      return [
+        {
+          source: '/:path*',
+          headers: [
+            {
+              key: 'Strict-Transport-Security',
+              value: 'max-age=0'
+            }
+          ]
+        }
+      ];
+    }
     return [
       {
         source: '/:path*',

@@ -254,12 +254,6 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
             {/* Header */}
             <div className="flex flex-col gap-2 border-b border-gray-100 dark:border-white/5 pb-8">
                 <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Course Builder
-                        </h1>
-                    </div>
                     <Button
                         onClick={() => setIsModuleModalOpen(true)}
                         className="bg-primary hover:bg-[#00B078] text-white border-none shadow-lg shadow-primary/40 rounded-xl px-6 flex items-center gap-2 font-bold"
@@ -268,7 +262,8 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
                         Add Module
                     </Button>
                 </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+                <h1 className="sr-only">Course Builder</h1>
+                <p className="text-base text-primary font-bold">
                     Organize modules and lessons for {level.title}
                 </p>
             </div>

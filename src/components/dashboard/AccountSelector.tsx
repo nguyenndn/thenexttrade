@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Check, ChevronsUpDown, Plus, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -94,14 +94,20 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
         fetchAccounts();
     }, []);
 
+    // Stable accountId string from URL (avoids searchParams object ref instability)
+    const urlAccountId = searchParams?.get("accountId") || currentAccountId;
+
+    // Guard: prevent re-navigating after initial account selection
+    const hasSetAccount = useRef(false);
+
     // Effect to Sync Selection
     useEffect(() => {
         if (accounts.length === 0) return;
 
         let active: TradingAccount | undefined;
 
-        if (currentAccountId && currentAccountId !== "all") {
-            active = accounts.find((a) => a.id === currentAccountId);
+        if (urlAccountId && urlAccountId !== "all") {
+            active = accounts.find((a) => a.id === urlAccountId);
         }
 
         // Fallback to Cookie or Oldest Account
@@ -127,8 +133,9 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
         if (active) {
             setSelectedAccount(active);
 
-            // Navigate if URL param is missing OR if it didn't match any account (stale/deleted)
-            if (!currentAccountId || active.id !== currentAccountId) {
+            // Navigate ONLY if URL param is missing/wrong AND we haven't already navigated
+            if ((!urlAccountId || active.id !== urlAccountId) && !hasSetAccount.current) {
+                hasSetAccount.current = true;
                 const params = new URLSearchParams(searchParams?.toString());
                 params.set("accountId", active.id);
                 // Update cookie to correct value
@@ -137,11 +144,13 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                 router.replace(`?${params.toString()}`);
             }
         }
-    }, [currentAccountId, accounts, router, searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [urlAccountId, accounts]);
 
     const handleSelect = useCallback((account: TradingAccount) => {
         setSelectedAccount(account);
         setOpen(false);
+        hasSetAccount.current = true; // Prevent sync effect from re-navigating
 
         // 1. Set Cookie for persistence
         document.cookie = `last_account_id=${account.id}; path=/; max-age=31536000; SameSite=Lax`;
@@ -151,8 +160,8 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
         params.set("accountId", account.id);
 
         router.push(`?${params.toString()}`);
-
-    }, [router, searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [router]);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>

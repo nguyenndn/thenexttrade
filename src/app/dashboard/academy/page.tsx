@@ -1,8 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { GraduationCap, Trophy, ArrowRight, Zap, Target } from "lucide-react";
+import { GraduationCap, Trophy, ArrowRight, Zap, Target, BookOpen } from "lucide-react";
 import Link from "next/link";
-import AcademyMap from "@/components/academy/AcademyMap"; // Import Map
-import { PageHeader } from "@/components/ui/PageHeader";
+import AcademyMap from "@/components/academy/AcademyMap";
 import { EmptyState } from "@/components/ui/EmptyState";
 
 import { getAuthUser } from "@/lib/auth-cache";
@@ -21,7 +20,7 @@ export default async function UserAcademyDashboard() {
     const userId = user.id;
 
     // Parallel Fetching for Performance
-    const [completedLessons, totalLessons, levels, quizAttempts, userData] = await Promise.all([
+    const [completedLessons, totalLessons, levels, userData, allQuizzes] = await Promise.all([
         prisma.userProgress.count({ where: { userId, isCompleted: true } }),
         prisma.lesson.count(),
         prisma.level.findMany({
@@ -29,14 +28,26 @@ export default async function UserAcademyDashboard() {
                 modules: {
                     select: {
                         id: true,
-                        title: true, // Needed for Map
-                        description: true, // Needed for Map
+                        title: true,
+                        description: true,
+                        quiz: {
+                            select: {
+                                id: true,
+                                title: true,
+                                attempts: {
+                                    where: { userId },
+                                    orderBy: { completedAt: 'desc' },
+                                    take: 1,
+                                    select: { score: true, passed: true }
+                                }
+                            }
+                        },
                         lessons: {
                             orderBy: { order: 'asc' },
                             select: {
                                 id: true,
                                 title: true,
-                                slug: true, // Needed for Map Link
+                                slug: true,
                                 duration: true,
                                 progress: {
                                     where: { userId },
@@ -49,16 +60,24 @@ export default async function UserAcademyDashboard() {
             },
             orderBy: { order: 'asc' }
         }),
-        prisma.userQuizAttempt.findMany({
-            where: { userId },
-            include: { quiz: { select: { title: true } } },
-            orderBy: { completedAt: 'desc' },
-            take: 5
-        }),
-        // Fetch streak explicitly to avoid type issues with getAuthUser
         prisma.user.findUnique({
             where: { id: userId },
             select: { streak: true }
+        }),
+        // All quizzes with best attempt + attempt count
+        prisma.quiz.findMany({
+            select: {
+                id: true,
+                title: true,
+                module: { select: { title: true } },
+                _count: { select: { attempts: { where: { userId } } } },
+                attempts: {
+                    where: { userId },
+                    orderBy: { score: 'desc' },
+                    take: 1,
+                    select: { score: true, passed: true }
+                }
+            }
         })
     ]);
 
@@ -85,22 +104,23 @@ export default async function UserAcademyDashboard() {
 
     const overallProgress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
     const currentStreak = userData?.streak || 0;
+    const hasStarted = completedLessons > 0;
 
     return (
-        <div className="space-y-6">
-            <PageHeader 
-                title="Academy Cockpit" 
-                description="Your professional trading journey tracker."
-            >
-                <div className="flex items-center gap-2 text-sm font-medium mt-2 sm:mt-0 p-2 sm:p-0">
-                    <div className="flex items-center gap-1.5 text-primary bg-primary/10 px-2 py-0.5 rounded-lg">
+        <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Your professional trading journey tracker.</p>
+                <div className="flex items-center gap-3 text-sm font-bold">
+                    <div className="flex items-center gap-1.5 text-white bg-primary px-3 py-1.5 rounded-full shadow-sm">
                         <GraduationCap size={14} />
                         <span>{Math.round(overallProgress)}% Complete</span>
                     </div>
-                    <span className="text-gray-300 dark:text-gray-700">|</span>
-                    <span className="text-gray-500 dark:text-gray-400">{completedLessons}/{totalLessons} Lessons</span>
+                    <div className="flex items-center gap-1.5 text-primary bg-primary/10 dark:bg-primary/20 px-3 py-1.5 rounded-full">
+                        <BookOpen size={14} />
+                        <span>{completedLessons}/{totalLessons} Lessons</span>
+                    </div>
                 </div>
-            </PageHeader>
+            </div>
 
             <div className="grid lg:grid-cols-3 gap-4">
                 {/* Main Map Column */}
@@ -113,7 +133,7 @@ export default async function UserAcademyDashboard() {
                                 <div>
                                     <div className="flex items-center gap-2 mb-2">
                                         <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                                        <span className="text-amber-400 font-bold text-xs uppercase tracking-wider">Ready to Resume</span>
+                                        <span className="text-amber-400 font-bold text-xs uppercase tracking-wider">{hasStarted ? 'Ready to Resume' : 'Get Started'}</span>
                                     </div>
                                     <h3 className="text-xl font-bold text-white mb-1">{nextLesson.title}</h3>
                                     <p className="text-gray-400 text-sm">In module: {nextLessonModuleTitle}</p>
@@ -122,7 +142,7 @@ export default async function UserAcademyDashboard() {
                                     href={`/dashboard/academy/lessons/${nextLesson.slug}`}
                                     className="px-6 py-3 bg-primary hover:bg-[#00B078] text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center gap-2 group whitespace-nowrap"
                                 >
-                                    Continue Learning <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                    {hasStarted ? 'Continue Learning' : 'Start Learning'} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             </div>
                             {/* Decor */}
@@ -170,31 +190,47 @@ export default async function UserAcademyDashboard() {
                         </div>
                     </div>
 
-                    {/* Quiz Performance */}
+                    {/* Available Quizzes */}
                     <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                            <Trophy size={18} className="text-yellow-500" /> Quiz Performance
+                            <Trophy size={18} className="text-yellow-500" /> Quizzes
                         </h3>
 
-                        {quizAttempts.length === 0 ? (
-                            <EmptyState 
-                                icon={Target} 
-                                description="No quizzes taken yet. Complete lessons to unlock quizzes." 
+                        {allQuizzes.length === 0 ? (
+                            <EmptyState
+                                icon={Target}
+                                description="No quizzes available yet. Complete lessons to unlock quizzes."
                                 className="border border-dashed border-gray-200 dark:border-white/10 rounded-xl"
                             />
                         ) : (
-                            <div className="space-y-4">
-                                {quizAttempts.map(attempt => (
-                                    <div key={attempt.id} className="flex justify-between items-center text-sm p-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors">
-                                        <div className="flex-1 truncate pr-4">
-                                            <p className="font-medium text-gray-900 dark:text-gray-200 truncate">{attempt.quiz.title}</p>
-                                            <p className="text-xs text-gray-500">{new Date(attempt.completedAt).toLocaleDateString()}</p>
-                                        </div>
-                                        <span className={`font-bold px-2 py-1 rounded text-xs ${attempt.passed ? 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400' : 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400'}`}>
-                                            {attempt.score}%
-                                        </span>
-                                    </div>
-                                ))}
+                            <div className="space-y-1">
+                                {allQuizzes.map(quiz => {
+                                    const bestAttempt = quiz.attempts[0];
+                                    const hasPassed = bestAttempt?.passed;
+                                    const attemptCount = quiz._count?.attempts ?? 0;
+                                    return (
+                                        <a
+                                            key={quiz.id}
+                                            href={`/dashboard/academy/quiz/${quiz.id}`}
+                                            className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group"
+                                        >
+                                            <div className="flex-1 truncate pr-3">
+                                                <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate group-hover:text-primary transition-colors">{quiz.title}</p>
+                                                <p className="text-xs text-gray-500 truncate">
+                                                    {quiz.module?.title ?? 'General'}
+                                                    {attemptCount > 0 && <span> · {attemptCount} attempt{attemptCount !== 1 ? 's' : ''}</span>}
+                                                </p>
+                                            </div>
+                                            {hasPassed ? (
+                                                <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400">✓ {bestAttempt.score}%</span>
+                                            ) : bestAttempt ? (
+                                                <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400">{bestAttempt.score}%</span>
+                                            ) : (
+                                                <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400">New</span>
+                                            )}
+                                        </a>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>

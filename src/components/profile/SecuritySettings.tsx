@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Key, Lock } from 'lucide-react';
+import { Key, Lock, Shield, Monitor } from 'lucide-react';
 import { toast } from 'sonner';
 import { updatePassword, getTwoFactorStatus } from '@/app/dashboard/settings/account/actions';
 import { TwoFactorSetup } from "./TwoFactorSetup";
@@ -21,100 +21,99 @@ export function SecuritySettings() {
     };
 
     return (
-        <div className="space-y-6">
-            <h2 className="text-xl font-bold border-b pb-4 dark:border-white/10">Security</h2>
+        <div className="w-full space-y-5">
 
-            {/* Password Change */}
-            <div className="pb-8 border-b border-gray-100 dark:border-white/5">
-                <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
-                        <Key size={24} className="text-blue-500" />
+            {/* ── Change Password Card ── */}
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/8 flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center">
+                        <Key size={14} className="text-blue-500" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Change Password</h2>
-                        <p className="text-gray-500 text-sm">Update your password to keep your account secure.</p>
+                        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Change Password</h2>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Update your password to keep your account secure.</p>
                     </div>
                 </div>
 
-                <form action={async (formData) => {
-                    setIsLoading(true);
-                    try {
-                        const res = await updatePassword(formData);
-                        if (res.error) {
-                            toast.error(res.error);
-                        } else {
-                            toast.success(res.message);
-                            // Clear form
-                            const form = document.querySelector('form');
-                            form?.reset();
+                <div className="px-6 py-5">
+                    <form action={async (formData) => {
+                        setIsLoading(true);
+                        try {
+                            const res = await updatePassword(formData);
+                            if (res.error) toast.error(res.error);
+                            else {
+                                toast.success(res.message);
+                                (document.querySelector('form') as HTMLFormElement)?.reset();
+                            }
+                        } catch (e: any) {
+                            toast.error(e instanceof Error ? e.message : (e?.message || "Something went wrong"));
+                        } finally {
+                            setIsLoading(false);
                         }
-                    } catch (e: any) {
-                        toast.error(e instanceof Error ? e.message : (e?.message || "Something went wrong"));
-                    } finally {
-                        setIsLoading(false);
-                    }
-                }} className="space-y-4 max-w-lg">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
-                        <div className="relative">
-                            <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                name="currentPassword"
-                                type="password"
-                                required
-                                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all dark:text-white placeholder:text-gray-500"
-                                placeholder="••••••••"
-                            />
+                    }} className="space-y-4">
+                        {[
+                            { name: "currentPassword", label: "Current Password" },
+                            { name: "newPassword", label: "New Password" },
+                            { name: "confirmPassword", label: "Confirm New Password" },
+                        ].map((field) => (
+                            <div key={field.name}>
+                                <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">
+                                    {field.label}
+                                </label>
+                                <div className="relative">
+                                    <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input
+                                        name={field.name}
+                                        type="password"
+                                        required
+                                        minLength={field.name !== "currentPassword" ? 6 : undefined}
+                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/8 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                        <div className="pt-1">
+                            <Button type="submit" isLoading={isLoading} variant="primary">
+                                Update Password
+                            </Button>
                         </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900 dark:text-white">New Password</label>
-                        <div className="relative">
-                            <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                name="newPassword"
-                                type="password"
-                                required
-                                minLength={6}
-                                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all dark:text-white placeholder:text-gray-500"
-                                placeholder="••••••••"
-                            />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900 dark:text-white">Confirm New Password</label>
-                        <div className="relative">
-                            <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                name="confirmPassword"
-                                type="password"
-                                required
-                                minLength={6}
-                                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all dark:text-white placeholder:text-gray-500"
-                                placeholder="••••••••"
-                            />
-                        </div>
-                    </div>
-                    <div className="pt-2">
-                        <Button
-                            type="submit"
-                            isLoading={isLoading}
-                        >
-                            Update Password
-                        </Button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
-            {/* Two-Factor Authentication */}
-            <div className="mt-8 pb-8 border-b border-gray-100 dark:border-white/5">
-                <TwoFactorSetup isEnabled={is2FAEnabled} onUpdate={refresh2FA} />
+            {/* ── Two-Factor Authentication Card ── */}
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/8 flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center">
+                        <Shield size={14} className="text-orange-500" />
+                    </div>
+                    <div>
+                        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Two-Factor Authentication (2FA)</h2>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Add an extra layer of security to your account.</p>
+                    </div>
+                </div>
+                <div className="px-6 py-5">
+                    <TwoFactorSetup isEnabled={is2FAEnabled} onUpdate={refresh2FA} />
+                </div>
             </div>
 
-            {/* Active Sessions */}
-            <div className="mt-8">
-                <ActiveSessionsList />
+            {/* ── Active Sessions Card ── */}
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/8 flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                        <Monitor size={14} className="text-primary" />
+                    </div>
+                    <div>
+                        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Active Sessions</h2>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage your logged-in devices and sessions.</p>
+                    </div>
+                </div>
+                <div className="px-6 py-5">
+                    <ActiveSessionsList />
+                </div>
             </div>
+
         </div>
     );
 }

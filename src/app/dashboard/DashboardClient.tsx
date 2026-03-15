@@ -3,22 +3,23 @@
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { TrendingUp, Trophy, PieChart, Layers, CalendarRange } from "lucide-react";
 import { useState } from "react";
-import Link from "next/link";
+import dynamic from "next/dynamic";
 import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
 import { GreetingHeader } from "@/components/dashboard/GreetingHeader";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
-import { MonthlyAnalyticsChart } from "@/components/dashboard/MonthlyAnalyticsChart";
-// Grid layout is now inline in this file (no longer using DashboardGrid wrapper)
-import { BalanceGrowthChart } from "@/components/dashboard/BalanceGrowthChart";
-import { ProfitDistributionChart } from "@/components/dashboard/ProfitDistributionChart";
-import { LotDistributionChart } from "@/components/dashboard/LotDistributionChart";
-import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";
-import { TopTradesList } from "@/components/dashboard/TopTradesList";
-import { SymbolPerformanceList } from "@/components/dashboard/SymbolPerformanceList";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
-import { RecentTradesMini } from "@/components/dashboard/RecentTradesMini";
-import { WinLossDistribution } from "@/components/dashboard/WinLossDistribution";
-import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from "recharts";
+
+// Lazy load chart components — only loaded when user scrolls to them
+const ChartSkeleton = () => <div className="h-[280px] bg-gray-100 dark:bg-white/5 animate-pulse rounded-xl" />;
+const BalanceGrowthChart = dynamic(() => import("@/components/dashboard/BalanceGrowthChart").then(m => m.BalanceGrowthChart), { loading: () => <ChartSkeleton /> });
+const ProfitDistributionChart = dynamic(() => import("@/components/dashboard/ProfitDistributionChart").then(m => m.ProfitDistributionChart), { loading: () => <ChartSkeleton /> });
+const LotDistributionChart = dynamic(() => import("@/components/dashboard/LotDistributionChart").then(m => m.LotDistributionChart), { loading: () => <ChartSkeleton /> });
+const DailyWinRateChart = dynamic(() => import("@/components/dashboard/DailyWinRateChart").then(m => m.DailyWinRateChart), { loading: () => <ChartSkeleton /> });
+const MonthlyAnalyticsChart = dynamic(() => import("@/components/dashboard/MonthlyAnalyticsChart").then(m => m.MonthlyAnalyticsChart), { loading: () => <ChartSkeleton /> });
+const TopTradesList = dynamic(() => import("@/components/dashboard/TopTradesList").then(m => m.TopTradesList), { loading: () => <ChartSkeleton /> });
+const SymbolPerformanceList = dynamic(() => import("@/components/dashboard/SymbolPerformanceList").then(m => m.SymbolPerformanceList), { loading: () => <ChartSkeleton /> });
+const RecentTradesMini = dynamic(() => import("@/components/dashboard/RecentTradesMini").then(m => m.RecentTradesMini), { loading: () => <ChartSkeleton /> });
+const WinLossDistribution = dynamic(() => import("@/components/dashboard/WinLossDistribution").then(m => m.WinLossDistribution), { loading: () => <ChartSkeleton /> });
 
 interface DashboardClientProps {
     userName?: string;
@@ -207,48 +208,7 @@ export default function DashboardClient({
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Net Profit by Month</p>
                             </div>
                         </div>
-                        <div className="h-[280px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={monthlyAnalytics}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" opacity={0.2} />
-                                    <XAxis
-                                        dataKey="date"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                                        dy={10}
-                                    />
-                                    <YAxis
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                                        tickFormatter={(value) => `$${Number(value).toFixed(2)}`}
-                                    />
-                                    <Tooltip
-                                        cursor={{ fill: 'transparent' }}
-                                        content={({ active, payload, label }: any) => {
-                                            if (active && payload && payload.length) {
-                                                return (
-                                                    <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl">
-                                                        <p className="text-sm font-medium text-gray-500 mb-1">{label}</p>
-                                                        <p className="text-base font-bold text-gray-900 dark:text-white">
-                                                            Net Profit: <span className="text-primary">${Number(payload[0].value).toFixed(2)}</span>
-                                                        </p>
-                                                    </div>
-                                                );
-                                            }
-                                            return null;
-                                        }}
-                                    />
-                                    <Bar
-                                        dataKey="value"
-                                        fill="hsl(var(--primary))"
-                                        radius={[4, 4, 0, 0]}
-                                        barSize={20}
-                                    />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
+                        <MonthlyAnalyticsChart data={monthlyAnalytics} />
                     </div>
                 </div>
 

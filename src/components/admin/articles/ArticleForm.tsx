@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -259,7 +259,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         <Link href="/admin/articles" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
                             <ArrowLeft size={20} className="text-gray-500" />
                         </Link>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter truncate max-w-xl">
+                        <h1 className="text-xl font-black text-gray-900 dark:text-white tracking-tighter truncate max-w-xl">
                             {formData.title ? `Editing: ${formData.title}` : (isEditMode ? "Edit Article" : "New Article")}
                         </h1>
                     </div>

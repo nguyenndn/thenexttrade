@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Copy, Download, Check, ArrowRight, MonitorPlay } from "lucide-react";
+import { X, Copy, Download, Check, MonitorPlay } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
@@ -13,15 +13,15 @@ interface AddAccountModalProps {
     onSuccess: (account: any) => void;
 }
 
-type Step = "select-platform" | "create" | "setup-instructions";
+type Step = "create" | "setup-instructions";
 
 export function AddAccountModal({
     isOpen,
     onClose,
     onSuccess,
 }: AddAccountModalProps) {
-    const [step, setStep] = useState<Step>("select-platform");
-    const [platform, setPlatform] = useState<string>("");
+    const [step, setStep] = useState<Step>("create");
+    const platform = "MT5";
     const [name, setName] = useState("");
     const [color, setColor] = useState("hsl(var(--primary))");
 
@@ -31,11 +31,6 @@ export function AddAccountModal({
     const [copied, setCopied] = useState(false);
 
     if (!isOpen) return null;
-
-    const platforms = [
-        { id: "MT4", name: "MetaTrader 4", description: "Classic MT4 platform", disabled: false },
-        { id: "MT5", name: "MetaTrader 5", description: "Latest MT5 platform", disabled: false },
-    ];
 
     async function handleCreate() {
         if (!name) {
@@ -76,8 +71,7 @@ export function AddAccountModal({
     }
 
     function handleClose() {
-        setStep("select-platform");
-        setPlatform("");
+        setStep("create");
         setName("");
         setCreatedAccount(null);
         onClose();
@@ -90,7 +84,6 @@ export function AddAccountModal({
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        {step === "select-platform" && "Connect Logic - Select Platform"}
                         {step === "create" && "Account Details"}
                         {step === "setup-instructions" && "Setup Instructions"}
                     </h2>
@@ -107,39 +100,7 @@ export function AddAccountModal({
 
                 {/* Content */}
                 <div className="p-6">
-                    {/* Step 1: Select Platform */}
-                    {step === "select-platform" && (
-                        <div className="space-y-4">
-                            {platforms.map((p) => (
-                                <Button
-                                    key={p.id}
-                                    variant="outline"
-                                    disabled={p.disabled}
-                                    onClick={() => {
-                                        setPlatform(p.id);
-                                        setStep("create");
-                                    }}
-                                    className={`
-                    w-full flex items-center justify-between gap-4 p-4 h-auto rounded-xl border transition-all text-left group
-                    ${p.disabled
-                                            ? "opacity-50 cursor-not-allowed border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500"
-                                            : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] hover:border-primary hover:bg-white dark:hover:bg-[#151925] hover:shadow-md transition-shadow dark:hover:shadow-primary/10"
-                                        }
-                  `}
-                                >
-                                    <div className="flex-1 text-left">
-                                        <p className="font-bold text-gray-900 dark:text-white text-lg group-hover:text-primary transition-colors">
-                                            {p.name}
-                                        </p>
-                                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400 normal-case">{p.description}</p>
-                                    </div>
-                                    {!p.disabled && <ArrowRight size={20} className="text-gray-300 group-hover:text-primary transition-colors shrink-0" />}
-                                </Button>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Step 2: Account Details */}
+                    {/* Account Details */}
                     {step === "create" && (
                         <div className="space-y-6">
                             <PremiumInput
@@ -177,13 +138,6 @@ export function AddAccountModal({
                             </div>
 
                             <div className="flex gap-3 pt-2">
-                                <Button
-                                    variant="outline"
-                                    onClick={() => setStep("select-platform")}
-                                    className="px-6 h-12 font-bold"
-                                >
-                                    Back
-                                </Button>
                                 <Button
                                     variant="primary"
                                     onClick={handleCreate}

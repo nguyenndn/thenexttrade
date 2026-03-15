@@ -51,7 +51,7 @@ export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
                                 <div className="flex items-center gap-2 mt-1">
                                     <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                                         <Clock className="w-3 h-3" />
-                                        {item.createdAt.toLocaleDateString()}
+                                        {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                     </span>
                                     {item.author && (
                                         <>

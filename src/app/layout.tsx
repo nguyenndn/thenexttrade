@@ -4,21 +4,23 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { Inter, Outfit } from "next/font/google";
+import { Lexend, Source_Sans_3 } from "next/font/google";
 import { Toaster } from "sonner";
 
-const inter = Inter({
+const sourceSans = Source_Sans_3({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-source-sans",
   display: 'swap',
   preload: true,
-  adjustFontFallback: true
+  adjustFontFallback: true,
+  weight: ["300", "400", "500", "600"]
 });
-const outfit = Outfit({
+const lexend = Lexend({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  variable: "--font-lexend",
   display: 'swap',
-  preload: false
+  preload: true,
+  weight: ["400", "500", "600", "700", "800", "900"]
 });
 
 export const metadata: Metadata = {
@@ -78,7 +80,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${outfit.variable} font-sans`}>
+      <body className={`${sourceSans.variable} ${lexend.variable} font-sans`}>
         <NextTopLoader
           color="hsl(var(--primary))"
           height={3}

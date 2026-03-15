@@ -70,10 +70,9 @@ export default async function MyLearningPage() {
     });
 
     return (
-        <div className="space-y-8">
-            <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Learning</h1>
-                <p className="text-gray-500 text-sm">Track your progress and continue where you left off.</p>
+        <div className="space-y-4">
+            <div className="mb-4">
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Track your progress and continue where you left off.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

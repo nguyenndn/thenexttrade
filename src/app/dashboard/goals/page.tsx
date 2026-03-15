@@ -7,10 +7,9 @@ export default async function GoalsPage() {
     const goalsProgress = await getGoalsProgress();
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Trading Goals</h1>
-                <p className="text-sm text-gray-500 mt-1">Set targets, track your weekly and monthly trading performance.</p>
+        <div className="space-y-4">
+            <div className="mb-4">
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Set targets, track your weekly and monthly trading performance.</p>
             </div>
             <GoalsTracker goals={goalsProgress} />
         </div>

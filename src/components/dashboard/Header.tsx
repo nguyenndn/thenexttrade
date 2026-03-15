@@ -80,7 +80,8 @@ export function Header({
                         >
                             <Menu size={20} />
                         </Button>
-                        <Logo />
+                        {/* Hide logo text on mobile to save space */}
+                        <Logo textClassName="hidden sm:inline text-lg font-bold tracking-tight text-gray-900 dark:text-white" />
                     </div>
                 </div>
 
@@ -88,7 +89,7 @@ export function Header({
                 <div className="flex-1" />
 
                 {/* Right Side Actions & Search */}
-                <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                     <div className="hidden md:block mr-2">
                         <CommandPaletteTrigger />
                     </div>
@@ -99,10 +100,10 @@ export function Header({
                         </div>
                     )}
 
-                    {/* Theme Toggle */}
+                    {/* Theme Toggle — visible on all sizes, next to avatar */}
                     <ThemeToggleSwitch />
 
-                    {/* Notification Bell */}
+                    {/* Notification Bell — visible on all sizes, next to avatar */}
                     {bell ? bell : <NotificationBell />}
 
                     <div className="h-6 w-[1px] bg-gray-200 dark:bg-white/10 mx-1 hidden sm:block"></div>

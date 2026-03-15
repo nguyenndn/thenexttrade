@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface PageHeaderProps {
-    title: string;
+    title?: string; // Kept for SEO/accessibility but hidden visually
     description?: string;
     children?: ReactNode; // For adding buttons, filters, etc. alongside the header
     className?: string;
@@ -10,27 +10,18 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, description, children, className }: PageHeaderProps) {
     return (
-        <div className={cn("flex flex-col xl:flex-row justify-between items-start border-b border-gray-100 dark:border-white/5 pb-8 gap-4 xl:gap-8", className)}>
-            {/* Left Column: Title & Description */}
-            <div className="flex flex-col gap-2 flex-1 xl:pr-4 min-w-0">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-8 bg-primary rounded-full shrink-0"></div>
-                    <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                        {title}
-                    </h1>
-                </div>
-                {description && (
-                    <div className="pl-4.5">
-                        <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">
-                            {description}
-                        </p>
-                    </div>
-                )}
-            </div>
+        <div className={cn("flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4", className)}>
+            {/* Left: Description only (H1 removed — sidebar already indicates current page) */}
+            {description && (
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">{description}</p>
+            )}
 
-            {/* Right Column: Action Area (Filters) */}
+            {/* Hidden H1 for SEO/Accessibility */}
+            {title && <h1 className="sr-only">{title}</h1>}
+
+            {/* Right: Action Area (Filters, Buttons) */}
             {children && (
-                <div className="flex items-center justify-start xl:justify-end w-full xl:w-auto shrink-0 mt-2 xl:mt-0 overflow-x-auto pb-2 xl:pb-0 custom-scrollbar">
+                <div className="flex items-center justify-start lg:justify-end w-full lg:w-auto shrink-0">
                     {children}
                 </div>
             )}

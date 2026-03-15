@@ -25,9 +25,7 @@ export default async function TradingAccountsPage({
     const { accounts, meta } = await getTradingAccounts(page, limit);
 
     return (
-        <div className="w-full max-w-full">
-            <AccountListClient initialAccounts={accounts} meta={meta} />
-        </div>
+        <AccountListClient initialAccounts={accounts} meta={meta} />
     );
 }
 

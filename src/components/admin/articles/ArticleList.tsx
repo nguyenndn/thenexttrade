@@ -115,7 +115,7 @@ const ArticleRow = memo(function ArticleRow({
                 {article.views.toLocaleString()}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                {new Date(article.createdAt).toLocaleDateString()}
+                {new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
                 <ArticleRowActions article={{ id: article.id, slug: article.slug }} />
@@ -146,7 +146,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
 
     // Search & Filter Handlers (URL-based)
     const handleSearch = useDebouncedCallback((term: string) => {
-        const params = new URLSearchParams(searchParams);
+        const params = new URLSearchParams(searchParams.toString());
         if (term) {
             params.set("q", term);
         } else {
@@ -157,7 +157,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
     }, 300);
 
     const handleFilterStatus = useCallback((status: string) => {
-        const params = new URLSearchParams(searchParams);
+        const params = new URLSearchParams(searchParams.toString());
         if (status) {
             params.set("status", status);
         } else {
@@ -165,14 +165,14 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
         }
         params.set("page", "1");
         router.replace(`${pathname}?${params.toString()}`);
-    }, [searchParams, router, pathname]);
+    }, [searchParams.toString(), router, pathname]);
 
     // Pagination Handler
     const handlePageChange = useCallback((newPage: number) => {
-        const params = new URLSearchParams(searchParams);
+        const params = new URLSearchParams(searchParams.toString());
         params.set("page", newPage.toString());
         router.push(`${pathname}?${params.toString()}`);
-    }, [searchParams, router, pathname]);
+    }, [searchParams.toString(), router, pathname]);
 
     // Bulk Selection
     const toggleSelectAll = () => {

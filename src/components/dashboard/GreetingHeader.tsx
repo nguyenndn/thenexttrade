@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
@@ -38,7 +38,7 @@ export function GreetingHeader({ userName, currentAccountId }: GreetingHeaderPro
             <div className={`transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
                 <div className="flex items-center gap-2 mb-1">
                     {greeting.icon}
-                    <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                    <h1 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
                         {greeting.text}, <span className="text-primary uppercase">{userName}</span>
                     </h1>
                 </div>

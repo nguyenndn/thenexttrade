@@ -101,15 +101,10 @@ export default async function AdminDashboard() {
     return (
         <div className="space-y-4 pb-10">
             {/* Dashboard Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
                 <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full" aria-hidden="true"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Dashboard Overview
-                        </h1>
-                    </div>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+                    <h1 className="sr-only">Dashboard Overview</h1>
+                <p className="text-base text-primary font-bold">
                         Welcome back! Here's what's happening in your platform today.
                     </p>
                 </div>

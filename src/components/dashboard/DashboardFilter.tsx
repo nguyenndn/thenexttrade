@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { AccountSelector } from "./AccountSelector";
 import { startOfMonth, endOfMonth, format, subDays, startOfDay, endOfDay } from "date-fns";
@@ -29,26 +29,30 @@ export function DashboardFilter({ currentAccountId, className, hideDateFilter }:
         end: endStr ? new Date(endStr) : defaultEnd,
     });
 
-    // Sync state with URL params
+    // Sync state with URL params (use stable string deps, not searchParams object)
     useEffect(() => {
-        const start = searchParams.get("from");
-        const end = searchParams.get("to");
-        if (start && end) {
+        if (startStr && endStr) {
             setDateRange({
-                start: new Date(start),
-                end: new Date(end),
+                start: new Date(startStr),
+                end: new Date(endStr),
             });
         }
-    }, [searchParams]);
+    }, [startStr, endStr]);
+
+    // Guard to prevent infinite loop: router.replace() triggers SSR re-render → 
+    // component re-mounts → effect re-runs → loop. useRef persists across renders.
+    const hasInitialized = useRef(false);
 
     // Default to Saved Range or Today on mount if URL is empty
     useEffect(() => {
         if (hideDateFilter) return;
+        if (hasInitialized.current) return;
 
         const start = searchParams.get("from");
         const end = searchParams.get("to");
 
         if (!start && !end) {
+             hasInitialized.current = true;
              // 1. Check for saved range in localStorage first
              const savedRangeStr = localStorage.getItem("gsn_date_range");
              if (savedRangeStr) {
@@ -100,7 +104,7 @@ export function DashboardFilter({ currentAccountId, className, hideDateFilter }:
     };
 
     return (
-        <div className={`flex flex-wrap items-center gap-3 w-full md:w-auto ${className || ""}`}>
+        <div className={`flex flex-col md:flex-row md:flex-nowrap items-stretch md:items-center gap-3 w-full md:w-auto ${className || ""}`}>
             <AccountSelector currentAccountId={currentAccountId} className="w-full md:w-auto min-w-[150px]" />
             {!hideDateFilter && (
                 <DateRangePicker

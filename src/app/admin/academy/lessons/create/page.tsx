@@ -61,14 +61,14 @@ function LessonForm() {
     }
 
     return (
-        <div className="w-full space-y-6">
+        <div className="w-full space-y-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Link href="/admin/academy" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
                         <ArrowLeft size={20} className="text-gray-500" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">New Lesson</h1>
+                        <h1 className="text-xl font-bold text-gray-900 dark:text-white">New Lesson</h1>
                         <p className="text-gray-500 dark:text-gray-400 text-sm">Add content to module.</p>
                     </div>
                 </div>

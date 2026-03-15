@@ -191,7 +191,7 @@ export function ReportsDashboard() {
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-4 animate-in fade-in duration-500">
 
             {/* Report Type Selection */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">

@@ -149,15 +149,13 @@ export function ProductForm({ initialData }: ProductFormProps) {
     return (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
                     <Link href="/admin/ea/products" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0" title="Back to Products">
                         <ArrowLeft size={20} className="text-gray-500" />
                     </Link>
-                    <div className="w-1.5 h-8 bg-primary rounded-full shrink-0" aria-hidden="true"></div>
-                    <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                        {initialData ? `Edit ${initialData.name}` : "New EA Product"}
-                    </h1>
+                    <h1 className="sr-only">{initialData ? `Edit ${initialData.name}` : "New EA Product"}</h1>
+                    <p className="text-base text-primary font-bold">{initialData ? `Edit ${initialData.name}` : "Create a new EA product."}</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <Link href="/admin/ea/products">

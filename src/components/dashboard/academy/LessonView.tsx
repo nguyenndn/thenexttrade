@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { toast } from "sonner";
@@ -105,7 +105,7 @@ export default function LessonView({
                             {lesson.module.title}
                         </span>
                     </div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white">
                         {lesson.title}
                     </h1>
                 </div>

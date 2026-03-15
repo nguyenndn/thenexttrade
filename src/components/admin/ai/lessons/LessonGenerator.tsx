@@ -98,12 +98,6 @@ export default function LessonGenerator() {
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-100 dark:border-white/5 pb-8 mb-8">
                 <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            Lesson Generator
-                        </h1>
-                    </div>
                     <div className="flex items-center text-sm text-gray-500 pl-4.5">
                         <Link href="/admin/ai-studio" className="hover:text-primary transition-colors">AI Studio</Link>
                         <ChevronRight size={14} className="mx-2" />

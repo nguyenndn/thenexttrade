@@ -1,24 +1,26 @@
 import { Metadata } from "next";
 import { ReportsDashboard } from "@/components/reports/ReportsDashboard";
+import { TabBar } from "@/components/ui/TabBar";
 
 export const metadata: Metadata = {
     title: "Export Reports | Trading Dashboard",
     description: "Generate and download trading reports and CSV exports",
 };
 
+const analyticsTabs = [
+    { label: "Analytics", href: "/dashboard/analytics" },
+    { label: "Reports", href: "/dashboard/reports" },
+    { label: "Mistakes", href: "/dashboard/mistakes" },
+];
+
 export default function ReportsPage() {
     return (
         <div className="space-y-4">
-            <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-white/10 pb-8 mb-4">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                    <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                        Export Reports
-                    </h1>
-                </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-                    Download performance reports and trade data for offline analysis.
-                </p>
+            <div className="mb-4">
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Download reports and trade data.</p>
+            </div>
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+                <TabBar tabs={analyticsTabs} />
             </div>
 
             <ReportsDashboard />

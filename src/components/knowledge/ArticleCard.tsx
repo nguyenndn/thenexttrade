@@ -50,7 +50,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
                 <div className="flex items-center gap-2 text-xs font-medium text-primary mb-3">
                     <Clock size={14} />
-                    <span>{new Date(article.createdAt).toLocaleDateString()}</span>
+                    <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                 </div>
 
                 <h3 className="text-xl font-bold font-heading text-gray-900 dark:text-white mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">

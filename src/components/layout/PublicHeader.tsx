@@ -45,7 +45,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
         >
             <div className="px-0 lg:px-4 py-2 flex justify-center">
                 <div
-                    className="flex w-full lg:max-w-[1440px] items-center justify-between gap-2 sm:gap-4 md:gap-6 rounded-none lg:rounded-xl border-b lg:border px-3 sm:px-4 md:px-6 h-16 shadow-lg bg-white dark:bg-[#151925]/90 border-gray-200 dark:border-white/10"
+                    className="flex w-full max-w-[1280px] items-center justify-between gap-2 sm:gap-4 md:gap-6 rounded-none lg:rounded-xl border-b lg:border px-3 sm:px-4 md:px-6 h-16 shadow-lg bg-white dark:bg-[#151925]/90 border-gray-200 dark:border-white/10"
                 >
                     {/* Logo */}
                     <div className="flex-shrink-0">
@@ -60,15 +60,17 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
                         {/* Theme Toggle */}
                         <ThemeToggleSwitch />
 
-                        {/* Login / User Menu Logic */}
-                        <UserMenu user={user} profile={profile} />
+                        {/* Login / User Menu — hidden on mobile, shown on md+ */}
+                        <div className="hidden md:flex items-center">
+                            <UserMenu user={user} profile={profile} />
+                        </div>
 
                         {/* Mobile Menu Button */}
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className={`lg:hidden p-2 rounded-lg ${isDark ? 'text-white hover:bg-slate-800' : 'text-gray-700 hover:bg-gray-100'}`}
+                            className={`md:hidden p-2 rounded-lg ${isDark ? 'text-white hover:bg-slate-800' : 'text-gray-700 hover:bg-gray-100'}`}
                             aria-label="Toggle menu"
                         >
                             {isMobileMenuOpen ? (
@@ -86,7 +88,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
             </div>
 
             {/* Mobile Menu */}
-            <MobileNavigation isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+            <MobileNavigation isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} user={user} />
         </header>
     );
 }

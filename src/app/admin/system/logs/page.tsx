@@ -19,15 +19,10 @@ export default async function SystemLogsPage() {
 
     return (
         <div className="space-y-4 pb-10">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
                 <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            System Health Logs
-                        </h1>
-                    </div>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+                    <h1 className="sr-only">System Health Logs</h1>
+                <p className="text-base text-primary font-bold">
                         Monitor errors and system events. Showing last 100 entries.
                     </p>
                 </div>

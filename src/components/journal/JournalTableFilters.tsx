@@ -45,7 +45,7 @@ export function JournalTableFilters({
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-xl shadow-sm border border-gray-200 dark:border-white/10">
             <div className="flex flex-col md:flex-row items-center gap-4 flex-1">
                 {/* Search */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-primary transition-colors w-full md:w-64">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-primary transition-colors w-full md:w-56">
                     <Search size={18} className="text-gray-400" />
                     <input
                         type="text"

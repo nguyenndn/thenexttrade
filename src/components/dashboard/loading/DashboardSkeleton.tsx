@@ -1,7 +1,7 @@
 
 export default function DashboardSkeleton() {
     return (
-        <div className="space-y-6 animate-pulse">
+        <div className="space-y-4 animate-pulse">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="h-8 w-48 bg-gray-200 dark:bg-white/10 rounded-lg"></div>

@@ -17,24 +17,29 @@ interface Props {
     prevLesson: any;
     quiz: any;
     isLastLesson: boolean;
+    isDashboard?: boolean;
+    completedLessonIds?: string[];
 }
 
-export default function LessonClientView({ lesson, courseLessons, nextLesson, prevLesson, quiz, isLastLesson }: Props) {
+export default function LessonClientView({ lesson, courseLessons, nextLesson, prevLesson, quiz, isLastLesson, isDashboard, completedLessonIds = [] }: Props) {
     const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [completing, setCompleting] = useState(false);
-    const [isCompleted, setIsCompleted] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(
+        completedLessonIds.includes(lesson.id)
+    );
+
+    // Route helper: dashboard vs public
+    const lessonPath = (slug: string) => isDashboard ? `/dashboard/academy/lessons/${slug}` : `/academy/lesson/${slug}`;
 
     const handleComplete = async () => {
         setCompleting(true);
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 
         try {
-            const userId = "00000000-0000-0000-0000-000000000000"; // Mock
             const res = await fetch(`/api/lessons/${lesson.id}/complete`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userId })
             });
 
             if (res.ok) {
@@ -46,8 +51,8 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     toast.success("Lesson Completed!");
                 }
                 setTimeout(() => {
-                    if (nextLesson) router.push(`/academy/lesson/${nextLesson.slug}`);
-                    else if (isLastLesson && quiz) router.push(`/academy/quiz/${quiz.id}`);
+                    if (nextLesson) router.push(lessonPath(nextLesson.slug));
+                    else if (isLastLesson && quiz) router.push(isDashboard ? `/dashboard/academy/quiz/${quiz.id}` : `/academy/quiz/${quiz.id}`);
                 }, 1500);
             }
         } catch (error: any) {
@@ -160,13 +165,13 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
 
                         <div className="flex items-center justify-between w-full max-w-md text-xs font-bold text-gray-400 uppercase tracking-wider">
                             {prevLesson ? (
-                                <Link href={`/academy/lesson/${prevLesson.slug}`} className="hover:text-primary flex items-center gap-2 transition-colors">
+                                <Link href={lessonPath(prevLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors">
                                     <ChevronLeft size={14} /> Previous
                                 </Link>
                             ) : <span></span>}
 
                             {nextLesson && (
-                                <Link href={`/academy/lesson/${nextLesson.slug}`} className="hover:text-primary flex items-center gap-2 transition-colors">
+                                <Link href={lessonPath(nextLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors">
                                     Next Lesson <ChevronRight size={14} />
                                 </Link>
                             )}
@@ -200,7 +205,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                         )}
 
                                         <Link
-                                            href={`/academy/lesson/${l.slug}`}
+                                            href={lessonPath(l.slug)}
                                             className={cn(
                                                 "block text-sm transition-colors duration-200 py-1",
                                                 isActive ? "font-bold text-primary" : "font-medium text-gray-500 hover:text-gray-800 dark:hover:text-gray-300"
@@ -208,7 +213,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                         >
                                             <span className="mr-2 text-[10px] opacity-40 tabular-nums">{idx + 1}.</span>
                                             {l.title}
-                                            {isCompleted && isActive && <CheckCircle size={10} className="inline ml-2 align-middle text-primary" />}
+                                            {completedLessonIds.includes(l.id) && <CheckCircle size={10} className="inline ml-2 align-middle text-primary" />}
                                         </Link>
                                     </div>
                                 )
@@ -231,7 +236,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                         </div>
                         <div className="space-y-3">
                             {courseLessons.map((l, idx) => (
-                                <Link key={l.id} href={`/academy/lesson/${l.slug}`} className="block py-2 text-sm border-b border-gray-200 dark:border-white/10">
+                                <Link key={l.id} href={lessonPath(l.slug)} className="block py-2 text-sm border-b border-gray-200 dark:border-white/10">
                                     <span className="font-bold text-gray-400 mr-2">{idx + 1}.</span> {l.title}
                                 </Link>
                             ))}

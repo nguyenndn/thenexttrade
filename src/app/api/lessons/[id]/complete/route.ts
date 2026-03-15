@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { addXP, checkAndGrantBadge } from "@/lib/gamification";
+import { getAuthUser } from "@/lib/auth-cache";
 
 export async function POST(
     req: Request,
@@ -9,12 +10,13 @@ export async function POST(
 ) {
     try {
         const { id } = await params;
-        const body = await req.json();
-        const userId = body.userId || "00000000-0000-0000-0000-000000000000"; // Fallback to demo user
+        const user = await getAuthUser();
 
-        if (!userId) {
+        if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
+
+        const userId = user.id;
 
         const progress = await prisma.userProgress.upsert({
             where: {

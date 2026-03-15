@@ -57,7 +57,7 @@ export const menuItems = [
 ];
 
 export const dashboardMenuItems = [
-    // --- BƯỚC 1: VẬN HÀNH (OPERATIONS) ---
+    // --- OPERATIONS ---
     {
         name: "Dashboard",
         href: "/dashboard",
@@ -69,21 +69,11 @@ export const dashboardMenuItems = [
         icon: Wallet,
     },
 
-    // --- BƯỚC 2: TÁC CHIẾN (EXECUTION) ---
+    // --- EXECUTION ---
     {
         name: "Trading Journal",
         href: "/dashboard/journal",
         icon: FileText,
-    },
-    {
-        name: "Sessions",
-        href: "/dashboard/sessions",
-        icon: Clock,
-    },
-    {
-        name: "Strategies",
-        href: "/dashboard/strategies",
-        icon: Route,
     },
     {
         name: "The Playbook",
@@ -91,21 +81,11 @@ export const dashboardMenuItems = [
         icon: Target,
     },
 
-    // --- BƯỚC 3: KIỂM ĐIỂM (REVIEW) ---
+    // --- REVIEW ---
     {
         name: "Analytics Hub",
         href: "/dashboard/analytics",
         icon: BarChart3,
-    },
-    {
-        name: "Reports",
-        href: "/dashboard/reports",
-        icon: FileSpreadsheet,
-    },
-    {
-        name: "Mistakes",
-        href: "/dashboard/mistakes",
-        icon: AlertTriangle,
     },
     {
         name: "Psychology",
@@ -113,7 +93,7 @@ export const dashboardMenuItems = [
         icon: Activity,
     },
 
-    // --- BƯỚC 4: TÀI NGUYÊN (RESOURCES) ---
+    // --- RESOURCES ---
     {
         name: "Academy",
         href: "/dashboard/academy",

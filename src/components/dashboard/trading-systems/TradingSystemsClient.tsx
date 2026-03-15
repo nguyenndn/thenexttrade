@@ -40,18 +40,12 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense, h
     return (
         <>
             {/* Header */}
-            <div className="flex flex-col gap-4 pb-6">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                            EA & Indicators
-                        </h1>
-                    </div>
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+            <div className="mb-4">
+                <h1 className="sr-only">EA & Indicators</h1>
+                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">
                     Manage accounts &amp; downloads.
                 </p>
+            </div>
 
                 {/* Account Setup Progress */}
                 <AccountSetupWidget
@@ -62,20 +56,20 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense, h
 
                 {/* Unified Tabs */}
                 <Tabs defaultValue="ACCOUNTS" className="w-full">
-                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1.5 rounded-xl border border-gray-200 dark:border-white/10 w-auto inline-flex h-auto">
+                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-gray-200 dark:border-white/10 w-auto inline-flex h-auto">
                         <TabsTrigger
                             value="ACCOUNTS"
-                            className="rounded-lg px-5 py-2.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
+                            className="rounded-lg px-4 py-1.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
                         >
                             <Wallet size={16} />
                             My Accounts
                         </TabsTrigger>
                         <TabsTrigger
                             value="MT5_EA"
-                            className="rounded-lg px-5 py-2.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
+                            className="rounded-lg px-4 py-1.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
                         >
                             <CustomBotIcon size={16} />
-                            MT5 Expert Advisor
+                            Expert Advisor
                             {eaCount > 0 && (
                                 <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-primary/10 text-primary">
                                     {eaCount}
@@ -84,10 +78,10 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense, h
                         </TabsTrigger>
                         <TabsTrigger
                             value="MT5_INDICATOR"
-                            className="rounded-lg px-5 py-2.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
+                            className="rounded-lg px-4 py-1.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
                         >
                             <BarChart2 size={16} />
-                            MT5 Indicators
+                            Indicators
                             {indicatorCount > 0 && (
                                 <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-primary/10 text-primary">
                                     {indicatorCount}
@@ -117,7 +111,6 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense, h
                         </TabsContent>
                     </div>
                 </Tabs>
-            </div>
         </>
     );
 }

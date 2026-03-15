@@ -1,13 +1,17 @@
 
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { getAuthUser } from "@/lib/auth-cache";
 
 export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
     try {
-        // Body: { userId: string, answers: { [questionId]: optionId } }
+        const user = await getAuthUser();
+        if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
         const body = await request.json();
-        const { userId, answers } = body;
+        const { answers } = body;
+        const userId = user.id;
 
         // Fetch quiz with correct answers
         const quiz = await prisma.quiz.findUnique({

@@ -24,13 +24,13 @@ export default async function PendingAccountsPage() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Link href="/admin/ea" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-500 transition-colors">
                         <ArrowLeft size={24} />
                     </Link>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                         Pending Requests
                     </h1>
                 </div>

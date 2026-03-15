@@ -7,8 +7,6 @@ import { Clock, Globe, Sun, Moon, TrendingUp, TrendingDown, Loader2 } from "luci
 import dynamic from "next/dynamic";
 import { SessionRecommendations } from "./SessionRecommendations";
 import { useSearchParams } from "next/navigation";
-import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
-import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 
 const SessionPerformance = dynamic(() => import("./SessionPerformance").then(m => m.SessionPerformance), {
@@ -94,13 +92,6 @@ export function SessionDashboard() {
 
     return (
         <div className="space-y-4">
-            {/* Header */}
-            <PageHeader 
-                title="Session Analysis" 
-                description="Optimize your trading schedule by analyzing performance across market sessions."
-            >
-                <DashboardFilter currentAccountId={accountId || undefined} />
-            </PageHeader>
 
             {isLoading ? (
                 <SessionLoadingSkeleton />

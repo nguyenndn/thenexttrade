@@ -1,9 +1,22 @@
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
-import LessonView from "@/components/dashboard/academy/LessonView";
+import LessonClientView from "@/components/academy/LessonClientView";
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const lesson = await prisma.lesson.findUnique({
+        where: { slug },
+        select: { title: true, module: { select: { title: true } } }
+    });
+
+    return {
+        title: lesson ? `${lesson.title} | Academy` : "Lesson Not Found",
+        description: lesson ? `${lesson.title} - ${lesson.module.title}` : undefined,
+    };
+}
 
 export default async function DashboardLessonPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -13,30 +26,28 @@ export default async function DashboardLessonPage({ params }: { params: Promise<
         redirect("/auth/login");
     }
 
-    const lesson = await prisma.lesson.findUnique({
-        where: { slug },
-        include: {
-            module: {
-                include: {
-                    level: true,
-                    quiz: true,
-                    lessons: {
-                        orderBy: { order: "asc" },
-                        select: {
-                            id: true,
-                            title: true,
-                            slug: true,
-                            duration: true,
-                            progress: {
-                                where: { userId: user.id },
-                                select: { isCompleted: true }
-                            }
+    // Fetch lesson with module context + user progress
+    const [lesson, userProgress] = await Promise.all([
+        prisma.lesson.findUnique({
+            where: { slug },
+            include: {
+                module: {
+                    include: {
+                        level: true,
+                        quiz: true,
+                        lessons: {
+                            orderBy: { order: "asc" },
+                            select: { id: true, title: true, slug: true, duration: true }
                         }
                     }
                 }
             }
-        }
-    });
+        }),
+        prisma.userProgress.findMany({
+            where: { userId: user.id, isCompleted: true },
+            select: { lessonId: true }
+        })
+    ]);
 
     if (!lesson) return notFound();
 
@@ -47,15 +58,19 @@ export default async function DashboardLessonPage({ params }: { params: Promise<
     const quiz = lesson.module.quiz;
     const isLastLesson = !nextLesson;
 
+    // Pass completed lesson IDs so client can show progress
+    const completedLessonIds = userProgress.map(p => p.lessonId);
+
     return (
-        <LessonView
+        <LessonClientView
             lesson={lesson}
             courseLessons={courseLessons}
             nextLesson={nextLesson}
             prevLesson={prevLesson}
             quiz={quiz}
             isLastLesson={isLastLesson}
-            userId={user.id}
+            isDashboard
+            completedLessonIds={completedLessonIds}
         />
     );
 }

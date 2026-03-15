@@ -26,7 +26,7 @@ export default function AuthLayout({
 
         {/* LEFT: Form Section */}
         <div className="w-full lg:w-[480px] shrink-0">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
+          <div className="flex flex-row items-center justify-between gap-4 py-4">
             <Link 
               href="/" 
               className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors group"

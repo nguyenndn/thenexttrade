@@ -1,4 +1,4 @@
-
+﻿
 "use client";
 
 import { useState } from "react";
@@ -117,7 +117,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                     </Link>
                     <div>
                         <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{quiz.title}</h1>
+                            <h1 className="text-xl font-bold text-gray-900 dark:text-white">{quiz.title}</h1>
                             <Button
                                 variant="ghost"
                                 size="icon"
