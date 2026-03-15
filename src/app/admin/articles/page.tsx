@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Plus, Eye, BarChart2, Globe, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { ArticleList } from "@/components/admin/articles/ArticleList";
 import { StatCard } from "@/components/admin/widgets/StatCard";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export const dynamic = 'force-dynamic';
 
@@ -102,27 +103,18 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
 
     return (
         <div className="space-y-4 pb-10">
-            {/* Header */}
-            {/* ... */}
-            {/* Using strict select means we might miss 'content', casting to any as List doesn't need content */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                {/* ... Header Content ... */}
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Article Management</h1>
-                <p className="text-base text-primary font-bold">
-                        Manage blog posts, track performance and analytics.
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Link
-                        href="/admin/articles/create"
-                        className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00C888] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0"
-                    >
-                        <Plus size={18} strokeWidth={2.5} />
-                        Add New
-                    </Link>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="Article Management"
+                description="Manage blog posts, track performance and analytics."
+            >
+                <Link
+                    href="/admin/articles/create"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00C888] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0"
+                >
+                    <Plus size={18} strokeWidth={2.5} />
+                    Add New
+                </Link>
+            </AdminPageHeader>
 
             {/* Stats Grid - Premium Style */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

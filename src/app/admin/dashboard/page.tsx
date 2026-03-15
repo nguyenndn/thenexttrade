@@ -1,222 +1,190 @@
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
-import { Users, FileText, Activity, Layers } from "lucide-react";
-import { StatsWidget } from "@/components/admin/widgets/StatsWidget";
-import { RecentTradesWidget } from "@/components/admin/widgets/RecentTradesWidget";
-import { PopularArticlesWidget } from "@/components/admin/widgets/PopularArticlesWidget";
-import { TopLearnersWidget } from "@/components/admin/widgets/TopLearnersWidget";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminDashboardClient } from "@/components/admin/dashboard/AdminDashboardClient";
+import { AnimatedSection } from "@/components/admin/dashboard/AnimatedSection";
+import { RecentTradesSuspense } from "@/components/admin/dashboard/RecentTradesSuspense";
+import { PopularArticlesSuspense } from "@/components/admin/dashboard/PopularArticlesSuspense";
+import { TopLearnersSuspense } from "@/components/admin/dashboard/TopLearnersSuspense";
 import { UserGrowthChart } from "@/components/admin/charts/UserGrowthChart";
-import { PendingActionsWidget } from "@/components/admin/widgets/PendingActionsWidget";
-import { RecentSignupsWidget } from "@/components/admin/widgets/RecentSignupsWidget";
+import { QuickActionsWidget } from "@/components/admin/widgets/QuickActionsWidget";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
+
+function WidgetSkeleton({ h = "h-[380px]" }: { h?: string }) {
+    return (
+        <div className={`${h} bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl animate-pulse`} />
+    );
+}
 
 export default async function AdminDashboard() {
-    // 1. Get current date for charts/stats
     const now = new Date();
-    const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
-    // Parallel data fetching for performance
     const [
-        usersCount,
-        articlesCount,
-        totalViewsData,
-        tradesCount,
-        recentTrades,
-        popularArticles,
-        topLearners,
-        recentSignups,
-        pendingArticles,
-        userGrowthData
+        usersTotal,
+        usersPrev,
+        articlesTotal,
+        articlesPrev,
+        tradesTotal,
+        tradesPrev,
+        viewsAgg,
+        lessonsCount,
+        quizzesCount,
+        commentsCount,
+        tradingVolumeAgg,
+        usersLast7,
+        articlesLast7,
+        tradesLast7,
+        viewsLast7,
+        userGrowthData,
     ] = await Promise.all([
-        // 1. Stats
+        /* hero counts */
         prisma.user.count(),
-        prisma.article.count({ where: { status: 'PUBLISHED' } }),
-        prisma.article.aggregate({ _sum: { views: true } }),
+        prisma.user.count({ where: { createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } } }),
+        prisma.article.count({ where: { status: "PUBLISHED" } }),
+        prisma.article.count({ where: { status: "PUBLISHED", createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } } }),
         prisma.journalEntry.count(),
-        
-        // 2. Recent Trades
+        prisma.journalEntry.count({ where: { createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } } }),
+        prisma.article.aggregate({ _sum: { views: true } }),
+
+        /* secondary counts */
+        prisma.userProgress.count({ where: { isCompleted: true } }),
+        prisma.quiz.count(),
+        prisma.comment.count(),
+        prisma.journalEntry.aggregate({ _sum: { lotSize: true } }),
+
+        /* sparkline data (last 7 days) */
+        prisma.user.findMany({
+            where: { createdAt: { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) } },
+            select: { createdAt: true },
+        }),
+        prisma.article.findMany({
+            where: { status: "PUBLISHED", createdAt: { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) } },
+            select: { createdAt: true },
+        }),
         prisma.journalEntry.findMany({
-            take: 5,
-            orderBy: { createdAt: 'desc' },
-            include: {
-                user: {
-                    select: { name: true, image: true }
-                }
-            }
+            where: { createdAt: { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) } },
+            select: { createdAt: true },
         }),
-        
-        // 3. Popular Articles
         prisma.article.findMany({
-            where: { status: 'PUBLISHED' },
-            take: 5,
-            orderBy: { views: 'desc' },
-            select: {
-                id: true,
-                title: true,
-                views: true,
-                createdAt: true,
-                author: {
-                    select: { name: true }
-                }
-            }
-        }),
-        
-        // 4. Top Learners (Users with most completed lessons)
-        prisma.user.findMany({
-            take: 5,
-            orderBy: {
-                progress: {
-                    _count: 'desc'
-                }
-            },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                image: true,
-                _count: {
-                    select: { progress: { where: { isCompleted: true } } }
-                }
-            }
+            where: { createdAt: { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) } },
+            select: { createdAt: true, views: true },
         }),
 
-        // 5. Recent Signups
+        /* chart data */
         prisma.user.findMany({
-            take: 5,
-            orderBy: { createdAt: 'desc' },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                image: true,
-                createdAt: true
-            }
+            where: { createdAt: { gte: thirtyDaysAgo } },
+            select: { createdAt: true },
         }),
-
-        // 6. Pending Actions (Articles)
-        prisma.article.findMany({
-            where: { status: 'PENDING' },
-            take: 5,
-            orderBy: { updatedAt: 'desc' },
-            select: {
-                id: true,
-                title: true,
-                createdAt: true,
-                author: { select: { name: true } }
-            }
-        }),
-
-        // 7. User Growth Data (Group by date - simplified for this example)
-        // Note: In real production, use raw SQL for aggregation or a dedicated analytics service
-        prisma.user.findMany({
-            where: {
-                createdAt: {
-                    gte: thirtyDaysAgo
-                }
-            },
-            select: {
-                createdAt: true
-            }
-        })
     ]);
 
-    // Process User Growth Data
+    /* Helper: bucket items into 7 daily bins */
+    function sparkline(items: { createdAt: Date }[]): number[] {
+        const bins = Array(7).fill(0);
+        items.forEach((item) => {
+            const daysAgo = Math.floor(
+                (now.getTime() - item.createdAt.getTime()) / (24 * 60 * 60 * 1000)
+            );
+            if (daysAgo >= 0 && daysAgo < 7) bins[6 - daysAgo]++;
+        });
+        return bins;
+    }
+
+    function viewSparkline(items: { createdAt: Date; views: number }[]): number[] {
+        const bins = Array(7).fill(0);
+        items.forEach((item) => {
+            const daysAgo = Math.floor(
+                (now.getTime() - item.createdAt.getTime()) / (24 * 60 * 60 * 1000)
+            );
+            if (daysAgo >= 0 && daysAgo < 7) bins[6 - daysAgo] += item.views;
+        });
+        return bins;
+    }
+
+    function trendPct(current: number, prev: number): number | null {
+        if (prev === 0) return current > 0 ? 100 : null;
+        return Math.round(((current - prev) / prev) * 100);
+    }
+
+    const viewsTotal = viewsAgg._sum.views ?? 0;
+    const tradingVolume = tradingVolumeAgg._sum?.lotSize ?? 0;
+
+    /* Growth chart data */
     const growthMap = new Map<string, number>();
-    userGrowthData.forEach(user => {
-        const dateStr = user.createdAt.toISOString().split('T')[0];
-        growthMap.set(dateStr, (growthMap.get(dateStr) || 0) + 1);
+    userGrowthData.forEach((u) => {
+        const d = u.createdAt.toISOString().split("T")[0];
+        growthMap.set(d, (growthMap.get(d) || 0) + 1);
     });
-    
-    // Sort and format for chart
     const growthChartData = Array.from(growthMap.entries())
         .map(([date, count]) => ({ date, count }))
         .sort((a, b) => a.date.localeCompare(b.date));
 
-    // Fill missing dates with 0 (Optional but better for charts) - Skipping for brevity
-
-    // Format data for widgets
-    const formattedTopLearners = topLearners.map(user => ({
-        ...user,
-        progressCount: user._count.progress
-    }));
-
-    const formattedPendingItems = pendingArticles.map(article => ({
-        id: article.id,
-        title: article.title,
-        type: "ARTICLE" as const,
-        createdAt: article.createdAt,
-        author: article.author.name || "Unknown"
-    }));
-
     return (
-        <div className="p-6 space-y-4">
-            <div className="flex items-center justify-between mb-2">
-                <div>
-                    <h1 className="text-xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
-                    <p className="text-gray-500 dark:text-gray-400">Welcome back to the Admin Dashboard</p>
+        <div className="space-y-4 pb-10">
+            <AdminPageHeader
+                title="Dashboard Overview"
+                description="Welcome back to the Admin Dashboard."
+            />
+
+            {/* Zone A: Hero Stats + Secondary Strip */}
+            <AdminDashboardClient
+                users={{
+                    value: usersTotal,
+                    sparkline: sparkline(usersLast7),
+                    trendPercent: trendPct(
+                        usersTotal,
+                        usersPrev
+                    ),
+                }}
+                articles={{
+                    value: articlesTotal,
+                    sparkline: sparkline(articlesLast7),
+                    trendPercent: trendPct(
+                        articlesTotal,
+                        articlesPrev
+                    ),
+                }}
+                trades={{
+                    value: tradesTotal,
+                    sparkline: sparkline(tradesLast7),
+                    trendPercent: trendPct(
+                        tradesTotal,
+                        tradesPrev
+                    ),
+                }}
+                views={{
+                    value: viewsTotal,
+                    sparkline: viewSparkline(viewsLast7),
+                    trendPercent: null,
+                }}
+                lessonsCount={lessonsCount}
+                quizzesCount={quizzesCount}
+                commentsCount={commentsCount}
+                tradingVolume={tradingVolume}
+            />
+
+            {/* Zone B: Charts + QuickActions */}
+            <AnimatedSection delay={0.6} className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                <div className="xl:col-span-2 h-[400px]">
+                    <UserGrowthChart data={growthChartData} />
                 </div>
-            </div>
+                <QuickActionsWidget />
+            </AnimatedSection>
 
-            {/* 1. Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatsWidget
-                    title="Total Users"
-                    value={usersCount}
-                    icon={Users}
-                    color="blue"
-                    trend={{ value: 12, label: "this month", isPositive: true }}
-                />
-                <StatsWidget
-                    title="Published Articles"
-                    value={articlesCount}
-                    icon={FileText}
-                    color="green"
-                    trend={{ value: 5, label: "this week", isPositive: true }}
-                />
-                <StatsWidget
-                    title="Total Views"
-                    value={totalViewsData._sum.views || 0}
-                    icon={Activity}
-                    color="purple"
-                    trend={{ value: 8, label: "vs last week", isPositive: true }}
-                />
-                <StatsWidget
-                    title="Journal Entries"
-                    value={tradesCount}
-                    icon={Layers}
-                    color="orange"
-                    trend={{ value: 2, label: "today", isPositive: false }}
-                />
-            </div>
-
-            {/* 2. Main Content Grid */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Left Column (2/3) */}
-                <div className="xl:col-span-2 space-y-6">
-                    {/* Growth Chart */}
-                    <div className="h-[400px]">
-                        <UserGrowthChart data={growthChartData} />
-                    </div>
-
-                    {/* Pending Actions & Recent Trades */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[400px]">
-                        <PendingActionsWidget items={formattedPendingItems} />
-                        <RecentTradesWidget trades={recentTrades as any} />
-                    </div>
-                </div>
-
-                {/* Right Column (1/3) */}
-                <div className="space-y-6">
-                    <div className="h-[400px]">
-                        <RecentSignupsWidget users={recentSignups} />
-                    </div>
-                    <div className="h-[400px]">
-                        <PopularArticlesWidget articles={popularArticles as any} />
-                    </div>
-                    {/* Top Learners moved to bottom or specific report page if too crowded */}
-                </div>
-            </div>
+            {/* Zone C: Bottom Widgets */}
+            <AnimatedSection delay={0.8} className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <Suspense fallback={<WidgetSkeleton />}>
+                    <RecentTradesSuspense />
+                </Suspense>
+                <Suspense fallback={<WidgetSkeleton />}>
+                    <TopLearnersSuspense />
+                </Suspense>
+                <Suspense fallback={<WidgetSkeleton />}>
+                    <PopularArticlesSuspense />
+                </Suspense>
+            </AnimatedSection>
         </div>
     );
 }
-

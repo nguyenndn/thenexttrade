@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { Activity } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export const metadata: Metadata = {
     title: "Audit Logs | Admin",
@@ -16,35 +17,31 @@ export default async function AuditLogsPage() {
             admin: { select: { name: true, email: true } },
         },
         orderBy: { createdAt: "desc" },
-        take: 100, // Limit check
+        take: 100,
     });
 
     return (
-        <div className="space-y-4">
-            <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    System Logs
-                </h1>
-                <p className="text-gray-500 dark:text-gray-400 mt-1">
-                    Track important admin actions and system events.
-                </p>
-            </div>
+        <div className="space-y-4 pb-10">
+            <AdminPageHeader
+                title="System Logs"
+                description="Track important admin actions and system events."
+            />
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
+            <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left text-sm border-collapse">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
                             <tr>
-                                <th className="px-6 py-4">Action</th>
-                                <th className="px-6 py-4">Target</th>
-                                <th className="px-6 py-4">Details</th>
-                                <th className="px-6 py-4">Admin</th>
-                                <th className="px-6 py-4">Time</th>
+                                <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Action</th>
+                                <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Target</th>
+                                <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Details</th>
+                                <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Admin</th>
+                                <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Time</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {logs.map((log) => (
-                                <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <tr key={log.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors">
                                     <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">
                                         {log.action.replace(/_/g, " ")}
                                     </td>

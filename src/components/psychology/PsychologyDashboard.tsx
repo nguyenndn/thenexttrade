@@ -10,6 +10,7 @@ import { ConfidenceCorrelation } from "./ConfidenceCorrelation";
 import { PlanAdherence } from "./PlanAdherence";
 import { TiltIndicators } from "./TiltIndicators";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 
 interface PsychologyData {
@@ -117,16 +118,16 @@ export function PsychologyDashboard() {
 
         <>
             {/* Header */}
-            <h1 className="sr-only">Psychology Analysis</h1>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">
-                    Understand how emotions affect your trading
-                </p>
+            <PageHeader
+                title="Psychology Analysis"
+                description="Understand how emotions affect your trading"
+                mobileFullWidthButton
+            >
                 <DateRangePicker
                     value={dateRange}
                     onChange={setDateRange}
                 />
-            </div>
+            </PageHeader>
 
             {/* Tilt Warning Banner */}
             {hasTiltWarning && (

@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Plus, BookOpen, Layers, MoreVertical, Edit, Trash } from "lucide-react";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { CreateLevelModal } from "./CreateLevelModal";
 import { EditLevelModal } from "./EditLevelModal";
 import { Button } from "@/components/ui/Button";
@@ -66,24 +67,18 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
     };
 
     return (
-        <div className="space-y-10 pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Academy Management</h1>
-                <p className="text-base text-primary font-bold">
-                        Manage your courses, modules, and lessons.
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button
-                        onClick={() => setIsCreateModalOpen(true)}
-                        className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
-                    >
-                        <Plus size={18} strokeWidth={2.5} /> Add New
-                    </Button>
-                </div>
-            </div>
+        <div className="space-y-4 pb-10">
+            <AdminPageHeader
+                title="Academy"
+                description="Manage course levels, modules, and learning content."
+            >
+                <Button
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
+                >
+                    <Plus size={18} strokeWidth={2.5} /> Add New
+                </Button>
+            </AdminPageHeader>
 
             {/* Level Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

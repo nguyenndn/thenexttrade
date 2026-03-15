@@ -113,7 +113,6 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     // (These routes are accessed via TabBar but not shown in sidebar)
     const childRouteMap: Record<string, string> = {
         "/dashboard/sessions": "/dashboard/journal",
-        "/dashboard/strategies": "/dashboard/playbook",
         "/dashboard/reports": "/dashboard/analytics",
         "/dashboard/mistakes": "/dashboard/analytics",
     };

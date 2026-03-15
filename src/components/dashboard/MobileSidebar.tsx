@@ -73,7 +73,6 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                         // Map child tab routes to parent menu items
                         const childRouteMap: Record<string, string> = {
                             "/dashboard/sessions": "/dashboard/journal",
-                            "/dashboard/strategies": "/dashboard/playbook",
                             "/dashboard/reports": "/dashboard/analytics",
                             "/dashboard/mistakes": "/dashboard/analytics",
                         };

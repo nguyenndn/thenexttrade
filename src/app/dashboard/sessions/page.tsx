@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { TabBar } from "@/components/ui/TabBar";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 
 export const metadata: Metadata = {
@@ -18,12 +19,13 @@ const journalTabs = [
 export default function SessionAnalysisPage() {
     return (
         <div className="space-y-4">
-            <div className="mb-4">
-                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Analyze your performance by market session.</p>
-            </div>
+            <PageHeader
+                title="Sessions"
+                description="Analyze your performance by market session."
+            />
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <TabBar tabs={journalTabs} />
-                <DashboardFilter />
+                <TabBar tabs={journalTabs} equalWidth />
+                <DashboardFilter equalWidth />
             </div>
 
             <Suspense fallback={

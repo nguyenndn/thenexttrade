@@ -2,8 +2,14 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { Plus, Search, ArrowUpDown } from "lucide-react";
+import { Plus, Search, ArrowUpDown, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { StrategyModal } from "./StrategyModal";
 import { StrategyPerformanceChart } from "./StrategyPerformanceChart";
 import { StrategyComparisonTable } from "./StrategyComparisonTable";
@@ -11,9 +17,11 @@ import { StrategyCard } from "./StrategyCard";
 import { StrategyEmptyState } from "./StrategyEmptyState";
 import { StrategiesLoadingSkeleton } from "./StrategiesLoadingSkeleton";
 import { PaginationControl } from "@/components/ui/PaginationControl";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { useRouter } from "next/navigation";
 import { deleteStrategy, getStrategyPerformance, untagStrategy } from "@/actions/strategies";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { cn } from "@/lib/utils";
 
 export interface Strategy {
     id: string;
@@ -63,6 +71,14 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
 
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState<"name" | "pnl" | "winRate" | "trades">("name");
+
+    const sortOptions: { value: typeof sortBy; label: string }[] = [
+        { value: "name", label: "Name" },
+        { value: "pnl", label: "Profit & Loss" },
+        { value: "winRate", label: "Win Rate" },
+        { value: "trades", label: "Trades Count" },
+    ];
+    const currentSortLabel = sortOptions.find(o => o.value === sortBy)?.label ?? "Name";
 
     const fetchPerformance = async () => {
         try {
@@ -175,21 +191,25 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
 
     return (
 
-        <>
-            {/* Action button — description & tabs handled by parent page */}
-            <div className="flex justify-end mb-4">
+        <div className="space-y-4">
+            {/* Page Header — same pattern as /dashboard/accounts */}
+            <PageHeader
+                title="Strategies"
+                description="Track performance by trading strategy."
+                mobileFullWidthButton
+            >
                 <Button
                     variant="primary"
                     onClick={() => setShowModal(true)}
-                    className="flex-1 md:flex-none"
+                    className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
                 >
                     <Plus size={18} strokeWidth={2.5} />
                     New Strategy
                 </Button>
-            </div>
+            </PageHeader>
 
             {/* Performance Chart - Only show when strategies exist */}
-            <div className="space-y-4 mt-4">
+            <div className="space-y-4">
                 {strategies.length > 0 && (
                     isLoadingPerformance ? (
                         <StrategiesLoadingSkeleton />
@@ -218,19 +238,35 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
                         />
                     </div>
                     
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <ArrowUpDown size={16} className="text-gray-400" />
-                        <select
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value as "name" | "pnl" | "winRate" | "trades")}
-                            className="w-full sm:w-auto appearance-none rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] px-4 py-2.5 pr-8 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-gray-700 dark:text-gray-300 cursor-pointer"
-                        >
-                            <option value="name">Sort by Name</option>
-                            <option value="pnl">Sort by Profit & Loss</option>
-                            <option value="winRate">Sort by Win Rate</option>
-                            <option value="trades">Sort by Trades Count</option>
-                        </select>
-                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300"
+                            >
+                                <ArrowUpDown size={16} className="text-gray-400" />
+                                <span>{currentSortLabel}</span>
+                                <ChevronDown size={14} className="text-gray-400" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="min-w-[180px]">
+                            {sortOptions.map((option) => (
+                                <DropdownMenuItem
+                                    key={option.value}
+                                    onClick={() => setSortBy(option.value)}
+                                    className={cn(
+                                        "flex items-center justify-between gap-2",
+                                        sortBy === option.value && "text-primary font-semibold"
+                                    )}
+                                >
+                                    {option.label}
+                                    {sortBy === option.value && (
+                                        <Check size={14} className="text-primary" />
+                                    )}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             )}
 
@@ -295,7 +331,7 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
                 onCancel={() => { setIsConfirmOpen(false); setStrategyToDelete(null); }}
                 variant="danger"
             />
-        </>
+        </div>
     );
 }
 

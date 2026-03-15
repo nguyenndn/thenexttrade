@@ -5,6 +5,7 @@ import { BookOpen, FileText, HelpCircle, BarChart2, ArrowRight, Zap } from "luci
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 const container = {
     hidden: { opacity: 0 },
@@ -23,16 +24,11 @@ const item = {
 
 export default function AIStudioPage() {
     return (
-        <div className="space-y-4">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">AI Content Studio</h1>
-                <p className="text-base text-primary font-bold">
-                        Supercharge your course creation with AI. Generate structures, lessons, and quizzes in seconds.
-                    </p>
-                </div>
-            </div>
+        <div className="space-y-4 pb-10">
+            <AdminPageHeader
+                title="AI Content Studio"
+                description="Supercharge your course creation with AI. Generate structures, lessons, and quizzes in seconds."
+            />
 
             {/* Quick Actions Grid */}
             <motion.div

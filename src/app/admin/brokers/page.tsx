@@ -2,39 +2,36 @@ import Link from 'next/link';
 import { getBrokers, deleteBroker } from '@/app/actions/brokers';
 import { Briefcase, Plus, Star, Globe, Trash2, Edit } from 'lucide-react';
 import { CreateBrokerButton } from './CreateBrokerButton';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 
 export default async function AdminBrokersPage() {
     const { data: brokers } = await getBrokers();
 
     return (
-        <div className="space-y-4">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Brokers Management</h1>
-                <p className="text-base text-primary font-bold">
-                        Manage verified partners and broker reviews.
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <CreateBrokerButton />
-                </div>
-            </div>
+        <div className="space-y-4 pb-10">
+            <AdminPageHeader
+                title="Brokers Management"
+                description="Manage verified partners and broker reviews."
+            >
+                <CreateBrokerButton />
+            </AdminPageHeader>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-white/5 text-left">
+            <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+                <div className="overflow-x-auto custom-scrollbar">
+                <table className="w-full text-left border-collapse">
+                    <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
                         <tr>
-                            <th className="p-4 text-xs font-bold text-gray-400 uppercase">Broker</th>
-                            <th className="p-4 text-xs font-bold text-gray-400 uppercase">Rating</th>
-                            <th className="p-4 text-xs font-bold text-gray-400 uppercase">Features</th>
-                            <th className="p-4 text-xs font-bold text-gray-400 uppercase">Status</th>
-                            <th className="p-4 text-xs font-bold text-gray-400 uppercase text-right">Actions</th>
+                            <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Broker</th>
+                            <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Rating</th>
+                            <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Features</th>
+                            <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Status</th>
+                            <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                         {brokers?.map((broker: any) => (
-                            <tr key={broker.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                                <td className="p-4">
+                            <tr key={broker.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors">
+                                <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-lg bg-white p-1 border border-gray-100 flex items-center justify-center">
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -46,13 +43,13 @@ export default async function AdminBrokersPage() {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="p-4">
+                                <td className="px-6 py-4">
                                     <div className="flex items-center gap-1 text-yellow-500 font-bold">
                                         <Star size={14} fill="currentColor" />
                                         {broker.rating}
                                     </div>
                                 </td>
-                                <td className="p-4">
+                                <td className="px-6 py-4">
                                     <div className="flex flex-wrap gap-1">
                                         {broker.features.slice(0, 2).map((feat: string, i: number) => (
                                             <span key={i} className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-white/10 rounded-full dark:text-gray-300">
@@ -66,7 +63,7 @@ export default async function AdminBrokersPage() {
                                         )}
                                     </div>
                                 </td>
-                                <td className="p-4">
+                                <td className="px-6 py-4">
                                     {broker.isRecommended && (
                                         <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded inline-block mr-2">
                                             Recommended
@@ -78,7 +75,7 @@ export default async function AdminBrokersPage() {
                                         <span className="text-xs text-gray-500">Hidden</span>
                                     )}
                                 </td>
-                                <td className="p-4 text-right">
+                                <td className="px-6 py-4 text-right">
                                     <div className="flex items-center justify-end gap-2">
                                         <Link href={`/admin/brokers/${broker.id}`} className="p-2 hover:bg-blue-500/10 text-blue-500 rounded-lg">
                                             <Edit size={16} />
@@ -100,6 +97,7 @@ export default async function AdminBrokersPage() {
                         )}
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     );

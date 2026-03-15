@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 
 import { getAuthUser } from "@/lib/auth-cache";
 import { redirect } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export const dynamic = 'force-dynamic';
 
@@ -108,19 +108,21 @@ export default async function UserAcademyDashboard() {
 
     return (
         <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
-                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Your professional trading journey tracker.</p>
-                <div className="flex items-center gap-3 text-sm font-bold">
-                    <div className="flex items-center gap-1.5 text-white bg-primary px-3 py-1.5 rounded-full shadow-sm">
+            <PageHeader
+                title="Academy"
+                description="Your professional trading journey tracker."
+            >
+                <div className="flex items-center gap-3 text-sm font-bold w-full sm:w-auto">
+                    <div className="flex items-center justify-center gap-1.5 text-white bg-primary px-3 py-1.5 rounded-full shadow-sm flex-1 sm:flex-none">
                         <GraduationCap size={14} />
                         <span>{Math.round(overallProgress)}% Complete</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-primary bg-primary/10 dark:bg-primary/20 px-3 py-1.5 rounded-full">
+                    <div className="flex items-center justify-center gap-1.5 text-primary bg-primary/10 dark:bg-primary/20 px-3 py-1.5 rounded-full flex-1 sm:flex-none">
                         <BookOpen size={14} />
                         <span>{completedLessons}/{totalLessons} Lessons</span>
                     </div>
                 </div>
-            </div>
+            </PageHeader>
 
             <div className="grid lg:grid-cols-3 gap-4">
                 {/* Main Map Column */}

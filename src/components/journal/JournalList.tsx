@@ -306,12 +306,13 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
     return (
         <>
             {/* Compact Header: Description + TabBar + Filters */}
-            <div className="mb-4">
-                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Track your trades and analyze your performance.</p>
-            </div>
+            <PageHeader
+                title="Journal"
+                description="Track your trades and analyze your performance."
+            />
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <TabBar tabs={journalTabs} />
-                <DashboardFilter currentAccountId={accountId || undefined} />
+                <TabBar tabs={journalTabs} equalWidth />
+                <DashboardFilter currentAccountId={accountId || undefined} equalWidth className="order-first lg:order-none" />
             </div>
 
             {stats && <JournalStats stats={stats} />}

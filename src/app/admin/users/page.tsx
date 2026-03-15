@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Users, Mail, ShieldCheck, MoreHorizontal, UserCheck, UserPlus, Zap, ExternalLink } from "lucide-react";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { UserCharts } from "@/components/admin/users/UserCharts";
 import { format, subDays } from "date-fns";
 import { Button } from "@/components/ui/Button";
@@ -95,23 +96,17 @@ export default async function AdminUsersPage() {
 
     return (
         <div className="space-y-4 pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Users Management</h1>
-                <p className="text-base text-primary font-bold">
-                        Manage registered members, analyze growth and activity.
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button
-                        variant="primary"
-                        className="bg-[#2F80ED] hover:bg-[#2563EB] text-white shadow-lg shadow-blue-500/30 flex items-center gap-2 font-bold px-6 py-2.5 h-auto rounded-xl active:scale-95 active:translate-y-0 transition-all"
-                    >
-                        Export Data
-                    </Button>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="Users Management"
+                description="Manage registered members, analyze growth and activity."
+            >
+                <Button
+                    variant="primary"
+                    className="bg-[#2F80ED] hover:bg-[#2563EB] text-white shadow-lg shadow-blue-500/30 flex items-center gap-2 font-bold px-6 py-2.5 h-auto rounded-xl active:scale-95 active:translate-y-0 transition-all"
+                >
+                    Export Data
+                </Button>
+            </AdminPageHeader>
 
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -126,7 +121,7 @@ export default async function AdminUsersPage() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">New (Last 7 Days)</p>
@@ -137,7 +132,7 @@ export default async function AdminUsersPage() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
+                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Active Learners</p>

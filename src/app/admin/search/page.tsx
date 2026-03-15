@@ -7,6 +7,7 @@ import { SearchBar } from "@/components/search/SearchBar";
 import { Loader2, FileText, User as UserIcon, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 interface SearchResult {
     id: string;
@@ -77,15 +78,10 @@ export default function AdminSearchPage() {
 
     return (
         <div className="space-y-4 pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Admin Search</h1>
-                <p className="text-base text-primary font-bold">
-                        Search across Users, Articles (Drafts & Published), and System data.
-                    </p>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="Admin Search"
+                description="Search across Users, Articles (Drafts & Published), and System data."
+            />
 
             {/* Results Area */}
             <div className="space-y-4">
@@ -144,7 +140,7 @@ export default function AdminSearchPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
+                            <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
                                 <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
                             </div>

@@ -6,6 +6,7 @@ import { enUS } from "date-fns/locale";
 import { Megaphone, Plus, Clock, CheckCircle } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/Button";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export const metadata: Metadata = {
     title: "Broadcasts | Admin",
@@ -22,24 +23,19 @@ export default async function AdminNotificationsPage() {
 
     return (
         <div className="space-y-4 pb-10">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                        Broadcasts
-                    </h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1">
-                        Send announcements to all users
-                    </p>
-                </div>
+            <AdminPageHeader
+                title="Broadcasts"
+                description="Send announcements to all users."
+            >
                 <Link href="/admin/notifications/create">
-                    <Button variant="primary" className="bg-primary hover:bg-[#00B078] text-white">
+                    <Button variant="primary" className="shadow-primary/30">
                         <Plus size={18} className="mr-2" />
                         New Broadcast
                     </Button>
                 </Link>
-            </div>
+            </AdminPageHeader>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 {broadcasts.length === 0 ? (
                     <div className="p-12 text-center text-gray-500">
                         <Megaphone size={48} className="mx-auto mb-4 opacity-30" />

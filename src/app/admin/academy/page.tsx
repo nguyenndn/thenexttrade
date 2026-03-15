@@ -18,8 +18,8 @@ export default async function AcademyPage() {
     });
 
     return (
-        <>
+        <div className="pb-10">
             <AcademyDashboard initialLevels={levels} />
-        </>
+        </div>
     );
 }

@@ -212,10 +212,10 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                                 <Link
                                                     key={module.id}
                                                     href={module.lessons[0] ? `${basePath}/lessons/${module.lessons[0].slug}` : '#'}
-                                                    className={cn("block group w-full max-w-sm", !module.lessons[0] && "pointer-events-none opacity-50")}
+                                                    className={cn("block group w-full max-w-[90%] sm:max-w-sm", !module.lessons[0] && "pointer-events-none opacity-50")}
                                                 >
                                                     <div className={cn(
-                                                        "inline-flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
+                                                        "inline-flex items-center gap-3 py-2 px-3 sm:p-3 rounded-xl border transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
                                                         isComplete
                                                             ? "bg-green-50 dark:bg-green-500/5 border-primary/30 dark:border-primary/20 hover:border-primary"
                                                             : isAwaitingQuiz

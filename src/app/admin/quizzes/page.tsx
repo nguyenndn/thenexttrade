@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Plus, ListChecks, MoreHorizontal, Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export default function AdminQuizzesPage() {
     const [quizzes, setQuizzes] = useState<any[]>([]);
@@ -46,23 +47,17 @@ export default function AdminQuizzesPage() {
 
     return (
         <div className="space-y-4 pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Quiz Management</h1>
-                <p className="text-base text-primary font-bold">
-                        Manage assessments and tests.
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Link
-                        href="/admin/quizzes/create"
-                        className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0"
-                    >
-                        <Plus size={18} strokeWidth={2.5} /> Add New
-                    </Link>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="Quiz Management"
+                description="Manage assessments and tests."
+            >
+                <Link
+                    href="/admin/quizzes/create"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0"
+                >
+                    <Plus size={18} strokeWidth={2.5} /> Add New
+                </Link>
+            </AdminPageHeader>
 
             {isLoading ? (
                 <div className="text-center py-20 text-gray-500">Loading quizzes...</div>

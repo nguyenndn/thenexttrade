@@ -6,6 +6,7 @@ import { SystemsList } from "@/components/dashboard/trading-systems/SystemsList"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { AccountSetupWidget } from "./AccountSetupWidget";
 import { CustomBotIcon } from "./SharedUI";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 interface TradingSystemsClientProps {
     licenses: any[];
@@ -40,12 +41,10 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense, h
     return (
         <>
             {/* Header */}
-            <div className="mb-4">
-                <h1 className="sr-only">EA & Indicators</h1>
-                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">
-                    Manage accounts &amp; downloads.
-                </p>
-            </div>
+            <PageHeader
+                title="EA & Indicators"
+                description="Manage accounts & downloads."
+            />
 
                 {/* Account Setup Progress */}
                 <AccountSetupWidget

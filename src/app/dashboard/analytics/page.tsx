@@ -18,6 +18,7 @@ import {
 } from "@/lib/analytics-queries";
 
 import { TabBar } from "@/components/ui/TabBar";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -95,12 +96,14 @@ export default async function AnalyticsPage({
 
     return (
         <div className="space-y-4">
-            <div className="mb-4">
-                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">Analyze your trading performance.</p>
-            </div>
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <TabBar tabs={analyticsTabs} />
+            <PageHeader
+                title="Analytics"
+                description="Analyze your trading performance."
+            >
                 <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
+            </PageHeader>
+            <div className="mb-4">
+                <TabBar tabs={analyticsTabs} equalWidth />
             </div>
             <Suspense key={JSON.stringify(resolvedParams)} fallback={<AnalyticsLoadingSkeleton />}>
                 <AnalyticsDataWrapper 

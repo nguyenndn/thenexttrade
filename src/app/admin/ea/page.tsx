@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/Button";
 import { BrokerLogo } from "@/components/ui/BrokerLogo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { StatCard } from "@/components/admin/widgets/StatCard";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export const metadata: Metadata = {
     title: "EA Management | Admin",
@@ -85,27 +86,21 @@ export default async function EADashboardPage() {
 
     return (
         <div className="space-y-4 pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">EA Management</h1>
-                <p className="text-base text-primary font-bold">
-                        Overview of license requests and products
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Link href="/admin/ea/products/create">
-                        <Button variant="primary" className="shadow-primary/30">
-                            <Bot size={18} aria-hidden="true" /> New Product
-                        </Button>
-                    </Link>
-                    <Link href="/admin/ea/accounts/pending">
-                        <Button variant="outline">
-                            Manage Requests
-                        </Button>
-                    </Link>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="EA Management"
+                description="Overview of license requests and products."
+            >
+                <Link href="/admin/ea/products/create">
+                    <Button variant="primary" className="shadow-primary/30">
+                        <Bot size={18} aria-hidden="true" /> New Product
+                    </Button>
+                </Link>
+                <Link href="/admin/ea/accounts/pending">
+                    <Button variant="outline">
+                        Manage Requests
+                    </Button>
+                </Link>
+            </AdminPageHeader>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -138,7 +133,7 @@ export default async function EADashboardPage() {
             {/* Recent Pending Requests */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Pending Requests */}
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
+                <div className="bg-white dark:bg-[#151925] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Clock className="text-yellow-500" size={24} />
@@ -190,7 +185,7 @@ export default async function EADashboardPage() {
                 {/* Quick Links / Info */}
                 <div className="space-y-6 flex flex-col h-full">
                     {/* Navigation Card */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Quick Navigation</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Link href="/admin/ea/accounts" className="block">
@@ -225,7 +220,7 @@ export default async function EADashboardPage() {
                     </div>
 
                     {/* Active Licenses by Broker Widget */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm flex-1">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm flex-1">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
                             <Briefcase className="text-primary" size={24} aria-hidden="true" />
                             Active by Broker

@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import useSWR from "swr";
 import { Plus, Edit2, Trash2, Zap, Search, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 import { toast } from "sonner";
 
@@ -131,20 +132,14 @@ export default function ShortcutsManagerPage() {
 
     return (
         <div className="space-y-4 pb-10">
-            {/* Standard Admin Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Content Shortcuts</h1>
-                <p className="text-base text-primary font-bold">
-                        Manage reusable content snippets to insert instantly into your articles.
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all">
-                        <Plus size={18} strokeWidth={2.5} /> New Shortcut
-                    </Button>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="Content Shortcuts"
+                description="Manage reusable content snippets to insert instantly into your articles."
+            >
+                <Button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all">
+                    <Plus size={18} strokeWidth={2.5} /> New Shortcut
+                </Button>
+            </AdminPageHeader>
 
             {/* Main Content */}
             <div className="space-y-6">
@@ -166,7 +161,7 @@ export default function ShortcutsManagerPage() {
                     {isLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                             {[1, 2, 3, 4, 5, 6].map((i) => (
-                                <div key={i} className="flex flex-col p-6 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl h-[160px] animate-pulse">
+                                <div key={i} className="flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl h-[160px] animate-pulse">
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10" />
                                         <div className="h-5 bg-gray-200 dark:bg-white/10 rounded-md w-1/2" />
@@ -185,7 +180,7 @@ export default function ShortcutsManagerPage() {
                     ) : filteredShortcuts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                             {filteredShortcuts.map((shortcut) => (
-                                <div key={shortcut.id} className="group relative flex flex-col p-6 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-md transition-shadow cursor-pointer">
+                                <div key={shortcut.id} className="group relative flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-md transition-shadow cursor-pointer">
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-2">
                                             <Zap size={16} className="text-yellow-500" />
@@ -224,7 +219,7 @@ export default function ShortcutsManagerPage() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center text-center p-12 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 my-10 max-w-lg mx-auto">
-                            <div className="w-16 h-16 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                            <div className="w-16 h-16 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-full flex items-center justify-center mb-4 shadow-sm">
                                 <Zap size={28} className="text-yellow-500" />
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No Shortcuts Found</h3>

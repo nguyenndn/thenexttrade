@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { PenTool, Users, FileImage, Layers } from "lucide-react";
+import { PenTool, Users, Layers, Settings } from "lucide-react";
 
 export function QuickActionsWidget() {
     const actions = [
@@ -11,7 +11,6 @@ export function QuickActionsWidget() {
             description: "Create a new post",
             icon: PenTool,
             href: "/admin/articles/create",
-            color: "bg-blue-500",
             textColor: "text-blue-500",
             bgColor: "bg-blue-50 dark:bg-blue-500/10"
         },
@@ -20,20 +19,24 @@ export function QuickActionsWidget() {
             description: "View user base",
             icon: Users,
             href: "/admin/users",
-            color: "bg-violet-500",
-            textColor: "text-violet-500",
-            bgColor: "bg-violet-50 dark:bg-violet-500/10"
+            textColor: "text-cyan-500",
+            bgColor: "bg-cyan-50 dark:bg-cyan-500/10"
         },
-        // We can add a Media Library page later, for now let's link to Categories as a proxy for 'Organization'
-        // or just Quizzes
         {
             title: "Manage Quizzes",
             description: "Academy content",
             icon: Layers,
             href: "/admin/quizzes",
-            color: "bg-amber-500",
             textColor: "text-amber-500",
             bgColor: "bg-amber-50 dark:bg-amber-500/10"
+        },
+        {
+            title: "Settings",
+            description: "Configure platform",
+            icon: Settings,
+            href: "/admin/settings",
+            textColor: "text-emerald-500",
+            bgColor: "bg-emerald-50 dark:bg-emerald-500/10"
         }
     ];
 

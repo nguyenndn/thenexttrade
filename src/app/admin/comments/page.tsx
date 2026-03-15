@@ -9,6 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 const fetcher = async (url: string) => {
     const res = await fetch(url);
@@ -92,15 +93,10 @@ export default function AdminCommentsPage() {
 
     return (
         <div className="space-y-4 pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Comments</h1>
-                <p className="text-base text-primary font-bold">
-                        Manage user discussions and moderation.
-                    </p>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="Comments"
+                description="Manage user discussions and moderation."
+            />
 
             {/* Data Wrapper */}
             <div className="space-y-6">

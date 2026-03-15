@@ -4,6 +4,7 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { Edit2, Trash2, Plus, Tag as TagIcon, MoreHorizontal } from "lucide-react";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/Button";
 import {
     DropdownMenu,
@@ -85,24 +86,18 @@ export default function TagList() {
     };
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Tag Management</h1>
-                <p className="text-base text-primary font-bold">
-                        Manage tags for organizing content.
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button
-                        onClick={handleCreate}
-                        className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
-                    >
-                        <Plus size={18} strokeWidth={2.5} /> Add New
-                    </Button>
-                </div>
-            </div>
+        <div className="space-y-4">
+            <AdminPageHeader
+                title="Tags"
+                description="Label and filter content with custom tags."
+            >
+                <Button
+                    onClick={handleCreate}
+                    className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
+                >
+                    <Plus size={18} strokeWidth={2.5} /> Add New
+                </Button>
+            </AdminPageHeader>
 
             <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">

@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
-import { Users, FileText, GraduationCap, BrainCircuit, Activity, BarChart3, MessageSquare, Eye } from "lucide-react";
-import { StatCard } from "@/components/admin/widgets/StatCard";
+import { AdminDashboardClient } from "@/components/admin/dashboard/AdminDashboardClient";
+import { AnimatedSection } from "@/components/admin/dashboard/AnimatedSection";
 import { UserGrowthChart } from "@/components/admin/charts/UserGrowthChart";
 import { ContentDistributionChart } from "@/components/admin/charts/ContentDistributionChart";
 import { QuickActionsWidget } from "@/components/admin/widgets/QuickActionsWidget";
@@ -12,10 +12,31 @@ import { PopularArticlesSuspense } from "@/components/admin/dashboard/PopularArt
 
 export const dynamic = 'force-dynamic';
 
+function toDailySparkline(items: { createdAt: Date }[], days = 7): number[] {
+    const result = Array(days).fill(0);
+    const now = new Date();
+    now.setHours(23, 59, 59, 999);
+    items.forEach(item => {
+        const daysAgo = Math.floor((now.getTime() - item.createdAt.getTime()) / 86400000);
+        if (daysAgo >= 0 && daysAgo < days) result[days - 1 - daysAgo]++;
+    });
+    return result;
+}
+
+function calcTrend(current: number, previous: number): number | null {
+    if (previous === 0) return current > 0 ? 100 : null;
+    return Math.round(((current - previous) / previous) * 100);
+}
+
 const getStats = unstable_cache(
     async () => {
-        const thirtyDaysAgo = new Date();
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now);
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const sixtyDaysAgo = new Date(now);
+        sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
         const [
             usersCount,
@@ -27,7 +48,17 @@ const getStats = unstable_cache(
             tradingVolumeData,
             totalViewsData,
             rawUserGrowth,
-            categoriesDistribution
+            categoriesDistribution,
+            // Trend: previous period counts
+            prevUsersCount,
+            prevArticlesCount,
+            prevTradesCount,
+            // Trend: recent period counts
+            recentArticlesCount,
+            recentTradesCount,
+            // Sparkline: 7-day raw data
+            rawArticles7d,
+            rawTrades7d,
         ] = await Promise.all([
             prisma.user.count(),
             prisma.article.count(),
@@ -37,187 +68,121 @@ const getStats = unstable_cache(
             prisma.comment.count(),
             prisma.journalEntry.aggregate({ _sum: { lotSize: true } }),
             prisma.article.aggregate({ _sum: { views: true } }),
-            // Use 'findMany' with minimal select for growth chart (Efficient for <10k users)
-            // For larger datasets, consider using a raw query for date grouping.
             prisma.user.findMany({
                 where: { createdAt: { gte: thirtyDaysAgo } },
                 select: { createdAt: true }
             }),
             prisma.category.findMany({
-                include: {
-                    _count: { select: { articles: true } }
-                }
-            })
+                include: { _count: { select: { articles: true } } }
+            }),
+            // Previous 30-day period
+            prisma.user.count({ where: { createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } } }),
+            prisma.article.count({ where: { createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } } }),
+            prisma.journalEntry.count({ where: { createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } } }),
+            // Recent 30-day period
+            prisma.article.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
+            prisma.journalEntry.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
+            // 7-day sparkline raw
+            prisma.article.findMany({ where: { createdAt: { gte: sevenDaysAgo } }, select: { createdAt: true } }),
+            prisma.journalEntry.findMany({ where: { createdAt: { gte: sevenDaysAgo } }, select: { createdAt: true } }),
         ]);
 
-        // Process User Growth Data
+        // User Growth Chart (30 days)
         const userGrowthMap = new Map<string, number>();
         rawUserGrowth.forEach(user => {
             const date = user.createdAt.toISOString().split('T')[0];
             userGrowthMap.set(date, (userGrowthMap.get(date) || 0) + 1);
         });
 
-        // Fill in missing days
         const userGrowthChart = [];
         for (let i = 29; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
             const dateStr = d.toISOString().split('T')[0];
-            userGrowthChart.push({
-                date: dateStr,
-                count: userGrowthMap.get(dateStr) || 0
-            });
+            userGrowthChart.push({ date: dateStr, count: userGrowthMap.get(dateStr) || 0 });
         }
 
-        // Process Content Distribution
-        const contentDistribution = categoriesDistribution.map(cat => ({
-            name: cat.name,
-            value: cat._count.articles
-        })).filter(item => item.value > 0);
+        // Content Distribution
+        const contentDistribution = categoriesDistribution
+            .map(cat => ({ name: cat.name, value: cat._count.articles }))
+            .filter(item => item.value > 0);
+
+        // Sparklines
+        const userSparkline = userGrowthChart.slice(-7).map(d => d.count);
+        const articleSparkline = toDailySparkline(rawArticles7d);
+        const tradeSparkline = toDailySparkline(rawTrades7d);
+
+        // Trends
+        const recentUsersCount = rawUserGrowth.length;
 
         return {
-            usersCount,
-            articlesCount,
+            users: { total: usersCount, sparkline: userSparkline, trendPercent: calcTrend(recentUsersCount, prevUsersCount) },
+            articles: { total: articlesCount, sparkline: articleSparkline, trendPercent: calcTrend(recentArticlesCount, prevArticlesCount) },
+            trades: { total: journalCount, sparkline: tradeSparkline, trendPercent: calcTrend(recentTradesCount, prevTradesCount) },
+            views: { total: totalViewsData._sum.views || 0, sparkline: [] as number[], trendPercent: null },
             lessonsCount,
             quizzesCount,
-            journalCount,
             commentsCount,
             tradingVolume: tradingVolumeData._sum.lotSize || 0,
             userGrowthChart,
             contentDistribution,
-            totalViews: totalViewsData._sum.views || 0
         };
     },
-    ['admin-dashboard-stats'],
-    {
-        revalidate: 300, // Optimize: Cache for 5 minutes instead of 60s
-        tags: ['admin-stats']
-    }
+    ['admin-dashboard-stats-v2'],
+    { revalidate: 300, tags: ['admin-stats'] }
 );
 
 export default async function AdminDashboard() {
     const stats = await getStats();
 
     return (
-        <div className="space-y-4 pb-10">
-            {/* Dashboard Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="sr-only">Dashboard Overview</h1>
-                <p className="text-base text-primary font-bold">
-                        Welcome back! Here's what's happening in your platform today.
-                    </p>
+        <div className="space-y-6 pb-10">
+            {/* Zone 1: Welcome + Hero Stats + Compact Stats */}
+            <AdminDashboardClient
+                users={{ value: stats.users.total, sparkline: stats.users.sparkline, trendPercent: stats.users.trendPercent }}
+                articles={{ value: stats.articles.total, sparkline: stats.articles.sparkline, trendPercent: stats.articles.trendPercent }}
+                trades={{ value: stats.trades.total, sparkline: stats.trades.sparkline, trendPercent: stats.trades.trendPercent }}
+                views={{ value: stats.views.total, sparkline: stats.views.sparkline, trendPercent: stats.views.trendPercent }}
+                lessonsCount={stats.lessonsCount}
+                quizzesCount={stats.quizzesCount}
+                commentsCount={stats.commentsCount}
+                tradingVolume={stats.tradingVolume}
+            />
+
+            {/* Zone 2: Charts */}
+            <AnimatedSection delay={0.6}>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div className="lg:col-span-2">
+                        <UserGrowthChart data={stats.userGrowthChart} />
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        <QuickActionsWidget />
+                        <ContentDistributionChart data={stats.contentDistribution} />
+                    </div>
                 </div>
-            </div>
+            </AnimatedSection>
 
-            {/* Core Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard
-                    title="Total Users"
-                    value={stats.usersCount.toLocaleString()}
-                    change="+12%"
-                    trend="up"
-                    icon={Users}
-                    color="blue"
-                />
-                <StatCard
-                    title="Published Articles"
-                    value={stats.articlesCount.toLocaleString()}
-                    change="+5%"
-                    trend="up"
-                    icon={FileText}
-                    color="emerald"
-                />
-                <StatCard
-                    title="Academy Lessons"
-                    value={stats.lessonsCount.toLocaleString()}
-                    change="New content"
-                    trend="neutral"
-                    icon={GraduationCap}
-                    color="violet"
-                />
-                <StatCard
-                    title="Active Quizzes"
-                    value={stats.quizzesCount.toLocaleString()}
-                    change="+2 features"
-                    trend="up"
-                    icon={BrainCircuit}
-                    color="amber"
-                />
-            </div>
-
-            {/* Secondary Stats Grid (Trading Focus) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard
-                    title="Trading Logs"
-                    value={stats.journalCount.toLocaleString()}
-                    change="Active traders"
-                    trend="up"
-                    icon={Activity}
-                    color="cyan"
-                />
-                <StatCard
-                    title="Volume Traded"
-                    value={`${stats.tradingVolume.toFixed(2)} Lots`}
-                    change="Platform wide"
-                    trend="neutral"
-                    icon={BarChart3}
-                    color="indigo"
-                />
-                <StatCard
-                    title="Total Comments"
-                    value={stats.commentsCount.toLocaleString()}
-                    icon={MessageSquare}
-                    color="rose"
-                    trend="up"
-                    change="Community interaction"
-                />
-                <StatCard
-                    title="Total Views"
-                    value={stats.totalViews.toLocaleString()}
-                    change="Across all articles"
-                    trend="up"
-                    icon={Eye}
-                    color="green"
-                />
-            </div>
-
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="lg:col-span-2">
-                    <UserGrowthChart data={stats.userGrowthChart} />
-                </div>
-                <div className="flex flex-col gap-6">
-                    <QuickActionsWidget />
-                    <ContentDistributionChart data={stats.contentDistribution} />
-                </div>
-            </div>
-
-            {/* Detailed Widgets Grid with Suspense Component Streaming */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="h-[400px]">
+            {/* Zone 3: Activity Widgets */}
+            <AnimatedSection delay={0.8}>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     <Suspense fallback={<WidgetSkeleton />}>
                         <RecentTradesSuspense />
                     </Suspense>
-                </div>
-                <div className="h-[400px]">
                     <Suspense fallback={<WidgetSkeleton />}>
                         <TopLearnersSuspense />
                     </Suspense>
-                </div>
-                <div className="h-[400px]">
                     <Suspense fallback={<WidgetSkeleton />}>
                         <PopularArticlesSuspense />
                     </Suspense>
                 </div>
-            </div>
+            </AnimatedSection>
         </div>
     );
 }
 
 function WidgetSkeleton() {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex items-center justify-center animate-pulse">
+        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full min-h-[350px] flex items-center justify-center animate-pulse">
             <div className="w-full space-y-4">
                 <div className="h-6 bg-gray-200 dark:bg-white/5 rounded w-1/3 mx-auto mb-8" />
                 {[1, 2, 3, 4, 5].map(i => (

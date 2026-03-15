@@ -19,7 +19,6 @@ import {
     Bot,
     Download,
     BarChart3,
-    Target,
     AlertTriangle,
     FileSpreadsheet,
     Clock,
@@ -76,9 +75,9 @@ export const dashboardMenuItems = [
         icon: FileText,
     },
     {
-        name: "The Playbook",
-        href: "/dashboard/playbook",
-        icon: Target,
+        name: "Strategies",
+        href: "/dashboard/strategies",
+        icon: Route,
     },
 
     // --- REVIEW ---

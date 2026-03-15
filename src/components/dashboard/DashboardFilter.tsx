@@ -10,9 +10,10 @@ interface DashboardFilterProps {
     currentAccountId?: string;
     className?: string;
     hideDateFilter?: boolean;
+    equalWidth?: boolean;
 }
 
-export function DashboardFilter({ currentAccountId, className, hideDateFilter }: DashboardFilterProps) {
+export function DashboardFilter({ currentAccountId, className, hideDateFilter, equalWidth }: DashboardFilterProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -105,12 +106,12 @@ export function DashboardFilter({ currentAccountId, className, hideDateFilter }:
 
     return (
         <div className={`flex flex-col md:flex-row md:flex-nowrap items-stretch md:items-center gap-3 w-full md:w-auto ${className || ""}`}>
-            <AccountSelector currentAccountId={currentAccountId} className="w-full md:w-auto min-w-[150px]" />
+            <AccountSelector currentAccountId={currentAccountId} className={equalWidth ? "w-full md:flex-1 min-w-[150px]" : "w-full md:w-auto min-w-[150px]"} />
             {!hideDateFilter && (
                 <DateRangePicker
                     value={dateRange}
                     onChange={handleDateChange}
-                    className="w-full md:w-auto"
+                    className={equalWidth ? "w-full md:flex-1" : "w-full md:w-auto"}
                     maxDate={new Date()} // Prevent future selection
                 />
             )}
