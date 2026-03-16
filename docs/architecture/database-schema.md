@@ -1,6 +1,6 @@
 # Database Schema
 
-This document outlines the core data models used in the **GSN-CRM** application. The database is hosted on **Supabase** (PostgreSQL) and managed via **Prisma ORM**.
+This document outlines the core data models used in the **TheNextTrade** application. The database is hosted on **Supabase** (PostgreSQL) and managed via **Prisma ORM**.
 
 ## Core Entities Relationship Diagram
 

@@ -1,4 +1,4 @@
-# GSN-CRM - Forex Education & Trading Platform
+# TheNextTrade - Forex Education & Trading Platform
 
 > **Web app giáo dục và hỗ trợ phân tích forex với hệ thống học liệu, quiz, trading journal, risk calculator và performance dashboard.**
 

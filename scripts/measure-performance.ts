@@ -335,7 +335,7 @@ function generateReport() {
 async function main() {
     console.clear();
     log('╔════════════════════════════════════════════════════════════════╗', 'cyan');
-    log('║       GSN-CRM PERFORMANCE BASELINE MEASUREMENT                 ║', 'cyan');
+    log('║       TheNextTrade PERFORMANCE BASELINE MEASUREMENT                 ║', 'cyan');
     log('║       Before Optimization - Baseline Metrics                   ║', 'cyan');
     log('╚════════════════════════════════════════════════════════════════╝', 'cyan');
 

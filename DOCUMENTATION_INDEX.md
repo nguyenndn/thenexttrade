@@ -1,6 +1,6 @@
 # 📚 Documentation Index
 
-Welcome to GSN-CRM documentation! All documentation has been reorganized for clarity.
+Welcome to TheNextTrade documentation! All documentation has been reorganized for clarity.
 
 ## 🎯 Start Here
 

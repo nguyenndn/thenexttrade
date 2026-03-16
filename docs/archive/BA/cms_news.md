@@ -1,7 +1,7 @@
 # Business Analysis: CMS & News Module
 
 ## 1. Tổng quan (Overview)
-Module **CMS (Content Management System)** là trái tim của nền tảng tin tức GSN-CRM. Nó cho phép đội ngũ biên tập (Editors/Admins) sản xuất, quản lý và xuất bản nội dung tin tức Forex, Crypto, Stocks và các bài phân tích thị trường.
+Module **CMS (Content Management System)** là trái tim của nền tảng tin tức TheNextTrade. Nó cho phép đội ngũ biên tập (Editors/Admins) sản xuất, quản lý và xuất bản nội dung tin tức Forex, Crypto, Stocks và các bài phân tích thị trường.
 
 ---
 

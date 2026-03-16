@@ -1,6 +1,6 @@
 # Server Startup Guide
 
-Hướng dẫn chi tiết cách start server GSN-CRM trên các môi trường khác nhau.
+Hướng dẫn chi tiết cách start server TheNextTrade trên các môi trường khác nhau.
 
 ---
 

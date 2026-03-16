@@ -2,7 +2,7 @@
 
 1.  Truy cập [Supabase Dashboard](https://supabase.com/dashboard) và đăng nhập (Create New Project).
 2.  **Organization:** Chọn Organization của bạn.
-3.  **Name:** Đặt tên là `GSN-CRM` (hoặc tên tùy thích).
+3.  **Name:** Đặt tên là `TheNextTrade` (hoặc tên tùy thích).
 4.  **Database Password:** **QUAN TRỌNG!** Hãy click "Generate a password" và **lưu mật khẩu này lại ngay lập tức** (vào Notepad hoặc Password Manager). Chúng ta sẽ cần nó để cấu hình Prisma sau này.
 5.  **Region:** Chọn `Singapore` (để gần Việt Nam nhất, tốc độ nhanh).
 6.  **Pricing Plan:** Chọn **Free**.
