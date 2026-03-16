@@ -61,4 +61,4 @@ We maintain a rigorous testing standard including Security Hardening and Logic V
 
 ---
 
-**Version:** 1.0.0 | **Maintainer:** GSN Team
+**Version:** 1.0.0 | **Maintainer:** TheNextTrade Team
