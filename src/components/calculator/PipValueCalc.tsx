@@ -34,7 +34,7 @@ export function PipValueCalc() {
                         type="number"
                         value={lotSize}
                         onChange={(e) => setLotSize(parseFloat(e.target.value) || 0)}
-                        className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
                     />
                 </div>
             </div>

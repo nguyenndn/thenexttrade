@@ -3,8 +3,7 @@ import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { AccountStatus } from "@prisma/client";
 import { PendingAccountsList } from "@/components/admin/ea/PendingAccountsList";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export const metadata: Metadata = {
     title: "Pending Requests | Admin",
@@ -17,27 +16,23 @@ export default async function PendingAccountsPage() {
         licenses = await prisma.eALicense.findMany({
             where: { status: AccountStatus.PENDING },
             include: { user: { select: { id: true, name: true, email: true, image: true, createdAt: true } } },
-            orderBy: { createdAt: "asc" }, // Oldest first for queue
+            orderBy: { createdAt: "asc" },
         });
     } catch (error) {
         console.error("Failed to fetch pending EA requests:", error);
     }
 
     return (
-        <div className="space-y-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Link href="/admin/ea" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-500 transition-colors">
-                        <ArrowLeft size={24} />
-                    </Link>
-                    <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                        Pending Requests
-                    </h1>
-                </div>
-                <span className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 px-3 py-1 rounded-lg font-bold">
+        <div className="space-y-4 pb-10">
+            <AdminPageHeader
+                title="Pending Requests"
+                description="Approve or reject EA license requests."
+                backHref="/admin/ea"
+            >
+                <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-4 py-2 rounded-xl font-bold text-sm">
                     {licenses.length} Requests
                 </span>
-            </div>
+            </AdminPageHeader>
 
             <PendingAccountsList licenses={licenses} />
         </div>

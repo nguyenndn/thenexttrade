@@ -12,9 +12,7 @@ export async function updateProfile(formData: FormData) {
         return { error: "Unauthorized" };
     }
 
-    const firstName = formData.get("firstName") as string;
-    const lastName = formData.get("lastName") as string;
-    const fullName = `${firstName} ${lastName}`.trim();
+    const fullName = (formData.get("fullName") as string || "").trim();
     const imageFile = formData.get("image") as File;
 
     try {
@@ -73,7 +71,6 @@ export async function updateSystemConfig(config: any) {
     if (!user) return { error: "Unauthorized" };
 
     try {
-        console.log("Saving System Config:", config);
         await prisma.systemSetting.upsert({
             where: { key: 'site_config' },
             update: { value: config },

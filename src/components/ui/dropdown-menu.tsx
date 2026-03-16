@@ -34,6 +34,8 @@ export function DropdownMenu({ children, open, onOpenChange, className }: Dropdo
     }, [onOpenChange, open]);
 
     React.useEffect(() => {
+        if (!isOpen) return;
+
         const handleClickOutside = (event: MouseEvent) => {
             const isClickInsideTrigger = ref.current?.contains(event.target as Node);
             const isClickInsideContent = contentRef.current?.contains(event.target as Node);
@@ -43,11 +45,13 @@ export function DropdownMenu({ children, open, onOpenChange, className }: Dropdo
             }
         };
 
-        if (isOpen) {
+        // Defer listener so it doesn't catch the same click that opened the menu
+        const frameId = requestAnimationFrame(() => {
             document.addEventListener("mousedown", handleClickOutside);
-        }
+        });
 
         return () => {
+            cancelAnimationFrame(frameId);
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [isOpen, setIsOpen]);
@@ -110,38 +114,44 @@ interface DropdownMenuContentProps extends React.HTMLAttributes<HTMLDivElement> 
     align?: "start" | "end" | "center";
 }
 
-export function DropdownMenuContent({ children, align = "center", className, ...props }: DropdownMenuContentProps) {
+export function DropdownMenuContent({ children, align = "center", className, style: externalStyle, ...props }: DropdownMenuContentProps & { style?: React.CSSProperties }) {
     const { isOpen, triggerRef, contentRef, mounted } = React.useContext(DropdownMenuContext);
-    const [position, setPosition] = React.useState({ top: 0, left: 0 });
+    const [position, setPosition] = React.useState({ top: 0, left: 0, width: 0 });
 
     React.useEffect(() => {
         if (isOpen && triggerRef.current) {
             const updatePosition = () => {
                 const triggerRect = triggerRef.current!.getBoundingClientRect();
-                const scrollY = window.scrollY;
-                const scrollX = window.scrollX;
                 
-                let top = triggerRect.bottom + scrollY + 4; // 4px margin
-                let left = triggerRect.left + scrollX;
+                let top = triggerRect.bottom + 4;
+                let left = triggerRect.left;
+                const width = triggerRect.width;
                 
                 if (contentRef.current) {
                     const contentRect = contentRef.current.getBoundingClientRect();
                     if (align === "end") {
-                        left = triggerRect.right + scrollX - contentRect.width;
+                        left = triggerRect.right - contentRect.width;
                     } else if (align === "center") {
-                        left = triggerRect.left + scrollX + (triggerRect.width / 2) - (contentRect.width / 2);
+                        left = triggerRect.left + (triggerRect.width / 2) - (contentRect.width / 2);
+                    }
+
+                    if (top + contentRect.height > window.innerHeight) {
+                        top = triggerRect.top - contentRect.height - 4;
+                    }
+                    if (left < 4) left = 4;
+                    if (left + contentRect.width > window.innerWidth - 4) {
+                        left = window.innerWidth - contentRect.width - 4;
                     }
                 }
                 
-                setPosition({ top, left });
+                setPosition({ top, left, width });
             };
             
             updatePosition();
-            // Re-calc after a tiny delay in case content width wasn't ready
             setTimeout(updatePosition, 0);
 
             window.addEventListener('resize', updatePosition);
-            window.addEventListener('scroll', updatePosition, true); // true for capturing scrolling events anywhere
+            window.addEventListener('scroll', updatePosition, true);
             return () => {
                 window.removeEventListener('resize', updatePosition);
                 window.removeEventListener('scroll', updatePosition, true);
@@ -158,11 +168,13 @@ export function DropdownMenuContent({ children, align = "center", className, ...
                 "fixed z-[200] min-w-[8rem] overflow-hidden rounded-md border border-gray-100 bg-white p-1 text-gray-950 shadow-md dark:border-white/10 dark:bg-[#1E2028] dark:text-gray-50",
                 className
             )}
+            {...props}
             style={{
+                ...externalStyle,
                 top: `${position.top}px`,
                 left: `${position.left}px`,
+                minWidth: `${position.width}px`,
             }}
-            {...props}
         >
             {children}
         </div>,

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { Users, Mail, ShieldCheck, MoreHorizontal, UserCheck, UserPlus, Zap, ExternalLink } from "lucide-react";
+import { Users, Mail, ShieldCheck, UserPlus, Zap, ExternalLink } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { UserStatsClient } from "@/components/admin/users/UserStatsClient";
 import { UserCharts } from "@/components/admin/users/UserCharts";
 import { format, subDays } from "date-fns";
 import { Button } from "@/components/ui/Button";
@@ -9,70 +10,99 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 
 export const dynamic = 'force-dynamic';
 
+// ── Helper: 7-day daily new user counts ──
+async function getDailyNewUserCounts(days: number) {
+    const counts: number[] = [];
+    const now = new Date();
+
+    for (let i = days - 1; i >= 0; i--) {
+        const dayStart = new Date(now);
+        dayStart.setDate(now.getDate() - i);
+        dayStart.setHours(0, 0, 0, 0);
+
+        const dayEnd = new Date(dayStart);
+        dayEnd.setHours(23, 59, 59, 999);
+
+        const count = await prisma.user.count({
+            where: { createdAt: { gte: dayStart, lte: dayEnd } },
+        });
+        counts.push(count);
+    }
+    return counts;
+}
+
+// ── Helper: 30d trend percent ──
+async function getUserTrend() {
+    const now = new Date();
+    const d30 = new Date(now);
+    d30.setDate(now.getDate() - 30);
+    const d60 = new Date(now);
+    d60.setDate(now.getDate() - 60);
+
+    const [current, previous] = await Promise.all([
+        prisma.user.count({ where: { createdAt: { gte: d30 } } }),
+        prisma.user.count({ where: { createdAt: { gte: d60, lt: d30 } } }),
+    ]);
+
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return Math.round(((current - previous) / previous) * 100);
+}
+
+async function getHeroStats() {
+    try {
+        const sevenDaysAgo = subDays(new Date(), 7);
+        const thirtyDaysAgo = subDays(new Date(), 30);
+
+        const [totalUsers, newUsers, activeUsers, sparkline, trend] = await Promise.all([
+            prisma.user.count(),
+            prisma.user.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
+            prisma.userProgress.findMany({
+                where: { completedAt: { gte: thirtyDaysAgo } },
+                distinct: ['userId'],
+                select: { userId: true }
+            }),
+            getDailyNewUserCounts(7),
+            getUserTrend(),
+        ]);
+
+        return {
+            totalUsers: { value: totalUsers, sparkline, trendPercent: trend },
+            newUsers: { value: newUsers, sparkline, trendPercent: null },
+            activeLearners: { value: activeUsers.length, sparkline: sparkline.map(v => Math.max(0, v - 1)), trendPercent: null },
+        };
+    } catch (error) {
+        console.error("Error fetching user hero stats:", error);
+        const empty = { value: 0, sparkline: [0, 0, 0, 0, 0, 0, 0], trendPercent: null };
+        return { totalUsers: empty, newUsers: empty, activeLearners: empty };
+    }
+}
+
 async function getUserStats() {
-    const sevenDaysAgo = subDays(new Date(), 7);
     const thirtyDaysAgo = subDays(new Date(), 30);
 
-    const [totalUsers, newUsers, activeUsers, roles, activityData, topUsers] = await Promise.all([
-        // 1. Total
-        prisma.user.count(),
-        // 2. New Users 7d
-        prisma.user.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
-        // 3. Active Users 30d (Distinct)
-        prisma.userProgress.findMany({
-            where: { completedAt: { gte: thirtyDaysAgo } },
-            distinct: ['userId'],
-            select: { userId: true }
-        }),
-        // 4. Roles
+    const [roles, activityData] = await Promise.all([
         prisma.profile.groupBy({
             by: ['role'],
             _count: { role: true }
         }),
-        // 5. Activity (Mocked for now as per original code pattern, or optimized?)
-        // Keeping original mock generation logic but essentially it was just array mapping.
-        // We can just return the mock data directly here without async if it's pure mock.
         Promise.resolve(Array.from({ length: 7 }).map((_, i) => ({
             name: format(subDays(new Date(), 6 - i), 'EEE'),
             value: Math.floor(Math.random() * 20) + 5
         }))),
-        // 6. Top Users (Optimized: N+1 Fix)
-        (async () => {
-            const users = await prisma.user.findMany({
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    image: true,
-                    _count: {
-                        select: {
-                            progress: {
-                                where: { isCompleted: true }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Sort in memory (faster than DB orderBy with count)
-            return users
-                .sort((a, b) => b._count.progress - a._count.progress)
-                .slice(0, 5);
-        })()
     ]);
 
-    // Format Role Data
+    const totalForRoles = await prisma.user.count();
     const roleData = [
-        { name: 'User', value: totalUsers - (roles.length > 0 ? roles.reduce((acc, curr) => acc + curr._count.role, 0) : 0) },
+        { name: 'User', value: totalForRoles - (roles.length > 0 ? roles.reduce((acc, curr) => acc + curr._count.role, 0) : 0) },
         ...roles.map(r => ({ name: r.role, value: r._count.role }))
     ].filter(d => d.value > 0);
 
-    return { totalUsers, newUsers, activeUsersCount: activeUsers.length, roleData, activityData, topUsers }; // Added topUsers to return
+    return { roleData, activityData };
 }
 
 export default async function AdminUsersPage() {
-    // Parallel Fetching
-    const [stats, users] = await Promise.all([
+    const [heroStats, stats, users] = await Promise.all([
+        getHeroStats(),
         getUserStats(),
         prisma.user.findMany({
             take: 50,
@@ -108,42 +138,12 @@ export default async function AdminUsersPage() {
                 </Button>
             </AdminPageHeader>
 
-            {/* Stats Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Users</p>
-                            <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.totalUsers.toLocaleString()}</h3>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 ring-1 ring-blue-500/20">
-                            <Users size={24} strokeWidth={2.5} />
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">New (Last 7 Days)</p>
-                            <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">+{stats.newUsers}</h3>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20">
-                            <UserPlus size={24} strokeWidth={2.5} />
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Active Learners</p>
-                            <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{stats.activeUsersCount}</h3>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
-                            <Zap size={24} strokeWidth={2.5} />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {/* Animated Hero Stats */}
+            <UserStatsClient
+                totalUsers={heroStats.totalUsers}
+                newUsers={heroStats.newUsers}
+                activeLearners={heroStats.activeLearners}
+            />
 
             {/* Charts Row */}
             <UserCharts roleData={stats.roleData} activityData={stats.activityData} />

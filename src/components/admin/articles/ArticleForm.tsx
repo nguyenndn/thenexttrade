@@ -1,9 +1,10 @@
-﻿"use client";
+"use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Save, ArrowLeft, Trash2, Clock, FileText, CheckCircle, AlertCircle, CheckSquare, Square, ChevronDown, Image as ImageIcon, X as XIcon } from "lucide-react";
+import { Loader2, Save, Trash2, Clock, FileText, CheckCircle, AlertCircle, CheckSquare, Square, ChevronDown, Image as ImageIcon, X as XIcon, BookOpen, ListTree } from "lucide-react";
 import Link from "next/link";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { MediaLibraryModal } from "@/components/admin/media/MediaLibraryModal";
 import { TagInput } from "./TagInput";
@@ -52,7 +53,7 @@ function FormSelect({ label, value, options, onChange, placeholder }: { label: s
                         <ChevronDown size={16} className="text-gray-400 shrink-0" aria-hidden="true" />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[200px] max-h-[300px] overflow-y-auto w-full">
+                <DropdownMenuContent align="start" className="min-w-[200px] max-h-[300px] overflow-y-auto">
                     <DropdownMenuItem onClick={() => onChange("")}>{placeholder}</DropdownMenuItem>
                     {options.map(o => (
                         <DropdownMenuItem key={o.value} onClick={() => onChange(o.value)}>{o.label}</DropdownMenuItem>
@@ -173,6 +174,51 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
     const wordCount = formData.content ? formData.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(w => w.length > 0).length : 0;
     const readingTime = Math.ceil(wordCount / 200);
 
+    // Table of Contents
+    const tocHeadings = useMemo(() => {
+        if (!formData.content) return [];
+        const regex = /<h([1-3])[^>]*>(.*?)<\/h[1-3]>/gi;
+        const matches = [];
+        let match;
+        let i = 0;
+        while ((match = regex.exec(formData.content)) !== null) {
+            matches.push({
+                id: `heading-${i++}`,
+                text: match[2].replace(/<[^>]*>/g, ''),
+                level: parseInt(match[1]),
+            });
+        }
+        return matches;
+    }, [formData.content]);
+
+    // Reading Level Score
+    const readingLevel = useMemo(() => {
+        const text = formData.content?.replace(/<[^>]*>/g, '') || '';
+        const words = text.split(/\s+/).filter(w => w.length > 0);
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        const syllables = words.reduce((acc, word) => acc + (word.match(/[aeiouy]{1,2}/g)?.length || 1), 0);
+        const totalWords = words.length || 1;
+        const totalSentences = sentences.length || 1;
+        const score = 206.835 - (1.015 * (totalWords / totalSentences)) - (84.6 * (syllables / totalWords));
+        if (score >= 80) return { label: 'Very Easy', color: 'text-green-500', score: Math.round(score) };
+        if (score >= 60) return { label: 'Easy', color: 'text-emerald-500', score: Math.round(score) };
+        if (score >= 40) return { label: 'Moderate', color: 'text-yellow-500', score: Math.round(score) };
+        if (score >= 20) return { label: 'Difficult', color: 'text-orange-500', score: Math.round(score) };
+        return { label: 'Very Hard', color: 'text-red-500', score: Math.round(score) };
+    }, [formData.content]);
+
+    // Unsaved changes warning
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (saveStatus !== 'saved') {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [saveStatus]);
+
     async function handleSubmit(e?: React.FormEvent) {
         if (e) e.preventDefault();
         
@@ -253,63 +299,54 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
     return (
         <div className="w-full space-y-6 pb-24">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
-                <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <Link href="/admin/articles" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
-                            <ArrowLeft size={20} className="text-gray-500" />
-                        </Link>
-                        <h1 className="text-xl font-black text-gray-900 dark:text-white tracking-tighter truncate max-w-xl">
-                            {formData.title ? `Editing: ${formData.title}` : (isEditMode ? "Edit Article" : "New Article")}
-                        </h1>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <span className="text-xs font-normal px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 flex items-center gap-2">
-                        {draftAutoSavedAt && (
-                            <span className="flex items-center gap-1 text-gray-400 border-r border-gray-300 dark:border-white/10 pr-2 mr-1">
-                                <Save size={12} /> Local: {draftAutoSavedAt.toLocaleTimeString('en-US')}
-                            </span>
-                        )}
-                        {saveStatus === 'saved' && <span className="flex items-center gap-1 text-green-500"><CheckCircle size={12} /> Cloud Saved</span>}
-                        {saveStatus === 'saving' && <span className="flex items-center gap-1 text-blue-500"><Loader2 size={12} className="animate-spin" /> Saving...</span>}
-                        {saveStatus === 'unsaved' && <span className="flex items-center gap-1 text-orange-500"><AlertCircle size={12} /> Unsaved</span>}
-                    </span>
-
-                    {isEditMode && (
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={confirmDelete}
-                            disabled={isDeleting || isSubmitting}
-                            className="p-2 h-auto w-auto text-red-600 dark:text-red-400 font-medium bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-900/50 rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
-                            title="Delete Article"
-                            aria-label="Delete Article"
-                        >
-                            {isDeleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
-                        </Button>
+            <AdminPageHeader
+                title={formData.title ? `Editing: ${formData.title}` : (isEditMode ? "Edit Article" : "New Article")}
+                description={isEditMode ? "Edit article content and settings." : "Create a new blog post."}
+                backHref="/admin/articles"
+            >
+                <span className="text-xs font-normal px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 flex items-center gap-2">
+                    {draftAutoSavedAt && (
+                        <span className="flex items-center gap-1 text-gray-400 border-r border-gray-300 dark:border-white/10 pr-2 mr-1">
+                            <Save size={12} /> Local: {draftAutoSavedAt.toLocaleTimeString('en-US')}
+                        </span>
                     )}
+                    {saveStatus === 'saved' && <span className="flex items-center gap-1 text-green-500"><CheckCircle size={12} /> Cloud Saved</span>}
+                    {saveStatus === 'saving' && <span className="flex items-center gap-1 text-blue-500"><Loader2 size={12} className="animate-spin" /> Saving...</span>}
+                    {saveStatus === 'unsaved' && <span className="flex items-center gap-1 text-orange-500"><AlertCircle size={12} /> Unsaved</span>}
+                </span>
 
+                {isEditMode && (
                     <Button
                         variant="outline"
-                        onClick={(e) => handleSubmit(e as unknown as React.FormEvent)}
-                        disabled={isSubmitting}
-                        className="px-4 py-2 h-auto text-gray-700 dark:text-gray-300 font-bold bg-white dark:bg-transparent border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 rounded-xl transition-colors"
+                        size="icon"
+                        onClick={confirmDelete}
+                        disabled={isDeleting || isSubmitting}
+                        className="p-2 h-auto w-auto text-red-600 dark:text-red-400 font-medium bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-900/50 rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
+                        title="Delete Article"
+                        aria-label="Delete Article"
                     >
-                        Save Draft
+                        {isDeleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
                     </Button>
+                )}
 
-                    <Button
-                        onClick={() => handleSubmit()}
-                        disabled={isSubmitting}
-                        className="flex items-center h-auto gap-2 px-6 py-2 bg-primary hover:bg-[#00C888] shadow-lg shadow-primary/30 text-white font-bold rounded-xl active:scale-95 active:translate-y-0 transition-all disabled:opacity-50"
-                    >
-                        {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                        {isEditMode ? "Update" : "Publish"}
-                    </Button>
-                </div>
-            </div>
+                <Button
+                    variant="outline"
+                    onClick={(e) => handleSubmit(e as unknown as React.FormEvent)}
+                    disabled={isSubmitting}
+                >
+                    Save Draft
+                </Button>
+
+                <Button
+                    onClick={() => handleSubmit()}
+                    disabled={isSubmitting}
+                    variant="primary"
+                    className="flex items-center h-auto gap-2 shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
+                >
+                    {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                    {isEditMode ? "Update" : "Publish"}
+                </Button>
+            </AdminPageHeader>
 
             {hasUnsavedLocalDraft && (
                 <div className="bg-yellow-50 dark:bg-yellow-500/10 border-l-4 border-yellow-400 p-4 rounded-r-xl flex items-center justify-between mb-6 shadow-sm">
@@ -630,6 +667,39 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         />
                     </div>
 
+                    {/* Table of Contents */}
+                    {tocHeadings.length > 0 && (
+                        <div className="space-y-4">
+                            <div className="border-b border-gray-100 dark:border-white/10 pb-2">
+                                <h3 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                                    <ListTree size={14} /> Table of Contents
+                                </h3>
+                            </div>
+                            <nav className="space-y-1">
+                                {tocHeadings.map((heading) => (
+                                    <div
+                                        key={heading.id}
+                                        className={`text-sm py-1.5 px-3 rounded-lg cursor-default transition-colors hover:bg-gray-50 dark:hover:bg-white/5 ${
+                                            heading.level === 1 ? 'font-bold text-gray-900 dark:text-white' :
+                                            heading.level === 2 ? 'pl-5 text-gray-700 dark:text-gray-300' :
+                                            'pl-8 text-gray-500 dark:text-gray-400 text-xs'
+                                        }`}
+                                    >
+                                        <span className="flex items-center gap-2">
+                                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                                heading.level === 1 ? 'bg-primary' :
+                                                heading.level === 2 ? 'bg-emerald-400' :
+                                                'bg-gray-300 dark:bg-gray-600'
+                                            }`} />
+                                            <span className="truncate">{heading.text}</span>
+                                        </span>
+                                    </div>
+                                ))}
+                            </nav>
+                            <p className="text-[10px] text-gray-400 italic">Auto-generated from headings</p>
+                        </div>
+                    )}
+
 
                 </div>
             </div>
@@ -639,6 +709,8 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
             <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10 p-2 flex gap-6 text-xs text-gray-500 dark:text-gray-400 justify-end px-8 z-40">
                 <span className="flex items-center gap-1"><FileText size={14} /> {wordCount} words</span>
                 <span className="flex items-center gap-1"><Clock size={14} /> {readingTime} min read</span>
+                <span className={`flex items-center gap-1 ${readingLevel.color}`}><BookOpen size={14} /> Level: {readingLevel.label} ({readingLevel.score})</span>
+                {tocHeadings.length > 0 && <span className="flex items-center gap-1"><ListTree size={14} /> {tocHeadings.length} headings</span>}
             </div>
 
             {/* Delete Confirmation Dialog */}

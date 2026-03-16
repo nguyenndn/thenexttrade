@@ -12,7 +12,7 @@ interface AnimatedStatCardProps {
     sparklineData?: number[];
     trendPercent: number | null;
     icon: LucideIcon;
-    color: "blue" | "emerald" | "cyan" | "green";
+    color: "blue" | "emerald" | "cyan" | "green" | "amber";
     index?: number;
 }
 
@@ -44,6 +44,13 @@ const COLOR_MAP: Record<string, { hex: string; bg: string; text: string; ring: s
         text: "text-green-600 dark:text-green-400",
         ring: "ring-1 ring-green-500/20",
         borderTop: "border-t-green-500",
+    },
+    amber: {
+        hex: "#f59e0b",
+        bg: "bg-amber-50/50 dark:bg-amber-500/10",
+        text: "text-amber-600 dark:text-amber-400",
+        ring: "ring-1 ring-amber-500/20",
+        borderTop: "border-t-amber-500",
     },
 };
 

@@ -1,15 +1,11 @@
-
 import { Metadata } from "next";
 import Link from "next/link";
 import {
-    Users,
     Clock,
     CheckCircle,
-    Download,
     Bot,
     ArrowRight,
     Briefcase,
-    Settings
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -18,32 +14,130 @@ import { AccountStatus } from "@prisma/client";
 import { Button } from "@/components/ui/Button";
 import { BrokerLogo } from "@/components/ui/BrokerLogo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { StatCard } from "@/components/admin/widgets/StatCard";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AnimatedSection } from "@/components/admin/dashboard/AnimatedSection";
+import { EADashboardClient } from "@/components/admin/ea/EADashboardClient";
 
 export const metadata: Metadata = {
     title: "EA Management | Admin",
     description: "Manage EA licenses and products",
 };
 
-async function getStats() {
+// ── Helper: get daily counts for last N days ──
+async function getDailyCountsForDays(
+    model: "eALicense" | "eADownload" | "eAProduct",
+    days: number,
+    where?: Record<string, unknown>,
+) {
+    const counts: number[] = [];
+    const now = new Date();
+
+    for (let i = days - 1; i >= 0; i--) {
+        const dayStart = new Date(now);
+        dayStart.setDate(now.getDate() - i);
+        dayStart.setHours(0, 0, 0, 0);
+
+        const dayEnd = new Date(dayStart);
+        dayEnd.setHours(23, 59, 59, 999);
+
+        const count = await (prisma[model] as any).count({
+            where: {
+                ...where,
+                createdAt: { gte: dayStart, lte: dayEnd },
+            },
+        });
+        counts.push(count);
+    }
+
+    return counts;
+}
+
+// ── Helper: calculate trend percent (last 30d vs previous 30d) ──
+async function getTrendPercent(
+    model: "eALicense" | "eADownload" | "eAProduct",
+    where?: Record<string, unknown>,
+) {
+    const now = new Date();
+    const d30 = new Date(now);
+    d30.setDate(now.getDate() - 30);
+    const d60 = new Date(now);
+    d60.setDate(now.getDate() - 60);
+
+    const [current, previous] = await Promise.all([
+        (prisma[model] as any).count({
+            where: { ...where, createdAt: { gte: d30 } },
+        }),
+        (prisma[model] as any).count({
+            where: { ...where, createdAt: { gte: d60, lt: d30 } },
+        }),
+    ]);
+
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return Math.round(((current - previous) / previous) * 100);
+}
+
+async function getHeroStats() {
     try {
-        const [pendingCount, approvedCount, productsCount, downloadsAggregate] = await Promise.all([
+        const [
+            pendingCount, activeCount, productsCount, downloadsCount,
+            pendingSparkline, activeSparkline, productsSparkline, downloadsSparkline,
+            pendingTrend, activeTrend, productsTrend, downloadsTrend,
+        ] = await Promise.all([
+            // Current totals
             prisma.eALicense.count({ where: { status: AccountStatus.PENDING } }),
             prisma.eALicense.count({ where: { status: AccountStatus.APPROVED } }),
             prisma.eAProduct.count({ where: { isActive: true } }),
-            prisma.eADownload.count()
+            prisma.eADownload.count(),
+            // Sparklines (7 days)
+            getDailyCountsForDays("eALicense", 7, { status: AccountStatus.PENDING }),
+            getDailyCountsForDays("eALicense", 7, { status: AccountStatus.APPROVED }),
+            getDailyCountsForDays("eAProduct", 7, { isActive: true }),
+            getDailyCountsForDays("eADownload", 7),
+            // Trends (30d vs 30d)
+            getTrendPercent("eALicense", { status: AccountStatus.PENDING }),
+            getTrendPercent("eALicense", { status: AccountStatus.APPROVED }),
+            getTrendPercent("eAProduct", { isActive: true }),
+            getTrendPercent("eADownload"),
         ]);
 
         return {
-            pendingCount,
-            approvedCount,
-            productsCount,
-            totalDownloads: downloadsAggregate,
+            pending: { value: pendingCount, sparkline: pendingSparkline, trendPercent: pendingTrend },
+            active: { value: activeCount, sparkline: activeSparkline, trendPercent: activeTrend },
+            products: { value: productsCount, sparkline: productsSparkline, trendPercent: productsTrend },
+            downloads: { value: downloadsCount, sparkline: downloadsSparkline, trendPercent: downloadsTrend },
         };
     } catch (error) {
-        console.error("Error fetching EA stats:", error);
-        return { pendingCount: 0, approvedCount: 0, productsCount: 0, totalDownloads: 0 };
+        console.error("Error fetching EA hero stats:", error);
+        const empty = { value: 0, sparkline: [0, 0, 0, 0, 0, 0, 0], trendPercent: 0 };
+        return { pending: empty, active: empty, products: empty, downloads: empty };
+    }
+}
+
+async function getRecentActivity() {
+    try {
+        const recentActions = await prisma.eALicense.findMany({
+            where: {
+                OR: [
+                    { status: AccountStatus.APPROVED, approvedAt: { not: null } },
+                    { status: AccountStatus.REJECTED, rejectedAt: { not: null } },
+                ],
+            },
+            orderBy: { updatedAt: "desc" },
+            take: 8,
+            include: { user: { select: { name: true, email: true } } },
+        });
+
+        return recentActions.map((l) => ({
+            id: l.id,
+            action: l.status as "APPROVED" | "REJECTED",
+            accountNumber: l.accountNumber,
+            broker: l.broker,
+            userName: l.user.name || l.user.email,
+            timestamp: l.status === "APPROVED" ? l.approvedAt! : l.rejectedAt!,
+        }));
+    } catch (error) {
+        console.error("Error fetching recent activity:", error);
+        return [];
     }
 }
 
@@ -63,13 +157,12 @@ async function getRecentPending() {
 
 async function getLicensesByBroker() {
     try {
-        const data = await prisma.eALicense.groupBy({
-            by: ['broker'],
+        return await prisma.eALicense.groupBy({
+            by: ["broker"],
             where: { status: AccountStatus.APPROVED },
             _count: { id: true },
-            orderBy: { _count: { id: 'desc' } }
+            orderBy: { _count: { id: "desc" } },
         });
-        return data;
     } catch (error) {
         console.error("Error fetching broker stats:", error);
         return [];
@@ -77,11 +170,11 @@ async function getLicensesByBroker() {
 }
 
 export default async function EADashboardPage() {
-    // OPTIMIZED: Fetch stats and pending in parallel
-    const [stats, recentPending, brokerStats] = await Promise.all([
-        getStats(),
+    const [heroStats, recentActivity, recentPending, brokerStats] = await Promise.all([
+        getHeroStats(),
+        getRecentActivity(),
         getRecentPending(),
-        getLicensesByBroker()
+        getLicensesByBroker(),
     ]);
 
     return (
@@ -102,145 +195,91 @@ export default async function EADashboardPage() {
                 </Link>
             </AdminPageHeader>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard
-                    title="Pending Requests"
-                    value={stats.pendingCount}
-                    icon={Clock}
-                    color="yellow"
-                />
-                <StatCard
-                    title="Active Licenses"
-                    value={stats.approvedCount}
-                    icon={CheckCircle}
-                    color="green"
-                />
-                <StatCard
-                    title="Active Products"
-                    value={stats.productsCount}
-                    icon={Bot}
-                    color="cyan"
-                />
-                <StatCard
-                    title="Total Downloads"
-                    value={stats.totalDownloads}
-                    icon={Download}
-                    color="blue"
-                />
-            </div>
+            {/* ── Zone A + B + C: Client Animated Section ── */}
+            <EADashboardClient
+                pending={heroStats.pending}
+                active={heroStats.active}
+                products={heroStats.products}
+                downloads={heroStats.downloads}
+                recentActivity={recentActivity}
+            />
 
-            {/* Recent Pending Requests */}
+            {/* ── Zone D: Server-rendered Widgets ── */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Pending Requests */}
-                <div className="bg-white dark:bg-[#151925] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <Clock className="text-yellow-500" size={24} />
-                            Recent Requests
-                        </h2>
-                        <Link
-                            href="/admin/ea/accounts/pending"
-                            className="text-sm font-bold text-primary hover:text-[#00B078] flex items-center gap-1"
-                        >
-                            View All <ArrowRight size={16} />
-                        </Link>
-                    </div>
-
-                    <div className="space-y-4">
-                        {recentPending.length === 0 ? (
-                            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                                <CheckCircle size={40} className="mx-auto mb-4 text-gray-300 dark:text-gray-600" aria-hidden="true" />
-                                <p>No pending requests</p>
-                            </div>
-                        ) : (
-                            recentPending.map((license) => (
-                                <div
-                                    key={license.id}
-                                    className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:shadow-md transition-shadow group"
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <BrokerLogo broker={license.broker} size={64} />
-                                        <div>
-                                            <p className="font-bold text-gray-900 dark:text-white font-mono">
-                                                {license.accountNumber}
-                                            </p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                {license.user.name || license.user.email}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="text-xs text-gray-400 block mb-1">
-                                            {formatDistanceToNow(license.createdAt, { addSuffix: true, locale: enUS })}
-                                        </span>
-                                        <StatusBadge status={license.status} />
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-
-                {/* Quick Links / Info */}
-                <div className="space-y-6 flex flex-col h-full">
-                    {/* Navigation Card */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm">
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Quick Navigation</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <Link href="/admin/ea/accounts" className="block">
-                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-200 dark:border-white/10">
-                                    <Users className="mb-3 text-blue-500" size={24} aria-hidden="true" />
-                                    <h3 className="font-bold text-gray-900 dark:text-white">All Licenses</h3>
-                                    <p className="text-sm text-gray-500 mt-1">Manage user licenses</p>
-                                </div>
-                            </Link>
-                            <Link href="/admin/ea/products" className="block">
-                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-200 dark:border-white/10">
-                                    <Bot className="mb-3 text-cyan-500" size={24} aria-hidden="true" />
-                                    <h3 className="font-bold text-gray-900 dark:text-white">EA Products</h3>
-                                    <p className="text-sm text-gray-500 mt-1">Manage files and versions</p>
-                                </div>
-                            </Link>
-                            <Link href="/admin/ea/brokers" className="block">
-                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-200 dark:border-white/10">
-                                    <Briefcase className="mb-3 text-amber-500" size={24} aria-hidden="true" />
-                                    <h3 className="font-bold text-gray-900 dark:text-white">EA Brokers</h3>
-                                    <p className="text-sm text-gray-500 mt-1">Manage supported brokers</p>
-                                </div>
-                            </Link>
-                            <Link href="/admin/ea/settings" className="block">
-                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition border border-gray-200 dark:border-white/10">
-                                    <Settings className="mb-3 text-slate-500" size={24} aria-hidden="true" />
-                                    <h3 className="font-bold text-gray-900 dark:text-white">System Settings</h3>
-                                    <p className="text-sm text-gray-500 mt-1">Configure global EA options</p>
-                                </div>
+                <AnimatedSection delay={0.7}>
+                    <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
+                        <div className="flex items-center justify-between mb-5">
+                            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                                <Clock className="text-amber-500" size={18} />
+                                Pending Requests
+                            </h2>
+                            <Link
+                                href="/admin/ea/accounts/pending"
+                                className="text-xs font-bold text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+                            >
+                                View All <ArrowRight size={14} />
                             </Link>
                         </div>
-                    </div>
 
-                    {/* Active Licenses by Broker Widget */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm flex-1">
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
-                            <Briefcase className="text-primary" size={24} aria-hidden="true" />
+                        <div className="space-y-3 flex-1">
+                            {recentPending.length === 0 ? (
+                                <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                                    <CheckCircle size={36} className="mx-auto mb-3 text-gray-300 dark:text-gray-600" aria-hidden="true" />
+                                    <p className="text-sm">No pending requests</p>
+                                </div>
+                            ) : (
+                                recentPending.map((license) => (
+                                    <div
+                                        key={license.id}
+                                        className="flex items-center justify-between p-3.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:shadow-md transition-shadow group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <BrokerLogo broker={license.broker} size={48} />
+                                            <div>
+                                                <p className="font-bold text-sm text-gray-900 dark:text-white font-mono">
+                                                    {license.accountNumber}
+                                                </p>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                    {license.user.name || license.user.email}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className="text-xs text-gray-400 block mb-1">
+                                                {formatDistanceToNow(license.createdAt, { addSuffix: true, locale: enUS })}
+                                            </span>
+                                            <StatusBadge status={license.status} />
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </AnimatedSection>
+
+                {/* Active Licenses by Broker */}
+                <AnimatedSection delay={0.8}>
+                    <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm h-full">
+                        <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2 mb-5">
+                            <Briefcase className="text-primary" size={18} />
                             Active by Broker
                         </h2>
-                        
-                        <div className="space-y-5">
+
+                        <div className="space-y-4">
                             {brokerStats.length === 0 ? (
-                                <p className="text-sm text-gray-500 text-center py-4">No active licenses found.</p>
+                                <p className="text-sm text-gray-500 text-center py-8">No active licenses found.</p>
                             ) : (
-                                brokerStats.map((stat, index) => {
-                                    // Calculate percentage for progress bar
+                                brokerStats.map((stat) => {
                                     const maxCount = brokerStats[0]._count.id || 1;
                                     const percentage = (stat._count.id / maxCount) * 100;
-                                    
+
                                     return (
                                         <div key={stat.broker} className="space-y-2 group">
                                             <div className="flex justify-between items-center text-sm">
                                                 <div className="flex items-center gap-3">
                                                     <BrokerLogo broker={stat.broker} size={36} />
-                                                    <span className="font-bold text-gray-900 dark:text-white capitalize group-hover:text-primary transition-colors text-base">
+                                                    <span className="font-bold text-gray-900 dark:text-white capitalize group-hover:text-primary transition-colors">
                                                         {stat.broker.toLowerCase()}
                                                     </span>
                                                 </div>
@@ -250,8 +289,8 @@ export default async function EADashboardPage() {
                                                 </span>
                                             </div>
                                             <div className="h-1.5 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
-                                                <div 
-                                                    className="h-full bg-primary rounded-full transition-all duration-1000" 
+                                                <div
+                                                    className="h-full bg-primary rounded-full transition-all duration-1000"
                                                     style={{ width: `${percentage}%` }}
                                                 />
                                             </div>
@@ -261,11 +300,8 @@ export default async function EADashboardPage() {
                             )}
                         </div>
                     </div>
-
-
-                </div>
+                </AnimatedSection>
             </div>
         </div>
     );
 }
-

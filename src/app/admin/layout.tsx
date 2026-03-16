@@ -22,10 +22,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/dashboard");
   }
 
-  const pendingCount = await prisma.eALicense.count({
-    where: { status: "PENDING" }
-  });
-
   return (
     <DashboardShell user={user} bell={<AdminNotificationBell />}>
       {children}

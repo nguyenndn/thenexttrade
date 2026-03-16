@@ -50,7 +50,7 @@ export function PositionSizeCalc() {
                                 type="number"
                                 value={inputs.accountBalance}
                                 onChange={(e) => setInputs({ ...inputs, accountBalance: parseFloat(e.target.value) || 0 })}
-                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
+                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
                             />
                             <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         </div>
@@ -64,7 +64,7 @@ export function PositionSizeCalc() {
                                 step="0.1"
                                 value={inputs.riskPercent}
                                 onChange={(e) => setInputs({ ...inputs, riskPercent: parseFloat(e.target.value) || 0 })}
-                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
+                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
                             />
                             <PercentIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         </div>
@@ -77,7 +77,7 @@ export function PositionSizeCalc() {
                                 type="number"
                                 value={inputs.stopLossPips}
                                 onChange={(e) => setInputs({ ...inputs, stopLossPips: parseFloat(e.target.value) || 0 })}
-                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
+                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
                             />
                             <TrendingUp className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         </div>

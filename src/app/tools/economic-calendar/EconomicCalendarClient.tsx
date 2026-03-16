@@ -188,7 +188,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                                 ${isSelected
                                                     ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20 hover:bg-cyan-600'
                                                     : isDark
-                                                        ? 'hover:bg-slate-700 text-gray-400 hover:text-white'
+                                                        ? 'hover:bg-slate-700 text-gray-300 hover:text-white'
                                                         : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
                                                 }
                                             `}

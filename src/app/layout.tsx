@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Lexend, Source_Sans_3 } from "next/font/google";
 import { Toaster } from "sonner";
+import { SystemAnnouncementBanner } from "@/components/layout/SystemAnnouncementBanner";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -100,6 +101,7 @@ export default function RootLayout({
               }
             }}
           />
+          <SystemAnnouncementBanner />
           {children}
           <Toaster richColors position="top-right" closeButton />
         </ThemeProvider>

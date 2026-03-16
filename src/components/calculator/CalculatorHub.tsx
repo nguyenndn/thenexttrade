@@ -50,7 +50,7 @@ export function CalculatorHub() {
                   We override TabsList default 'w-fit' with 'w-full' to ensure it takes full layout width.
                   And we force grid on mobile and tablet to preserve the previous look but with animations. 
                 */}
-                <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 w-full !bg-gray-100 flex-wrap !dark:bg-white/5 p-1.5 h-auto">
+                <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 w-full !bg-gray-100 dark:!bg-white/5 flex-wrap p-1.5 h-auto">
                     {CALCULATORS.map((calc) => {
                         const Icon = calc.icon;
                         return (

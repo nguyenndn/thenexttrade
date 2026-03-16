@@ -39,7 +39,6 @@ interface Comment {
 export default function AdminCommentsPage() {
     const { data, error, isLoading, mutate } = useSWR("/api/admin/comments", fetcher, {
         onError: (err) => {
-            console.error(err);
             toast.error(err.message || "Error fetching comments");
         }
     });
@@ -74,7 +73,6 @@ export default function AdminCommentsPage() {
                 toast.error(error.error || "Failed to delete");
             }
         } catch (error: any) {
-            console.error(error);
             toast.error(error instanceof Error ? error.message : (error?.message || "Error deleting comment"));
         } finally {
             setIsDeleting(null);

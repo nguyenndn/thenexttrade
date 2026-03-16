@@ -138,8 +138,7 @@ export default function CreateBrokerPage() {
                             <Button
                                 type="button"
                                 onClick={handleAddFeature}
-                                variant="secondary"
-                                className="px-4 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-900 dark:text-white border-0"
+                                variant="outline"
                             >
                                 <Plus size={20} />
                             </Button>
@@ -173,9 +172,11 @@ export default function CreateBrokerPage() {
                     <div className="pt-4 border-t dark:border-white/10 flex justify-end">
                         <Button
                             type="submit"
+                            variant="primary"
+                            size="lg"
                             disabled={loading}
                             isLoading={loading}
-                            className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-xl bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all"
+                            className="w-full md:w-auto"
                         >
                             {!loading && <Briefcase size={20} />}
                             Create Broker

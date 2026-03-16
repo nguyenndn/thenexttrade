@@ -43,7 +43,6 @@ export async function updateSession(request: NextRequest) {
     // 1. Protected Routes (Dashboard, Admin)
     if (!user && (path.startsWith('/dashboard') || path.startsWith('/admin'))) {
         const loginUrl = new URL('/auth/login', request.url)
-        // Optional: Add ?next= param to redirect back
         return NextResponse.redirect(loginUrl)
     }
 
@@ -52,7 +51,49 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(new URL('/academy', request.url))
     }
 
-    // 3. User Role Check (Future Scope: Admin only for /admin)
+    // 3. Maintenance Mode Check
+    const needsMaintenanceCheck =
+        path === '/maintenance' ||
+        (!path.startsWith('/admin') &&
+         !path.startsWith('/api') &&
+         !path.startsWith('/auth') &&
+         !path.startsWith('/_next'));
+
+    if (needsMaintenanceCheck) {
+        try {
+            const configUrl = new URL('/api/system/config', request.url);
+            const configRes = await fetch(configUrl, {
+                headers: { 'x-internal': '1' },
+            });
+            if (configRes.ok) {
+                const config = await configRes.json();
+                const isMaintenanceOn = config.maintenanceMode === true;
+
+                if (isMaintenanceOn && path !== '/maintenance') {
+                    // Maintenance ON → redirect non-admin users to /maintenance
+                    const userRole = user?.app_metadata?.role || user?.user_metadata?.role;
+                    const isAdmin = userRole === 'ADMIN' || userRole === 'EDITOR';
+                    if (!isAdmin) {
+                        return NextResponse.redirect(new URL('/maintenance', request.url));
+                    }
+                } else if (!isMaintenanceOn && path === '/maintenance') {
+                    // Maintenance OFF → redirect away from /maintenance
+                    return NextResponse.redirect(new URL('/', request.url));
+                }
+
+                // 4. Email Verification Check
+                if (config.requireEmailVerification && user) {
+                    const emailConfirmed = user.email_confirmed_at || user.confirmed_at;
+                    const isVerifyPage = path === '/auth/verify-email';
+                    if (!emailConfirmed && !isVerifyPage) {
+                        return NextResponse.redirect(new URL('/auth/verify-email', request.url));
+                    }
+                }
+            }
+        } catch {
+            // If config fetch fails, don't block — allow access
+        }
+    }
 
     return response
 }

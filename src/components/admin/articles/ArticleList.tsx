@@ -404,15 +404,16 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                                     <Button
                                                         onClick={saveQuickEdit}
                                                         disabled={isSavingQuickEdit}
-                                                        className="px-3 py-2 h-auto bg-primary text-white rounded-md hover:bg-[#00C888]"
+                                                        variant="primary"
+                                                        size="sm"
                                                     >
                                                         {isSavingQuickEdit ? <Loader2 size={16} className="animate-spin" /> : "Save"}
                                                     </Button>
                                                     <Button
                                                         type="button"
                                                         variant="outline"
+                                                        size="sm"
                                                         onClick={() => setQuickEditId(null)}
-                                                        className="px-3 py-2 h-auto rounded-md"
                                                     >
                                                         Cancel
                                                     </Button>

@@ -7,6 +7,7 @@ import { Plus, ListChecks, MoreHorizontal, Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { toast } from "sonner";
 
 export default function AdminQuizzesPage() {
     const [quizzes, setQuizzes] = useState<any[]>([]);
@@ -38,8 +39,8 @@ export default function AdminQuizzesPage() {
             setQuizzes(quizzes.filter(q => q.id !== quizToDeleteId));
             setIsConfirmOpen(false);
             setQuizToDeleteId(null);
-        } catch (error) {
-            console.error("Failed to delete quiz:", error);
+        } catch {
+            toast.error("Failed to delete quiz");
         } finally {
             setIsDeleting(false);
         }
@@ -51,11 +52,10 @@ export default function AdminQuizzesPage() {
                 title="Quiz Management"
                 description="Manage assessments and tests."
             >
-                <Link
-                    href="/admin/quizzes/create"
-                    className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00a872] text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0"
-                >
-                    <Plus size={18} strokeWidth={2.5} /> Add New
+                <Link href="/admin/quizzes/create">
+                    <Button variant="primary" className="shadow-lg shadow-primary/30">
+                        <Plus size={18} strokeWidth={2.5} /> Add New
+                    </Button>
                 </Link>
             </AdminPageHeader>
 
@@ -86,6 +86,7 @@ export default function AdminQuizzesPage() {
                                 <Button
                                     onClick={() => confirmDelete(quiz.id)}
                                     variant="ghost"
+                                    size="icon"
                                     className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all h-auto w-auto"
                                     aria-label="Delete Quiz"
                                 >

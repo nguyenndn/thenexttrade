@@ -31,7 +31,7 @@ export function ProfitLossCalc() {
                             "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-all h-auto",
                             inputs.direction === "LONG"
                                 ? "bg-green-500 text-white shadow-lg shadow-green-500/25 hover:bg-green-600 hover:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         <ArrowUp size={18} /> LONG
@@ -44,7 +44,7 @@ export function ProfitLossCalc() {
                             "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-all h-auto",
                             inputs.direction === "SHORT"
                                 ? "bg-red-500 text-white shadow-lg shadow-red-500/25 hover:bg-red-600 hover:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         <ArrowDown size={18} /> SHORT
@@ -53,37 +53,37 @@ export function ProfitLossCalc() {
 
                 <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Entry Price</label>
+                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Entry Price</label>
                         <input
                             type="number"
                             value={inputs.entryPrice}
                             onChange={(e) => setInputs({ ...inputs, entryPrice: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Exit Price</label>
+                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Exit Price</label>
                         <input
                             type="number"
                             value={inputs.exitPrice}
                             onChange={(e) => setInputs({ ...inputs, exitPrice: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Lot Size</label>
+                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Lot Size</label>
                         <input
                             type="number"
                             value={inputs.lotSize}
                             onChange={(e) => setInputs({ ...inputs, lotSize: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Currency Pair</label>
+                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Currency Pair</label>
                         <CurrencyPairSelect value={inputs.pair} onChange={(v) => setInputs({ ...inputs, pair: v })} />
                     </div>
                 </div>

@@ -3,7 +3,7 @@ import { Cookie } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'Cookie Policy | GSN CRM',
-    description: 'Information about how GSN CRM uses cookies.',
+    description: 'Information about how TheNextTradeuses cookies.',
 };
 
 export default function CookiePolicyPage() {

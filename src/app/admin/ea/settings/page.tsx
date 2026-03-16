@@ -1,23 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { 
-    Settings, 
     Save, 
     ShieldAlert, 
     Bell, 
     MessageCircle,
-    Loader2,
-    ArrowLeft
+    Loader2
 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Switch } from "@/components/ui/switch";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import axios from "axios";
 
 const settingsSchema = z.object({
@@ -107,16 +105,11 @@ export default function EASettingsPage() {
     return (
         <div className="w-full">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pb-10 max-w-4xl">
-                {/* Header */}
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                    <div className="flex items-center gap-3">
-                        <Link href="/admin/ea" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0" title="Back to EA Dashboard">
-                            <ArrowLeft size={20} className="text-gray-500" />
-                        </Link>
-                        <h1 className="sr-only">System Settings</h1>
-                        <p className="text-base text-primary font-bold">Configure EA system settings and notifications.</p>
-                    </div>
-                    <div className="flex items-center gap-3">
+                <AdminPageHeader
+                    title="EA Settings"
+                    description="Configure EA system settings and notifications."
+                    backHref="/admin/ea"
+                >
                     <Button 
                         type="submit" 
                         variant="primary" 
@@ -126,11 +119,10 @@ export default function EASettingsPage() {
                         {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                         {isSaving ? "Saving..." : "Save Changes"}
                     </Button>
-                </div>
-            </div>
+                </AdminPageHeader>
 
             {/* General Settings */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+            <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4 mb-6">
                     <ShieldAlert className="text-red-500" size={20} />
                     General Configuration
@@ -174,7 +166,7 @@ export default function EASettingsPage() {
             </div>
 
             {/* Email Notifications */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+            <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4 mb-6">
                     <Bell className="text-blue-500" size={20} />
                     Email Notifications
@@ -216,7 +208,7 @@ export default function EASettingsPage() {
             </div>
 
             {/* Telegram Webhook */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm mb-10">
+            <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm mb-10">
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4 mb-6">
                     <MessageCircle className="text-sky-500" size={20} />
                     Telegram Webhook

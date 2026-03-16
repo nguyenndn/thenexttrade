@@ -1,32 +1,27 @@
 import Link from "next/link";
-import { Briefcase, Plus, ExternalLink, Power, ArrowLeft } from "lucide-react";
+import { Plus, ExternalLink, Power } from "lucide-react";
 import { getEABrokers } from "./actions";
 import { Button } from "@/components/ui/Button";
 import { EditEABrokerModal } from "./EditEABrokerModal";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export default async function EABrokersPage() {
     const { data: brokers } = await getEABrokers();
 
     return (
         <div className="space-y-4 pb-10">
-            {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-3">
-                    <Link href="/admin/ea" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0" title="Back to EA Dashboard">
-                        <ArrowLeft size={20} className="text-gray-500" />
-                    </Link>
-                    <h1 className="sr-only">EA Supported Brokers</h1>
-                    <p className="text-base text-primary font-bold">Manage supported brokers and affiliate links.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Link href="/admin/ea/brokers/create">
-                        <Button variant="primary" className="shadow-lg shadow-primary/30">
-                            <Plus size={18} strokeWidth={2.5} />
-                            Add EA Broker
-                        </Button>
-                    </Link>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="EA Brokers"
+                description="Manage supported brokers and affiliate links."
+                backHref="/admin/ea"
+            >
+                <Link href="/admin/ea/brokers/create">
+                    <Button variant="primary" className="shadow-lg shadow-primary/30">
+                        <Plus size={18} strokeWidth={2.5} />
+                        Add EA Broker
+                    </Button>
+                </Link>
+            </AdminPageHeader>
 
             {/* Table */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">

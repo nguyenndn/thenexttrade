@@ -1036,7 +1036,7 @@ export async function generatePDF(data: ReportData): Promise<void> {
       20,
       285
     );
-    doc.text("GSN CRM Trading Journal", 170, 285);
+    doc.text("TheNextTradeTrading Journal", 170, 285);
   }
 
   // Download

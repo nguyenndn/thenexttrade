@@ -24,7 +24,19 @@ export default async function AdminSettingsPage() {
     const systemConfig = {
         maintenanceMode: savedConfig.maintenanceMode ?? false,
         userRegistration: savedConfig.userRegistration ?? true,
-        siteTitle: savedConfig.siteTitle || "GSN Financial CRM"
+        feedbackEnabled: savedConfig.feedbackEnabled ?? true,
+        requireEmailVerification: savedConfig.requireEmailVerification ?? false,
+        siteTitle: savedConfig.siteTitle || "GSN Financial CRM",
+        siteDescription: savedConfig.siteDescription || "",
+        supportEmail: savedConfig.supportEmail || "",
+        socialTelegram: savedConfig.socialTelegram || "",
+        socialFacebook: savedConfig.socialFacebook || "",
+        socialYoutube: savedConfig.socialYoutube || "",
+        socialInstagram: savedConfig.socialInstagram || "",
+        welcomeEmail: savedConfig.welcomeEmail ?? true,
+        adminAlertOnFeedback: savedConfig.adminAlertOnFeedback ?? true,
+        newArticleAlert: savedConfig.newArticleAlert ?? true,
+        systemAnnouncement: savedConfig.systemAnnouncement || "",
     };
 
     return (

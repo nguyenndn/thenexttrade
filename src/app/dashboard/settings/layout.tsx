@@ -1,11 +1,21 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Flame, Settings, Bell, Users, Lock } from "lucide-react";
+import { Flame, Settings, Bell, Users, Lock, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { type LucideIcon } from "lucide-react";
 
-const navItems = [
+interface NavItem {
+    title: string;
+    href: string;
+    icon: LucideIcon;
+    exact?: boolean;
+}
+
+const baseNavItems: NavItem[] = [
     { title: "Account", href: "/dashboard/settings", icon: Settings, exact: true },
     { title: "Security", href: "/dashboard/settings/security", icon: Lock },
     { title: "Login Streak", href: "/dashboard/settings/streak", icon: Flame },
@@ -13,23 +23,33 @@ const navItems = [
     { title: "Referrals", href: "/dashboard/settings/referrals", icon: Users },
 ];
 
+const feedbackNavItem: NavItem = { title: "Feedback & Support", href: "/dashboard/settings/feedback", icon: MessageSquare };
+
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const [feedbackEnabled, setFeedbackEnabled] = useState(true);
+
+    useEffect(() => {
+        fetch("/api/system/config")
+            .then((res) => res.json())
+            .then((data) => setFeedbackEnabled(data.feedbackEnabled ?? true))
+            .catch(() => setFeedbackEnabled(true));
+    }, []);
+
+    const navItems = feedbackEnabled
+        ? [...baseNavItems, feedbackNavItem]
+        : baseNavItems;
 
     return (
-        <div className="min-h-screen">
-            {/* ── Page Header ── */}
-            <div className="px-4 sm:px-6 pt-6 pb-0">
-                <h1 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                    Settings
-                </h1>
-                <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-                    Manage your account, preferences, and notifications.
-                </p>
-            </div>
+        <div className="space-y-4">
+            {/* ── Page Header — consistent with other dashboard pages ── */}
+            <PageHeader
+                title="Settings"
+                description="Manage your account, preferences, and notifications."
+            />
 
             {/* ── Horizontal Tab Nav ── */}
-            <div className="mt-6 border-b border-gray-200 dark:border-white/10 px-4 sm:px-6">
+            <div className="border-b border-gray-200 dark:border-white/10">
                 <nav className="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
                     {navItems.map((item) => {
                         const isActive = item.exact
@@ -56,7 +76,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
             </div>
 
             {/* ── Content ── */}
-            <div className="px-4 sm:px-6 py-6">
+            <div>
                 {children}
             </div>
         </div>

@@ -1,20 +1,11 @@
 
 import { Metadata } from "next";
 import Link from "next/link";
-import { format } from "date-fns";
-import { enUS } from "date-fns/locale";
-import { Bot, Download, Monitor, Plus, Edit, Power, Trash2, ArrowLeft } from "lucide-react";
+import { Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/Button";
-import { StatusBadge } from "@/components/ui/StatusBadge"; // Or just custom badge
-import { EAType, PlatformType } from "@prisma/client";
-import { toggleProductStatus } from "@/app/admin/ea/products/actions";
-// Note: toggleProductStatus is a server action, cannot be called directly from onClick in Server Component.
-// Buttons need to be wrapped in Client Component or use form actions.
-// I'll create a Client Component for the Row Actions or the whole list.
-// For simplicity, let's create `ProductList.tsx` client component.
-
 import { ProductList } from "@/components/admin/ea/ProductList";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export const metadata: Metadata = {
     title: "EA Products | Admin",
@@ -33,26 +24,21 @@ export default async function EAProductsPage() {
 
     return (
         <div className="space-y-4 pb-10">
-            {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-3">
-                    <Link href="/admin/ea" className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0" title="Back to EA Dashboard">
-                        <ArrowLeft size={20} className="text-gray-500" />
-                    </Link>
-                    <h1 className="sr-only">EA Products</h1>
-                    <p className="text-base text-primary font-bold">Manage EA products and versions.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Link href="/admin/ea/products/create">
-                        <Button variant="primary" className="shadow-lg shadow-primary/30">
-                            <Plus size={18} strokeWidth={2.5} />
-                            Create Product
-                        </Button>
-                    </Link>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="EA Products"
+                description="Manage EA products and versions."
+                backHref="/admin/ea"
+            >
+                <Link href="/admin/ea/products/create">
+                    <Button variant="primary" className="shadow-lg shadow-primary/30">
+                        <Plus size={18} strokeWidth={2.5} />
+                        Create Product
+                    </Button>
+                </Link>
+            </AdminPageHeader>
 
             <ProductList products={products} />
         </div>
     );
 }
+

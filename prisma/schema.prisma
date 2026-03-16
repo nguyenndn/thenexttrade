@@ -84,6 +84,9 @@ model User {
   // ============================================
   auditLogs          AuditLog[]        @relation("AdminAuditLogs")
 
+  // Feedback & Support
+  feedbacks          Feedback[]
+
   @@index([createdAt])
   @@index([email])
   
@@ -1084,4 +1087,23 @@ model UserSession {
   
   @@unique([userId, userAgent, ip], name: "unique_session")
   @@index([userId])
+}
+
+// ============================================================================
+// FEEDBACK & SUPPORT
+// ============================================================================
+
+model Feedback {
+  id        String   @id @default(cuid())
+  type      String   // "BUG" | "FEATURE"
+  message   String   @db.Text
+  status    String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  @@index([userId])
+  @@index([status])
+  @@index([type])
 }

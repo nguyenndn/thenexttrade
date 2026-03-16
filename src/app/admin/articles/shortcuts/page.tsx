@@ -135,8 +135,9 @@ export default function ShortcutsManagerPage() {
             <AdminPageHeader
                 title="Content Shortcuts"
                 description="Manage reusable content snippets to insert instantly into your articles."
+                backHref="/admin/articles"
             >
-                <Button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all">
+                <Button onClick={() => handleOpenModal()} variant="primary" className="flex items-center gap-2 shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all">
                     <Plus size={18} strokeWidth={2.5} /> New Shortcut
                 </Button>
             </AdminPageHeader>
@@ -235,7 +236,7 @@ export default function ShortcutsManagerPage() {
             {isModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleCloseModal} aria-hidden="true" />
-                    <div className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-4xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                    <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-4xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-white/10">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <Zap className="text-yellow-500" size={24} />
@@ -243,7 +244,7 @@ export default function ShortcutsManagerPage() {
                             </h2>
                         </div>
 
-                        <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-[#1E2028]">
+                        <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-[#151925]">
                             <form id="shortcut-form" onSubmit={handleSubmit} className="-mt-4 space-y-5">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div className="md:col-span-1 space-y-5">
@@ -288,7 +289,7 @@ export default function ShortcutsManagerPage() {
                             </form>
                         </div>
 
-                        <div className="p-4 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] flex justify-end gap-3 z-20 relative">
+                        <div className="p-4 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] flex justify-end gap-3 z-20 relative">
                             <Button type="button" variant="outline" onClick={handleCloseModal} disabled={isSubmitting}>
                                 Cancel
                             </Button>

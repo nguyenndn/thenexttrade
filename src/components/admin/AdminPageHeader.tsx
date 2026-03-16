@@ -1,22 +1,36 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
 interface AdminPageHeaderProps {
     title: string;
     description: string;
+    backHref?: string;
     children?: React.ReactNode;
 }
 
-export function AdminPageHeader({ title, description, children }: AdminPageHeaderProps) {
+export function AdminPageHeader({ title, description, backHref, children }: AdminPageHeaderProps) {
     return (
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
-            <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                    <h1 className="text-xl font-black text-gray-900 dark:text-white tracking-tighter">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div className="flex items-center gap-4">
+                {backHref && (
+                    <Link
+                        href={backHref}
+                        className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0"
+                        aria-label="Go back"
+                    >
+                        <ArrowLeft size={20} className="text-gray-500" />
+                    </Link>
+                )}
+                {/* Gradient Bar */}
+                <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-teal-500 shrink-0" />
+                <div>
+                    <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                         {title}
                     </h1>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                        {description}
+                    </p>
                 </div>
-                <p className="text-base text-gray-500 dark:text-gray-400 font-medium pl-4.5">
-                    {description}
-                </p>
             </div>
             {children && (
                 <div className="flex items-center gap-3">
@@ -26,3 +40,4 @@ export function AdminPageHeader({ title, description, children }: AdminPageHeade
         </div>
     );
 }
+

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/search/SearchBar";
 import { Loader2, FileText, User as UserIcon, AlertCircle } from "lucide-react";
@@ -20,7 +20,7 @@ interface SearchResult {
     meta: any;
 }
 
-export default function AdminSearchPage() {
+function AdminSearchContent() {
     const searchParams = useSearchParams();
     const query = searchParams.get("q");
 
@@ -42,8 +42,8 @@ export default function AdminSearchPage() {
                 const res = await fetch(`/api/search?scope=admin&q=${encodeURIComponent(query)}`);
                 const data = await res.json();
                 setResults(data.data || []);
-            } catch (error) {
-                console.error("Admin Search error", error);
+            } catch {
+                // Silently handle search errors
             } finally {
                 setIsLoading(false);
             }
@@ -92,7 +92,7 @@ export default function AdminSearchPage() {
                 ) : (hasSearched && query) ? (
                     <>
                         <h2 className="text-sm font-bold text-gray-500 mb-4 border-b pb-2 border-gray-200 dark:border-white/10">
-                            Results for "{query}"
+                            Results for &quot;{query}&quot;
                         </h2>
 
                         {results.length > 0 ? (
@@ -151,3 +151,12 @@ export default function AdminSearchPage() {
         </div>
     );
 }
+
+export default function AdminSearchPage() {
+    return (
+        <Suspense fallback={<div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={32} /></div>}>
+            <AdminSearchContent />
+        </Suspense>
+    );
+}
+

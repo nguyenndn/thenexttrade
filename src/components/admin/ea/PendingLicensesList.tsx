@@ -82,14 +82,16 @@ export function PendingLicensesList({ licenses, adminId }: PendingLicensesListPr
                             <div className="flex gap-2 w-full md:w-auto">
                                 <Button
                                     onClick={() => handleAction(req, "REJECT")}
-                                    className="flex-1 md:flex-none bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 hover:border-red-200 font-bold px-4 rounded-xl transition-all"
+                                    variant="outline"
+                                    className="flex-1 md:flex-none bg-red-50 hover:bg-red-100 text-red-600 border-red-100 hover:border-red-200"
                                 >
                                     <X size={18} className="mr-2" />
                                     Reject
                                 </Button>
                                 <Button
                                     onClick={() => handleAction(req, "APPROVE")}
-                                    className="flex-1 md:flex-none bg-primary hover:bg-[#00B078] text-white font-bold shadow-lg shadow-primary/30 hover:shadow-primary/40 px-6 rounded-xl transition-all border-none"
+                                    variant="primary"
+                                    className="flex-1 md:flex-none shadow-lg shadow-primary/30"
                                 >
                                     <Check size={18} className="mr-2" />
                                     Approve

@@ -1,8 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { calculateMargin, PIP_VALUES } from "@/lib/calculators";
+import { calculateMargin } from "@/lib/calculators";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
+import { ChevronDown, Check } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 export function MarginCalc() {
     const [inputs, setInputs] = useState({
@@ -22,40 +31,58 @@ export function MarginCalc() {
             <div className="lg:col-span-7 space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Currency Pair</label>
+                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Currency Pair</label>
                         <CurrencyPairSelect value={inputs.pair} onChange={(v) => setInputs({ ...inputs, pair: v })} />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Lot Size</label>
+                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Lot Size</label>
                         <input
                             type="number"
                             value={inputs.lotSize}
                             onChange={(e) => setInputs({ ...inputs, lotSize: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Leverage (1:X)</label>
-                        <select
-                            value={inputs.leverage}
-                            onChange={(e) => setInputs({ ...inputs, leverage: parseInt(e.target.value) })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
-                        >
-                            {leverageOptions.map(lev => (
-                                <option key={lev} value={lev}>1:{lev}</option>
-                            ))}
-                        </select>
+                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Leverage (1:X)</label>
+                        <DropdownMenu className="block w-full">
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    className="w-full px-4 py-3 h-auto rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 focus:border-primary transition-all font-medium text-gray-900 dark:text-white flex items-center justify-between"
+                                >
+                                    <span className="font-bold text-lg">1:{inputs.leverage}</span>
+                                    <ChevronDown size={16} className="text-gray-500 shrink-0" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="max-h-[280px] overflow-y-auto">
+                                {leverageOptions.map(lev => (
+                                    <DropdownMenuItem
+                                        key={lev}
+                                        onClick={() => setInputs({ ...inputs, leverage: lev })}
+                                        className={cn(
+                                            "flex items-center justify-between gap-2 px-3 py-2",
+                                            inputs.leverage === lev && "bg-primary/10 text-primary font-semibold"
+                                        )}
+                                    >
+                                        <span>1:{lev}</span>
+                                        {inputs.leverage === lev && <Check size={14} className="text-primary shrink-0" />}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Current Price</label>
+                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Current Price</label>
                         <input
                             type="number"
                             value={inputs.currentPrice}
                             onChange={(e) => setInputs({ ...inputs, currentPrice: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
                         />
                     </div>
                 </div>
@@ -69,11 +96,11 @@ export function MarginCalc() {
                     <div className="mt-8 bg-white/5 rounded-xl p-4">
                         <p className="text-xs text-gray-400 mb-2">Influence of Leverage</p>
                         <div className="flex justify-between text-sm">
-                            <span>1:500</span>
+                            <span className="text-gray-400">1:500</span>
                             <span className="text-white">${(requiredMargin / (500 / inputs.leverage)).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-sm mt-1">
-                            <span>1:30</span>
+                            <span className="text-gray-400">1:30</span>
                             <span className="text-white">${(requiredMargin / (30 / inputs.leverage)).toFixed(2)}</span>
                         </div>
                     </div>
