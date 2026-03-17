@@ -44,7 +44,7 @@ export async function GET() {
     }
 }
 
-import DOMPurify from "isomorphic-dompurify";
+import { sanitizeInput } from "@/lib/sanitize";
 
 export async function PUT(request: Request) {
     const supabase = await createClient();
@@ -59,7 +59,7 @@ export async function PUT(request: Request) {
 
         // Sanitize bio
         if (body.bio) {
-            body.bio = DOMPurify.sanitize(body.bio);
+            body.bio = sanitizeInput(body.bio);
         }
 
         const validatedData = updateProfileSchema.parse(body);

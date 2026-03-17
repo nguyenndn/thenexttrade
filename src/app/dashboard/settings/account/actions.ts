@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-import DOMPurify from "isomorphic-dompurify";
+import { sanitizeInput } from "@/lib/sanitize";
 
 export async function updateSettings(formData: FormData) {
     const supabase = await createClient();
@@ -22,8 +22,8 @@ export async function updateSettings(formData: FormData) {
     const bioRaw = formData.get("bio") as string;
 
     // Sanitize inputs
-    const username = DOMPurify.sanitize(usernameRaw);
-    const bio = DOMPurify.sanitize(bioRaw);
+    const username = sanitizeInput(usernameRaw);
+    const bio = sanitizeInput(bioRaw);
 
     const avatarFile = formData.get("avatar") as File;
 
