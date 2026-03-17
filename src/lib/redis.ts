@@ -1,30 +1,25 @@
+import { Redis } from "@upstash/redis";
 
-import Redis from "ioredis";
-
-const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
-
+// Upstash REST client for Vercel serverless
 const getRedisClient = () => {
-    const client = new Redis(REDIS_URL, {
-        maxRetriesPerRequest: null, // Required by BullMQ
-        retryStrategy: (times) => {
-            return Math.min(times * 50, 2000);
-        }
-    });
+    const url = process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-    client.on("error", (err) => {
-        console.warn("Redis connection error:", err);
-    });
+    if (!url || !token) {
+        console.warn("Upstash Redis not configured. Caching disabled.");
+        return null;
+    }
 
-    return client;
+    return new Redis({ url, token });
 };
 
-// Singleton pattern for Next.js to avoid too many connections in dev
+// Singleton for dev mode
 declare global {
-    var redis: ReturnType<typeof getRedisClient> | undefined;
+    var redisClient: ReturnType<typeof getRedisClient> | undefined;
 }
 
-export const redis = globalThis.redis || getRedisClient();
+export const redis = globalThis.redisClient || getRedisClient();
 
 if (process.env.NODE_ENV !== "production") {
-    globalThis.redis = redis;
+    globalThis.redisClient = redis;
 }

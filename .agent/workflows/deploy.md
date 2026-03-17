@@ -1,176 +1,136 @@
 ---
-description: Deployment command for production releases. Pre-flight checks and deployment execution.
+description: Automated Vercel deployment. Pre-flight checks, git push, production deploy, and health verification.
 ---
 
-# /deploy - Production Deployment
+# /deploy - TheNextTrade Production Deployment
 
-$ARGUMENTS
+// turbo-all
 
 ---
 
-## Purpose
+## Steps
 
-This command handles production deployment with pre-flight checks, deployment execution, and verification.
+### 1. Pre-flight: TypeScript Check
+// turbo
+```powershell
+npx tsc --noEmit
+```
+> ❌ Nếu fail → STOP. Fix lỗi trước khi tiếp tục.
+
+### 2. Clean Build Cache
+// turbo
+```powershell
+if (Test-Path ".next") { Remove-Item -Recurse -Force ".next" }
+Write-Host "✅ .next cache cleared"
+```
+
+### 3. Check Git Status
+// turbo
+```powershell
+git status --short
+```
+Review changes trước khi commit.
+
+### 4. Stage All Changes
+// turbo
+```powershell
+git add .
+```
+
+### 5. Generate Commit Message & Commit
+Tuân thủ Conventional Commits. Phân tích diff để tạo commit message phù hợp.
+```powershell
+git commit -m "<type>(<scope>): <description>"
+```
+
+### 6. Push to Remote
+// turbo
+```powershell
+git push origin TheNextTrade
+```
+
+### 7. Prisma DB Sync (If Schema Changed)
+Chỉ chạy nếu `prisma/schema.prisma` có thay đổi trong commit.
+```powershell
+npx dotenv -e .env.production -- npx prisma db push --accept-data-loss
+```
+> ⚠️ Hỏi user trước khi chạy nếu có `--accept-data-loss`.
+
+### 8. Deploy to Vercel Production
+```powershell
+vercel --prod --yes
+```
+> Vercel sẽ tự động: `npm install` → `prisma generate` → `next build` → deploy.
+
+### 9. Health Check
+Sau khi deploy xong, kiểm tra:
+// turbo
+```powershell
+curl -s -o /dev/null -w "%{http_code}" https://thenexttrade.vercel.app
+```
+> ✅ Expected: `200`
+
+### 10. Verify API Health
+// turbo
+```powershell
+curl -s -o /dev/null -w "%{http_code}" https://thenexttrade.vercel.app/api/health
+```
+
+### 11. Report
+Sau khi hoàn tất, báo cáo cho user:
+```markdown
+## 🚀 Deployment Complete
+
+### Summary
+- **Branch:** TheNextTrade
+- **URL:** https://thenexttrade.vercel.app
+- **Status:** ✅ Live
+- **Health:** API responding
+
+### What Changed
+[list changes from commit]
+```
+
+---
+
+## Rollback (Nếu Cần)
+```powershell
+vercel rollback --yes
+```
 
 ---
 
 ## Sub-commands
 
-```
-/deploy            - Interactive deployment wizard
-/deploy check      - Run pre-deployment checks only
-/deploy preview    - Deploy to preview/staging
-/deploy production - Deploy to production
-/deploy rollback   - Rollback to previous version
-```
+| Command | Mô tả |
+|---------|--------|
+| `/deploy` | Full deploy (check → push → build → verify) |
+| `/deploy check` | Chỉ chạy pre-flight checks (steps 1-3) |
+| `/deploy push` | Git push only (steps 3-6) |
+| `/deploy production` | Skip git, deploy trực tiếp từ code hiện tại |
+| `/deploy rollback` | Rollback về version trước |
 
 ---
 
-## Pre-Deployment Checklist
+## Environment Variables (Vercel Dashboard)
 
-Before any deployment:
+Các biến cần set trên Vercel Dashboard > Project Settings > Environment Variables:
 
-```markdown
-## 🚀 Pre-Deploy Checklist
-
-### Code Quality
-- [ ] No TypeScript errors (`npx tsc --noEmit`)
-- [ ] ESLint passing (`npx eslint .`)
-- [ ] All tests passing (`npm test`)
-
-### Security
-- [ ] No hardcoded secrets
-- [ ] Environment variables documented
-- [ ] Dependencies audited (`npm audit`)
-
-### Performance
-- [ ] Bundle size acceptable
-- [ ] No console.log statements
-- [ ] Images optimized
-
-### Documentation
-- [ ] README updated
-- [ ] CHANGELOG updated
-- [ ] API docs current
-
-### Ready to deploy? (y/n)
-```
-
----
-
-## Deployment Flow
-
-```
-┌─────────────────┐
-│  /deploy        │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Pre-flight     │
-│  checks         │
-└────────┬────────┘
-         │
-    Pass? ──No──► Fix issues
-         │
-        Yes
-         │
-         ▼
-┌─────────────────┐
-│  Build          │
-│  application    │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Deploy to      │
-│  platform       │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Health check   │
-│  & verify       │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  ✅ Complete    │
-└─────────────────┘
-```
-
----
-
-## Output Format
-
-### Successful Deploy
-
-```markdown
-## 🚀 Deployment Complete
-
-### Summary
-- **Version:** v1.2.3
-- **Environment:** production
-- **Duration:** 47 seconds
-- **Platform:** Vercel
-
-### URLs
-- 🌐 Production: https://app.example.com
-- 📊 Dashboard: https://vercel.com/project
-
-### What Changed
-- Added user profile feature
-- Fixed login bug
-- Updated dependencies
-
-### Health Check
-✅ API responding (200 OK)
-✅ Database connected
-✅ All services healthy
-```
-
-### Failed Deploy
-
-```markdown
-## ❌ Deployment Failed
-
-### Error
-Build failed at step: TypeScript compilation
-
-### Details
-```
-error TS2345: Argument of type 'string' is not assignable...
-```
-
-### Resolution
-1. Fix TypeScript error in `src/services/user.ts:45`
-2. Run `npm run build` locally to verify
-3. Try `/deploy` again
-
-### Rollback Available
-Previous version (v1.2.2) is still active.
-Run `/deploy rollback` if needed.
-```
-
----
-
-## Platform Support
-
-| Platform | Command | Notes |
-|----------|---------|-------|
-| Vercel | `vercel --prod` | Auto-detected for Next.js |
-| Railway | `railway up` | Needs Railway CLI |
-| Fly.io | `fly deploy` | Needs flyctl |
-| Docker | `docker compose up -d` | For self-hosted |
-
----
-
-## Examples
-
-```
-/deploy
-/deploy check
-/deploy preview
-/deploy production --skip-tests
-/deploy rollback
-```
+| Variable | Required | Notes |
+|----------|----------|-------|
+| `DATABASE_URL` | ✅ | Port 6543 (Pooler) + `?pgbouncer=true` |
+| `DIRECT_URL` | ✅ | Port 5432 (Direct) |
+| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Supabase service role key |
+| `NEXT_PUBLIC_APP_URL` | ✅ | `https://thenexttrade.vercel.app` |
+| `REDIS_URL` | ✅ | Upstash/Railway Redis URL |
+| `SMTP_HOST` | ✅ | Email SMTP server |
+| `SMTP_PORT` | ✅ | Usually `587` |
+| `SMTP_USER` | ✅ | SMTP username |
+| `SMTP_PASS` | ✅ | SMTP password |
+| `SMTP_SECURE` | ⚪ | `true` for port 465 |
+| `SMTP_FROM_EMAIL` | ✅ | Sender email address |
+| `SMTP_FROM_NAME` | ⚪ | `The Next Trade` |
+| `GEMINI_API_KEY` | ⚪ | Google AI Studio key |
+| `GITHUB_TOKEN` | ⚪ | GitHub Models API (AI Studio) |
