@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -188,7 +188,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <PremiumInput
                             label="Product Name"
-                            placeholder="GSN Auto Trader"
+                            placeholder="TheNextTrade Auto Trader"
                             {...form.register("name")}
                             error={form.formState.errors.name?.message}
                             required

@@ -26,7 +26,7 @@ export default async function AdminSettingsPage() {
         userRegistration: savedConfig.userRegistration ?? true,
         feedbackEnabled: savedConfig.feedbackEnabled ?? true,
         requireEmailVerification: savedConfig.requireEmailVerification ?? false,
-        siteTitle: savedConfig.siteTitle || "GSN Financial CRM",
+        siteTitle: savedConfig.siteTitle || "TheNextTrade",
         siteDescription: savedConfig.siteDescription || "",
         supportEmail: savedConfig.supportEmail || "",
         socialTelegram: savedConfig.socialTelegram || "",

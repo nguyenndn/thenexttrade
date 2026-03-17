@@ -189,7 +189,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     datePublished: (article.publishedAt ? new Date(article.publishedAt) : new Date(article.createdAt)).toISOString(),
                     dateModified: new Date(article.updatedAt).toISOString(),
                     author: {
-                        name: article.author.name || "GSN Team",
+                        name: article.author.name || "TheNextTrade Team",
                         url: `${process.env.NEXT_PUBLIC_APP_URL}/author/${article.author.id}`
                     }
                 }}
@@ -267,7 +267,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                     className="object-cover"
                                 />
                             </div>
-                            <span className="font-bold text-gray-800 dark:text-gray-200">{article.author.name || "GSN Team"}</span>
+                            <span className="font-bold text-gray-800 dark:text-gray-200">{article.author.name || "TheNextTrade Team"}</span>
                         </div>
 
                         <span className="w-px h-4 bg-gray-200 dark:bg-white/10" />

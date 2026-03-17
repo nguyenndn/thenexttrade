@@ -1,4 +1,4 @@
-import JournalList from "@/components/journal/JournalList";
+﻿import JournalList from "@/components/journal/JournalList";
 import { Metadata } from "next";
 import { getJournalEntries, getUserTags } from "@/actions/journal";
 import { getStrategies } from "@/actions/strategies";
@@ -10,7 +10,7 @@ import { getAuthUser } from "@/lib/auth-cache";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-    title: "Trading Journal | GSN CRM",
+    title: "Trading Journal | TheNextTrade",
     description: "Your trading history",
 };
 

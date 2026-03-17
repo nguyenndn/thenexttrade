@@ -92,9 +92,9 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                         {/* Header: Logo & Badge */}
                         <div className="flex items-center justify-between mb-6 md:mb-8">
                             <div className="flex items-center gap-1.5">
+                                <img src="/images/thenexttrade-avatar.png" alt="TheNextTrade" className="w-7 h-7 rounded-md" />
                                 <span className="font-black text-2xl tracking-tighter">
-                                    <span className="text-gray-900 dark:text-white">The</span>
-                                    <span className="text-gray-900 dark:text-white">Next</span>
+                                    <span className="text-gray-900 dark:text-white">TheNext</span>
                                     <span className="text-primary">Trade</span>
                                 </span>
                             </div>

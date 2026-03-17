@@ -18,7 +18,7 @@ export const revalidate = 60;
 import { getAuthUser } from "@/lib/auth-cache";
 import { getMarketData } from "@/app/actions/get-market-data";
 import { shuffleArray } from "@/lib/utils";
-import { HOMEPAGE_TRENDING_TOPICS } from "@/config/home-data";
+
 import { Button } from "@/components/ui/Button";
 import { Suspense } from "react";
 import { HomeFeedSkeleton } from "@/components/ui/LoadingSkeleton";
@@ -142,14 +142,29 @@ async function HomeFeed() {
   // Shuffle specifically for random requirement
   const featuredArticles = shuffleArray(featuredRaw);
 
-  const trendingTopics = HOMEPAGE_TRENDING_TOPICS;
+  // Get trending categories (those with most published articles)
+  const trendingCategories = await cache.wrap("home:trending_cats", () => prisma.category.findMany({
+    where: {
+      articles: { some: { status: 'PUBLISHED' } }
+    },
+    select: {
+      name: true,
+      slug: true,
+      _count: { select: { articles: { where: { status: 'PUBLISHED' } } } }
+    },
+    orderBy: { articles: { _count: 'desc' } },
+    take: 6
+  }), 600);
 
   return (
     <>
       <FadeIn delay={0.1}>
       {/* Hero Section */}
-      <div className="pt-24 pb-8 dark:bg-[#0B0E14]">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="pt-24 pb-10 dark:bg-[#0B0E14] relative">
+        {/* Subtle noise texture */}
+        <div className="absolute inset-0 noise-bg opacity-[0.03] dark:opacity-[0.05] pointer-events-none" />
+
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {/* Big Card - Carousel */}
@@ -157,55 +172,75 @@ async function HomeFeed() {
               {featuredArticles.length > 0 ? (
                 <HeroCarousel articles={featuredArticles} />
               ) : (
-                <div className="h-[500px] rounded-xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
-                  <p className="text-gray-500">No featured articles found. Please enable 'isFeatured' on some articles.</p>
+                <div className="h-[500px] rounded-2xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
+                  <p className="text-gray-500">No featured articles found. Please enable &apos;isFeatured&apos; on some articles.</p>
                 </div>
               )}
             </div>
 
             {/* Side Cards - Latest Articles */}
-            <div className="space-y-4 flex flex-col">
+            <div className="flex flex-col">
               <SectionHeader
                 title="Latest Updates"
                 align="left"
                 linkHref="/knowledge"
                 linkText="View All"
-                className="!mb-2"
+                className="!mb-4"
               />
 
-              <div className="flex flex-col gap-4">
-                {latestArticles.map((article, idx) => (
-                  <Link key={article.id} href={`/articles/${article.slug}`} className="group flex gap-3 p-2 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
-                    <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gray-200">
-                      {article.thumbnail && (
-                        <Image
-                          src={article.thumbnail}
-                          alt={article.title}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
-                          sizes="80px"
-                          priority={idx < 2}
-                        />
-                      )}
-                    </div>
-                    <div className="flex-1 flex flex-col justify-center">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-primary mb-1">
-                        {article.category.name}
-                      </span>
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-                        {article.title}
-                      </h4>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        <Clock size={12} />
-                        <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+              <div className="flex flex-col gap-3 flex-1">
+                {latestArticles.map((article, idx) => {
+                  const isNew = (Date.now() - new Date(article.createdAt).getTime()) < 86400000;
+                  return (
+                    <Link
+                      key={article.id}
+                      href={`/articles/${article.slug}`}
+                      className="group flex gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.07] border border-transparent hover:border-gray-200 dark:hover:border-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md relative overflow-hidden"
+                    >
+                      {/* Accent border left */}
+                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-primary to-teal-400 rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                      <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gray-200 dark:bg-white/10">
+                        {article.thumbnail && (
+                          <Image
+                            src={article.thumbnail}
+                            alt={article.title}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            sizes="80px"
+                            priority={idx < 2}
+                          />
+                        )}
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                      <div className="flex-1 flex flex-col justify-center min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                            {article.category.name}
+                          </span>
+                          {isNew && (
+                            <span className="text-[9px] font-black uppercase tracking-wider bg-primary/10 text-primary px-1.5 py-0.5 rounded">
+                              NEW
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                          {article.title}
+                        </h4>
+                        <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                          <Clock size={11} />
+                          <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
+
+        {/* Gradient divider */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       </div>
       </FadeIn>
 
@@ -225,16 +260,18 @@ async function HomeFeed() {
           />
 
           <div className="flex flex-wrap justify-center gap-4">
-            {trendingTopics.map((topic, idx) => (
+            {trendingCategories.map((cat, idx) => (
               <Link
                 key={idx}
-                href={topic.href}
+                href={`/knowledge?category=${cat.slug}`}
                 className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-primary/20 hover:bg-primary/5 dark:hover:bg-primary/10 hover:border-primary/50 transition-all duration-300"
               >
                 <span className="text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors">
-                  # {topic.name}
+                  # {cat.name}
                 </span>
-                {topic.change === 'Up' && <TrendingUp size={16} className="text-green-500" />}
+                <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded">
+                  {cat._count.articles}
+                </span>
               </Link>
             ))}
           </div>
@@ -325,7 +362,7 @@ async function HomeFeed() {
             {[
               { icon: BookOpen, title: "1. Initiate", desc: "Forex fundamentals.", color: "text-blue-500", bg: "bg-blue-500/10" },
               { icon: TrendingUp, title: "2. Novice", desc: "Master Analysis.", color: "text-primary", bg: "bg-primary/10" },
-              { icon: Clock, title: "3. Apprentice", desc: "Build Strategy.", color: "text-purple-500", bg: "bg-purple-500/10" },
+              { icon: Clock, title: "3. Apprentice", desc: "Build Strategy.", color: "text-rose-500", bg: "bg-rose-500/10" },
               { icon: Zap, title: "4. Trader", desc: "Risk & Psych.", color: "text-pink-500", bg: "bg-pink-500/10" },
               { icon: Calendar, title: "5. Pro", desc: "Consistency.", color: "text-orange-500", bg: "bg-orange-500/10" },
             ].map((step, idx) => (

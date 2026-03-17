@@ -8,7 +8,7 @@ import { Clock } from "lucide-react";
 
 export default function MarketHoursPage() {
     return (
-        <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
+        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14]">
             <PublicHeader />
 
             <main className="flex-1 pt-28 pb-12">
