@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import DOMPurify from "isomorphic-dompurify";
+import { sanitizeInput } from "@/lib/sanitize";
 
 const createCommentSchema = z.object({
     content: z.string().min(1, "Comment cannot be empty"),
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
 
         // Sanitize content
         if (body.content) {
-            body.content = DOMPurify.sanitize(body.content);
+            body.content = sanitizeInput(body.content);
         }
 
         const validatedData = createCommentSchema.parse(body);
