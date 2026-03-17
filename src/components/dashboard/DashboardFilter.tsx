@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
@@ -55,7 +55,7 @@ export function DashboardFilter({ currentAccountId, className, hideDateFilter, e
         if (!start && !end) {
              hasInitialized.current = true;
              // 1. Check for saved range in localStorage first
-             const savedRangeStr = localStorage.getItem("gsn_date_range");
+             const savedRangeStr = localStorage.getItem("tnt_date_range");
              if (savedRangeStr) {
                  try {
                      const savedRange = JSON.parse(savedRangeStr);
@@ -88,12 +88,12 @@ export function DashboardFilter({ currentAccountId, className, hideDateFilter, e
         if (range.start.getFullYear() === 2025 && range.start.getMonth() === 0 && range.start.getDate() === 1) {
             params.delete("from");
             params.delete("to");
-            localStorage.removeItem("gsn_date_range");
+            localStorage.removeItem("tnt_date_range");
         } else {
             params.set("from", format(range.start, "yyyy-MM-dd"));
             params.set("to", format(range.end, "yyyy-MM-dd"));
             
-            localStorage.setItem("gsn_date_range", JSON.stringify({
+            localStorage.setItem("tnt_date_range", JSON.stringify({
                 start: range.start.toISOString(),
                 end: range.end.toISOString()
             }));

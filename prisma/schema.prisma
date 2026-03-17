@@ -1107,3 +1107,15 @@ model Feedback {
   @@index([status])
   @@index([type])
 }
+
+// ============================================================================
+// TOOL ANALYTICS
+// ============================================================================
+
+model ToolView {
+  slug      String   @id // tool slug e.g. "position-size-calculator"
+  viewCount Int      @default(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  @@index([viewCount(sort: Desc)])
+}

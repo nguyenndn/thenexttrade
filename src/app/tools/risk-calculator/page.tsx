@@ -7,7 +7,7 @@ import { Calculator } from "lucide-react";
 
 export default function RiskCalculatorPage() {
     return (
-        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0F1117] text-gray-900 dark:text-white transition-colors duration-300">
+        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white transition-colors duration-300">
             <PublicHeader />
             <section className="pt-28 pb-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

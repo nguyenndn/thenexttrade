@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { X, Copy, Download, Check, MonitorPlay } from "lucide-react";
@@ -192,7 +192,7 @@ export function AddAccountModal({
                                             1
                                         </span>
                                         <span>
-                                            Download the <strong className="text-gray-900 dark:text-white">GSN Trade Sync EA</strong> for {platform}.
+                                            Download the <strong className="text-gray-900 dark:text-white">TheNextTrade Sync EA</strong> for {platform}.
                                         </span>
                                     </li>
                                     <li className="flex gap-3 items-start">
@@ -220,7 +220,7 @@ export function AddAccountModal({
 
                             {/* Download Button */}
                             <a
-                                href={`/downloads/GSN_TradeSync_${platform}.ex${platform === "MT5" ? "5" : "4"}`}
+                                href={`/downloads/TNT_TradeSync_${platform}.ex${platform === "MT5" ? "5" : "4"}`}
                                 className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors shadow-lg shadow-primary/20"
                             >
                                 <Download size={18} />

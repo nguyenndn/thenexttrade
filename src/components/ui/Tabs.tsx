@@ -8,21 +8,31 @@ import { Button } from "@/components/ui/Button";
 interface TabsContextType {
     activeTab: string;
     setActiveTab: (value: string) => void;
+    tabsId: string;
 }
 
 const TabsContext = createContext<TabsContextType | undefined>(undefined);
 
 interface TabsProps {
-    defaultValue: string;
+    defaultValue?: string;
+    value?: string;
+    onValueChange?: (value: string) => void;
     children: ReactNode;
     className?: string;
+    tabsId?: string;
 }
 
-export function Tabs({ defaultValue, children, className }: TabsProps) {
-    const [activeTab, setActiveTab] = useState(defaultValue);
+export function Tabs({ defaultValue, value, onValueChange, children, className, tabsId }: TabsProps) {
+    const [internal, setInternal] = useState(defaultValue || value || "");
+    const activeTab = value !== undefined ? value : internal;
+    const setActiveTab = (v: string) => {
+        if (onValueChange) onValueChange(v);
+        else setInternal(v);
+    };
+    const id = tabsId || defaultValue || "tabs";
 
     return (
-        <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+        <TabsContext.Provider value={{ activeTab, setActiveTab, tabsId: id }}>
             <div className={cn("w-full", className)}>
                 {children}
             </div>
@@ -47,9 +57,11 @@ interface TabsTriggerProps {
     value: string;
     children: ReactNode;
     className?: string;
+    activeIndicatorClassName?: string;
+    activeTextClassName?: string;
 }
 
-export function TabsTrigger({ value, children, className }: TabsTriggerProps) {
+export function TabsTrigger({ value, children, className, activeIndicatorClassName, activeTextClassName }: TabsTriggerProps) {
     const context = useContext(TabsContext);
     if (!context) throw new Error("TabsTrigger must be used within Tabs");
 
@@ -62,15 +74,18 @@ export function TabsTrigger({ value, children, className }: TabsTriggerProps) {
             className={cn(
                 "relative px-4 py-2 h-auto rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 z-10 hover:bg-transparent",
                 isActive
-                    ? "text-gray-900 dark:text-white"
+                    ? (activeTextClassName || "text-gray-900 dark:text-white")
                     : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
                 className
             )}
         >
             {isActive && (
                 <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-white dark:bg-slate-700 shadow-sm rounded-lg -z-10"
+                    layoutId={`activeTab-${context.tabsId}`}
+                    className={cn(
+                        "absolute inset-0 bg-white dark:bg-slate-700 shadow-sm rounded-lg -z-10",
+                        activeIndicatorClassName
+                    )}
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
             )}

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 import { Clock, TrendingUp, BookOpen } from "lucide-react";
 
@@ -78,7 +78,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                     </div>
                     <div className="flex flex-col">
                         <span className="text-xs font-bold text-gray-900 dark:text-white">
-                            {article.author?.name || 'GSN Team'}
+                            {article.author?.name || 'TheNextTrade Team'}
                         </span>
                         <span className="text-[10px] text-gray-500 uppercase tracking-wide">Author</span>
                     </div>

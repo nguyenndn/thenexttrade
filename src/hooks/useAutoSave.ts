@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { useDebounce } from 'use-debounce';
 
-const AUTO_SAVE_KEY = 'gsn_article_draft';
+const AUTO_SAVE_KEY = 'tnt_article_draft';
 
 export function useAutoSave<T>(currentData: T, articleId?: string) {
     const [draftAutoSavedAt, setDraftAutoSavedAt] = useState<Date | null>(null);

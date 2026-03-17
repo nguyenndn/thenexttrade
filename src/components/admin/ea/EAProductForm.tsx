@@ -104,7 +104,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                     <PremiumInput
                         label="Product Name"
                         {...register("name")}
-                        placeholder="GSN Auto Trader"
+                        placeholder="TheNextTrade Auto Trader"
                         error={errors.name?.message}
                     />
                 </div>
@@ -114,7 +114,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                     <PremiumInput
                         label="Slug"
                         {...register("slug")}
-                        placeholder="gsn-auto-trader"
+                        placeholder="tnt-auto-trader"
                         disabled={isEdit}
                         error={errors.slug?.message}
                     />

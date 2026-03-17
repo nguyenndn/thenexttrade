@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const Logo = ({ className = "", size = "md" }: { className?: string; size?: "sm" | "md" | "lg" | "xl" }) => {
     const sizeClasses = {
@@ -8,15 +9,22 @@ export const Logo = ({ className = "", size = "md" }: { className?: string; size
         xl: "text-4xl",
     };
 
+    const imgSizes = {
+        sm: 32,
+        md: 40,
+        lg: 48,
+        xl: 64,
+    };
+
     return (
         <Link href="/" className={`font-outfit font-bold flex items-center gap-2 ${className}`}>
-            <div className={`rounded-lg bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-bold ${size === 'sm' ? 'w-8 h-8 text-sm' :
-                size === 'md' ? 'w-10 h-10 text-xl' :
-                    size === 'lg' ? 'w-12 h-12 text-2xl' :
-                        'w-16 h-16 text-3xl'
-                }`}>
-                G
-            </div>
+            <Image
+                src="/images/thenexttrade-avatar.png"
+                alt="TheNextTrade"
+                width={imgSizes[size]}
+                height={imgSizes[size]}
+                className="rounded-lg"
+            />
             <span className={`${sizeClasses[size] || "text-xl"} tracking-tight hover:text-inherit`}>
                 The Next<span className="text-primary"> Trade</span>
             </span>

@@ -1,4 +1,4 @@
-import { SessionDashboard } from "@/components/sessions/SessionDashboard";
+﻿import { SessionDashboard } from "@/components/sessions/SessionDashboard";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 
 export const metadata: Metadata = {
-    title: "Session Analysis | GSN CRM",
+    title: "Session Analysis | TheNextTrade",
     description: "Analyze your trading performance by market session and time of day",
 };
 

@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+﻿import nodemailer from 'nodemailer';
 
 interface EmailOptions {
     to: string;
@@ -32,7 +32,7 @@ export class EmailService {
 
         try {
             const info = await this.transporter.sendMail({
-                from: process.env.SMTP_FROM || '"GSN CRM" <noreply@gsncrm.com>',
+                from: process.env.SMTP_FROM || '"TheNextTrade" <noreply@thenexttrade.com>',
                 to,
                 subject,
                 text,

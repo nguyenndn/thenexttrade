@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
@@ -6,7 +6,7 @@ import { AccountStatus } from "@prisma/client";
 import { TradingSystemsClient } from "@/components/dashboard/trading-systems/TradingSystemsClient";
 
 export const metadata: Metadata = {
-    title: "EA & Indicators | GSN CRM",
+    title: "EA & Indicators | TheNextTrade",
     description: "Download professional trading indicators and EAs",
 };
 

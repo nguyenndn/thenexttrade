@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Users, Copy, DollarSign, TrendingUp, Gift } from 'lucide-react';
 import { useState } from 'react';
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 
 export default function ReferralsClient() {
     const [copied, setCopied] = useState(false);
-    const referralLink = "https://gsn-crm.com/register?ref=TRADER123";
+    const referralLink = "https://thenexttrade.com/register?ref=TRADER123";
 
     const handleCopy = () => {
         navigator.clipboard.writeText(referralLink);

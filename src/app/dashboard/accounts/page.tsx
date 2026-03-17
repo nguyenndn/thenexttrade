@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Trading Accounts | GSN",
+    title: "Trading Accounts | TheNextTrade",
     description: "Manage your trading accounts and EA sync",
 };
 

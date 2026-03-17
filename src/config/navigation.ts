@@ -41,12 +41,8 @@ export const menuItems = [
     },
     {
         name: "Tools",
-        type: "dropdown" as const,
-        items: [
-            { name: "Risk Calculator", href: "/tools/risk-calculator" },
-            { name: "Market Hours", href: "/tools/market-hours" },
-            { name: "Economic Calendar", href: "/tools/economic-calendar" },
-        ],
+        href: "/tools",
+        type: "link" as const,
     },
     {
         name: "Brokers",

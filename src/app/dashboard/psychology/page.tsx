@@ -1,8 +1,8 @@
-import { PsychologyDashboard } from "@/components/psychology/PsychologyDashboard";
+﻿import { PsychologyDashboard } from "@/components/psychology/PsychologyDashboard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Psychology Tracking | GSN Trading",
+    title: "Psychology Tracking | TheNextTrade",
     description: "Track your emotions and confidence to identify trading patterns.",
 };
 

@@ -49,7 +49,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
                     description: lesson.module.description || `Lesson: ${lesson.title}`,
                     datePublished: lesson.createdAt.toISOString(),
                     dateModified: lesson.updatedAt.toISOString(),
-                    author: { name: "GSN Academy" },
+                    author: { name: "TheNextTrade Academy" },
                     isPartOf: {
                         "@type": "Course",
                         name: "Zero to Funded Trader",

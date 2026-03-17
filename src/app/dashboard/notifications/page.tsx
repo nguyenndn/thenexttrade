@@ -1,4 +1,4 @@
-
+﻿
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/Button";
 
 export const metadata: Metadata = {
-    title: "Notifications | GSN CRM",
+    title: "Notifications | TheNextTrade",
     description: "Your latest notifications",
 };
 

@@ -4,18 +4,18 @@ import { EAType, PlatformType } from "@prisma/client";
 
 export async function GET() {
     try {
-        // 1. GSN Trend Pilot (Expert Advisor)
+        // 1. TheNextTrade Trend Pilot (Expert Advisor)
         const trendPilot = await prisma.eAProduct.upsert({
-            where: { slug: "gsn-trend-pilot" },
+            where: { slug: "tnt-trend-pilot" },
             update: {},
             create: {
-                name: "GSN Trend Pilot",
-                slug: "gsn-trend-pilot",
+                name: "TheNextTrade Trend Pilot",
+                slug: "tnt-trend-pilot",
                 description: "Advanced trend-following algorithm designed for XAUUSD and Major Pairs. Features dynamic risk management and news filtering.",
                 type: EAType.AUTO_TRADE,
                 platform: PlatformType.MT5,
                 version: "2.1.0",
-                fileMT5: "ea-products/demo/GSN_Trend_Pilot_v2.1.ex5",
+                fileMT5: "ea-products/demo/TNT_Trend_Pilot_v2.1.ex5",
                 thumbnail: "https://placehold.co/600x400/1e293b/00c888?text=Trend+Pilot",
                 isActive: true,
                 isFree: false,
@@ -23,18 +23,18 @@ export async function GET() {
             },
         });
 
-        // 2. GSN Supply Demand (Indicator)
+        // 2. TheNextTrade Supply Demand (Indicator)
         const supplyDemand = await prisma.eAProduct.upsert({
-            where: { slug: "gsn-supply-demand" },
+            where: { slug: "tnt-supply-demand" },
             update: {},
             create: {
-                name: "GSN Supply & Demand",
-                slug: "gsn-supply-demand",
+                name: "TheNextTrade Supply & Demand",
+                slug: "tnt-supply-demand",
                 description: "Automatically identifies high-probability Supply and Demand zones. Essential for Price Action traders.",
                 type: EAType.INDICATOR,
                 platform: PlatformType.MT5, // or BOTH
                 version: "1.0.5",
-                fileMT5: "ea-products/demo/GSN_SD_Zones.ex5",
+                fileMT5: "ea-products/demo/tnt_SD_Zones.ex5",
                 thumbnail: "https://placehold.co/600x400/1e293b/3b82f6?text=Supply+Demand",
                 isActive: true,
                 isFree: true,

@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Economic Calendar | Forex News & Events Schedule",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "Economic Calendar | GSN CRM",
+        title: "Economic Calendar | TheNextTrade",
         description: "Track high-impact forex news events in real-time.",
     },
     alternates: {
