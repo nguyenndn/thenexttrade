@@ -5,10 +5,10 @@ const DEFAULT_TTL = 3600; // 1 hour
 
 export const cache = {
     async get<T>(key: string): Promise<T | null> {
-        if (!redis || redis.status !== 'ready') return null;
+        if (!redis) return null;
         try {
-            const data = await redis.get(key);
-            return data ? JSON.parse(data) : null;
+            const data = await redis.get<T>(key);
+            return data ?? null;
         } catch (error) {
             console.warn(`Cache GET error for ${key}:`, error);
             return null;
@@ -16,13 +16,12 @@ export const cache = {
     },
 
     async set(key: string, value: any, ttl: number = DEFAULT_TTL): Promise<void> {
-        if (!redis || redis.status !== 'ready') return;
+        if (!redis) return;
         try {
-            const serialized = JSON.stringify(value);
             if (ttl) {
-                await redis.set(key, serialized, "EX", ttl);
+                await redis.set(key, value, { ex: ttl });
             } else {
-                await redis.set(key, serialized);
+                await redis.set(key, value);
             }
         } catch (error) {
             console.warn(`Cache SET error for ${key}:`, error);
@@ -30,7 +29,7 @@ export const cache = {
     },
 
     async del(key: string): Promise<void> {
-        if (!redis || redis.status !== 'ready') return;
+        if (!redis) return;
         try {
             await redis.del(key);
         } catch (error) {
