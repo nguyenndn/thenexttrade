@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import NextTopLoader from 'nextjs-toploader';
 import "./globals.css";
 
@@ -26,34 +26,34 @@ const lexend = Lexend({
 
 export const metadata: Metadata = {
   title: {
-    default: "GSN CRM - Professional Forex Trading Tools & Academy",
-    template: "%s | GSN CRM"
+    default: "TheNextTrade - Professional Forex Trading Tools & Academy",
+    template: "%s | TheNextTrade"
   },
-  description: "Master the markets with GSN CRM. Advanced Position Size Calculator, Trading Journal, and premium Forex Academy materials.",
+  description: "Master the markets with TheNextTrade. Advanced Position Size Calculator, Trading Journal, and premium Forex Academy materials.",
   keywords: ["Forex", "Trading Journal", "Position Calculator", "Trading Education", "CRM", "Risk Management"],
-  authors: [{ name: "GSN Team" }],
-  creator: "GSN Team",
+  authors: [{ name: "TheNextTrade Team" }],
+  creator: "TheNextTrade Team",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://crm.gsn.com", // Placeholder
-    title: "GSN CRM - Professional Forex Trading Tools",
+    url: "https://thenexttrade.com", // Placeholder
+    title: "TheNextTrade - Professional Forex Trading Tools",
     description: "Master the markets with advanced tools and education.",
-    siteName: "GSN CRM",
+    siteName: "TheNextTrade",
     images: [
       {
         url: "/og-image.jpg", // We should create this asset later
         width: 1200,
         height: 630,
-        alt: "GSN CRM Dashboard",
+        alt: "TheNextTrade Dashboard",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GSN CRM",
+    title: "TheNextTrade",
     description: "Professional Forex Trading Tools & Academy",
-    creator: "@gsncrm",
+    creator: "@thenexttrade",
   },
   icons: {
     icon: "/favicon.ico",
@@ -81,6 +81,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `history.scrollRestoration = "manual"` }} />
+      </head>
       <body className={`${sourceSans.variable} ${lexend.variable} font-sans`}>
         <NextTopLoader
           color="hsl(var(--primary))"
@@ -92,11 +95,11 @@ export default function RootLayout({
           <JsonLd
             type="WebSite"
             data={{
-              name: "GSN CRM",
-              url: process.env.NEXT_PUBLIC_APP_URL || "https://crm.gsn.com",
+              name: "TheNextTrade",
+              url: process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com",
               potentialAction: {
                 "@type": "SearchAction",
-                "target": `${process.env.NEXT_PUBLIC_APP_URL || "https://crm.gsn.com"}/search?q={search_term_string}`,
+                "target": `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/search?q={search_term_string}`,
                 "query-input": "required name=search_term_string"
               }
             }}

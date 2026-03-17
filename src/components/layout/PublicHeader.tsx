@@ -1,11 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { Sun, Moon } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
-import { createClient } from "@/lib/supabase/client";
 import { AuthUser } from "@/lib/auth-types";
 import { useTheme } from "@/components/providers/ThemeProvider";
 
@@ -26,11 +23,14 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
 
     const [user, setUser] = useState<AuthUser | null>(initialUser || null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
 
-    // Note: getAuthUser is server side only, so we rely on initialUser or client side fetch if needed
-    // But for PublicHeader, we usually pass user from server
-    // Removing client-side getUser for now as getAuthUser returns mapped type not available in client auth.getUser directly without API
+    useEffect(() => {
+        const onScroll = () => setIsScrolled(window.scrollY > 10);
+        onScroll(); // check on mount
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
 
     const userData = {
         name: user?.name || "Trader",
@@ -41,12 +41,20 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
     return (
         <header
             id="site-header"
-            className="fixed top-0 inset-x-0 z-[60] backdrop-blur-2xl"
+            className="fixed top-0 inset-x-0 z-[60] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
+            style={{ paddingTop: isScrolled ? "12px" : "0px" }}
         >
-            <div className="px-0 lg:px-4 py-2 flex justify-center">
-                <div
-                    className="flex w-full max-w-[1280px] items-center justify-between gap-2 sm:gap-4 md:gap-6 rounded-none lg:rounded-xl border-b lg:border px-3 sm:px-4 md:px-6 h-16 shadow-lg bg-white dark:bg-[#151925]/90 border-gray-200 dark:border-white/10"
-                >
+            {/* Full-width bar — bg + rounded here */}
+            <div
+                className={[
+                    "h-16 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
+                    isScrolled
+                        ? "mx-4 sm:mx-6 lg:mx-60 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white/80 dark:bg-[#151925]/80 border-gray-200/50 dark:border-white/10"
+                        : "mx-0 rounded-none border-transparent bg-transparent",
+                ].join(" ")}
+            >
+                {/* Content constrained to 1440px */}
+                <div className="flex w-full max-w-[1440px] mx-auto items-center justify-between gap-2 sm:gap-4 md:gap-6 px-3 sm:px-4 md:px-6 h-full">
                     {/* Logo */}
                     <div className="flex-shrink-0">
                         <Logo />

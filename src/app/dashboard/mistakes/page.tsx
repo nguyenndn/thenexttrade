@@ -1,9 +1,9 @@
-import { MistakeDashboard } from "@/components/mistakes/MistakeDashboard";
+﻿import { MistakeDashboard } from "@/components/mistakes/MistakeDashboard";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
 
 export const metadata = {
-    title: "Mistake Analysis | GSN CRM",
+    title: "Mistake Analysis | TheNextTrade",
     description: "Track and analyze your trading mistakes to improve performance.",
 };
 

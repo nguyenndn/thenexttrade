@@ -47,7 +47,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
             { name: "Sydney", status: isSydney ? "Open" : "Closed", color: isSydney ? "text-green-500" : "text-gray-400" },
             { name: "Tokyo", status: isTokyo ? "Open" : "Closed", color: isTokyo ? "text-cyan-500" : "text-gray-400" },
             { name: "London", status: isLondon ? "Open" : "Closed", color: isLondon ? "text-orange-500" : "text-gray-400" },
-            { name: "New York", status: isNY ? "Open" : "Closed", color: isNY ? "text-purple-500" : "text-gray-400" },
+            { name: "New York", status: isNY ? "Open" : "Closed", color: isNY ? "text-blue-500" : "text-gray-400" },
         ];
     };
 
@@ -68,17 +68,17 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                     {/* Market Hours Widget */}
                     <Link
                         href="/tools/market-hours"
-                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-purple-50/50 dark:from-[#1E2028] dark:to-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 hover:border-purple-200 dark:hover:border-purple-500/30 hover:shadow-md transition-shadow"
+                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-blue-50/50 dark:from-[#1E2028] dark:to-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-500/30 hover:shadow-md transition-shadow"
                     >
                         {/* Icon Box */}
-                        <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-xl bg-purple-100 dark:bg-purple-500/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-purple-600 dark:text-purple-400">
+                        <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-xl bg-blue-100 dark:bg-blue-500/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-blue-600 dark:text-blue-400">
                             <Clock size={32} strokeWidth={1.5} />
                         </div>
 
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-2">
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                     Forex Market Hours
                                 </h3>
                                 {/* Simple Live Status */}
@@ -103,7 +103,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                         </div>
 
                         {/* Arrow Action */}
-                        <div className="ml-4 flex-shrink-0 text-gray-300 dark:text-gray-600 group-hover:text-purple-500 transform group-hover:translate-x-1 transition-all">
+                        <div className="ml-4 flex-shrink-0 text-gray-300 dark:text-gray-600 group-hover:text-blue-500 transform group-hover:translate-x-1 transition-all">
                             <ChevronRight size={24} />
                         </div>
                     </Link>
@@ -111,17 +111,17 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                     {/* Economic Calendar Widget */}
                     <Link
                         href="/tools/economic-calendar"
-                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-pink-50/50 dark:from-[#1E2028] dark:to-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 hover:border-pink-200 dark:hover:border-pink-500/30 hover:shadow-md transition-shadow"
+                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-amber-50/50 dark:from-[#1E2028] dark:to-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 hover:border-amber-200 dark:hover:border-amber-500/30 hover:shadow-md transition-shadow"
                     >
                         {/* Icon Box */}
-                        <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-xl bg-pink-100 dark:bg-pink-500/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-pink-500 dark:text-pink-400">
+                        <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-xl bg-amber-100 dark:bg-amber-500/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-amber-600 dark:text-amber-400">
                             <Calendar size={32} strokeWidth={1.5} />
                         </div>
 
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-2">
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-pink-500 dark:group-hover:text-pink-400 transition-colors">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                                     Economic Calendar
                                 </h3>
                                 <div className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/10 text-gray-500">TODAY</div>
@@ -153,7 +153,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                         </div>
 
                         {/* Arrow Action */}
-                        <div className="ml-4 flex-shrink-0 text-gray-300 dark:text-gray-600 group-hover:text-pink-500 transform group-hover:translate-x-1 transition-all">
+                        <div className="ml-4 flex-shrink-0 text-gray-300 dark:text-gray-600 group-hover:text-amber-500 transform group-hover:translate-x-1 transition-all">
                             <ChevronRight size={24} />
                         </div>
                     </Link>

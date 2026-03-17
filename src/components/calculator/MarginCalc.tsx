@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { AccountCurrencySelect } from "./AccountCurrencySelect";
+import { CalcInput } from "./CalcInput";
+import { CalcResultPrimary } from "./CalcResult";
 
 export function MarginCalc() {
     const [inputs, setInputs] = useState({
@@ -22,7 +25,7 @@ export function MarginCalc() {
         accountCurrency: "USD"
     });
 
-    const leverageOptions = [500, 400, 200, 100, 50, 30, 20];
+    const leverageOptions = [1000, 500, 400, 200, 100, 50, 30, 20, 10, 5];
 
     const requiredMargin = calculateMargin(inputs).requiredMargin;
 
@@ -31,28 +34,24 @@ export function MarginCalc() {
             <div className="lg:col-span-7 space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Currency Pair</label>
+                        <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Currency Pair</label>
                         <CurrencyPairSelect value={inputs.pair} onChange={(v) => setInputs({ ...inputs, pair: v })} />
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Lot Size</label>
-                        <input
-                            type="number"
-                            value={inputs.lotSize}
-                            onChange={(e) => setInputs({ ...inputs, lotSize: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
-                        />
-                    </div>
+                    <CalcInput
+                        label="Lot Size"
+                        value={inputs.lotSize}
+                        onChange={(v) => setInputs({ ...inputs, lotSize: parseFloat(v) || 0 })}
+                    />
 
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Leverage (1:X)</label>
+                        <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Leverage (1:X)</label>
                         <DropdownMenu className="block w-full">
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     type="button"
                                     variant="ghost"
-                                    className="w-full px-4 py-3 h-auto rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 focus:border-primary transition-all font-medium text-gray-900 dark:text-white flex items-center justify-between"
+                                    className="w-full px-4 py-3 h-auto rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium text-gray-900 dark:text-white flex items-center justify-between"
                                 >
                                     <span className="font-bold text-lg">1:{inputs.leverage}</span>
                                     <ChevronDown size={16} className="text-gray-500 shrink-0" />
@@ -76,32 +75,42 @@ export function MarginCalc() {
                         </DropdownMenu>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Current Price</label>
-                        <input
-                            type="number"
-                            value={inputs.currentPrice}
-                            onChange={(e) => setInputs({ ...inputs, currentPrice: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary outline-none font-bold text-lg text-gray-900 dark:text-white"
-                        />
-                    </div>
+                    <CalcInput
+                        label="Current Price"
+                        value={inputs.currentPrice}
+                        onChange={(v) => setInputs({ ...inputs, currentPrice: parseFloat(v) || 0 })}
+                        step="0.0001"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Account Currency</label>
+                    <AccountCurrencySelect value={inputs.accountCurrency} onChange={(v) => setInputs({ ...inputs, accountCurrency: v })} />
                 </div>
             </div>
 
-            <div className="lg:col-span-5">
-                <div className="bg-[#151925] border border-white/5 p-6 rounded-xl h-full flex flex-col justify-center text-center shadow-lg">
-                    <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-2">Required Margin</p>
-                    <p className="text-5xl font-black text-white mb-2">${requiredMargin.toFixed(2)}</p>
+            <div className="lg:col-span-5 flex flex-col gap-4">
+                <CalcResultPrimary
+                    label="Required Margin"
+                    value={`$${requiredMargin.toFixed(2)}`}
+                    className="flex-1 flex flex-col justify-center"
+                />
 
-                    <div className="mt-8 bg-white/5 rounded-xl p-4">
-                        <p className="text-xs text-gray-400 mb-2">Influence of Leverage</p>
-                        <div className="flex justify-between text-sm">
-                            <span className="text-gray-400">1:500</span>
-                            <span className="text-white">${(requiredMargin / (500 / inputs.leverage)).toFixed(2)}</span>
+                <div className="space-y-3">
+                    <div className="bg-white dark:bg-white/5 rounded-xl p-3 flex justify-between items-center border border-gray-200 dark:border-white/10 hover:border-primary/30 transition-colors">
+                        <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">Position Value</span>
+                        <span className="text-sm font-bold text-gray-900 dark:text-white">${(inputs.lotSize * 100000 * inputs.currentPrice).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+                    </div>
+                    <div className="bg-white dark:bg-white/5 rounded-xl p-3 border border-gray-200 dark:border-white/10 hover:border-primary/30 transition-colors">
+                        <div className="flex justify-between mb-1.5">
+                            <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">Margin %</span>
+                            <span className="text-xs font-bold text-primary">{((1 / inputs.leverage) * 100).toFixed(2)}%</span>
                         </div>
-                        <div className="flex justify-between text-sm mt-1">
-                            <span className="text-gray-400">1:30</span>
-                            <span className="text-white">${(requiredMargin / (30 / inputs.leverage)).toFixed(2)}</span>
+                        <div className="w-full bg-gray-200 dark:bg-white/10 rounded-full h-2">
+                            <div
+                                className="bg-gradient-to-r from-primary to-teal-500 h-2 rounded-full transition-all"
+                                style={{ width: `${Math.min(100, (1 / inputs.leverage) * 100)}%` }}
+                            />
                         </div>
                     </div>
                 </div>

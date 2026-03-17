@@ -34,46 +34,16 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
 
                 {/* Nav Links */}
                 <nav className="p-4 space-y-2">
-                    {menuItems.map((item) => {
-                        if (item.type === "link") {
-                            return (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    onClick={onClose}
-                                    className={`block px-4 py-3 rounded-lg font-medium transition-colors ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-900 hover:bg-gray-50 hover:text-teal-600'}`}
-                                >
-                                    {item.name}
-                                </Link>
-                            );
-                        }
-                        return (
-                            <div key={item.name}>
-                                <Button
-                                    variant="ghost"
-                                    onClick={(e) => handleMobileDropdownToggle(item.name, e)}
-                                    className={`w-full flex h-auto items-center justify-between px-4 py-3 rounded-lg font-medium transition-colors ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-900 hover:bg-gray-50 hover:text-teal-600'}`}
-                                >
-                                    <span>{item.name}</span>
-                                    <ChevronDown className={`w-5 h-5 transition-transform ${openDropdown === item.name ? 'rotate-180' : ''}`} />
-                                </Button>
-                                {openDropdown === item.name && (
-                                    <div className="pl-4 mt-2 space-y-1">
-                                        {item.items?.map((subItem, idx) => (
-                                            <Link
-                                                key={idx}
-                                                href={subItem.href}
-                                                onClick={() => { setOpenDropdown(null); onClose(); }}
-                                                className={`block px-4 py-2.5 rounded-lg text-sm transition-colors ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-teal-400' : 'text-gray-700 hover:bg-gray-50 hover:text-teal-600'}`}
-                                            >
-                                                {subItem.name}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
+                {menuItems.map((item) => (
+                    <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={onClose}
+                        className={`block px-4 py-3 rounded-lg font-medium transition-colors ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-900 hover:bg-gray-50 hover:text-teal-600'}`}
+                    >
+                        {item.name}
+                    </Link>
+                ))}
                 </nav>
 
                 {/* Bottom section: user info OR auth buttons */}

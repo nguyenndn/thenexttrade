@@ -1,9 +1,9 @@
-import { Metadata } from 'next';
+﻿import { Metadata } from 'next';
 import { Scale } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Terms of Service | GSN CRM',
-    description: 'Terms of Service and Risk Disclaimer for GSN CRM.',
+    title: 'Terms of Service | TheNextTrade',
+    description: 'Terms of Service and Risk Disclaimer for TheNextTrade.',
 };
 
 export default function TermsOfServicePage() {

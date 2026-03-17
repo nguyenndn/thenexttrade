@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -156,7 +156,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                         {/* Toast for Locked State */}
                         {showLockedToast && (
                             <div className="absolute bottom-[calc(100%+8px)] right-0 w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs rounded-xl shadow-xl font-medium animate-in fade-in slide-in-from-bottom-2 z-20 text-center leading-relaxed">
-                                Please connect your GSN account to unlock downloads.
+                                Please connect your TheNextTrade account to unlock downloads.
                             </div>
                         )}
                     </div>

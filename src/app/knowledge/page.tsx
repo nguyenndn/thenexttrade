@@ -32,7 +32,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
     const categorySlug = params?.category;
     const tagSlug = params?.tag;
     const currentPage = Number(params?.page) || 1;
-    const ITEMS_PER_PAGE = 6;
+    const ITEMS_PER_PAGE = 9;
 
     const whereCondition: any = {
         status: 'PUBLISHED',
@@ -81,7 +81,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
     return (
-        <main className="min-h-screen bg-slate-50 dark:bg-[#0F1117]">
+        <main className="min-h-screen bg-slate-50 dark:bg-[#0B0E14]">
             {/* Wrapper for Content that needs Firefly Background */}
             <div className="relative overflow-hidden">
                 {/* Background Effects */}
@@ -116,7 +116,11 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={cat.id}
                                         href={`/knowledge?category=${cat.slug}`}
-                                        className="px-5 py-2.5 rounded-xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/20 hover:border-primary hover:bg-white/60 dark:hover:bg-white/10 transition-all cursor-pointer text-sm font-bold text-gray-700 dark:text-gray-200"
+                                        className={`px-5 py-2.5 rounded-xl backdrop-blur-md border transition-all cursor-pointer text-sm font-bold ${
+                                            categorySlug === cat.slug
+                                                ? 'bg-primary/10 dark:bg-primary/20 border-primary text-primary'
+                                                : 'bg-white/40 dark:bg-white/5 border-gray-300 dark:border-white/20 hover:border-primary hover:bg-white/60 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'
+                                        }`}
                                     >
                                         {cat.name}
                                     </Link>
@@ -147,6 +151,11 @@ export default async function LibraryPage(props: LibraryPageProps) {
                             </Link>
                         )}
                     </div>
+
+                    {/* Article Count */}
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                        Showing {articles.length} of {totalCount} {totalCount === 1 ? 'article' : 'articles'}
+                    </p>
 
                     {articles.length > 0 ? (
                         <>

@@ -173,7 +173,7 @@ export function DropdownMenuContent({ children, align = "center", className, sty
                 ...externalStyle,
                 top: `${position.top}px`,
                 left: `${position.left}px`,
-                minWidth: `${position.width}px`,
+                width: `${position.width}px`,
             }}
         >
             {children}

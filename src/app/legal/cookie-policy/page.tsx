@@ -1,8 +1,8 @@
-import { Metadata } from 'next';
+﻿import { Metadata } from 'next';
 import { Cookie } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Cookie Policy | GSN CRM',
+    title: 'Cookie Policy | TheNextTrade',
     description: 'Information about how TheNextTradeuses cookies.',
 };
 

@@ -1,9 +1,9 @@
-import { Metadata } from 'next';
+﻿import { Metadata } from 'next';
 import { Shield } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Privacy Policy | GSN CRM',
-    description: 'Privacy Policy and Data Protection information for GSN CRM.',
+    title: 'Privacy Policy | TheNextTrade',
+    description: 'Privacy Policy and Data Protection information for TheNextTrade.',
 };
 
 export default function PrivacyPolicyPage() {

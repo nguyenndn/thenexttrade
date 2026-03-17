@@ -66,7 +66,7 @@ export function MarketTickerSection({ initialData }: { initialData?: MarketItem[
     const getIconColor = (symbol: string) => {
         if (symbol.includes("XAU") || symbol.includes("Gold")) return "text-yellow-500 bg-yellow-500/10";
         if (symbol.includes("BTC")) return "text-orange-500 bg-orange-500/10";
-        if (symbol.includes("ETH")) return "text-purple-500 bg-purple-500/10";
+        if (symbol.includes("ETH")) return "text-indigo-500 bg-indigo-500/10";
         if (symbol.includes("Oil") || symbol.includes("CL=F")) return "text-gray-500 bg-gray-500/10";
         if (symbol.includes("SPX")) return "text-green-600 bg-green-600/10";
         if (symbol.includes("EUR")) return "text-blue-500 bg-blue-500/10";

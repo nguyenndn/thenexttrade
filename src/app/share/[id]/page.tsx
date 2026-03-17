@@ -100,7 +100,7 @@ export default async function SharePage({ params }: SharePageProps) {
                                     Start Your Trading Journal
                                 </h2>
                                 <p className="text-gray-400 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
-                                    Join thousands of traders who are mastering their psychology and strategy with GSN Trading.
+                                    Join thousands of traders who are mastering their psychology and strategy with TheNextTrade.
                                 </p>
                             </div>
 
@@ -118,7 +118,7 @@ export default async function SharePage({ params }: SharePageProps) {
 
             {/* Simple Footer Text */}
             <footer className="py-8 text-center text-xs text-gray-600">
-                &copy; {new Date().getFullYear()} GSN Trading. All rights reserved.
+                &copy; {new Date().getFullYear()} TheNextTrade. All rights reserved.
             </footer>
         </div>
     );

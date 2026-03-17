@@ -1,11 +1,14 @@
 "use client";
 
-import { Calculator, Target, DollarSign, Percent, TrendingUp } from "lucide-react";
+import { Calculator, Target, DollarSign, Percent, TrendingUp, BarChart3, AlertTriangle, GitBranch } from "lucide-react";
 import { PositionSizeCalc } from "./PositionSizeCalc";
 import { RiskRewardCalc } from "./RiskRewardCalc";
 import { PipValueCalc } from "./PipValueCalc";
 import { MarginCalc } from "./MarginCalc";
 import { ProfitLossCalc } from "./ProfitLossCalc";
+import { CompoundingCalc } from "./CompoundingCalc";
+import { DrawdownCalc } from "./DrawdownCalc";
+import { FibonacciCalc } from "./FibonacciCalc";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 
 const CALCULATORS = [
@@ -39,6 +42,24 @@ const CALCULATORS = [
         icon: TrendingUp,
         description: "Calculate potential P/L",
     },
+    {
+        id: "compounding",
+        name: "Compounding",
+        icon: BarChart3,
+        description: "Project account growth",
+    },
+    {
+        id: "drawdown",
+        name: "Drawdown",
+        icon: AlertTriangle,
+        description: "Recovery % calculator",
+    },
+    {
+        id: "fibonacci",
+        name: "Fibonacci",
+        icon: GitBranch,
+        description: "Fib retracement & extension",
+    },
 ];
 
 export function CalculatorHub() {
@@ -50,7 +71,7 @@ export function CalculatorHub() {
                   We override TabsList default 'w-fit' with 'w-full' to ensure it takes full layout width.
                   And we force grid on mobile and tablet to preserve the previous look but with animations. 
                 */}
-                <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 w-full !bg-gray-100 dark:!bg-white/5 flex-wrap p-1.5 h-auto">
+                <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 w-full !bg-gray-100 dark:!bg-white/5 flex-wrap p-1.5 h-auto">
                     {CALCULATORS.map((calc) => {
                         const Icon = calc.icon;
                         return (
@@ -76,6 +97,9 @@ export function CalculatorHub() {
                 <TabsContent value="pip-value"><PipValueCalc /></TabsContent>
                 <TabsContent value="margin"><MarginCalc /></TabsContent>
                 <TabsContent value="profit-loss"><ProfitLossCalc /></TabsContent>
+                <TabsContent value="compounding"><CompoundingCalc /></TabsContent>
+                <TabsContent value="drawdown"><DrawdownCalc /></TabsContent>
+                <TabsContent value="fibonacci"><FibonacciCalc /></TabsContent>
             </div>
         </Tabs>
     );
