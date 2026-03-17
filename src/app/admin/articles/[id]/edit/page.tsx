@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/prisma";
+import { ArticleForm } from "@/components/admin/articles/ArticleForm";
 import { notFound } from "next/navigation";
 
 export default async function ArticleEditPage({
@@ -9,13 +11,49 @@ export default async function ArticleEditPage({
 
     if (!id) return notFound();
 
+    // Fetch article with all fields needed by ArticleForm
+    const article = await prisma.article.findUnique({
+        where: { id },
+        include: {
+            tags: {
+                select: { tagId: true }
+            }
+        }
+    });
+
+    if (!article) return notFound();
+
+    // Fetch categories for the form
+    const categories = await prisma.category.findMany({
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' }
+    });
+
+    // Map article data to ArticleForm's initialData shape
+    const initialData = {
+        id: article.id,
+        title: article.title,
+        content: article.content || "",
+        excerpt: article.excerpt || "",
+        categoryId: article.categoryId || "",
+        status: article.status,
+        thumbnail: article.thumbnail || "",
+        slug: article.slug,
+        metaTitle: article.metaTitle || "",
+        metaDescription: article.metaDescription || "",
+        publishedAt: article.publishedAt?.toISOString() || "",
+        tags: article.tags,
+        authorId: article.authorId || "",
+        isFeatured: article.isFeatured || false,
+        focusKeyword: article.focusKeyword || "",
+        updatedAt: article.updatedAt?.toISOString() || "",
+    };
+
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Edit Article
-            </h1>
-            <p className="text-gray-500 mt-2">Article ID: {id}</p>
-            <p className="text-sm text-gray-400 mt-4">This page is under construction.</p>
-        </div>
+        <ArticleForm
+            initialData={initialData}
+            categories={categories}
+            isEditMode={true}
+        />
     );
 }
