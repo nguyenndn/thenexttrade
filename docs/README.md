@@ -1,103 +1,141 @@
-# Documentation Structure
+# 📚 Documentation Index
 
-# TheNextTrade - Documentation
+Welcome to TheNextTrade documentation! All documentation has been reorganized for clarity.
 
-Welcome to the official documentation for **TheNextTrade**.
+## 🎯 Start Here
 
-## 📚 Documentation Structure
+**New to the project?** Read in this order:
+1. [README.md](README.md) - Project overview & quick start
+2. [docs/QUICK_START.md](docs/QUICK_START.md) - Daily development workflow
+3. [docs/SERVER_STARTUP_GUIDE.md](docs/SERVER_STARTUP_GUIDE.md) - Server deployment
+4. [docs/ENVIRONMENT_SETUP.md](docs/ENVIRONMENT_SETUP.md) - Environment configuration
 
-### 🏗️ [Architecture](docs/architecture/overview.md)
-Understand the high-level design and technology choices.
-- [Project Overview](docs/architecture/overview.md)
-- [Database Schema](docs/architecture/database.md)
+## 📁 Documentation Structure
 
-### 🚀 [Features](docs/features/analytics.md)
-Detailed guides on core functionalities.
-- [Analytics Dashboard](docs/features/analytics.md)
-- [Trader Tools](docs/features/trader-tools.md) (Journal, Calculators, Strategies)
+```
+📦 Root Level (you are here)
+├── README.md                      # ⭐ Project overview & quick start
+├── PROJECT_STATUS.md              # Current development status
+├── OPTIMIZATION_PLAN.md           # Performance optimization roadmap
+├── VERCEL_DEPLOYMENT.md           # Deployment instructions
+│
+📁 docs/ - Main Documentation Hub
+├── README.md                      # Documentation index
+├── QUICK_START.md                 # ⭐ Daily workflow guide
+├── SERVER_STARTUP_GUIDE.md        # 🚀 Server deployment & startup
+├── ENVIRONMENT_SETUP.md           # Environment configuration
+├── LOCAL_DEVELOPMENT.md           # Local dev options
+│
+├── performance/                   # Performance documentation
+│   ├── PERFORMANCE_AUDIT_REPORT.md      # Issues identified
+│   ├── PERFORMANCE_OPTIMIZATION_SPEC.md # Solutions & implementation
+│   └── IMPLEMENTATION_CHECKLIST.md      # Task tracking
+│
+├── planning/                      # Project planning
+│   ├── PROJECT_STRUCTURE.md       # Code organization
+│   ├── DEVELOPMENT_PROCESS.md     # Dev workflow
+│   ├── PLAN.md                    # Project plan
+│   └── SUPABASE_SETUP.md          # Database setup
+│
+├── architecture/                  # System Architecture
+│   ├── overview.md                # System overview
+│   ├── database.md                # Database ER models
+│   └── routes.md                  # App routing and page structure
+│
+├── BA/                            # Business analysis
+│   ├── academy.md
+│   ├── admin_dashboard.md
+│   ├── auth_user.md
+│   ├── cms_news.md
+│   ├── notification_system.md
+│   └── trading_tools.md
+│
+├── design-system/                 # UI/UX specifications
+│   └── USER_DASHBOARD_SPECS.md
+│
+├── setup/                         # Database & infra setup
+│   ├── FIX_PERMISSIONS.sql
+│   ├── FIX_STORAGE_RLS_V2.sql
+│   └── SUPABASE_TRIGGER.sql
+│
+├── sprints/                       # Sprint planning
+│   ├── SPRINT1_TASKS.md
+│   ├── SPRINT2_TASKS.md
+│   ├── SPRINT3_TASKS.md
+│   └── SPRINT4_TASKS.md
+│
+└── api/                           # API documentation
+```
 
-### 🔌 [API Reference](docs/api/endpoints.md)
-If you're a developer integrating with our platform.
-- [API Endpoints](docs/api/endpoints.md)
+## 🚀 Common Tasks
 
-## 📂 Archives
-- [Legacy Specifications](docs/archive) - Original project specs (for historical reference).
+### Daily Development
+```bash
+npm run dev:local      # Start with local database
+npm run dev:prod       # Start with production database
+```
+📖 See: [docs/QUICK_START.md](docs/QUICK_START.md)
 
-### Performance Documentation
-- **[performance/PERFORMANCE_AUDIT_REPORT.md](performance/PERFORMANCE_AUDIT_REPORT.md)** - Performance analysis results
-- **[performance/PERFORMANCE_OPTIMIZATION_SPEC.md](performance/PERFORMANCE_OPTIMIZATION_SPEC.md)** - Detailed optimization specifications
-- **[performance/IMPLEMENTATION_CHECKLIST.md](performance/IMPLEMENTATION_CHECKLIST.md)** - Implementation tasks
+### Environment Management
+```bash
+npm run env:local      # Switch to local environment
+npm run env:prod       # Switch to production
+```
+📖 See: [docs/ENVIRONMENT_SETUP.md](docs/ENVIRONMENT_SETUP.md)
 
-### Business Analysis
-- **[BA/](BA/)** - Business analysis documents
-  - academy.md
-  - admin_dashboard.md
-  - auth_user.md
-  - cms_news.md
-  - notification_system.md
-  - trading_tools.md
+### Database
+```bash
+npm run db:migrate     # Run migrations
+npm run db:seed        # Seed database
+```
+📖 See: [docs/planning/SUPABASE_SETUP.md](docs/planning/SUPABASE_SETUP.md)
 
-### Design System
-- **[design-system/](design-system/)** - UI/UX specifications
-  - USER_DASHBOARD_SPECS.md
+### Performance Testing
+```bash
+npm run perf:test      # Run performance tests
+```
+📖 See: [docs/performance/](docs/performance/)
 
-### Planning
-- **[planning/](planning/)** - Project planning documents
-  - DEVELOPMENT_PROCESS.md
-  - PAGE_STRUCTURE.md
-  - PLAN.md
-  - PROJECT_STRUCTURE.md
-  - SUPABASE_SETUP.md
+## 📖 Quick Links by Role
 
-### Setup & Configuration
-- **[setup/](setup/)** - Database & infrastructure setup
-  - FIX_PERMISSIONS.sql
-  - FIX_STORAGE_RLS_V2.sql
-  - SUPABASE_TRIGGER.sql
+### For Developers
+- [QUICK_START.md](docs/QUICK_START.md) - Get started quickly
+- [PROJECT_STRUCTURE.md](docs/planning/PROJECT_STRUCTURE.md) - Code organization
+- [DEVELOPMENT_PROCESS.md](docs/planning/DEVELOPMENT_PROCESS.md) - Workflow
 
-### Sprint Planning
-- **[sprints/](sprints/)** - Sprint task breakdown
-  - SPRINT1_TASKS.md
-  - SPRINT2_TASKS.md
-  - SPRINT3_TASKS.md
-  - SPRINT4_TASKS.md
+### For Performance Engineers
+- [PERFORMANCE_AUDIT_REPORT.md](docs/performance/PERFORMANCE_AUDIT_REPORT.md) - Analysis
+- [PERFORMANCE_OPTIMIZATION_SPEC.md](docs/performance/PERFORMANCE_OPTIMIZATION_SPEC.md) - Specs
+- [IMPLEMENTATION_CHECKLIST.md](docs/performance/IMPLEMENTATION_CHECKLIST.md) - Tasks
 
-### API Documentation
-- **[api/](api/)** - API documentation (if any)
+### For Product Managers
+- [PROJECT_STATUS.md](PROJECT_STATUS.md) - Current status
+- [BA/](docs/BA/) - Business analysis docs
+- [sprints/](docs/sprints/) - Sprint planning
 
-### Specs
-- **[specs/](specs/)** - Technical specifications
+### For Designers
+- [design-system/USER_DASHBOARD_SPECS.md](docs/design-system/USER_DASHBOARD_SPECS.md)
+- [routes.md](docs/architecture/routes.md)
+
+## 📝 File Naming Convention
+
+- **ALL_CAPS.md** - Important top-level documents
+- **lowercase-with-dashes.md** - Regular documentation
+- **CATEGORY_NAME.md** - Categorized docs (e.g., SPRINT1_TASKS.md)
+
+## 🔍 Can't Find Something?
+
+1. Check [docs/README.md](docs/README.md) for detailed documentation index
+2. Use GitHub search or IDE search (Ctrl/Cmd + Shift + F)
+3. Check git history for moved files: `git log --all --full-history -- "**/filename.md"`
+
+## ✅ Documentation Standards
+
+- All docs use Markdown format
+- Use relative links for internal references
+- Keep docs up-to-date with code changes
+- Add table of contents for docs >100 lines
 
 ---
 
-## 🎯 For New Developers
-
-**Start here (in order):**
-1. [README.md](../README.md) - Project overview
-2. [QUICK_START.md](QUICK_START.md) - Setup & daily workflow
-3. [ENVIRONMENT_SETUP.md](ENVIRONMENT_SETUP.md) - Environment config
-4. [planning/PROJECT_STRUCTURE.md](planning/PROJECT_STRUCTURE.md) - Code structure
-
----
-
-## 📊 For Performance Work
-
-1. [performance/PERFORMANCE_AUDIT_REPORT.md](performance/PERFORMANCE_AUDIT_REPORT.md) - Issues identified
-2. [performance/PERFORMANCE_OPTIMIZATION_SPEC.md](performance/PERFORMANCE_OPTIMIZATION_SPEC.md) - Solutions
-3. [performance/IMPLEMENTATION_CHECKLIST.md](performance/IMPLEMENTATION_CHECKLIST.md) - Tasks
-
----
-
-## 🏗️ For Architecture
-
-1. [planning/PROJECT_STRUCTURE.md](planning/PROJECT_STRUCTURE.md)
-2. [planning/PAGE_STRUCTURE.md](planning/PAGE_STRUCTURE.md)
-3. [design-system/USER_DASHBOARD_SPECS.md](design-system/USER_DASHBOARD_SPECS.md)
-
----
-
-## 📝 Notes
-
-- All documentation follows Markdown format
-- Keep docs updated with code changes
-- Use relative links when referencing other docs
+**Last Updated:** January 23, 2026
