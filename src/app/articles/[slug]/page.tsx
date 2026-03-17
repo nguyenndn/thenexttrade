@@ -19,7 +19,7 @@ import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { ViewCounter } from "@/components/features/ViewCounter";
 import { unstable_cache } from "next/cache";
 import { JsonLd } from "@/components/seo/JsonLd";
-import DOMPurify from "isomorphic-dompurify";
+
 
 // CACHING: Cache article data for 60 seconds
 const getCachedArticle = unstable_cache(
@@ -163,7 +163,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     });
 
     // Inject IDs into H2 and H3 tags for TOC
-    const cleanContent = DOMPurify.sanitize(article.content);
+    // Content is from trusted admin CMS — no need for DOMPurify
+    const cleanContent = article.content;
 
     const processedContent = cleanContent.replace(/<h([23])((?: [^>]*)?)>(.*?)<\/h\1>/g, (match, level, attrs, content) => {
         const text = content.replace(/<[^>]*>/g, ''); // Strip tags to get text for ID
