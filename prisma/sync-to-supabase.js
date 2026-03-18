@@ -43,15 +43,20 @@ const remotePrisma = new PrismaClient({
 });
 
 async function main() {
-  console.log('🔄 Syncing Academy data: Local → Supabase\n');
+  console.log('🔄 Syncing data: Local → Supabase\n');
 
   // 1. Read all data from local
   console.log('📖 Reading from local DB...');
   const levels = await localPrisma.level.findMany({ orderBy: { order: 'asc' } });
   const modules = await localPrisma.module.findMany({ orderBy: { order: 'asc' } });
   const lessons = await localPrisma.lesson.findMany({ orderBy: { order: 'asc' } });
+  const categories = await localPrisma.category.findMany({ orderBy: { createdAt: 'asc' } });
+  const tags = await localPrisma.tag.findMany({ orderBy: { name: 'asc' } });
+  const articles = await localPrisma.article.findMany({ orderBy: { createdAt: 'asc' } });
+  const articleTags = await localPrisma.articleTag.findMany();
 
-  console.log(`   Found: ${levels.length} levels, ${modules.length} modules, ${lessons.length} lessons\n`);
+  console.log(`   Found: ${levels.length} levels, ${modules.length} modules, ${lessons.length} lessons`);
+  console.log(`   Found: ${categories.length} categories, ${tags.length} tags, ${articles.length} articles, ${articleTags.length} article-tags\n`);
 
   // 2. Sync Levels
   console.log('📚 Syncing Levels...');
@@ -94,9 +99,70 @@ async function main() {
     synced++;
     if (synced % 10 === 0) console.log(`   ✅ ${synced}/${lessons.length} lessons synced...`);
   }
-
   console.log(`   ✅ ${synced}/${lessons.length} lessons synced!`);
-  console.log(`\n${'='.repeat(50)}\n✨ Done! All Academy data synced to Supabase.`);
+
+  // 5. Sync Categories (parents first, then children)
+  console.log('\n🗂️  Syncing Categories...');
+  const parentCats = categories.filter(c => !c.parentId);
+  const childCats = categories.filter(c => c.parentId);
+  for (const cat of [...parentCats, ...childCats]) {
+    await remotePrisma.category.upsert({
+      where: { id: cat.id },
+      create: cat,
+      update: { name: cat.name, slug: cat.slug, description: cat.description, parentId: cat.parentId },
+    });
+  }
+  console.log(`   ✅ ${categories.length} categories synced (${parentCats.length} parents + ${childCats.length} children)`);
+
+  // 6. Sync Tags
+  console.log('\n🏷️  Syncing Tags...');
+  for (const tag of tags) {
+    await remotePrisma.tag.upsert({
+      where: { id: tag.id },
+      create: tag,
+      update: { name: tag.name, slug: tag.slug },
+    });
+  }
+  console.log(`   ✅ ${tags.length} tags synced`);
+
+  // 7. Sync Articles
+  console.log('\n📰 Syncing Articles...');
+  for (const article of articles) {
+    await remotePrisma.article.upsert({
+      where: { id: article.id },
+      create: article,
+      update: {
+        title: article.title,
+        slug: article.slug,
+        excerpt: article.excerpt,
+        content: article.content,
+        thumbnail: article.thumbnail,
+        status: article.status,
+        categoryId: article.categoryId,
+        authorId: article.authorId,
+        isFeatured: article.isFeatured,
+        publishedAt: article.publishedAt,
+        metaTitle: article.metaTitle,
+        metaDescription: article.metaDescription,
+        focusKeyword: article.focusKeyword,
+        views: article.views,
+      },
+    });
+    console.log(`   ✅ ${article.title}`);
+  }
+
+  // 8. Sync ArticleTags (join table)
+  console.log('\n🔗 Syncing ArticleTags...');
+  for (const at of articleTags) {
+    await remotePrisma.articleTag.upsert({
+      where: { articleId_tagId: { articleId: at.articleId, tagId: at.tagId } },
+      create: at,
+      update: {},
+    });
+  }
+  console.log(`   ✅ ${articleTags.length} article-tag links synced`);
+
+  console.log(`\n${'='.repeat(50)}\n✨ Done! All data synced to Supabase.`);
 }
 
 main()

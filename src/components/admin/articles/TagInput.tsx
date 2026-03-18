@@ -26,18 +26,23 @@ export function TagInput({ value, onChange }: TagInputProps) {
 
     // Fetch full tag objects for the selected IDs on mount
     useEffect(() => {
-        // In a real app we might fetch these, but for now we rely on user adding them
-        // OR we need the parent to pass full objects. 
-        // For simplicity, let's assume we start empty or fetch all tags? 
-        // Better: The parent should probably pass full objects if possible or we fetch selected ones.
-        // For this MVP, let's assume if we have IDs but no objects, we can't show names properly 
-        // without fetching.
-        // Let's modify the props to accept full objects if possible, or just manage IDs 
-        // and fetch details?
-        // Let's stick to fetching suggestions. If `value` has IDs, we need to know their names.
-        // I will ignore `value` prop for initial rendering of names for now to save time, 
-        // OR I will assume the parent passes initialTags.
-    }, []);
+        if (!value || value.length === 0) return;
+        // Avoid refetching if selectedTags already match
+        if (selectedTags.length === value.length && selectedTags.every(t => value.includes(t.id))) return;
+
+        const fetchExistingTags = async () => {
+            try {
+                const res = await fetch(`/api/tags?ids=${value.join(',')}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setSelectedTags(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch existing tags:', error);
+            }
+        };
+        fetchExistingTags();
+    }, []); // Only on mount
 
     const searchTags = async (query: string) => {
         if (!query) {
