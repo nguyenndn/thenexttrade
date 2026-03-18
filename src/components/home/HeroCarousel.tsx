@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
@@ -115,10 +115,10 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                         {/* Content */}
                         <div className="absolute bottom-0 left-0 p-6 md:p-12 w-full max-w-4xl">
                             <Link href={`/articles/${article.slug}`} className="block group/text">
-                                <span className={`inline-block px-4 py-1.5 mb-4 md:mb-5 rounded-lg ${catColor.bg} ${catColor.text} text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg`}>
+                                <span className={`inline-block px-4 py-1.5 mt-2 mb-4 md:mb-5 rounded-lg ${catColor.bg} ${catColor.text} text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg`}>
                                     {article.category.name}
                                 </span>
-                                <h2 className="text-3xl md:text-6xl font-extrabold text-white mb-3 md:mb-5 leading-[1.1] tracking-tight text-balance group-hover/text:underline decoration-primary decoration-2 underline-offset-4 transition-all">
+                                <h2 className="text-2xl md:text-5xl font-extrabold text-white mb-3 md:mb-5 leading-[1.1] tracking-tight text-balance group-hover/text:underline decoration-primary decoration-2 underline-offset-4 transition-all">
                                     {article.title}
                                 </h2>
                                 <p className="text-gray-300 text-sm md:text-lg line-clamp-2 mb-5 md:mb-7 max-w-2xl hidden sm:block leading-relaxed">

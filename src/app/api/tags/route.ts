@@ -6,8 +6,19 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("query") || "";
+    const ids = searchParams.get("ids");
 
     try {
+        // If IDs are provided, fetch those specific tags
+        if (ids) {
+            const idList = ids.split(",").filter(Boolean);
+            const tags = await prisma.tag.findMany({
+                where: { id: { in: idList } },
+            });
+            return NextResponse.json(tags);
+        }
+
+        // Otherwise, search by name
         const tags = await prisma.tag.findMany({
             where: {
                 name: {

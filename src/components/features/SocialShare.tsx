@@ -13,8 +13,8 @@ interface SocialShareProps {
 export default function SocialShare({ title, slug, vertical = false }: SocialShareProps) {
     const [copied, setCopied] = useState(false);
 
-    // Fallback for SSR/build time where window is undefined
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://thenexttrade.com';
+    // Use env var for consistent URL on both server and client (avoids hydration mismatch)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://thenexttrade.com';
     const url = `${baseUrl}/articles/${slug}`;
 
     const shareLinks = {

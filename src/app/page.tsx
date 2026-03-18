@@ -10,6 +10,8 @@ import QuoteDisplay from "@/components/shared/QuoteDisplay";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFirefly";
 import { ToolsPreviewSection } from "@/components/home/ToolsPreviewSection";
+import { ReviewsSection } from "@/components/home/ReviewsSection";
+import { HomeFAQSection } from "@/components/home/HomeFAQSection";
 import { cache } from "@/lib/cache";
 
 // Revalidate data every 60 seconds
@@ -393,6 +395,16 @@ async function HomeFeed() {
           </div>
         </div>
       </section>
+      </FadeIn>
+
+      <FadeIn delay={0.1} direction="up">
+      {/* Trader Reviews */}
+      <ReviewsSection />
+      </FadeIn>
+
+      <FadeIn delay={0.1} direction="up">
+      {/* FAQ Section */}
+      <HomeFAQSection />
       </FadeIn>
 
       <FadeIn delay={0.2} direction="up">
