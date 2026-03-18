@@ -52,6 +52,8 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<{ type: "module" | "lesson"; id: string; title: string } | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [draggedLesson, setDraggedLesson] = useState<string | null>(null);
+    const [dragOverLesson, setDragOverLesson] = useState<string | null>(null);
 
     const toggleModule = (moduleId: string) => {
         setExpandedModules(prev => {
@@ -87,6 +89,55 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
             toast.error("Failed to delete");
         } finally {
             setIsDeleting(false);
+        }
+    };
+
+    const handleLessonDragStart = (lessonId: string) => {
+        setDraggedLesson(lessonId);
+    };
+
+    const handleLessonDragOver = (e: React.DragEvent, lessonId: string) => {
+        e.preventDefault();
+        if (draggedLesson && draggedLesson !== lessonId) {
+            setDragOverLesson(lessonId);
+        }
+    };
+
+    const handleLessonDrop = async (moduleId: string) => {
+        if (!draggedLesson || !dragOverLesson || draggedLesson === dragOverLesson) {
+            setDraggedLesson(null);
+            setDragOverLesson(null);
+            return;
+        }
+
+        const module = level.modules.find(m => m.id === moduleId);
+        if (!module) return;
+
+        const lessons = [...module.lessons];
+        const fromIndex = lessons.findIndex(l => l.id === draggedLesson);
+        const toIndex = lessons.findIndex(l => l.id === dragOverLesson);
+
+        if (fromIndex === -1 || toIndex === -1) return;
+
+        const [moved] = lessons.splice(fromIndex, 1);
+        lessons.splice(toIndex, 0, moved);
+
+        const items = lessons.map((l, i) => ({ id: l.id, order: i + 1 }));
+
+        setDraggedLesson(null);
+        setDragOverLesson(null);
+
+        try {
+            const res = await fetch('/api/academy/lessons/reorder', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ items }),
+            });
+            if (!res.ok) throw new Error();
+            toast.success('Lesson order updated');
+            router.refresh();
+        } catch {
+            toast.error('Failed to reorder lessons');
         }
     };
 
@@ -228,11 +279,21 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                             {module.lessons.map((lesson, lIndex) => (
                                                 <div
                                                     key={lesson.id}
-                                                    className="flex items-center justify-between px-4 py-3 pl-16 group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                                    draggable
+                                                    onDragStart={() => handleLessonDragStart(lesson.id)}
+                                                    onDragOver={(e) => handleLessonDragOver(e, lesson.id)}
+                                                    onDrop={() => handleLessonDrop(module.id)}
+                                                    onDragEnd={() => { setDraggedLesson(null); setDragOverLesson(null); }}
+                                                    className={`flex items-center justify-between px-4 py-3 pl-12 group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-grab active:cursor-grabbing ${
+                                                        draggedLesson === lesson.id ? 'opacity-40' : ''
+                                                    } ${
+                                                        dragOverLesson === lesson.id ? 'border-t-2 border-primary bg-primary/5' : ''
+                                                    }`}
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <span className="text-xs font-mono text-gray-400 w-6">{lIndex + 1}.</span>
-                                                        <FileText size={16} className="text-blue-400" />
+                                                        <GripVertical size={14} className="text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                                                        <span className="text-xs font-mono text-gray-400 w-5">{lIndex + 1}.</span>
+                                                        <FileText size={16} className="text-blue-400 flex-shrink-0" />
                                                         <span className="text-sm text-gray-700 dark:text-gray-300">{lesson.title}</span>
                                                         {lesson.duration && (
                                                             <span className="text-xs text-gray-400 flex items-center gap-1">
