@@ -4,11 +4,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, CheckCircle, PlayCircle, Menu, X, MonitorPlay, Sparkles, Home, GraduationCap } from "lucide-react";
-import Markdown from 'react-markdown';
+import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, GraduationCap, BookOpen, Clock, Menu, X } from "lucide-react";
 import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 interface Props {
     lesson: any;
@@ -29,8 +29,11 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
         completedLessonIds.includes(lesson.id)
     );
 
-    // Route helper: dashboard vs public
     const lessonPath = (slug: string) => isDashboard ? `/dashboard/academy/lessons/${slug}` : `/academy/lesson/${slug}`;
+    const academyPath = isDashboard ? '/dashboard/academy' : '/academy';
+
+    const currentIndex = courseLessons.findIndex((l: any) => l.id === lesson.id);
+    const completedInModule = courseLessons.filter((l: any) => completedLessonIds.includes(l.id)).length;
 
     const handleComplete = async () => {
         setCompleting(true);
@@ -75,46 +78,34 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
     const videoId = getVideoId(lesson.videoUrl);
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0B0E14] flex flex-col font-sans">
-
-            {/* Header / Nav */}
-            <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#0B0E14]/80 backdrop-blur border-b border-gray-200 dark:border-white/10 h-14 flex items-center px-4">
-                <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <Link href="/dashboard/academy" className="text-gray-400 hover:text-primary transition-colors" aria-label="Go to Dashboard">
-                            <Home size={18} />
-                        </Link>
-                        <span className="text-gray-200 dark:text-gray-800">/</span>
-                        <h1 className="font-bold text-xs lg:text-sm text-gray-900 dark:text-white truncate max-w-[200px]">
-                            {lesson.title}
-                        </h1>
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)} className="lg:hidden text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5" aria-label="Open Course Menu">
-                        <Menu size={20} />
-                    </Button>
+        <div className="space-y-4">
+            {/* Breadcrumb + Actions */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-2 text-base font-semibold">
+                    <Link href={academyPath} className="flex items-center gap-1.5 text-primary hover:underline transition-colors">
+                        <GraduationCap size={16} />
+                        Academy
+                    </Link>
+                    <ChevronRight size={14} className="text-gray-300 dark:text-gray-600" />
+                    <span className="text-gray-500 dark:text-gray-400">{lesson.module.level?.title || 'Level'}</span>
+                    <ChevronRight size={14} className="text-gray-300 dark:text-gray-600" />
+                    <span className="text-gray-700 dark:text-gray-200 font-bold">{lesson.module.title}</span>
                 </div>
-            </header>
-
-            {/* Layout Container */}
-            <div className="flex-1 w-full max-w-5xl mx-auto p-4 lg:p-8 lg:pt-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 relative">
-
-                {/* --- MAIN CONTENT (LEFT/CENTER) --- */}
-                <main className="lg:col-span-8 space-y-6">
-
-                    {/* Title Area */}
-                    <div className="text-center lg:text-left space-y-3 py-2">
-                        <div className="flex items-center justify-center lg:justify-start gap-2 text-xs font-bold text-primary mb-1 font-sans uppercase tracking-widest">
-                            <Link href="/academy" className="hover:underline flex items-center gap-1">
-                                <GraduationCap size={14} />
-                                Academy
-                            </Link>
-                            <span className="text-gray-300 dark:text-gray-600">/</span>
-                            <span className="hover:underline cursor-pointer line-clamp-1">{lesson.module.title}</span>
-                        </div>
-                        <h1 className="text-2xl lg:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-tight">
-                            {lesson.title}
-                        </h1>
+                <div className="flex items-center gap-3 text-base font-bold w-full sm:w-auto">
+                    <div className="flex items-center gap-1.5 text-gray-500 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
+                        <BookOpen size={14} />
+                        <span>{currentIndex + 1}/{courseLessons.length}</span>
                     </div>
+                </div>
+            </div>
+
+            {/* Grid: Main Content (2 cols) + Sidebar (1 col) */}
+            <div className="grid lg:grid-cols-3 gap-4">
+
+                {/* ── Main Content ── */}
+                <div className="lg:col-span-2 space-y-4">
+
+
 
                     {/* Video Player */}
                     {videoId && (
@@ -130,17 +121,41 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                         </div>
                     )}
 
-                    {/* Content */}
-                    <article className="prose prose-base dark:prose-invert max-w-none 
-                        prose-headings:font-bold prose-headings:tracking-tight 
-                        prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300
-                        prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                        prose-img:rounded-xl prose-img:shadow-md">
-                        <Markdown>{lesson.content}</Markdown>
-                    </article>
+                    {/* Article Content Card */}
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                        <div className="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
+                            <h1 className="text-2xl lg:text-3xl font-black text-gray-900 dark:text-white leading-tight tracking-tight">
+                                {lesson.title}
+                            </h1>
+                        </div>
+                        <div className="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+                        <article
+                            className="p-6 lg:p-8 prose prose-base dark:prose-invert max-w-none
+                                prose-headings:font-bold prose-headings:tracking-tight
+                                prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-100 dark:prose-h2:border-white/5
+                                prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3
+                                prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300
+                                prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold
+                                prose-img:rounded-xl prose-img:shadow-md
+                                prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2
+                                prose-li:text-gray-600 dark:prose-li:text-gray-300
+                                prose-strong:text-gray-900 dark:prose-strong:text-white
+                                prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto
+                                prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200
+                                [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono
+                                [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-gray-200 dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-gray-200 dark:[&_td]:border-white/10"
+                            dangerouslySetInnerHTML={{ __html: lesson.content }}
+                        />
+                    </div>
 
-                    {/* Completion Area */}
-                    <div className="pt-10 border-t border-gray-200 dark:border-white/10 flex flex-col items-center gap-6">
+                    {/* Completion + Navigation */}
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 flex items-center justify-between gap-4">
+                        {prevLesson ? (
+                            <Link href={lessonPath(prevLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                <ChevronLeft size={14} /> Previous
+                            </Link>
+                        ) : <span></span>}
+
                         <Button
                             size="md"
                             onClick={handleComplete}
@@ -154,7 +169,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                             )}
                         >
                             {isCompleted ? (
-                                <> <CheckCircle size={18} /> Mark Complete </>
+                                <> <CheckCircle size={18} /> Completed </>
                             ) : (
                                 <>
                                     {completing ? 'Completing...' : 'Mark as Complete'}
@@ -163,68 +178,104 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                             )}
                         </Button>
 
-                        <div className="flex items-center justify-between w-full max-w-md text-xs font-bold text-gray-400 uppercase tracking-wider">
-                            {prevLesson ? (
-                                <Link href={lessonPath(prevLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors">
-                                    <ChevronLeft size={14} /> Previous
-                                </Link>
-                            ) : <span></span>}
+                        {nextLesson ? (
+                            <Link href={lessonPath(nextLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                Next Lesson <ChevronRight size={14} />
+                            </Link>
+                        ) : <span></span>}
+                    </div>
+                </div>
 
-                            {nextLesson && (
-                                <Link href={lessonPath(nextLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors">
-                                    Next Lesson <ChevronRight size={14} />
-                                </Link>
-                            )}
+                {/* ── Sidebar ── */}
+                <div className="space-y-4">
+
+                    {/* Module Info Card */}
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5 space-y-3">
+                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Current Module</h3>
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{lesson.module.title}</h2>
+                        <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">
+                            {lesson.module.description || "Master this module to advance your trading skills."}
+                        </p>
+                        {/* Module Progress */}
+                        <div className="pt-2 border-t border-gray-100 dark:border-white/5">
+                            <div className="flex items-center justify-between text-xs text-gray-400 mb-2">
+                                <span>{completedInModule}/{courseLessons.length} completed</span>
+                                <span>{courseLessons.length > 0 ? Math.round((completedInModule / courseLessons.length) * 100) : 0}%</span>
+                            </div>
+                            <div className="w-full bg-gray-100 dark:bg-white/5 rounded-full h-1.5 overflow-hidden">
+                                <div
+                                    className="h-full bg-primary rounded-full transition-all duration-500"
+                                    style={{ width: `${courseLessons.length > 0 ? (completedInModule / courseLessons.length) * 100 : 0}%` }}
+                                />
+                            </div>
                         </div>
                     </div>
-                </main>
 
-
-                {/* --- SIDEBAR (RIGHT) --- */}
-                <aside className="hidden lg:block lg:col-span-4 space-y-6">
-                    <div className="sticky top-32 space-y-6">
-
-                        {/* Module Info */}
-                        <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-5 border border-gray-200 dark:border-white/10">
-                            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Current Module</h3>
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2 leading-tight">{lesson.module.title}</h2>
-                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">
-                                {lesson.module.description || "Master this module to advance your trading skills."}
-                            </p>
+                    {/* Lesson List Card */}
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                        <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+                            <h3 className="font-bold text-sm text-gray-900 dark:text-white">Lessons in Module</h3>
+                            <span className="text-[10px] font-bold text-gray-400 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded">
+                                {courseLessons.length} lessons
+                            </span>
                         </div>
-
-                        {/* Lesson List */}
-                        <div className="border-l border-gray-200 dark:border-white/10 ml-3 pl-4 space-y-1 relative">
-                            {courseLessons.map((l, idx) => {
+                        <div className="divide-y divide-gray-50 dark:divide-white/5">
+                            {courseLessons.map((l: any, idx: number) => {
                                 const isActive = l.id === lesson.id;
+                                const isLessonCompleted = completedLessonIds.includes(l.id);
                                 return (
-                                    <div key={l.id} className="relative py-1">
-                                        {/* Active Dot */}
-                                        {isActive && (
-                                            <div className="absolute -left-[21px] top-2.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-white dark:ring-[#0B0E14]" />
+                                    <Link
+                                        key={l.id}
+                                        href={lessonPath(l.slug)}
+                                        className={cn(
+                                            "flex items-center gap-3 px-4 py-3 text-sm transition-colors",
+                                            isActive
+                                                ? "bg-primary/5 dark:bg-primary/10 border-l-2 border-primary"
+                                                : "hover:bg-gray-50 dark:hover:bg-white/5 border-l-2 border-transparent"
                                         )}
-
-                                        <Link
-                                            href={lessonPath(l.slug)}
-                                            className={cn(
-                                                "block text-sm transition-colors duration-200 py-1",
-                                                isActive ? "font-bold text-primary" : "font-medium text-gray-500 hover:text-gray-800 dark:hover:text-gray-300"
-                                            )}
-                                        >
-                                            <span className="mr-2 text-[10px] opacity-40 tabular-nums">{idx + 1}.</span>
+                                    >
+                                        <span className={cn(
+                                            "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0",
+                                            isLessonCompleted
+                                                ? "bg-primary/10 text-primary"
+                                                : isActive
+                                                    ? "bg-primary text-white"
+                                                    : "bg-gray-100 dark:bg-white/5 text-gray-400"
+                                        )}>
+                                            {isLessonCompleted ? <CheckCircle size={12} /> : idx + 1}
+                                        </span>
+                                        <span className={cn(
+                                            "flex-1 truncate",
+                                            isActive ? "font-bold text-primary" : "text-gray-600 dark:text-gray-400"
+                                        )}>
                                             {l.title}
-                                            {completedLessonIds.includes(l.id) && <CheckCircle size={10} className="inline ml-2 align-middle text-primary" />}
-                                        </Link>
-                                    </div>
-                                )
+                                        </span>
+                                        {l.duration && (
+                                            <span className="text-[10px] text-gray-400 flex items-center gap-1 shrink-0">
+                                                <Clock size={10} />{l.duration}
+                                            </span>
+                                        )}
+                                    </Link>
+                                );
                             })}
                         </div>
 
+                        {/* Quiz link if available */}
+                        {quiz && (
+                            <div className="p-4 border-t border-gray-100 dark:border-white/10">
+                                <Link
+                                    href={isDashboard ? `/dashboard/academy/quiz/${quiz.id}` : `/academy/quiz/${quiz.id}`}
+                                    className="flex items-center gap-2 text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline"
+                                >
+                                    🏆 Take Module Quiz
+                                </Link>
+                            </div>
+                        )}
                     </div>
-                </aside>
+                </div>
             </div>
 
-            {/* Mobile Sidebar drawer if needed */}
+            {/* Mobile Sidebar Drawer */}
             {mobileMenuOpen && (
                 <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setMobileMenuOpen(false)}>
                     <div className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#151925] shadow-2xl p-6 overflow-y-auto" onClick={e => e.stopPropagation()}>
@@ -234,10 +285,15 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                 <X size={20} />
                             </Button>
                         </div>
-                        <div className="space-y-3">
-                            {courseLessons.map((l, idx) => (
-                                <Link key={l.id} href={lessonPath(l.slug)} className="block py-2 text-sm border-b border-gray-200 dark:border-white/10">
-                                    <span className="font-bold text-gray-400 mr-2">{idx + 1}.</span> {l.title}
+                        <div className="space-y-1">
+                            {courseLessons.map((l: any, idx: number) => (
+                                <Link key={l.id} href={lessonPath(l.slug)} className={cn(
+                                    "flex items-center gap-3 py-2.5 px-3 text-sm rounded-lg transition-colors",
+                                    l.id === lesson.id ? "bg-primary/10 text-primary font-bold" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
+                                )}>
+                                    <span className="text-xs font-bold text-gray-400 w-5 text-center">{idx + 1}</span>
+                                    <span className="truncate">{l.title}</span>
+                                    {completedLessonIds.includes(l.id) && <CheckCircle size={12} className="text-primary shrink-0 ml-auto" />}
                                 </Link>
                             ))}
                         </div>
@@ -245,6 +301,14 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                 </div>
             )}
 
+            {/* Mobile Menu Button (floating) */}
+            <button
+                onClick={() => setMobileMenuOpen(true)}
+                className="lg:hidden fixed bottom-20 right-4 z-50 w-12 h-12 rounded-full bg-primary text-white shadow-lg shadow-primary/30 flex items-center justify-center hover:bg-[#00B078] transition-colors"
+                aria-label="Open lesson menu"
+            >
+                <Menu size={20} />
+            </button>
         </div>
     );
 }
