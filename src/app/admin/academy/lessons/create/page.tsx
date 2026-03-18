@@ -8,6 +8,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import { ModuleSelector } from "@/components/admin/academy/ModuleSelector";
 import { Button } from "@/components/ui/Button";
+import { AIRewriteDialog } from "@/components/admin/academy/AIRewriteDialog";
 import { toast } from "sonner";
 
 function LessonForm() {
@@ -94,6 +95,12 @@ function LessonForm() {
                 description="Create a new lesson with rich content."
                 backHref="/admin/academy"
             >
+                <AIRewriteDialog
+                    onApply={({ title, content }) => {
+                        handleTitleChange(title);
+                        setFormData(prev => ({ ...prev, content }));
+                    }}
+                />
                 <Button
                     onClick={() => handleSubmit()}
                     disabled={isSubmitting}
