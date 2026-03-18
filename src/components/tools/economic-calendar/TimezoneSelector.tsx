@@ -115,7 +115,7 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
                     : 'bg-white border-gray-200 hover:border-gray-300 text-gray-700'
                     }`}
             >
-                <Clock size={16} className="text-gray-400 shrink-0" />
+                <Clock size={15} className="text-gray-400 shrink-0" />
                 <span className="text-xs font-medium truncate">
                     <span className="opacity-70 hidden sm:inline">Time: </span>
                     <span className="opacity-70">({selectedZone.offsetDisplay})</span>

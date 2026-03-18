@@ -27,10 +27,16 @@ interface AccountCardProps {
     onSettings: (account: any) => void;
 }
 
-// Logic: Map "PERSONAL" to "REAL", everything else defaults to input or "DEMO"
-const getAccountType = (type: string) => {
-    const t = (type || "DEMO").toUpperCase();
-    if (t === "PERSONAL") return "REAL";
+// Returns account type label, or null if not yet synced
+const getAccountType = (type: string | null | undefined, server?: string | null): string | null => {
+    if (!type) return null; // Not synced yet — no badge
+    const t = type.toUpperCase();
+    if (t === "PERSONAL") {
+        // Double-check against server name for demo detection
+        if (server?.toLowerCase().includes('demo')) return "DEMO";
+        return "REAL";
+    }
+    if (t === "DEMO" || t === "CONTEST") return "DEMO";
     return t;
 };
 
@@ -47,7 +53,9 @@ export function AccountCard({
     onDelete,
     onSettings
 }: AccountCardProps) {
-    const accountType = getAccountType(account.accountType);
+    // Only trust accountType if account has actually synced at least once
+    const hasSynced = !!account.lastSync;
+    const accountType = hasSynced ? getAccountType(account.accountType, account.server) : null;
     const isReal = accountType === "REAL";
 
     return (
@@ -79,14 +87,16 @@ export function AccountCard({
                                 <h3 className="font-bold text-gray-900 dark:text-white truncate max-w-[140px]" title={account.name}>
                                     {account.name}
                                 </h3>
-                                <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest border whitespace-nowrap hidden sm:inline-block pr-1.5 ${isReal
-                                    ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
-                                    : "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20"
-                                    }`}>
-                                    {accountType}
-                                </span>
+                                {accountType && (
+                                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest border whitespace-nowrap hidden sm:inline-block pr-1.5 ${isReal
+                                        ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
+                                        : "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20"
+                                        }`}>
+                                        {accountType}
+                                    </span>
+                                )}
                                 {account.accountNumber && (
-                                    <span className="text-[10px] font-mono font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest whitespace-nowrap bg-gray-50 border border-gray-200 dark:bg-white/5 dark:border-white/10 px-1.5 py-0.5 rounded-md">
+                                    <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest whitespace-nowrap bg-emerald-50 border border-emerald-100 dark:bg-emerald-500/10 dark:border-emerald-500/20 px-1.5 py-0.5 rounded-md">
                                         #{account.accountNumber}
                                     </span>
                                 )}
@@ -105,7 +115,7 @@ export function AccountCard({
                                     <MoreVertical size={16} />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-52 p-1.5 rounded-xl border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#1E2028] z-[100]">
+                            <DropdownMenuContent align="end" className="w-50 p-1.5 rounded-xl border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#1E2028] z-[100]">
                                 <DropdownMenuItem onClick={() => onSettings(account)} className="flex items-center gap-3 px-3 py-2.5 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors">
                                     <Settings size={16} className="text-gray-400" />
                                     <span>Account Settings</span>

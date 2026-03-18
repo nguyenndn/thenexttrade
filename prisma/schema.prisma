@@ -160,6 +160,7 @@ model Lesson {
   content     String   @db.Text // Markdown or HTML
   videoUrl    String?
   duration    Int?     // Minutes
+  status      String   @default("draft") // draft | published
   moduleId    String
   module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   order       Int

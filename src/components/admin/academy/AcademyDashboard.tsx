@@ -88,8 +88,8 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                         className="group bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
                     >
                         <div className="flex justify-between items-start mb-4">
-                            <div className="w-12 h-12 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 flex items-center justify-center text-cyan-500">
-                                <BookOpen size={24} />
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-500/10 dark:to-cyan-500/20 flex items-center justify-center">
+                                <span className="text-lg font-black text-cyan-600 dark:text-cyan-400">{String(level.order).padStart(2, '0')}</span>
                             </div>
                             <div className="relative" onClick={(e) => e.stopPropagation()}>
                                 <Popover>

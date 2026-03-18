@@ -193,6 +193,12 @@ export function RichTextEditor({ content, onChange, editable = true, className =
             },
         },
     });
+    // Sync content from parent (e.g., AI Rewrite Apply)
+    const lastExternalContent = useRef(content);
+    if (editor && content !== lastExternalContent.current && content !== editor.getHTML()) {
+        lastExternalContent.current = content;
+        editor.commands.setContent(content, { emitUpdate: false });
+    }
 
     if (!editor) return null;
 
@@ -404,8 +410,15 @@ export function RichTextEditor({ content, onChange, editable = true, className =
             <ShortcutsMenuModal
                 isOpen={isShortcutsOpen}
                 onClose={() => setIsShortcutsOpen(false)}
-                onSelect={(htmlContent: string) => {
-                    editor.chain().focus().insertContent(htmlContent).run();
+                onSelect={(shortcutTag: string) => {
+                    editor.chain().focus().insertContent({
+                        type: 'text',
+                        text: shortcutTag,
+                        marks: [{
+                            type: 'highlight',
+                            attrs: { color: '#fef08a' },
+                        }],
+                    }).run();
                     setIsShortcutsOpen(false);
                 }}
             />
