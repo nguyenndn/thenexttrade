@@ -10,12 +10,10 @@ import {
     FileText,
     List,
     Users,
-    ListChecks,
     Activity,
     Tag,
     MessageSquare,
     Briefcase,
-    Sparkles,
     Bot,
     Download,
     BarChart3,
@@ -114,8 +112,6 @@ export const adminMenuItems = [
 
     // --- EDUCATION ---
     { name: "Academy", href: "/admin/academy", icon: GraduationCap },
-    { name: "Quizzes", href: "/admin/quizzes", icon: ListChecks },
-    { name: "AI Studio", href: "/admin/ai-studio", icon: Sparkles },
 
     // --- SYSTEM ---
     { name: "EA Management", href: "/admin/ea", icon: Bot },
