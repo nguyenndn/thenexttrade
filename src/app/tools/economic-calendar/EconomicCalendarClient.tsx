@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { EconomicEvent } from "@prisma/client";
 import { EventRow } from "@/components/tools/economic-calendar/EventRow";
-import { Calendar, Filter, RefreshCw, TriangleAlert } from "lucide-react";
+import { Calendar, Filter, RefreshCw, TriangleAlert, Home, ChevronRight } from "lucide-react";
 import { format, addDays, startOfWeek, isSameDay } from "date-fns";
 
 import { PublicHeader } from "@/components/layout/PublicHeader";
@@ -15,6 +15,7 @@ import { FilterModal, CalendarFilters } from "@/components/tools/economic-calend
 import { TimezoneSelector } from "@/components/tools/economic-calendar/TimezoneSelector";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { Button } from "@/components/ui/Button";
+import Link from "next/link";
 
 const DEFAULT_FILTERS: CalendarFilters = {
     currencies: ["USD", "EUR", "GBP", "JPY", "CAD", "AUD", "NZD", "CHF", "CNY"],
@@ -108,6 +109,16 @@ export function EconomicCalendarClient({ user }: { user: any }) {
 
             <main className="flex-1 pt-28 pb-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Breadcrumb */}
+                    <div className="flex items-center gap-2 text-sm font-medium bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-xl px-5 py-3 mb-8 shadow-sm border border-[#00C888]/20">
+                        <Home size={14} className="text-white/70 dark:text-gray-400 shrink-0" />
+                        <Link href="/" className="text-white/80 dark:text-gray-400 hover:text-white transition-colors shrink-0">Home</Link>
+                        <ChevronRight size={14} className="text-white/40 shrink-0" />
+                        <Link href="/tools" className="text-white/80 dark:text-gray-400 hover:text-white transition-colors shrink-0">Tools</Link>
+                        <ChevronRight size={14} className="text-white/40 shrink-0" />
+                        <span className="text-white font-semibold truncate">Economic Calendar</span>
+                    </div>
+
                     {/* Header Section */}
                     <div className="mb-12 text-center max-w-3xl mx-auto">
                         <div className="flex items-center justify-center gap-3 mb-4">
@@ -125,7 +136,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
 
                     {/* Controls Toolbar */}
                     <div className="flex justify-end mb-6">
-                        <div className="hidden md:flex items-center gap-2">
+                        <div className="flex items-center gap-2">
                             <TimezoneSelector
                                 value={selectedTimezone}
                                 onChange={setSelectedTimezone}
@@ -139,7 +150,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                     : 'bg-white border-gray-200 hover:border-gray-300 focus:bg-gray-100 text-gray-700'
                                     }`}
                             >
-                                <Filter size={16} className="text-gray-400" />
+                                <Filter size={15} className="text-gray-400" />
                                 Filters
                             </Button>
 
@@ -161,7 +172,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                     }`}
                                 title="Refresh Data"
                             >
-                                <RefreshCw size={16} className={isLoading ? "animate-spin text-cyan-500" : "text-gray-400"} />
+                                <RefreshCw size={15} className={isLoading ? "animate-spin text-cyan-500" : "text-gray-400"} />
                                 Refresh
                             </Button>
                         </div>
