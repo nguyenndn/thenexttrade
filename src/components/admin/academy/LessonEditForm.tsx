@@ -7,6 +7,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ModuleSelector } from "@/components/admin/academy/ModuleSelector";
 import { toast } from "sonner";
 
 interface LessonEditFormProps {
@@ -157,18 +158,11 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-5 space-y-5">
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Module *</label>
-                            <select
+                            <ModuleSelector
+                                modules={modules}
                                 value={formData.moduleId}
-                                onChange={e => setFormData({ ...formData, moduleId: e.target.value })}
-                                className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all appearance-none"
-                            >
-                                <option value="">Select Module</option>
-                                {modules.map(m => (
-                                    <option key={m.id} value={m.id}>
-                                        {m.levelTitle} → {m.title}
-                                    </option>
-                                ))}
-                            </select>
+                                onChange={(moduleId) => setFormData({ ...formData, moduleId })}
+                            />
                         </div>
 
                         <div>
