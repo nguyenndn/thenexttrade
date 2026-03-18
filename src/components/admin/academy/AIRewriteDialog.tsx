@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Sparkles, Loader2, Link2, FileText, RefreshCw, Check, X, Eye } from "lucide-react";
+import { Sparkles, Loader2, Link2, FileText, RefreshCw, Check, X, Eye, ClipboardPaste } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,8 @@ interface AIRewriteDialogProps {
 export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [url, setUrl] = useState("");
+    const [pastedContent, setPastedContent] = useState("");
+    const [inputMode, setInputMode] = useState<"url" | "paste">("url");
     const [mode, setMode] = useState<"summary" | "rewrite">("rewrite");
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<{ title: string; content: string } | null>(null);
@@ -26,7 +28,8 @@ export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
     }, [isOpen]);
 
     const handleGenerate = async () => {
-        if (!url.trim()) return toast.warning("Please paste a URL");
+        if (inputMode === "url" && !url.trim()) return toast.warning("Please paste a URL");
+        if (inputMode === "paste" && !pastedContent.trim()) return toast.warning("Please paste some content");
 
         setIsLoading(true);
         setError("");
@@ -36,7 +39,11 @@ export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
             const res = await fetch("/api/ai/rewrite", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url: url.trim(), mode }),
+                body: JSON.stringify({
+                    url: inputMode === "url" ? url.trim() : undefined,
+                    pastedContent: inputMode === "paste" ? pastedContent.trim() : undefined,
+                    mode,
+                }),
             });
 
             const data = await res.json();
@@ -59,6 +66,7 @@ export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
         setIsOpen(false);
         setResult(null);
         setUrl("");
+        setPastedContent("");
         toast.success("Content applied to editor!");
     };
 
@@ -67,6 +75,7 @@ export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
         setIsOpen(false);
         setResult(null);
         setUrl("");
+        setPastedContent("");
         setError("");
     };
 
@@ -108,22 +117,70 @@ export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
 
                         {/* Body */}
                         <div className="p-5 space-y-4">
-                            {/* URL Input */}
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
-                                    <Link2 size={12} className="inline mr-1" /> Source URL
-                                </label>
-                                <input
-                                    ref={inputRef}
-                                    type="url"
-                                    value={url}
-                                    onChange={e => setUrl(e.target.value)}
-                                    onKeyDown={e => { if (e.key === "Enter" && !isLoading) handleGenerate(); }}
-                                    placeholder="https://www.babypips.com/learn/forex/what-is-forex"
-                                    disabled={isLoading}
-                                    className="w-full p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
-                                />
+                            {/* Input Mode Toggle */}
+                            <div className="flex gap-1 p-1 bg-gray-100 dark:bg-white/5 rounded-lg">
+                                <button
+                                    type="button"
+                                    onClick={() => setInputMode("url")}
+                                    className={cn(
+                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all",
+                                        inputMode === "url"
+                                            ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm"
+                                            : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                    )}
+                                >
+                                    <Link2 size={13} /> From URL
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setInputMode("paste")}
+                                    className={cn(
+                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all",
+                                        inputMode === "paste"
+                                            ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm"
+                                            : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                    )}
+                                >
+                                    <ClipboardPaste size={13} /> Paste Content
+                                </button>
                             </div>
+
+                            {/* URL Input */}
+                            {inputMode === "url" && (
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
+                                        <Link2 size={12} className="inline mr-1" /> Source URL
+                                    </label>
+                                    <input
+                                        ref={inputRef}
+                                        type="url"
+                                        value={url}
+                                        onChange={e => setUrl(e.target.value)}
+                                        onKeyDown={e => { if (e.key === "Enter" && !isLoading) handleGenerate(); }}
+                                        placeholder="https://www.babypips.com/learn/forex/what-is-forex"
+                                        disabled={isLoading}
+                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Paste Content */}
+                            {inputMode === "paste" && (
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
+                                        <ClipboardPaste size={12} className="inline mr-1" /> Paste Article Content
+                                    </label>
+                                    <textarea
+                                        value={pastedContent}
+                                        onChange={e => setPastedContent(e.target.value)}
+                                        placeholder="Copy the article content from BabyPips and paste it here..."
+                                        disabled={isLoading}
+                                        rows={6}
+                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50 resize-y"
+                                    />
+                                    <p className="text-[10px] text-gray-400 mt-1">Tip: Select all text on the lesson page (Ctrl+A), copy (Ctrl+C), and paste here</p>
+                                </div>
+                            )}
 
                             {/* Mode Selector */}
                             <div>
@@ -175,9 +232,9 @@ export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
                                         <Sparkles size={16} className="absolute inset-0 m-auto text-amber-500" />
                                     </div>
                                     <p className="text-sm text-gray-500">
-                                        {mode === "summary" ? "Analyzing content..." : "Rewriting with Captain GSN's voice..."}
+                                        {mode === "summary" ? "Analyzing content..." : "Rewriting with Captain TheNextTrade's voice..."}
                                     </p>
-                                    <p className="text-xs text-gray-400">This may take 10-30 seconds</p>
+                                    <p className="text-xs text-gray-400">This may take 15-30 seconds</p>
                                 </div>
                             )}
 
@@ -210,7 +267,7 @@ export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
 
                         {/* Footer */}
                         <div className="flex items-center justify-between p-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
-                            <p className="text-[10px] text-gray-400">Powered by Gemini 2.5 Pro · Writer Persona: Captain GSN</p>
+                            <p className="text-sm text-gray-400">Powered by Gemini 3 Flash + FireCrawl · Captain TheNextTrade</p>
                             <div className="flex gap-2">
                                 {result && !isLoading && (
                                     <Button
@@ -226,7 +283,7 @@ export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
                                 {!result ? (
                                     <Button
                                         onClick={handleGenerate}
-                                        disabled={isLoading || !url.trim()}
+                                        disabled={isLoading || (inputMode === "url" ? !url.trim() : !pastedContent.trim())}
                                         className="gap-2 shadow-lg shadow-primary/30"
                                     >
                                         {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
@@ -237,7 +294,7 @@ export function AIRewriteDialog({ onApply }: AIRewriteDialogProps) {
                                         onClick={handleApply}
                                         className="gap-2 bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/30"
                                     >
-                                        <Check size={16} /> Apply to Lesson
+                                        <Check size={16} /> Apply
                                     </Button>
                                 )}
                             </div>

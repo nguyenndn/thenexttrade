@@ -17,7 +17,7 @@ interface Shortcut {
 interface ShortcutsMenuModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSelect: (content: string) => void;
+    onSelect: (shortcutTag: string, shortcutName: string) => void;
 }
 
 export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuModalProps) {
@@ -100,8 +100,8 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                                     key={shortcut.id}
                                     role="button"
                                     tabIndex={0}
-                                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect(shortcut.content); }}
-                                    onClick={() => onSelect(shortcut.content)}
+                                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect(`{{${shortcut.name}}}`, shortcut.name); }}
+                                    onClick={() => onSelect(`{{${shortcut.name}}}`, shortcut.name)}
                                     className="flex flex-col items-start p-4 text-left border border-gray-100 dark:border-white/5 rounded-xl hover:border-blue-500/30 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all group focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer"
                                 >
                                     <div className="flex items-center gap-2 w-full mb-1">

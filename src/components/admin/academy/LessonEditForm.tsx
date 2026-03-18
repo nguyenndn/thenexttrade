@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Save, Trash2, Video, Clock } from "lucide-react";
+import { Loader2, Save, Trash2, BookOpen, Clock, Eye, EyeOff } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import { Button } from "@/components/ui/Button";
@@ -36,11 +36,12 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
         title: lesson.title,
         slug: lesson.slug,
         content: lesson.content,
-        videoUrl: lesson.videoUrl,
-        duration: lesson.duration,
         moduleId: lesson.moduleId,
-        order: lesson.order,
+        status: (lesson as any).status || "draft" as "draft" | "published",
     });
+
+    const wordCount = formData.content?.replace(/<[^>]*>?/gm, '').trim().split(/\s+/).filter(Boolean).length || 0;
+    const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
     const handleTitleChange = (value: string) => {
         setFormData(prev => {
@@ -65,7 +66,10 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
             const res = await fetch(`/api/academy/lessons/${lesson.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    duration: readingTime,
+                }),
             });
 
             if (!res.ok) {
@@ -131,7 +135,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                 </Button>
             </AdminPageHeader>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 {/* Editor */}
                 <div className="lg:col-span-3 space-y-6">
                     <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
@@ -161,8 +165,8 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                 </div>
 
                 {/* Sidebar */}
-                <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-5 space-y-5">
+                <div className="lg:col-span-1 space-y-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-4">
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Module *</label>
                             <ModuleSelector
@@ -171,40 +175,50 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                                 onChange={(moduleId) => setFormData({ ...formData, moduleId })}
                             />
                         </div>
+                    </div>
 
+                    {/* Status */}
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-4 space-y-4">
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
-                                <Video size={12} className="inline mr-1" /> Video URL
-                            </label>
-                            <input
-                                type="text"
-                                value={formData.videoUrl}
-                                onChange={e => setFormData({ ...formData, videoUrl: e.target.value })}
-                                placeholder="YouTube/Vimeo link"
-                                className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
-                            />
+                            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Status</label>
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, status: "draft" })}
+                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
+                                        formData.status === "draft"
+                                            ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-700 dark:text-amber-400"
+                                            : "border-gray-200 dark:border-white/10 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"
+                                    }`}
+                                >
+                                    <EyeOff size={13} /> Draft
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, status: "published" })}
+                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
+                                        formData.status === "published"
+                                            ? "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                                            : "border-gray-200 dark:border-white/10 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"
+                                    }`}
+                                >
+                                    <Eye size={13} /> Published
+                                </button>
+                            </div>
                         </div>
+                    </div>
 
-                        <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
-                                <Clock size={12} className="inline mr-1" /> Duration (min)
-                            </label>
-                            <input
-                                type="number"
-                                value={formData.duration}
-                                onChange={e => setFormData({ ...formData, duration: parseInt(e.target.value) || 0 })}
-                                className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Sort Order</label>
-                            <input
-                                type="number"
-                                value={formData.order}
-                                onChange={e => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
-                                className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
-                            />
+                    {/* Word Count & Reading Time */}
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-gray-500">
+                                <BookOpen size={14} />
+                                <span className="text-xs font-medium">{wordCount.toLocaleString()} words</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-500">
+                                <Clock size={14} />
+                                <span className="text-xs font-medium">{readingTime} min read</span>
+                            </div>
                         </div>
                     </div>
                 </div>

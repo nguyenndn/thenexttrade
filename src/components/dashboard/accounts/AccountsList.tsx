@@ -83,8 +83,8 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
                     </div>
                 </div>
             ) : (
-                <div className="p-5 mb-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="p-4 mb-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {licenses.map((license) => (
                             <EALicenseCard
                                 key={license.id}
@@ -94,7 +94,7 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
                             />
                         ))}
                     </div>
-                    <div className="mt-10 mb-2 flex justify-center">
+                    <div className="mt-6 mb-2 flex justify-center">
                         <AddAccountModal brokers={eaBrokers} />
                     </div>
                 </div>

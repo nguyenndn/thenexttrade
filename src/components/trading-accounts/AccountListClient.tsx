@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Plus, RefreshCw, Wallet } from "lucide-react";
+import { Plus, RefreshCw, Wallet, Download } from "lucide-react";
 import { AccountCard } from "./AccountCard";
 import { AddAccountModal } from "./AddAccountModal";
 import { AccountSettingsModal } from "./AccountSettingsModal";
@@ -67,7 +67,14 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                     description="Manage your connected MT5 trading accounts"
                 >
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
-
+                        <a
+                            href="/downloads/TheNextTrade_TradeSync.ex5"
+                            download
+                            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors flex-1 sm:flex-none"
+                        >
+                            <Download size={16} />
+                            EA Sync
+                        </a>
                         <Button
                             variant="outline"
                             onClick={() => {
