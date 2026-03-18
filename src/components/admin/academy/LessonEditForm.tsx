@@ -1,83 +1,78 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, Save, ArrowLeft, Video, Clock } from "lucide-react";
-import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2, Save, Trash2, Video, Clock } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
 
-function LessonForm() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const moduleId = searchParams.get("moduleId");
+interface LessonEditFormProps {
+    lesson: {
+        id: string;
+        title: string;
+        slug: string;
+        content: string;
+        videoUrl: string;
+        duration: number;
+        moduleId: string;
+        order: number;
+    };
+    modules: { id: string; title: string; levelTitle: string }[];
+    backHref: string;
+}
 
+export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProps) {
+    const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [modules, setModules] = useState<{ id: string; title: string; levelId: string; level?: { title: string } }[]>([]);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
     const [formData, setFormData] = useState({
-        title: "",
-        slug: "",
-        content: "",
-        videoUrl: "",
-        duration: 10,
-        moduleId: moduleId || "",
-        order: 1
+        title: lesson.title,
+        slug: lesson.slug,
+        content: lesson.content,
+        videoUrl: lesson.videoUrl,
+        duration: lesson.duration,
+        moduleId: lesson.moduleId,
+        order: lesson.order,
     });
 
-    // Fetch modules for dropdown
-    useEffect(() => {
-        fetch("/api/academy/levels")
-            .then(res => res.json())
-            .then(levels => {
-                const allModules: any[] = [];
-                if (Array.isArray(levels)) {
-                    levels.forEach((level: any) => {
-                        if (level.modules) {
-                            level.modules.forEach((mod: any) => {
-                                allModules.push({ ...mod, level: { title: level.title } });
-                            });
-                        }
-                    });
-                }
-                setModules(allModules);
-            })
-            .catch(() => {});
-    }, []);
-
     const handleTitleChange = (value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            title: value,
-            slug: value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
-        }));
+        setFormData(prev => {
+            const expectedOldSlug = prev.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+            const shouldUpdateSlug = prev.slug === expectedOldSlug;
+            return {
+                ...prev,
+                title: value,
+                slug: shouldUpdateSlug
+                    ? value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+                    : prev.slug,
+            };
+        });
     };
 
-    async function handleSubmit(e?: React.FormEvent) {
-        if (e) e.preventDefault();
-
+    async function handleSubmit() {
         if (!formData.title.trim()) return toast.warning("Title is required");
         if (!formData.moduleId) return toast.warning("Please select a module");
 
-        const textContent = formData.content?.replace(/<[^>]*>?/gm, '').trim() || '';
-        if (!textContent) return toast.warning("Content is required");
-
         setIsSubmitting(true);
         try {
-            const res = await fetch("/api/academy/lessons", {
-                method: "POST",
+            const res = await fetch(`/api/academy/lessons/${lesson.id}`, {
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
             });
 
             if (!res.ok) {
                 const error = await res.json();
-                throw new Error(error.error || "Failed");
+                throw new Error(error.error || "Failed to update");
             }
 
-            toast.success("Lesson created successfully!");
-            router.push("/admin/academy");
+            toast.success("Lesson updated successfully!");
+            router.push(backHref);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message);
@@ -86,25 +81,50 @@ function LessonForm() {
         }
     }
 
+    async function handleDelete() {
+        setIsDeleting(true);
+        try {
+            const res = await fetch(`/api/academy/lessons/${lesson.id}`, { method: "DELETE" });
+            if (!res.ok) throw new Error("Failed to delete");
+
+            toast.success("Lesson deleted");
+            router.push(backHref);
+            router.refresh();
+        } catch {
+            toast.error("Failed to delete lesson");
+        } finally {
+            setIsDeleting(false);
+            setIsConfirmOpen(false);
+        }
+    }
+
     return (
         <div className="w-full space-y-6 pb-24">
             <AdminPageHeader
-                title="New Lesson"
-                description="Create a new lesson with rich content."
-                backHref="/admin/academy"
+                title={formData.title || "Edit Lesson"}
+                description="Edit lesson content and settings."
+                backHref={backHref}
             >
                 <Button
-                    onClick={() => handleSubmit()}
+                    variant="outline"
+                    onClick={() => setIsConfirmOpen(true)}
+                    disabled={isDeleting || isSubmitting}
+                    className="text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-900/50 hover:bg-red-100"
+                >
+                    <Trash2 size={18} />
+                </Button>
+                <Button
+                    onClick={handleSubmit}
                     disabled={isSubmitting}
                     className="flex items-center gap-2 shadow-lg shadow-primary/30"
                 >
                     {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                    Save Lesson
+                    Update Lesson
                 </Button>
             </AdminPageHeader>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                {/* Editor — Left */}
+                {/* Editor */}
                 <div className="lg:col-span-3 space-y-6">
                     <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
                         <input
@@ -132,10 +152,9 @@ function LessonForm() {
                     </div>
                 </div>
 
-                {/* Sidebar — Right */}
+                {/* Sidebar */}
                 <div className="lg:col-span-1 space-y-6">
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-5 space-y-5">
-                        {/* Module Selector */}
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Module *</label>
                             <select
@@ -146,13 +165,12 @@ function LessonForm() {
                                 <option value="">Select Module</option>
                                 {modules.map(m => (
                                     <option key={m.id} value={m.id}>
-                                        {m.level?.title ? `${m.level.title} → ` : ""}{m.title}
+                                        {m.levelTitle} → {m.title}
                                     </option>
                                 ))}
                             </select>
                         </div>
 
-                        {/* Video URL */}
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
                                 <Video size={12} className="inline mr-1" /> Video URL
@@ -166,7 +184,6 @@ function LessonForm() {
                             />
                         </div>
 
-                        {/* Duration */}
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
                                 <Clock size={12} className="inline mr-1" /> Duration (min)
@@ -179,7 +196,6 @@ function LessonForm() {
                             />
                         </div>
 
-                        {/* Order */}
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Sort Order</label>
                             <input
@@ -192,14 +208,17 @@ function LessonForm() {
                     </div>
                 </div>
             </div>
-        </div>
-    );
-}
 
-export default function CreateLessonPage() {
-    return (
-        <Suspense fallback={<div className="flex justify-center py-20"><Loader2 className="animate-spin" /></div>}>
-            <LessonForm />
-        </Suspense>
+            <ConfirmDialog
+                isOpen={isConfirmOpen}
+                title="Delete Lesson"
+                description={`Are you sure you want to delete "${lesson.title}"? This action cannot be undone.`}
+                confirmText="Delete"
+                onConfirm={handleDelete}
+                onCancel={() => { if (!isDeleting) setIsConfirmOpen(false); }}
+                isLoading={isDeleting}
+                variant="danger"
+            />
+        </div>
     );
 }

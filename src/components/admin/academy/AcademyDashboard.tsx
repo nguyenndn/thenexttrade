@@ -9,7 +9,7 @@ import { CreateLevelModal } from "./CreateLevelModal";
 import { EditLevelModal } from "./EditLevelModal";
 import { Button } from "@/components/ui/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { deleteLevel } from "@/app/admin/ai-studio/levels/actions";
+import { deleteLevel } from "@/app/admin/academy/actions";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useRouter } from "next/navigation";

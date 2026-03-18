@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
-import { updateLevel } from "@/app/admin/ai-studio/levels/actions";
+import { updateLevel } from "@/app/admin/academy/actions";
 import { toast } from "sonner";
 import { BookOpen, FileText, X } from "lucide-react";
 
