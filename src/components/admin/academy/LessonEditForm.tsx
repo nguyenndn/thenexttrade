@@ -8,6 +8,7 @@ import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ModuleSelector } from "@/components/admin/academy/ModuleSelector";
+import { AIRewriteDialog } from "@/components/admin/academy/AIRewriteDialog";
 import { toast } from "sonner";
 
 interface LessonEditFormProps {
@@ -114,6 +115,12 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                 >
                     <Trash2 size={18} />
                 </Button>
+                <AIRewriteDialog
+                    onApply={({ title, content }) => {
+                        handleTitleChange(title);
+                        setFormData(prev => ({ ...prev, content }));
+                    }}
+                />
                 <Button
                     onClick={handleSubmit}
                     disabled={isSubmitting}
