@@ -6,6 +6,7 @@ import { Loader2, Save, ArrowLeft, Video, Clock } from "lucide-react";
 import Link from "next/link";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
+import { ModuleSelector } from "@/components/admin/academy/ModuleSelector";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 
@@ -15,7 +16,7 @@ function LessonForm() {
     const moduleId = searchParams.get("moduleId");
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [modules, setModules] = useState<{ id: string; title: string; levelId: string; level?: { title: string } }[]>([]);
+    const [modules, setModules] = useState<{ id: string; title: string; levelTitle: string }[]>([]);
     const [formData, setFormData] = useState({
         title: "",
         slug: "",
@@ -31,12 +32,12 @@ function LessonForm() {
         fetch("/api/academy/levels")
             .then(res => res.json())
             .then(levels => {
-                const allModules: any[] = [];
+                const allModules: { id: string; title: string; levelTitle: string }[] = [];
                 if (Array.isArray(levels)) {
                     levels.forEach((level: any) => {
                         if (level.modules) {
                             level.modules.forEach((mod: any) => {
-                                allModules.push({ ...mod, level: { title: level.title } });
+                                allModules.push({ id: mod.id, title: mod.title, levelTitle: level.title });
                             });
                         }
                     });
@@ -138,18 +139,11 @@ function LessonForm() {
                         {/* Module Selector */}
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Module *</label>
-                            <select
+                            <ModuleSelector
+                                modules={modules}
                                 value={formData.moduleId}
-                                onChange={e => setFormData({ ...formData, moduleId: e.target.value })}
-                                className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all appearance-none"
-                            >
-                                <option value="">Select Module</option>
-                                {modules.map(m => (
-                                    <option key={m.id} value={m.id}>
-                                        {m.level?.title ? `${m.level.title} → ` : ""}{m.title}
-                                    </option>
-                                ))}
-                            </select>
+                                onChange={(moduleId) => setFormData({ ...formData, moduleId })}
+                            />
                         </div>
 
                         {/* Video URL */}
