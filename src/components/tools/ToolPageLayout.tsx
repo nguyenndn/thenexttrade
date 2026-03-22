@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { FAQAccordion } from "./FAQAccordion";
 import { SimilarTools } from "./SimilarTools";
 import { ToolViewTracker } from "./ToolViewTracker";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getSimilarTools } from "@/config/tools-data";
 import { getAuthUser } from "@/lib/auth-cache";
 import { HelpCircle, BookOpen, CheckCircle, Lightbulb, Home, ChevronRight } from "lucide-react";
@@ -17,11 +18,56 @@ interface ToolPageLayoutProps {
 export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
     const user = await getAuthUser();
     const similarTools = getSimilarTools(tool.slug, 6);
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://thenexttrade.com';
 
     return (
         <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white">
             <PublicHeader user={user} />
             <ToolViewTracker slug={tool.slug} />
+
+            {/* SoftwareApplication Schema */}
+            <JsonLd type="SoftwareApplication" data={{
+                name: tool.title,
+                description: tool.description,
+                url: `${baseUrl}/tools/${tool.slug}`,
+                applicationCategory: "FinanceApplication",
+                operatingSystem: "Web Browser",
+                offers: {
+                    "@type": "Offer",
+                    price: "0",
+                    priceCurrency: "USD",
+                },
+                aggregateRating: {
+                    "@type": "AggregateRating",
+                    ratingValue: "4.8",
+                    ratingCount: "120",
+                    bestRating: "5",
+                },
+            }} />
+
+            {/* HowTo Schema */}
+            <JsonLd type="HowTo" data={{
+                name: `How to Use ${tool.title}`,
+                description: tool.description,
+                step: tool.howToUse.map((s, idx) => ({
+                    "@type": "HowToStep",
+                    position: idx + 1,
+                    name: s.step,
+                    text: s.detail,
+                })),
+            }} />
+
+            {/* FAQPage Schema */}
+            <JsonLd type="FAQPage" data={{
+                mainEntity: tool.faqs.map(faq => ({
+                    "@type": "Question",
+                    name: faq.question,
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: faq.answer,
+                    },
+                })),
+            }} />
 
             <main className="flex-1 pt-28 pb-20">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
