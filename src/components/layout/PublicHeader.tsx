@@ -11,6 +11,7 @@ import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { Button } from "@/components/ui/Button";
+import { PublicSearchModal, PublicSearchTrigger } from "@/components/search/PublicSearchModal";
 
 interface PublicHeaderProps {
     user?: AuthUser | null;
@@ -49,8 +50,8 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
                 className={[
                     "h-16 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
                     isScrolled
-                        ? "mx-4 sm:mx-6 lg:mx-60 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white/80 dark:bg-[#151925]/80 border-gray-200/50 dark:border-white/10"
-                        : "mx-0 rounded-none border-transparent bg-transparent",
+                        ? "mx-4 sm:mx-6 lg:mx-60 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white dark:bg-[#151925] border-gray-200/50 dark:border-white/10"
+                        : "mx-0 rounded-none border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#0B0E14]",
                 ].join(" ")}
             >
                 {/* Content constrained to 1440px */}
@@ -65,6 +66,9 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
+                        {/* Search */}
+                        <PublicSearchTrigger className="hidden sm:flex" />
+
                         {/* Theme Toggle */}
                         <ThemeToggleSwitch />
 
@@ -97,6 +101,9 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
 
             {/* Mobile Menu */}
             <MobileNavigation isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} user={user} />
+
+            {/* Search Modal (Ctrl+K) */}
+            <PublicSearchModal />
         </header>
     );
 }

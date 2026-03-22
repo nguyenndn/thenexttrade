@@ -39,7 +39,7 @@ function flattenNavItems() {
 
 const allPages = flattenNavItems();
 
-export function CommandPalette({ searchRoute = "/dashboard/search" }: { searchRoute?: string }) {
+export function CommandPalette({ searchRoute = "/dashboard/search", showPages = true }: { searchRoute?: string; showPages?: boolean }) {
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const router = useRouter();
@@ -87,10 +87,10 @@ export function CommandPalette({ searchRoute = "/dashboard/search" }: { searchRo
             />
 
             {/* Modal */}
-            <div className="absolute left-1/2 top-[20%] -translate-x-1/2 w-full max-w-[640px] px-4">
+            <div className="absolute left-1/2 top-[30%] -translate-x-1/2 w-full max-w-[640px] px-4">
                 <Command className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden" shouldFilter={true}>
                     {/* Search Input */}
-                    <div className="flex items-center border-b border-gray-100 dark:border-gray-800 px-4">
+                    <div className="relative border-b border-gray-100 dark:border-gray-800 px-4">
                         <CommandInput
                             placeholder="Search for anything..."
                             autoFocus
@@ -98,7 +98,6 @@ export function CommandPalette({ searchRoute = "/dashboard/search" }: { searchRo
                             onValueChange={setSearchQuery}
                             onKeyDown={(e: React.KeyboardEvent) => {
                                 if (e.key === "Enter" && searchQuery.trim()) {
-                                    // If no item is actively selected, do a full search
                                     const selected = document.querySelector('[cmdk-item][data-selected="true"]');
                                     if (!selected) {
                                         e.preventDefault();
@@ -106,13 +105,13 @@ export function CommandPalette({ searchRoute = "/dashboard/search" }: { searchRo
                                     }
                                 }
                             }}
-                            className="flex h-12 w-full bg-transparent py-3 text-[15px] outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 border-none"
+                            className="flex h-14 w-full bg-transparent py-3 text-lg text-center outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 border-none px-10"
                         />
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setOpen(false)}
-                            className="ml-2 w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
                             <X size={16} />
                         </Button>
@@ -135,9 +134,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search" }: { searchRo
                                     </div>
                                     <ArrowRight size={14} className="text-gray-400" />
                                 </Button>
-                            ) : (
-                                <p className="py-6 text-center text-sm text-gray-500">No results found.</p>
-                            )}
+                            ) : null}
                         </CommandEmpty>
 
                         {/* Full Search Option (always visible when typing) */}
@@ -161,6 +158,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search" }: { searchRo
                         )}
 
                         {/* Pages */}
+                        {showPages && (
                         <CommandGroup heading="Pages">
                             {allPages.map((item) => {
                                 const Icon = item.icon || FileText;
@@ -185,6 +183,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search" }: { searchRo
                                 );
                             })}
                         </CommandGroup>
+                        )}
                     </CommandList>
 
                     {/* Footer */}

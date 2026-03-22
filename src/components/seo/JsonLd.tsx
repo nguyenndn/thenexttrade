@@ -1,8 +1,8 @@
 import React from 'react';
-import { Article, WithContext, Course, BreadcrumbList, WebSite } from 'schema-dts';
+import { Article, WithContext, Course, BreadcrumbList, WebSite, Organization, FAQPage } from 'schema-dts';
 
 type JsonLdProps = {
-    type: "Article" | "Course" | "BreadcrumbList" | "WebSite";
+    type: "Article" | "Course" | "BreadcrumbList" | "WebSite" | "Organization" | "FAQPage";
     data: any; // We can improve typing later if needed, or use specific mapped types
 };
 

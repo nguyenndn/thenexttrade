@@ -3,6 +3,7 @@
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { HelpCircle, TrendingUp } from "lucide-react";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 const PLATFORM_FAQ = [
     {
@@ -51,7 +52,23 @@ const TRADING_FAQ = [
 ];
 
 export function HomeFAQSection() {
+    const allFaq = [...PLATFORM_FAQ, ...TRADING_FAQ];
+
     return (
+        <>
+        <JsonLd
+            type="FAQPage"
+            data={{
+                mainEntity: allFaq.map(faq => ({
+                    "@type": "Question",
+                    name: faq.question,
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: faq.answer,
+                    }
+                }))
+            }}
+        />
         <section className="py-16 relative overflow-hidden border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#0B0E14]">
             {/* Grid pattern */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
@@ -91,5 +108,6 @@ export function HomeFAQSection() {
                 </div>
             </div>
         </section>
+        </>
     );
 }

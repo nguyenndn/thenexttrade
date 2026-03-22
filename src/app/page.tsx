@@ -163,6 +163,7 @@ async function HomeFeed() {
       <FadeIn delay={0.1}>
       {/* Hero Section */}
       <div className="pt-24 pb-10 dark:bg-[#0B0E14] relative">
+        <h1 className="sr-only">TheNextTrade — Professional Forex Trading Tools, Academy & Market Analysis</h1>
         {/* Subtle noise texture */}
         <div className="absolute inset-0 noise-bg opacity-[0.03] dark:opacity-[0.05] pointer-events-none" />
 

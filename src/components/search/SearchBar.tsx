@@ -51,7 +51,7 @@ export function SearchBar({ className, variant = "default", targetRoute = "/dash
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:block">
                     <kbd className="inline-flex h-6 items-center gap-1 rounded-md border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-2 font-mono text-[10px] font-medium text-gray-500 dark:text-gray-400 shadow-sm">
-                        <span className="text-xs">Ctrl</span>K
+                        <span className="text-xs text-primary">Ctrl + K </span>
                     </kbd>
                 </div>
             </div>
