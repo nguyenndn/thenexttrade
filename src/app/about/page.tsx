@@ -6,8 +6,12 @@ import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
-    title: 'About Us | The Next Trade',
-    description: 'Learn about The Next Trade, our mission to empower global traders with institutional-grade tools and education.',
+    title: 'About TheNextTrade — Our Mission to Democratize Trading Education',
+    description: 'Meet the team behind TheNextTrade. We build institutional-grade tools and structured education to help retail traders develop systematic, data-driven trading strategies.',
+    openGraph: {
+        title: 'About TheNextTrade | Retail Trading Ecosystem',
+        description: 'From frustration to innovation — how veteran traders built the ultimate ecosystem for modern retail trading.',
+    },
 };
 
 export default function AboutPage() {

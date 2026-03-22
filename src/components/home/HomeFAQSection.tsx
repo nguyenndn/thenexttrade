@@ -26,6 +26,18 @@ const PLATFORM_FAQ = [
         question: "Do you offer trading signals?",
         answer: "We don't sell signals. Instead, we teach you HOW to find your own setups through technical analysis, fundamental analysis, and strategy development. Our goal is to make you a self-sufficient trader.",
     },
+    {
+        question: "How do I calculate position size?",
+        answer: "Position size depends on your account balance, risk percentage (usually 1-2%), and stop loss distance in pips. Formula: Position Size = (Account × Risk%) / (Stop Loss Pips × Pip Value). Use our free Position Size Calculator for instant, accurate calculations.",
+    },
+    {
+        question: "What is a pip in forex?",
+        answer: "A pip (percentage in point) is the smallest standard price movement in forex. For most currency pairs, 1 pip = 0.0001. For JPY pairs, 1 pip = 0.01. Use our Pip Value Calculator to see the dollar value of each pip for any pair and lot size.",
+    },
+    {
+        question: "What are the most traded currency pairs?",
+        answer: "The major pairs (involving USD) are the most liquid: EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD. EUR/USD alone accounts for about 22% of daily forex volume. Our Live Market Rates tool tracks all major pairs in real-time.",
+    },
 ];
 
 const TRADING_FAQ = [
@@ -48,6 +60,18 @@ const TRADING_FAQ = [
     {
         question: "What is the best time to trade forex?",
         answer: "The best times are during major session overlaps: London-New York (1:00-5:00 PM GMT) has the highest volume & volatility. Use our Market Hours tool to visualize sessions in your timezone.",
+    },
+    {
+        question: "What is risk management in trading?",
+        answer: "Risk management is the process of controlling how much capital you expose to potential loss. Key practices include: risking only 1-2% per trade, always using stop losses, calculating position sizes with our Position Size Calculator, and never risking more than you can afford to lose.",
+    },
+    {
+        question: "What is a prop trading firm?",
+        answer: "Proprietary trading firms (prop firms) provide traders with funded accounts after passing evaluation challenges. You trade the firm's capital and keep a percentage of profits (typically 70-80%). Our Academy's Level 3 covers prop firm strategies and evaluation preparation.",
+    },
+    {
+        question: "What is a trading strategy?",
+        answer: "A trading strategy is a set of rules that defines when to enter and exit trades. It includes criteria like technical indicators, chart patterns, risk parameters, and trade management rules. Successful traders follow their strategy consistently rather than trading on emotions or hunches.",
     },
 ];
 
