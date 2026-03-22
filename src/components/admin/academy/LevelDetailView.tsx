@@ -29,6 +29,7 @@ interface Module {
     order: number;
     lessons: Lesson[];
     _count: { lessons: number };
+    quiz: { id: string } | null;
 }
 
 interface Level {
@@ -52,6 +53,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<{ type: "module" | "lesson"; id: string; title: string } | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isQuizLoading, setIsQuizLoading] = useState<string | null>(null);
     const [draggedLesson, setDraggedLesson] = useState<string | null>(null);
     const [dragOverLesson, setDragOverLesson] = useState<string | null>(null);
 
@@ -89,6 +91,35 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
             toast.error("Failed to delete");
         } finally {
             setIsDeleting(false);
+        }
+    };
+
+    const handleManageQuiz = async (moduleId: string, quizId: string | null) => {
+        if (quizId) {
+            router.push(`/admin/academy/quiz/${quizId}`);
+            return;
+        }
+        setIsQuizLoading(moduleId);
+        try {
+            const mod = level.modules.find(m => m.id === moduleId);
+            const res = await fetch('/api/academy/quizzes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: `${mod?.title || 'Module'} Quiz`,
+                    moduleId,
+                }),
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || 'Failed to create quiz');
+            }
+            const quiz = await res.json();
+            router.push(`/admin/academy/quiz/${quiz.id}`);
+        } catch (e: any) {
+            toast.error(e.message || 'Failed to create quiz');
+        } finally {
+            setIsQuizLoading(null);
         }
     };
 
@@ -236,13 +267,21 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                     <MoreVertical size={16} />
                                                 </Button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-44 p-1" align="end">
+                                            <PopoverContent className="w-48 p-1" align="end">
                                                 <Link
                                                     href={`/admin/academy/lessons/create?moduleId=${module.id}`}
                                                     className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors"
                                                 >
                                                     <Plus size={14} /> Add Lesson
                                                 </Link>
+                                                <button
+                                                    onClick={() => handleManageQuiz(module.id, module.quiz?.id || null)}
+                                                    disabled={isQuizLoading === module.id}
+                                                    className="w-full flex items-center gap-2 text-sm px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors disabled:opacity-50"
+                                                >
+                                                    <ListChecks size={14} />
+                                                    {isQuizLoading === module.id ? 'Creating...' : module.quiz ? 'Edit Quiz' : 'Add Quiz'}
+                                                </button>
                                                 <Button
                                                     variant="ghost"
                                                     onClick={() => confirmDelete("module", module.id, module.title)}

@@ -1,4 +1,4 @@
-﻿import type { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import NextTopLoader from 'nextjs-toploader';
 import "./globals.css";
 
@@ -101,6 +101,24 @@ export default function RootLayout({
                 "@type": "SearchAction",
                 "target": `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/search?q={search_term_string}`,
                 "query-input": "required name=search_term_string"
+              }
+            }}
+          />
+          <JsonLd
+            type="Organization"
+            data={{
+              name: "TheNextTrade",
+              url: process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com",
+              logo: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/logo.png`,
+              description: "Professional Forex Trading Tools & Academy. Master the markets with structured education, trading tools, and market analysis.",
+              foundingDate: "2024",
+              sameAs: [
+                "https://twitter.com/thenexttrade"
+              ],
+              contactPoint: {
+                "@type": "ContactPoint",
+                "contactType": "customer support",
+                "url": `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/contact`
               }
             }}
           />

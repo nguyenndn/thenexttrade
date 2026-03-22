@@ -60,6 +60,16 @@ export default async function DashboardLessonPage({ params }: { params: Promise<
 
     // Pass completed lesson IDs so client can show progress
     const completedLessonIds = userProgress.map(p => p.lessonId);
+    const completedSet = new Set(completedLessonIds);
+
+    // Server-side sequential lock: all previous lessons must be completed
+    if (currentIndex > 0) {
+        const previousLessons = courseLessons.slice(0, currentIndex);
+        const allPreviousCompleted = previousLessons.every(l => completedSet.has(l.id));
+        if (!allPreviousCompleted) {
+            redirect("/dashboard/academy?locked=1");
+        }
+    }
 
     return (
         <LessonClientView

@@ -25,13 +25,18 @@ export default async function DashboardQuizPage({ params }: { params: Promise<{ 
         redirect("/auth/login");
     }
 
-    // Fetch quiz with questions (exclude correct answers) + previous attempts
     const [quiz, previousAttempts] = await Promise.all([
         prisma.quiz.findUnique({
             where: { id: quizId },
             include: {
                 module: {
-                    select: { title: true, level: { select: { title: true } } }
+                    include: {
+                        level: { select: { title: true } },
+                        lessons: {
+                            orderBy: { order: 'asc' },
+                            select: { id: true, title: true, slug: true, duration: true }
+                        }
+                    }
                 },
                 questions: {
                     orderBy: { order: 'asc' },
@@ -40,11 +45,7 @@ export default async function DashboardQuizPage({ params }: { params: Promise<{ 
                         text: true,
                         order: true,
                         options: {
-                            select: {
-                                id: true,
-                                text: true
-                                // isCorrect excluded — prevent cheating
-                            }
+                            select: { id: true, text: true }
                         }
                     }
                 }
@@ -59,6 +60,14 @@ export default async function DashboardQuizPage({ params }: { params: Promise<{ 
 
     if (!quiz) return notFound();
 
+    // Fetch user progress for module lessons
+    const moduleLessonIds = quiz.module?.lessons.map(l => l.id) || [];
+    const userProgress = await prisma.userProgress.findMany({
+        where: { userId: user.id, isCompleted: true, lessonId: { in: moduleLessonIds } },
+        select: { lessonId: true }
+    });
+    const completedLessonIds = userProgress.map(p => p.lessonId);
+
     const bestScore = previousAttempts.length > 0
         ? Math.max(...previousAttempts.map(a => a.score))
         : null;
@@ -72,6 +81,9 @@ export default async function DashboardQuizPage({ params }: { params: Promise<{ 
                 completedAt: a.completedAt.toISOString()
             }))}
             bestScore={bestScore}
+            moduleLessons={quiz.module?.lessons || []}
+            completedLessonIds={completedLessonIds}
         />
     );
 }
+

@@ -31,6 +31,9 @@ export default async function LevelDetailPage({
                     _count: {
                         select: { lessons: true },
                     },
+                    quiz: {
+                        select: { id: true }
+                    },
                 },
             },
         },

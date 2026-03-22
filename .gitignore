@@ -48,8 +48,8 @@ next-env.d.ts
 
 # prisma
 
-
-
-
 # Content files
 /content/
+
+# Credentials (never commit)
+.agent/workflows/login.md

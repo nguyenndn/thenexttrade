@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { GraduationCap, Trophy, ArrowRight, Zap, Target, BookOpen } from "lucide-react";
 import Link from "next/link";
-import AcademyMap from "@/components/academy/AcademyMap";
+import { AcademyTree } from "@/components/academy/AcademyTree";
 import { EmptyState } from "@/components/ui/EmptyState";
 
 import { getAuthUser } from "@/lib/auth-cache";
@@ -30,6 +30,7 @@ export default async function UserAcademyDashboard() {
                         id: true,
                         title: true,
                         description: true,
+                        _count: { select: { lessons: true } },
                         quiz: {
                             select: {
                                 id: true,
@@ -101,6 +102,17 @@ export default async function UserAcademyDashboard() {
         if (nextLesson) break;
     }
 
+    // Build completed lesson IDs for gamification lock logic
+    const completedLessonIds: string[] = [];
+    for (const level of levels) {
+        for (const module of level.modules) {
+            for (const lesson of module.lessons) {
+                if (lesson.progress.some((p: any) => p.isCompleted)) {
+                    completedLessonIds.push(lesson.id);
+                }
+            }
+        }
+    }
 
     const overallProgress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
     const currentStreak = userData?.streak || 0;
@@ -160,16 +172,9 @@ export default async function UserAcademyDashboard() {
                         </div>
                     )}
 
-                    {/* The Galaxy Map (Synced) */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
-                        <div className="p-6 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
-                            <h2 className="font-bold text-lg text-gray-900 dark:text-white">Your Flight Path</h2>
-                            <span className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-white/5 rounded text-gray-500">Interactive Map</span>
-                        </div>
-                        {/* Map Component */}
-                        <div className="-mx-4 md:mx-0">
-                            <AcademyMap levels={levels as any} userProgress={null} basePath="/dashboard/academy" />
-                        </div>
+                    {/* Academy Tree (Synced with /academy) */}
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                        <AcademyTree levels={levels as any} basePath="/dashboard/academy" isGuest={false} completedLessonIds={completedLessonIds} devMode />
                     </div>
 
                 </div>

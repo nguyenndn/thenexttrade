@@ -122,40 +122,53 @@ export async function GET(request: Request) {
                 })));
             }
 
-            // Search Lessons
+            // Search Lessons (only for authenticated users)
             if (type === "all" || type === "lesson") {
-                const lessons = await prisma.lesson.findMany({
-                    where: {
-                        OR: [
-                            { title: { contains: searchQuery, mode: "insensitive" } },
-                            { content: { contains: searchQuery, mode: "insensitive" } }
-                        ]
-                    },
-                    select: {
-                        id: true,
-                        title: true,
-                        slug: true,
-                        updatedAt: true,
-                        module: {
-                            select: {
-                                title: true,
-                                level: { select: { title: true } }
-                            }
-                        }
-                    },
-                    take: 10
-                });
+                // Check auth - only show lessons to logged-in users
+                const { createServerClient } = await import("@supabase/ssr");
+                const { cookies } = await import("next/headers");
+                const cookieStore = await cookies();
+                const supabase = createServerClient(
+                    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+                    { cookies: { getAll: () => cookieStore.getAll() } }
+                );
+                const { data: { user } } = await supabase.auth.getUser();
 
-                results.push(...lessons.map(lesson => ({
-                    type: "lesson",
-                    id: lesson.id,
-                    title: lesson.title,
-                    slug: `/academy/lesson/${lesson.slug}`, // Verify URL structure later
-                    description: `Lesson in ${lesson.module.level.title} - ${lesson.module.title}`,
-                    image: null,
-                    date: lesson.updatedAt,
-                    meta: { module: lesson.module.title }
-                })));
+                if (user) {
+                    const lessons = await prisma.lesson.findMany({
+                        where: {
+                            OR: [
+                                { title: { contains: searchQuery, mode: "insensitive" } },
+                                { content: { contains: searchQuery, mode: "insensitive" } }
+                            ]
+                        },
+                        select: {
+                            id: true,
+                            title: true,
+                            slug: true,
+                            updatedAt: true,
+                            module: {
+                                select: {
+                                    title: true,
+                                    level: { select: { title: true } }
+                                }
+                            }
+                        },
+                        take: 10
+                    });
+
+                    results.push(...lessons.map(lesson => ({
+                        type: "lesson",
+                        id: lesson.id,
+                        title: lesson.title,
+                        slug: `/academy/lesson/${lesson.slug}`,
+                        description: `Lesson in ${lesson.module.level.title} - ${lesson.module.title}`,
+                        image: null,
+                        date: lesson.updatedAt,
+                        meta: { module: lesson.module.title }
+                    })));
+                }
             }
         }
 

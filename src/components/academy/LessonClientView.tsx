@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, GraduationCap, BookOpen, Clock, Menu, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, GraduationCap, BookOpen, Clock, Menu, X, Lock, Trophy } from "lucide-react";
 import confetti from "canvas-confetti";
+import DOMPurify from "isomorphic-dompurify";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -28,12 +29,26 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
     const [isCompleted, setIsCompleted] = useState(
         completedLessonIds.includes(lesson.id)
     );
+    const [lockedDialogLesson, setLockedDialogLesson] = useState<string | null>(null);
 
     const lessonPath = (slug: string) => isDashboard ? `/dashboard/academy/lessons/${slug}` : `/academy/lesson/${slug}`;
     const academyPath = isDashboard ? '/dashboard/academy' : '/academy';
 
     const currentIndex = courseLessons.findIndex((l: any) => l.id === lesson.id);
     const completedInModule = courseLessons.filter((l: any) => completedLessonIds.includes(l.id)).length;
+
+    // Precompute which lesson indexes are unlocked (O(n) instead of O(n²))
+    const unlockedIndexes = useMemo(() => {
+        const set = new Set<number>([0]);
+        for (let i = 1; i < courseLessons.length; i++) {
+            const allPrevDone = courseLessons.slice(0, i).every((l: any) => completedLessonIds.includes(l.id));
+            if (allPrevDone) set.add(i);
+            else break; // Sequential: if one isn't done, none after are unlocked
+        }
+        return set;
+    }, [courseLessons, completedLessonIds]);
+
+    const sanitizedContent = useMemo(() => DOMPurify.sanitize(lesson.content), [lesson.content]);
 
     const handleComplete = async () => {
         setCompleting(true);
@@ -144,7 +159,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                 prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200
                                 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono
                                 [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-gray-200 dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-gray-200 dark:[&_td]:border-white/10"
-                            dangerouslySetInnerHTML={{ __html: lesson.content }}
+                            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
                     </div>
 
@@ -223,6 +238,27 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                             {courseLessons.map((l: any, idx: number) => {
                                 const isActive = l.id === lesson.id;
                                 const isLessonCompleted = completedLessonIds.includes(l.id);
+                                // Sequential lock: unlocked if all previous lessons are completed
+                                const isUnlocked = unlockedIndexes.has(idx);
+                                const isLocked = !isUnlocked && !isActive && !isLessonCompleted;
+
+                                if (isLocked) {
+                                    return (
+                                        <button
+                                            key={l.id}
+                                            onClick={() => setLockedDialogLesson(l.title)}
+                                            className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5 border-l-2 border-transparent cursor-not-allowed opacity-60"
+                                        >
+                                            <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 border border-dashed border-gray-300 dark:border-white/20 bg-gray-50 dark:bg-white/5">
+                                                <Lock size={10} className="text-gray-400" />
+                                            </span>
+                                            <span className="flex-1 truncate text-gray-400 dark:text-gray-600">
+                                                {l.title}
+                                            </span>
+                                        </button>
+                                    );
+                                }
+
                                 return (
                                     <Link
                                         key={l.id}
@@ -267,7 +303,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                     href={isDashboard ? `/dashboard/academy/quiz/${quiz.id}` : `/academy/quiz/${quiz.id}`}
                                     className="flex items-center gap-2 text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline"
                                 >
-                                    🏆 Take Module Quiz
+                                    <Trophy size={14} className="shrink-0" /> Take Module Quiz
                                 </Link>
                             </div>
                         )}
@@ -286,16 +322,31 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                             </Button>
                         </div>
                         <div className="space-y-1">
-                            {courseLessons.map((l: any, idx: number) => (
-                                <Link key={l.id} href={lessonPath(l.slug)} className={cn(
-                                    "flex items-center gap-3 py-2.5 px-3 text-sm rounded-lg transition-colors",
-                                    l.id === lesson.id ? "bg-primary/10 text-primary font-bold" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
-                                )}>
-                                    <span className="text-xs font-bold text-gray-400 w-5 text-center">{idx + 1}</span>
-                                    <span className="truncate">{l.title}</span>
-                                    {completedLessonIds.includes(l.id) && <CheckCircle size={12} className="text-primary shrink-0 ml-auto" />}
-                                </Link>
-                            ))}
+                            {courseLessons.map((l: any, idx: number) => {
+                                const mobileUnlocked = unlockedIndexes.has(idx);
+                                const mobileCompleted = completedLessonIds.includes(l.id);
+                                const mobileLocked = !mobileUnlocked && l.id !== lesson.id && !mobileCompleted;
+
+                                if (mobileLocked) {
+                                    return (
+                                        <button key={l.id} onClick={() => { setMobileMenuOpen(false); setLockedDialogLesson(l.title); }} className="w-full flex items-center gap-3 py-2.5 px-3 text-sm rounded-lg text-gray-400 opacity-50">
+                                            <Lock size={10} className="w-5 text-center" />
+                                            <span className="truncate">{l.title}</span>
+                                        </button>
+                                    );
+                                }
+
+                                return (
+                                    <Link key={l.id} href={lessonPath(l.slug)} className={cn(
+                                        "flex items-center gap-3 py-2.5 px-3 text-sm rounded-lg transition-colors",
+                                        l.id === lesson.id ? "bg-primary/10 text-primary font-bold" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
+                                    )}>
+                                        <span className="text-xs font-bold text-gray-400 w-5 text-center">{idx + 1}</span>
+                                        <span className="truncate">{l.title}</span>
+                                        {mobileCompleted && <CheckCircle size={12} className="text-primary shrink-0 ml-auto" />}
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
@@ -309,6 +360,33 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
             >
                 <Menu size={20} />
             </button>
+
+            {/* Locked Lesson Dialog */}
+            {lockedDialogLesson && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setLockedDialogLesson(null)}>
+                    <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 mx-4 max-w-sm text-center" onClick={e => e.stopPropagation()}>
+                        <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
+                            <Lock size={24} className="text-amber-600 dark:text-amber-400" />
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Lesson Locked</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                            <strong className="text-gray-700 dark:text-gray-300">&ldquo;{lockedDialogLesson}&rdquo;</strong>
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+                            You need to complete the previous lessons first before accessing this one. Keep up the great work!
+                        </p>
+                        <div className="flex gap-3 justify-center">
+                            <button
+                                onClick={() => setLockedDialogLesson(null)}
+                                autoFocus
+                                className="px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-[#00B078] transition-colors shadow-lg shadow-primary/20"
+                            >
+                                Got it!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

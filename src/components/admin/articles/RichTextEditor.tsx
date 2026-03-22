@@ -104,7 +104,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
             }),
             Image.configure({
                 HTMLAttributes: {
-                    class: 'rounded-xl shadow-lg max-w-full my-6',
+                    class: 'rounded-xl shadow-lg max-w-full my-6 mx-auto block',
                 },
             }),
             Youtube.configure({
