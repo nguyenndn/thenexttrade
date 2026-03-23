@@ -59,27 +59,6 @@ export default function NotificationsClient() {
                     </div>
 
                     <div className="border-t border-gray-200 dark:border-white/10 my-4"></div>
-
-                    {/* Push Notifications */}
-                    <div>
-                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                            <Smartphone size={16} /> Push Notifications
-                        </h3>
-                        <div className="space-y-4">
-                            <ToggleItem
-                                title="Trade Executions"
-                                description="Instant alerts when your TP or SL is hit."
-                                isOn={toggles.trade_notifications}
-                                onToggle={() => handleToggle('trade_notifications')}
-                            />
-                            <ToggleItem
-                                title="Enable All Push Notifications"
-                                description="Turn on all push notifications for mobile devices."
-                                isOn={toggles.push_all}
-                                onToggle={() => handleToggle('push_all')}
-                            />
-                        </div>
-                    </div>
                 </div>
 
                 <div className="mt-8 flex justify-end">

@@ -9,6 +9,7 @@ import { QuickActionsWidget } from "@/components/admin/widgets/QuickActionsWidge
 import { TopLearnersSuspense } from "@/components/admin/dashboard/TopLearnersSuspense";
 import { RecentTradesSuspense } from "@/components/admin/dashboard/RecentTradesSuspense";
 import { PopularArticlesSuspense } from "@/components/admin/dashboard/PopularArticlesSuspense";
+import { LeaderboardWidget } from "@/components/dashboard/LeaderboardWidget";
 
 export const dynamic = 'force-dynamic';
 
@@ -164,7 +165,7 @@ export default async function AdminDashboard() {
 
             {/* Zone 3: Activity Widgets */}
             <AnimatedSection delay={0.8}>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
                     <Suspense fallback={<WidgetSkeleton />}>
                         <RecentTradesSuspense />
                     </Suspense>
@@ -173,6 +174,9 @@ export default async function AdminDashboard() {
                     </Suspense>
                     <Suspense fallback={<WidgetSkeleton />}>
                         <PopularArticlesSuspense />
+                    </Suspense>
+                    <Suspense fallback={<WidgetSkeleton />}>
+                        <LeaderboardWidget />
                     </Suspense>
                 </div>
             </AnimatedSection>

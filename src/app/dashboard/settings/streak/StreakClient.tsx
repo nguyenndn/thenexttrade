@@ -6,6 +6,8 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { celebrateXP } from "@/lib/celebrate";
+import gamificationConfig from "@/config/gamification.json";
 
 
 export default function StreakClient() {
@@ -47,45 +49,21 @@ export default function StreakClient() {
             if (res.ok) {
                 setStreak(data.streak);
                 setLastCheckIn(new Date(data.lastCheckIn));
-                // Optimistically update history
                 setCheckInHistory(prev => [...prev, new Date().toISOString()]);
-                toast.success(data.message);
 
                 // Sync Header
                 window.dispatchEvent(new Event("streak-updated"));
 
-                // Trigger Fireworks Celebration
-                console.log("Triggering confetti fireworks!");
+                // Parse XP from message (e.g. "+30 XP Bonus!")
+                const xpMatch = data.message?.match(/(\d+)\s*XP/);
+                const xpAmount = xpMatch ? parseInt(xpMatch[1]) : 10;
 
-                const confetti = (await import("canvas-confetti")).default;
-
-                const duration = 3000;
-                const animationEnd = Date.now() + duration;
-                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
-
-                const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
-
-                const interval: any = setInterval(function () {
-                    const timeLeft = animationEnd - Date.now();
-
-                    if (timeLeft <= 0) {
-                        return clearInterval(interval);
-                    }
-
-                    const particleCount = 50 * (timeLeft / duration);
-
-                    // Since particles fall down, start a bit higher than random
-                    confetti({
-                        ...defaults,
-                        particleCount,
-                        origin: { x: randomInRange(0.1, 0.3), y: randomInRange(0.3, 0.5) }
-                    });
-                    confetti({
-                        ...defaults,
-                        particleCount,
-                        origin: { x: randomInRange(0.7, 0.9), y: randomInRange(0.3, 0.5) }
-                    });
-                }, 250);
+                // Celebration with confetti (shared effect)
+                await celebrateXP({
+                    xp: xpAmount,
+                    message: data.message || "Streak Updated!",
+                    leveledUp: data.message?.includes("Badge") || data.message?.includes("LEGENDARY"),
+                });
             } else {
                 toast.error(data.error);
             }
@@ -112,17 +90,12 @@ export default function StreakClient() {
         );
     }
 
-    // Milestones Configuration
-    const MILESTONES = [
-        { days: 3, reward: "20 XP" },
-        { days: 7, reward: "50 XP + 'Week Warrior' Badge" },
-        { days: 14, reward: "100 XP" },
-        { days: 30, reward: "300 XP + 'Monthly Master' Badge" },
-        { days: 60, reward: "500 XP" },
-        { days: 90, reward: "1000 XP + 'Quarterly King' Badge" },
-        { days: 100, reward: "Exclusive 'Century Club' Title" },
-        { days: 365, reward: "Legendary Status + 5000 XP" },
-    ];
+    // Milestones from JSON config
+    const MILESTONES = gamificationConfig.streakMilestones.map(m => ({
+        days: m.days,
+        reward: [m.xp ? `${m.xp} XP` : null, m.badge ? `'${m.badge}' Badge` : null]
+            .filter(Boolean).join(" + ") || "Special Reward",
+    }));
 
     // Calculate Progress
     const nextMilestone = MILESTONES.find(m => m.days > streak) || MILESTONES[MILESTONES.length - 1];

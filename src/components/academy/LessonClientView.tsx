@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, GraduationCap, BookOpen, Clock, Menu, X, Lock, Trophy } from "lucide-react";
-import confetti from "canvas-confetti";
+import { celebrateXP } from "@/lib/celebrate";
 import DOMPurify from "isomorphic-dompurify";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
@@ -52,7 +52,6 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
 
     const handleComplete = async () => {
         setCompleting(true);
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 
         try {
             const res = await fetch(`/api/lessons/${lesson.id}/complete`, {
@@ -63,11 +62,15 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
             if (res.ok) {
                 const data = await res.json();
                 setIsCompleted(true);
-                if (data.gamification) {
-                    toast.success(`Lesson Completed! +${data.gamification.xpEarned} XP`);
-                } else {
-                    toast.success("Lesson Completed!");
-                }
+
+                // Celebration effect
+                await celebrateXP({
+                    xp: data.gamification?.xpEarned || 50,
+                    message: "Lesson Completed!",
+                    badge: data.gamification?.newBadge?.name || null,
+                    leveledUp: data.gamification?.leveledUp || false,
+                });
+
                 setTimeout(() => {
                     if (nextLesson) router.push(lessonPath(nextLesson.slug));
                     else if (isLastLesson && quiz) router.push(isDashboard ? `/dashboard/academy/quiz/${quiz.id}` : `/academy/quiz/${quiz.id}`);

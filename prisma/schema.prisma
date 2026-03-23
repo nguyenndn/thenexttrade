@@ -62,10 +62,17 @@ model User {
   importHistory ImportHistory[] // Added to satisfy relation
 
 
-  // Gamification (Sprint 5)
-  xp            Int       @default(0) // @deprecated
-  level         Int       @default(1) // @deprecated
-  badges        UserBadge[] // @deprecated Relation to UserBadge
+  // Gamification
+  xp            Int       @default(0)
+  level         Int       @default(1)
+  badges        UserBadge[]
+  showOnLeaderboard Boolean @default(true)
+
+  // Social
+  followers     UserFollow[] @relation("Following")
+  following     UserFollow[] @relation("Followers")
+  challengesSent     Challenge[] @relation("Challenger")
+  challengesReceived Challenge[] @relation("Challengee")
 
   // EA License Management (Sprint 6/V2)
   EALicenses    EALicense[]
@@ -90,8 +97,9 @@ model User {
   @@index([createdAt])
   @@index([email])
   
-  // Performance Indexes
-  @@index([xp(sort: Desc)]) // Fast Leaderboard Sorting
+  // Leaderboard Indexes
+  @@index([xp(sort: Desc)])
+  @@index([streak(sort: Desc)])
 }
 
 // Removed NextAuth tables (Account, Session, VerificationToken) as they are not needed with Supabase SSR.
@@ -739,19 +747,20 @@ model SystemSetting {
 // GAMIFICATION
 // ============================================================================
 
-model Badge { // @deprecated
+model Badge {
   id          String   @id @default(cuid())
   code        String   @unique // e.g. "FIRST_TRADE", "LESSON_MASTER"
   name        String
   description String
-  icon        String   // Path to icon or lucide name
+  icon        String   // Lucide icon name
+  category    String   @default("milestone") // milestone, season, achievement
   xpReward    Int      @default(0)
   createdAt   DateTime @default(now()) @db.Timestamptz
   
   users       UserBadge[]
 }
 
-model UserBadge { // @deprecated
+model UserBadge {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String   @db.Uuid
@@ -760,6 +769,7 @@ model UserBadge { // @deprecated
   earnedAt  DateTime @default(now()) @db.Timestamptz
 
   @@unique([userId, badgeId])
+  @@index([userId])
 }
 
 // ============================================================================
@@ -1119,4 +1129,39 @@ model ToolView {
   updatedAt DateTime @updatedAt @db.Timestamptz
 
   @@index([viewCount(sort: Desc)])
+}
+
+// ============================================================================
+// SOCIAL & LEADERBOARD
+// ============================================================================
+
+model UserFollow {
+  id          String   @id @default(cuid())
+  followerId  String   @db.Uuid
+  followingId String   @db.Uuid
+  follower    User     @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @db.Timestamptz
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
+
+model Challenge {
+  id            String   @id @default(cuid())
+  challengerId  String   @db.Uuid
+  challengeeId  String   @db.Uuid
+  challenger    User     @relation("Challenger", fields: [challengerId], references: [id], onDelete: Cascade)
+  challengee    User     @relation("Challengee", fields: [challengeeId], references: [id], onDelete: Cascade)
+  type          String   @default("xp") // xp, streak, trades
+  startDate     DateTime @db.Timestamptz
+  endDate       DateTime @db.Timestamptz
+  status        String   @default("PENDING") // PENDING, ACTIVE, COMPLETED, DECLINED
+  winnerId      String?  @db.Uuid
+  createdAt     DateTime @default(now()) @db.Timestamptz
+
+  @@index([challengerId])
+  @@index([challengeeId])
+  @@index([status])
 }

@@ -46,7 +46,22 @@ export async function POST(request: Request) {
             }
         });
 
-        return NextResponse.json(entry, { status: 201 });
+        // Award XP for logging trade
+        let xpEarned = 0;
+        let isFirstTrade = false;
+        try {
+            const { addXP, XP_AWARDS, checkAndGrantBadge } = await import("@/lib/gamification");
+            await addXP(user.id, XP_AWARDS.JOURNAL_ENTRY);
+            xpEarned = XP_AWARDS.JOURNAL_ENTRY;
+
+            const tradeCount = await prisma.journalEntry.count({ where: { userId: user.id } });
+            if (tradeCount === 1) {
+                await checkAndGrantBadge(user.id, "TRADER");
+                isFirstTrade = true;
+            }
+        } catch { /* XP failure should not block entry creation */ }
+
+        return NextResponse.json({ ...entry, gamification: { xpEarned, isFirstTrade } }, { status: 201 });
     } catch (error) {
         console.error("Create Journal Error:", error);
         if (error instanceof z.ZodError) {

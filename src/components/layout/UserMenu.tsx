@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/Button";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { CommandPaletteTrigger } from "@/components/search/CommandPalette";
+import { getTierProgress } from "@/lib/tier-utils";
 
 interface UserMenuProps {
     user: AuthUser | null;
@@ -39,12 +40,8 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
         username: user?.profile?.username || "User",
     };
 
-    // Mock Stats (To be replaced with real data or props in the future)
-    const stats = {
-        profit: 1250.50,
-        points: 850,
-        rank: "Silver"
-    };
+    const userXp = user?.profile?.xp ?? 0;
+    const tierProgress = getTierProgress(userXp);
 
     // Close dropdown on click outside
     useEffect(() => {
@@ -118,6 +115,41 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                         <h4 className="font-bold text-lg text-gray-900 dark:text-white leading-tight">
                             Hello, <span className="text-primary">{userData.name}</span>
                         </h4>
+
+                        {/* XP & Tier */}
+                        <div className="mt-3 flex items-center gap-2">
+                            <span
+                                className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border"
+                                style={{
+                                    color: tierProgress.current.color,
+                                    borderColor: tierProgress.current.color + '40',
+                                    backgroundColor: tierProgress.current.color + '15',
+                                }}
+                            >
+                                {tierProgress.current.label}
+                            </span>
+                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                                {userXp.toLocaleString()} XP
+                            </span>
+                        </div>
+
+                        {/* Progress bar */}
+                        {tierProgress.next && (
+                            <div className="mt-2">
+                                <div className="w-full h-1.5 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full rounded-full transition-all duration-500"
+                                        style={{
+                                            width: `${tierProgress.progress}%`,
+                                            backgroundColor: tierProgress.current.color,
+                                        }}
+                                    />
+                                </div>
+                                <p className="text-[10px] text-gray-400 mt-1">
+                                    {tierProgress.xpToNext.toLocaleString()} XP to {tierProgress.next.label}
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Search — mobile only (sm:hidden) */}
