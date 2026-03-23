@@ -163,10 +163,25 @@ export async function createJournalEntry(data: z.infer<typeof journalSchema>) {
             }
         });
 
+        // Award XP for logging trade
+        let xpEarned = 0;
+        let isFirstTrade = false;
+        try {
+            const { addXP, XP_AWARDS } = await import("@/lib/gamification");
+            const { checkAndGrantBadge } = await import("@/lib/gamification");
+            await addXP(user.id, XP_AWARDS.JOURNAL_ENTRY);
+            xpEarned = XP_AWARDS.JOURNAL_ENTRY;
+
+            const tradeCount = await prisma.journalEntry.count({ where: { userId: user.id } });
+            if (tradeCount === 1) {
+                await checkAndGrantBadge(user.id, "TRADER");
+                isFirstTrade = true;
+            }
+        } catch { /* XP award failure should not block journal creation */ }
+
         revalidatePath("/dashboard/journal");
-        return { success: true };
+        return { success: true, gamification: { xpEarned, isFirstTrade } };
     } catch (error) {
-        console.error("Create Entry Error", error);
         return { error: "Failed to create entry" };
     }
 }

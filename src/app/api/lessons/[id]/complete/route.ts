@@ -1,7 +1,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { addXP, checkAndGrantBadge } from "@/lib/gamification";
+import { addXP, checkAndGrantBadge, XP_AWARDS } from "@/lib/gamification";
 import { getAuthUser } from "@/lib/auth-cache";
 
 export async function POST(
@@ -37,10 +37,11 @@ export async function POST(
             }
         });
 
-        // 2. Add XP for completing a lesson (e.g., 20 XP)
-        const xpResult = await addXP(userId, 20);
+        // Add XP for completing a lesson
+        const xpAmount = XP_AWARDS.LESSON_COMPLETE;
+        const xpResult = await addXP(userId, xpAmount);
 
-        // 3. Check for 'STUDIOUS' Badge (Completed 5 lessons)
+        // Check for 'STUDIOUS' Badge (Completed 5 lessons)
         const completedCount = await prisma.userProgress.count({
             where: {
                 userId,
@@ -56,14 +57,11 @@ export async function POST(
             }
         }
 
-        // 4. Check for 'FIRST_LESSON' Badge (if we had one, logic here)
-        // For now just STUDIOUS.
-
         return NextResponse.json({
             success: true,
             progress,
             gamification: {
-                xpEarned: 20,
+                xpEarned: xpAmount,
                 newLevel: xpResult?.newLevel,
                 leveledUp: xpResult?.leveledUp,
                 newBadge

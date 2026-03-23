@@ -93,6 +93,11 @@ export const dashboardMenuItems = [
         icon: GraduationCap,
     },
     {
+        name: "Leaderboard",
+        href: "/dashboard/leaderboard",
+        icon: Trophy,
+    },
+    {
         name: "EA & Indicators",
         href: "/dashboard/trading-systems",
         icon: Bot,

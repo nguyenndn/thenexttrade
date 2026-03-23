@@ -14,6 +14,7 @@ import { Button, buttonVariants } from "@/components/ui/Button";
 import { StrategyModal } from "@/components/strategies/StrategyModal";
 import { calculateProfitLoss } from "@/lib/calculators";
 import { formatAccountLabel, transformImageUrl } from "@/lib/utils";
+import { celebrateXP } from "@/lib/celebrate";
 
 interface JournalFormProps {
     initialData?: any;
@@ -213,7 +214,17 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 throw new Error(error.error || "Failed using API");
             }
 
-            toast.success(isEditMode ? "Trade updated successfully" : "Trade logged successfully");
+            const responseData = await res.json();
+
+            if (!isEditMode && responseData.gamification?.xpEarned) {
+                await celebrateXP({
+                    xp: responseData.gamification.xpEarned,
+                    message: "Trade Logged Successfully!",
+                    badge: responseData.gamification.isFirstTrade ? "First Trade" : null,
+                });
+            } else {
+                toast.success(isEditMode ? "Trade updated successfully" : "Trade logged successfully");
+            }
 
             if (onSuccess) {
                 onSuccess();

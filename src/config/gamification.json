@@ -1,0 +1,31 @@
+{
+  "tiers": [
+    { "name": "bronze",   "label": "Bronze",   "minXp": 0,     "icon": "Shield",      "color": "#CD7F32" },
+    { "name": "silver",   "label": "Silver",   "minXp": 1000,  "icon": "Shield",      "color": "#C0C0C0" },
+    { "name": "gold",     "label": "Gold",     "minXp": 5000,  "icon": "ShieldCheck", "color": "#FFD700" },
+    { "name": "platinum", "label": "Platinum", "minXp": 15000, "icon": "Gem",         "color": "#E5E4E2" },
+    { "name": "diamond",  "label": "Diamond",  "minXp": 30000, "icon": "Diamond",     "color": "#06B6D4" },
+    { "name": "master",   "label": "Master",   "minXp": 50000, "icon": "Crown",       "color": "#FF6B35" }
+  ],
+  "xpAwards": {
+    "LESSON_COMPLETE": 50,
+    "QUIZ_PASS": 100,
+    "JOURNAL_ENTRY": 25,
+    "DAILY_CHECKIN": 10,
+    "STREAK_MILESTONE_7": 200,
+    "STREAK_MILESTONE_30": 500,
+    "STREAK_MILESTONE_100": 1500,
+    "CHALLENGE_WIN": 300,
+    "FIRST_TRADE": 100
+  },
+  "streakMilestones": [
+    { "days": 3,   "xp": 20,   "badge": null },
+    { "days": 7,   "xp": 50,   "badge": "Week Warrior" },
+    { "days": 14,  "xp": 100,  "badge": null },
+    { "days": 30,  "xp": 300,  "badge": "Monthly Master" },
+    { "days": 60,  "xp": 500,  "badge": null },
+    { "days": 90,  "xp": 1000, "badge": "Quarterly King" },
+    { "days": 100, "xp": 0,    "badge": "Century Club" },
+    { "days": 365, "xp": 5000, "badge": "Legendary" }
+  ]
+}
