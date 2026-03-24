@@ -78,6 +78,8 @@ export async function PUT(
         if (metaDescription !== undefined) data.metaDescription = metaDescription;
         if (focusKeyword !== undefined) data.focusKeyword = focusKeyword;
         if (publishedAt !== undefined) data.publishedAt = publishedAt ? new Date(publishedAt) : null;
+        if (body.schemaType !== undefined) data.schemaType = body.schemaType;
+        if (body.estimatedTime !== undefined) data.estimatedTime = body.estimatedTime ? parseInt(body.estimatedTime) : null;
 
         if (tags && Array.isArray(tags)) {
             data.tags = {

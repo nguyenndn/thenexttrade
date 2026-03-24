@@ -139,6 +139,7 @@ model Level {
   title       String
   description String?
   order       Int      @unique // 1, 2, 3
+  accessLevel String   @default("PUBLIC") // "PUBLIC" | "MEMBER"
   modules     Module[]
   
   createdAt   DateTime @default(now()) @db.Timestamptz
@@ -209,6 +210,11 @@ enum ArticleStatus {
   ARCHIVED
 }
 
+enum ArticleSchemaType {
+  ARTICLE
+  HOWTO
+}
+
 model Article {
   id          String    @id @default(cuid())
   title       String
@@ -234,6 +240,8 @@ model Article {
   metaTitle       String?
   metaDescription String?
   focusKeyword    String?
+  schemaType      ArticleSchemaType @default(ARTICLE)
+  estimatedTime   Int?
   
   createdAt   DateTime  @default(now()) @db.Timestamptz
   updatedAt   DateTime  @updatedAt @db.Timestamptz
@@ -420,6 +428,7 @@ model TradingAccount {
   currency    String   @default("USD")
   platform    String?  @default("MetaTrader 4") // MT4, MT5, cTrader
   isDefault   Boolean  @default(false)
+  useForLeaderboard Boolean @default(false) @map("use_for_leaderboard") // Only one per user, real accounts only
   
   journalEntries JournalEntry[]
   

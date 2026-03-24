@@ -11,16 +11,48 @@ interface RelatedArticlesBottomProps {
 }
 
 export default async function RelatedArticlesBottom({ categoryId, currentArticleId, initialArticles }: RelatedArticlesBottomProps) {
-    const articles = initialArticles || await prisma.article.findMany({
-        where: {
-            categoryId: categoryId,
-            id: { not: currentArticleId },
-            status: "PUBLISHED"
-        },
-        take: 3,
-        orderBy: { createdAt: 'desc' },
-        include: { tags: true }
-    });
+    // Strategy: fetch more candidates from same category, then supplement with popular articles
+    let articles = initialArticles;
+    
+    if (!articles) {
+        // Primary: same category articles
+        const sameCategoryArticles = await prisma.article.findMany({
+            where: {
+                categoryId: categoryId,
+                id: { not: currentArticleId },
+                status: "PUBLISHED"
+            },
+            take: 6, // Fetch extra to have fallback
+            orderBy: [
+                { views: 'desc' },
+                { createdAt: 'desc' }
+            ],
+            select: {
+                id: true, title: true, slug: true, excerpt: true,
+                thumbnail: true, createdAt: true,
+            }
+        });
+
+        if (sameCategoryArticles.length >= 3) {
+            articles = sameCategoryArticles.slice(0, 3);
+        } else {
+            // Fallback: supplement with popular articles from other categories
+            const existingIds = [currentArticleId, ...sameCategoryArticles.map(a => a.id)];
+            const popular = await prisma.article.findMany({
+                where: {
+                    id: { notIn: existingIds },
+                    status: "PUBLISHED"
+                },
+                take: 3 - sameCategoryArticles.length,
+                orderBy: { views: 'desc' },
+                select: {
+                    id: true, title: true, slug: true, excerpt: true,
+                    thumbnail: true, createdAt: true,
+                }
+            });
+            articles = [...sameCategoryArticles, ...popular];
+        }
+    }
 
     if (articles.length === 0) return null;
 

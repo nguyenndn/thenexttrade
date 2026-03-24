@@ -33,6 +33,8 @@ interface ArticleFormProps {
         authorId?: string;
         isFeatured?: boolean;
         focusKeyword?: string;
+        schemaType?: string;
+        estimatedTime?: number | null;
         updatedAt?: string; // Added for draft comparison
     };
     categories: { id: string; name: string }[];
@@ -88,6 +90,8 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
         tags: initialData?.tags?.map(t => t.tagId || t.id) || [] as string[],
         authorId: initialData?.authorId || "",
         isFeatured: initialData?.isFeatured || false,
+        schemaType: initialData?.schemaType || "ARTICLE",
+        estimatedTime: initialData?.estimatedTime ?? null,
     });
 
     // Integrated Local Storage Auto-Save hook
@@ -567,6 +571,29 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                             onChange={(val) => setFormData({ ...formData, status: val })}
                             placeholder="Select Status"
                         />
+                        <FormSelect
+                            label="Schema Type"
+                            value={formData.schemaType}
+                            options={[
+                                { label: 'Article (Default)', value: 'ARTICLE' },
+                                { label: 'HowTo Guide', value: 'HOWTO' },
+                            ]}
+                            onChange={(val) => setFormData({ ...formData, schemaType: val })}
+                            placeholder="Select Schema"
+                        />
+                        {formData.schemaType === 'HOWTO' && (
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Estimated Time (minutes)</label>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
+                                    value={formData.estimatedTime ?? ''}
+                                    onChange={e => setFormData({ ...formData, estimatedTime: e.target.value ? parseInt(e.target.value) : null })}
+                                    placeholder="e.g. 30"
+                                />
+                            </div>
+                        )}
 
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Publish Date</label>

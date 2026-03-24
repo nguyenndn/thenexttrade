@@ -83,7 +83,7 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        const { title, content, excerpt, thumbnail, status, categoryId, isFeatured, metaTitle, metaDescription, publishedAt, slug, tags, focusKeyword } = body;
+        const { title, content, excerpt, thumbnail, status, categoryId, isFeatured, metaTitle, metaDescription, publishedAt, slug, tags, focusKeyword, schemaType, estimatedTime } = body;
 
         // Manual validation since Zod schema is simple and we have optional complex fields
         if (!title || !content || !categoryId) {
@@ -139,6 +139,8 @@ export async function POST(request: Request) {
             metaTitle,
             metaDescription,
             focusKeyword,
+            schemaType: schemaType || "ARTICLE",
+            estimatedTime: estimatedTime ? parseInt(estimatedTime) : null,
             publishedAt: publishedAt ? new Date(publishedAt) : null,
             authorId: user.id
         };

@@ -10,7 +10,7 @@ export async function GET() {
         description: "Latest insights, analysis, and educational content from The Next Trade.",
         site_url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
         feed_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/feed.xml`,
-        language: "vi",
+        language: "en-us",
         pubDate: new Date(),
         copyright: `All rights reserved ${new Date().getFullYear()}, The Next Trade`,
     });
@@ -19,10 +19,11 @@ export async function GET() {
         where: {
             status: "PUBLISHED",
         },
-        orderBy: {
-            createdAt: "desc", // Using createdAt as primary sort for now, ideally publishedAt
-        },
-        take: 20,
+        orderBy: [
+            { publishedAt: "desc" },
+            { createdAt: "desc" }
+        ],
+        take: 50,
         include: {
             author: true,
             category: true,
@@ -35,7 +36,7 @@ export async function GET() {
             description: article.excerpt || article.content.substring(0, 160) + "...",
             url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/articles/${article.slug}`,
             guid: article.id,
-            date: article.createdAt, // Or publishedAt if available
+            date: article.publishedAt || article.createdAt,
             author: article.author.name || "The Next Trade Team",
             categories: [article.category.name],
         });

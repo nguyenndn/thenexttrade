@@ -11,12 +11,33 @@ async function main() {
   console.log(`Found ${users.length} users`);
   if (users.length === 0) return;
 
+  // --- XP + STREAK TAB: Set XP, level, streak on users ---
+  const xpProfiles = [
+    { xp: 11260, level: 21, streak: 45 },
+    { xp: 3755,  level: 12, streak: 30 },
+    { xp: 1655,  level: 9,  streak: 14 },
+    { xp: 1549,  level: 8,  streak: 7 },
+    { xp: 1430,  level: 7,  streak: 3 },
+  ];
+
+  for (let u = 0; u < Math.min(xpProfiles.length, users.length); u++) {
+    await prisma.user.update({
+      where: { id: users[u].id },
+      data: {
+        xp: xpProfiles[u].xp,
+        level: xpProfiles[u].level,
+        streak: xpProfiles[u].streak,
+        showOnLeaderboard: true,
+      },
+    });
+    console.log(`⭐ ${users[u].name || users[u].email} → ${xpProfiles[u].xp} XP, Level ${xpProfiles[u].level}, Streak ${xpProfiles[u].streak}`);
+  }
+
   // --- ACADEMY TAB: Seed lesson completions ---
   const lessons = await prisma.lesson.findMany({ take: 20, select: { id: true } });
   console.log(`\nFound ${lessons.length} lessons`);
 
   if (lessons.length > 0) {
-    // User 0 completes ALL lessons, user 1 most, etc.
     for (let u = 0; u < Math.min(5, users.length); u++) {
       const lessonsForUser = Math.max(1, lessons.length - u * 3);
       let completed = 0;
@@ -40,7 +61,6 @@ async function main() {
   }
 
   // --- TRADING TAB: Seed journal entries (last 7 days, CLOSED, min 5 trades) ---
-  // Need a trading account for each user
   const symbols = ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD", "BTCUSD"];
   const tradingProfiles = [
     { wins: 8, losses: 2, label: "80% WR" },
@@ -53,7 +73,6 @@ async function main() {
   for (let u = 0; u < Math.min(5, users.length); u++) {
     const profile = tradingProfiles[u];
 
-    // Get or create a trading account
     let account = await prisma.tradingAccount.findFirst({
       where: { userId: users[u].id },
       select: { id: true },
@@ -74,12 +93,9 @@ async function main() {
       console.log(`🏦 Created trading account for ${users[u].name}`);
     }
 
-    // Delete old seed trades (to avoid duplicates)
+    // Delete old seed trades
     await prisma.journalEntry.deleteMany({
-      where: {
-        userId: users[u].id,
-        notes: "LEADERBOARD_SEED",
-      },
+      where: { userId: users[u].id, notes: "LEADERBOARD_SEED" },
     });
 
     // Create WIN trades

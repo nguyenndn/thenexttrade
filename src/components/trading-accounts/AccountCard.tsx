@@ -6,6 +6,7 @@ import {
     Key,
     Trash2,
     ExternalLink,
+    Trophy,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
@@ -18,6 +19,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/Button";
+import { toast } from "sonner";
 
 interface AccountCardProps {
     account: any;
@@ -49,6 +51,7 @@ const getPlatformIcon = (platform: string) => {
 
 export function AccountCard({
     account,
+    onUpdate,
     onRegenerateKey,
     onDelete,
     onSettings
@@ -100,6 +103,12 @@ export function AccountCard({
                                         #{account.accountNumber}
                                     </span>
                                 )}
+                                {account.useForLeaderboard && (
+                                    <span className="text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest border whitespace-nowrap hidden sm:inline-flex items-center gap-1 bg-yellow-50 text-yellow-600 border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20">
+                                        <Trophy size={10} />
+                                        Leaderboard
+                                    </span>
+                                )}
                             </div>
                             <p className="text-xs text-gray-500 font-medium mt-0.5 truncate max-w-[180px]" title={account.server || "Server Unknown"}>
                                 {account.server || "Server Unknown"}
@@ -125,6 +134,25 @@ export function AccountCard({
                                     <span>Regenerate API Key</span>
                                 </DropdownMenuItem>
                                 <div className="h-px bg-gray-100 dark:bg-white/5 my-1" />
+                                {isReal && (
+                                    <DropdownMenuItem
+                                        onClick={async () => {
+                                            try {
+                                                const res = await fetch(`/api/trading-accounts/${account.id}/leaderboard`, { method: 'POST' });
+                                                const data = await res.json();
+                                                if (!res.ok) throw new Error(data.error);
+                                                toast.success(data.useForLeaderboard ? 'Account set for leaderboard!' : 'Account removed from leaderboard');
+                                                onUpdate();
+                                            } catch (e: any) {
+                                                toast.error(e.message || 'Failed to update');
+                                            }
+                                        }}
+                                        className="flex items-center gap-3 px-3 py-2.5 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
+                                    >
+                                        <Trophy size={16} className={account.useForLeaderboard ? "text-yellow-500" : "text-gray-400"} />
+                                        <span>{account.useForLeaderboard ? 'Remove from Leaderboard' : 'Use for Leaderboard'}</span>
+                                    </DropdownMenuItem>
+                                )}
                                 <DropdownMenuItem
                                     onClick={() => onDelete(account.id)}
                                     className="flex items-center gap-3 px-3 py-2.5 font-semibold text-sm cursor-pointer rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 focus:bg-red-50 dark:focus:bg-red-500/10 focus:text-red-600 transition-colors"

@@ -19,6 +19,8 @@ import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { ViewCounter } from "@/components/features/ViewCounter";
 import { unstable_cache } from "next/cache";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
+import { parseHowToSteps, minutesToIsoDuration } from "@/lib/parseHowToSteps";
 
 
 // CACHING: Cache article data for 60 seconds
@@ -98,6 +100,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             title: article.title,
             description: article.excerpt || undefined,
             images: article.thumbnail ? [article.thumbnail] : undefined,
+        },
+        alternates: {
+            canonical: `/articles/${slug}`,
         }
     };
 }
@@ -181,6 +186,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <main className="min-h-screen dark:bg-[#0F1117]" style={{ background: 'linear-gradient(to bottom, #ffffff 0%, #ffffff 80px, #f8fafc 400px)' }}>
             <ReadingProgressBar />
             <ViewCounter articleId={article.id} />
+            <BreadcrumbJsonLd items={[
+                { name: "Home", href: "/" },
+                { name: "Knowledge", href: "/articles" },
+                { name: article.category.name, href: `/articles/category/${article.category.slug}` },
+                { name: article.title, href: `/articles/${slug}` },
+            ]} />
             <JsonLd
                 type="Article"
                 data={{
@@ -195,6 +206,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     }
                 }}
             />
+            {article.schemaType === "HOWTO" && (() => {
+                const howTo = parseHowToSteps(article.content);
+                return (
+                    <JsonLd
+                        type="HowTo"
+                        data={{
+                            name: article.title,
+                            description: article.excerpt || howTo.description,
+                            image: article.thumbnail || undefined,
+                            ...(article.estimatedTime ? { totalTime: minutesToIsoDuration(article.estimatedTime) } : {}),
+                            step: howTo.steps,
+                        }}
+                    />
+                );
+            })()}
 
             <PublicHeader user={authUser} />
 
