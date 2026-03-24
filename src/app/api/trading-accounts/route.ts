@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
                     balance: true,
                     equity: true,
                     accountType: true,
+                    useForLeaderboard: true,
                     // Don't expose full API key
                     apiKey: false,
                 },

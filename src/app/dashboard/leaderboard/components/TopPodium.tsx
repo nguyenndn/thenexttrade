@@ -1,149 +1,281 @@
 "use client";
 
-import { UserTierBadge } from "./UserTierBadge";
-import type { LeaderboardEntry } from "../actions";
+import type { LeaderboardEntry, LeaderboardType } from "../actions";
 import { cn } from "@/lib/utils";
+import { Clock, Crown, FileText, Star, Flame, Trophy, TrendingUp } from "lucide-react";
 
 interface TopPodiumProps {
   entries: LeaderboardEntry[];
   currentUserId?: string | null;
+  onUserClick?: (entry: LeaderboardEntry) => void;
+  type: LeaderboardType;
 }
 
-// Rank themes: index 0 = Silver (#2), index 1 = Gold (#1), index 2 = Bronze (#3)
-const RANK_THEMES = [
+function formatStudyTime(minutes: number): string {
+  if (minutes === 0) return "0m";
+  if (minutes < 60) return `${minutes}m`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
+// Podium config per position: [Silver #2, Gold #1, Bronze #3]
+const PODIUM = [
   {
-    // #2 Silver
-    bg: "bg-gradient-to-b from-slate-50 to-white dark:from-[#1c1e26] dark:to-[#1E2028]",
-    border: "border-slate-300 dark:border-slate-500/40",
-    ring: "ring-1 ring-slate-200/60 dark:ring-slate-600/20",
-    glow: "bg-slate-300/10",
-    medalBg: "bg-gradient-to-br from-slate-400 to-slate-500",
-    avatarRing: "ring-[3px] ring-slate-300 dark:ring-slate-500/60",
-    rankTextColor: "text-slate-500",
+    // Silver #2
+    avatarRing: "ring-0",
+    avatarSize: "w-16 h-16 text-lg",
+    medalBg: "bg-gradient-to-br from-gray-300 to-gray-500",
+    hasGradientRing: false,
+    glowShadow: "0 0 24px 10px rgba(156,163,175,0.45), 0 0 48px 20px rgba(156,163,175,0.15)",
+    xpColor: "text-gray-500 dark:text-gray-400",
+    podiumBg: "bg-gradient-to-t from-gray-400 to-gray-300 dark:from-gray-600 dark:to-gray-500",
+    podiumH: "h-20",
+    cardMt: "mt-8",
+    cardBg: "bg-gradient-to-b from-slate-50 to-white dark:from-slate-800/40 dark:to-[#1E2028]",
+    borderColor: "border-slate-200 dark:border-slate-600/30",
+    nameColor: "text-slate-700 dark:text-slate-200",
   },
   {
-    // #1 Gold
-    bg: "bg-gradient-to-b from-amber-50/80 to-white dark:from-[#201d14] dark:to-[#1E2028]",
-    border: "border-yellow-300 dark:border-yellow-500/40",
-    ring: "ring-2 ring-yellow-200/40 dark:ring-yellow-500/15",
-    glow: "bg-yellow-300/15",
+    // Gold #1
+    avatarRing: "ring-0",
+    avatarSize: "w-20 h-20 text-2xl",
     medalBg: "bg-gradient-to-br from-yellow-400 to-amber-500",
-    avatarRing: "ring-[3px] ring-yellow-400 dark:ring-yellow-500/70",
-    rankTextColor: "text-yellow-600 dark:text-yellow-400",
+    hasGradientRing: true,
+    glowShadow: "0 0 30px 12px rgba(251,191,36,0.5), 0 0 60px 24px rgba(251,191,36,0.2)",
+    xpColor: "text-amber-600 dark:text-yellow-400",
+    podiumBg: "bg-gradient-to-t from-yellow-500 to-amber-400 dark:from-yellow-600 dark:to-yellow-500",
+    podiumH: "h-28",
+    cardMt: "mt-0",
+    cardBg: "bg-gradient-to-b from-amber-50 via-yellow-50/50 to-white dark:from-amber-900/30 dark:via-yellow-900/10 dark:to-[#1E2028]",
+    borderColor: "border-amber-200 dark:border-amber-500/30",
+    nameColor: "text-amber-800 dark:text-amber-200",
   },
   {
-    // #3 Bronze
-    bg: "bg-gradient-to-b from-orange-50/60 to-white dark:from-[#201a14] dark:to-[#1E2028]",
-    border: "border-orange-200 dark:border-orange-500/30",
-    ring: "ring-1 ring-orange-200/50 dark:ring-orange-600/15",
-    glow: "bg-orange-300/8",
+    // Bronze #3
+    avatarRing: "ring-0",
+    avatarSize: "w-14 h-14 text-base",
     medalBg: "bg-gradient-to-br from-orange-400 to-orange-600",
-    avatarRing: "ring-[3px] ring-orange-300 dark:ring-orange-500/60",
-    rankTextColor: "text-orange-500",
+    hasGradientRing: false,
+    glowShadow: "0 0 24px 10px rgba(251,146,60,0.45), 0 0 48px 20px rgba(251,146,60,0.15)",
+    xpColor: "text-orange-600 dark:text-orange-400",
+    podiumBg: "bg-gradient-to-t from-orange-400 to-orange-300 dark:from-orange-600 dark:to-orange-500",
+    podiumH: "h-14",
+    cardMt: "mt-12",
+    cardBg: "bg-gradient-to-b from-orange-50 to-white dark:from-orange-900/20 dark:to-[#1E2028]",
+    borderColor: "border-orange-200 dark:border-orange-500/25",
+    nameColor: "text-orange-800 dark:text-orange-200",
   },
 ];
 
-export function TopPodium({ entries, currentUserId }: TopPodiumProps) {
-  if (entries.length < 3) return null;
+// Get tab-specific stats for podium cards
+function getTabStats(entry: LeaderboardEntry, type: LeaderboardType) {
+  switch (type) {
+    case "xp":
+      return [
+        { icon: Clock, text: formatStudyTime(entry.studyTimeMinutes) },
+        { icon: FileText, text: `${entry.lessonsCompleted} lessons` },
+      ];
+    case "streak":
+      return [
+        { icon: Star, text: `${entry.value} XP` },
+        { icon: Flame, text: `${entry.value} days streak` },
+      ];
+    case "academy":
+      return [
+        { icon: Clock, text: formatStudyTime(entry.studyTimeMinutes) },
+        { icon: FileText, text: `${entry.lessonsCompleted} lessons` },
+      ];
+    case "trading":
+      return [
+        { icon: Trophy, text: `${entry.value}% Win Rate` },
+        { icon: TrendingUp, text: `${entry.totalTrades} trades` },
+      ];
+    default:
+      return [
+        { icon: Clock, text: formatStudyTime(entry.studyTimeMinutes) },
+        { icon: FileText, text: `${entry.lessonsCompleted} lessons` },
+      ];
+  }
+}
 
-  // Reorder: [2nd, 1st, 3rd] for podium layout
-  const podiumOrder = [entries[1], entries[0], entries[2]];
+// Get main value display for podium
+function getMainValue(entry: LeaderboardEntry, type: LeaderboardType) {
+  switch (type) {
+    case "xp":
+      return `${entry.value.toLocaleString()} XP`;
+    case "streak":
+      return `${entry.value} days`;
+    case "academy":
+      return `${entry.value} lessons`;
+    case "trading": {
+      const pnl = entry.pnl >= 0 ? `+$${entry.pnl.toFixed(2)}` : `-$${Math.abs(entry.pnl).toFixed(2)}`;
+      return pnl;
+    }
+    default:
+      return `${entry.value.toLocaleString()} ${entry.label}`;
+  }
+}
+
+export function TopPodium({ entries, currentUserId, onUserClick, type }: TopPodiumProps) {
+  // Pad entries to 3 with placeholders
+  const padded: (LeaderboardEntry | null)[] = [
+    entries[0] ?? null,
+    entries[1] ?? null,
+    entries[2] ?? null,
+  ];
+
+  // Reorder: [#2 left, #1 center, #3 right]
+  const podiumOrder = [padded[1], padded[0], padded[2]];
 
   return (
-    <div className="grid grid-cols-3 gap-3 mb-6 items-end">
-      {podiumOrder.map((entry, i) => {
-        const isCenter = i === 1;
-        const isCurrentUser = entry.userId === currentUserId;
-        const theme = RANK_THEMES[i];
+    <div className="relative py-4 mb-4">
+      <div className="grid grid-cols-3 gap-3 items-end">
+        {podiumOrder.map((entry, i) => {
+          const isCenter = i === 1;
+          const config = PODIUM[i];
+          const rank = [2, 1, 3][i];
 
-        return (
-          <div
-            key={entry.userId}
-            className={cn(
-              "relative rounded-xl border shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5",
-              theme.bg,
-              theme.border,
-              theme.ring,
-              isCenter ? "pt-6 pb-5 px-4" : "pt-5 pb-4 px-3",
-              isCurrentUser && "!border-primary/60 !ring-primary/30"
-            )}
-          >
-            {/* Subtle glow */}
-            <div
-              className={cn(
-                "absolute inset-0 opacity-60 pointer-events-none",
-                theme.glow
-              )}
-              style={{ filter: "blur(40px)" }}
-            />
+          // Placeholder for empty slot
+          if (!entry) {
+            return (
+              <div
+                key={`empty-${i}`}
+                className={cn("flex flex-col items-center opacity-40", config.cardMt)}
+              >
+                {isCenter && <div className="text-2xl mb-1"><Crown size={24} className="text-yellow-400" /></div>}
 
-            {/* Content: vertical flow, no absolute overlap */}
-            <div className="relative z-10 flex flex-col items-center gap-2">
-              {/* Avatar with medal badge overlay */}
-              <div className="relative">
-                <div
-                  className={cn(
-                    "rounded-full flex items-center justify-center text-white font-bold overflow-hidden",
-                    isCenter ? "w-16 h-16 text-xl" : "w-12 h-12 text-sm",
-                    "bg-gray-400 dark:bg-gray-600",
-                    theme.avatarRing,
-                    isCurrentUser && "!ring-primary/70"
-                  )}
-                >
-                  {entry.avatar ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={entry.avatar}
-                      alt={entry.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    entry.name.charAt(0).toUpperCase()
-                  )}
+                <div className="relative mb-2">
+                  <div
+                    className={cn(
+                      "rounded-full flex items-center justify-center font-bold text-gray-300 dark:text-gray-600 border-[3px] border-dashed border-gray-300 dark:border-gray-600",
+                      config.avatarSize
+                    )}
+                  >
+                    ?
+                  </div>
+                  <div
+                    className={cn(
+                      "absolute -bottom-1 -right-1 flex items-center justify-center rounded-full text-white/60 font-black shadow-lg border-2 border-white dark:border-[#1E2028] bg-gray-300 dark:bg-gray-600",
+                      isCenter ? "w-7 h-7 text-xs" : "w-6 h-6 text-[10px]"
+                    )}
+                  >
+                    {rank}
+                  </div>
                 </div>
 
-                {/* Medal badge — pinned to bottom-right of avatar */}
+                <p className="font-bold text-base text-gray-300 dark:text-gray-600 mb-0.5">Waiting...</p>
+                <div className="text-xs text-gray-300 dark:text-gray-600 mb-2">---</div>
+
                 <div
                   className={cn(
-                    "absolute -bottom-1 -right-1 flex items-center justify-center rounded-full text-white font-black shadow-md border-2 border-white dark:border-[#1E2028]",
-                    theme.medalBg,
-                    isCenter ? "w-7 h-7 text-xs" : "w-6 h-6 text-[10px]"
+                    "w-full rounded-t-lg flex items-center justify-center font-black text-white/30 text-lg mt-0 bg-gray-200 dark:bg-gray-700",
+                    config.podiumH
                   )}
                 >
-                  {entry.rank}
+                  #{rank}
                 </div>
               </div>
+            );
+          }
 
-              {/* Name */}
-              <p
-                className={cn(
-                  "font-bold text-sm text-gray-900 dark:text-white truncate max-w-full text-center mt-1",
-                  isCurrentUser && "text-primary"
-                )}
-              >
-                {entry.name}
-              </p>
+          // Real entry
+          const isCurrentUser = entry.userId === currentUserId;
+          const stats = getTabStats(entry, type);
 
-              {/* Tier badge */}
-              <UserTierBadge
-                tierName={entry.tier.name}
-                tierColor={entry.tier.color}
-                tierIcon={entry.tier.icon}
-                tierLabel={entry.tier.label}
-                size="sm"
-              />
+          return (
+            <div
+              key={entry.userId}
+              className={cn("flex flex-col items-center cursor-pointer group", config.cardMt)}
+              onClick={() => onUserClick?.(entry)}
+            >
+              {isCenter && (
+                <div className="mb-1 animate-bounce" style={{ animationDuration: '2s' }}>
+                  <Crown size={24} className="text-yellow-400" />
+                </div>
+              )}
 
-              {/* Value */}
-              <p className="font-black text-sm text-gray-900 dark:text-white tabular-nums">
-                {entry.value.toLocaleString()}
-                <span className="text-xs font-normal text-gray-400 ml-1">
-                  {entry.label}
-                </span>
-              </p>
+              {/* Unified card + podium */}
+              <div className={cn("w-full shadow-md rounded-xl", isCenter ? "border-2" : "border", config.borderColor)}>
+                {/* User info section */}
+                <div className={cn("rounded-t-xl pt-12 pb-3 px-3 flex flex-col items-center relative", config.cardBg)}>
+                  {/* Avatar floating on top of card */}
+                  <div className="absolute -top-10">
+                    <div className="relative">
+                      <div
+                        className="rounded-full transition-transform group-hover:scale-105"
+                        style={{ boxShadow: config.glowShadow }}
+                      >
+                        <div
+                          className={cn(
+                            "rounded-full flex items-center justify-center font-bold text-white bg-gray-400 dark:bg-gray-600 overflow-hidden ring-[4px] ring-white dark:ring-[#1E2028]",
+                            config.avatarSize
+                          )}
+                        >
+                          {entry.avatar ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={entry.avatar} alt={entry.name} className="w-full h-full object-cover" />
+                          ) : (
+                            entry.name.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                      </div>
+
+                      <div
+                        className={cn(
+                          "absolute -bottom-1 -right-1 flex items-center justify-center rounded-full text-white font-black shadow-lg border-2 border-white dark:border-[#1E2028]",
+                          config.medalBg,
+                          isCenter ? "w-7 h-7 text-xs" : "w-6 h-6 text-[10px]"
+                        )}
+                      >
+                        {entry.rank}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Name */}
+                  <p
+                    className={cn(
+                      "font-bold text-base text-center truncate max-w-full mb-0.5",
+                      isCurrentUser ? "text-primary" : config.nameColor
+                    )}
+                  >
+                    {entry.name}
+                  </p>
+
+                  {/* Main Value */}
+                  <div className={cn("flex items-center gap-1 text-sm font-bold mb-2", config.xpColor)}>
+                    <Star size={14} />
+                    <span>{getMainValue(entry, type)}</span>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="w-full border-t border-gray-100 dark:border-white/10 mb-2" />
+
+                  {/* Tab-specific stats */}
+                  {stats.map((stat, si) => (
+                    <div key={si} className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                      <stat.icon size={13} />
+                      <span>{stat.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Podium rank bar — seamlessly connected */}
+                <div
+                  className={cn(
+                    "w-full rounded-b-xl flex items-center justify-center font-black text-white/90 text-lg shadow-inner",
+                    config.podiumBg,
+                    config.podiumH
+                  )}
+                >
+                  #{entry.rank}
+                </div>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

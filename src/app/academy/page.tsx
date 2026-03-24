@@ -27,7 +27,7 @@ export default async function AcademyPage() {
     const levels = await prisma.level.findMany({
         orderBy: { order: "asc" },
         select: {
-            id: true, title: true, description: true, order: true,
+            id: true, title: true, description: true, order: true, accessLevel: true,
             modules: {
                 orderBy: { order: "asc" },
                 select: {

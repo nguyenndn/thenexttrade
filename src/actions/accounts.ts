@@ -43,6 +43,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                 balance: true,
                 equity: true,
                 accountType: true,
+                useForLeaderboard: true,
                 // Don't expose full API key
                 apiKey: false,
                 currency: true,

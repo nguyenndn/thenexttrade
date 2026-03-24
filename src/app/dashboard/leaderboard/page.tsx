@@ -1,14 +1,17 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getLeaderboard, type LeaderboardType } from "./actions";
 import { LeaderboardTabs } from "./components/LeaderboardTabs";
-import { LeaderboardTable } from "./components/LeaderboardTable";
-import { TopPodium } from "./components/TopPodium";
-import { MyRankCard } from "./components/MyRankCard";
+import { LeaderboardContent } from "./components/LeaderboardContent";
+import { MyStatsView } from "./components/MyStatsView";
+import { TradingSetupModal } from "./components/TradingSetupModal";
 import { RankUpModal } from "./components/RankUpModal";
 
 import { getTier } from "@/lib/gamification";
 import { PageHeader } from "@/components/ui/PageHeader";
+
+const VALID_TYPES: LeaderboardType[] = ["xp", "streak", "academy", "trading", "mystats"];
 
 export const metadata = {
   title: "Leaderboard | TheNextTrade",
@@ -22,13 +25,21 @@ interface PageProps {
 
 export default async function LeaderboardPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const type = (params.type as LeaderboardType) || "xp";
+  const rawType = params.type || "xp";
+
+  if (!VALID_TYPES.includes(rawType as LeaderboardType)) {
+    redirect("/dashboard/leaderboard?type=xp");
+  }
+
+  const type = rawType as LeaderboardType;
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const leaderboard = await getLeaderboard(type, 50);
+  // For mystats, fetch XP leaderboard data to get rank info
+  const fetchType = type === "mystats" ? "xp" : type;
+  const leaderboard = await getLeaderboard(fetchType, 50);
 
   // Build myEntry for table display when user is not in top list
   const myEntry = leaderboard.myRank && user
@@ -39,53 +50,50 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
         avatar: user.user_metadata?.avatar_url || null,
         tier: getTier(leaderboard.myRank.tierProgress.current.minXp),
         value: leaderboard.myRank.value,
-        label: type === "xp" ? "XP" : type === "streak" ? "days" : type === "academy" ? "lessons" : "%",
+        label: fetchType === "xp" ? "XP" : fetchType === "streak" ? "days" : fetchType === "academy" ? "lessons" : "%",
+        level: 0,
+        lessonsCompleted: 0,
+        studyTimeMinutes: 0,
+        percentile: leaderboard.myRank.percentile,
+        totalTrades: 0,
+        pnl: 0,
       }
     : null;
 
+  const isMyStats = type === "mystats";
+
   return (
-    <div className="space-y-4">
-      {/* PageHeader */}
+    <div className="space-y-6">
       <PageHeader
         title="Leaderboard"
         description="See where you stand in the community."
       />
 
-
-
       {/* Tabs */}
       <Suspense fallback={null}>
-        <LeaderboardTabs activeType={type} equalWidth />
+        <LeaderboardTabs activeType={type} />
       </Suspense>
 
+      {/* Setup Prompt for Trading */}
+      {type === "trading" && user && !leaderboard.hasLeaderboardAccount && (
+        <TradingSetupModal />
+      )}
+
       {/* Content */}
-      <div className="flex flex-col lg:flex-row gap-4">
-        {/* Main Column */}
-        <div className="flex-1 min-w-0 space-y-4">
-          <TopPodium
-            entries={leaderboard.data.slice(0, 3)}
-            currentUserId={user?.id}
-          />
-
-          <LeaderboardTable
-            entries={leaderboard.data.slice(3)}
-            currentUserId={user?.id}
-            myEntry={
-              leaderboard.data.some((e) => e.userId === user?.id)
-                ? null
-                : myEntry
-            }
-          />
-        </div>
-
-        {/* Sidebar */}
-        <div className="w-full lg:w-80 shrink-0 space-y-4">
-          <MyRankCard
-            myRank={leaderboard.myRank}
-            rivals={leaderboard.rivals}
-          />
-        </div>
-      </div>
+      {isMyStats ? (
+        <MyStatsView
+          myRank={leaderboard.myRank}
+          userName={user?.user_metadata?.full_name || user?.email?.split("@")[0] || undefined}
+          userAvatar={user?.user_metadata?.avatar_url || null}
+        />
+      ) : (
+        <LeaderboardContent
+          entries={leaderboard.data}
+          currentUserId={user?.id}
+          myEntry={myEntry}
+          type={type}
+        />
+      )}
 
       {/* Rank-Up Celebration */}
       <RankUpModal myRank={leaderboard.myRank} />

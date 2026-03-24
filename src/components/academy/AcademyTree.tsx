@@ -31,6 +31,7 @@ interface Level {
     title: string;
     description: string | null;
     order: number;
+    accessLevel?: string;
     modules: Module[];
 }
 
@@ -420,6 +421,13 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                         </div>
                                     )}
 
+                                    {isGuest && level.accessLevel === "PUBLIC" && (
+                                        <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-500">
+                                            <BookOpen size={11} />
+                                            <span>FREE</span>
+                                        </div>
+                                    )}
+
                                     <div className="flex items-center gap-3 text-xs text-gray-400">
                                         <span className="flex items-center gap-1"><Layers size={11} />{level.modules.length} modules</span>
                                         <span className="flex items-center gap-1"><BookOpen size={11} />{totalLessons} lessons</span>
@@ -520,7 +528,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                             const isModLocked = hasProgress && (modState === "locked" || isLevelLocked);
                                             const isModCompleted = hasProgress && modState === "completed";
                                             const isModCurrent = hasProgress && modState === "current";
-                                            const isGuestLocked = isGuest && level.order > 1;
+                                            const isGuestLocked = isGuest && level.accessLevel !== "PUBLIC";
 
                                             // Check if this module just got unlocked
                                             const isJustUnlocked = isModCurrent && justUnlockedIds.size > 0;
@@ -660,7 +668,13 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         transition={{ duration: 0.3, delay: modIndex * 0.05 }}
                                                     >
                                                         <button
-                                                            onClick={() => setPreviewModal({ lessonSlug: modFirstSlug!, moduleTitle: mod.title })}
+                                                            onClick={() => {
+                                                            if (level.accessLevel === "PUBLIC" && modFirstSlug) {
+                                                                router.push(`/academy/lesson/${modFirstSlug}`);
+                                                            } else {
+                                                                setPreviewModal({ lessonSlug: modFirstSlug!, moduleTitle: mod.title });
+                                                            }
+                                                        }}
                                                             className={cn(
                                                                 "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left",
                                                                 "bg-white dark:bg-white/[0.03] border-gray-200 dark:border-white/10",

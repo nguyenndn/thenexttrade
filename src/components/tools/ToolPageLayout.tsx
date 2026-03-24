@@ -5,6 +5,7 @@ import { FAQAccordion } from "./FAQAccordion";
 import { SimilarTools } from "./SimilarTools";
 import { ToolViewTracker } from "./ToolViewTracker";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { getSimilarTools } from "@/config/tools-data";
 import { getAuthUser } from "@/lib/auth-cache";
 import { HelpCircle, BookOpen, CheckCircle, Lightbulb, Home, ChevronRight } from "lucide-react";
@@ -24,6 +25,13 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
         <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white">
             <PublicHeader user={user} />
             <ToolViewTracker slug={tool.slug} />
+
+            {/* Breadcrumb Schema */}
+            <BreadcrumbJsonLd items={[
+                { name: "Home", href: "/" },
+                { name: "Tools", href: "/tools" },
+                { name: tool.title, href: `/tools/${tool.slug}` },
+            ]} />
 
             {/* SoftwareApplication Schema */}
             <JsonLd type="SoftwareApplication" data={{
@@ -95,6 +103,22 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                             {tool.description}
                         </p>
                     </div>
+
+                    {/* Pillar Page Link for Risk Management Tools */}
+                    {tool.category === "risk-management" && (
+                        <div className="mb-8 max-w-4xl mx-auto">
+                            <Link
+                                href="/knowledge/risk-management"
+                                className="flex items-center gap-3 px-5 py-3 rounded-xl bg-red-500/5 dark:bg-red-500/10 border border-red-500/15 hover:border-red-500/30 transition-all group"
+                            >
+                                <BookOpen size={16} className="text-red-500 shrink-0" />
+                                <span className="text-sm text-gray-600 dark:text-gray-400">
+                                    Part of our <span className="font-bold text-red-500">Complete Risk Management Guide</span>
+                                </span>
+                                <ChevronRight size={14} className="text-red-500/50 group-hover:translate-x-1 transition-transform ml-auto shrink-0" />
+                            </Link>
+                        </div>
+                    )}
 
                     {/* ── Section 2: Calculator ── */}
                     <div className="mb-16">
