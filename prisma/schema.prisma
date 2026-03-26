@@ -1174,3 +1174,16 @@ model Challenge {
   @@index([challengeeId])
   @@index([status])
 }
+
+model Quote {
+  id        String   @id @default(cuid())
+  text      String
+  author    String   @default("")
+  type      String   @default("DASHBOARD") // DASHBOARD or HOMEPAGE
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  @@index([type])
+  @@index([isActive])
+}

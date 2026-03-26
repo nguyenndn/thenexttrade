@@ -50,7 +50,7 @@ export function ContentDistributionChart({ data = [] }: ContentDistributionChart
             <div className="flex-1 flex items-center gap-4 min-h-0">
                 {/* Chart */}
                 <div className="w-[140px] h-[140px] flex-shrink-0">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                         <PieChart>
                             <Pie
                                 data={chartData}

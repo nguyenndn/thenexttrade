@@ -46,7 +46,7 @@ export function DayPerformance({ data }: DayPerformanceProps) {
                 <ChartEmptyState />
             ) : (
                 <div className="h-[250px]">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <BarChart
                         data={chartData}
                         margin={{ top: 5, right: 10, left: 10, bottom: 5 }}

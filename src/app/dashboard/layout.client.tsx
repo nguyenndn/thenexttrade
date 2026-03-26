@@ -3,6 +3,7 @@
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
 import { MobileSidebar } from "@/components/dashboard/MobileSidebar";
+import { MobileBottomTabBar } from "@/components/dashboard/MobileBottomTabBar";
 import { useState } from "react";
 import { AuthUser } from "@/lib/auth-types";
 import { FloatingQuickActions } from "@/components/dashboard/FloatingQuickActions";
@@ -37,7 +38,7 @@ export function DashboardLayoutClient({
                 />
 
                 {/* Main Content Area */}
-                <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pt-0 w-full custom-scrollbar">
+                <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pt-0 pb-20 lg:pb-4 w-full custom-scrollbar">
                     <div className="w-full max-w-full">
                         {children}
                     </div>
@@ -51,6 +52,9 @@ export function DashboardLayoutClient({
             />
 
             <FloatingQuickActions />
+
+            {/* Mobile Bottom Tab Bar */}
+            <MobileBottomTabBar />
         </div>
     );
 }

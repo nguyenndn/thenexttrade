@@ -44,12 +44,20 @@ Professional-grade financial calculators for forex risk management and analysis.
 - Level 1: Foundation (Forex Basics, Candlestick Charts, Support & Resistance)
 - Level 2: Strategy (Technical Indicators, Risk Management, Trade Planning)
 - Level 3: Mastery (Advanced Patterns, Psychology, System Building)
+- Public Lessons (free, no login required): Levels 1-3 first chapters
 - URL: ${baseUrl}/academy
 
-### Knowledge Base (Articles & Guides)
+### Knowledge Hub (Pillar Content)
+Comprehensive, in-depth guides on core trading topics.
+
+**Pillar Pages:**
+- Forex Risk Management Guide: ${baseUrl}/knowledge/risk-management
+- Knowledge Index: ${baseUrl}/knowledge
+
+### Articles & Analysis
 In-depth trading articles, market analysis, and educational content.
 - Categories: Technical Analysis, Fundamental Analysis, Trading Psychology, Risk Management
-- URL: ${baseUrl}/knowledge
+- URL: ${baseUrl}/articles
 
 ### Broker Reviews
 Honest, data-driven forex broker comparisons and reviews.

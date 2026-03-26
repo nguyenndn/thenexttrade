@@ -26,7 +26,7 @@ export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
 
     return (
         <div className="h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <PieChart>
                     <Pie
                         data={chartData}

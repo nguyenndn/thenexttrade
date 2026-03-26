@@ -31,7 +31,7 @@ export function LotDistributionChart({ data, height = 300, innerRadius = 60, out
 
   return (
     <div className="w-full [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none" style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <PieChart key={JSON.stringify(chartData)}>
           <Pie
             data={chartData}

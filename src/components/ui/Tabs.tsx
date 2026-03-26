@@ -47,7 +47,7 @@ interface TabsListProps {
 
 export function TabsList({ children, className }: TabsListProps) {
     return (
-        <div className={cn("flex items-center gap-1 bg-gray-100 dark:bg-white/5 p-1 rounded-xl w-fit", className)}>
+        <div className={cn("flex items-center gap-1 bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-gray-200 dark:border-white/10 w-fit", className)}>
             {children}
         </div>
     );
@@ -72,10 +72,10 @@ export function TabsTrigger({ value, children, className, activeIndicatorClassNa
             variant="ghost"
             onClick={() => context.setActiveTab(value)}
             className={cn(
-                "relative px-4 py-2 h-auto rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 z-10 hover:bg-transparent",
+                "relative px-4 py-1.5 h-auto rounded-lg text-sm font-bold transition-all duration-300 flex items-center gap-2 z-10 hover:bg-transparent border",
                 isActive
                     ? (activeTextClassName || "text-gray-900 dark:text-white")
-                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
+                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 border-transparent",
                 className
             )}
         >
@@ -83,7 +83,7 @@ export function TabsTrigger({ value, children, className, activeIndicatorClassNa
                 <motion.div
                     layoutId={`activeTab-${context.tabsId}`}
                     className={cn(
-                        "absolute inset-0 bg-white dark:bg-slate-700 shadow-sm rounded-lg -z-10",
+                        "absolute inset-0 bg-white dark:bg-[#262A36] shadow-sm rounded-lg -z-10 border border-gray-200 dark:border-white/10",
                         activeIndicatorClassName
                     )}
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}

@@ -23,7 +23,9 @@ import {
     Route,
     Zap,
     Bookmark,
-    FolderTree
+    FolderTree,
+    Quote,
+    MoreHorizontal
 } from "lucide-react";
 
 export const menuItems = [
@@ -112,8 +114,8 @@ export const adminMenuItems = [
     { name: "Articles", href: "/admin/articles", icon: FileText },
     { name: "Shortcuts", href: "/admin/articles/shortcuts", icon: Bookmark },
     { name: "Comments", href: "/admin/comments", icon: MessageSquare },
-    { name: "Categories", href: "/admin/categories", icon: FolderTree },
-    { name: "Tags", href: "/admin/tags", icon: Tag },
+    { name: "Taxonomy", href: "/admin/taxonomy", icon: FolderTree },
+    { name: "Quotes", href: "/admin/quotes", icon: Quote },
 
     // --- EDUCATION ---
     { name: "Academy", href: "/admin/academy", icon: GraduationCap },
@@ -124,4 +126,41 @@ export const adminMenuItems = [
     { name: "Brokers", href: "/admin/brokers", icon: Briefcase },
     { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
     { name: "Settings", href: "/admin/settings", icon: Settings },
+];
+
+// Mobile bottom tab bar groups (first 3 groups + "More" for remainder)
+export const dashboardMenuGroups = [
+    {
+        label: "Dashboard",
+        icon: LayoutDashboard,
+        items: [
+            { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+            { name: "Accounts & Props", href: "/dashboard/accounts", icon: Wallet },
+        ],
+    },
+    {
+        label: "Journal",
+        icon: FileText,
+        items: [
+            { name: "Trading Journal", href: "/dashboard/journal", icon: FileText },
+            { name: "Strategies", href: "/dashboard/strategies", icon: Route },
+        ],
+    },
+    {
+        label: "Analytics",
+        icon: BarChart3,
+        items: [
+            { name: "Analytics Hub", href: "/dashboard/analytics", icon: BarChart3 },
+            { name: "Psychology", href: "/dashboard/psychology", icon: Activity },
+        ],
+    },
+    {
+        label: "More",
+        icon: MoreHorizontal,
+        items: [
+            { name: "Academy", href: "/dashboard/academy", icon: GraduationCap },
+            { name: "Leaderboard", href: "/dashboard/leaderboard", icon: Trophy },
+            { name: "EA & Indicators", href: "/dashboard/trading-systems", icon: Bot },
+        ],
+    },
 ];

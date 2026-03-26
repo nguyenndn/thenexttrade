@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 export function LessonProgressChart({ data }: { data: { name: string; value: number }[] }) {
     return (
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <BarChart data={data} barSize={40}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.1} />
                 <XAxis

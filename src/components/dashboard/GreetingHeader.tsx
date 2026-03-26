@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
@@ -28,9 +28,21 @@ export function GreetingHeader({ userName, currentAccountId }: GreetingHeaderPro
         } else {
             setGreeting({ text: "Good evening", icon: <AnimatedEveningIcon size={32} /> });
         }
-        
-        const randomQuote = tradingQuotes[Math.floor(Math.random() * tradingQuotes.length)];
-        setQuote(randomQuote);
+
+        // Fetch from DB, fallback to static
+        fetch('/api/quotes?type=DASHBOARD&active=true')
+            .then(res => res.json())
+            .then((data: { text: string }[]) => {
+                if (Array.isArray(data) && data.length > 0) {
+                    const random = data[Math.floor(Math.random() * data.length)];
+                    setQuote(random.text);
+                } else {
+                    setQuote(tradingQuotes[Math.floor(Math.random() * tradingQuotes.length)]);
+                }
+            })
+            .catch(() => {
+                setQuote(tradingQuotes[Math.floor(Math.random() * tradingQuotes.length)]);
+            });
     }, []);
 
     return (

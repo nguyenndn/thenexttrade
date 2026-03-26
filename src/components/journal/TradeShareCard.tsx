@@ -165,7 +165,7 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
 
                         {/* Chart */}
                         <div className="absolute inset-0 pt-12 pb-0 px-0">
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                                 <AreaChart data={chartData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
                                     <defs>
                                         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">

@@ -29,7 +29,7 @@ interface Tag {
     slug: string;
 }
 
-export default function TagList() {
+export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
     const { data: tags = [], isLoading, mutate } = useSWR("/api/tags", fetcher, {
         onError: (err) => {
             toast.error(err.message || "Failed to load tags");
@@ -87,6 +87,7 @@ export default function TagList() {
 
     return (
         <div className="space-y-4">
+            {!hideHeader && (
             <AdminPageHeader
                 title="Tags"
                 description="Label and filter content with custom tags."
@@ -98,6 +99,7 @@ export default function TagList() {
                     <Plus size={18} strokeWidth={2.5} /> Add New
                 </Button>
             </AdminPageHeader>
+            )}
 
             <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
