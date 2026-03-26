@@ -131,7 +131,7 @@ function VerifyEmailForm() {
 
                 <Button
                     type="submit"
-                    className="w-full h-14 bg-[#0B0E14] text-white hover:bg-[#1E2028] dark:bg-primary dark:text-white dark:hover:bg-[#00b078] font-bold text-base border-none rounded-xl shadow-md transition-all shadow-black/5 flex items-center justify-center gap-2"
+                    className="w-full h-14 bg-primary text-white hover:bg-[#00b078] dark:bg-primary dark:text-white dark:hover:bg-[#00b078] font-bold text-base border-none rounded-xl shadow-md transition-all shadow-primary/20 flex items-center justify-center gap-2"
                     isLoading={loading}
                     disabled={otp.length !== 8 || loading}
                 >
