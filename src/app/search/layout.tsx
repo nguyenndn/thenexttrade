@@ -1,6 +1,7 @@
-import { Metadata } from "next";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { getAuthUser } from "@/lib/auth-cache";
 
-export const metadata: Metadata = {
+export const metadata = {
     title: "Search | Find Articles, Lessons & Tools",
     description: "Search our comprehensive database of forex trading articles, academy lessons, and tools.",
     robots: {
@@ -9,10 +10,17 @@ export const metadata: Metadata = {
     },
 };
 
-export default function SearchLayout({
+export default async function SearchLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    return children;
+    const user = await getAuthUser();
+
+    return (
+        <>
+            <PublicHeader user={user} />
+            {children}
+        </>
+    );
 }

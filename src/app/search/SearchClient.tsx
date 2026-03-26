@@ -51,7 +51,7 @@ export default function SearchClient() {
     }, [query]);
 
     return (
-        <div className="min-h-screen bg-gray-50/50 dark:bg-black py-12 px-4 sm:px-6">
+        <div className="min-h-screen bg-gray-50/50 dark:bg-black pt-24 pb-12 px-4 sm:px-6">
             <div className="max-w-3xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="text-center space-y-6">
@@ -59,7 +59,7 @@ export default function SearchClient() {
                         Search Results
                     </h1>
                     <div className="max-w-md mx-auto">
-                        <SearchBar />
+                        <SearchBar targetRoute="/search" />
                     </div>
                 </div>
 
