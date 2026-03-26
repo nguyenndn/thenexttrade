@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { recordSession } from '@/lib/session'
 
 import { authSchema } from '@/lib/validations/auth'
+import { headers } from 'next/headers'
 
 export async function login(formData: FormData) {
     const supabase = await createClient()
@@ -106,6 +107,29 @@ export async function verifyLogin2FA(code: string) {
     redirect('/academy')
 }
 
+export async function signInWithMagicLink(formData: FormData) {
+    const supabase = await createClient()
+    const email = formData.get('email') as string
+    const origin = (await headers()).get('origin')
+
+    if (!email) {
+        return { error: 'Email is required' }
+    }
+
+    const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+            emailRedirectTo: `${origin}/auth/callback?next=/dashboard`,
+        },
+    })
+
+    if (error) {
+        return { error: error.message }
+    }
+
+    return { success: true, message: 'Check your email for a login link!' }
+}
+
 export async function signup(formData: FormData) {
     const supabase = await createClient()
 
@@ -169,7 +193,6 @@ export async function signout() {
     redirect('/auth/login')
 }
 
-import { headers } from 'next/headers'
 
 export async function forgotPassword(formData: FormData) {
     const supabase = await createClient()

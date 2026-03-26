@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Your Password</title>
+    <title>Magic Link Login</title>
     <style>
         body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
         table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
@@ -38,21 +38,21 @@
                 <td style="padding: 40px 36px; text-align: center; background-color: #ffffff;">
                     <!-- Icon -->
                     <div style="width: 64px; height: 64px; background-color: #e8f8f2; border: 2px solid #d0f0e4; border-radius: 50%; margin: 0 auto 24px auto; line-height: 64px; font-size: 26px;">
-                        🔐
+                        ✨
                     </div>
                     
-                    <h1 style="color: #1a1a2e; font-size: 24px; font-weight: 700; margin: 0 0 12px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">Reset Your Password</h1>
+                    <h1 style="color: #1a1a2e; font-size: 24px; font-weight: 700; margin: 0 0 12px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">Log In to TheNextTrade</h1>
                     <p style="color: #5a5d6e; font-size: 15px; line-height: 24px; margin: 0 0 32px 0;">
-                        We received a request to reset the password for your TheNextTrade account. No changes have been made yet. Click below to set a new password safely.
+                        You requested a magic link to sign in to your account. Click the button below to log in instantly — no password needed.
                     </p>
                     
                     <!-- Button -->
                     <div style="margin-bottom: 32px;">
-                        <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{{ .ConfirmationURL }}" style="height:52px;v-text-anchor:middle;width:280px;" arcsize="50%" fillcolor="#00C888"><center style="color:#ffffff;font-family:sans-serif;font-size:16px;font-weight:bold;">Reset Password Now</center></v:roundrect><![endif]-->
+                        <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{{ .ConfirmationURL }}" style="height:52px;v-text-anchor:middle;width:280px;" arcsize="50%" fillcolor="#00C888"><center style="color:#ffffff;font-family:sans-serif;font-size:16px;font-weight:bold;">Log In Now</center></v:roundrect><![endif]-->
                         <!--[if !mso]><!-->
                         <a href="{{ .ConfirmationURL }}" style="display: inline-block; background-color: #00C888; color: #ffffff !important; font-size: 15px; font-weight: 700; text-decoration: none; padding: 16px 40px; border-radius: 999px; mso-padding-alt: 0; text-align: center;">
-                            <!--[if mso]>&nbsp;&nbsp;Reset Password Now&nbsp;&nbsp;<![endif]-->
-                            <!--[if !mso]><!-->Reset Password Now<!--<![endif]-->
+                            <!--[if mso]>&nbsp;&nbsp;Log In Now&nbsp;&nbsp;<![endif]-->
+                            <!--[if !mso]><!-->Log In Now<!--<![endif]-->
                         </a>
                         <!--<![endif]-->
                     </div>
@@ -61,10 +61,10 @@
                     <div style="border-top: 1px solid #e8eaed; margin: 0 0 24px 0;"></div>
                     
                     <p style="color: #8b8d9a; font-size: 13px; line-height: 20px; text-align: left; margin: 0 0 12px 0;">
-                        <strong style="color: #5a5d6e;">Security Notice:</strong> If you did not request a password reset, you can safely ignore this email. Your password will remain unchanged and your account is secure.
+                        <strong style="color: #5a5d6e;">Security Notice:</strong> If you did not request this login link, you can safely ignore this email. Your account remains secure.
                     </p>
                     <p style="color: #8b8d9a; font-size: 13px; line-height: 20px; text-align: left; margin: 0;">
-                        This password reset link will expire in 24 hours.
+                        This link will expire in 60 minutes.
                     </p>
                 </td>
             </tr>

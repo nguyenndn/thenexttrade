@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/Button";
 
 const TEAM = [
   {
-    name: "Kee",
+    name: "Ninja Trader",
     role: "Founder & Lead Developer",
-    initials: "K",
+    initials: "NT",
     color: "bg-gradient-to-br from-primary to-teal-500",
   },
   {
