@@ -162,6 +162,18 @@ async function main() {
   }
   console.log(`   ✅ ${articleTags.length} article-tag links synced`);
 
+  // 9. Sync Quotes
+  console.log('\n💬 Syncing Quotes...');
+  const quotes = await localPrisma.quote.findMany({ orderBy: { createdAt: 'asc' } });
+  for (const quote of quotes) {
+    await remotePrisma.quote.upsert({
+      where: { id: quote.id },
+      create: quote,
+      update: { text: quote.text, author: quote.author, type: quote.type, isActive: quote.isActive },
+    });
+  }
+  console.log(`   ✅ ${quotes.length} quotes synced`);
+
   console.log(`\n${'='.repeat(50)}\n✨ Done! All data synced to Supabase.`);
 }
 
