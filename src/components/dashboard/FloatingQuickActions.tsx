@@ -70,6 +70,13 @@ export function FloatingQuickActions() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [isOpen]);
 
+    // Listen for open-feedback event from MobileBottomTabBar
+    useEffect(() => {
+        const handler = () => setIsOpen(true);
+        window.addEventListener("open-feedback", handler);
+        return () => window.removeEventListener("open-feedback", handler);
+    }, []);
+
     if (!isMounted || !feedbackEnabled) return null;
 
     return (
@@ -83,7 +90,7 @@ export function FloatingQuickActions() {
                 )}
             </AnimatePresence>
 
-            <div className="fixed bottom-6 right-6 z-[9999]">
+            <div className="fixed bottom-6 right-6 z-[9999] hidden lg:block">
                 <Button
                     variant="primary"
                     aria-label="Feedback & Support"

@@ -135,7 +135,6 @@ export default function ShortcutsManagerPage() {
             <AdminPageHeader
                 title="Content Shortcuts"
                 description="Manage reusable content snippets to insert instantly into your articles."
-                backHref="/admin/articles"
             >
                 <Button onClick={() => handleOpenModal()} variant="primary" className="flex items-center gap-2 shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all">
                     <Plus size={18} strokeWidth={2.5} /> New Shortcut

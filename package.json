@@ -18,7 +18,7 @@
     "analyze": "cross-env ANALYZE=true next build",
     "start": "next start",
     "test": "vitest",
-    "lint": "next lint",
+    "lint": "npx eslint src/",
     "type-check": "tsc --noEmit",
     "verify": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" scripts/verify-routes.ts",
     "worker": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" scripts/worker.ts",
@@ -112,6 +112,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/typography": "^0.5.19",
     "@testing-library/dom": "^10.4.1",

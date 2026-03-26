@@ -60,16 +60,6 @@ export function Header({
             <header className="mx-4 mt-3 mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-gray-200 dark:border-white/10 h-16 px-4 lg:px-6 flex items-center justify-between z-40 relative transition-all duration-100 ease-in-out">
                 {/* Left Section: Toggle + Logo */}
                 <div className="flex items-center gap-4">
-                    {/* Mobile Menu Button */}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="lg:hidden p-2 -ml-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                        onClick={onMobileMenuClick}
-                    >
-                        <Menu size={20} />
-                    </Button>
-
                     {/* Desktop Toggle + Logo (Toggle FIRST) */}
                     <div className="flex items-center gap-3">
                         <Button
@@ -80,8 +70,7 @@ export function Header({
                         >
                             <Menu size={20} />
                         </Button>
-                        {/* Hide logo text on mobile to save space */}
-                        <Logo textClassName="hidden sm:inline text-lg font-bold tracking-tight text-gray-900 dark:text-white" />
+                        <Logo textClassName="text-lg font-bold tracking-tight text-gray-900 dark:text-white" />
                     </div>
                 </div>
 

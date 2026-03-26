@@ -3,22 +3,32 @@
 import { useState, useEffect, memo } from 'react';
 import { Quote } from 'lucide-react';
 
-const quotes = [
+// Fallback quotes in case DB is empty or API fails
+const fallbackQuotes = [
     { text: "The goal of a successful trader is to make the best trades. Money is secondary.", author: "Alexander Elder" },
-    { text: "It's not whether you're right or wrong that's important, but how much money you make when you're right and how much you lose when you're wrong.", author: "George Soros" },
-    { text: "Win or lose, everybody gets what they want out of the market. Some people seem to like to lose, so they win by losing money.", author: "Ed Seykota" },
     { text: "Risk comes from not knowing what you're doing.", author: "Warren Buffett" },
     { text: "The trend is your friend until the end when it bends.", author: "Ed Seykota" },
-    { text: "Do not anticipate and move without market confirmation—being a little late in your trade is your insurance that you are right or wrong.", author: "Jesse Livermore" },
-    { text: "Confidence is not 'I will profit on this trade.' Confidence is 'I will be fine if I don't profit on this trade.'", author: "Yvan Byeajee" },
 ];
 
 export default memo(function QuoteDisplay({ isDark }: { isDark: boolean }) {
-    const [quote, setQuote] = useState(quotes[0]);
+    const [quote, setQuote] = useState(fallbackQuotes[0]);
 
     useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * quotes.length);
-        setQuote(quotes[randomIndex]);
+        fetch('/api/quotes?type=HOMEPAGE&active=true')
+            .then(res => res.json())
+            .then((data: { text: string; author: string }[]) => {
+                if (Array.isArray(data) && data.length > 0) {
+                    const random = data[Math.floor(Math.random() * data.length)];
+                    setQuote({ text: random.text, author: random.author || '' });
+                } else {
+                    const random = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+                    setQuote(random);
+                }
+            })
+            .catch(() => {
+                const random = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+                setQuote(random);
+            });
     }, []);
 
     return (

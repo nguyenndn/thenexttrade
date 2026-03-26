@@ -34,7 +34,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
             </p>
 
             <div className="flex-1 min-h-[280px]">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <BarChart data={data} layout="vertical">
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.1} />
                         <XAxis

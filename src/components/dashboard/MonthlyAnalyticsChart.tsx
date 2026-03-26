@@ -100,7 +100,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
             </div>
 
             <div className="flex-1 min-h-[250px] [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <BarChart
                         data={chartData}
                         margin={{ top: 10, right: 10, left: -20, bottom: 0 }}

@@ -71,7 +71,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
 
     return (
         <div className="h-[250px] sm:h-[calc(100%-48px)] min-h-[220px] w-full pb-6 [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <AreaChart
                     data={chartData}
                     margin={{ top: 10, right: 10, left: 0, bottom: 0 }}

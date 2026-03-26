@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Search, Zap, Plus, Loader2 } from "lucide-react";
+import { X, Search, Zap, Plus, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { PremiumInput } from "@/components/ui/PremiumInput";
@@ -66,6 +66,14 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white">Content Shortcuts</h2>
                     </div>
                     <div className="flex items-center gap-2">
+                        <button
+                            onClick={fetchShortcuts}
+                            className="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-1 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors"
+                            title="Reload shortcuts"
+                            aria-label="Reload shortcuts"
+                        >
+                            <RefreshCw size={14} />
+                        </button>
                         <Link href="/admin/articles/shortcuts" target="_blank" className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg transition-colors">
                             <Plus size={16} /> Manage
                         </Link>

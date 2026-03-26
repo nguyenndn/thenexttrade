@@ -33,7 +33,7 @@ interface Category {
     };
 }
 
-export default function CategoryList() {
+export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
     const { data: categories = [], isLoading, mutate } = useSWR("/api/categories", fetcher, {
         onError: (err) => {
             toast.error(err.message || "Failed to load categories");
@@ -90,6 +90,7 @@ export default function CategoryList() {
 
     return (
         <div className="space-y-4">
+            {!hideHeader && (
             <AdminPageHeader
                 title="Categories"
                 description="Organize content with categories and subcategories."
@@ -101,6 +102,7 @@ export default function CategoryList() {
                     <Plus size={18} strokeWidth={2.5} /> Add New
                 </Button>
             </AdminPageHeader>
+            )}
 
             <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">

@@ -12,6 +12,8 @@ import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFire
 import { ToolsPreviewSection } from "@/components/home/ToolsPreviewSection";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { HomeFAQSection } from "@/components/home/HomeFAQSection";
+import { TrustedPartners } from "@/components/home/TrustedPartners";
+import { AboutUsSection } from "@/components/home/AboutUsSection";
 import { cache } from "@/lib/cache";
 
 // Revalidate data every 60 seconds
@@ -404,8 +406,18 @@ async function HomeFeed() {
       </FadeIn>
 
       <FadeIn delay={0.1} direction="up">
+      {/* Trusted Partners */}
+      <TrustedPartners />
+      </FadeIn>
+
+      <FadeIn delay={0.1} direction="up">
       {/* FAQ Section */}
       <HomeFAQSection />
+      </FadeIn>
+
+      <FadeIn delay={0.1} direction="up">
+      {/* About Us */}
+      <AboutUsSection />
       </FadeIn>
 
       <FadeIn delay={0.2} direction="up">

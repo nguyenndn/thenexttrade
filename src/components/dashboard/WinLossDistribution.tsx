@@ -32,7 +32,7 @@ export function WinLossDistribution({ wins, losses, breakEvens, winRate }: WinLo
       <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-6">Win/Loss Distribution</h3>
       
       <div className="flex-1 relative min-h-[180px] [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <PieChart>
             <Pie
               data={data}

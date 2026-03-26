@@ -6,7 +6,7 @@ export function ArticleCategoryChart({ data }: { data: { name: string; value: nu
     const COLORS = ['hsl(var(--primary))', '#2F80ED', '#9B51E0', '#F2994A', '#EB5757'];
 
     return (
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <BarChart data={data} layout="vertical" margin={{ left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.1} horizontal={false} />
                 <XAxis type="number" hide />

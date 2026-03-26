@@ -50,7 +50,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
                 className={[
                     "h-16 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
                     isScrolled
-                        ? "mx-4 sm:mx-6 lg:mx-60 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white dark:bg-[#151925] border-gray-200/50 dark:border-white/10"
+                        ? "mx-4 sm:mx-6 lg:mx-16 xl:mx-40 2xl:mx-60 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white dark:bg-[#151925] border-gray-200/50 dark:border-white/10"
                         : "mx-0 rounded-none border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#0B0E14]",
                 ].join(" ")}
             >
