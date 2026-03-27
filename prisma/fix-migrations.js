@@ -10,18 +10,23 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: '.env.local' });
 
-// --- Resolve Production DB URL (same logic as sync-to-supabase.js) ---
+// --- Resolve Production DB URLs (both needed for Prisma) ---
 let supabaseUrl = process.env.SUPABASE_DATABASE_URL || process.env.DIRECT_URL_PRODUCTION;
+let supabaseDirectUrl = null;
 
 if (!supabaseUrl) {
   try {
     const envProd = fs.readFileSync(path.join(process.cwd(), '.env.production'), 'utf-8');
-    const match = envProd.match(/DIRECT_URL="([^"]+)"/);
-    if (match) supabaseUrl = match[1];
-    if (!supabaseUrl) {
-      const match2 = envProd.match(/DATABASE_URL="([^"]+)"/);
-      if (match2) supabaseUrl = match2[1];
-    }
+    // Read DIRECT_URL (for migrations - uses direct connection)
+    const directMatch = envProd.match(/DIRECT_URL="([^"]+)"/);
+    if (directMatch) supabaseDirectUrl = directMatch[1];
+    // Read DATABASE_URL (pooler URL)
+    const dbMatch = envProd.match(/DATABASE_URL="([^"]+)"/);
+    if (dbMatch) supabaseUrl = dbMatch[1];
+    // Fallback: use DIRECT_URL as DATABASE_URL if pooler not found
+    if (!supabaseUrl) supabaseUrl = supabaseDirectUrl;
+    // Use DIRECT_URL as the primary URL for migrations
+    if (supabaseDirectUrl) supabaseUrl = supabaseDirectUrl;
   } catch (e) {}
 }
 
@@ -33,11 +38,15 @@ if (!supabaseUrl) {
 
 console.log(`📡 Production DB: ${supabaseUrl.replace(/:[^:@]+@/, ':***@')}\n`);
 
-// Helper: run prisma command with production URL
+// Helper: run prisma command with production URL (overrides .env)
 function prisma(cmd) {
   try {
     const result = execSync(`npx prisma ${cmd}`, {
-      env: { ...process.env, DATABASE_URL: supabaseUrl },
+      env: {
+        ...process.env,
+        DATABASE_URL: supabaseUrl,
+        DIRECT_URL: supabaseDirectUrl || supabaseUrl,
+      },
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],
     });
