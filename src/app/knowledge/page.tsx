@@ -2,7 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { Clock, Search, BookOpen, TrendingUp, Filter } from "lucide-react";
+import { Clock, Search, BookOpen, TrendingUp, Filter, Flame, MessageCircle, CalendarDays } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -33,6 +33,7 @@ interface LibraryPageProps {
         page?: string;
         category?: string;
         tag?: string;
+        sort?: string;
     }>;
 }
 
@@ -42,7 +43,16 @@ export default async function LibraryPage(props: LibraryPageProps) {
     const categorySlug = params?.category;
     const tagSlug = params?.tag;
     const currentPage = Number(params?.page) || 1;
+    const sortBy = params?.sort || 'newest';
     const ITEMS_PER_PAGE = 9;
+
+    // Dynamic orderBy based on sort param
+    const orderByMap: Record<string, any> = {
+        newest: { createdAt: 'desc' },
+        popular: { views: 'desc' },
+        discussed: { comments: { _count: 'desc' } },
+    };
+    const orderBy = orderByMap[sortBy] || orderByMap.newest;
 
     const whereCondition: any = {
         status: 'PUBLISHED',
@@ -75,13 +85,15 @@ export default async function LibraryPage(props: LibraryPageProps) {
         getAuthUser(),
         prisma.article.findMany({
             where: whereCondition,
-            orderBy: { createdAt: 'desc' },
+            orderBy,
             take: ITEMS_PER_PAGE,
             skip: (currentPage - 1) * ITEMS_PER_PAGE,
             select: {
                 id: true, title: true, slug: true, excerpt: true, thumbnail: true, createdAt: true,
+                views: true, estimatedTime: true,
                 category: { select: { name: true } },
-                author: { select: { name: true, image: true } }
+                author: { select: { name: true, image: true } },
+                _count: { select: { comments: true } }
             },
         }),
         prisma.article.count({ where: whereCondition }),
@@ -162,10 +174,42 @@ export default async function LibraryPage(props: LibraryPageProps) {
                         )}
                     </div>
 
-                    {/* Article Count */}
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-                        Showing {articles.length} of {totalCount} {totalCount === 1 ? 'article' : 'articles'}
-                    </p>
+                    {/* Sort Chips + Count */}
+                    <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+                        <div className="flex items-center gap-2">
+                            {[
+                                { key: 'newest', label: 'Newest', icon: CalendarDays },
+                                { key: 'popular', label: 'Most Read', icon: Flame },
+                                { key: 'discussed', label: 'Most Discussed', icon: MessageCircle },
+                            ].map((chip) => {
+                                const isActive = sortBy === chip.key;
+                                // Build URL preserving existing params
+                                const chipParams = new URLSearchParams();
+                                if (query) chipParams.set('q', query);
+                                if (categorySlug) chipParams.set('category', categorySlug);
+                                if (tagSlug) chipParams.set('tag', tagSlug);
+                                if (chip.key !== 'newest') chipParams.set('sort', chip.key);
+                                const chipHref = `/knowledge${chipParams.toString() ? `?${chipParams.toString()}` : ''}`;
+                                return (
+                                    <Link
+                                        key={chip.key}
+                                        href={chipHref}
+                                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 ${
+                                            isActive
+                                                ? 'bg-primary text-white shadow-md shadow-primary/30'
+                                                : 'bg-white dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-primary hover:text-primary'
+                                        }`}
+                                    >
+                                        <chip.icon size={14} />
+                                        {chip.label}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                            {totalCount} {totalCount === 1 ? 'article' : 'articles'}
+                        </span>
+                    </div>
 
                     {articles.length > 0 ? (
                         <>

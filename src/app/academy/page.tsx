@@ -90,7 +90,7 @@ export default async function AcademyPage() {
 
                     {!user && (
                         <Link
-                            href="/login"
+                            href="/auth/login"
                             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300"
                         >
                             <PlayCircle size={20} />

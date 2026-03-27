@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import useSWR from "swr";
 import Link from "next/link";
-import { MessageSquare, Search, Trash2, ExternalLink, MoreVertical, Loader2, AlertCircle } from "lucide-react";
+import { MessageSquare, Search, Trash2, ExternalLink, Loader2, CheckSquare, Square } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { PremiumInput } from "@/components/ui/PremiumInput";
@@ -50,6 +50,11 @@ export default function AdminCommentsPage() {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [commentToDelete, setCommentToDelete] = useState<Comment | null>(null);
 
+    // Bulk Selection State
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [isBulkConfirmOpen, setIsBulkConfirmOpen] = useState(false);
+    const [isBulkLoading, setIsBulkLoading] = useState(false);
+
     const confirmDelete = (comment: Comment) => {
         setCommentToDelete(comment);
         setIsConfirmOpen(true);
@@ -62,12 +67,12 @@ export default function AdminCommentsPage() {
         setIsConfirmOpen(false);
         try {
             const res = await fetch(`/api/comments/${commentToDelete.id}`, {
-                method: "DELETE" // Reusing the existing delete API which checks for Admin role
+                method: "DELETE"
             });
 
             if (res.ok) {
                 toast.success("Comment deleted");
-                await mutate(); // Revalidate SWR cache
+                await mutate();
             } else {
                 const error = await res.json();
                 toast.error(error.error || "Failed to delete");
@@ -80,7 +85,47 @@ export default function AdminCommentsPage() {
         }
     };
 
-    // Filter comments locally for now (can move to API if list gets huge)
+    // Bulk Selection
+    const toggleSelectAll = () => {
+        if (selectedIds.size === filteredComments.length && filteredComments.length > 0) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(filteredComments.map(c => c.id)));
+        }
+    };
+
+    const toggleSelect = (id: string) => {
+        const newSelected = new Set(selectedIds);
+        if (newSelected.has(id)) newSelected.delete(id);
+        else newSelected.add(id);
+        setSelectedIds(newSelected);
+    };
+
+    // Bulk Delete
+    const handleBulkDelete = async () => {
+        setIsBulkLoading(true);
+        try {
+            const res = await fetch("/api/comments/bulk", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: Array.from(selectedIds) })
+            });
+
+            if (!res.ok) throw new Error("Bulk delete failed");
+
+            toast.success(`Deleted ${selectedIds.size} comments`);
+            setSelectedIds(new Set());
+            setIsBulkConfirmOpen(false);
+            await mutate();
+        } catch (error: any) {
+            toast.error(error instanceof Error ? error.message : "Bulk delete failed");
+            setIsBulkConfirmOpen(false);
+        } finally {
+            setIsBulkLoading(false);
+        }
+    };
+
+    // Filter comments locally
     const filteredComments = useMemo(() => {
         return comments.filter(c =>
             c.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -100,13 +145,34 @@ export default function AdminCommentsPage() {
             <div className="space-y-6">
                 {/* 1. Toolbar Card */}
                 <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
-                    <div className="flex-1 w-full max-w-md">
-                        <PremiumInput
-                            icon={Search}
-                            placeholder="Search comments..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
+                    <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
+                        <div className="flex-1 w-full max-w-md">
+                            <PremiumInput
+                                icon={Search}
+                                placeholder="Search comments..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+
+                        {/* Bulk Actions (Visible when selected) */}
+                        {selectedIds.size > 0 && (
+                            <div className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-xl animate-in fade-in zoom-in-95 text-sm shrink-0">
+                                <span className="font-bold text-primary mr-2">{selectedIds.size} selected</span>
+
+                                <div className="w-[1px] h-4 bg-gray-300 dark:bg-white/10 mx-1" />
+
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => setIsBulkConfirmOpen(true)}
+                                    disabled={isBulkLoading}
+                                    className="w-8 h-8 p-0 flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 rounded-lg transition-colors disabled:opacity-50"
+                                    title="Delete Selected"
+                                >
+                                    {isBulkLoading ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -114,18 +180,24 @@ export default function AdminCommentsPage() {
                 <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full text-left border-collapse">
-                            <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+                            <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
                                 <tr>
-                                    <th className="py-4 px-6 border-b border-gray-100 dark:border-white/5">Author</th>
-                                    <th className="py-4 px-6 border-b border-gray-100 dark:border-white/5 w-1/2">Comment</th>
-                                    <th className="py-4 px-6 border-b border-gray-100 dark:border-white/5">Context</th>
-                                    <th className="py-4 px-6 border-b border-gray-100 dark:border-white/5 text-right">Actions</th>
+                                    <th className="pl-6 pr-4 py-5 w-14">
+                                        <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
+                                            {selectedIds.size === filteredComments.length && filteredComments.length > 0 ? <CheckSquare size={20} className="text-primary" /> : <Square size={20} />}
+                                        </Button>
+                                    </th>
+                                    <th className="py-4 px-6">Author</th>
+                                    <th className="py-4 px-6 w-1/2">Comment</th>
+                                    <th className="py-4 px-6">Context</th>
+                                    <th className="py-4 px-6 text-right">Actions</th>
                                 </tr>
                             </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {isLoading ? (
                                 Array.from({ length: 5 }).map((_, i) => (
                                     <tr key={i} className="animate-pulse">
+                                        <td className="pl-6 pr-4 py-4"><div className="w-5 h-5 bg-gray-200 dark:bg-white/10 rounded" /></td>
                                         <td className="py-4 px-6">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-white/10" />
@@ -151,7 +223,7 @@ export default function AdminCommentsPage() {
                                 ))
                             ) : filteredComments.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="py-20 text-center">
+                                    <td colSpan={5} className="py-20 text-center">
                                         <div className="flex flex-col items-center justify-center text-gray-500">
                                             <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
                                                 <MessageSquare size={32} />
@@ -165,8 +237,13 @@ export default function AdminCommentsPage() {
                                 filteredComments.map((comment) => (
                                     <tr
                                         key={comment.id}
-                                        className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors"
+                                        className={`group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors ${selectedIds.has(comment.id) ? 'bg-primary/5' : ''}`}
                                     >
+                                        <td className="pl-6 pr-4 py-4">
+                                            <Button variant="ghost" onClick={() => toggleSelect(comment.id)} className={`w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:bg-transparent hover:text-gray-600 ${selectedIds.has(comment.id) ? 'text-primary' : ''}`} aria-label="Select Comment">
+                                                {selectedIds.has(comment.id) ? <CheckSquare size={20} /> : <Square size={20} />}
+                                            </Button>
+                                        </td>
                                         <td className="py-4 px-6">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden flex-shrink-0">
@@ -238,7 +315,7 @@ export default function AdminCommentsPage() {
             
             </div>
 
-            {/* Delete Confirmation Dialog */}
+            {/* Single Delete Confirmation */}
             <ConfirmDialog
                 isOpen={isConfirmOpen}
                 title="Delete Comment"
@@ -250,6 +327,19 @@ export default function AdminCommentsPage() {
                     setIsConfirmOpen(false);
                     setCommentToDelete(null);
                 }}
+                variant="danger"
+            />
+
+            {/* Bulk Delete Confirmation */}
+            <ConfirmDialog
+                isOpen={isBulkConfirmOpen}
+                title="Delete Comments"
+                description={`Are you sure you want to delete ${selectedIds.size} selected comments? This action cannot be undone.`}
+                confirmText="Delete All"
+                cancelText="Cancel"
+                isLoading={isBulkLoading}
+                onConfirm={handleBulkDelete}
+                onCancel={() => setIsBulkConfirmOpen(false)}
                 variant="danger"
             />
         </div>

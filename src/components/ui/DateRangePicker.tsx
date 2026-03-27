@@ -104,19 +104,12 @@ export function DateRangePicker({
         ])
     }, [value?.start, value?.end])
 
-    const [months, setMonths] = useState(2);
+    const [isMobile, setIsMobile] = useState(false);
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth < 1024) {
-                setMonths(1);
-            } else {
-                setMonths(2);
-            }
+            setIsMobile(window.innerWidth < 640);
         };
-
-        // Initial check
         handleResize();
-
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -160,6 +153,166 @@ export function DateRangePicker({
         return format(value.start, "MMM dd, yyyy")
     }
 
+    // Mobile: use bottom sheet / fullscreen overlay
+    if (isMobile) {
+        return (
+            <div className={cn("grid gap-2", className)}>
+                <style jsx global>{`
+                    .mobile-drp .rdrDateRangePickerWrapper {
+                        display: flex !important;
+                        flex-direction: column !important;
+                        width: 100% !important;
+                    }
+                    .mobile-drp .rdrDefinedRangesWrapper {
+                        width: 100% !important;
+                        border-right: none !important;
+                        border-bottom: 1px solid #e5e7eb !important;
+                    }
+                    .mobile-drp .rdrStaticRanges {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        flex-wrap: wrap !important;
+                        gap: 0 !important;
+                        padding: 8px !important;
+                    }
+                    .mobile-drp .rdrStaticRange {
+                        flex: none !important;
+                        border: 1px solid #e5e7eb !important;
+                        border-radius: 8px !important;
+                        margin: 3px !important;
+                        height: 34px !important;
+                        border-bottom: 1px solid #e5e7eb !important;
+                    }
+                    .mobile-drp .rdrStaticRange:hover, .mobile-drp .rdrStaticRangeSelected {
+                        background-color: #ecfdf5 !important;
+                        border-color: #00C888 !important;
+                    }
+                    .mobile-drp .rdrStaticRangeLabel {
+                        color: #374151 !important;
+                        font-weight: 500;
+                        font-size: 13px !important;
+                        padding: 8px 14px !important;
+                        background-color: transparent !important;
+                    }
+                    .mobile-drp .rdrStaticRangeSelected .rdrStaticRangeLabel {
+                        color: #00C888 !important;
+                    }
+                    .mobile-drp .rdrInputRanges {
+                        display: none !important;
+                    }
+                    .mobile-drp .rdrCalendarWrapper {
+                        width: 100% !important;
+                        font-size: 13px !important;
+                    }
+                    .mobile-drp .rdrMonth {
+                        width: 100% !important;
+                        padding: 0 8px 8px 8px !important;
+                    }
+                    .mobile-drp .rdrMonthName {
+                        font-weight: 600 !important;
+                        color: #1f2937 !important;
+                    }
+                    .mobile-drp .rdrDateDisplayWrapper {
+                        background-color: transparent !important;
+                    }
+                    .mobile-drp .rdrDateInput {
+                        border-radius: 8px !important;
+                    }
+                    .dark .mobile-drp .rdrDateRangePickerWrapper,
+                    .dark .mobile-drp .rdrCalendarWrapper {
+                        background: #1E2028 !important;
+                        color: #e5e7eb !important;
+                    }
+                    .dark .mobile-drp .rdrDefinedRangesWrapper {
+                        background: #1E2028 !important;
+                        border-color: rgba(255,255,255,0.1) !important;
+                    }
+                    .dark .mobile-drp .rdrStaticRange {
+                        border-color: rgba(255,255,255,0.1) !important;
+                    }
+                    .dark .mobile-drp .rdrStaticRangeLabel {
+                        color: #d1d5db !important;
+                    }
+                    .dark .mobile-drp .rdrMonthName,
+                    .dark .mobile-drp .rdrWeekDay,
+                    .dark .mobile-drp .rdrDayNumber span {
+                        color: #d1d5db !important;
+                    }
+                    .dark .mobile-drp .rdrDayPassive .rdrDayNumber span {
+                        color: #4b5563 !important;
+                    }
+                    .dark .mobile-drp .rdrMonthAndYearPickers select {
+                        color: #d1d5db !important;
+                        background: #1E2028 !important;
+                    }
+                `}</style>
+
+                {/* Trigger Button */}
+                <Button
+                    variant="ghost"
+                    id="date"
+                    onClick={() => setOpen(true)}
+                    className={cn(
+                        "flex items-center justify-start h-auto gap-2 px-3 py-2 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
+                        !value && "text-gray-500"
+                    )}
+                >
+                    <div className="p-1.5 bg-primary/10 text-primary rounded-lg shrink-0">
+                        <CalendarIcon size={16} />
+                    </div>
+                    <span className="flex-1 truncate text-left">{getDisplayText()}</span>
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+
+                {/* Mobile Fullscreen Overlay */}
+                {open && (
+                    <div className="fixed inset-0 z-[200] flex flex-col bg-white dark:bg-[#0B0E14]">
+                        {/* Overlay Header */}
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-white/10">
+                            <h3 className="font-semibold text-gray-900 dark:text-white">Select Date Range</h3>
+                            <button onClick={handleCancel} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700">
+                                Cancel
+                            </button>
+                        </div>
+
+                        {/* Calendar Content */}
+                        <div className="flex-1 overflow-y-auto mobile-drp">
+                            <ReactDateRangePicker
+                                onChange={handleSelect}
+                                moveRangeOnFirstSelection={false}
+                                months={1}
+                                ranges={tempRange}
+                                direction="vertical"
+                                rangeColors={["#00C888"]}
+                                color="#00C888"
+                                staticRanges={customStaticRanges}
+                                inputRanges={[]}
+                                maxDate={maxDate}
+                            />
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex items-center gap-3 p-4 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#1E2028]">
+                            <Button
+                                variant="outline"
+                                onClick={handleCancel}
+                                className="flex-1 text-gray-600 dark:text-gray-300 hover:text-gray-900 rounded-xl h-12"
+                            >Cancel
+                            </Button>
+                            <Button
+                                onClick={handleApply}
+                                className="flex-1 bg-primary hover:bg-[#00A872] text-white border-none rounded-xl h-12 font-semibold"
+                            >
+                                Apply
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        )
+    }
+
+    // Desktop: standard popover
     return (
         <div className={cn("grid gap-2", className)}>
             <style jsx global>{`
@@ -216,13 +369,12 @@ export function DateRangePicker({
                 </PopoverTrigger>
                 <PopoverContent
                     className="w-auto p-0 bg-white border-gray-200 shadow-xl rounded-xl overflow-hidden"
-                    align="end"
+                    align="start"
                 >
-                    {/* React Date Range Picker */}
                     <ReactDateRangePicker
                         onChange={handleSelect}
                         moveRangeOnFirstSelection={false}
-                        months={months}
+                        months={2}
                         ranges={tempRange}
                         direction="horizontal"
                         rangeColors={["#00C888"]}
