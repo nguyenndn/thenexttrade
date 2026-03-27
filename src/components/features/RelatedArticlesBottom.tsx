@@ -57,7 +57,7 @@ export default async function RelatedArticlesBottom({ categoryId, currentArticle
     if (articles.length === 0) return null;
 
     return (
-        <div className="mt-16 pt-12 border-t border-gray-200 dark:border-white/10">
+        <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/10">
             <h3 className="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
                 You Might Also Like
             </h3>

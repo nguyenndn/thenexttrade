@@ -93,7 +93,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                 views: true, estimatedTime: true,
                 category: { select: { name: true } },
                 author: { select: { name: true, image: true } },
-                _count: { select: { comments: true } }
+                _count: { select: { comments: true, votes: true } }
             },
         }),
         prisma.article.count({ where: whereCondition }),

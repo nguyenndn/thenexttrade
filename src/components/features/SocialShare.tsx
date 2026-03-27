@@ -1,17 +1,22 @@
 "use client";
 
-import { Facebook, Linkedin, Twitter, Link as LinkIcon, Check, Send } from "lucide-react";
-import { useState } from "react";
+import { Facebook, Linkedin, Twitter, Link as LinkIcon, Check, Send, ThumbsUp } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
+import { toast } from "sonner";
 
 interface SocialShareProps {
     title: string;
     slug: string;
     vertical?: boolean;
+    articleId?: string;
 }
 
-export default function SocialShare({ title, slug, vertical = false }: SocialShareProps) {
+export default function SocialShare({ title, slug, vertical = false, articleId }: SocialShareProps) {
     const [copied, setCopied] = useState(false);
+    const [voted, setVoted] = useState(false);
+    const [voteCount, setVoteCount] = useState(0);
+    const [isToggling, setIsToggling] = useState(false);
 
     // Use env var for consistent URL on both server and client (avoids hydration mismatch)
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://thenexttrade.com';
@@ -33,6 +38,40 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
             console.error('Failed to copy text: ', err);
         }
     };
+
+    // Fetch vote status
+    useEffect(() => {
+        if (!articleId) return;
+        fetch(`/api/articles/${articleId}/vote`)
+            .then(res => res.json())
+            .then(data => { setVoted(data.voted); setVoteCount(data.count); })
+            .catch(() => {});
+    }, [articleId]);
+
+    const handleVoteToggle = useCallback(async () => {
+        if (!articleId || isToggling) return;
+        const prev = { voted, count: voteCount };
+        setVoted(!voted);
+        setVoteCount(voted ? voteCount - 1 : voteCount + 1);
+        setIsToggling(true);
+        try {
+            const res = await fetch(`/api/articles/${articleId}/vote`, { method: "POST" });
+            if (!res.ok) {
+                if (res.status === 401) {
+                    setVoted(prev.voted); setVoteCount(prev.count);
+                    toast.error("Please log in to mark articles as helpful");
+                    return;
+                }
+                throw new Error();
+            }
+            const data = await res.json();
+            setVoted(data.voted); setVoteCount(data.count);
+        } catch {
+            setVoted(prev.voted); setVoteCount(prev.count);
+        } finally {
+            setIsToggling(false);
+        }
+    }, [articleId, voted, voteCount, isToggling]);
 
     if (vertical) {
         return (
@@ -78,6 +117,31 @@ export default function SocialShare({ title, slug, vertical = false }: SocialSha
                 >
                     {copied ? <Check size={20} strokeWidth={3} className="text-primary" /> : <LinkIcon size={20} strokeWidth={2.5} />}
                 </button>
+                {articleId && (
+                    <>
+                        <div className="w-6 h-[1px] bg-gray-100 dark:bg-white/10 my-1"></div>
+                        <button
+                            onClick={handleVoteToggle}
+                            disabled={isToggling}
+                            className={`relative hover:scale-125 transition-all duration-300 disabled:opacity-70 ${
+                                voted ? "text-primary" : "text-gray-400 hover:text-primary"
+                            }`}
+                            title={voted ? "Remove your vote" : "Mark as helpful"}
+                            aria-label={voted ? "Remove your vote" : "Mark as helpful"}
+                        >
+                            <ThumbsUp size={20} strokeWidth={2.5} className={voted ? "fill-primary" : ""} />
+                            {voteCount > 0 && (
+                                <span className={`absolute -top-2 -right-2.5 text-[9px] font-black tabular-nums min-w-[16px] h-4 flex items-center justify-center rounded-full px-1 ${
+                                    voted
+                                        ? "bg-primary text-white"
+                                        : "bg-gray-200 dark:bg-white/15 text-gray-500 dark:text-gray-400"
+                                }`}>
+                                    {voteCount}
+                                </span>
+                            )}
+                        </button>
+                    </>
+                )}
             </div>
         );
     }

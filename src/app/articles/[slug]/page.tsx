@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 
-import { MessageSquare, Calendar, Clock, Home, ChevronRight, Share2, Link as LinkIcon } from "lucide-react";
+import { MessageSquare, Calendar, Clock, Home, ChevronRight, Share2, Link as LinkIcon, ThumbsUp, Flame } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { CommentsFetcher } from "@/components/comments/CommentsFetcher";
@@ -17,6 +17,7 @@ import ReadingProgressBar from "@/components/features/ReadingProgressBar";
 import TableOfContents from "@/components/features/TableOfContents";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { ViewCounter } from "@/components/features/ViewCounter";
+import { HelpfulButton } from "@/components/features/HelpfulButton";
 import { unstable_cache } from "next/cache";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
@@ -177,10 +178,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         return `<h${level} id="${id}" class="scroll-mt-32"${attrs}>${content}</h${level}>`;
     });
 
-    // Get real comment count
-    const commentCount = await prisma.comment.count({
-        where: { articleId: article.id }
-    });
+    // Get real comment count + vote count
+    const [commentCount, voteCount] = await Promise.all([
+        prisma.comment.count({ where: { articleId: article.id } }),
+        prisma.articleVote.count({ where: { articleId: article.id } })
+    ]);
 
     return (
         <main className="min-h-screen dark:bg-[#0F1117]" style={{ background: 'linear-gradient(to bottom, #ffffff 0%, #ffffff 80px, #f8fafc 400px)' }}>
@@ -283,44 +285,58 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     </h1>
 
                     {/* Meta info row */}
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                    <div className="flex flex-wrap items-center gap-5 text-base font-medium text-gray-700 dark:text-gray-300">
                         {/* Author */}
                         <div className="flex items-center gap-2.5">
                             <div className="relative w-9 h-9 rounded-full overflow-hidden bg-gray-200 dark:bg-white/10 ring-2 ring-white dark:ring-[#1E2028] shadow-sm">
-                                <Image
-                                    src={article.author.image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100"}
-                                    alt={article.author.name || "Author"}
-                                    fill
-                                    className="object-cover"
-                                />
+                                {article.author.image ? (
+                                    <Image
+                                        src={article.author.image}
+                                        alt={article.author.name || "Author"}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-sm font-bold text-gray-500 dark:text-gray-400">
+                                        {article.author.name?.charAt(0) || '?'}
+                                    </div>
+                                )}
                             </div>
                             <span className="font-bold text-gray-800 dark:text-gray-200">{article.author.name || "TheNextTrade Team"}</span>
                         </div>
 
-                        <span className="w-px h-4 bg-gray-200 dark:bg-white/10" />
-
                         {/* Date */}
                         <div className="flex items-center gap-1.5">
-                            <Calendar size={14} className="text-primary" />
+                            <Calendar size={16} strokeWidth={2.5} className="text-primary" />
                             <span>{formattedDate}</span>
                         </div>
 
-                        <span className="w-px h-4 bg-gray-200 dark:bg-white/10" />
+                        {/* Views */}
+                        <div className="flex items-center gap-1.5">
+                            <Flame size={16} strokeWidth={2.5} className="text-primary" />
+                            <span>{article.views.toLocaleString()}</span>
+                        </div>
 
                         {/* Read time */}
                         <div className="flex items-center gap-1.5">
-                            <Clock size={14} className="text-gray-400" />
+                            <Clock size={16} strokeWidth={2.5} className="text-primary" />
                             <span>{Math.ceil(article.content.length / 1000)} min read</span>
                         </div>
 
+                        {/* Comments */}
                         {commentCount > 0 && (
-                            <>
-                                <span className="w-px h-4 bg-gray-200 dark:bg-white/10" />
-                                <a href="#comments" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                                    <MessageSquare size={14} />
-                                    <span>{commentCount} Comments</span>
-                                </a>
-                            </>
+                            <a href="#comments" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                                <MessageSquare size={16} strokeWidth={2.5} className="text-primary" />
+                                <span>{commentCount}</span>
+                            </a>
+                        )}
+
+                        {/* Helpful votes */}
+                        {voteCount > 0 && (
+                            <div className="flex items-center gap-1.5 text-primary font-medium">
+                                <ThumbsUp size={16} strokeWidth={2.5} className="fill-primary/50" />
+                                <span>This article helped <strong>{voteCount}</strong> {voteCount === 1 ? 'trader' : 'traders'}</span>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -331,7 +347,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     {/* --- Sticky Social Share (overlaps card left border) --- */}
                     <div className="hidden lg:block shrink-0 z-10 -mr-[26px]">
                         <div className="sticky top-24 pt-8">
-                            <SocialShare title={article.title} slug={slug} vertical={true} />
+                            <SocialShare title={article.title} slug={slug} vertical={true} articleId={article.id} />
                         </div>
                     </div>
 
@@ -374,13 +390,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
 
 
+                        {/* Helpful Vote (mobile only — desktop uses sidebar) */}
+                        <div className="mt-8 flex items-center gap-3 lg:hidden">
+                            <HelpfulButton articleId={article.id} />
+                            <span className="text-sm text-gray-400 dark:text-gray-500">Did you find this article helpful?</span>
+                        </div>
+
                         {/* Related Articles */}
                         <Suspense fallback={<div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl mt-16" />}>
                             <RelatedArticlesBottom categoryId={article.categoryId} currentArticleId={article.id} initialArticles={relatedArticles} />
                         </Suspense>
 
                         {/* Comments */}
-                        <div id="comments" className="mt-16">
+                        <div id="comments" className="mt-8">
                             <Suspense fallback={
                                 <div className="py-12 border-t border-gray-200 dark:border-white/10 space-y-8">
                                     <div className="flex items-center gap-3">
