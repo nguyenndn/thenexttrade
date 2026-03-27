@@ -15,6 +15,12 @@ const TEAM = [
     initials: "PV",
     color: "bg-gradient-to-br from-amber-500 to-orange-500",
   },
+  {
+    name: "Thor Trader",
+    role: "Funded Trader",
+    initials: "TT",
+    color: "bg-gradient-to-br from-sky-500 to-blue-600",
+  },
 ];
 
 const SITES = [
@@ -31,6 +37,13 @@ const SITES = [
     url: "https://pvsrcapital.com",
     initials: "PV",
     color: "bg-gradient-to-br from-blue-500 to-indigo-500",
+  },
+  {
+    name: "ThorTrader.com",
+    desc: "Funded Trading",
+    url: "https://thortrader.com",
+    initials: "TT",
+    color: "bg-gradient-to-br from-sky-500 to-blue-600",
   },
 ];
 
@@ -64,7 +77,7 @@ export function AboutUsSection() {
             <Link href="/about">
               <Button
                 variant="outline"
-                className="border-gray-300 dark:border-white/20 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 hover:border-gray-400 dark:hover:border-white/30 rounded-full text-sm"
+                className="border-primary/30 dark:border-primary/40 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 hover:border-primary dark:hover:border-primary rounded-full text-sm"
               >
                 Read My Story <ArrowRight size={16} className="ml-1" />
               </Button>
