@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
-import { Target, Shield, TrendingUp, Users, Globe2, ChevronRight, BookOpen, Flame, Search, Rocket } from 'lucide-react';
+import { Target, Shield, TrendingUp, Users, Globe2, ChevronRight } from 'lucide-react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/Button';
+import { AboutTimeline } from '@/components/home/AboutTimeline';
 
 export const metadata: Metadata = {
     title: 'About TheNextTrade — From Blown Accounts to Building the Platform I Wish I Had',
@@ -13,53 +14,6 @@ export const metadata: Metadata = {
         description: 'From blown accounts to building the platform I wish I had — the personal story behind TheNextTrade.',
     },
 };
-
-const TIMELINE = [
-    {
-        phase: "01",
-        icon: Flame,
-        color: "text-red-500",
-        bg: "bg-red-100 dark:bg-red-500/10",
-        borderColor: "border-red-200 dark:border-red-500/20",
-        accentColor: "from-red-500 to-orange-500",
-        title: "The Pink Glasses",
-        period: "The Beginning",
-        story: "A friend introduced me to forex, and everything looked rosy. Every trade seemed to win. I felt invincible — like I had discovered a secret money machine. The charts moved, my balance grew, and I thought this was it."
-    },
-    {
-        phase: "02",
-        icon: Search,
-        color: "text-amber-500",
-        bg: "bg-amber-100 dark:bg-amber-500/10",
-        borderColor: "border-amber-200 dark:border-amber-500/20",
-        accentColor: "from-amber-500 to-red-500",
-        title: "The Wake-Up Call",
-        period: "Rock Bottom",
-        story: "Then came the moment of truth. I went all in. Oversized lots. No stop loss. No plan. The market didn't care about my confidence — it took everything. I stared at a blown account and realized: I had been gambling, not trading. I had zero real knowledge."
-    },
-    {
-        phase: "03",
-        icon: BookOpen,
-        color: "text-blue-500",
-        bg: "bg-blue-100 dark:bg-blue-500/10",
-        borderColor: "border-blue-200 dark:border-blue-500/20",
-        accentColor: "from-blue-500 to-cyan-500",
-        title: "The Hard Way",
-        period: "Self-Education",
-        story: "Desperate and broke, I chased the holy grail — magic indicators, secret strategies, paid signals. None of it worked. So I did the only thing left: I taught myself. But the knowledge was scattered across hundreds of sites, YouTube channels, and forums. There was no single structured path. It took years of pain, trial, and error — but slowly, the losses stopped, and I started seeing consistent profits."
-    },
-    {
-        phase: "04",
-        icon: Rocket,
-        color: "text-primary",
-        bg: "bg-emerald-100 dark:bg-primary/10",
-        borderColor: "border-emerald-200 dark:border-primary/20",
-        accentColor: "from-primary to-teal-400",
-        title: "TheNextTrade",
-        period: "The Solution",
-        story: "After years of hard-won experience, I had one burning thought: no new trader should have to go through what I went through. The scattered knowledge, the scams, the loneliness of figuring it out alone — I wanted to change that. So I built TheNextTrade: a free, structured platform where everything a retail trader needs — tools, courses, knowledge, and community — lives in one place."
-    },
-];
 
 export default function AboutPage() {
     return (
@@ -83,61 +37,13 @@ export default function AboutPage() {
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">Building What I Wished Existed</span>
                         </h1>
                         <p className="text-xl md:text-2xl text-gray-500 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                            I lost everything chasing shortcuts. Then I spent years learning the hard way. This is why I built TheNextTrade — so you don&apos;t have to.
+                            I lost everything chasing shortcuts. Then I spent years learning the hard way. This is why I built TheNextTrade &mdash; so you don&apos;t have to.
                         </p>
                     </div>
                 </section>
 
                 {/* 2. Timeline Journey */}
-                <section className="px-4 mb-24 max-w-5xl mx-auto">
-                    <div className="text-center mb-16 space-y-4">
-                        <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-white">My Journey</h2>
-                        <p className="text-lg text-gray-500 dark:text-gray-400">Four phases that shaped everything</p>
-                    </div>
-
-                    <div className="relative">
-                        {/* Timeline vertical line */}
-                        <div className="absolute left-6 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-red-300 via-amber-300 via-blue-300 to-primary/50 dark:from-red-500/30 dark:via-amber-500/30 dark:via-blue-500/30 dark:to-primary/30 hidden md:block" />
-                        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-red-300 via-amber-300 via-blue-300 to-primary/50 dark:from-red-500/30 dark:via-amber-500/30 dark:via-blue-500/30 dark:to-primary/30 md:hidden" />
-
-                        <div className="space-y-12 md:space-y-16">
-                            {TIMELINE.map((item, idx) => {
-                                const isLeft = idx % 2 === 0;
-                                return (
-                                    <div key={idx} className="relative">
-                                        {/* Timeline dot */}
-                                        <div className={`absolute left-6 md:left-1/2 -translate-x-1/2 w-12 h-12 rounded-full ${item.bg} ${item.color} flex items-center justify-center z-10 border-4 border-white dark:border-[#0F1117] shadow-lg`}>
-                                            <item.icon size={20} strokeWidth={2.5} />
-                                        </div>
-
-                                        {/* Content card */}
-                                        <div className={`ml-20 md:ml-0 md:w-[calc(50%-40px)] ${isLeft ? 'md:mr-auto md:pr-0' : 'md:ml-auto md:pl-0'}`}>
-                                            <div className={`bg-white dark:bg-[#1E2028] border ${item.borderColor} rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-lg transition-all duration-300 group`}>
-                                                {/* Phase badge */}
-                                                <div className="flex items-center gap-3 mb-4">
-                                                    <span className={`text-xs font-black uppercase tracking-widest bg-gradient-to-r ${item.accentColor} bg-clip-text text-transparent`}>
-                                                        Phase {item.phase}
-                                                    </span>
-                                                    <span className="text-xs font-medium text-gray-400 dark:text-gray-500">
-                                                        {item.period}
-                                                    </span>
-                                                </div>
-
-                                                <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
-                                                    {item.title}
-                                                </h3>
-
-                                                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                                                    {item.story}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </section>
+                <AboutTimeline />
 
                 {/* 3. Mission & Vision */}
                 <section className="px-4 mb-24 max-w-6xl mx-auto">
@@ -213,7 +119,7 @@ export default function AboutPage() {
                                 Don&apos;t make the mistakes I made. Start with the right tools, the right knowledge, and a clear path forward.
                             </p>
                             <Link
-                                href="/register"
+                                href="/auth/register"
                                 className={buttonVariants({
                                     variant: 'primary',
                                     size: 'lg',

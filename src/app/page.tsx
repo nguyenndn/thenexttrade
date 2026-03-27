@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MarketTickerSection } from "@/components/home/MarketTickerSection";
 import Image from "next/image";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { Clock, TrendingUp, Calendar, ArrowRight, BookOpen, Zap } from "lucide-react";
+import { Clock, TrendingUp, Calendar, ArrowRight, BookOpen, Zap, Flame, MessageCircle } from "lucide-react";
 import QuoteDisplay from "@/components/shared/QuoteDisplay";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFirefly";
@@ -13,6 +13,7 @@ import { ToolsPreviewSection } from "@/components/home/ToolsPreviewSection";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { HomeFAQSection } from "@/components/home/HomeFAQSection";
 import { TrustedPartners } from "@/components/home/TrustedPartners";
+import { LearningPathTimeline } from "@/components/home/LearningPathTimeline";
 import { AboutUsSection } from "@/components/home/AboutUsSection";
 import { cache } from "@/lib/cache";
 
@@ -96,11 +97,11 @@ async function HomeFeed() {
         }
       },
       orderBy: { createdAt: 'desc' },
-      take: 4
+      take: 3
     }), 300),
 
     // 3. Fetch Popular Guides
-    cache.wrap("home:popular_v2", () => prisma.article.findMany({
+    cache.wrap("home:popular_v3", () => prisma.article.findMany({
       where: { status: 'PUBLISHED' },
       select: {
         id: true,
@@ -109,6 +110,7 @@ async function HomeFeed() {
         excerpt: true,
         thumbnail: true,
         views: true,
+        estimatedTime: true,
         createdAt: true,
         author: {
           select: {
@@ -121,10 +123,15 @@ async function HomeFeed() {
             name: true,
             slug: true
           }
+        },
+        _count: {
+          select: {
+            comments: true
+          }
         }
       },
       orderBy: { views: 'desc' },
-      take: 4
+      take: 3
     }), 600), // Cache popular longer
 
     // 4. Market Data (SSR)
@@ -295,10 +302,10 @@ async function HomeFeed() {
             linkText="Explore Library"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {popularArticles.map((article, idx) => (
-              <Link key={article.id} href={`/articles/${article.slug}`} className="group relative bg-white dark:bg-[#1E2028] rounded-xl p-2 shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-white/10">
-                <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
+              <Link key={article.id} href={`/articles/${article.slug}`} className="group relative bg-white dark:bg-[#1E2028] rounded-xl p-2 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-white/10 flex flex-col">
+                <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
                   {article.thumbnail ? (
                     <Image
                       src={article.thumbnail}
@@ -313,18 +320,44 @@ async function HomeFeed() {
                   <div className="absolute top-2 left-2 bg-gradient-to-r from-primary to-[#00A570] shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-white">
                     #{idx + 1} Trending
                   </div>
+                  {article.estimatedTime && (
+                    <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold text-white flex items-center gap-1">
+                      <Clock size={10} />
+                      {article.estimatedTime} min
+                    </div>
+                  )}
                 </div>
-                <div className="px-2 pb-2">
-                  <span className="text-xs font-bold text-primary uppercase tracking-wide">{article.category.name}</span>
-                  <h3 className="mt-2 text-lg font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors">
+                <div className="px-2 pt-3 pb-1 flex flex-col flex-1">
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider">{article.category.name}</span>
+                  <h3 className="mt-2.5 mb-3 text-base font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
                     {article.title}
                   </h3>
-                  <div className="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-white/10 pt-3">
-                    <span className="flex items-center gap-1">
-                      <TrendingUp size={14} className="text-green-500" />
-                      {article.views} Views
-                    </span>
-                    <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  {/* Footer: Author + Stats */}
+                  <div className="mt-auto pt-4 pb-1 flex items-center justify-between border-t border-gray-100 dark:border-white/5">
+                    {/* Author */}
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-200 dark:bg-white/10 flex-shrink-0">
+                        {article.author.image ? (
+                          <Image src={article.author.image} alt={article.author.name || ''} width={36} height={36} className="object-cover w-full h-full" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500">
+                            {article.author.name?.charAt(0) || '?'}
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">{article.author.name}</span>
+                    </div>
+                    {/* Stats */}
+                    <div className="flex items-center gap-3 text-sm text-gray-400 dark:text-gray-500 flex-shrink-0">
+                      <span className="flex items-center gap-1">
+                        <Flame size={14} className="text-orange-400" />
+                        {article.views}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MessageCircle size={14} />
+                        {article._count.comments}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -344,13 +377,13 @@ async function HomeFeed() {
       <MarketTickerSection initialData={marketData} />
       </FadeIn>
 
-      <FadeIn delay={0.1} direction="up">
       {/* Academy Learning Path Section */}
       <section id="academy-preview" className="py-16 relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10">
         {/* Grid Pattern Background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/20 via-transparent to-transparent dark:from-blue-900/10 dark:via-transparent dark:to-transparent"></div>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <FadeIn delay={0.1} direction="up">
           <div className="mb-16 text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
               Your Journey to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Pro Trader</span> status
@@ -359,30 +392,11 @@ async function HomeFeed() {
               Master the markets with our structured learning path. From basics to advanced strategies, we guide you every step of the way.
             </p>
           </div>
+          </FadeIn>
 
-          <div className="grid grid-cols-1 md:flex md:flex-wrap md:justify-center lg:grid lg:grid-cols-5 gap-6 mb-16 relative">
-            {/* Connecting Line (Desktop Only) */}
-            <div className="hidden lg:block absolute top-12 left-6 right-6 h-1 bg-gradient-to-r from-primary/0 via-primary/50 to-primary/0 -z-10 shadow-[0_0_15px_rgba(0,200,136,0.3)]"></div>
+          <LearningPathTimeline />
 
-            {[
-              { icon: BookOpen, title: "1. Initiate", desc: "Forex fundamentals.", color: "text-blue-500", bg: "bg-blue-500/10" },
-              { icon: TrendingUp, title: "2. Novice", desc: "Master Analysis.", color: "text-primary", bg: "bg-primary/10" },
-              { icon: Clock, title: "3. Apprentice", desc: "Build Strategy.", color: "text-rose-500", bg: "bg-rose-500/10" },
-              { icon: Zap, title: "4. Trader", desc: "Risk & Psych.", color: "text-pink-500", bg: "bg-pink-500/10" },
-              { icon: Calendar, title: "5. Pro", desc: "Consistency.", color: "text-orange-500", bg: "bg-orange-500/10" },
-            ].map((step, idx) => (
-              <div key={idx} className="relative group bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary transition-shadow duration-300 hover:shadow-md md:w-[30%] lg:w-auto">
-                <div className={`w-12 h-12 rounded-xl ${step.bg} ${step.color} flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform`}>
-                  <step.icon size={24} strokeWidth={2.5} />
-                </div>
-                <div className="text-center">
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">{step.title}</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{step.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
+          <FadeIn delay={0.3} direction="up">
           <div className="flex justify-center mt-4">
             <Link href="/academy">
               <Button 
@@ -396,9 +410,9 @@ async function HomeFeed() {
               </Button>
             </Link>
           </div>
+          </FadeIn>
         </div>
       </section>
-      </FadeIn>
 
       <FadeIn delay={0.1} direction="up">
       {/* Trader Reviews */}

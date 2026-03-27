@@ -184,7 +184,7 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[300px] sm:w-[360px] p-0" align="end">
+            <PopoverContent className="w-[calc(100vw-32px)] sm:w-[360px] p-0" align="start" sideOffset={6}>
                 <Command>
                     <CommandInput placeholder="Search account..." />
                     <CommandList>

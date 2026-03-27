@@ -1,6 +1,6 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import Image from "next/image";
-import { Clock, TrendingUp, BookOpen } from "lucide-react";
+import { Clock, BookOpen, Flame, MessageCircle } from "lucide-react";
 
 export interface ArticleCardProps {
     article: {
@@ -10,8 +10,11 @@ export interface ArticleCardProps {
         excerpt: string | null;
         thumbnail: string | null;
         createdAt: Date;
+        views?: number;
+        estimatedTime?: number | null;
         category: { name: string } | null;
         author: { name: string | null; image: string | null } | null;
+        _count?: { comments: number };
     };
 }
 
@@ -19,72 +22,79 @@ export function ArticleCard({ article }: ArticleCardProps) {
     return (
         <Link
             href={`/articles/${article.slug}`}
-            className="group flex flex-col rounded-xl overflow-hidden bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow duration-300"
+            className="group relative bg-white dark:bg-[#1E2028] rounded-xl p-2 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-white/10 flex flex-col"
         >
             {/* Thumbnail */}
-            <div className="relative h-56 w-full overflow-hidden">
+            <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
                 {article.thumbnail ? (
                     <Image
                         src={article.thumbnail}
                         alt={article.title}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                 ) : (
-                    <div className="flex items-center justify-center h-full bg-gray-200 dark:bg-gray-800 text-gray-400">
+                    <div className="flex items-center justify-center h-full bg-gray-100 dark:bg-gray-800 text-gray-400">
                         <BookOpen size={48} opacity={0.5} />
                     </div>
                 )}
-                {/* Glass Badge */}
-                <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1.5 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-xs font-bold text-white uppercase tracking-wider shadow-sm">
-                        {article.category?.name || 'General'}
-                    </span>
+                {/* Category Badge */}
+                <div className="absolute top-2 left-2 bg-gradient-to-r from-primary to-[#00A570] shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-white uppercase tracking-wide">
+                    {article.category?.name || 'General'}
                 </div>
+                {/* Read Time Badge */}
+                {article.estimatedTime && (
+                    <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold text-white flex items-center gap-1">
+                        <Clock size={10} />
+                        {article.estimatedTime} min
+                    </div>
+                )}
             </div>
 
             {/* Content */}
-            <div className="flex-1 p-6 flex flex-col relative">
-                {/* Decorative gradient glow behind text */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -z-10 group-hover:bg-primary/20 transition-colors"></div>
-
-                <div className="flex items-center gap-2 text-xs font-medium text-primary mb-3">
-                    <Clock size={14} />
-                    <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                </div>
-
-                <h3 className="text-xl font-bold font-heading text-gray-900 dark:text-white mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+            <div className="px-2 pt-3 pb-1 flex flex-col flex-1">
+                <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+                    {article.category?.name || 'General'}
+                </span>
+                <h3 className="mt-2.5 mb-2 text-base font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
                     {article.title}
                 </h3>
 
-                <p className={`text-sm line-clamp-3 mb-6 flex-1 leading-relaxed ${article.excerpt ? 'text-gray-600 dark:text-gray-400' : 'text-gray-400 dark:text-gray-600 italic'}`}>
+                {/* Excerpt */}
+                <p className={`text-sm line-clamp-2 mb-4 leading-relaxed ${article.excerpt ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-600 italic'}`}>
                     {article.excerpt || "No description available."}
                 </p>
 
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-200/50 dark:border-white/5">
-                    <div className="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-white/20 bg-gray-100 dark:bg-gray-800">
-                        {article.author?.image ? (
-                            <Image
-                                src={article.author.image}
-                                alt={article.author.name || 'Author'}
-                                fill
-                                className="object-cover"
-                            />
-                        ) : (
-                             <div className="flex items-center justify-center w-full h-full text-xs font-bold text-gray-400">
-                                {article.author?.name?.charAt(0) || 'G'}
-                             </div>
+                {/* Footer: Author + Stats */}
+                <div className="mt-auto pt-4 pb-1 flex items-center justify-between border-t border-gray-100 dark:border-white/5">
+                    {/* Author */}
+                    <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-200 dark:bg-white/10 flex-shrink-0">
+                            {article.author?.image ? (
+                                <Image src={article.author.image} alt={article.author.name || ''} width={36} height={36} className="object-cover w-full h-full" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500">
+                                    {article.author?.name?.charAt(0) || '?'}
+                                </div>
+                            )}
+                        </div>
+                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">{article.author?.name || 'TheNextTrade'}</span>
+                    </div>
+                    {/* Stats */}
+                    <div className="flex items-center gap-3 text-sm text-gray-400 dark:text-gray-500 flex-shrink-0">
+                        {article.views !== undefined && (
+                            <span className="flex items-center gap-1">
+                                <Flame size={14} className="text-orange-400" />
+                                {article.views}
+                            </span>
                         )}
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-xs font-bold text-gray-900 dark:text-white">
-                            {article.author?.name || 'TheNextTrade Team'}
-                        </span>
-                        <span className="text-[10px] text-gray-500 uppercase tracking-wide">Author</span>
-                    </div>
-
-                    <div className="ml-auto w-8 h-8 rounded-full bg-white/50 dark:bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
-                        <TrendingUp size={14} />
+                        {article._count && (
+                            <span className="flex items-center gap-1">
+                                <MessageCircle size={14} />
+                                {article._count.comments}
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
