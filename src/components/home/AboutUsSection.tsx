@@ -16,9 +16,9 @@ const TEAM = [
     color: "bg-gradient-to-br from-amber-500 to-orange-500",
   },
   {
-    name: "Thor Trader",
+    name: "Tony",
     role: "Funded Trader",
-    initials: "TT",
+    initials: "T",
     color: "bg-gradient-to-br from-sky-500 to-blue-600",
   },
 ];
@@ -39,10 +39,10 @@ const SITES = [
     color: "bg-gradient-to-br from-blue-500 to-indigo-500",
   },
   {
-    name: "ThorTrader.com",
+    name: "Coming Soon",
     desc: "Funded Trading",
-    url: "https://thortrader.com",
-    initials: "TT",
+    url: "#",
+    initials: "CS",
     color: "bg-gradient-to-br from-sky-500 to-blue-600",
   },
 ];
