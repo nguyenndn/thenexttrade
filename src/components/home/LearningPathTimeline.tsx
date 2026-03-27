@@ -23,7 +23,7 @@ export function LearningPathTimeline() {
     <div ref={ref} className="grid grid-cols-1 md:flex md:flex-wrap md:justify-center lg:grid lg:grid-cols-5 gap-6 mb-16 relative">
       
       {/* Desktop Animated Line — vertically centered through cards */}
-      <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 left-[10%] right-[10%] h-[3px] -z-10">
+      <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 left-[10%] right-[10%] h-[3px] z-0">
         {/* Background track */}
         <div className="absolute inset-0 bg-gray-200 dark:bg-white/10 rounded-full" />
         
@@ -63,10 +63,10 @@ export function LearningPathTimeline() {
       </div>
 
       {/* Mobile Animated Vertical Line */}
-      <div className="lg:hidden absolute top-0 bottom-0 left-[24px] md:left-1/2 md:-translate-x-1/2 w-[3px] -z-10">
+      <div className="lg:hidden absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[3px] z-0">
         <div className="absolute inset-0 bg-gray-200 dark:bg-white/10 rounded-full" />
         <motion.div
-          className="absolute inset-x-0 top-0 rounded-full"
+          className="absolute inset-x-0 top-0 bottom-0 rounded-full"
           style={{
             background: "linear-gradient(180deg, #00C888, #00A570)",
             boxShadow: "0 0 12px rgba(0,200,136,0.5)",
@@ -96,7 +96,7 @@ export function LearningPathTimeline() {
               delay: cardDelay,
               ease: "easeOut",
             }}
-            className="relative group overflow-hidden bg-white dark:bg-[#1E2028] p-4 pt-5 rounded-xl border border-gray-200/80 dark:border-white/10 hover:border-transparent transition-all duration-300 md:w-[30%] lg:w-auto ml-12 md:ml-0 shadow-sm hover:shadow-lg"
+            className="relative z-10 group overflow-hidden bg-white dark:bg-[#1E2028] p-4 pt-5 rounded-xl border border-gray-200/80 dark:border-white/10 hover:border-transparent transition-all duration-300 md:w-[30%] lg:w-auto mx-auto w-[85%] md:mx-0 shadow-sm hover:shadow-lg"
             style={{
               boxShadow: `0 2px 12px ${step.glow}`,
             }}
