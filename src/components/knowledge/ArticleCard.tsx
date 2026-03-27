@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Clock, BookOpen, Flame, MessageCircle } from "lucide-react";
+import { Clock, BookOpen, Flame, MessageCircle, ThumbsUp } from "lucide-react";
 
 export interface ArticleCardProps {
     article: {
@@ -14,7 +14,7 @@ export interface ArticleCardProps {
         estimatedTime?: number | null;
         category: { name: string } | null;
         author: { name: string | null; image: string | null } | null;
-        _count?: { comments: number };
+        _count?: { comments: number; votes?: number };
     };
 }
 
@@ -39,7 +39,6 @@ export function ArticleCard({ article }: ArticleCardProps) {
                         <BookOpen size={48} opacity={0.5} />
                     </div>
                 )}
-                {/* Category Badge */}
                 <div className="absolute top-2 left-2 bg-gradient-to-r from-primary to-[#00A570] shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-white uppercase tracking-wide">
                     {article.category?.name || 'General'}
                 </div>
@@ -54,10 +53,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
             {/* Content */}
             <div className="px-2 pt-3 pb-1 flex flex-col flex-1">
-                <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
-                    {article.category?.name || 'General'}
-                </span>
-                <h3 className="mt-2.5 mb-2 text-base font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                <h3 className="mt-1 mb-2 text-base font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
                     {article.title}
                 </h3>
 
@@ -82,17 +78,23 @@ export function ArticleCard({ article }: ArticleCardProps) {
                         <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">{article.author?.name || 'TheNextTrade'}</span>
                     </div>
                     {/* Stats */}
-                    <div className="flex items-center gap-3 text-sm text-gray-400 dark:text-gray-500 flex-shrink-0">
+                    <div className="flex items-center gap-3 text-sm font-semibold text-gray-700 dark:text-gray-300 flex-shrink-0">
                         {article.views !== undefined && (
                             <span className="flex items-center gap-1">
-                                <Flame size={14} className="text-orange-400" />
+                                <Flame size={15} strokeWidth={2.5} className="text-primary" />
                                 {article.views}
                             </span>
                         )}
                         {article._count && (
                             <span className="flex items-center gap-1">
-                                <MessageCircle size={14} />
+                                <MessageCircle size={15} strokeWidth={2.5} className="text-primary" />
                                 {article._count.comments}
+                            </span>
+                        )}
+                        {article._count?.votes !== undefined && article._count.votes > 0 && (
+                            <span className="flex items-center gap-1">
+                                <ThumbsUp size={15} strokeWidth={2.5} className="text-primary" />
+                                {article._count.votes}
                             </span>
                         )}
                     </div>

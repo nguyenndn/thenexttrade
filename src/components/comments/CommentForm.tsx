@@ -30,6 +30,7 @@ interface CommentFormProps {
     onCancel?: () => void;
     placeholder?: string;
     autoFocus?: boolean;
+    userName?: string | null;
 }
 
 export function CommentForm({
@@ -38,12 +39,10 @@ export function CommentForm({
     onSuccess,
     onCancel,
     placeholder = "Add to the discussion...",
-    autoFocus = false
+    autoFocus = false,
+    userName = null
 }: CommentFormProps) {
     const [isLoading, setIsLoading] = useState(false);
-
-    // Quick auth check handled by API response mostly, but nice to disable if not logged in.
-    // For now, let's allow typing and prompt on submit if needed or let API fail.
 
     const {
         register,
@@ -68,7 +67,6 @@ export function CommentForm({
 
             if (res.status === 401) {
                 toast.error("Please login to comment");
-                // TODO: Redirect to login
                 window.location.href = "/auth/login";
                 return;
             }
@@ -90,49 +88,60 @@ export function CommentForm({
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="relative">
-            <div className="relative">
-                <textarea
-                    {...register("content")}
-                    className="w-full min-h-[120px] p-4 pb-16 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
-                    placeholder={placeholder}
-                    autoFocus={autoFocus}
-                    disabled={isLoading}
-                />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <textarea
+                {...register("content")}
+                className="w-full min-h-[140px] p-5 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all resize-none outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400 text-[15px]"
+                placeholder={parentId ? placeholder : "Share your thoughts..."}
+                autoFocus={autoFocus}
+                disabled={isLoading}
+            />
 
-                {isLoading ? (
-                    <div className="absolute right-3 bottom-3 text-primary">
-                        <Loader2 className="animate-spin" size={20} />
-                    </div>
-                ) : (
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        size="md"
-                        disabled={isLoading}
-                        className="absolute right-3 bottom-3 rounded-full shadow-lg shadow-[#00C888]/20 transition-all active:scale-95 flex items-center justify-center gap-2 px-6 py-2.5 bg-[#00C888] hover:bg-[#00b37a]"
-                    >
-                        <SendHorizontal size={18} className="text-white" />
-                        <span className="font-medium text-white text-base">Send</span>
-                    </Button>
-                )}
-            </div>
-
-            {(errors.content || onCancel) && (
-                <div className="flex justify-between items-center mt-2">
-                    <p className="text-red-500 text-xs">{errors.content?.message}</p>
-                    {onCancel && (
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={onCancel}
-                            className="text-xs h-auto px-2 py-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                        >
-                            Cancel
-                        </Button>
-                    )}
+            {!parentId && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        defaultValue={userName || ""}
+                        readOnly={!!userName}
+                        className="w-full px-5 py-3 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400 text-[15px]"
+                    />
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        className="w-full px-5 py-3 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400 text-[15px]"
+                    />
                 </div>
             )}
+
+            {errors.content && (
+                <p className="text-red-500 text-xs">{errors.content.message}</p>
+            )}
+
+            <div className="flex items-center justify-end gap-3">
+                {onCancel && (
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={onCancel}
+                        className="text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                    >
+                        Cancel
+                    </Button>
+                )}
+
+                <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="rounded-full px-7 py-2.5 bg-primary hover:bg-[#00B078] text-white font-bold text-sm shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center gap-2"
+                >
+                    {isLoading ? (
+                        <Loader2 className="animate-spin" size={16} />
+                    ) : (
+                        <>Send</>
+                    )}
+                </Button>
+            </div>
         </form>
     );
 }

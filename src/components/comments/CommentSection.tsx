@@ -49,7 +49,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
     }, [articleId]);
 
     return (
-        <section id="comments" className="mt-16 py-10 px-6 sm:px-8 bg-white dark:bg-[#15171E] border border-gray-200 dark:border-white/5 rounded-xl shadow-sm">
+        <section id="comments" className="py-10 px-6 sm:px-8 bg-white dark:bg-[#15171E] border border-gray-200 dark:border-white/5 rounded-xl shadow-sm">
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-xl text-primary">
@@ -89,25 +89,11 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
             {/* Main Comment Form */}
             <div id="comment-form-box" className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/5 scroll-mt-32 shadow-sm">
                 {currentUser ? (
-                    <div className="flex gap-4">
-                        <div className="flex-shrink-0">
-                            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 border border-white/10 overflow-hidden relative">
-                                {currentUser.image ? (
-                                    <img src={currentUser.image} alt={currentUser.name || "User"} className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-gray-500 font-bold">
-                                        {currentUser.name?.charAt(0) || "U"}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex-1">
-                            <CommentForm
-                                articleId={articleId}
-                                onSuccess={fetchComments}
-                            />
-                        </div>
-                    </div>
+                    <CommentForm
+                        articleId={articleId}
+                        onSuccess={fetchComments}
+                        userName={currentUser.name}
+                    />
                 ) : (
                     <div className="text-center py-6">
                         <p className="text-gray-500 mb-4">Log in to join the discussion</p>

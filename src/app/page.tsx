@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MarketTickerSection } from "@/components/home/MarketTickerSection";
 import Image from "next/image";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { Clock, TrendingUp, Calendar, ArrowRight, BookOpen, Zap, Flame, MessageCircle } from "lucide-react";
+import { Clock, TrendingUp, Calendar, ArrowRight, BookOpen, Zap, Flame, MessageCircle, ThumbsUp } from "lucide-react";
 import QuoteDisplay from "@/components/shared/QuoteDisplay";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFirefly";
@@ -101,7 +101,7 @@ async function HomeFeed() {
     }), 300),
 
     // 3. Fetch Popular Guides
-    cache.wrap("home:popular_v3", () => prisma.article.findMany({
+    cache.wrap("home:popular_v4", () => prisma.article.findMany({
       where: { status: 'PUBLISHED' },
       select: {
         id: true,
@@ -126,11 +126,12 @@ async function HomeFeed() {
         },
         _count: {
           select: {
-            comments: true
+            comments: true,
+            votes: true
           }
         }
       },
-      orderBy: { views: 'desc' },
+      orderBy: { votes: { _count: 'desc' } },
       take: 3
     }), 600), // Cache popular longer
 
@@ -293,8 +294,14 @@ async function HomeFeed() {
 
       <FadeIn delay={0.1} direction="up">
       {/* Popular Guides Section */}
-      <section className="py-16 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 border-t border-gray-200 dark:border-white/5 bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 dark:from-[#0B0E14] dark:via-[#0F1219] dark:to-[#0B0E14] overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.2] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-teal-400/10 dark:bg-teal-500/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-primary/10 dark:bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             title="Popular Guides"
             align="left"
@@ -317,8 +324,17 @@ async function HomeFeed() {
                   ) : (
                     <div className="w-full h-full bg-gray-200 dark:bg-gray-800" />
                   )}
-                  <div className="absolute top-2 left-2 bg-gradient-to-r from-primary to-[#00A570] shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-white">
-                    #{idx + 1} Trending
+                  <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                    <div className={`shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-white ${
+                      idx === 0 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' :
+                      idx === 1 ? 'bg-gradient-to-r from-slate-400 to-slate-300' :
+                      'bg-gradient-to-r from-amber-700 to-amber-600'
+                    }`}>
+                      #{idx + 1} Trending
+                    </div>
+                    <div className="bg-gradient-to-r from-primary to-[#00A570] shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-white uppercase tracking-wide">
+                      {article.category.name}
+                    </div>
                   </div>
                   {article.estimatedTime && (
                     <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold text-white flex items-center gap-1">
@@ -328,8 +344,7 @@ async function HomeFeed() {
                   )}
                 </div>
                 <div className="px-2 pt-3 pb-1 flex flex-col flex-1">
-                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider">{article.category.name}</span>
-                  <h3 className="mt-2.5 mb-3 text-base font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                  <h3 className="mt-1 mb-3 text-base font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
                     {article.title}
                   </h3>
                   {/* Footer: Author + Stats */}
@@ -348,15 +363,21 @@ async function HomeFeed() {
                       <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">{article.author.name}</span>
                     </div>
                     {/* Stats */}
-                    <div className="flex items-center gap-3 text-sm text-gray-400 dark:text-gray-500 flex-shrink-0">
+                    <div className="flex items-center gap-3 text-sm font-semibold text-gray-700 dark:text-gray-300 flex-shrink-0">
                       <span className="flex items-center gap-1">
-                        <Flame size={14} className="text-orange-400" />
+                        <Flame size={15} strokeWidth={2.5} className="text-primary" />
                         {article.views}
                       </span>
                       <span className="flex items-center gap-1">
-                        <MessageCircle size={14} />
+                        <MessageCircle size={15} strokeWidth={2.5} className="text-primary" />
                         {article._count.comments}
                       </span>
+                      {article._count.votes > 0 && (
+                        <span className="flex items-center gap-1">
+                          <ThumbsUp size={15} strokeWidth={2.5} className="text-primary" />
+                          {article._count.votes}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
