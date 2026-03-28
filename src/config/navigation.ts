@@ -30,6 +30,11 @@ import {
 
 export const menuItems = [
     {
+        name: "Home",
+        href: "/",
+        type: "link" as const,
+    },
+    {
         name: "Knowledge",
         href: "/knowledge",
         type: "link" as const,
