@@ -4,10 +4,19 @@ import Image from 'next/image';
 import { Calendar } from 'lucide-react';
 import { prisma } from '@/lib/prisma'; // Assumes server component usage
 
+interface RelatedArticle {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    thumbnail: string | null;
+    createdAt: Date;
+}
+
 interface RelatedArticlesBottomProps {
     categoryId?: string;
     currentArticleId: string;
-    initialArticles?: any[];
+    initialArticles?: RelatedArticle[];
 }
 
 export default async function RelatedArticlesBottom({ categoryId, currentArticleId, initialArticles }: RelatedArticlesBottomProps) {

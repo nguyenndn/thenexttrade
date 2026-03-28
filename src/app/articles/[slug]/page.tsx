@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 
-import { MessageSquare, Calendar, Clock, Home, ChevronRight, Share2, Link as LinkIcon, ThumbsUp, Flame } from "lucide-react";
+import { MessageSquare, Calendar, Clock, Home, ChevronRight, ThumbsUp, Flame } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { CommentsFetcher } from "@/components/comments/CommentsFetcher";
@@ -18,17 +18,25 @@ import TableOfContents from "@/components/features/TableOfContents";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { ViewCounter } from "@/components/features/ViewCounter";
 import { HelpfulButton } from "@/components/features/HelpfulButton";
+import { BreadcrumbShareButtons } from "@/components/features/BreadcrumbShareButtons";
 import { unstable_cache } from "next/cache";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { parseHowToSteps, minutesToIsoDuration } from "@/lib/parseHowToSteps";
 
 
-// CACHING: Cache article data for 60 seconds
+// CACHING: Cache article data + processed content for 60 seconds
+const generateId = (text: string) => {
+    return text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "");
+};
+
 const getCachedArticle = unstable_cache(
     async (slug: string) => {
         // 1. Fast Path: Strict Slug Lookup (Indexed)
-        const article = await prisma.article.findUnique({
+        let article = await prisma.article.findUnique({
             where: { slug },
             include: {
                 author: {
@@ -39,26 +47,36 @@ const getCachedArticle = unstable_cache(
             }
         });
 
-        if (article) return article;
-
-        // 2. Fallback: Fuzzy Search (Slower, only acts if slug not found)
-        // This handles legacy URLs or title-based slugs if strictly needed
-        return await prisma.article.findFirst({
-            where: {
-                title: { equals: slug.replace(/-/g, ' '), mode: 'insensitive' },
-                status: 'PUBLISHED'
-            },
-            include: {
-                author: {
-                    select: { id: true, name: true, image: true }
+        if (!article) {
+            // 2. Fallback: Fuzzy Search (Slower, only acts if slug not found)
+            article = await prisma.article.findFirst({
+                where: {
+                    title: { equals: slug.replace(/-/g, ' '), mode: 'insensitive' },
+                    status: 'PUBLISHED'
                 },
-                category: true,
-                tags: { include: { tag: true } }
-            }
+                include: {
+                    author: {
+                        select: { id: true, name: true, image: true }
+                    },
+                    category: true,
+                    tags: { include: { tag: true } }
+                }
+            });
+        }
+
+        if (!article) return null;
+
+        // C8: Pre-compute processedContent — regex runs once per cache cycle (60s)
+        const processedContent = article.content.replace(/<h([23])((?:\s[^>]*)?)>(.*?)<\/h\1>/g, (_match: string, level: string, attrs: string, content: string) => {
+            const text = content.replace(/<[^>]*>/g, '');
+            const id = generateId(text);
+            return `<h${level} id="${id}" class="scroll-mt-32"${attrs}>${content}</h${level}>`;
         });
+
+        return { ...article, processedContent };
     },
-    ['article-by-slug'], // Key parts
-    { revalidate: 60, tags: ['articles'] } // Options
+    ['article-by-slug'],
+    { revalidate: 60, tags: ['articles'] }
 );
 
 // SSG: Pre-render the top 50 most recent articles at build time
@@ -108,15 +126,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
 }
 
-
-// Helper to generate IDs from text
-const generateId = (text: string) => {
-    return text
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)+/g, "");
-};
-
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
@@ -142,8 +151,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         })
     ]);
 
-    let currentUser = null;
+    if (!article) return notFound();
 
+    let currentUser = null;
     if (authUser) {
         currentUser = await prisma.user.findUnique({
             where: { id: authUser.id },
@@ -151,16 +161,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         });
     }
 
-    if (!article) return notFound();
-
-    // Non-blocking view update (we can just fire and forget or await it if we want strict consistency, spec suggests await in flow or after)
-    // We'll keep it simple and await it for now, or just not await to be faster? 
-    // Spec moved it to after() or kept it after Promise.all. 
-    // We will place it here.
-    await prisma.article.update({
+    // A1: Non-blocking view increment — fire-and-forget, don't block render
+    prisma.article.update({
         where: { id: article.id },
         data: { views: { increment: 1 } }
-    });
+    }).catch(() => {});
 
     const formattedDate = new Date(article.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -168,15 +173,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         day: 'numeric'
     });
 
-    // Inject IDs into H2 and H3 tags for TOC
-    // Content is from trusted admin CMS — no need for DOMPurify
-    const cleanContent = article.content;
-
-    const processedContent = cleanContent.replace(/<h([23])((?: [^>]*)?)>(.*?)<\/h\1>/g, (match, level, attrs, content) => {
-        const text = content.replace(/<[^>]*>/g, ''); // Strip tags to get text for ID
-        const id = generateId(text);
-        return `<h${level} id="${id}" class="scroll-mt-32"${attrs}>${content}</h${level}>`;
-    });
+    // C8: processedContent is pre-computed inside getCachedArticle (runs once per 60s)
+    const { processedContent } = article;
 
     // Get real comment count + vote count
     const [commentCount, voteCount] = await Promise.all([
@@ -239,6 +237,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                             className="object-cover"
                             priority
                             sizes="(max-width: 768px) 100vw, (max-width: 1400px) 90vw, 1280px"
+                            placeholder="blur"
+                            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI1MTQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzk0YTNiOCIvPjwvc3ZnPg=="
                         />
                         {/* Subtle gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
@@ -267,15 +267,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         <span className="text-white font-semibold truncate max-w-[150px] sm:max-w-[300px]">{article.title}</span>
                     </div>
                     
-                    <div className="flex items-center gap-2 shrink-0 bg-white/15 dark:bg-white/10 rounded-lg px-3 py-1.5">
-                        <span className="text-sm text-white font-semibold">Share:</span>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors" title="Share via Social" aria-label="Share via Social">
-                            <Share2 size={14} />
-                        </button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors" title="Copy Link" aria-label="Copy Link">
-                            <LinkIcon size={14} />
-                        </button>
-                    </div>
+                    <BreadcrumbShareButtons title={article.title} slug={article.slug} />
                 </div>
 
                 {/* ===== ARTICLE HEADER ===== */}

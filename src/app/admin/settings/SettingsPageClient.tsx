@@ -235,6 +235,34 @@ function SecuritySettings() {
     );
 }
 /* ─────────────────────────────────────────────
+   Shared UI Components (defined outside to prevent re-mount on re-render)
+   ───────────────────────────────────────────── */
+const ToggleRow = ({ label, desc, checked, onChange }: { label: string; desc: string; checked: boolean; onChange: () => void }) => (
+    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
+        <div>
+            <h4 className="font-bold text-gray-900 dark:text-white text-sm">{label}</h4>
+            <p className="text-xs text-gray-500">{desc}</p>
+        </div>
+        <label className="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" className="sr-only peer" checked={checked} onChange={onChange} />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+        </label>
+    </div>
+);
+
+const SectionCard = ({ icon: Icon, title, children, className }: { icon: any; title: string; children: React.ReactNode; className?: string }) => (
+    <div className={`bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col ${className || ''}`}>
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-white/8 flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                <Icon size={14} className="text-primary" />
+            </div>
+            <h2 className="text-sm font-semibold text-gray-900 dark:text-white">{title}</h2>
+        </div>
+        <div className="px-6 py-5 space-y-4 flex-1">{children}</div>
+    </div>
+);
+
+/* ─────────────────────────────────────────────
    System Settings
    ───────────────────────────────────────────── */
 function SystemSettings({ initialConfig }: { initialConfig: SettingsPageClientProps["initialConfig"] }) {
@@ -265,31 +293,6 @@ function SystemSettings({ initialConfig }: { initialConfig: SettingsPageClientPr
             }
         });
     };
-
-    const ToggleRow = ({ label, desc, checked, onChange }: { label: string; desc: string; checked: boolean; onChange: () => void }) => (
-        <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
-            <div>
-                <h4 className="font-bold text-gray-900 dark:text-white text-sm">{label}</h4>
-                <p className="text-xs text-gray-500">{desc}</p>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={checked} onChange={onChange} />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-            </label>
-        </div>
-    );
-
-    const SectionCard = ({ icon: Icon, title, children, className }: { icon: any; title: string; children: React.ReactNode; className?: string }) => (
-        <div className={`bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col ${className || ''}`}>
-            <div className="px-6 py-4 border-b border-gray-100 dark:border-white/8 flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                    <Icon size={14} className="text-primary" />
-                </div>
-                <h2 className="text-sm font-semibold text-gray-900 dark:text-white">{title}</h2>
-            </div>
-            <div className="px-6 py-5 space-y-4 flex-1">{children}</div>
-        </div>
-    );
 
     return (
         <div className="space-y-5">

@@ -26,6 +26,25 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
+    // Auto-fetch user when not provided (client-side pages)
+    useEffect(() => {
+        if (initialUser !== undefined) return; // Skip if prop was explicitly passed
+        fetch("/api/profile")
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data?.name) {
+                    setUser({
+                        id: "",
+                        name: data.name,
+                        email: data.email,
+                        image: data.image,
+                        profile: { username: data.name, role: data.role || "USER" }
+                    } as AuthUser);
+                }
+            })
+            .catch(() => {});
+    }, [initialUser]);
+
     useEffect(() => {
         const onScroll = () => setIsScrolled(window.scrollY > 10);
         onScroll(); // check on mount
@@ -42,8 +61,11 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
     return (
         <header
             id="site-header"
-            className="fixed top-0 inset-x-0 z-[60] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
-            style={{ paddingTop: isScrolled ? "12px" : "0px" }}
+            className="fixed inset-x-0 z-[60] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
+            style={{
+                top: 'var(--banner-h, 0px)',
+                paddingTop: isScrolled ? "12px" : "0px"
+            }}
         >
             {/* Full-width bar — bg + rounded here */}
             <div

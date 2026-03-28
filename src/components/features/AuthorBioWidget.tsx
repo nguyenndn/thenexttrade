@@ -36,16 +36,16 @@ export default function AuthorBioWidget({ author }: AuthorBioWidgetProps) {
             </p>
 
             <div className="flex justify-center gap-2">
-                <a href="#" className="p-2 text-gray-400 hover:text-cyan-500 transition-colors border border-gray-200 dark:border-slate-700 rounded-full hover:border-cyan-500">
+                <a href="#" aria-label="Facebook" className="p-2 text-gray-400 hover:text-cyan-500 transition-colors border border-gray-200 dark:border-slate-700 rounded-full hover:border-cyan-500">
                     <Facebook size={16} />
                 </a>
-                <a href="#" className="p-2 text-gray-400 hover:text-cyan-500 transition-colors border border-gray-200 dark:border-slate-700 rounded-full hover:border-cyan-500">
+                <a href="#" aria-label="Twitter" className="p-2 text-gray-400 hover:text-cyan-500 transition-colors border border-gray-200 dark:border-slate-700 rounded-full hover:border-cyan-500">
                     <Twitter size={16} />
                 </a>
-                <a href="#" className="p-2 text-gray-400 hover:text-cyan-500 transition-colors border border-gray-200 dark:border-slate-700 rounded-full hover:border-cyan-500">
+                <a href="#" aria-label="Instagram" className="p-2 text-gray-400 hover:text-cyan-500 transition-colors border border-gray-200 dark:border-slate-700 rounded-full hover:border-cyan-500">
                     <Instagram size={16} />
                 </a>
-                <a href="#" className="p-2 text-gray-400 hover:text-cyan-500 transition-colors border border-gray-200 dark:border-slate-700 rounded-full hover:border-cyan-500">
+                <a href="#" aria-label="GitHub" className="p-2 text-gray-400 hover:text-cyan-500 transition-colors border border-gray-200 dark:border-slate-700 rounded-full hover:border-cyan-500">
                     <Github size={16} />
                 </a>
             </div>
