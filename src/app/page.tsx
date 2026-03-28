@@ -2,19 +2,12 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { MarketTickerSection } from "@/components/home/MarketTickerSection";
 import Image from "next/image";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { Clock, TrendingUp, Calendar, ArrowRight, BookOpen, Zap, Flame, MessageCircle, ThumbsUp } from "lucide-react";
-import QuoteDisplay from "@/components/shared/QuoteDisplay";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFirefly";
-import { ToolsPreviewSection } from "@/components/home/ToolsPreviewSection";
-import { ReviewsSection } from "@/components/home/ReviewsSection";
-import { HomeFAQSection } from "@/components/home/HomeFAQSection";
-import { TrustedPartners } from "@/components/home/TrustedPartners";
-import { LearningPathTimeline } from "@/components/home/LearningPathTimeline";
 import { AboutUsSection } from "@/components/home/AboutUsSection";
+import { FadeIn } from "@/components/ui/FadeIn";
 import { cache } from "@/lib/cache";
 
 // Revalidate data every 60 seconds
@@ -27,9 +20,17 @@ import { shuffleArray } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Suspense } from "react";
 import { HomeFeedSkeleton } from "@/components/ui/LoadingSkeleton";
-import { FadeIn } from "@/components/ui/FadeIn";
+import dynamic from "next/dynamic";
 
-// ... imports ... 
+// A2: Dynamic imports for below-fold sections — reduces initial JS bundle via code-splitting
+const DynamicFirefly = dynamic(() => import("@/components/ui/DynamicFirefly").then(m => ({ default: m.DynamicFirefly })));
+const ReviewsSection = dynamic(() => import("@/components/home/ReviewsSection").then(m => ({ default: m.ReviewsSection })), { loading: () => <div className="h-96" /> });
+const HomeFAQSection = dynamic(() => import("@/components/home/HomeFAQSection").then(m => ({ default: m.HomeFAQSection })), { loading: () => <div className="h-96" /> });
+const QuoteDisplay = dynamic(() => import("@/components/shared/QuoteDisplay"), { loading: () => <div className="h-48" /> });
+const MarketTickerSection = dynamic(() => import("@/components/home/MarketTickerSection").then(m => ({ default: m.MarketTickerSection })));
+const ToolsPreviewSection = dynamic(() => import("@/components/home/ToolsPreviewSection").then(m => ({ default: m.ToolsPreviewSection })), { loading: () => <div className="h-96" /> });
+const LearningPathTimeline = dynamic(() => import("@/components/home/LearningPathTimeline").then(m => ({ default: m.LearningPathTimeline })), { loading: () => <div className="h-96" /> });
+const TrustedPartners = dynamic(() => import("@/components/home/TrustedPartners").then(m => ({ default: m.TrustedPartners })), { loading: () => <div className="h-96" /> });
 
 export default async function Home() {
   const user = await getAuthUser();
@@ -264,7 +265,7 @@ async function HomeFeed() {
         <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
 
         {/* Fireflies Effect */}
-        <FireflyBackground />
+        <DynamicFirefly />
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <SectionHeader
@@ -460,7 +461,7 @@ async function HomeFeed() {
       <section className="py-16 relative overflow-hidden border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
-        <FireflyBackground />
+        <DynamicFirefly />
 
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
           <QuoteDisplay isDark={true} />

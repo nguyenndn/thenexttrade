@@ -90,4 +90,4 @@ Xuất báo cáo bằng Tiếng Việt gồm:
 - [ ] `npx tsc --noEmit` vẫn pass sau khi fix
 
 ## Workflow tiếp theo
-→ `/4optimize` (Tối ưu hóa) hoặc `/5qc_test` (QC Testing)
+→ `/optimize` (Tối ưu hóa) hoặc `/qa` (QA Testing)

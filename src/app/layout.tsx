@@ -123,6 +123,8 @@ export default function RootLayout({
             }}
           />
           <SystemAnnouncementBanner />
+          {/* Spacer for fixed announcement banner — reads CSS var set by banner */}
+          <div style={{ height: 'var(--banner-h, 0px)', transition: 'height 0.3s ease' }} />
           {children}
           <Toaster richColors position="top-right" closeButton />
         </ThemeProvider>

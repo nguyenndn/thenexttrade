@@ -34,8 +34,8 @@ export default function SocialShare({ title, slug, vertical = false, articleId }
             await navigator.clipboard.writeText(url);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            console.error('Failed to copy text: ', err);
+        } catch {
+            toast.error("Failed to copy link");
         }
     };
 

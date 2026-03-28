@@ -46,7 +46,7 @@ export async function login(formData: FormData) {
                 // Conflict: Email exists but ID is different.
                 // Action: Updates the local user ID to match Supabase Auth ID.
                 // This preserves seed data relationships while fixing the auth link.
-                console.log(`[Auth] Resolving ID mismatch for ${user.email}: ${existingUserByEmail.id} -> ${user.id}`);
+
                 await prisma.user.update({
                     where: { email: user.email! },
                     data: { id: user.id }
@@ -175,7 +175,7 @@ export async function signup(formData: FormData) {
                 email: email,
                 name: fullName.trim(),
             }
-        }).catch(err => console.error("Prisma Create Error:", err));
+        }).catch(() => {});
         
         revalidatePath('/', 'layout')
         redirect('/onboarding')
@@ -281,7 +281,7 @@ export async function verifyOtpAction(formData: FormData) {
                 }
             })
         } catch (err) {
-            console.error("Prisma Insert Error during Verify:", err);
+            // Silently handle insert error
         }
     }
 

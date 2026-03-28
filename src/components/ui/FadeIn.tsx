@@ -1,14 +1,22 @@
 "use client";
 
-import { motion, HTMLMotionProps } from "framer-motion";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
-interface FadeInProps extends HTMLMotionProps<"div"> {
+interface FadeInProps {
   children: ReactNode;
   delay?: number;
   direction?: "up" | "down" | "left" | "right" | "none";
   duration?: number;
+  className?: string;
 }
+
+const OFFSETS: Record<string, string> = {
+  up: "translate3d(0, 40px, 0)",
+  down: "translate3d(0, -40px, 0)",
+  left: "translate3d(40px, 0, 0)",
+  right: "translate3d(-40px, 0, 0)",
+  none: "translate3d(0, 0, 0)",
+};
 
 export function FadeIn({
   children,
@@ -16,37 +24,40 @@ export function FadeIn({
   direction = "up",
   duration = 0.5,
   className,
-  ...props
 }: FadeInProps) {
-  const directions = {
-    up: { y: 40, x: 0 },
-    down: { y: -40, x: 0 },
-    left: { x: 40, y: 0 },
-    right: { x: -40, y: 0 },
-    none: { x: 0, y: 0 },
-  };
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { rootMargin: "-10% 0px", threshold: 0 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <motion.div
-      initial={{
-        opacity: 0,
-        ...directions[direction],
-      }}
-      whileInView={{
-        opacity: 1,
-        x: 0,
-        y: 0,
-      }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{
-        duration,
-        delay,
-        ease: "easeOut",
-      }}
+    <div
+      ref={ref}
       className={className}
-      {...props}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translate3d(0, 0, 0)" : OFFSETS[direction],
+        transition: `opacity ${duration}s ease-out ${delay}s, transform ${duration}s ease-out ${delay}s`,
+        willChange: isVisible ? "auto" : "opacity, transform",
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

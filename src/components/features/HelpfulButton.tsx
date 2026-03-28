@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { ThumbsUp } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 
 interface HelpfulButtonProps {
     articleId: string;
@@ -79,13 +80,14 @@ export function HelpfulButton({ articleId, vertical = false }: HelpfulButtonProp
     if (vertical) {
         return (
             <div className="flex flex-col items-center gap-1.5">
-                <button
+                <Button
+                    variant="ghost"
                     onClick={handleToggle}
                     disabled={isToggling}
-                    className={`w-[52px] h-[52px] rounded-full flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.12)] border transition-all duration-300 active:scale-90 disabled:opacity-70 ${
+                    className={`w-[52px] h-[52px] rounded-full flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.12)] border transition-all duration-300 active:scale-90 disabled:opacity-70 p-0 ${
                         voted
-                            ? "bg-primary/10 dark:bg-primary/15 border-primary/30 text-primary"
-                            : "bg-white dark:bg-[#1E2028] border-gray-100 dark:border-white/5 text-gray-400 hover:text-primary hover:border-primary/30"
+                            ? "bg-primary/10 dark:bg-primary/15 border-primary/30 text-primary hover:bg-primary/15"
+                            : "bg-white dark:bg-[#1E2028] border-gray-100 dark:border-white/5 text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-white"
                     }`}
                     title={voted ? "Remove your vote" : "Mark as helpful"}
                     aria-label={voted ? "Remove your vote" : "Mark as helpful"}
@@ -95,7 +97,7 @@ export function HelpfulButton({ articleId, vertical = false }: HelpfulButtonProp
                         strokeWidth={2.5}
                         className={`transition-transform duration-300 ${voted ? "fill-primary" : "hover:scale-110"}`}
                     />
-                </button>
+                </Button>
                 {count > 0 && (
                     <span className={`text-xs font-bold tabular-nums ${voted ? "text-primary" : "text-gray-400 dark:text-gray-500"}`}>
                         {count}
@@ -107,7 +109,8 @@ export function HelpfulButton({ articleId, vertical = false }: HelpfulButtonProp
 
     // Horizontal (inline) layout
     return (
-        <button
+        <Button
+            variant="ghost"
             onClick={handleToggle}
             disabled={isToggling}
             className={`group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full font-bold text-sm transition-all duration-300 border-2 active:scale-95 disabled:opacity-70 ${
@@ -129,6 +132,6 @@ export function HelpfulButton({ articleId, vertical = false }: HelpfulButtonProp
                     <span className="tabular-nums">{count}</span>
                 </>
             )}
-        </button>
+        </Button>
     );
 }

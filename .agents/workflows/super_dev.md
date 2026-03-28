@@ -8,7 +8,7 @@ description: Core Full-Stack Developer — Implementing features and fixing comp
 Hóa thân thành **Senior Full-Stack Engineer** của dự án. Nhận bản thiết kế (`implementation_plan.md`) hoặc Bug Report, phân tích logic, chẻ nhỏ file, viết code tuân thủ Design System tuyệt đối, kết nối API mượt mà và fix bug tận gốc.
 
 ## Pre-Conditions (Điều kiện tiên quyết)
-- [ ] Nếu **Tính năng mới**: Phải có `implementation_plan.md` đã được User approve (output của `/1plan_feature`)
+- [ ] Nếu **Tính năng mới**: Phải có `implementation_plan.md` đã được User approve (output của `/plan_feature`)
 - [ ] Nếu **Fix Bug**: Phải có mô tả lỗi rõ ràng (Console Error, Screenshot, Steps to Reproduce)
 - [ ] Dev server đang chạy (`npm run dev`)
 
@@ -82,13 +82,40 @@ Khi fix bug, **tuyệt đối không đoán mò**. Phải tìm Root Cause:
   ```
 - Chạy verify: `npx vitest run` — đảm bảo **100% pass**.
 
-### 6. Build Verification (Syntax & Type Check)
-- Chạy kiểm tra trước khi báo cáo:
-  ```powershell
-  npx tsc --noEmit          # Type check
-  npm run lint               # Lint check  
-  ```
-- Fix tất cả errors trước khi chuyển bước tiếp.
+### 6. Syntax & Quality Gate (gộp /check_syntax)
+Sau khi code xong, **BẮT BUỘC** chạy tuần tự trước khi báo cáo:
+
+#### 6.1 TypeScript Type Check
+Bắt lỗi type mismatch, missing props, `any` abuse.
+// turbo
+```powershell
+npx tsc --noEmit
+```
+
+#### 6.2 Lint Check
+Bắt lỗi code style, unused imports, React anti-patterns.
+// turbo
+```powershell
+npm run lint
+```
+
+#### 6.3 Unit Tests
+Đảm bảo không regression — tất cả tests phải pass.
+// turbo
+```powershell
+npx vitest run
+```
+
+#### 6.4 Build Verification (Optional — cho thay đổi lớn)
+Đảm bảo production build không fail.
+```powershell
+npm run build
+```
+
+#### 6.5 Fix Loop
+- Nếu bất kỳ bước nào fail → **fix ngay lập tức**.
+- Re-run lại từ 6.1 sau khi fix.
+- **KHÔNG chuyển Step 7 khi còn errors.**
 
 ### 7. Self-Review & Chuyển Giao (Hand-off)
 - Tự review lại code: có lỡ thay đổi logic component khác không?
@@ -112,4 +139,4 @@ Khi fix bug, **tuyệt đối không đoán mò**. Phải tìm Root Cause:
 - [ ] Console sạch (không ReferenceError, không Hydration error)
 
 ## Workflow tiếp theo
-→ `/3code_review` (Code Review) hoặc `/5qc_test` (QC Testing)
+→ `/code_review` (Code Review) hoặc `/qa` (QA Testing)

@@ -15,6 +15,7 @@ const nextConfig = {
       'date-fns',
       'lodash',
       'react-icons',
+      'framer-motion',
       '@dnd-kit/core',
       '@dnd-kit/sortable',
       '@tiptap/react',

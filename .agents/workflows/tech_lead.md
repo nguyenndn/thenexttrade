@@ -33,12 +33,12 @@ User Request
 └──────────┬───────────┘
            ▼
 ┌──────────────────────┐
-│ Phase 3: SELF-REVIEW │  ← Review + Optimize (vai /3code_review + /4optimize)
+│ Phase 3: SELF-REVIEW │  ← Review + Optimize (vai /code_review + /optimize)
 │ + Auto-Fix           │
 └──────────┬───────────┘
            ▼
 ┌──────────────────────┐
-│ Phase 4: QA CHECK    │  ← Nghiệm thu (vai /6qa_process)
+│ Phase 4: QA CHECK    │  ← Nghiệm thu (vai /qa)
 │ + Type/Lint/Test     │
 └──────────┬───────────┘
            ▼
@@ -62,7 +62,7 @@ User Request
 - Nếu yêu cầu đơn giản → lên task list trong đầu và nhảy thẳng Phase 2.
 
 ### Phase 2: Super Dev Execution (EXECUTION)
-Tự động áp dụng toàn bộ quy trình `/2super_dev`:
+Tự động áp dụng toàn bộ quy trình `/super_dev`:
 - Code **chuẩn ngay từ đầu** — không code bừa rồi fix sau.
 - Tuân thủ nghiêm ngặt **THE LAW** table (English Only, Button Component, No Native Select, A11y, etc.)
 - **Viết Unit Tests** cho logic quan trọng:
@@ -95,7 +95,7 @@ Code xong **khoan báo cáo**. Lập tức tự đóng vai `/3code_review` + `/4
 Nếu phát hiện vi phạm → **TỰ ĐỘNG fix ngay** trong im lặng (Auto-Fix). Không hỏi User cho lỗi nhỏ.
 
 ### Phase 4: QA Check Run (VERIFICATION)
-Kích hoạt vai `/6qa_process`:
+Kích hoạt vai `/qa`:
 
 ```powershell
 # BẮT BUỘC chạy 3 lệnh này:

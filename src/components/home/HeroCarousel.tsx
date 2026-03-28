@@ -103,6 +103,8 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                                     }`}
                                     style={{ opacity: 0.55 }}
                                     priority={idx === 0}
+                                    placeholder="blur"
+                                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI1MTQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzFhMjAyZSIvPjwvc3ZnPg=="
                                 />
                             ) : (
                                 <div className="w-full h-full bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900 opacity-80" />
