@@ -183,7 +183,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     ]);
 
     return (
-        <main className="min-h-screen dark:bg-[#0F1117]" style={{ background: 'linear-gradient(to bottom, #ffffff 0%, #ffffff 80px, #f8fafc 400px)' }}>
+        <main className="min-h-screen bg-white bg-[linear-gradient(to_bottom,#ffffff_0%,#ffffff_120px,#f0fdf4_300px,#f8fafc_600px,#ffffff_1200px)] dark:bg-[#0F1117] dark:bg-none">
             <ReadingProgressBar />
             <ViewCounter articleId={article.id} />
             <BreadcrumbJsonLd items={[
@@ -224,12 +224,25 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
             <PublicHeader user={authUser} />
 
-            {/* ===== HERO SECTION ===== */}
-            <div className="relative w-full mt-24">
+            {/* ===== BREADCRUMB BAR ===== */}
+            <div className="pt-[84px] max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-11 bg-gradient-to-r from-primary to-cyan-400 rounded-xl px-5 shadow-sm">
+                    <nav className="flex items-center gap-1.5 text-[13px] font-medium min-w-0">
+                        <Home size={13} className="shrink-0 text-white/70" />
+                        <Link href="/" className="text-white/80 hover:text-white transition-colors shrink-0">Home</Link>
+                        <ChevronRight size={12} className="text-white/40 shrink-0" />
+                        <Link href="/articles" className="text-white/80 hover:text-white transition-colors shrink-0">Knowledge</Link>
+                        <ChevronRight size={12} className="text-white/40 shrink-0" />
+                        <span className="text-white font-bold truncate max-w-[180px] sm:max-w-[400px]">{article.title}</span>
+                    </nav>
+                    <BreadcrumbShareButtons title={article.title} slug={article.slug} />
+                </div>
+            </div>
 
-                {article.thumbnail && (
-                    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="relative w-full aspect-[21/9] rounded-xl overflow-hidden shadow-lg bg-gray-200 dark:bg-gray-800">
+            {/* ===== HERO IMAGE ===== */}
+            {article.thumbnail && (
+                <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+                    <div className="relative w-full aspect-[21/9] rounded-xl overflow-hidden shadow-lg bg-gray-200 dark:bg-gray-800">
                         <Image
                             src={article.thumbnail}
                             alt={article.title}
@@ -248,27 +261,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                 {article.category.name}
                             </span>
                         </div>
-                        </div>
                     </div>
-                )}
-            </div>
+                    {/* Decorative gradient line */}
+                    <div className="h-1 mt-0 rounded-b-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+                </div>
+            )}
 
             {/* ===== MAIN CONTENT AREA ===== */}
-            <div className={`max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 ${article.thumbnail ? 'mt-8' : 'pt-28 sm:pt-32'}`}>
-                
-                {/* ===== BREADCRUMB BAR ===== */}
-                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-xl px-5 py-3 ${article.thumbnail ? 'mb-6' : 'mb-8'} shadow-sm border border-[#00C888]/20`}>
-                    <div className="flex items-center gap-2 text-sm text-gray-100 dark:text-gray-400 font-medium">
-                        <Home size={14} className="shrink-0" />
-                        <Link href="/" className="hover:text-white transition-colors shrink-0">Home</Link>
-                        <ChevronRight size={14} className="text-white/40 shrink-0" />
-                        <Link href="/articles" className="hover:text-white transition-colors shrink-0">Knowledge</Link>
-                        <ChevronRight size={14} className="text-white/40 shrink-0" />
-                        <span className="text-white font-semibold truncate max-w-[150px] sm:max-w-[300px]">{article.title}</span>
-                    </div>
-                    
-                    <BreadcrumbShareButtons title={article.title} slug={article.slug} />
-                </div>
+            <div className={`max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 ${article.thumbnail ? 'mt-8' : 'mt-6'}`}>
 
                 {/* ===== ARTICLE HEADER ===== */}
                 <div className="mb-10">
