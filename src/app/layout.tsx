@@ -84,7 +84,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: `history.scrollRestoration = "manual"` }} />
       </head>
-      <body className={`${sourceSans.variable} ${lexend.variable} font-sans`}>
+      <body className={`${sourceSans.variable} ${lexend.variable} font-sans bg-white dark:bg-[#0F1117]`}>
         <NextTopLoader
           color="hsl(var(--primary))"
           height={3}

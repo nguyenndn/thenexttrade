@@ -41,7 +41,7 @@ export function BreadcrumbShareButtons({ title, slug }: BreadcrumbShareButtonsPr
     };
 
     return (
-        <div className="flex items-center gap-2 shrink-0 bg-white/15 dark:bg-white/10 rounded-lg px-3 py-1.5">
+        <div className="flex items-center gap-2 shrink-0 rounded-lg px-3 py-1.5">
             <span className="text-sm text-white font-semibold">Share:</span>
             <Button
                 variant="ghost"
