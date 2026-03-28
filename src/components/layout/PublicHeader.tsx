@@ -8,6 +8,7 @@ import { useTheme } from "@/components/providers/ThemeProvider";
 
 import { DesktopNav } from "@/components/layout/DesktopNav";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
+import { TabletBottomNav } from "@/components/layout/TabletBottomNav";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { Button } from "@/components/ui/Button";
@@ -126,6 +127,9 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
 
             {/* Search Modal (Ctrl+K) */}
             <PublicSearchModal />
+
+            {/* Tablet Bottom Nav (md → lg) */}
+            <TabletBottomNav />
         </header>
     );
 }
