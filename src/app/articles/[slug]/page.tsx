@@ -15,7 +15,7 @@ import SidebarWidgets from "@/components/features/SidebarWidgets";
 import { Metadata } from "next";
 import ReadingProgressBar from "@/components/features/ReadingProgressBar";
 import TableOfContents from "@/components/features/TableOfContents";
-import MobileBottomNav from "@/components/layout/MobileBottomNav";
+import ScrollToTopButton from "@/components/features/ScrollToTopButton";
 import { ViewCounter } from "@/components/features/ViewCounter";
 import { HelpfulButton } from "@/components/features/HelpfulButton";
 import { BreadcrumbShareButtons } from "@/components/features/BreadcrumbShareButtons";
@@ -435,8 +435,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
 
 
-            <div className="pb-24" />
-            <MobileBottomNav />
+            <div className="pb-12" />
+            <ScrollToTopButton />
             <SiteFooter />
         </main>
     );
