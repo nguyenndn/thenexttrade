@@ -1,4 +1,4 @@
-﻿import { MistakeDashboard } from "@/components/mistakes/MistakeDashboard";
+import { MistakeDashboard } from "@/components/mistakes/MistakeDashboard";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
 
@@ -11,6 +11,7 @@ const analyticsTabs = [
     { label: "Analytics", href: "/dashboard/analytics" },
     { label: "Reports", href: "/dashboard/reports" },
     { label: "Mistakes", href: "/dashboard/mistakes" },
+    { label: "Intelligence", href: "/dashboard/intelligence" },
 ];
 
 export default function MistakeAnalysisPage() {

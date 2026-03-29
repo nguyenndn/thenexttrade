@@ -115,6 +115,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
         "/dashboard/sessions": "/dashboard/journal",
         "/dashboard/reports": "/dashboard/analytics",
         "/dashboard/mistakes": "/dashboard/analytics",
+        "/dashboard/intelligence": "/dashboard/analytics",
     };
 
     // Calculate the most specific active route using longest prefix match
