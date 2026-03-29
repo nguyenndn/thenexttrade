@@ -10,6 +10,7 @@ import {
     BarChart3,
     FileSpreadsheet,
     AlertTriangle,
+    Brain,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -22,6 +23,7 @@ const routeIconMap: Record<string, LucideIcon> = {
     "/dashboard/analytics": BarChart3,
     "/dashboard/reports": FileSpreadsheet,
     "/dashboard/mistakes": AlertTriangle,
+    "/dashboard/intelligence": Brain,
 };
 
 interface Tab {

@@ -125,12 +125,21 @@ model Profile {
   username    String?   @unique
   bio         String?   @db.Text
   role        UserRole  @default(USER)
+
+  // Public Profile Settings
+  isPublicProfile    Boolean  @default(false)     @map("is_public_profile")
+  showTradeScore     Boolean  @default(false)     @map("show_trade_score")
+  showBadges         Boolean  @default(true)      @map("show_badges")
+  showPairStats      Boolean  @default(true)      @map("show_pair_stats")
+  showSessionStats   Boolean  @default(true)      @map("show_session_stats")
+  profileHeadline    String?  @map("profile_headline") @db.VarChar(160)
   
   createdAt   DateTime  @default(now()) @db.Timestamptz
   updatedAt   DateTime  @updatedAt @db.Timestamptz
 
   @@index([userId])
   @@index([role])
+  @@index([username])
 }
 
 // ============================================================================
