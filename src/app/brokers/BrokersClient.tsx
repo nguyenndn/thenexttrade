@@ -13,9 +13,9 @@ const BADGE_STYLES: Record<string, string> = {
 };
 
 const CATEGORIES = [
-  { key: "brokers", label: "CFD Brokers", icon: Building2, data: partnersData.brokers, cta: "Open Account" },
-  { key: "propFirms", label: "Prop Firms", icon: Shield, data: partnersData.propFirms, cta: "Get Funded" },
-  { key: "vps", label: "VPS Hosting", icon: Server, data: partnersData.vps, cta: "Get VPS" },
+  { key: "brokers", label: "CFD Brokers", icon: Building2, data: partnersData.brokers, cta: "Open Account", depositLabel: "Min Deposit" },
+  { key: "propFirms", label: "Prop Firms", icon: Shield, data: partnersData.propFirms, cta: "Get Funded", depositLabel: "Challenge Fee" },
+  { key: "vps", label: "VPS Hosting", icon: Server, data: partnersData.vps, cta: "Get VPS", depositLabel: "Price" },
 ];
 
 function StarRating({ rating }: { rating: number }) {
@@ -41,67 +41,73 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-function PartnerCard({ item, ctaLabel }: { item: (typeof CATEGORIES)[number]["data"]["items"][number]; ctaLabel: string }) {
+function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIES)[number]["data"]["items"][number]; ctaLabel: string; depositLabel: string }) {
   const hasUrl = item.url && item.url !== "#";
 
   return (
     <div className="group bg-white dark:bg-[#1A1C24] rounded-2xl border border-gray-200 dark:border-white/[0.08] hover:border-primary/40 dark:hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 overflow-hidden flex flex-col">
-      {/* Card Header */}
-      <div className="p-6 pb-4">
-        <div className="flex items-start justify-between mb-4">
-          <div className={`w-16 h-16 rounded-xl flex items-center justify-center overflow-hidden ${
-            item.logo
-              ? "bg-white dark:bg-white/10 border border-gray-100 dark:border-white/10"
-              : `bg-gradient-to-br ${item.color} text-white text-lg font-black shadow-lg`
-          }`}>
-            {item.logo ? (
-              <Image src={item.logo} alt={item.name} width={64} height={64} className="object-contain w-full h-full p-2" />
-            ) : (
-              item.initials
-            )}
-          </div>
-          {item.badge && (
-            <span className={`text-xs font-bold px-3 py-1.5 rounded-lg ${BADGE_STYLES[item.badgeType || "green"]}`}>
-              {item.badge}
-            </span>
+      {/* Badge ribbon */}
+      {item.badge && (
+        <div className={`px-4 py-1.5 text-xs font-bold text-center ${BADGE_STYLES[item.badgeType || "green"]}`}>
+          {item.badge}
+        </div>
+      )}
+
+      {/* Header: Logo + Info inline */}
+      <div className="p-5 pb-4 flex items-center gap-4">
+        <div className={`w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden ${
+          item.logo
+            ? "bg-white dark:bg-white/10 border border-gray-100 dark:border-white/10"
+            : `bg-gradient-to-br ${item.color} text-white text-base font-black shadow-lg`
+        }`}>
+          {item.logo ? (
+            <Image src={item.logo} alt={item.name} width={56} height={56} className="object-contain w-full h-full p-1.5" />
+          ) : (
+            item.initials
           )}
         </div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1.5">{item.name}</h3>
-        {item.rating && <StarRating rating={item.rating} />}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{item.name}</h3>
+          {item.rating && <StarRating rating={item.rating} />}
+        </div>
       </div>
 
       {/* Specs Bar */}
-      {(item.minDeposit || item.maxLeverage || item.regulation) && (
-        <div className="mx-6 grid grid-cols-3 gap-2 py-3 border-t border-b border-gray-100 dark:border-white/5 text-center">
+      {(item.minDeposit || item.maxLeverage || item.regulation) && (() => {
+        const specCount = [item.minDeposit, item.maxLeverage, item.regulation].filter(Boolean).length;
+        const gridCols = specCount === 1 ? "grid-cols-1" : specCount === 2 ? "grid-cols-2" : "grid-cols-3";
+        return (
+        <div className={`grid ${gridCols} gap-px bg-gray-100 dark:bg-white/5 border-y border-gray-100 dark:border-white/5`}>
           {item.minDeposit && (
-            <div>
+            <div className="bg-white dark:bg-[#1A1C24] py-3 text-center">
               <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">
-                {item.maxLeverage ? "Min Deposit" : "Price"}
+                {depositLabel}
               </div>
               <div className="text-sm font-bold text-gray-900 dark:text-white mt-0.5">{item.minDeposit}</div>
             </div>
           )}
           {item.maxLeverage && (
-            <div>
+            <div className="bg-white dark:bg-[#1A1C24] py-3 text-center">
               <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Leverage</div>
               <div className="text-sm font-bold text-gray-900 dark:text-white mt-0.5">{item.maxLeverage}</div>
             </div>
           )}
           {item.regulation && (
-            <div>
+            <div className="bg-white dark:bg-[#1A1C24] py-3 text-center">
               <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Regulation</div>
-              <div className="text-sm font-bold text-gray-900 dark:text-white mt-0.5 truncate">{item.regulation}</div>
+              <div className="text-sm font-bold text-gray-900 dark:text-white mt-0.5 truncate px-2">{item.regulation}</div>
             </div>
           )}
         </div>
-      )}
+        );
+      })()}
 
       {/* Features */}
       {item.features && item.features.length > 0 && (
-        <div className="p-6 pt-4 flex-1">
-          <ul className="space-y-2.5">
+        <div className="p-5 pt-4 flex-1">
+          <ul className="space-y-2">
             {item.features.map((feature, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-300">
+              <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
                 <ChevronRight size={14} className="text-primary mt-0.5 flex-shrink-0" />
                 {feature}
               </li>
@@ -111,7 +117,7 @@ function PartnerCard({ item, ctaLabel }: { item: (typeof CATEGORIES)[number]["da
       )}
 
       {/* CTA */}
-      <div className="px-6 pb-6 mt-auto">
+      <div className="px-5 pb-5 mt-auto">
         {hasUrl ? (
           <a
             href={item.url!}
@@ -147,9 +153,9 @@ export default function BrokersClient() {
           <span>Curated by TheNextTrade</span>
         </div>
         <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
-          Trader&apos;s{" "}
+          Trusted{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">
-            Toolkit
+            Partners
           </span>
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
@@ -184,7 +190,7 @@ export default function BrokersClient() {
             <TabsContent key={cat.key} value={cat.key}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {cat.data.items.map((item, idx) => (
-                  <PartnerCard key={idx} item={item} ctaLabel={cat.cta} />
+                  <PartnerCard key={idx} item={item} ctaLabel={cat.cta} depositLabel={cat.depositLabel} />
                 ))}
               </div>
             </TabsContent>
