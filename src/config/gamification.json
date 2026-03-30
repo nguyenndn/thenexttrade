@@ -19,13 +19,13 @@
     "FIRST_TRADE": 100
   },
   "streakMilestones": [
-    { "days": 3,   "xp": 20,   "badge": null },
-    { "days": 7,   "xp": 50,   "badge": "Week Warrior" },
-    { "days": 14,  "xp": 100,  "badge": null },
-    { "days": 30,  "xp": 300,  "badge": "Monthly Master" },
-    { "days": 60,  "xp": 500,  "badge": null },
-    { "days": 90,  "xp": 1000, "badge": "Quarterly King" },
-    { "days": 100, "xp": 0,    "badge": "Century Club" },
-    { "days": 365, "xp": 5000, "badge": "Legendary" }
+    { "days": 3,   "xp": 30,   "badge": null },
+    { "days": 7,   "xp": 60,   "badge": "Week Warrior" },
+    { "days": 14,  "xp": 110,  "badge": null },
+    { "days": 30,  "xp": 310,  "badge": "Monthly Master" },
+    { "days": 60,  "xp": 510,  "badge": null },
+    { "days": 90,  "xp": 1010, "badge": "Quarterly King" },
+    { "days": 100, "xp": 1510, "badge": "Century Club" },
+    { "days": 365, "xp": 5010, "badge": "Legendary" }
   ]
 }

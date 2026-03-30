@@ -56,31 +56,36 @@ export async function POST(req: Request) {
         // 1. Base Reward: Daily Check-in
         await addXP(user.id, 10);
 
-        // 2. Milestone Rewards
+        // 2. Milestone Rewards (bonus XP on top of base)
         if (newStreak === 3) {
             await addXP(user.id, 20);
-            rewardMessage = "3 Day Streak! +30 XP Bonus!";
+            rewardMessage = "3 Day Streak! +30 XP Total!";
         } else if (newStreak === 7) {
+            await addXP(user.id, 50);
             await checkAndGrantBadge(user.id, "WEEK_WARRIOR");
-            rewardMessage = "7 Day Streak! You earned the 'Week Warrior' Badge!";
+            rewardMessage = "7 Day Streak! +60 XP + 'Week Warrior' Badge!";
         } else if (newStreak === 14) {
             await addXP(user.id, 100);
-            rewardMessage = "14 Day Streak! +100 XP Bonus!";
+            rewardMessage = "14 Day Streak! +110 XP Total!";
         } else if (newStreak === 30) {
+            await addXP(user.id, 300);
             await checkAndGrantBadge(user.id, "MONTHLY_MASTER");
-            rewardMessage = "30 Day Streak! 'Monthly Master' Badge Unlocked!";
+            rewardMessage = "30 Day Streak! +310 XP + 'Monthly Master' Badge!";
         } else if (newStreak === 60) {
             await addXP(user.id, 500);
-            rewardMessage = "60 Day Streak! +500 XP Massive Bonus!";
+            rewardMessage = "60 Day Streak! +510 XP Total!";
         } else if (newStreak === 90) {
+            await addXP(user.id, 1000);
             await checkAndGrantBadge(user.id, "QUARTERLY_KING");
-            rewardMessage = "90 Day Streak! You are a 'Quarterly King'!";
+            rewardMessage = "90 Day Streak! +1010 XP + 'Quarterly King' Badge!";
         } else if (newStreak === 100) {
+            await addXP(user.id, 1500);
             await checkAndGrantBadge(user.id, "CENTURY_CLUB");
-            rewardMessage = "100 Day Streak! Welcome to the Century Club!";
+            rewardMessage = "100 Day Streak! +1510 XP + 'Century Club' Badge!";
         } else if (newStreak === 365) {
+            await addXP(user.id, 5000);
             await checkAndGrantBadge(user.id, "LEGENDARY");
-            rewardMessage = "365 Days! You are LEGENDARY!";
+            rewardMessage = "365 Days! +5010 XP! You are LEGENDARY!";
         }
 
         return NextResponse.json({
