@@ -46,7 +46,7 @@ export default async function AcademyPage() {
     const totalLessons = levels.reduce((s, l) => s + l.modules.reduce((ms, m) => ms + m._count.lessons, 0), 0);
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-[#0B0E14] text-gray-900 dark:text-white">
+        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white">
             <JsonLd
                 type="Course"
                 data={{
@@ -71,7 +71,7 @@ export default async function AcademyPage() {
             />
 
             {/* ── Hero Section ── */}
-            <section className="pt-32 sm:pt-40 pb-5 px-6 relative overflow-hidden">
+            <section className="pt-32 pb-5 px-6 relative overflow-hidden">
                 <div className="max-w-5xl mx-auto text-center relative z-10">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-6">
                         <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
