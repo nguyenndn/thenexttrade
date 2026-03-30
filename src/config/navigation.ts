@@ -25,8 +25,7 @@ import {
     Bookmark,
     FolderTree,
     Quote,
-    MoreHorizontal,
-    Newspaper
+    MoreHorizontal
 } from "lucide-react";
 
 export const menuItems = [
@@ -63,11 +62,6 @@ export const dashboardMenuItems = [
         name: "Dashboard",
         href: "/dashboard",
         icon: LayoutDashboard,
-    },
-    {
-        name: "Daily Briefing",
-        href: "/dashboard/briefing",
-        icon: Newspaper,
     },
     {
         name: "Accounts & Props",
@@ -146,7 +140,6 @@ export const dashboardMenuGroups = [
         icon: LayoutDashboard,
         items: [
             { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-            { name: "Daily Briefing", href: "/dashboard/briefing", icon: Newspaper },
             { name: "Accounts & Props", href: "/dashboard/accounts", icon: Wallet },
         ],
     },

@@ -1,72 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { getCurrentStreak, getKeyStats } from "@/lib/analytics-queries";
-import { startOfWeek, format, subDays } from "date-fns";
+import { getCurrentStreak } from "@/lib/analytics-queries";
+import { startOfWeek, format } from "date-fns";
 
 // ============================================================================
-// TYPES
-// ============================================================================
-
-export interface BriefingData {
-    userName: string;
-    currentStreak: { type: "win" | "loss" | "none"; count: number };
-
-    lastTradingSession: {
-        date: string;
-        trades: number;
-        wins: number;
-        losses: number;
-        pnl: number;
-        bestPair: string | null;
-    } | null;
-
-    // Yesterday vs all-time average (unique to Briefing)
-    yesterdayVsAvg: {
-        yesterdayWR: number;
-        avgWR: number;
-        yesterdayTrades: number;
-        avgDailyTrades: number;
-        yesterdayPnl: number;
-        hasData: boolean;
-    };
-
-    // Last 7 trading days: win/loss results for sparkline
-    weeklyResults: Array<{
-        date: string;        // "Mon", "Tue"...
-        wins: number;
-        losses: number;
-        pnl: number;
-    }>;
-
-    todayEvents: Array<{
-        time: string;
-        currency: string;
-        event: string;
-        impact: "HIGH" | "MEDIUM" | "LOW";
-    }>;
-
-    insight: {
-        icon: string;
-        title: string;
-        description: string;
-    } | null;
-
-    dailyFocus: string | null;
-
-    tradeScore: number | null;
-
-    quote: { text: string; author: string } | null;
-
-    // Keep weekStats internally for insight generation but don't expose as UI block
-    weekStats: {
-        trades: number;
-        winRate: number;
-        profitFactor: number;
-        bestPair: string | null;
-    };
-}
-
-// ============================================================================
-// QUERIES
+// INTERNAL QUERIES (used by getDashboardInsight)
 // ============================================================================
 
 async function getLastTradingSession(userId: string, accountId?: string) {
@@ -97,28 +34,13 @@ async function getLastTradingSession(userId: string, accountId?: string) {
     const row = (result as any[])[0];
     if (!row) return null;
 
-    const pairResult = await prisma.$queryRaw`
-        SELECT "symbol", COUNT(*) as "cnt",
-            SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
-        FROM "JournalEntry"
-        WHERE "userId" = ${userId}::uuid
-        AND "status" = 'CLOSED'
-        AND DATE("exitDate") = ${row.tradeDate}
-        AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-        GROUP BY "symbol"
-        ORDER BY "wins" DESC
-        LIMIT 1
-    `;
-
-    const bestPairRow = (pairResult as any[])[0];
-
     return {
         date: format(new Date(row.tradeDate), "EEE, MMM d"),
         trades: Number(row.trades),
         wins: Number(row.wins),
         losses: Number(row.losses),
         pnl: Number(row.pnl || 0),
-        bestPair: bestPairRow?.symbol || null,
+        bestPair: null,
     };
 }
 
@@ -146,147 +68,12 @@ async function getWeekStats(userId: string, accountId?: string) {
     const grossProfit = Number(row.grossProfit || 0);
     const grossLoss = Number(row.grossLoss || 0);
 
-    let bestPair: string | null = null;
-    if (trades > 0) {
-        const pairResult = await prisma.$queryRaw`
-            SELECT "symbol", COUNT(*) as "cnt",
-                SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
-            FROM "JournalEntry"
-            WHERE "userId" = ${userId}::uuid
-            AND "status" = 'CLOSED'
-            AND "exitDate" >= ${weekStart}
-            AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-            GROUP BY "symbol"
-            ORDER BY "wins" DESC
-            LIMIT 1
-        `;
-        bestPair = (pairResult as any[])[0]?.symbol || null;
-    }
-
     return {
         trades,
         winRate: trades > 0 ? (wins / trades) * 100 : 0,
         profitFactor: grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? 999 : 0,
-        bestPair,
+        bestPair: null,
     };
-}
-
-// NEW: Yesterday performance vs all-time average
-async function getYesterdayVsAvg(userId: string, accountId?: string): Promise<BriefingData["yesterdayVsAvg"]> {
-    const yesterday = subDays(new Date(), 1);
-    const yesterdayStart = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
-    const yesterdayEnd = new Date(yesterdayStart);
-    yesterdayEnd.setDate(yesterdayEnd.getDate() + 1);
-
-    // Yesterday's stats
-    const yesterdayResult = await prisma.$queryRaw`
-        SELECT
-            COUNT(*) as "trades",
-            SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins",
-            SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl"
-        FROM "JournalEntry"
-        WHERE "userId" = ${userId}::uuid
-        AND "status" = 'CLOSED'
-        AND "exitDate" >= ${yesterdayStart}
-        AND "exitDate" < ${yesterdayEnd}
-        AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-    `;
-
-    const yRow = (yesterdayResult as any[])[0] || {};
-    const yTrades = Number(yRow.trades || 0);
-    const yWins = Number(yRow.wins || 0);
-    const yPnl = Number(yRow.pnl || 0);
-
-    // All-time average per trading day
-    const avgResult = await prisma.$queryRaw`
-        SELECT
-            COUNT(DISTINCT DATE("exitDate")) as "tradingDays",
-            COUNT(*) as "totalTrades",
-            SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "totalWins"
-        FROM "JournalEntry"
-        WHERE "userId" = ${userId}::uuid
-        AND "status" = 'CLOSED'
-        AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-    `;
-
-    const aRow = (avgResult as any[])[0] || {};
-    const tradingDays = Number(aRow.tradingDays || 1);
-    const totalTrades = Number(aRow.totalTrades || 0);
-    const totalWins = Number(aRow.totalWins || 0);
-
-    return {
-        yesterdayWR: yTrades > 0 ? (yWins / yTrades) * 100 : 0,
-        avgWR: totalTrades > 0 ? (totalWins / totalTrades) * 100 : 0,
-        yesterdayTrades: yTrades,
-        avgDailyTrades: tradingDays > 0 ? Math.round(totalTrades / tradingDays) : 0,
-        yesterdayPnl: yPnl,
-        hasData: yTrades > 0,
-    };
-}
-
-// NEW: Last 7 trading days for sparkline
-async function getWeeklyResults(userId: string, accountId?: string): Promise<BriefingData["weeklyResults"]> {
-    const sevenDaysAgo = subDays(new Date(), 7);
-
-    const result = await prisma.$queryRaw`
-        SELECT
-            DATE("exitDate") as "tradeDate",
-            SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins",
-            SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "losses",
-            SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl"
-        FROM "JournalEntry"
-        WHERE "userId" = ${userId}::uuid
-        AND "status" = 'CLOSED'
-        AND "exitDate" >= ${sevenDaysAgo}
-        AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-        GROUP BY DATE("exitDate")
-        ORDER BY DATE("exitDate") ASC
-    `;
-
-    return (result as any[]).map((row) => ({
-        date: format(new Date(row.tradeDate), "EEE"),
-        wins: Number(row.wins || 0),
-        losses: Number(row.losses || 0),
-        pnl: Number(row.pnl || 0),
-    }));
-}
-
-async function getTodayEvents() {
-    const today = new Date();
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const todayEnd = new Date(todayStart);
-    todayEnd.setDate(todayEnd.getDate() + 1);
-
-    const events = await prisma.economicEvent.findMany({
-        where: {
-            date: { gte: todayStart, lt: todayEnd },
-            impact: { in: ["HIGH", "MEDIUM"] },
-        },
-        orderBy: { date: "asc" },
-        take: 8,
-    });
-
-    return events.map((e) => ({
-        time: format(e.date, "HH:mm"),
-        currency: e.currency,
-        event: e.title,
-        impact: e.impact as "HIGH" | "MEDIUM" | "LOW",
-    }));
-}
-
-async function getRandomQuote(): Promise<{ text: string; author: string } | null> {
-    try {
-        const count = await prisma.quote.count({ where: { isActive: true } });
-        if (count === 0) return null;
-        const skip = Math.floor(Math.random() * count);
-        const quote = await prisma.quote.findFirst({
-            where: { isActive: true },
-            skip,
-        });
-        return quote ? { text: quote.text, author: quote.author } : null;
-    } catch {
-        return null;
-    }
 }
 
 // ============================================================================
@@ -294,12 +81,19 @@ async function getRandomQuote(): Promise<{ text: string; author: string } | null
 // ============================================================================
 
 interface InsightInput {
-    weekStats: BriefingData["weekStats"];
-    streak: BriefingData["currentStreak"];
-    lastSession: BriefingData["lastTradingSession"];
+    weekStats: { trades: number; winRate: number; profitFactor: number; bestPair: string | null };
+    streak: { type: "win" | "loss" | "none"; count: number };
+    lastSession: {
+        date: string;
+        trades: number;
+        wins: number;
+        losses: number;
+        pnl: number;
+        bestPair: string | null;
+    } | null;
 }
 
-function generateInsight(data: InsightInput): BriefingData["insight"] {
+function generateInsight(data: InsightInput): { icon: string; title: string; description: string } {
     if (data.streak.type === "loss" && data.streak.count >= 3) {
         return {
             icon: "AlertTriangle",
@@ -347,68 +141,15 @@ function generateInsight(data: InsightInput): BriefingData["insight"] {
     };
 }
 
-function generateDailyFocus(data: InsightInput): string | null {
-    if (data.weekStats.trades > 0 && data.weekStats.winRate < 50) {
-        return "Focus on quality over quantity today. Only take A+ setups.";
-    }
-    if (data.streak.type === "loss" && data.streak.count >= 2) {
-        return "Use a checklist before every trade today. Confirm setup + risk before entry.";
-    }
-    if (data.weekStats.trades === 0) {
-        return "Review your watchlist and prepare your trading plan for the day.";
-    }
-    return "Stick to your plan. Document every trade in your journal.";
-}
-
 // ============================================================================
-// MAIN AGGREGATOR
+// EXPORT: Dashboard Insight (used by /dashboard page)
 // ============================================================================
 
-export async function getDailyBriefingData(
-    userId: string,
-    accountId?: string
-): Promise<BriefingData> {
-    const userName = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { name: true },
-    });
-
-    const [streak, lastSession, weekStats, todayEvents, quote, yesterdayVsAvg, weeklyResults] = await Promise.all([
+export async function getDashboardInsight(userId: string, accountId?: string) {
+    const [weekStats, streak, lastSession] = await Promise.all([
+        getWeekStats(userId, accountId),
         getCurrentStreak(userId, accountId),
         getLastTradingSession(userId, accountId),
-        getWeekStats(userId, accountId),
-        getTodayEvents(),
-        getRandomQuote(),
-        getYesterdayVsAvg(userId, accountId),
-        getWeeklyResults(userId, accountId),
     ]);
-
-    const insightInput: InsightInput = { weekStats, streak, lastSession: lastSession };
-
-    // Get trade score if enough trades
-    let tradeScore: number | null = null;
-    try {
-        const stats = await getKeyStats(userId, accountId);
-        if (stats.totalTrades >= 30) {
-            const { getIntelligenceData } = await import("@/lib/smart-analytics");
-            const intelligence = await getIntelligenceData(userId, accountId);
-            tradeScore = intelligence.tradeScore.score;
-        }
-    } catch {
-        // Ignore
-    }
-
-    return {
-        userName: userName?.name || "Trader",
-        currentStreak: streak,
-        lastTradingSession: lastSession,
-        yesterdayVsAvg,
-        weeklyResults,
-        weekStats,
-        todayEvents,
-        insight: generateInsight(insightInput),
-        dailyFocus: generateDailyFocus(insightInput),
-        tradeScore,
-        quote,
-    };
+    return generateInsight({ weekStats, streak, lastSession });
 }

@@ -8,6 +8,7 @@ import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
 import { GreetingHeader } from "@/components/dashboard/GreetingHeader";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
+import { InsightBanner } from "@/components/dashboard/InsightBanner";
 
 // Lazy load chart components — only loaded when user scrolls to them
 const ChartSkeleton = () => <div className="h-[280px] bg-gray-100 dark:bg-white/5 animate-pulse rounded-xl" />;
@@ -48,6 +49,8 @@ interface DashboardClientProps {
     worstTrades: any[];
     symbolAnalytics: any[];
     lotDistribution: { name: string; value: number }[];
+    tradeScore: number | null;
+    insight: { icon: string; title: string; description: string } | null;
 }
 
 export default function DashboardClient({
@@ -63,6 +66,8 @@ export default function DashboardClient({
     worstTrades,
     symbolAnalytics,
     lotDistribution,
+    tradeScore,
+    insight,
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -95,11 +100,15 @@ export default function DashboardClient({
             {/* Header Section */}
             <GreetingHeader userName={userName} currentAccountId={currentAccountId} />
 
-            {/* Hero Stats Bar */}
+            {/* AI Insight Banner */}
+            {insight && <InsightBanner insight={insight} />}
+
+            {/* Hero Stats Bar (4 columns) */}
             <DashboardHero 
                 totalBalance={dashboardData.totalBalance} 
                 periodPnL={dashboardData.periodPnL} 
                 winRate={dashboardData.winRate} 
+                tradeScore={tradeScore}
                 isDark={isDark} 
             />
 
