@@ -1,0 +1,181 @@
+{
+  "brokers": {
+    "title": "Best Forex Brokers",
+    "subtitle": "Regulated & Low Spreads",
+    "viewAllHref": "/brokers",
+    "items": [
+      {
+        "name": "Exness",
+        "desc": "Instant Withdrawals • Low Spreads",
+        "badge": "Top Rated",
+        "badgeType": "gold",
+        "logo": "/images/brokers/exness.png",
+        "initials": "EX",
+        "color": "from-amber-500 to-amber-600",
+        "url": "https://one.exnesstrack.org/a/1ewjh1ww32",
+        "rating": 4.8,
+        "minDeposit": "$1",
+        "maxLeverage": "Unlimited",
+        "regulation": "FCA, CySEC, FSA",
+        "features": [
+          "Instant withdrawals 24/7",
+          "Spreads from 0.0 pips",
+          "No commission on Standard accounts",
+          "Swap-free on all accounts"
+        ]
+      },
+      {
+        "name": "Vantage Markets",
+        "desc": "Raw ECN Spreads from 0.0",
+        "badge": "Popular",
+        "badgeType": "green",
+        "logo": "/images/brokers/vantage.png",
+        "initials": "VM",
+        "color": "from-sky-500 to-blue-600",
+        "url": "https://www.vantagemarkets.com/forex-trading/forex-trading-account/?affid=111451",
+        "rating": 4.5,
+        "minDeposit": "$50",
+        "maxLeverage": "1:500",
+        "regulation": "ASIC, CIMA",
+        "features": [
+          "Raw ECN spreads from 0.0",
+          "Low commission $3/lot",
+          "MT4, MT5 & ProTrader",
+          "Copy trading platform"
+        ]
+      },
+      {
+        "name": "VT Markets",
+        "desc": "Fast Execution • Multi-Asset",
+        "badge": "Trusted",
+        "badgeType": "blue",
+        "logo": "/images/brokers/vtmarkets.png",
+        "initials": "VT",
+        "color": "from-indigo-500 to-indigo-600",
+        "url": "https://www.vtmarkets.com/get-trading/forex-trading-account/?affid=830422",
+        "rating": 4.3,
+        "minDeposit": "$100",
+        "maxLeverage": "1:500",
+        "regulation": "ASIC, SVGFSA",
+        "features": [
+          "Fast execution < 1ms",
+          "1000+ trading instruments",
+          "Advanced charting tools",
+          "Multi-asset trading"
+        ]
+      }
+    ]
+  },
+  "propFirms": {
+    "title": "Prop Trading Firms",
+    "subtitle": "Get Funded Up to $400K",
+    "items": [
+      {
+        "name": "FTMO",
+        "desc": "Up to $400K Funding",
+        "badge": "#1 Choice",
+        "badgeType": "gold",
+        "logo": "/images/brokers/ftmo_dark.png",
+        "initials": "FT",
+        "color": "from-blue-600 to-blue-700",
+        "url": "#",
+        "rating": 4.7,
+        "minDeposit": "$155",
+        "maxLeverage": "1:100",
+        "regulation": "Czech Republic",
+        "features": [
+          "Up to $400K funded account",
+          "80% profit split",
+          "Free retakes on FTMO Challenge",
+          "Bi-weekly payouts"
+        ]
+      },
+      {
+        "name": "The5ers",
+        "desc": "Instant Funding Available",
+        "badge": "Popular",
+        "badgeType": "green",
+        "logo": "/images/brokers/the5ers.png",
+        "initials": "T5",
+        "color": "from-green-500 to-green-600",
+        "url": "#",
+        "rating": 4.4,
+        "minDeposit": "$39",
+        "maxLeverage": "1:100",
+        "regulation": "Israel",
+        "features": [
+          "Instant funding option",
+          "Scale up to $4M",
+          "100% profit on first $10K",
+          "No time limit on evaluation"
+        ]
+      },
+      {
+        "name": "MyFundedFX",
+        "desc": "Low Targets • No Time Limit",
+        "badge": "USA OK",
+        "badgeType": "blue",
+        "logo": "/images/brokers/myfundedfx.png",
+        "initials": "MF",
+        "color": "from-purple-500 to-purple-600",
+        "url": "#",
+        "rating": 4.2,
+        "minDeposit": "$49",
+        "maxLeverage": "1:100",
+        "regulation": "N/A",
+        "features": [
+          "No time limit on challenges",
+          "Low profit targets (8%/5%)",
+          "80% profit split",
+          "US traders accepted"
+        ]
+      }
+    ]
+  },
+  "vps": {
+    "title": "Forex VPS Hosting",
+    "subtitle": "24/7 EA Running",
+    "items": [
+      {
+        "name": "FXVM",
+        "desc": "From $0.99/mo • NY4 Location",
+        "badge": "Best",
+        "badgeType": "green",
+        "logo": "/images/brokers/fxvm.png",
+        "initials": "FX",
+        "color": "from-slate-600 to-slate-700",
+        "url": "#",
+        "rating": 4.6,
+        "minDeposit": "$0.99/mo",
+        "maxLeverage": null,
+        "regulation": null,
+        "features": [
+          "NY4 & London data centers",
+          "Pre-installed MT4/MT5",
+          "99.99% uptime guaranteed",
+          "From $0.99/month"
+        ]
+      },
+      {
+        "name": "ForexVPS.net",
+        "desc": "Ultra-Low Latency",
+        "badge": null,
+        "badgeType": null,
+        "logo": "/images/brokers/forexvps.png",
+        "initials": "VPS",
+        "color": "from-blue-500 to-blue-600",
+        "url": "#",
+        "rating": 4.3,
+        "minDeposit": "$4.99/mo",
+        "maxLeverage": null,
+        "regulation": null,
+        "features": [
+          "Ultra-low latency < 1ms",
+          "Multiple server locations",
+          "Optimized for forex trading",
+          "24/7 customer support"
+        ]
+      }
+    ]
+  }
+}

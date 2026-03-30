@@ -1,64 +1,52 @@
 import { Building2, Shield, Server } from "lucide-react";
 import { FadeIn } from "@/components/ui/FadeIn";
 import Link from "next/link";
+import Image from "next/image";
+import partnersData from "@/config/partners.json";
 
-interface PartnerItem {
-  name: string;
-  desc: string;
-  badge?: string;
-  badgeColor?: string;
-  logo: string;
-  logoBg: string;
-  url?: string;
-}
+const BADGE_STYLES: Record<string, string> = {
+  gold: "bg-amber-500 text-white",
+  green: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30",
+  blue: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-200 dark:border-sky-500/30",
+};
 
-interface PartnerCategory {
+interface Category {
   title: string;
   subtitle: string;
+  viewAllHref?: string;
   icon: React.ElementType;
   iconBg: string;
   iconColor: string;
-  viewAllHref?: string;
-  items: PartnerItem[];
+  items: {
+    name: string;
+    desc: string;
+    badge: string | null;
+    badgeType: string | null;
+    logo: string | null;
+    initials: string;
+    color: string;
+    url: string | null;
+  }[];
 }
 
-const PARTNERS: PartnerCategory[] = [
+const CATEGORIES: Category[] = [
   {
-    title: "Best Forex Brokers",
-    subtitle: "Regulated & Low Spreads",
+    ...partnersData.brokers,
     icon: Building2,
     iconBg: "bg-blue-100 dark:bg-blue-500/20",
     iconColor: "text-blue-600 dark:text-blue-400",
-    viewAllHref: "/brokers",
-    items: [
-      { name: "Exness", desc: "Instant Withdrawals • Low Spreads", badge: "Top Rated", badgeColor: "bg-amber-500 text-white", logo: "EX", logoBg: "bg-gradient-to-br from-amber-500 to-amber-600" },
-      { name: "Vantage Markets", desc: "Raw ECN Spreads from 0.0", badge: "Popular", badgeColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30", logo: "VM", logoBg: "bg-gradient-to-br from-sky-500 to-blue-600" },
-      { name: "VT Markets", desc: "Fast Execution • Multi-Asset", badge: "Trusted", badgeColor: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-200 dark:border-sky-500/30", logo: "VT", logoBg: "bg-gradient-to-br from-indigo-500 to-indigo-600" },
-    ],
   },
   {
-    title: "Prop Trading Firms",
-    subtitle: "Get Funded Up to $400K",
+    ...partnersData.propFirms,
     icon: Shield,
     iconBg: "bg-orange-100 dark:bg-orange-500/20",
     iconColor: "text-orange-600 dark:text-orange-400",
-    items: [
-      { name: "FTMO", desc: "Up to $400K Funding", badge: "#1 Choice", badgeColor: "bg-amber-500 text-white", logo: "FT", logoBg: "bg-gradient-to-br from-blue-600 to-blue-700" },
-      { name: "The5ers", desc: "Instant Funding Available", badge: "Popular", badgeColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30", logo: "T5", logoBg: "bg-gradient-to-br from-green-500 to-green-600" },
-      { name: "MyFundedFX", desc: "Low Targets • No Time Limit", badge: "USA OK", badgeColor: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-200 dark:border-sky-500/30", logo: "MF", logoBg: "bg-gradient-to-br from-purple-500 to-purple-600" },
-    ],
   },
   {
-    title: "Forex VPS Hosting",
-    subtitle: "24/7 EA Running",
+    ...partnersData.vps,
     icon: Server,
     iconBg: "bg-emerald-100 dark:bg-emerald-500/20",
     iconColor: "text-emerald-600 dark:text-emerald-400",
-    items: [
-      { name: "FXVM", desc: "From $0.99/mo • NY4 Location", badge: "Best", badgeColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30", logo: "FX", logoBg: "bg-gradient-to-br from-slate-600 to-slate-700" },
-      { name: "ForexVPS.net", desc: "Ultra-Low Latency", logo: "VPS", logoBg: "bg-gradient-to-br from-blue-500 to-blue-600" },
-      { name: "Coming Soon", desc: "Coming Soon", logo: "CS", logoBg: "bg-gradient-to-br from-indigo-500 to-indigo-600" },
-    ],
   },
 ];
 
@@ -71,15 +59,15 @@ export function TrustedPartners() {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
-            Trusted Partners & Resources
+            	Trader's Toolkit
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-base">
-            Services we recommend to our community
+            Services we use and trust
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {PARTNERS.map((cat, catIdx) => (
+          {CATEGORIES.map((cat, catIdx) => (
             <FadeIn key={catIdx} delay={catIdx * 0.1} direction="up">
               <div className="bg-white dark:bg-white/[0.04] backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-5 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-lg dark:hover:shadow-none transition-all duration-300">
                 {/* Category Header */}
@@ -105,27 +93,65 @@ export function TrustedPartners() {
 
                 {/* Items */}
                 <div className="space-y-2">
-                  {cat.items.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.07] border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 transition-all duration-200 group cursor-pointer"
-                    >
-                      <div className={`w-9 h-9 rounded-lg ${item.logoBg} flex items-center justify-center text-white text-xs font-black flex-shrink-0 shadow-lg`}>
-                        {item.logo}
+                  {cat.items.map((item, idx) => {
+                    const content = (
+                      <>
+                        {/* Logo or Initials */}
+                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden ${
+                          item.logo 
+                            ? "bg-white dark:bg-white/10 border border-gray-100 dark:border-white/10" 
+                            : `bg-gradient-to-br ${item.color} text-white text-sm font-black shadow-lg`
+                        }`}>
+                          {item.logo ? (
+                            <Image
+                              src={item.logo}
+                              alt={item.name}
+                              width={56}
+                              height={56}
+                              className="object-contain w-full h-full p-1.5"
+                            />
+                          ) : (
+                            item.initials
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors truncate">
+                            {item.name}
+                          </p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{item.desc}</p>
+                        </div>
+                        {item.badge && (
+                          <span className={`text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap ${BADGE_STYLES[item.badgeType || "green"]}`}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </>
+                    );
+
+                    // Clickable if URL exists and not "#"
+                    if (item.url && item.url !== "#") {
+                      return (
+                        <a
+                          key={idx}
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-4 p-2.5 rounded-xl bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.07] border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 transition-all duration-200 group cursor-pointer"
+                        >
+                          {content}
+                        </a>
+                      );
+                    }
+
+                    return (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-4 p-2.5 rounded-xl bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.07] border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 transition-all duration-200 group"
+                      >
+                        {content}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors truncate">
-                          {item.name}
-                        </p>
-                        <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{item.desc}</p>
-                      </div>
-                      {item.badge && (
-                        <span className={`text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap ${item.badgeColor}`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </FadeIn>
