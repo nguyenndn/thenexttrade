@@ -6,7 +6,7 @@
     "items": [
       {
         "name": "Exness",
-        "desc": "Instant Withdrawals • Low Spreads",
+        "desc": "Instant Withdrawals • Unlimited Leverage",
         "badge": "Top Rated",
         "badgeType": "gold",
         "logo": "/images/brokers/exness.png",
@@ -14,7 +14,7 @@
         "color": "from-amber-500 to-amber-600",
         "url": "https://one.exnesstrack.org/a/1ewjh1ww32",
         "rating": 4.8,
-        "minDeposit": "$1",
+        "minDeposit": "$10",
         "maxLeverage": "Unlimited",
         "regulation": "FCA, CySEC, FSA",
         "features": [
@@ -26,7 +26,7 @@
       },
       {
         "name": "Vantage Markets",
-        "desc": "Raw ECN Spreads from 0.0",
+        "desc": "Raw ECN • ASIC Regulated",
         "badge": "Popular",
         "badgeType": "green",
         "logo": "/images/brokers/vantage.png",
@@ -36,10 +36,10 @@
         "rating": 4.5,
         "minDeposit": "$50",
         "maxLeverage": "1:500",
-        "regulation": "ASIC, CIMA",
+        "regulation": "ASIC, FCA, CIMA",
         "features": [
           "Raw ECN spreads from 0.0",
-          "Low commission $3/lot",
+          "Commission from $3/lot round-turn",
           "MT4, MT5 & ProTrader",
           "Copy trading platform"
         ]
@@ -54,25 +54,25 @@
         "color": "from-indigo-500 to-indigo-600",
         "url": "https://www.vtmarkets.com/get-trading/forex-trading-account/?affid=830422",
         "rating": 4.3,
-        "minDeposit": "$100",
+        "minDeposit": "$50",
         "maxLeverage": "1:500",
-        "regulation": "ASIC, SVGFSA",
+        "regulation": "FSCA, FSC",
         "features": [
-          "Fast execution < 1ms",
+          "Execution under 1ms",
           "1000+ trading instruments",
-          "Advanced charting tools",
-          "Multi-asset trading"
+          "MT4 & MT5 supported",
+          "Copy trading available"
         ]
       }
     ]
   },
   "propFirms": {
     "title": "Prop Trading Firms",
-    "subtitle": "Get Funded Up to $400K",
+    "subtitle": "Get Funded Up to $2M+",
     "items": [
       {
         "name": "FTMO",
-        "desc": "Up to $400K Funding",
+        "desc": "Scale Up to $2M • 80-90% Profit Split",
         "badge": "#1 Choice",
         "badgeType": "gold",
         "logo": "/images/brokers/ftmo_dark.png",
@@ -80,19 +80,19 @@
         "color": "from-blue-600 to-blue-700",
         "url": "#",
         "rating": 4.7,
-        "minDeposit": "$155",
+        "minDeposit": "€155",
         "maxLeverage": "1:100",
         "regulation": "Czech Republic",
         "features": [
-          "Up to $400K funded account",
-          "80% profit split",
-          "Free retakes on FTMO Challenge",
-          "Bi-weekly payouts"
+          "Scale up to $2,000,000",
+          "80-90% profit split",
+          "No maximum time limit",
+          "MT4, MT5 & cTrader"
         ]
       },
       {
         "name": "The5ers",
-        "desc": "Instant Funding Available",
+        "desc": "Instant Funding • Scale to $4M",
         "badge": "Popular",
         "badgeType": "green",
         "logo": "/images/brokers/the5ers.png",
@@ -104,30 +104,30 @@
         "maxLeverage": "1:100",
         "regulation": "Israel",
         "features": [
-          "Instant funding option",
-          "Scale up to $4M",
-          "100% profit on first $10K",
+          "Instant funding option available",
+          "Scale up to $4,000,000",
+          "Up to 100% profit split",
           "No time limit on evaluation"
         ]
       },
       {
-        "name": "MyFundedFX",
-        "desc": "Low Targets • No Time Limit",
+        "name": "Moneta Funded",
+        "desc": "Broker-Backed • 88% Profit Split",
         "badge": "USA OK",
         "badgeType": "blue",
-        "logo": "/images/brokers/myfundedfx.png",
+        "logo": "/images/brokers/moneta.png",
         "initials": "MF",
-        "color": "from-purple-500 to-purple-600",
+        "color": "from-teal-500 to-teal-600",
         "url": "#",
         "rating": 4.2,
         "minDeposit": "$49",
         "maxLeverage": "1:100",
-        "regulation": "N/A",
+        "regulation": "Moneta Markets",
         "features": [
           "No time limit on challenges",
-          "Low profit targets (8%/5%)",
-          "80% profit split",
-          "US traders accepted"
+          "88% profit split",
+          "Instant funding available",
+          "Bi-weekly payouts ($100 min)"
         ]
       }
     ]
@@ -138,42 +138,42 @@
     "items": [
       {
         "name": "FXVM",
-        "desc": "From $0.99/mo • NY4 Location",
-        "badge": "Best",
+        "desc": "15+ Global Data Centers • $0.99 Trial",
+        "badge": "Best Value",
         "badgeType": "green",
         "logo": "/images/brokers/fxvm.png",
         "initials": "FX",
         "color": "from-slate-600 to-slate-700",
         "url": "#",
         "rating": 4.6,
-        "minDeposit": "$0.99/mo",
+        "minDeposit": "$0.99 trial",
         "maxLeverage": null,
         "regulation": null,
         "features": [
-          "NY4 & London data centers",
-          "Pre-installed MT4/MT5",
-          "99.99% uptime guaranteed",
-          "From $0.99/month"
+          "15+ data centers worldwide (NY, London, Tokyo)",
+          "Pre-installed MT4/MT5 & cTrader",
+          "99.99% uptime SLA",
+          "24/7 support + DDoS protection"
         ]
       },
       {
         "name": "ForexVPS.net",
-        "desc": "Ultra-Low Latency",
-        "badge": null,
-        "badgeType": null,
+        "desc": "20+ Locations • Enterprise Grade",
+        "badge": "Pro Choice",
+        "badgeType": "blue",
         "logo": "/images/brokers/forexvps.png",
         "initials": "VPS",
         "color": "from-blue-500 to-blue-600",
         "url": "#",
         "rating": 4.3,
-        "minDeposit": "$4.99/mo",
+        "minDeposit": "$32/mo",
         "maxLeverage": null,
         "regulation": null,
         "features": [
-          "Ultra-low latency < 1ms",
-          "Multiple server locations",
-          "Optimized for forex trading",
-          "24/7 customer support"
+          "20+ global data center locations",
+          "Sub-1ms latency to brokers",
+          "99.99% uptime guaranteed",
+          "Online in 60 seconds"
         ]
       }
     ]

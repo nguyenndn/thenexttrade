@@ -7,7 +7,7 @@ import { getAuthUser } from '@/lib/auth-cache';
 import BrokersClient from './BrokersClient';
 
 export const metadata: Metadata = {
-    title: "Trader's Toolkit — Brokers, Prop Firms & VPS | The Next Trade",
+    title: "Trusted Partners — Brokers, Prop Firms & VPS | The Next Trade",
     description: 'Handpicked forex brokers, prop trading firms, and VPS hosting we personally use and trust.',
 };
 

@@ -59,7 +59,7 @@ export function TrustedPartners() {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
-            	Trader's Toolkit
+            	Trusted Partners
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-base">
             Services we use and trust
