@@ -8,7 +8,6 @@ import { useTheme } from "@/components/providers/ThemeProvider";
 
 import { DesktopNav } from "@/components/layout/DesktopNav";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
-import { TabletBottomNav } from "@/components/layout/TabletBottomNav";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { Button } from "@/components/ui/Button";
@@ -95,17 +94,17 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
                         {/* Theme Toggle */}
                         <ThemeToggleSwitch />
 
-                        {/* Login / User Menu — hidden on mobile, shown on md+ */}
-                        <div className="hidden md:flex items-center">
+                        {/* Login / User Menu — hidden on mobile/tablet, shown on lg+ */}
+                        <div className="hidden lg:flex items-center">
                             <UserMenu user={user} profile={profile} />
                         </div>
 
-                        {/* Mobile Menu Button */}
+                        {/* Mobile/Tablet Menu Button */}
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className={`md:hidden p-2 rounded-lg ${isDark ? 'text-white hover:bg-slate-800' : 'text-gray-700 hover:bg-gray-100'}`}
+                            className={`lg:hidden p-2 rounded-lg ${isDark ? 'text-white hover:bg-slate-800' : 'text-gray-700 hover:bg-gray-100'}`}
                             aria-label="Toggle menu"
                         >
                             {isMobileMenuOpen ? (
@@ -127,9 +126,6 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
 
             {/* Search Modal (Ctrl+K) */}
             <PublicSearchModal />
-
-            {/* Tablet Bottom Nav (md → lg) */}
-            <TabletBottomNav />
         </header>
     );
 }

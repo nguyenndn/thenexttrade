@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
 import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution } from "@/lib/analytics-queries";
+import { getDashboardInsight } from "@/lib/briefing-queries";
 import { format } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 
@@ -120,11 +121,12 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         userData,
         accounts,
         recentTrades,
-        dashboardStats,     // Cached wrapper result
+        dashboardStats,
         dailyPerformance,
         symbolStats,
         topTrades,
         lotDistribution,
+        insightData,
     ] = await Promise.all([
         // User Info (name + streak only)
         prisma.user.findUnique({
@@ -159,10 +161,22 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         getTopTrades(user.id, accountId, startDate, endDate),
         // Lot Distribution
         getLotDistribution(user.id, accountId, startDate, endDate),
+        // AI Insight for banner
+        getDashboardInsight(user.id, accountId).catch(() => null),
     ]);
 
     // Destructure stats from cached result
     const { stats, monthly } = dashboardStats;
+
+    // Trade Score (requires >= 30 trades)
+    let tradeScore: number | null = null;
+    if (stats.totalTrades >= 30) {
+        try {
+            const { getIntelligenceData } = await import("@/lib/smart-analytics");
+            const intelligence = await getIntelligenceData(user.id, accountId);
+            tradeScore = intelligence.tradeScore.score;
+        } catch { /* not enough data */ }
+    }
 
     // 3. Post-Processing & Formatting
     const totalBalance = accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
@@ -229,6 +243,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
             worstTrades={topTrades.worst}
             symbolAnalytics={symbolAnalytics}
             lotDistribution={lotDistribution}
+            tradeScore={tradeScore}
+            insight={insightData}
         />
     );
 }

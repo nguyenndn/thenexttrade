@@ -1,4 +1,4 @@
-import { Building2, Shield, Server, Wrench } from "lucide-react";
+import { Building2, Shield, Server } from "lucide-react";
 import { FadeIn } from "@/components/ui/FadeIn";
 import Link from "next/link";
 
@@ -31,9 +31,9 @@ const PARTNERS: PartnerCategory[] = [
     iconColor: "text-blue-600 dark:text-blue-400",
     viewAllHref: "/brokers",
     items: [
-      { name: "Moneta Markets", desc: "Raw Spread Trading", badge: "Top Rated", badgeColor: "bg-amber-500 text-white", logo: "MM", logoBg: "bg-gradient-to-br from-red-500 to-red-600" },
-      { name: "Exness", desc: "Instant Withdrawals", badge: "Popular", badgeColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30", logo: "ex", logoBg: "bg-gradient-to-br from-amber-500 to-amber-600" },
-      { name: "PlexyTrade", desc: "USA Traders Accepted", badge: "USA OK", badgeColor: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-200 dark:border-sky-500/30", logo: "PT", logoBg: "bg-gradient-to-br from-teal-500 to-teal-600" },
+      { name: "Exness", desc: "Instant Withdrawals • Low Spreads", badge: "Top Rated", badgeColor: "bg-amber-500 text-white", logo: "EX", logoBg: "bg-gradient-to-br from-amber-500 to-amber-600" },
+      { name: "Vantage Markets", desc: "Raw ECN Spreads from 0.0", badge: "Popular", badgeColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30", logo: "VM", logoBg: "bg-gradient-to-br from-sky-500 to-blue-600" },
+      { name: "VT Markets", desc: "Fast Execution • Multi-Asset", badge: "Trusted", badgeColor: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-200 dark:border-sky-500/30", logo: "VT", logoBg: "bg-gradient-to-br from-indigo-500 to-indigo-600" },
     ],
   },
   {
@@ -57,19 +57,7 @@ const PARTNERS: PartnerCategory[] = [
     items: [
       { name: "FXVM", desc: "From $0.99/mo • NY4 Location", badge: "Best", badgeColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30", logo: "FX", logoBg: "bg-gradient-to-br from-slate-600 to-slate-700" },
       { name: "ForexVPS.net", desc: "Ultra-Low Latency", logo: "VPS", logoBg: "bg-gradient-to-br from-blue-500 to-blue-600" },
-      { name: "AccuWeb Hosting", desc: "Budget Options", logo: "AW", logoBg: "bg-gradient-to-br from-indigo-500 to-indigo-600" },
-    ],
-  },
-  {
-    title: "Trading Tools",
-    subtitle: "Analytics & Charting",
-    icon: Wrench,
-    iconBg: "bg-rose-100 dark:bg-rose-500/20",
-    iconColor: "text-rose-600 dark:text-rose-400",
-    items: [
-      { name: "TradingView", desc: "Best Charting Platform", badge: "Pro", badgeColor: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30", logo: "TV", logoBg: "bg-gradient-to-br from-blue-500 to-indigo-600" },
-      { name: "Myfxbook", desc: "Trade Analysis & Tracking", badge: "Popular", badgeColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30", logo: "Mx", logoBg: "bg-gradient-to-br from-green-600 to-green-700" },
-      { name: "FX Blue", desc: "Free EA Analytics", logo: "FB", logoBg: "bg-gradient-to-br from-sky-500 to-sky-600" },
+      { name: "Coming Soon", desc: "Coming Soon", logo: "CS", logoBg: "bg-gradient-to-br from-indigo-500 to-indigo-600" },
     ],
   },
 ];
@@ -90,7 +78,7 @@ export function TrustedPartners() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {PARTNERS.map((cat, catIdx) => (
             <FadeIn key={catIdx} delay={catIdx * 0.1} direction="up">
               <div className="bg-white dark:bg-white/[0.04] backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-5 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-lg dark:hover:shadow-none transition-all duration-300">

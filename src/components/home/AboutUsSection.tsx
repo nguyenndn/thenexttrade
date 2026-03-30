@@ -58,9 +58,9 @@ export function AboutUsSection() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,200,136,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,200,136,0.04)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-          {/* Brand Story */}
-          <div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+          {/* Brand Story — full width on tablet */}
+          <div className="lg:col-span-1">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
               <Globe size={22} className="text-primary" />
               About TheNextTrade
@@ -84,51 +84,54 @@ export function AboutUsSection() {
             </Link>
           </div>
 
-          {/* Team & Partners */}
-          <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5">Team & Partners</h3>
-            <div className="space-y-3">
-              {TEAM.map((member, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary/30 dark:hover:border-white/20 hover:shadow-md dark:hover:shadow-none transition-all"
-                >
-                  <div className={`w-10 h-10 rounded-full ${member.color} flex items-center justify-center text-white text-sm font-black shadow-lg`}>
-                    {member.initials}
+          {/* Team & Sites — side by side on tablet, each 1 col on desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-8 lg:col-span-2 lg:contents">
+            {/* Team & Partners */}
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5">Team & Partners</h3>
+              <div className="space-y-3">
+                {TEAM.map((member, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary/30 dark:hover:border-white/20 hover:shadow-md dark:hover:shadow-none transition-all"
+                  >
+                    <div className={`w-10 h-10 rounded-full ${member.color} flex items-center justify-center text-white text-sm font-black shadow-lg`}>
+                      {member.initials}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">{member.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{member.role}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">{member.name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{member.role}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Our Sites */}
-          <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5">Our Sites</h3>
-            <div className="space-y-3">
-              {SITES.map((site, idx) => (
-                <a
-                  key={idx}
-                  href={site.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary/30 hover:shadow-md dark:hover:shadow-none transition-all group"
-                >
-                  <div className={`w-10 h-10 rounded-lg ${site.color} flex items-center justify-center text-white text-xs font-black shadow-lg`}>
-                    {site.initials}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
-                      {site.name}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{site.desc}</p>
-                  </div>
-                  <ExternalLink size={14} className="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors" />
-                </a>
-              ))}
+            {/* Our Sites */}
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5">Our Sites</h3>
+              <div className="space-y-3">
+                {SITES.map((site, idx) => (
+                  <a
+                    key={idx}
+                    href={site.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary/30 hover:shadow-md dark:hover:shadow-none transition-all group"
+                  >
+                    <div className={`w-10 h-10 rounded-lg ${site.color} flex items-center justify-center text-white text-xs font-black shadow-lg`}>
+                      {site.initials}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
+                        {site.name}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{site.desc}</p>
+                    </div>
+                    <ExternalLink size={14} className="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors" />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
