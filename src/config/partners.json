@@ -5,6 +5,7 @@
     "viewAllHref": "/brokers",
     "items": [
       {
+        "active": true,
         "name": "Exness",
         "desc": "Instant Withdrawals • Unlimited Leverage",
         "badge": "Top Rated",
@@ -22,9 +23,17 @@
           "Spreads from 0.0 pips",
           "No commission on Standard accounts",
           "Swap-free on all accounts"
-        ]
+        ],
+        "review": {
+          "summary": "Exness is **one of the world's largest brokers** with monthly trading volume exceeding $4 trillion. Their standout feature is **instant withdrawals 24/7** — funds arrive in your wallet within seconds.",
+          "pros": ["Instant withdrawals 24/7 with no limits", "Ultra-low spreads from 0.0 pips on Raw Spread", "Unlimited leverage available", "Swap-free on all account types", "Regulated by FCA (UK), CySEC, FSA"],
+          "cons": ["No bonus or promotional programs", "Spreads can widen significantly during major news", "Unlimited leverage only available when equity < $1,000"],
+          "bestFor": "Scalpers and day traders who need **fast withdrawals** and tight spreads.",
+          "verdict": "**4.8/5** — Top choice for traders who need high liquidity and instant withdrawals."
+        }
       },
       {
+        "active": true,
         "name": "Vantage Markets",
         "desc": "Raw ECN • ASIC Regulated",
         "badge": "Popular",
@@ -42,9 +51,17 @@
           "Commission from $3/lot round-turn",
           "MT4, MT5 & ProTrader",
           "Copy trading platform"
-        ]
+        ],
+        "review": {
+          "summary": "Vantage Markets is a **top-tier ECN broker** regulated by ASIC (Australia), FCA (UK), and CIMA. Known for **Raw ECN spreads from 0.0** with commissions as low as $3/lot.",
+          "pros": ["True Raw ECN spreads from 0.0 pips", "Low commission: $3/lot round-turn", "Regulated by ASIC & FCA — highly trusted", "Supports MT4, MT5 & ProTrader", "Built-in copy trading platform"],
+          "cons": ["Minimum deposit $50 (higher than Exness)", "Standard account spreads less competitive", "Withdrawals take 1-3 business days"],
+          "bestFor": "Professional traders who want **true ECN pricing** with the lowest spreads and ASIC regulation.",
+          "verdict": "**4.5/5** — Excellent choice for serious traders who need raw ECN execution."
+        }
       },
       {
+        "active": true,
         "name": "VT Markets",
         "desc": "Fast Execution • Multi-Asset",
         "badge": "Trusted",
@@ -62,7 +79,322 @@
           "1000+ trading instruments",
           "MT4 & MT5 supported",
           "Copy trading available"
-        ]
+        ],
+        "review": {
+          "summary": "VT Markets is a **multi-asset broker** regulated by FSCA and FSC. Their biggest strength is **execution speed under 1ms** and access to 1,000+ trading instruments.",
+          "pros": ["Ultra-fast execution under 1ms", "1,000+ instruments: Forex, Stocks, Crypto, Commodities", "MT4 & MT5 supported", "Copy trading for beginners"],
+          "cons": ["Regulation not as strong as FCA/ASIC", "Minimum deposit $50", "No cTrader support yet"],
+          "bestFor": "Traders who want **multi-asset trading** (forex + stocks + crypto) on a single platform.",
+          "verdict": "**4.3/5** — Great fit for traders who need speed and product diversity."
+        }
+      },
+      {
+        "active": true,
+        "name": "IC Markets",
+        "desc": "True ECN • Raw Spreads from 0.0",
+        "badge": "Best ECN",
+        "badgeType": "gold",
+        "logo": "/images/brokers/icmarkets.png",
+        "initials": "IC",
+        "color": "from-blue-500 to-blue-600",
+        "url": "https://icmarkets.com/?camp=75999",
+        "rating": 4.6,
+        "minDeposit": "$200",
+        "maxLeverage": "1:500",
+        "regulation": "ASIC, CySEC, FSA",
+        "features": [
+          "Raw spreads from 0.0 pips",
+          "Commission from $6/lot (cTrader)",
+          "MT4, MT5 & cTrader",
+          "Ultra-fast execution for algo traders"
+        ],
+        "review": {
+          "summary": "IC Markets is a **true ECN broker** regulated by ASIC and CySEC. Built for **algorithmic and active traders**, it offers raw spreads from 0.0 pips with ultra-fast execution speeds.",
+          "pros": ["True Raw ECN spreads from 0.0 pips", "ASIC & CySEC regulated — top-tier trust", "MT4, MT5 & cTrader supported", "Ultra-fast execution — ideal for algo trading", "No dealing desk intervention"],
+          "cons": ["Minimum deposit $200 — higher entry point", "Commission on Raw Spread accounts ($6-7/lot)", "Not available in US, Canada"],
+          "bestFor": "Algorithmic traders and scalpers who need **raw ECN pricing** and ultra-fast execution.",
+          "verdict": "**4.6/5** — The go-to broker for professional ECN trading."
+        }
+      },
+      {
+        "active": true,
+        "name": "XM",
+        "desc": "Micro Lots • $5 Min Deposit",
+        "badge": "Beginner Friendly",
+        "badgeType": "green",
+        "logo": "/images/brokers/xm.png",
+        "initials": "XM",
+        "color": "from-emerald-600 to-emerald-700",
+        "url": "https://affs.click/RHHt8",
+        "rating": 4.4,
+        "minDeposit": "$5",
+        "maxLeverage": "1:1000",
+        "regulation": "CySEC, ASIC, FSCA",
+        "features": [
+          "Micro & Standard accounts from $5",
+          "Up to 1:1000 leverage",
+          "Zero account with 0.0 spreads",
+          "1,000+ instruments available"
+        ],
+        "review": {
+          "summary": "XM is a **globally popular broker** regulated by CySEC, ASIC, and FSCA. Known for its **$5 minimum deposit** and beginner-friendly approach with multiple account types.",
+          "pros": ["Ultra-low $5 minimum deposit", "Regulated by CySEC & ASIC", "Up to 1:1000 leverage", "Zero account with raw spreads", "Excellent educational resources"],
+          "cons": ["Spreads on Standard account not the tightest", "No cTrader support", "Shares account requires $10,000 minimum"],
+          "bestFor": "Beginners and traders who want to **start small** with a highly regulated broker.",
+          "verdict": "**4.4/5** — Best entry point for new traders with solid regulation."
+        }
+      },
+      {
+        "active": true,
+        "name": "HFM",
+        "desc": "Zero Deposit • Up to 1:2000",
+        "badge": "High Leverage",
+        "badgeType": "blue",
+        "logo": "/images/brokers/hfm.png",
+        "initials": "HF",
+        "color": "from-red-500 to-red-600",
+        "url": "https://register.hfm.com/sv/en/new-partner-account/?refid=383095#",
+        "rating": 4.3,
+        "minDeposit": "$0",
+        "maxLeverage": "1:2000",
+        "regulation": "FCA, CySEC, FSCA",
+        "features": [
+          "$0 minimum deposit on most accounts",
+          "Leverage up to 1:2000",
+          "FCA (UK) regulated",
+          "Copy trading available"
+        ],
+        "review": {
+          "summary": "HFM (formerly HotForex) is a **multi-regulated broker** with FCA, CySEC, and FSCA licenses. Stands out with **$0 minimum deposit** and leverage up to 1:2000.",
+          "pros": ["$0 minimum deposit — most accessible", "FCA regulated — top-tier trust", "Leverage up to 1:2000", "Copy trading platform included", "Multi-regulated across 6 jurisdictions"],
+          "cons": ["Unlimited leverage restricted to equity < $1,000", "Spreads widen during news events", "Some account types have higher minimums"],
+          "bestFor": "Traders seeking **maximum accessibility** with zero deposit and FCA regulation.",
+          "verdict": "**4.3/5** — Great all-rounder with zero barriers to entry."
+        }
+      },
+      {
+        "active": true,
+        "name": "JustMarkets",
+        "desc": "From $1 • Up to 1:3000",
+        "badge": null,
+        "badgeType": "green",
+        "logo": "/images/brokers/jm.png",
+        "initials": "JM",
+        "color": "from-green-600 to-teal-600",
+        "url": "https://one.justmarkets.link/a/u212s0f32l",
+        "rating": 4.1,
+        "minDeposit": "$1",
+        "maxLeverage": "1:3000",
+        "regulation": "CySEC, FSA, FSCA",
+        "features": [
+          "Start from just $1",
+          "Leverage up to 1:3000",
+          "Swap-free for all traders",
+          "Copy trading system"
+        ],
+        "review": {
+          "summary": "JustMarkets is a **highly accessible broker** with CySEC regulation and a $1 minimum deposit. Offers up to **1:3000 leverage** and swap-free accounts.",
+          "pros": ["$1 minimum deposit — lowest in industry", "Up to 1:3000 leverage", "CySEC regulated", "Swap-free on all accounts", "Built-in copy trading"],
+          "cons": ["Offshore entities have less protection", "Raw Spread account needs $100+", "Less established than top-tier brokers"],
+          "bestFor": "Budget traders who want to **start with minimal capital** and high leverage options.",
+          "verdict": "**4.1/5** — Best for traders who want to start with just $1."
+        }
+      },
+      {
+        "active": false,
+        "name": "AMarkets",
+        "desc": "1:3000 Leverage • Copy Trading",
+        "badge": null,
+        "badgeType": "green",
+        "logo": "/images/brokers/amarkets.png",
+        "initials": "AM",
+        "color": "from-orange-500 to-red-500",
+        "url": "#",
+        "rating": 4.0,
+        "minDeposit": "$100",
+        "maxLeverage": "1:3000",
+        "regulation": "MISA, FSC, FinaCom",
+        "features": [
+          "Leverage up to 1:3000",
+          "MT4 & MT5 supported",
+          "Copy trading service",
+          "FinaCom member (€20K protection)"
+        ],
+        "review": {
+          "summary": "AMarkets is a **flexible broker** since 2007 offering up to **1:3000 leverage** and copy trading. Member of FinaCom with €20,000 compensation fund.",
+          "pros": ["Up to 1:3000 leverage on FX/metals", "FinaCom member — €20K per claim", "Copy trading available", "MT4 & MT5 supported", "Operating since 2007"],
+          "cons": ["Offshore regulation only (no FCA/ASIC)", "$100 minimum on Standard", "$200 minimum for ECN accounts"],
+          "bestFor": "Traders comfortable with offshore regulation who want **maximum leverage** and copy trading.",
+          "verdict": "**4.0/5** — Good for high-leverage seekers with FinaCom safety net."
+        }
+      },
+      {
+        "active": true,
+        "name": "PU Prime",
+        "desc": "ASIC Regulated • 1000+ Assets",
+        "badge": null,
+        "badgeType": "green",
+        "logo": "/images/brokers/pu.png",
+        "initials": "PP",
+        "color": "from-sky-600 to-blue-700",
+        "url": "https://www.puprime.partners/forex-trading-account/?affid=MTU0NTY5NDk=",
+        "rating": 4.2,
+        "minDeposit": "$20",
+        "maxLeverage": "1:1000",
+        "regulation": "ASIC, FSCA, FSA",
+        "features": [
+          "Cent account from $20",
+          "1000+ instruments",
+          "Up to 1:1000 leverage",
+          "MT4, MT5 & PU WebTrader"
+        ],
+        "review": {
+          "summary": "PU Prime is a **versatile broker** regulated by ASIC and FSCA. Offers **1,000+ instruments** with leverage up to 1:1000 and a low $20 Cent account entry.",
+          "pros": ["ASIC regulated — top-tier trust", "1,000+ tradable instruments", "Cent account from just $20", "Dynamic leverage up to 1:1000", "Segregated funds + insurance"],
+          "cons": ["Prime account needs $1,000", "ECN account needs $10,000", "Dynamic leverage can reduce during news"],
+          "bestFor": "Traders who want **ASIC regulation** with flexible account types and diverse instruments.",
+          "verdict": "**4.2/5** — Solid ASIC-regulated choice with flexible entry points."
+        }
+      },
+      {
+        "active": true,
+        "name": "RoboForex",
+        "desc": "12,000+ Assets • 1:2000 Leverage",
+        "badge": null,
+        "badgeType": "green",
+        "logo": "/images/brokers/roboforex.jpg",
+        "initials": "RF",
+        "color": "from-blue-500 to-cyan-600",
+        "url": "https://my.roboforex.com/en/?a=vzhv",
+        "rating": 4.1,
+        "minDeposit": "$10",
+        "maxLeverage": "1:2000",
+        "regulation": "FSC Belize, FinaCom",
+        "features": [
+          "12,000+ trading instruments",
+          "Leverage up to 1:2000",
+          "5 account types available",
+          "€2.5M insurance coverage"
+        ],
+        "review": {
+          "summary": "RoboForex offers the **widest asset range** with 12,000+ instruments and leverage up to 1:2000. Backed by **€2.5M insurance** and FinaCom membership.",
+          "pros": ["12,000+ instruments — largest range", "Up to 1:2000 leverage", "€2.5M insurance protection", "FinaCom Category A member", "$10 minimum deposit"],
+          "cons": ["Offshore regulation only (FSC Belize)", "High leverage auto-reduces above $10K equity", "Not available in US, Canada, Japan"],
+          "bestFor": "Traders who want the **widest product range** with high leverage and insurance protection.",
+          "verdict": "**4.1/5** — Best instrument variety with solid insurance backing."
+        }
+      },
+      {
+        "active": false,
+        "name": "CXM Trading",
+        "desc": "FCA Licensed • Multi-Asset",
+        "badge": null,
+        "badgeType": "green",
+        "logo": "/images/brokers/cxm.png",
+        "initials": "CX",
+        "color": "from-gray-700 to-gray-800",
+        "url": "#",
+        "rating": 3.9,
+        "minDeposit": "$10",
+        "maxLeverage": "1:2000",
+        "regulation": "FCA, FSC, SCA",
+        "features": [
+          "FCA (UK) regulated entity",
+          "Cent account from $10",
+          "MT4 & MT5 platforms",
+          "Fast deposit & withdrawal"
+        ],
+        "review": {
+          "summary": "CXM Trading operates through **FCA-regulated** CXM Prime Ltd. Offers multi-asset trading with Cent accounts from $10 and leverage up to 1:2000 on offshore entities.",
+          "pros": ["FCA-regulated entity available", "Low $10 minimum on Cent account", "MT4 & MT5 supported", "Fast deposit/withdrawal processing", "IB program with unlimited sub-levels"],
+          "cons": ["FCA entity capped at 1:30 leverage", "Mixed reviews on withdrawal experiences", "Offshore entities have less oversight"],
+          "bestFor": "Traders who want access to an **FCA-regulated entity** with flexible account options.",
+          "verdict": "**3.9/5** — Decent option with FCA backing but verify your entity carefully."
+        }
+      },
+      {
+        "active": true,
+        "name": "Ultima Markets",
+        "desc": "CySEC & FCA • Up to 1:2000",
+        "badge": null,
+        "badgeType": "green",
+        "logo": "/images/brokers/ultima.png",
+        "initials": "UM",
+        "color": "from-indigo-600 to-purple-600",
+        "url": "https://www.ultimamarkets.trade/forex-trading/forex-trading-account/?affid=NzIzNDkwMw==",
+        "rating": 4.1,
+        "minDeposit": "$50",
+        "maxLeverage": "1:2000",
+        "regulation": "CySEC, FCA, FSC",
+        "features": [
+          "CySEC & FCA regulated",
+          "250+ CFD instruments",
+          "MT4 & MT5 platforms",
+          "Leverage up to 1:2000"
+        ],
+        "review": {
+          "summary": "Ultima Markets is a **dual-regulated broker** with CySEC and FCA (secured 2025) licenses. Offers **250+ instruments** with leverage up to 1:2000 on global entities.",
+          "pros": ["CySEC & FCA regulated — strong trust", "Leverage up to 1:2000 (global)", "$50 minimum deposit", "MT4 & MT5 supported", "Segregated client funds"],
+          "cons": ["FCA entity has strict leverage caps", "Less well-known than major brokers", "Offshore entities have limited protection"],
+          "bestFor": "Traders who want a **CySEC/FCA-regulated broker** with competitive leverage on global accounts.",
+          "verdict": "**4.1/5** — Promising dual-regulated broker with growing reputation."
+        }
+      },
+      {
+        "active": true,
+        "name": "TMGM",
+        "desc": "ASIC Regulated • 12,000+ Assets",
+        "badge": null,
+        "badgeType": "green",
+        "logo": "/images/brokers/tmgm.png",
+        "initials": "TM",
+        "color": "from-blue-600 to-blue-800",
+        "url": "https://portal.tmgm.com/register?r_code=IB138164859A",
+        "rating": 4.2,
+        "minDeposit": "$100",
+        "maxLeverage": "1:1000",
+        "regulation": "ASIC, FMA, VFSC",
+        "features": [
+          "ASIC (Australia) regulated",
+          "12,000+ tradable instruments",
+          "Raw spreads from 0.0 pips",
+          "MT4, MT5 & IRESS platforms"
+        ],
+        "review": {
+          "summary": "TMGM (TradeMax Global Markets) is an **ASIC-regulated broker** offering access to **12,000+ instruments** including forex, stocks, indices, and crypto CFDs.",
+          "pros": ["ASIC regulated — top-tier trust", "12,000+ instruments available", "Raw spreads from 0.0 on Edge account", "MT4, MT5 & IRESS platforms", "Segregated client funds"],
+          "cons": ["$100 minimum deposit", "IRESS accounts need $5,000", "Commission on Edge accounts ($7/lot)"],
+          "bestFor": "Active traders who want **ASIC regulation** with a massive instrument selection.",
+          "verdict": "**4.2/5** — Strong ASIC-regulated broker with impressive product range."
+        }
+      },
+      {
+        "active": true,
+        "name": "Valetax",
+        "desc": "From $1 • Up to 1:2000",
+        "badge": null,
+        "badgeType": "green",
+        "logo": "/images/brokers/valetax.png",
+        "initials": "VX",
+        "color": "from-cyan-600 to-teal-700",
+        "url": "https://ma.valetax.com/p/341140",
+        "rating": 3.8,
+        "minDeposit": "$1",
+        "maxLeverage": "1:2000",
+        "regulation": "FSC Mauritius",
+        "features": [
+          "Start from just $1",
+          "Leverage up to 1:2000",
+          "6 account types available",
+          "MT4 & MT5 platforms"
+        ],
+        "review": {
+          "summary": "Valetax is an **accessible broker** licensed by FSC Mauritius. Offers **6 account types** starting from just $1 with leverage up to 1:2000.",
+          "pros": ["$1 minimum deposit — ultra-accessible", "Up to 1:2000 leverage", "6 account types (Cent to PRO)", "MT4 & MT5 supported", "IB program up to 85% revenue share"],
+          "cons": ["Offshore regulation only (FSC Mauritius)", "Not top-tier regulatory protection", "Mixed withdrawal reviews"],
+          "bestFor": "Traders who want to **start with minimal capital** and high leverage on an offshore platform.",
+          "verdict": "**3.8/5** — Budget-friendly option but exercise caution with offshore regulation."
+        }
       }
     ]
   },
@@ -71,6 +403,7 @@
     "subtitle": "Get Funded Up to $2M+",
     "items": [
       {
+        "active": true,
         "name": "FTMO",
         "desc": "Scale Up to $2M • 80-90% Profit Split",
         "badge": "#1 Choice",
@@ -88,9 +421,17 @@
           "80-90% profit split",
           "No maximum time limit",
           "MT4, MT5 & cTrader"
-        ]
+        ],
+        "review": {
+          "summary": "FTMO is the **world's #1 prop firm** with over $200 million paid to traders. Their transparent 2-step challenge lets you **scale up to $2M** with an 80-90% profit split.",
+          "pros": ["#1 reputation — paid over $200M to traders", "Scale accounts up to $2,000,000", "80-90% profit split", "No maximum time limit", "Supports MT4, MT5 & cTrader"],
+          "cons": ["Challenge fee higher than competitors (from €155)", "Strict trading rules", "Not available in some countries"],
+          "bestFor": "Skilled traders who want the **largest and most reputable** prop firm in the industry.",
+          "verdict": "**4.7/5** — The gold standard of proprietary trading."
+        }
       },
       {
+        "active": true,
         "name": "The5ers",
         "desc": "Instant Funding • Scale to $4M",
         "badge": "Popular",
@@ -108,9 +449,17 @@
           "Scale up to $4,000,000",
           "Up to 100% profit split",
           "No time limit on evaluation"
-        ]
+        ],
+        "review": {
+          "summary": "The5ers stands out with **Instant Funding** — skip the challenge and get funded immediately. Scale up to **$4M** with profit splits up to 100%.",
+          "pros": ["Instant Funding — get funded without a challenge", "Scale up to $4,000,000", "Profit split up to 100%", "No time limit on evaluation", "Lowest challenge fee from $39"],
+          "cons": ["Payout speed slower than FTMO", "Some account types have tight drawdown limits", "No cTrader support yet"],
+          "bestFor": "Traders who want to **start immediately** with instant funding or need a low challenge fee.",
+          "verdict": "**4.4/5** — Best choice for instant funding seekers."
+        }
       },
       {
+        "active": true,
         "name": "Moneta Funded",
         "desc": "Broker-Backed • 88% Profit Split",
         "badge": "USA OK",
@@ -128,53 +477,209 @@
           "88% profit split",
           "Instant funding available",
           "Bi-weekly payouts ($100 min)"
-        ]
+        ],
+        "review": {
+          "summary": "Moneta Funded is a **broker-backed prop firm** (by Moneta Markets). Key advantage: **accepts US traders** and offers no time limit on challenges.",
+          "pros": ["Accepts US traders (USA OK)", "No time limit on challenges", "Broker-backed — reliable payouts", "Instant funding option available", "Bi-weekly payouts (every 2 weeks)"],
+          "cons": ["Profit split 88% — lower than FTMO", "Less well-known than FTMO/The5ers", "Minimum payout $100"],
+          "bestFor": "US-based traders or anyone who needs a **broker-backed prop firm** with reliable payouts.",
+          "verdict": "**4.2/5** — Solid choice for US traders and those seeking stability."
+        }
       }
     ]
   },
   "vps": {
     "title": "Forex VPS Hosting",
     "subtitle": "24/7 EA Running",
+    "viewAllHref": "/brokers",
     "items": [
       {
+        "active": true,
         "name": "FXVM",
-        "desc": "15+ Global Data Centers • $0.99 Trial",
+        "desc": "15+ Data Centers • $0.99 Trial",
         "badge": "Best Value",
         "badgeType": "green",
         "logo": "/images/brokers/fxvm.png",
         "initials": "FX",
         "color": "from-slate-600 to-slate-700",
-        "url": "#",
+        "url": "https://www.fxvm.net",
         "rating": 4.6,
-        "minDeposit": "$0.99 trial",
+        "minDeposit": "From $12/mo",
         "maxLeverage": null,
         "regulation": null,
         "features": [
           "15+ data centers worldwide (NY, London, Tokyo)",
           "Pre-installed MT4/MT5 & cTrader",
           "99.99% uptime SLA",
-          "24/7 support + DDoS protection"
+          "$0.99 for 7-day trial"
         ]
       },
       {
-        "name": "ForexVPS.net",
-        "desc": "20+ Locations • Enterprise Grade",
-        "badge": "Pro Choice",
-        "badgeType": "blue",
-        "logo": "/images/brokers/forexvps.png",
-        "initials": "VPS",
-        "color": "from-blue-500 to-blue-600",
-        "url": "#",
-        "rating": 4.3,
-        "minDeposit": "$32/mo",
+        "active": true,
+        "name": "SocialVPS",
+        "desc": "Equinix NY • From $10/mo",
+        "badge": "Cheapest",
+        "badgeType": "green",
+        "logo": "/images/brokers/socialvps.png",
+        "initials": "SV",
+        "color": "from-teal-500 to-teal-600",
+        "url": "https://www.socialvps.net",
+        "rating": 4.5,
+        "minDeposit": "From $10/mo",
         "maxLeverage": null,
         "regulation": null,
         "features": [
-          "20+ global data center locations",
-          "Sub-1ms latency to brokers",
-          "99.99% uptime guaranteed",
-          "Online in 60 seconds"
+          "Equinix data centers (NY, London)",
+          "2GB RAM from ~$10/mo, 4GB ~$16/mo",
+          "Free EA Copier tool included",
+          "1 Gbps connection + DDoS protection"
         ]
+      },
+      {
+        "active": true,
+        "name": "VPSForexTrader",
+        "desc": "Since 2011 • AMD EPYC • 14-Day Guarantee",
+        "badge": "Reliable",
+        "badgeType": "blue",
+        "logo": "/images/brokers/vpsforextrader.png",
+        "initials": "VF",
+        "color": "from-blue-700 to-blue-800",
+        "url": "https://www.vpsforextrader.com",
+        "rating": 4.4,
+        "minDeposit": "From $19/mo",
+        "maxLeverage": null,
+        "regulation": null,
+        "features": [
+          "AMD EPYC CPUs + NVMe SSD storage",
+          "Data centers in NY, London, Amsterdam, HK",
+          "Pre-installed MT4/MT5 & cTrader",
+          "14-day money-back guarantee"
+        ]
+      },
+      {
+        "active": true,
+        "name": "ForexVPS.net",
+        "desc": "22+ Locations • Enterprise Grade",
+        "badge": "Most Locations",
+        "badgeType": "blue",
+        "logo": "/images/brokers/forexvps.png",
+        "initials": "FV",
+        "color": "from-blue-500 to-blue-600",
+        "url": "https://www.forexvps.net",
+        "rating": 4.5,
+        "minDeposit": "From $32/mo",
+        "maxLeverage": null,
+        "regulation": null,
+        "features": [
+          "22+ global data center locations",
+          "Sub-1ms latency to major brokers",
+          "Pre-installed MT4/MT5 — online in 60s",
+          "99.99% uptime guaranteed"
+        ]
+      },
+      {
+        "active": true,
+        "name": "TradingFXVPS",
+        "desc": "Ryzen 9 • Sub-1ms Latency",
+        "badge": "Lowest Latency",
+        "badgeType": "gold",
+        "logo": "/images/brokers/tradingfxvps.png",
+        "initials": "TF",
+        "color": "from-emerald-600 to-emerald-700",
+        "url": "https://www.tradingfxvps.com",
+        "rating": 4.7,
+        "minDeposit": "From $25/mo",
+        "maxLeverage": null,
+        "regulation": null,
+        "features": [
+          "AMD Ryzen 9 high-clock CPUs for scalping",
+          "Servers in NY4, LD4, TY3 financial hubs",
+          "Sub-1ms latency to top brokers",
+          "NVMe SSD + 99.99% uptime"
+        ]
+      },
+      {
+        "active": true,
+        "name": "TradingVPS.io",
+        "desc": "Ryzen 9 9950X • DDR5 • From $19/mo",
+        "badge": "Best Hardware",
+        "badgeType": "green",
+        "logo": "/images/brokers/tradingvps.png",
+        "initials": "TV",
+        "color": "from-cyan-600 to-cyan-700",
+        "url": "https://tradingvps.io",
+        "rating": 4.5,
+        "minDeposit": "From $19/mo",
+        "maxLeverage": null,
+        "regulation": null,
+        "features": [
+          "AMD Ryzen 9 9950X + DDR5 RAM",
+          "NVMe Gen4 SSD — fastest storage",
+          "5 hubs: Chicago, NY, London, Frankfurt, Amsterdam",
+          "Free DDoS protection + 99.99% uptime"
+        ]
+      }
+    ]
+  },
+  "cryptoExchanges": {
+    "title": "Crypto Exchanges",
+    "subtitle": "Trade 600+ Cryptocurrencies",
+    "items": [
+      {
+        "active": true,
+        "name": "Binance",
+        "desc": "World's Largest • Spot & Futures",
+        "badge": "#1 Volume",
+        "badgeType": "gold",
+        "logo": "/images/brokers/binance.png",
+        "initials": "BN",
+        "color": "from-yellow-500 to-amber-500",
+        "url": "https://www.binance.com/register?ref=128300263",
+        "rating": 4.8,
+        "minDeposit": "$1",
+        "maxLeverage": "125x",
+        "regulation": "Global Licenses",
+        "features": [
+          "World's #1 exchange by volume",
+          "Spot, Futures & Margin trading",
+          "Up to 125x leverage on futures",
+          "Copy trading & trading bots"
+        ],
+        "review": {
+          "summary": "Binance is the **world's largest crypto exchange** by trading volume. Offers a complete ecosystem including **spot, futures (125x), margin, staking, and Web3 wallet**.",
+          "pros": ["#1 by volume — deepest liquidity", "0.1% base fee (0.075% with BNB)", "125x leverage on futures", "600+ cryptocurrencies", "Copy trading & automated bots"],
+          "cons": ["Restricted in some countries (US uses Binance.US)", "Can be overwhelming for beginners", "Regulatory scrutiny in multiple jurisdictions"],
+          "bestFor": "Crypto traders who want the **deepest liquidity** and widest product range in one platform.",
+          "verdict": "**4.8/5** — The undisputed king of crypto exchanges."
+        }
+      },
+      {
+        "active": true,
+        "name": "Bybit",
+        "desc": "Derivatives Leader • Copy Trading",
+        "badge": "Top Derivatives",
+        "badgeType": "blue",
+        "logo": "/images/brokers/bybit.png",
+        "initials": "BB",
+        "color": "from-orange-500 to-orange-600",
+        "url": "https://www.bybit.com/invite?ref=NQEZZR",
+        "rating": 4.6,
+        "minDeposit": "$1",
+        "maxLeverage": "100x",
+        "regulation": "Global Licenses",
+        "features": [
+          "Top derivatives exchange globally",
+          "Unified Trading Account (UTA)",
+          "600+ spot assets available",
+          "Copy trading & Aurora AI tools"
+        ],
+        "review": {
+          "summary": "Bybit is a **leading derivatives exchange** known for deep liquidity on perpetual contracts. Features **Unified Trading Account** for cross-margin efficiency and advanced AI tools.",
+          "pros": ["Top derivatives liquidity", "Unified Trading Account — cross-margin", "100x leverage on major pairs", "600+ spot assets", "Copy trading & AI-powered tools"],
+          "cons": ["$5,000 quarterly affiliate cap (new 2026 rule)", "UI more complex than beginner exchanges", "Dynamic leverage reduces during volatility"],
+          "bestFor": "Derivatives traders who want **professional-grade tools** and deep perpetual contract liquidity.",
+          "verdict": "**4.6/5** — Best-in-class for crypto derivatives trading."
+        }
       }
     ]
   }
