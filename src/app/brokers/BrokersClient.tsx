@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Building2, Shield, Server, Star, ChevronRight, ExternalLink, Sparkles } from "lucide-react";
+import { Building2, Shield, Server, Star, ChevronRight, ExternalLink, Sparkles, Bitcoin } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
+import { ReviewBadge } from "./ReviewModal";
 import partnersData from "@/config/partners.json";
 
 const BADGE_STYLES: Record<string, string> = {
@@ -15,6 +16,7 @@ const BADGE_STYLES: Record<string, string> = {
 const CATEGORIES = [
   { key: "brokers", label: "CFD Brokers", icon: Building2, data: partnersData.brokers, cta: "Open Account", depositLabel: "Min Deposit" },
   { key: "propFirms", label: "Prop Firms", icon: Shield, data: partnersData.propFirms, cta: "Get Funded", depositLabel: "Challenge Fee" },
+  { key: "cryptoExchanges", label: "Crypto", icon: Bitcoin, data: partnersData.cryptoExchanges, cta: "Start Trading", depositLabel: "Min Deposit" },
   { key: "vps", label: "VPS Hosting", icon: Server, data: partnersData.vps, cta: "Get VPS", depositLabel: "Price" },
 ];
 
@@ -57,7 +59,7 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
       <div className="p-5 pb-4 flex items-center gap-4">
         <div className={`w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden ${
           item.logo
-            ? "bg-white dark:bg-white/10 border border-gray-100 dark:border-white/10"
+            ? "bg-white border border-gray-100 dark:border-white/10"
             : `bg-gradient-to-br ${item.color} text-white text-base font-black shadow-lg`
         }`}>
           {item.logo ? (
@@ -68,7 +70,12 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{item.name}</h3>
-          {item.rating && <StarRating rating={item.rating} />}
+          <div className="flex items-center gap-2 flex-wrap">
+            {item.rating && <StarRating rating={item.rating} />}
+            {(item as any).review && (
+              <ReviewBadge item={{ ...item, review: (item as any).review } as any} />
+            )}
+          </div>
         </div>
       </div>
 
@@ -189,7 +196,7 @@ export default function BrokersClient() {
           {CATEGORIES.map((cat) => (
             <TabsContent key={cat.key} value={cat.key}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {cat.data.items.map((item, idx) => (
+                {cat.data.items.filter((item) => (item as any).active !== false).map((item, idx) => (
                   <PartnerCard key={idx} item={item} ctaLabel={cat.cta} depositLabel={cat.depositLabel} />
                 ))}
               </div>

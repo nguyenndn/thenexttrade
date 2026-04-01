@@ -93,13 +93,13 @@ export function TrustedPartners() {
 
                 {/* Items */}
                 <div className="space-y-2">
-                  {cat.items.map((item, idx) => {
+                  {cat.items.filter((item: any) => item.active !== false).slice(0, 3).map((item, idx) => {
                     const content = (
                       <>
                         {/* Logo or Initials */}
                         <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden ${
                           item.logo 
-                            ? "bg-white dark:bg-white/10 border border-gray-100 dark:border-white/10" 
+                            ? "bg-white border border-gray-100 dark:border-white/10" 
                             : `bg-gradient-to-br ${item.color} text-white text-sm font-black shadow-lg`
                         }`}>
                           {item.logo ? (
