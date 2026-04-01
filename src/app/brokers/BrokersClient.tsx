@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Building2, Shield, Server, Star, ChevronRight, ExternalLink, Sparkles, Bitcoin } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
@@ -149,7 +150,12 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
 }
 
 export default function BrokersClient() {
-  const [activeTab, setActiveTab] = useState("brokers");
+  const searchParams = useSearchParams();
+  const validTabs = CATEGORIES.map((c) => c.key);
+  const tabFromUrl = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState(
+    tabFromUrl && validTabs.includes(tabFromUrl) ? tabFromUrl : "brokers"
+  );
 
   return (
     <>

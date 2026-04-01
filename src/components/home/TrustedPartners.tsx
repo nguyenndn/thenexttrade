@@ -1,4 +1,4 @@
-import { Building2, Shield, Server } from "lucide-react";
+import { Building2, Shield, Server, Bitcoin } from "lucide-react";
 import { FadeIn } from "@/components/ui/FadeIn";
 import Link from "next/link";
 import Image from "next/image";
@@ -37,6 +37,13 @@ const CATEGORIES: Category[] = [
     iconColor: "text-blue-600 dark:text-blue-400",
   },
   {
+    ...partnersData.cryptoExchanges,
+    icon: Bitcoin,
+    iconBg: "bg-amber-100 dark:bg-amber-500/20",
+    iconColor: "text-amber-600 dark:text-amber-400",
+    viewAllHref: "/brokers?tab=cryptoExchanges",
+  },
+  {
     ...partnersData.propFirms,
     icon: Shield,
     iconBg: "bg-orange-100 dark:bg-orange-500/20",
@@ -66,7 +73,7 @@ export function TrustedPartners() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {CATEGORIES.map((cat, catIdx) => (
             <FadeIn key={catIdx} delay={catIdx * 0.1} direction="up">
               <div className="bg-white dark:bg-white/[0.04] backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-5 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-lg dark:hover:shadow-none transition-all duration-300">
@@ -136,7 +143,7 @@ export function TrustedPartners() {
                           href={item.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-4 p-2.5 rounded-xl bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.07] border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 transition-all duration-200 group cursor-pointer"
+                          className="flex items-center gap-4 p-1 rounded-xl bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.07] border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 transition-all duration-200 group cursor-pointer"
                         >
                           {content}
                         </a>
@@ -146,7 +153,7 @@ export function TrustedPartners() {
                     return (
                       <div
                         key={idx}
-                        className="flex items-center gap-4 p-2.5 rounded-xl bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.07] border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 transition-all duration-200 group"
+                        className="flex items-center gap-4 p-1 rounded-xl bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.07] border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 transition-all duration-200 group"
                       >
                         {content}
                       </div>

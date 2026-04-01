@@ -21,7 +21,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
             {items.map((item, idx) => (
                 <div
                     key={idx}
-                    className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden"
+                    className="rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary/60 hover:shadow-md hover:shadow-primary/10 hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
                 >
                     <button
                         onClick={() => setOpen(open === idx ? null : idx)}
