@@ -172,7 +172,7 @@ export default function BrokersClient() {
 
         {/* Tabs - same style as /tools page */}
         <Tabs value={activeTab} onValueChange={setActiveTab} tabsId="brokers-page">
-          <div className="mb-10 overflow-x-auto scrollbar-hide flex justify-center">
+          <div className="mb-10 overflow-x-auto scrollbar-hide flex sm:justify-center">
             <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
               {CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
