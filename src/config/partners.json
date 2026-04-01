@@ -2,7 +2,7 @@
   "brokers": {
     "title": "Best Forex Brokers",
     "subtitle": "Regulated & Low Spreads",
-    "viewAllHref": "/brokers",
+    "viewAllHref": "/brokers?tab=brokers",
     "items": [
       {
         "active": true,
@@ -401,6 +401,7 @@
   "propFirms": {
     "title": "Prop Trading Firms",
     "subtitle": "Get Funded Up to $2M+",
+    "viewAllHref": "/brokers?tab=propFirms",
     "items": [
       {
         "active": true,
@@ -419,12 +420,12 @@
         "features": [
           "Scale up to $2,000,000",
           "80-90% profit split",
-          "No maximum time limit",
+          "1-Step & 2-Step Challenge options",
           "MT4, MT5 & cTrader"
         ],
         "review": {
-          "summary": "FTMO is the **world's #1 prop firm** with over $200 million paid to traders. Their transparent 2-step challenge lets you **scale up to $2M** with an 80-90% profit split.",
-          "pros": ["#1 reputation — paid over $200M to traders", "Scale accounts up to $2,000,000", "80-90% profit split", "No maximum time limit", "Supports MT4, MT5 & cTrader"],
+          "summary": "FTMO is the **world's #1 prop firm** with over $450 million paid to traders. Their challenge system offers 1-Step & 2-Step options to **scale up to $2M** with an 80-90% profit split.",
+          "pros": ["#1 reputation — paid over $450M to traders", "Scale accounts up to $2,000,000", "80-90% profit split", "1-Step & 2-Step Challenge options", "Supports MT4, MT5 & cTrader"],
           "cons": ["Challenge fee higher than competitors (from €155)", "Strict trading rules", "Not available in some countries"],
           "bestFor": "Skilled traders who want the **largest and most reputable** prop firm in the industry.",
           "verdict": "**4.7/5** — The gold standard of proprietary trading."
@@ -448,7 +449,7 @@
           "Instant funding option available",
           "Scale up to $4,000,000",
           "Up to 100% profit split",
-          "No time limit on evaluation"
+          "Futures & Forex prop trading"
         ],
         "review": {
           "summary": "The5ers stands out with **Instant Funding** — skip the challenge and get funded immediately. Scale up to **$4M** with profit splits up to 100%.",
@@ -491,7 +492,7 @@
   "vps": {
     "title": "Forex VPS Hosting",
     "subtitle": "24/7 EA Running",
-    "viewAllHref": "/brokers",
+    "viewAllHref": "/brokers?tab=vps",
     "items": [
       {
         "active": true,
@@ -679,6 +680,34 @@
           "cons": ["$5,000 quarterly affiliate cap (new 2026 rule)", "UI more complex than beginner exchanges", "Dynamic leverage reduces during volatility"],
           "bestFor": "Derivatives traders who want **professional-grade tools** and deep perpetual contract liquidity.",
           "verdict": "**4.6/5** — Best-in-class for crypto derivatives trading."
+        }
+      },
+      {
+        "active": true,
+        "name": "OKX",
+        "desc": "Web3 Wallet • Spot & Derivatives",
+        "badge": "Web3 Leader",
+        "badgeType": "green",
+        "logo": "/images/brokers/okx.png",
+        "initials": "OKX",
+        "color": "from-gray-800 to-black",
+        "url": "https://okx.com/join/64011294",
+        "rating": 4.5,
+        "minDeposit": "$1",
+        "maxLeverage": "125x",
+        "regulation": "MiCA, VARA, MSB",
+        "features": [
+          "Spot, Futures, Options & Margin trading",
+          "Built-in Web3 wallet & DeFi access",
+          "Up to 125x leverage on futures",
+          "Trading bots & copy trading"
+        ],
+        "review": {
+          "summary": "OKX is a **top-3 global crypto exchange** known for its pro-grade derivatives, integrated **Web3 wallet**, and transparent Proof of Reserves using zk-STARKs technology.",
+          "pros": ["Top-3 exchange — deep liquidity", "Built-in Web3 wallet + DeFi + NFT marketplace", "125x leverage on BTC/ETH futures", "Low fees: 0.08% maker / 0.10% taker", "Proof of Reserves with zk-STARKs — fully transparent"],
+          "cons": ["Not available in all US states", "UI can be complex for beginners", "Some features restricted by region"],
+          "bestFor": "Crypto traders who want **pro-grade derivatives** with integrated Web3/DeFi access in one platform.",
+          "verdict": "**4.5/5** — The best exchange for traders who also want Web3 and DeFi."
         }
       }
     ]

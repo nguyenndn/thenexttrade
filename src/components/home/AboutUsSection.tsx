@@ -93,7 +93,7 @@ export function AboutUsSection() {
                 {TEAM.map((member, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary/30 dark:hover:border-white/20 hover:shadow-md dark:hover:shadow-none transition-all"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary/60 hover:shadow-md hover:shadow-primary/10 hover:-translate-y-0.5 transition-all duration-200"
                   >
                     <div className={`w-10 h-10 rounded-full ${member.color} flex items-center justify-center text-white text-sm font-black shadow-lg`}>
                       {member.initials}
@@ -117,7 +117,7 @@ export function AboutUsSection() {
                     href={site.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary/30 hover:shadow-md dark:hover:shadow-none transition-all group"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary/60 hover:shadow-md hover:shadow-primary/10 hover:-translate-y-0.5 transition-all duration-200 group"
                   >
                     <div className={`w-10 h-10 rounded-lg ${site.color} flex items-center justify-center text-white text-xs font-black shadow-lg`}>
                       {site.initials}
