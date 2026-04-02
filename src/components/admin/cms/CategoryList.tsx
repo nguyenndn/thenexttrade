@@ -196,7 +196,7 @@ export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
             <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
+                        <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-600 font-bold tracking-wider">
                             <tr>
                                 <th className="pl-6 pr-4 py-5 w-14">
                                     <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
@@ -213,7 +213,7 @@ export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={5} className="px-6 py-12 text-center">
-                                        <div className="flex items-center justify-center gap-3 text-gray-500">
+                                        <div className="flex items-center justify-center gap-3 text-gray-600">
                                             <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                                             <span className="font-medium text-sm">Loading...</span>
                                         </div>
@@ -222,7 +222,7 @@ export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
                             ) : filteredCategories.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} className="px-6 py-16 text-center">
-                                        <div className="flex flex-col items-center justify-center text-gray-500">
+                                        <div className="flex flex-col items-center justify-center text-gray-600">
                                             <FolderOpen size={40} className="mb-3 opacity-30" />
                                             <p className="font-bold text-gray-900 dark:text-gray-300">No categories found</p>
                                             <p className="text-sm mt-1 mb-4">{searchQuery ? 'Try adjusting your search.' : 'Create your first category to start organizing articles.'}</p>
@@ -245,10 +245,10 @@ export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
                                         <td className="px-6 py-5 font-bold text-gray-900 dark:text-white">
                                             {category.name}
                                             {category.description && (
-                                                <div className="text-xs text-gray-500 font-normal mt-1">{category.description}</div>
+                                                <div className="text-xs text-gray-600 font-normal mt-1">{category.description}</div>
                                             )}
                                         </td>
-                                        <td className="px-6 py-5 text-gray-500 font-mono text-xs">{category.slug}</td>
+                                        <td className="px-6 py-5 text-gray-600 font-mono text-xs">{category.slug}</td>
                                         <td className="px-6 py-5">
                                             <span className="bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-lg text-xs font-bold">
                                                 {category._count?.articles || 0}

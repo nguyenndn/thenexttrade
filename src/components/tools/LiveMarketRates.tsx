@@ -283,9 +283,9 @@ export function LiveMarketRates() {
             )}
 
             {/* Note */}
-            <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
                 <Info size={14} className="shrink-0 text-primary/60" />
-                <span>Change % reflects <span className="font-semibold text-gray-500 dark:text-gray-400">24-hour daily change</span>. Some pairs may not update when markets are closed.</span>
+                <span>Change % reflects <span className="font-semibold text-gray-600 dark:text-gray-300">24-hour daily change</span>. Some pairs may not update when markets are closed.</span>
             </div>
         </div>
     );

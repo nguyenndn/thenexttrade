@@ -18,7 +18,7 @@ export function AdminPageHeader({ title, description, backHref, children }: Admi
                         className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0"
                         aria-label="Go back"
                     >
-                        <ArrowLeft size={20} className="text-gray-500" />
+                        <ArrowLeft size={20} className="text-gray-600" />
                     </Link>
                 )}
                 {/* Gradient Bar */}
@@ -27,7 +27,7 @@ export function AdminPageHeader({ title, description, backHref, children }: Admi
                     <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                         {title}
                     </h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">
                         {description}
                     </p>
                 </div>

@@ -76,7 +76,7 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
                     {/* Current Strategy */}
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                            <label className="text-xs font-medium text-gray-500">Current Strategy</label>
+                            <label className="text-xs font-medium text-gray-600">Current Strategy</label>
                             {entry.strategy && (
                                 <Button variant="outline" size="sm" onClick={handleClear} className="h-4 px-1 text-[10px] text-red-500 hover:text-red-600 hover:underline bg-transparent">Remove</Button>
                             )}
@@ -102,7 +102,7 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
 
                     {/* Select Strategy */}
                     <div className="space-y-2">
-                        <label className="text-xs font-medium text-gray-500">Select a Strategy</label>
+                        <label className="text-xs font-medium text-gray-600">Select a Strategy</label>
                         <div className="flex flex-wrap gap-2 max-h-[200px] overflow-y-auto">
                             {strategies.length > 0 ? (
                                 strategies.map((strategy) => {
@@ -125,7 +125,7 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
                                     );
                                 })
                             ) : (
-                                <div className="text-xs text-gray-500 w-full text-center py-2">No strategies found.</div>
+                                <div className="text-xs text-gray-600 w-full text-center py-2">No strategies found.</div>
                             )}
                         </div>
                     </div>

@@ -245,7 +245,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
     return (
         <div className="space-y-10 pb-10">
             {/* Breadcrumb */}
-            <div className="flex items-center text-sm text-gray-500">
+            <div className="flex items-center text-sm text-gray-600">
                 <Link href="/admin/academy" className="hover:text-primary transition-colors">Academy</Link>
                 <ChevronRight size={14} className="mx-2" />
                 <span className="text-gray-900 dark:text-white font-medium">Level: {level.title}</span>
@@ -332,7 +332,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
 
             {modules.length === 0 && (
                 <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
-                    <p className="text-gray-500 mb-4">This course has no content yet.</p>
+                    <p className="text-gray-600 mb-4">This course has no content yet.</p>
                     <Button
                         onClick={() => setIsModuleModalOpen(true)}
                         className="bg-blue-500 hover:bg-blue-600 text-white border-none shadow-lg shadow-blue-500/40 rounded-xl px-6"

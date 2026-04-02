@@ -67,7 +67,7 @@ export default function CreateBrokerPage() {
 
     return (
         <div className="w-full space-y-4">
-            <Link href="/admin/brokers" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary transition-colors">
+            <Link href="/admin/brokers" className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors">
                 <ArrowLeft size={16} />
                 Back to Brokers
             </Link>

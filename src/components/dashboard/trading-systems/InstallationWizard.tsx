@@ -44,7 +44,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                     <p className="text-gray-600 dark:text-gray-300">
                         In your MT5 terminal, click on <strong>File</strong> in the top menu, then select <strong>Open Data Folder</strong>.
                     </p>
-                    <div className="bg-gray-100 dark:bg-white/5 p-4 rounded-xl font-mono text-xs text-gray-500 dark:text-gray-400">
+                    <div className="bg-gray-100 dark:bg-white/5 p-4 rounded-xl font-mono text-xs text-gray-600 dark:text-gray-300">
                         File &gt; Open Data Folder
                     </div>
                 </div>
@@ -63,7 +63,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         </strong>
                         folder.
                     </p>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
                         <FolderOpen size={16} />
                         <span>MQL5</span>
                         <ChevronRight size={14} />
@@ -84,7 +84,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                     <p className="text-gray-700 dark:text-gray-300 font-medium mb-2">
                         Paste the <strong>.ex5</strong> file here
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-gray-600 dark:text-gray-300">
                         Make sure the file extension remains .ex5
                     </p>
                 </div>
@@ -100,10 +100,10 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         Right-click on the <strong>Navigator</strong> panel in MT5 (usually on the left side) and select <strong>Refresh</strong>.
                     </p>
                     <div className="bg-gray-100 dark:bg-white/5 p-3 rounded-lg flex items-center gap-3">
-                        <RefreshCw size={16} className="text-gray-500" />
+                        <RefreshCw size={16} className="text-gray-600" />
                         <span className="text-sm font-medium">Refresh</span>
                     </div>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-600">
                         Your new {type === "MT5_EA" ? "Expert Advisor" : "Indicator"} should now appear in the list!
                     </p>
                 </div>
@@ -131,7 +131,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
             {/* Progress Header */}
             <div className="mb-8">
                 <div className="flex justify-between items-end mb-2">
-                    <span className="text-sm font-bold text-gray-500 dark:text-gray-400">
+                    <span className="text-sm font-bold text-gray-600 dark:text-gray-300">
                         Step {currentStep + 1} of {steps.length}
                     </span>
                     <span className="text-xs font-bold text-primary">
@@ -162,7 +162,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         {steps[currentStep].title}
                     </h2>
 
-                    <p className="text-gray-500 dark:text-gray-400 text-lg mb-8 leading-relaxed">
+                    <p className="text-gray-600 dark:text-gray-300 text-lg mb-8 leading-relaxed">
                         {steps[currentStep].description}
                     </p>
 

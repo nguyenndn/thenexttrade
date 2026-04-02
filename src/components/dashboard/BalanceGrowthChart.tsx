@@ -21,7 +21,7 @@ interface BalanceGrowthChartProps {
 export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="h-[300px] md:h-full min-h-[300px] w-full flex items-center justify-center font-medium text-sm text-gray-400 dark:text-gray-500">
+            <div className="h-[300px] md:h-full min-h-[300px] w-full flex items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
                 No data available
             </div>
         );
@@ -107,7 +107,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                             if (active && payload && payload.length) {
                                 return (
                                     <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl">
-                                        <p className="text-sm font-medium text-gray-500 mb-1">
+                                        <p className="text-sm font-medium text-gray-600 mb-1">
                                             {format(new Date(label), "MMM dd, HH:mm")}
                                         </p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">

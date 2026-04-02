@@ -96,7 +96,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
                     />
                 ) : (
                     <div className="text-center py-6">
-                        <p className="text-gray-500 mb-4">Log in to join the discussion</p>
+                        <p className="text-gray-600 mb-4">Log in to join the discussion</p>
                         <a
                             href={`/auth/login?next=/articles/${articleId}#comment-form-box`}
                             className="inline-flex items-center justify-center px-6 py-2.5 bg-primary hover:bg-[#00B078] text-white rounded-xl font-medium transition-all shadow-lg shadow-primary/20"

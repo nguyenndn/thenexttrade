@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { toast } from "sonner";
@@ -101,7 +101,7 @@ export default function LessonView({
                             Academy
                         </Link>
                         <span className="text-gray-300 dark:text-gray-700">/</span>
-                        <span className="text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
+                        <span className="text-gray-600 dark:text-gray-300 truncate max-w-[200px]">
                             {lesson.module.title}
                         </span>
                     </div>
@@ -139,7 +139,7 @@ export default function LessonView({
                             <div className="flex items-center gap-4">
                                 {prevLesson ? (
                                     <Link href={`/dashboard/academy/lessons/${prevLesson.slug}`}>
-                                        <Button variant="ghost" className="text-gray-500 hover:text-primary hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
+                                        <Button variant="ghost" className="text-gray-600 hover:text-primary hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
                                             <ChevronLeft size={16} />
                                             Previous
                                         </Button>
@@ -172,7 +172,7 @@ export default function LessonView({
                             <div className="flex items-center gap-4">
                                 {nextLesson ? (
                                     <Link href={`/dashboard/academy/lessons/${nextLesson.slug}`}>
-                                        <Button variant="ghost" className="text-gray-500 hover:text-primary hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
+                                        <Button variant="ghost" className="text-gray-600 hover:text-primary hover:bg-transparent px-0 font-bold uppercase tracking-wider text-xs">
                                             Next <ChevronRight size={16} />
                                         </Button>
                                     </Link>
@@ -189,7 +189,7 @@ export default function LessonView({
                         <div className="relative z-10">
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Current Module</p>
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">{lesson.module.title}</h3>
-                            <div className="flex items-center gap-3 text-xs text-gray-500 mb-6">
+                            <div className="flex items-center gap-3 text-xs text-gray-600 mb-6">
                                 <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg">
                                     <Clock size={12} />
                                     <span>{lesson.duration || "10"} mins</span>
@@ -214,7 +214,7 @@ export default function LessonView({
                                                 "flex items-center gap-4 p-3 rounded-xl transition-all relative group",
                                                 isActive
                                                     ? "bg-primary/10 text-primary"
-                                                    : "text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"
+                                                    : "text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
                                             )}
                                         >
                                             {/* Status Dot */}

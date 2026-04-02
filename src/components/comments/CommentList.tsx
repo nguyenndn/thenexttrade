@@ -106,7 +106,7 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
                             className="object-cover"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-500 font-bold">
+                        <div className="w-full h-full flex items-center justify-center text-gray-600 font-bold">
                             {comment.user.name?.charAt(0) || "U"}
                         </div>
                     )}
@@ -131,7 +131,7 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
                     <Button
                         variant="ghost"
                         onClick={() => setIsReplying(!isReplying)}
-                        className="flex items-center gap-1.5 h-auto px-2 py-1 text-gray-500 hover:text-primary transition-colors font-medium"
+                        className="flex items-center gap-1.5 h-auto px-2 py-1 text-gray-600 hover:text-primary transition-colors font-medium"
                     >
                         <Reply size={14} />
                         Reply

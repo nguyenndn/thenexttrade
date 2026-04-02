@@ -77,7 +77,7 @@ export function PipValueCalc() {
                     label={`Pip Value (${accountCurrency})`}
                     value={`${currSymbol}${totalValue.toFixed(2)}`}
                 />
-                <p className="text-center text-sm text-gray-500 dark:text-gray-400 -mt-1">
+                <p className="text-center text-sm text-gray-600 dark:text-gray-300 -mt-1">
                     For <span className="font-bold text-gray-900 dark:text-white">{lotSize}</span> lot(s) of {pair}
                 </p>
 

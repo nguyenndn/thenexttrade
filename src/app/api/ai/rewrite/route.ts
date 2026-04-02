@@ -6,14 +6,36 @@ import path from "path";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 
-async function getWriterPersona(): Promise<string> {
+// ============================================================================
+// HELPERS
+// ============================================================================
+
+async function loadFileContent(filePath: string): Promise<string> {
     try {
-        const personaPath = path.join(process.cwd(), "content", "writer-persona.md");
-        return await readFile(personaPath, "utf-8");
+        return await readFile(filePath, "utf-8");
     } catch {
-        return "Write in a friendly, professional tone. Use short paragraphs and bullet points.";
+        return "";
     }
 }
+
+async function getSystemPrompt(): Promise<string> {
+    return loadFileContent(path.join(process.cwd(), "content", "rewrite-system-prompt.md"));
+}
+
+async function getWriterPersona(): Promise<string> {
+    const content = await loadFileContent(path.join(process.cwd(), "content", "writer-persona.md"));
+    return content || "Write in a friendly, professional tone. Use short paragraphs and bullet points.";
+}
+
+async function getToneInstructions(tone: string): Promise<string> {
+    if (!tone) return "";
+    const content = await loadFileContent(path.join(process.cwd(), "content", "tones", `${tone}.md`));
+    return content;
+}
+
+// ============================================================================
+// IMAGE EXTRACTION
+// ============================================================================
 
 interface ExtractedImage {
     alt: string;
@@ -29,7 +51,6 @@ function extractImages(markdown: string): { text: string; images: ExtractedImage
 
     while ((match = imgRegex.exec(markdown)) !== null) {
         const imgUrl = match[2].trim();
-        // Skip tiny icons, tracking pixels, and data URIs
         if (imgUrl.startsWith('data:') || imgUrl.includes('1x1') || imgUrl.includes('pixel')) continue;
         index++;
         images.push({
@@ -42,9 +63,13 @@ function extractImages(markdown: string): { text: string; images: ExtractedImage
     return { text: markdown, images };
 }
 
-async function scrapeUrl(url: string): Promise<{ content: string; images: ExtractedImage[] }> {
+// ============================================================================
+// FIRECRAWL SCRAPING
+// ============================================================================
+
+async function scrapeUrl(url: string): Promise<{ content: string; images: ExtractedImage[]; title: string }> {
     if (!FIRECRAWL_API_KEY) {
-        throw new Error("FIRECRAWL_API_KEY is not configured. Add it to .env.local (get free key at firecrawl.dev)");
+        throw new Error("FIRECRAWL_API_KEY is not configured. Add it to .env.local");
     }
 
     const res = await fetch("https://api.firecrawl.dev/v1/scrape", {
@@ -67,59 +92,89 @@ async function scrapeUrl(url: string): Promise<{ content: string; images: Extrac
 
     const data = await res.json();
     const markdown = data.data?.markdown || "";
+    const title = data.data?.metadata?.title || "";
 
-    if (!markdown) throw new Error("FireCrawl returned no content");
+    if (!markdown) throw new Error(`FireCrawl returned no content for ${url}`);
 
     const { text, images } = extractImages(markdown);
-    return { content: text.substring(0, 8000), images };
+    return { content: text.substring(0, 6000), images, title };
 }
 
-export async function POST(req: NextRequest) {
-    if (!GEMINI_API_KEY) {
-        return NextResponse.json(
-            { error: "GEMINI_API_KEY is not configured. Add it to .env.local" },
-            { status: 500 }
-        );
+// ============================================================================
+// MULTI-SOURCE SCRAPING
+// ============================================================================
+
+interface ScrapedSource {
+    url: string;
+    content: string;
+    title: string;
+    images: ExtractedImage[];
+}
+
+async function scrapeMultipleSources(urls: string[]): Promise<{
+    sources: ScrapedSource[];
+    mergedContent: string;
+    allImages: ExtractedImage[];
+    rawContent: string;
+}> {
+    // Scrape all URLs in parallel
+    const results = await Promise.allSettled(
+        urls.map(url => scrapeUrl(url))
+    );
+
+    const sources: ScrapedSource[] = [];
+    const allImages: ExtractedImage[] = [];
+
+    results.forEach((result, i) => {
+        if (result.status === "fulfilled") {
+            sources.push({
+                url: urls[i],
+                content: result.value.content,
+                title: result.value.title,
+                images: result.value.images,
+            });
+            allImages.push(...result.value.images);
+        }
+    });
+
+    if (sources.length === 0) {
+        throw new Error("Failed to scrape any of the provided URLs");
     }
 
-    try {
-        const { url, pastedContent, mode } = await req.json();
+    // Build merged content for the prompt (labeled by source)
+    const mergedContent = sources.map((s, i) =>
+        `--- SOURCE ${i + 1} (${new URL(s.url).hostname}) ---\nTitle: ${s.title}\n\n${s.content}\n--- END SOURCE ${i + 1} ---`
+    ).join("\n\n");
 
-        if (!url && !pastedContent) {
-            return NextResponse.json({ error: "URL or content is required" }, { status: 400 });
-        }
+    // Build raw content backup (all sources concatenated)
+    const rawContent = sources.map(s =>
+        `## Source: ${s.url}\n\n${s.content}`
+    ).join("\n\n---\n\n");
 
-        // 1. Get content — either from URL (FireCrawl) or pasted directly
-        let scrapedContent: string;
-        let images: ExtractedImage[] = [];
-        if (pastedContent && typeof pastedContent === "string") {
-            const extracted = extractImages(pastedContent);
-            scrapedContent = extracted.text.substring(0, 8000);
-            images = extracted.images;
-        } else {
-            const result = await scrapeUrl(url);
-            scrapedContent = result.content;
-            images = result.images;
-        }
+    return { sources, mergedContent, allImages, rawContent };
+}
 
-        if (scrapedContent.length < 100) {
-            return NextResponse.json(
-                { error: "Not enough content to work with (min 100 chars)" },
-                { status: 400 }
-            );
-        }
+// ============================================================================
+// PROMPT BUILDER
+// ============================================================================
 
-        // 2. Load writer persona
-        const persona = await getWriterPersona();
-
-        // 3. Build prompt based on mode
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
-
-        let prompt: string;
-
-        if (mode === "summary") {
-            prompt = `You are a content analyst. Read the following article and create:
+function buildPrompt({
+    mode,
+    systemPrompt,
+    persona,
+    toneInstructions,
+    sourceContent,
+    images,
+}: {
+    mode: "summary" | "rewrite";
+    systemPrompt: string;
+    persona: string;
+    toneInstructions: string;
+    sourceContent: string;
+    images: ExtractedImage[];
+}): string {
+    if (mode === "summary") {
+        return `You are a content analyst. Read the following article(s) and create:
 
 1. A new, original TITLE (do not copy the original title)
 2. A SUMMARY of the key points in 3-5 bullet points
@@ -129,7 +184,7 @@ export async function POST(req: NextRequest) {
 ${persona}
 
 ## Source Content:
-${scrapedContent}
+${sourceContent}
 
 ## Output Format (respond ONLY in this JSON format):
 {
@@ -138,64 +193,145 @@ ${scrapedContent}
 }
 
 IMPORTANT: Output MUST be valid JSON only. No markdown code blocks. No extra text.`;
-        } else {
-            const imageInstructions = images.length > 0
-                ? `\n\n## Available Images (use these placeholders in your HTML where relevant):\n${images.map(img => `- ${img.placeholder}: "${img.alt}"`).join('\n')}\n\nPlace image placeholders between paragraphs where they best illustrate the content. Use the exact placeholder text like ${images[0]?.placeholder || '[IMAGE_1]'}.`
-                : '';
+    }
 
-            prompt = `You are "Captain TheNextTrade", a professional forex trading educator. Your task is to read the source article and create a COMPLETELY NEW lesson with:
+    // Full Rewrite mode
+    const imageInstructions = images.length > 0
+        ? `\n\n## Available Images (use these placeholders in your HTML where relevant):\n${images.map(img => `- ${img.placeholder}: "${img.alt}"`).join('\n')}\n\nPlace image placeholders between paragraphs where they best illustrate the content.`
+        : '';
 
-1. A new, original TITLE (do not copy the original title)
-2. Fully rewritten CONTENT that:
-   - Covers the same educational concepts
-   - Uses completely different structure, order, and wording
-   - Follows the Writer Persona guidelines exactly
-   - Is formatted in clean HTML (h2, h3, p, ul, li, strong, em, table, etc.)
-   - Includes practical Gold (XAU/USD) examples where relevant
-   - Has 💡 Key Takeaway boxes (use <blockquote> with 💡 emoji)
-   - Has ⚠️ Common Mistake boxes where relevant (use <blockquote> with ⚠️ emoji)
-   - Ends with a 📝 Quick Recap section
-${imageInstructions}
+    return `${systemPrompt}
 
-## Writer Persona:
+## WRITER PERSONA:
 ${persona}
 
-## Source Content:
-${scrapedContent}
+${toneInstructions ? `## SELECTED TONE:\n${toneInstructions}` : ""}
 
-## Output Format (respond ONLY in this JSON format):
-{
-  "title": "Your completely original title here",
-  "content": "<h2>Section 1</h2><p>...</p>..."
+## SOURCE CONTENT TO REWRITE:
+${sourceContent}
+${imageInstructions}
+
+Remember: Output MUST be valid JSON only. No markdown code blocks. No extra text.
+Format: {"title": "...", "content": "<h2>...</h2><p>...</p>..."}`;
 }
 
-CRITICAL RULES:
-- Output MUST be valid JSON only. No markdown code blocks. No extra text.
-- Do NOT copy any sentences from the source. Rewrite everything.
-- The structure and flow should be different from the source.
-- Keep the lesson around 800-1200 words (about 5 min read).
-- Use HTML tags for formatting, NOT markdown.`;
+// ============================================================================
+// POST HANDLER
+// ============================================================================
+
+export async function POST(req: NextRequest) {
+    if (!GEMINI_API_KEY) {
+        return NextResponse.json(
+            { error: "GEMINI_API_KEY is not configured" },
+            { status: 500 }
+        );
+    }
+
+    try {
+        const body = await req.json();
+        const {
+            url,              // legacy: single URL
+            urls,             // new: array of URLs
+            pastedContent,
+            mode = "rewrite",
+            tone = "",        // new: tone selection
+        } = body;
+
+        // Resolve URL list (support both legacy single URL and new multi-URL)
+        const urlList: string[] = urls?.length
+            ? urls.filter((u: string) => u?.trim())
+            : url?.trim() ? [url.trim()] : [];
+
+        if (urlList.length === 0 && !pastedContent) {
+            return NextResponse.json({ error: "URL(s) or content is required" }, { status: 400 });
         }
 
-        // 4. Call Gemini
+        // 1. Get content
+        let sourceContent: string;
+        let allImages: ExtractedImage[] = [];
+        let rawContent = "";
+        let sourceUrls: string[] = [];
+
+        if (pastedContent && typeof pastedContent === "string") {
+            const extracted = extractImages(pastedContent);
+            sourceContent = extracted.text.substring(0, 8000);
+            allImages = extracted.images;
+            rawContent = pastedContent;
+        } else {
+            const result = await scrapeMultipleSources(urlList);
+            sourceContent = result.mergedContent;
+            allImages = result.allImages;
+            rawContent = result.rawContent;
+            sourceUrls = urlList;
+        }
+
+        if (sourceContent.length < 100) {
+            return NextResponse.json(
+                { error: "Not enough content to work with (min 100 chars)" },
+                { status: 400 }
+            );
+        }
+
+        // 2. Load prompt components in parallel
+        const [systemPrompt, persona, toneInstructions] = await Promise.all([
+            getSystemPrompt(),
+            getWriterPersona(),
+            getToneInstructions(tone),
+        ]);
+
+        // 3. Build full prompt
+        const prompt = buildPrompt({
+            mode,
+            systemPrompt,
+            persona,
+            toneInstructions,
+            sourceContent,
+            images: allImages,
+        });
+
+        // 4. Call Gemini with JSON mode
+        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({
+            model: "gemini-3-flash-preview",
+            generationConfig: {
+                responseMimeType: "application/json",
+            },
+        });
+
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
 
-        // 5. Parse JSON response
-        const cleanJson = responseText
-            .replace(/```json\s*/g, "")
-            .replace(/```\s*/g, "")
-            .trim();
-
-        let parsed: { title: string; content: string };
+        // 5. Parse JSON response (with robust fallbacks)
+        let parsed: { title: string; content: string; metaDescription?: string };
         try {
-            parsed = JSON.parse(cleanJson);
+            parsed = JSON.parse(responseText);
         } catch {
-            const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-                parsed = JSON.parse(jsonMatch[0]);
-            } else {
-                throw new Error("AI returned invalid format");
+            // Fallback 1: clean markdown code blocks
+            const cleaned = responseText
+                .replace(/```json\s*/g, "")
+                .replace(/```\s*/g, "")
+                .trim();
+            try {
+                parsed = JSON.parse(cleaned);
+            } catch {
+                // Fallback 2: extract title and content separately
+                const titleMatch = cleaned.match(/"title"\s*:\s*"([^"]+)"/);
+                const contentMatch = cleaned.match(/"content"\s*:\s*"([\s\S]+)"/);
+                if (titleMatch && contentMatch) {
+                    parsed = {
+                        title: titleMatch[1],
+                        content: contentMatch[1]
+                            .replace(/\\n/g, "\n")
+                            .replace(/\\"/g, '"')
+                            .replace(/\\\\/g, "\\"),
+                    };
+                } else {
+                    // Fallback 3: treat entire response as content
+                    parsed = {
+                        title: "Untitled Lesson",
+                        content: responseText.substring(0, 10000),
+                    };
+                }
             }
         }
 
@@ -203,18 +339,18 @@ CRITICAL RULES:
         let finalContent = parsed.content || "";
         const usedImages = new Set<number>();
 
-        for (const img of images) {
+        for (const img of allImages) {
             if (finalContent.includes(img.placeholder)) {
                 finalContent = finalContent.replace(
                     img.placeholder,
                     `<img src="${img.url}" alt="${img.alt}" style="max-width:100%;border-radius:8px;margin:16px 0" />`
                 );
-                usedImages.add(images.indexOf(img));
+                usedImages.add(allImages.indexOf(img));
             }
         }
 
-        // Append unused images at the end (before Quick Recap if it exists)
-        const unusedImgs = images
+        // Append unused images before Quick Recap
+        const unusedImgs = allImages
             .filter((_, i) => !usedImages.has(i))
             .map(img => `<img src="${img.url}" alt="${img.alt}" style="max-width:100%;border-radius:8px;margin:16px 0" />`)
             .join('');
@@ -230,9 +366,14 @@ CRITICAL RULES:
 
         return NextResponse.json({
             title: parsed.title || "Untitled Lesson",
+            metaDescription: parsed.metaDescription || "",
             content: finalContent,
+            rawContent,
+            sourceUrls,
+            tone: tone || null,
             mode,
-            imageCount: images.length,
+            imageCount: allImages.length,
+            sourcesUsed: urlList.length,
         });
     } catch (error: any) {
         console.error("[AI Rewrite Error]", error);

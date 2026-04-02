@@ -89,7 +89,7 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
                             type="button"
                             className="w-full h-auto flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10 text-left hover:border-primary transition-colors focus:border-primary focus:outline-none hover:bg-gray-50 dark:hover:bg-black/20 font-normal"
                         >
-                            <span className="text-sm font-medium text-gray-500">
+                            <span className="text-sm font-medium text-gray-600">
                                 {value.length === 0 ? "Select mistakes..." : `${value.length} mistake(s) logged`}
                             </span>
                             <ChevronDown size={16} className="text-gray-400" />

@@ -21,7 +21,7 @@ export default function MaintenancePage() {
                 </h1>
 
                 {/* Description */}
-                <p className="text-base text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
+                <p className="text-base text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
                     We&apos;re performing scheduled maintenance to improve your experience. 
                     Please check back shortly — we won&apos;t be long!
                 </p>

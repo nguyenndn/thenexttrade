@@ -118,7 +118,7 @@ export function ReviewsSection() {
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
                         What Traders Say
                     </h2>
-                    <p className="text-gray-500 dark:text-gray-400 text-base">
+                    <p className="text-gray-600 dark:text-gray-300 text-base">
                         Real reviews from our community
                     </p>
                 </div>
@@ -156,7 +156,7 @@ export function ReviewsSection() {
                                         <p className="text-gray-900 dark:text-white font-bold text-sm">
                                             {review.name}
                                         </p>
-                                        <p className="text-gray-500 dark:text-gray-400 text-xs">{review.role}</p>
+                                        <p className="text-gray-600 dark:text-gray-300 text-xs">{review.role}</p>
                                     </div>
                                 </div>
 

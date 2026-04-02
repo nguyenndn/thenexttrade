@@ -105,7 +105,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                                     }
                                 }
                             }}
-                            className="flex h-14 w-full bg-transparent py-3 text-lg text-center outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 border-none px-10"
+                            className="flex h-14 w-full bg-transparent py-3 text-lg text-center outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 border-none px-10"
                         />
                         <Button
                             variant="ghost"
@@ -130,7 +130,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-semibold text-gray-900 dark:text-white">Search for &ldquo;{searchQuery}&rdquo;</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Search across all trades, sessions, and more</p>
+                                        <p className="text-xs text-gray-600 dark:text-gray-300">Search across all trades, sessions, and more</p>
                                     </div>
                                     <ArrowRight size={14} className="text-gray-400" />
                                 </Button>
@@ -150,7 +150,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-semibold text-gray-900 dark:text-white">Search for &ldquo;{searchQuery}&rdquo;</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Search across all trades, sessions, and more</p>
+                                        <p className="text-xs text-gray-600 dark:text-gray-300">Search across all trades, sessions, and more</p>
                                     </div>
                                     <ArrowRight size={14} className="text-gray-400" />
                                 </CommandItem>
@@ -170,13 +170,13 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                                         className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-gray-700 dark:text-gray-300 aria-selected:bg-gray-50 dark:aria-selected:bg-white/5"
                                     >
                                         <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/5 shrink-0">
-                                            <Icon size={16} className="text-gray-500 dark:text-gray-400" />
+                                            <Icon size={16} className="text-gray-600 dark:text-gray-300" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{item.name}</p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{item.category}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-300 truncate">{item.category}</p>
                                         </div>
-                                        <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded">
+                                        <span className="text-[10px] font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded">
                                             Pages
                                         </span>
                                     </CommandItem>
@@ -190,15 +190,15 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                     <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02] text-xs text-gray-400">
                         <div className="flex items-center gap-4">
                             <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 font-mono text-[10px]">↑↓</kbd>
+                                <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">↑↓</kbd>
                                 to navigate
                             </span>
                             <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 font-mono text-[10px]">↵</kbd>
+                                <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">↵</kbd>
                                 to select
                             </span>
                             <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 font-mono text-[10px]">Esc</kbd>
+                                <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">Esc</kbd>
                                 to close
                             </span>
                         </div>
@@ -223,13 +223,13 @@ export function CommandPaletteTrigger({ className }: { className?: string }) {
             variant="ghost"
             onClick={handleClick}
             className={cn(
-                "flex items-center gap-2 px-3 py-2 h-auto rounded-full bg-gray-50 dark:bg-white/5 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-sm cursor-pointer border border-transparent font-normal",
+                "flex items-center gap-2 px-3 py-2 h-auto rounded-full bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-sm cursor-pointer border border-transparent font-normal",
                 className
             )}
         >
             <Search size={16} />
             <span className="hidden sm:inline">Search...</span>
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-500 dark:text-gray-400">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
                 <span className="text-[10px]">Ctrl</span>K
             </kbd>
         </Button>

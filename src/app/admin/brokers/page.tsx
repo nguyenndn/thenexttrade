@@ -39,7 +39,7 @@ export default async function AdminBrokersPage() {
                                         </div>
                                         <div>
                                             <div className="font-bold dark:text-white">{broker.name}</div>
-                                            <div className="text-xs text-gray-500">{broker.slug}</div>
+                                            <div className="text-xs text-gray-600">{broker.slug}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -72,7 +72,7 @@ export default async function AdminBrokersPage() {
                                     {broker.isVisible ? (
                                         <span className="text-xs text-blue-500">Visible</span>
                                     ) : (
-                                        <span className="text-xs text-gray-500">Hidden</span>
+                                        <span className="text-xs text-gray-600">Hidden</span>
                                     )}
                                 </td>
                                 <td className="px-6 py-4 text-right">
@@ -90,7 +90,7 @@ export default async function AdminBrokersPage() {
                         ))}
                         {(!brokers || brokers.length === 0) && (
                             <tr>
-                                <td colSpan={5} className="p-8 text-center text-gray-500">
+                                <td colSpan={5} className="p-8 text-center text-gray-600">
                                     No brokers found. Add your first partner!
                                 </td>
                             </tr>

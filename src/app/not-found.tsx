@@ -26,7 +26,7 @@ export default function NotFound() {
         </h1>
 
         {/* Description */}
-        <p className="text-base text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
+        <p className="text-base text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
           Let&apos;s get you back on track.
         </p>

@@ -35,7 +35,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
 
     return (
         <div className="grid grid-cols-12 gap-2 md:gap-4 py-3 border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors items-center px-4 group">
-            <div className="col-span-2 md:col-span-1 text-sm font-bold text-gray-500 dark:text-gray-400">
+            <div className="col-span-2 md:col-span-1 text-sm font-bold text-gray-600 dark:text-gray-300">
                 {formatTime(event.date)}
             </div>
 
@@ -59,10 +59,10 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
 
             <div className="hidden md:block col-span-4">
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="text-center text-gray-500 dark:text-gray-400">
+                    <div className="text-center text-gray-600 dark:text-gray-300">
                         {event.forecast || "--"}
                     </div>
-                    <div className="text-center text-gray-500 dark:text-gray-400">
+                    <div className="text-center text-gray-600 dark:text-gray-300">
                         {event.previous || "--"}
                     </div>
                 </div>

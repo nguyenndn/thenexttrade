@@ -26,7 +26,7 @@ export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
             <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4">
                 Confidence vs. Performance
             </h3>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-gray-600 mb-6">
                 Do you perform better when you are more confident?
             </p>
 

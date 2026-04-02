@@ -73,17 +73,17 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
                     <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Mindset (Before Entry)</h4>
                 </div>
                 <div className="max-h-[300px] overflow-y-auto custom-scrollbar p-1">
-                    <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400">Positive</div>
+                    <div className="px-2 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">Positive</div>
                     {psychologyData.before.positive.map(renderEmotionItem)}
 
                     <div className="h-px bg-gray-100 dark:bg-white/5 my-1" />
 
-                    <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400">Neutral</div>
+                    <div className="px-2 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">Neutral</div>
                     {psychologyData.before.neutral.map(renderEmotionItem)}
 
                     <div className="h-px bg-gray-100 dark:bg-white/5 my-1" />
 
-                    <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400">Negative</div>
+                    <div className="px-2 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">Negative</div>
                     {psychologyData.before.negative.map(renderEmotionItem)}
                 </div>
             </PopoverContent>

@@ -10,7 +10,7 @@ export function StrategyEmptyState({ onAdd }: { onAdd: () => void }) {
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                 No strategies yet
             </h3>
-            <p className="text-gray-500 px-6 max-w-sm mx-auto mb-6">
+            <p className="text-gray-600 px-6 max-w-sm mx-auto mb-6">
                 Create strategies to track which setups work best for you.
                 Tag your trades and analyze their performance.
             </p>

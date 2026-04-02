@@ -111,7 +111,7 @@ export default function QuizRunnerPage() {
 
                     <div>
                         <h2 className="text-2xl font-bold mb-2">{results.passed ? "Quiz Passed!" : "Quiz Failed"}</h2>
-                        <p className="text-gray-500 dark:text-gray-400">
+                        <p className="text-gray-600 dark:text-gray-300">
                             You scored <span className="font-bold text-gray-900 dark:text-white">{results.score}%</span>
                             ({results.correctCount}/{results.totalQuestions})
                         </p>
@@ -147,7 +147,7 @@ export default function QuizRunnerPage() {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-[#0B0E14] flex flex-col">
             <div className="bg-white dark:bg-[#151925] px-6 py-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <Link href="/academy" className="text-gray-500 hover:text-gray-900 dark:hover:text-white" aria-label="Go back to course map">
+                <Link href="/academy" className="text-gray-600 hover:text-gray-900 dark:hover:text-white" aria-label="Go back to course map">
                     <ArrowLeft />
                 </Link>
                 <div className="flex-1 mx-8 max-w-sm">
@@ -155,7 +155,7 @@ export default function QuizRunnerPage() {
                         <div className="h-full bg-cyan-500 transition-all duration-300" style={{ width: `${progress}%` }}></div>
                     </div>
                 </div>
-                <span className="text-sm font-bold text-gray-500">
+                <span className="text-sm font-bold text-gray-600">
                     {currentQuestionIndex + 1}/{quiz.questions.length}
                 </span>
             </div>

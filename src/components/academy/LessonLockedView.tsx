@@ -27,7 +27,7 @@ export function LessonLockedView({ lessonTitle, levelTitle, levelOrder, moduleTi
                 <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
                     {/* Lock icon */}
                     <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-gray-200 to-gray-300 dark:from-white/10 dark:to-white/5 flex items-center justify-center">
-                        <Lock size={32} className="text-gray-400 dark:text-gray-500" />
+                        <Lock size={32} className="text-gray-600 dark:text-gray-300" />
                     </div>
 
                     {/* Context */}
@@ -41,10 +41,10 @@ export function LessonLockedView({ lessonTitle, levelTitle, levelOrder, moduleTi
                     <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-3">
                         {lessonTitle}
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400 mb-2">
+                    <p className="text-gray-600 dark:text-gray-300 mb-2">
                         {moduleTitle}
                     </p>
-                    <p className="text-gray-400 dark:text-gray-500 text-sm mb-10 max-w-md mx-auto">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-10 max-w-md mx-auto">
                         This lesson is part of our premium curriculum. Create a free account to unlock all levels and track your progress.
                     </p>
 

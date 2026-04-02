@@ -110,7 +110,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                     </div>
                     <div className="flex-1 text-center sm:text-left">
                         <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Profile Picture</h3>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-600">
                             Upload a high-quality image. <br className="hidden sm:block" />
                             JPG, GIF or PNG. Max size of 1MB.
                         </p>
@@ -130,10 +130,10 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                                 required
                                 defaultValue={profile?.username || user?.user_metadata?.name || ""}
                                 placeholder="username"
-                                className="w-full h-11 pl-9 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white placeholder:text-gray-500 transition-all font-medium"
+                                className="w-full h-11 pl-9 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white placeholder:text-gray-600 transition-all font-medium"
                             />
                         </div>
-                        <p className="text-xs text-gray-500">This will be your unique handle on the platform.</p>
+                        <p className="text-xs text-gray-600">This will be your unique handle on the platform.</p>
                     </div>
 
                     {/* Bio */}
@@ -145,9 +145,9 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                             rows={4}
                             defaultValue={profile?.bio || ""}
                             placeholder="Tell us about your trading journey..."
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white placeholder:text-gray-500 resize-none transition-all"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white placeholder:text-gray-600 resize-none transition-all"
                         />
-                        <p className="text-xs text-gray-500">Brief description for your profile. URLs are hyperlinked.</p>
+                        <p className="text-xs text-gray-600">Brief description for your profile. URLs are hyperlinked.</p>
                     </div>
                 </div>
 

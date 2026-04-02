@@ -34,14 +34,14 @@ export function StrategyComparisonTable({ data }: StrategyComparisonTableProps) 
                 <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                     Strategy Comparison
                 </h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-600 mt-1">
                     Side-by-side performance metrics
                 </p>
             </div>
 
             <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
-                    <thead className="bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-medium uppercase text-xs">
+                    <thead className="bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-medium uppercase text-xs">
                         <tr>
                             <th className="px-6 py-3 min-w-[150px]">Strategy</th>
                             <th className="px-6 py-3 text-center">Win Rate</th>

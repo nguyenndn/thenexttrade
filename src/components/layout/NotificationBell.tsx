@@ -23,7 +23,7 @@ export function NotificationBell() {
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full border border-gray-200 dark:border-white/10 relative text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100">
+                <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full border border-gray-200 dark:border-white/10 relative text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100">
                     <Bell size={20} />
                     {unreadCount > 0 && (
                         <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-[#1E2028]">
@@ -49,7 +49,7 @@ export function NotificationBell() {
 
                 <div className="max-h-[300px] overflow-y-auto">
                     {notifications.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500">
+                        <div className="p-8 text-center text-gray-600">
                             <Bell size={24} className="mx-auto mb-2 opacity-50" />
                             <p className="text-xs">{isLoading ? "Loading..." : "No notifications"}</p>
                         </div>
@@ -78,7 +78,7 @@ export function NotificationBell() {
                                     </h4>
                                     {!n.isRead && <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0 mt-1.5" />}
                                 </div>
-                                <p className="text-xs text-gray-500 line-clamp-2 mb-1">{n.message}</p>
+                                <p className="text-xs text-gray-600 line-clamp-2 mb-1">{n.message}</p>
                                 <span className="text-[10px] text-gray-400">
                                     {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true, locale: enUS })}
                                 </span>
@@ -90,7 +90,7 @@ export function NotificationBell() {
                 <div className="p-2 border-t border-gray-200 dark:border-white/10">
                     <Button
                         variant="ghost"
-                        className="w-full text-xs text-gray-500 justify-center h-8"
+                        className="w-full text-xs text-gray-600 justify-center h-8"
                         onClick={() => {
                             setIsOpen(false);
                             router.push("/dashboard/notifications");

@@ -84,7 +84,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
 
                 <Icon size={20} className={cn(
                     "transition-colors relative z-10 pointer-events-none min-w-[20px]",
-                    isActiveStyle ? "text-primary" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+                    isActiveStyle ? "text-primary" : "text-gray-600 dark:text-gray-300 group-hover:text-gray-600 dark:group-hover:text-gray-300"
                 )} />
 
                 {!collapsed && (
@@ -195,7 +195,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                             {/* Section Label */}
                             {sectionLabel && !isCollapsed && (
                                 <div className="px-5 py-2 mt-2">
-                                    <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 tracking-widest uppercase">{sectionLabel}</span>
+                                    <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 tracking-widest uppercase">{sectionLabel}</span>
                                 </div>
                             )}
 
@@ -226,7 +226,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                     variant="ghost"
                     onClick={() => signout()}
                     className={cn(
-                        "flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group justify-start font-normal",
+                        "flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group justify-start font-normal",
                         isCollapsed && "justify-center px-0"
                     )}>
                     <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />

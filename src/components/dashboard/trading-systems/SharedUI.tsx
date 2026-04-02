@@ -44,7 +44,7 @@ export function FilterTab({ label, icon: Icon, count, active, onClick }: FilterT
                 "group relative flex items-center h-auto justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap",
                 active
                     ? "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white shadow-sm border border-primary/30 hover:bg-white dark:hover:bg-[#1E2028]"
-                    : "text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-transparent border border-transparent"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-transparent border border-transparent"
             )}
         >
             <Icon size={16} className={cn("transition-colors", active ? "text-primary" : "opacity-50 group-hover:opacity-80")} />

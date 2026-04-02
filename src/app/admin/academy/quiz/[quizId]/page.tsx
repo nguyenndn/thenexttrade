@@ -214,7 +214,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                     onChange={e => setTitle(e.target.value)}
                 />
                 <textarea
-                    className="w-full bg-transparent border-none focus:outline-none resize-none text-gray-500 text-sm"
+                    className="w-full bg-transparent border-none focus:outline-none resize-none text-gray-600 text-sm"
                     placeholder="Description (Optional)"
                     value={description}
                     onChange={e => setDescription(e.target.value)}

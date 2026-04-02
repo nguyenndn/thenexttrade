@@ -51,7 +51,7 @@ export function LicenseCard({ license }: LicenseCardProps) {
         PENDING: { color: "text-yellow-500", bg: "bg-yellow-50 dark:bg-yellow-900/10", border: "border-yellow-200 dark:border-yellow-900/30", icon: Clock },
         APPROVED: { color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", icon: CheckCircle },
         REJECTED: { color: "text-red-500", bg: "bg-red-50 dark:bg-red-900/10", border: "border-red-200 dark:border-red-900/30", icon: XCircle },
-        SUSPENDED: { color: "text-gray-500", bg: "bg-gray-50 dark:bg-gray-900/10", border: "border-gray-200 dark:border-white/10", icon: AlertTriangle },
+        SUSPENDED: { color: "text-gray-600", bg: "bg-gray-50 dark:bg-gray-900/10", border: "border-gray-200 dark:border-white/10", icon: AlertTriangle },
         EXPIRED: { color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-900/10", border: "border-orange-200 dark:border-orange-900/30", icon: AlertTriangle },
     };
 
@@ -69,25 +69,25 @@ export function LicenseCard({ license }: LicenseCardProps) {
             <div className="space-y-4">
                 <div className="flex items-center gap-4">
                     {/* Broker Logo Mock */}
-                    <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center font-bold text-gray-500 text-xs text-center p-1">
+                    <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center font-bold text-gray-600 text-xs text-center p-1">
                         {license.broker}
                     </div>
                     <div>
-                        <p className="text-xs text-gray-500 font-medium tracking-wider uppercase mb-0.5">Account Number</p>
+                        <p className="text-xs text-gray-600 font-medium tracking-wider uppercase mb-0.5">Account Number</p>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white font-mono">{license.accountNumber}</h3>
                     </div>
                 </div>
 
                 <div className="pt-4 border-t border-gray-200 dark:border-white/10 space-y-2 text-sm">
                     <div className="flex justify-between">
-                        <span className="text-gray-500">Date Added</span>
+                        <span className="text-gray-600">Date Added</span>
                         <span className="font-medium text-gray-900 dark:text-white">
                             {format(new Date(license.createdAt), "MMM d, yyyy")}
                         </span>
                     </div>
                     {license.expiryDate && (
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Expires</span>
+                            <span className="text-gray-600">Expires</span>
                             <span className="font-medium text-gray-900 dark:text-white">
                                 {format(new Date(license.expiryDate), "MMM d, yyyy")}
                             </span>

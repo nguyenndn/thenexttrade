@@ -40,7 +40,7 @@ export default async function AboutPage() {
                                 From Blown Accounts to <br className="hidden md:block"/>
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">Building What I Wished Existed</span>
                             </h1>
-                            <p className="text-xl md:text-2xl text-gray-500 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
                                 I lost everything chasing shortcuts. Then I spent years learning the hard way. This is why I built TheNextTrade &mdash; so you don&apos;t have to.
                             </p>
                         </div>
@@ -64,7 +64,7 @@ export default async function AboutPage() {
                                         <Target size={32} />
                                     </div>
                                     <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">My Mission</h2>
-                                    <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
+                                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
                                         To give every retail trader — regardless of budget — free access to the same quality tools and education that I spent years searching for. No paid signals. No get-rich-quick promises. Just real knowledge, structured learning, and honest resources.
                                     </p>
                                 </div>
@@ -82,7 +82,7 @@ export default async function AboutPage() {
                                         <TrendingUp size={32} />
                                     </div>
                                     <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">My Vision</h2>
-                                    <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
+                                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
                                         One platform where a new trader can learn everything — from what a pip is to building a complete trading system. A place where the knowledge isn&apos;t scattered, the tools aren&apos;t paywalled, and the path is clear from day one.
                                     </p>
                                 </div>
@@ -96,7 +96,7 @@ export default async function AboutPage() {
                     <ScrollReveal>
                         <div className="text-center mb-16 space-y-4">
                             <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-white">What I Believe In</h2>
-                            <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+                            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                                 The principles that guide every feature I build.
                             </p>
                         </div>
@@ -114,7 +114,7 @@ export default async function AboutPage() {
                                         <item.icon size={28} />
                                     </div>
                                     <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{item.title}</h3>
-                                    <p className="text-gray-500 dark:text-gray-400 leading-relaxed">{item.desc}</p>
+                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{item.desc}</p>
                                 </div>
                             </ScrollReveal>
                         ))}

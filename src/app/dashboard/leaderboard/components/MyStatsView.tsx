@@ -56,7 +56,7 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
           Your stats will appear here
         </h3>
-        <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-md mx-auto">
+        <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed max-w-md mx-auto">
           Start earning XP by completing lessons, maintaining your streak, and trading to see your position on the leaderboard.
         </p>
       </div>
@@ -216,7 +216,7 @@ function QuickStat({ icon: Icon, label, value, color, border }: {
 function BadgeItem({ badge }: { badge: UserBadgeInfo }) {
   const isEarned = !!badge.earnedAt;
   const Icon = BADGE_ICONS[badge.icon] || Award;
-  const colors = BADGE_COLORS[badge.code] || { bg: "bg-gray-100 dark:bg-white/5", ring: "ring-gray-200 dark:ring-white/10", text: "text-gray-500" };
+  const colors = BADGE_COLORS[badge.code] || { bg: "bg-gray-100 dark:bg-white/5", ring: "ring-gray-200 dark:ring-white/10", text: "text-gray-600" };
 
   return (
     <div
@@ -231,7 +231,7 @@ function BadgeItem({ badge }: { badge: UserBadgeInfo }) {
       <div className="relative">
         <Icon size={24} className={cn(isEarned ? colors.text : "text-gray-300 dark:text-gray-600")} />
         {!isEarned && (
-          <Lock size={10} className="absolute -bottom-0.5 -right-1 text-gray-400 dark:text-gray-500" />
+          <Lock size={10} className="absolute -bottom-0.5 -right-1 text-gray-600 dark:text-gray-300" />
         )}
       </div>
       <span className={cn(

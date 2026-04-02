@@ -48,7 +48,7 @@ export function AdminDashboardClient(props: Props) {
                             {greeting} 👋
                         </h1>
                     </div>
-                    <p className="text-base text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+                    <p className="text-base text-gray-600 dark:text-gray-300 font-medium pl-4.5">
                         Here&apos;s what&apos;s happening in your platform today.
                     </p>
                 </div>

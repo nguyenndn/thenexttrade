@@ -20,7 +20,7 @@ export function SiteFooter() {
                             <Link href="/" className="inline-block mb-4">
                                 <h4 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">The Next <span className="text-primary">Trade</span></h4>
                             </Link>
-                            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 mb-8">
+                            <p className="text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-8">
                                 Empowering global traders with institutional-grade data, expert education, and advanced analysis tools.
                             </p>
                         </div>
@@ -46,7 +46,7 @@ export function SiteFooter() {
                                     </a>
                                 ))}
                             </div>
-                            <a href="mailto:support@thenexttrade.com" className="text-base font-medium text-gray-500 hover:text-primary transition-colors flex items-center gap-2">
+                            <a href="mailto:support@thenexttrade.com" className="text-base font-medium text-gray-600 hover:text-primary transition-colors flex items-center gap-2">
                                 <Mail size={16} /> support@thenexttrade.com
                             </a>
                         </div>
@@ -66,22 +66,22 @@ export function SiteFooter() {
                                     </span>
                                 </summary>
                                 <ul className="space-y-3 px-2 pb-4">
-                                    <li><Link href="/academy" className="text-sm text-gray-500 hover:text-primary transition-colors">Trading Academy</Link></li>
-                                    <li><Link href="/knowledge" className="text-sm text-gray-500 hover:text-primary transition-colors">Knowledge Base</Link></li>
-                                    <li><Link href="/analysis" className="text-sm text-gray-500 hover:text-primary transition-colors">Market Analysis</Link></li>
-                                    <li><Link href="/knowledge?tag=technical-analysis" className="text-sm text-gray-500 hover:text-primary transition-colors">Technical Analysis</Link></li>
-                                    <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-500 hover:text-primary transition-colors">Trading Psychology</Link></li>
+                                    <li><Link href="/academy" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Academy</Link></li>
+                                    <li><Link href="/knowledge" className="text-sm text-gray-600 hover:text-primary transition-colors">Knowledge Base</Link></li>
+                                    <li><Link href="/analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Analysis</Link></li>
+                                    <li><Link href="/knowledge?tag=technical-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Technical Analysis</Link></li>
+                                    <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Psychology</Link></li>
                                 </ul>
                             </details>
                             {/* Desktop View */}
                             <div className="hidden sm:block">
                                 <h4 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider mb-6">Academy & Insights</h4>
                                 <ul className="space-y-3">
-                                    <li><Link href="/academy" className="text-sm text-gray-500 hover:text-primary transition-colors">Trading Academy</Link></li>
-                                    <li><Link href="/knowledge" className="text-sm text-gray-500 hover:text-primary transition-colors">Knowledge Base</Link></li>
-                                    <li><Link href="/analysis" className="text-sm text-gray-500 hover:text-primary transition-colors">Market Analysis</Link></li>
-                                    <li><Link href="/knowledge?tag=technical-analysis" className="text-sm text-gray-500 hover:text-primary transition-colors">Technical Analysis</Link></li>
-                                    <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-500 hover:text-primary transition-colors">Trading Psychology</Link></li>
+                                    <li><Link href="/academy" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Academy</Link></li>
+                                    <li><Link href="/knowledge" className="text-sm text-gray-600 hover:text-primary transition-colors">Knowledge Base</Link></li>
+                                    <li><Link href="/analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Analysis</Link></li>
+                                    <li><Link href="/knowledge?tag=technical-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Technical Analysis</Link></li>
+                                    <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Psychology</Link></li>
                                 </ul>
                             </div>
                         </div>
@@ -97,18 +97,18 @@ export function SiteFooter() {
                                     </span>
                                 </summary>
                                 <ul className="space-y-3 px-2 pb-4">
-                                    <li><Link href="/tools/economic-calendar" className="text-sm text-gray-500 hover:text-primary transition-colors">Economic Calendar</Link></li>
-                                    <li><Link href="/tools/market-hours" className="text-sm text-gray-500 hover:text-primary transition-colors">Market Hours</Link></li>
-                                    <li><Link href="/tools/risk-calculator" className="text-sm text-gray-500 hover:text-primary transition-colors">Risk Calculator</Link></li>
+                                    <li><Link href="/tools/economic-calendar" className="text-sm text-gray-600 hover:text-primary transition-colors">Economic Calendar</Link></li>
+                                    <li><Link href="/tools/market-hours" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Hours</Link></li>
+                                    <li><Link href="/tools/risk-calculator" className="text-sm text-gray-600 hover:text-primary transition-colors">Risk Calculator</Link></li>
                                 </ul>
                             </details>
                             {/* Desktop View */}
                             <div className="hidden sm:block">
                                 <h4 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider mb-6">Trading Tools</h4>
                                 <ul className="space-y-3">
-                                    <li><Link href="/tools/economic-calendar" className="text-sm text-gray-500 hover:text-primary transition-colors">Economic Calendar</Link></li>
-                                    <li><Link href="/tools/market-hours" className="text-sm text-gray-500 hover:text-primary transition-colors">Market Hours</Link></li>
-                                    <li><Link href="/tools/risk-calculator" className="text-sm text-gray-500 hover:text-primary transition-colors">Risk Calculator</Link></li>
+                                    <li><Link href="/tools/economic-calendar" className="text-sm text-gray-600 hover:text-primary transition-colors">Economic Calendar</Link></li>
+                                    <li><Link href="/tools/market-hours" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Hours</Link></li>
+                                    <li><Link href="/tools/risk-calculator" className="text-sm text-gray-600 hover:text-primary transition-colors">Risk Calculator</Link></li>
                                 </ul>
                             </div>
                         </div>
@@ -124,20 +124,20 @@ export function SiteFooter() {
                                     </span>
                                 </summary>
                                 <ul className="space-y-3 px-2 pb-4">
-                                    <li><Link href="/brokers" className="text-sm text-gray-500 hover:text-primary transition-colors">Trusted Brokers</Link></li>
-                                    <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-500 hover:text-primary transition-colors">Trading Systems</Link></li>
-                                    <li><Link href="/about" className="text-sm text-gray-500 hover:text-primary transition-colors">About Us</Link></li>
-                                    <li><Link href="/contact" className="text-sm text-gray-500 hover:text-primary transition-colors">Contact Us</Link></li>
+                                    <li><Link href="/brokers" className="text-sm text-gray-600 hover:text-primary transition-colors">Trusted Brokers</Link></li>
+                                    <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
+                                    <li><Link href="/about" className="text-sm text-gray-600 hover:text-primary transition-colors">About Us</Link></li>
+                                    <li><Link href="/contact" className="text-sm text-gray-600 hover:text-primary transition-colors">Contact Us</Link></li>
                                 </ul>
                             </details>
                             {/* Desktop View */}
                             <div className="hidden sm:block">
                                 <h4 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider mb-6">Resources</h4>
                                 <ul className="space-y-3">
-                                    <li><Link href="/brokers" className="text-sm text-gray-500 hover:text-primary transition-colors">Trusted Brokers</Link></li>
-                                    <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-500 hover:text-primary transition-colors">Trading Systems</Link></li>
-                                    <li><Link href="/about" className="text-sm text-gray-500 hover:text-primary transition-colors">About Us</Link></li>
-                                    <li><Link href="/contact" className="text-sm text-gray-500 hover:text-primary transition-colors">Contact Us</Link></li>
+                                    <li><Link href="/brokers" className="text-sm text-gray-600 hover:text-primary transition-colors">Trusted Brokers</Link></li>
+                                    <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
+                                    <li><Link href="/about" className="text-sm text-gray-600 hover:text-primary transition-colors">About Us</Link></li>
+                                    <li><Link href="/contact" className="text-sm text-gray-600 hover:text-primary transition-colors">Contact Us</Link></li>
                                 </ul>
                             </div>
                         </div>
@@ -166,9 +166,9 @@ export function SiteFooter() {
                         &copy; 2026 The Next Trade. All rights reserved.
                     </p>
                     <div className="flex flex-wrap gap-4 sm:gap-6 justify-center items-center">
-                        <Link href="/legal/privacy-policy" className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">Privacy</Link>
-                        <Link href="/legal/terms-of-service" className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">Terms Of Service</Link>
-                        <Link href="/legal/cookie-policy" className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">Cookies</Link>
+                        <Link href="/legal/privacy-policy" className="text-sm font-bold text-gray-600 hover:text-primary transition-colors">Privacy</Link>
+                        <Link href="/legal/terms-of-service" className="text-sm font-bold text-gray-600 hover:text-primary transition-colors">Terms Of Service</Link>
+                        <Link href="/legal/cookie-policy" className="text-sm font-bold text-gray-600 hover:text-primary transition-colors">Cookies</Link>
                     </div>
                 </div>
             </div>

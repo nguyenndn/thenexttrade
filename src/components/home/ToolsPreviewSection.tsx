@@ -92,7 +92,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                             </div>
 
                             {/* Session Status Pills */}
-                            <div className="flex flex-wrap gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+                            <div className="flex flex-wrap gap-2 text-xs font-medium text-gray-600 dark:text-gray-300">
                                 {sessions.map((s) => (
                                     <span suppressHydrationWarning key={s.name} className={`flex items-center gap-1.5 px-2 py-1 rounded border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 ${s.status === "Open" ? "border-green-500/20 bg-green-500/5" : "opacity-60"}`}>
                                         <span suppressHydrationWarning className={`w-1.5 h-1.5 rounded-full ${s.status === "Open" ? "bg-green-500" : "bg-gray-400"}`}></span>
@@ -124,7 +124,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                                     Economic Calendar
                                 </h3>
-                                <div className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/10 text-gray-500">TODAY</div>
+                                <div className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/10 text-gray-600">TODAY</div>
                             </div>
 
                             {nextEvent ? (
@@ -134,7 +134,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                                         <p className="text-sm font-bold text-gray-900 dark:text-white line-clamp-1">
                                             {nextEvent.currency} {nextEvent.title}
                                         </p>
-                                        <p className="text-xs text-gray-500 mt-0.5">
+                                        <p className="text-xs text-gray-600 mt-0.5">
                                             Happen {timeString} • <span className={`${nextEvent.impact === 'HIGH' ? 'text-red-500' : 'text-yellow-600'}`}>{nextEvent.impact} Impact</span>
                                         </p>
                                     </div>
@@ -146,7 +146,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold text-gray-900 dark:text-gray-200">Calculated Stability</p>
-                                        <p className="text-xs text-gray-500 mt-0.5">No high impact events pending.</p>
+                                        <p className="text-xs text-gray-600 mt-0.5">No high impact events pending.</p>
                                     </div>
                                 </div>
                             )}

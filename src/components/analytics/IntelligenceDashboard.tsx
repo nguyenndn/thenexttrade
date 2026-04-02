@@ -54,7 +54,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 
     const impactColors = {
         positive: "text-emerald-500", negative: "text-red-500",
-        neutral: "text-gray-500 dark:text-gray-400",
+        neutral: "text-gray-600 dark:text-gray-300",
     };
     const impactBg = {
         positive: "bg-emerald-500", negative: "bg-red-500",
@@ -174,7 +174,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                         </div>
 
                         {/* Summary */}
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-4 leading-relaxed flex-1">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-4 leading-relaxed flex-1">
                             {riskSummary}
                         </p>
 
@@ -253,7 +253,7 @@ function AIRecommendation({ data }: { data: IntelligenceData }) {
                     <p className="text-base font-bold text-gray-900 dark:text-white mt-1 leading-relaxed">
                         {recommendation}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{context}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{context}</p>
                 </div>
             </div>
         </div>
@@ -303,7 +303,7 @@ function InsightCard({ insight }: { insight: Insight }) {
                             <h3 className="font-bold text-gray-900 dark:text-white text-sm">{insight.title}</h3>
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${s.badge}`}>{severityLabel[insight.severity]}</span>
                         </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 leading-relaxed">{insight.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 leading-relaxed">{insight.description}</p>
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{insight.metric}</span>
                             {insight.filterUrl && (
@@ -330,12 +330,12 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
                 <Brain size={32} />
             </div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">More Trades Needed</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
                 Complete at least 30 closed trades to unlock Trading Intelligence.
             </p>
             <div className="max-w-xs mx-auto">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-bold text-gray-500">{totalTrades} / 30 trades</span>
+                    <span className="text-sm font-bold text-gray-600">{totalTrades} / 30 trades</span>
                     <span className="text-sm font-bold text-primary">{Math.round(progress)}%</span>
                 </div>
                 <div className="w-full h-3 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
@@ -357,7 +357,7 @@ export function IntelligenceDashboard({ data }: { data: IntelligenceData }) {
     return (
         <div className="space-y-4">
             {/* Header */}
-            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
                 <div className="flex items-center gap-1.5">
                     <Crosshair size={14} className="text-primary" />
                     <span>
@@ -389,7 +389,7 @@ export function IntelligenceDashboard({ data }: { data: IntelligenceData }) {
                     <div className={data.strengths.length === 0 ? "lg:col-span-2" : ""}>
                         <div className="flex items-center gap-2 mb-3">
                             <AlertTriangle size={16} className="text-red-500" />
-                            <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Issues Detected</h3>
+                            <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Issues Detected</h3>
                         </div>
                         <div className="space-y-3">
                             {data.issues.map((insight) => <InsightCard key={insight.id} insight={insight} />)}
@@ -400,7 +400,7 @@ export function IntelligenceDashboard({ data }: { data: IntelligenceData }) {
                     <div className={data.issues.length === 0 ? "lg:col-span-2" : ""}>
                         <div className="flex items-center gap-2 mb-3">
                             <Sparkles size={16} className="text-emerald-500" />
-                            <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Your Strengths</h3>
+                            <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Your Strengths</h3>
                         </div>
                         <div className="space-y-3">
                             {data.strengths.map((insight) => <InsightCard key={insight.id} insight={insight} />)}
@@ -410,7 +410,7 @@ export function IntelligenceDashboard({ data }: { data: IntelligenceData }) {
                 {data.issues.length === 0 && data.strengths.length === 0 && (
                     <div className="lg:col-span-2 bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm text-center">
                         <Sparkles size={24} className="text-primary mx-auto mb-3" />
-                        <p className="text-gray-500 dark:text-gray-400">No significant patterns detected yet.</p>
+                        <p className="text-gray-600 dark:text-gray-300">No significant patterns detected yet.</p>
                     </div>
                 )}
             </div>

@@ -68,7 +68,7 @@ export function EditLevelModal({ isOpen, onClose, level }: EditLevelModalProps) 
                             Description
                         </label>
                         <div className="relative group">
-                            <div className="absolute left-3 top-3 text-gray-500 group-focus-within:text-primary transition-colors">
+                            <div className="absolute left-3 top-3 text-gray-600 group-focus-within:text-primary transition-colors">
                                 <FileText size={18} />
                             </div>
                             <textarea
@@ -83,7 +83,7 @@ export function EditLevelModal({ isOpen, onClose, level }: EditLevelModalProps) 
                 </div>
 
                 <div className="flex justify-end gap-3 mt-8">
-                    <Button variant="outline" onClick={onClose} disabled={isLoading} className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5">Cancel
+                    <Button variant="outline" onClick={onClose} disabled={isLoading} className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5">Cancel
                     </Button>
                     <Button
                         onClick={handleSave}

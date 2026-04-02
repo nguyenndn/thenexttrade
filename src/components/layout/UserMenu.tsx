@@ -128,7 +128,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                             >
                                 {tierProgress.current.label}
                             </span>
-                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                            <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
                                 {userXp.toLocaleString()} XP
                             </span>
                         </div>
@@ -156,7 +156,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                     <div className="sm:hidden px-3 py-2 border-b border-gray-200 dark:border-white/10">
                         <button
                             onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true }))}
-                            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors text-sm text-left"
+                            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors text-sm text-left"
                         >
                             <Search size={15} className="shrink-0" />
                             <span>Search...</span>
@@ -170,7 +170,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                                 <LayoutDashboard size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
                                 <div>
                                     <span className="block text-gray-900 dark:text-white">Dashboard</span>
-                                    <span className="text-xs text-gray-500 font-normal">Overview & Learning Path</span>
+                                    <span className="text-xs text-gray-600 font-normal">Overview & Learning Path</span>
                                 </div>
                             </Link>
                         ) : (

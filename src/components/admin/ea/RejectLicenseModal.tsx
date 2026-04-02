@@ -63,7 +63,7 @@ export function RejectLicenseModal({ isOpen, onClose, license, adminId }: Reject
                 </DialogHeader>
 
                 <div className="space-y-6 py-4">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
                         You are about to reject the request for account <span className="font-bold text-gray-900 dark:text-white">{license.accountNumber}</span>.
                     </p>
 

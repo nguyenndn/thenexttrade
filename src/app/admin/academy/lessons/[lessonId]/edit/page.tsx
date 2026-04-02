@@ -42,6 +42,10 @@ export default async function LessonEditPage({
                 duration: lesson.duration || 10,
                 moduleId: lesson.moduleId,
                 order: lesson.order,
+                rawContent: lesson.rawContent || "",
+                tone: lesson.tone || "",
+                sourceUrls: lesson.sourceUrls || [],
+                metaDescription: lesson.metaDescription || "",
             }}
             modules={levels.flatMap(l =>
                 l.modules.map(m => ({ id: m.id, title: m.title, levelTitle: l.title }))

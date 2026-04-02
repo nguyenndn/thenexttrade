@@ -80,7 +80,7 @@ export function CompoundingCalc() {
                                     "relative flex-1 py-2.5 rounded-lg font-bold text-xs transition-colors z-10",
                                     inputs.periodType === opt.id
                                         ? "text-white"
-                                        : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                                        : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                                 )}
                             >
                                 {inputs.periodType === opt.id && (

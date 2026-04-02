@@ -37,7 +37,7 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
                         aria-describedby={error ? `${id}-error` : undefined}
                         className={cn(
                             "w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary transition-all",
-                            "placeholder:text-gray-400 dark:placeholder:text-gray-500 placeholder:font-normal",
+                            "placeholder:text-gray-400 dark:placeholder:text-gray-600 placeholder:font-normal",
                             "text-gray-900 dark:text-white font-medium",
                             Icon ? "pl-9" : "",
                             error ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50" : "",

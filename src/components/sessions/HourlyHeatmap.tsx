@@ -139,7 +139,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
             <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                 24-Hour Trading Heatmap
             </h3>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-gray-600 mb-6">
                 P&L distribution across the day (UTC timezone)
             </p>
 
@@ -154,7 +154,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
             </TooltipProvider>
 
             {/* Color Legend */}
-            <div className="flex items-center justify-end gap-4 mt-6 text-xs text-gray-500">
+            <div className="flex items-center justify-end gap-4 mt-6 text-xs text-gray-600">
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded bg-red-400"></div>
                     <span>High Loss</span>

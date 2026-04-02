@@ -123,7 +123,7 @@ export function LearningPathTimeline() {
             {/* Text */}
             <div className="text-center">
               <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">{step.title}</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">{step.desc}</p>
+              <p className="text-xs text-gray-600 dark:text-gray-300">{step.desc}</p>
             </div>
 
             {/* Glow on hover */}

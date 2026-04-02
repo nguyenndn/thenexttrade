@@ -182,7 +182,7 @@ export function EADashboardClient({
                                     {/* Info */}
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm text-gray-900 dark:text-white font-medium truncate">
-                                            <span className="font-mono text-xs text-gray-500 dark:text-gray-400 mr-1.5">
+                                            <span className="font-mono text-xs text-gray-600 dark:text-gray-300 mr-1.5">
                                                 {item.accountNumber}
                                             </span>
                                             <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${

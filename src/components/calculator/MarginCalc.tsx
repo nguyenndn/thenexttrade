@@ -54,7 +54,7 @@ export function MarginCalc() {
                                     className="w-full px-4 py-3 h-auto rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium text-gray-900 dark:text-white flex items-center justify-between"
                                 >
                                     <span className="font-bold text-lg">1:{inputs.leverage}</span>
-                                    <ChevronDown size={16} className="text-gray-500 shrink-0" />
+                                    <ChevronDown size={16} className="text-gray-600 shrink-0" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="start" className="max-h-[280px] overflow-y-auto">

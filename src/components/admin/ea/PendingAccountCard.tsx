@@ -24,7 +24,7 @@ export function PendingAccountCard({ license, onApprove, onReject }: PendingAcco
 
             {/* Time Absolute */}
             <div className="absolute top-5 right-5">
-                <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-full text-gray-500 font-bold">
+                <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-full text-gray-600 font-bold">
                     {formatDistanceToNow(new Date(license.createdAt), { addSuffix: true, locale: enUS })}
                 </span>
             </div>

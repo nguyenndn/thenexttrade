@@ -131,7 +131,7 @@ export function CorrelationMatrix() {
                             {PAIRS.map((p) => (
                                 <div
                                     key={p}
-                                    className="flex-1 text-center text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider py-3 px-1"
+                                    className="flex-1 text-center text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider py-3 px-1"
                                 >
                                     {p.replace("/", "")}
                                 </div>
@@ -186,7 +186,7 @@ export function CorrelationMatrix() {
             {/* ── Legend + Note ── */}
             {matrix && (
                 <div className="space-y-4">
-                    <div className="flex items-center justify-center gap-5 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center justify-center gap-5 text-xs text-gray-600 dark:text-gray-300">
                         <div className="flex items-center gap-1.5">
                             <div className="w-4 h-4 rounded bg-green-600 dark:bg-teal-600" />
                             <span>Strong +</span>
@@ -209,10 +209,10 @@ export function CorrelationMatrix() {
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+                    <div className="flex items-center justify-center gap-2 text-xs text-gray-600 dark:text-gray-300">
                         <Info size={14} className="shrink-0 text-primary/60" />
                         <span>
-                            Based on <span className="font-semibold text-gray-500 dark:text-gray-400">{period}-day</span> historical price data using Pearson correlation.
+                            Based on <span className="font-semibold text-gray-600 dark:text-gray-300">{period}-day</span> historical price data using Pearson correlation.
                         </span>
                     </div>
                 </div>

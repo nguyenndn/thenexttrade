@@ -16,7 +16,7 @@ interface DailyWinRateChartProps {
 export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps) {
   if (!data || data.length === 0) {
     return (
-      <div className={`w-full flex items-center justify-center font-medium text-sm text-gray-400 dark:text-gray-500`} style={{ height }}>
+      <div className={`w-full flex items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300`} style={{ height }}>
         No data available
       </div>
     );
@@ -32,7 +32,7 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
           <p className="text-sm font-semibold text-primary">
             Win Rate: {payload[0].value}%
           </p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-600 mt-1">
             {payload[0].payload.wins} wins / {payload[0].payload.trades} trades
           </p>
         </div>

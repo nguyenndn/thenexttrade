@@ -68,7 +68,7 @@ export function TrustedPartners() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
             	Trusted Partners
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 text-base">
+          <p className="text-gray-600 dark:text-gray-300 text-base">
             Services we use and trust
           </p>
         </div>
@@ -85,7 +85,7 @@ export function TrustedPartners() {
                     </div>
                     <div>
                       <h3 className="text-base font-bold text-gray-900 dark:text-white">{cat.title}</h3>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{cat.subtitle}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">{cat.subtitle}</p>
                     </div>
                   </div>
                   {cat.viewAllHref && (
@@ -125,7 +125,7 @@ export function TrustedPartners() {
                           <p className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors truncate">
                             {item.name}
                           </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{item.desc}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 truncate">{item.desc}</p>
                         </div>
                         {item.badge && (
                           <span className={`text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap ${BADGE_STYLES[item.badgeType || "green"]}`}>

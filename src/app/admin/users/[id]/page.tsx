@@ -195,7 +195,7 @@ export default async function UserDetailPage({
                             <h2 className="text-xl font-black text-gray-900 dark:text-white mt-2">
                                 {user.name || "Unnamed User"}
                             </h2>
-                            <p className="text-sm text-gray-500 font-medium mb-3">
+                            <p className="text-sm text-gray-600 font-medium mb-3">
                                 {user.profile?.username ? `@${user.profile.username}` : "No username set"}
                             </p>
                             
@@ -255,7 +255,7 @@ export default async function UserDetailPage({
                                 {user.tradingAccounts.map(acc => (
                                     <div key={acc.id} className="p-4 sm:px-6 flex items-center justify-between hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg text-gray-500 max-sm:hidden">
+                                            <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg text-gray-600 max-sm:hidden">
                                                 <LineChart size={16} />
                                             </div>
                                             <div>
@@ -267,7 +267,7 @@ export default async function UserDetailPage({
                                                         <span className="text-[11px] font-bold bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded uppercase tracking-widest">Real</span>
                                                     )}
                                                 </p>
-                                                <p className="text-[11px] text-gray-500 uppercase tracking-wider mt-0.5">
+                                                <p className="text-[11px] text-gray-600 uppercase tracking-wider mt-0.5">
                                                     {acc.broker || "Unknown Broker"} · {acc.platform || "MT4"} {acc.accountNumber ? `· #${acc.accountNumber}` : ""}
                                                 </p>
                                             </div>
@@ -284,7 +284,7 @@ export default async function UserDetailPage({
                             </div>
                         ) : (
                             <div className="p-8 text-center">
-                                <p className="text-sm text-gray-500">No trading accounts linked yet.</p>
+                                <p className="text-sm text-gray-600">No trading accounts linked yet.</p>
                             </div>
                         )}
                     </div>
@@ -304,14 +304,14 @@ export default async function UserDetailPage({
                                 {user.EALicenses.map(lic => (
                                     <div key={lic.id} className="p-4 sm:px-6 flex items-center justify-between hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg text-gray-500 max-sm:hidden">
+                                            <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg text-gray-600 max-sm:hidden">
                                                 <Key size={16} />
                                             </div>
                                             <div>
                                                 <p className="text-sm font-bold text-gray-900 dark:text-white">
                                                     {lic.broker} · #{lic.accountNumber}
                                                 </p>
-                                                <p className="text-[11px] text-gray-500 mt-0.5">
+                                                <p className="text-[11px] text-gray-600 mt-0.5">
                                                     {lic.startDate ? `Since ${format(new Date(lic.startDate), "MMM d, yyyy")}` : "Pending approval"}
                                                     {lic.expiryDate ? ` · Expires ${format(new Date(lic.expiryDate), "MMM d, yyyy")}` : " · Lifetime"}
                                                 </p>
@@ -325,7 +325,7 @@ export default async function UserDetailPage({
                             </div>
                         ) : (
                             <div className="p-8 text-center">
-                                <p className="text-sm text-gray-500">No EA licenses registered.</p>
+                                <p className="text-sm text-gray-600">No EA licenses registered.</p>
                             </div>
                         )}
                     </div>
@@ -356,7 +356,7 @@ export default async function UserDetailPage({
                                     </div>
                                     <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
                                     {stat.values.map(v => (
-                                        <p key={v} className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{v}</p>
+                                        <p key={v} className="text-[11px] font-medium text-gray-600 dark:text-gray-300">{v}</p>
                                     ))}
                                 </div>
                             ))}
@@ -390,7 +390,7 @@ export default async function UserDetailPage({
                                 </div>
                             ) : (
                                 <div className="p-6 text-center">
-                                    <p className="text-xs text-gray-500">No achievements yet.</p>
+                                    <p className="text-xs text-gray-600">No achievements yet.</p>
                                 </div>
                             )}
                         </div>
@@ -419,7 +419,7 @@ export default async function UserDetailPage({
                                                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-0.5">
                                                     {evt.title}
                                                 </p>
-                                                <p className="text-xs text-gray-500 font-medium mb-1">
+                                                <p className="text-xs text-gray-600 font-medium mb-1">
                                                     {evt.description}
                                                 </p>
                                                 <p className="text-[10px] text-gray-400">
@@ -432,7 +432,7 @@ export default async function UserDetailPage({
                                 </div>
                             ) : (
                                 <div className="text-center py-8">
-                                    <p className="text-sm text-gray-500">No recent activity found.</p>
+                                    <p className="text-sm text-gray-600">No recent activity found.</p>
                                 </div>
                             )}
                         </div>
@@ -461,7 +461,7 @@ export default async function UserDetailPage({
                                                         {formatDistanceToNow(new Date(s.lastActive), { addSuffix: true })}
                                                     </span>
                                                 </div>
-                                                <p className="text-[11px] text-gray-500">
+                                                <p className="text-[11px] text-gray-600">
                                                     {s.ip || "Unknown IP"} {s.device ? `· ${s.device}` : ""}
                                                 </p>
                                             </div>
@@ -469,7 +469,7 @@ export default async function UserDetailPage({
                                     </div>
                                 ) : (
                                     <div className="p-6 text-center">
-                                        <p className="text-xs text-gray-500">No sessions recorded.</p>
+                                        <p className="text-xs text-gray-600">No sessions recorded.</p>
                                     </div>
                                 )}
                             </div>

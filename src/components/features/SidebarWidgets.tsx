@@ -121,7 +121,7 @@ async function CategoriesWidget() {
                             <span className="text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors">
                                 {cat.name}
                             </span>
-                            <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-500 px-2 py-0.5 rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-600 px-2 py-0.5 rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
                                 {cat._count.articles}
                             </span>
                         </Link>
@@ -194,12 +194,12 @@ async function TopBrokersWidget() {
                             {/* Info Tags */}
                             <div className="flex flex-wrap gap-1.5 mb-2">
                                 {broker.minDeposit != null && (
-                                    <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-white/5 whitespace-nowrap">
+                                    <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5 whitespace-nowrap">
                                         <span className="text-gray-900 dark:text-white font-black">${broker.minDeposit}</span> Min Deposit
                                     </div>
                                 )}
                                 {broker.maxLeverage && (
-                                    <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-white/5 whitespace-nowrap">
+                                    <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5 whitespace-nowrap">
                                         <span className="text-gray-900 dark:text-white font-black">{broker.maxLeverage}</span> Leverage
                                     </div>
                                 )}

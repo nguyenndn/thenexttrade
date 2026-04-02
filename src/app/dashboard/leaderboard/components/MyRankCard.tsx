@@ -18,7 +18,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
           <Target size={16} className="text-cyan-500" />
           Your Position
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Start earning XP to appear on the leaderboard!
         </p>
       </div>
@@ -108,7 +108,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
       {/* Quick Stats */}
       <div className="flex items-center gap-3 pt-2 border-t border-gray-200 dark:border-white/10">
         <TrendingUp size={14} className="text-gray-400" />
-        <span className="text-xs text-gray-500 dark:text-gray-400">
+        <span className="text-xs text-gray-600 dark:text-gray-300">
           Total: {value.toLocaleString()} XP
         </span>
       </div>

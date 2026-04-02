@@ -187,7 +187,7 @@ async function HomeFeed() {
                 <HeroCarousel articles={featuredArticles} />
               ) : (
                 <div className="h-[500px] rounded-2xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
-                  <p className="text-gray-500">No featured articles found. Please enable &apos;isFeatured&apos; on some articles.</p>
+                  <p className="text-gray-600">No featured articles found. Please enable &apos;isFeatured&apos; on some articles.</p>
                 </div>
               )}
             </div>
@@ -240,7 +240,7 @@ async function HomeFeed() {
                         <h4 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                           {article.title}
                         </h4>
-                        <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-600 dark:text-gray-300">
                           <Clock size={11} />
                           <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                         </div>
@@ -283,7 +283,7 @@ async function HomeFeed() {
                 <span className="text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors">
                   # {cat.name}
                 </span>
-                <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded">
                   {cat._count.articles}
                 </span>
               </Link>
@@ -356,7 +356,7 @@ async function HomeFeed() {
                         {article.author.image ? (
                           <Image src={article.author.image} alt={article.author.name || ''} width={36} height={36} className="object-cover w-full h-full" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500">
+                          <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-600">
                             {article.author.name?.charAt(0) || '?'}
                           </div>
                         )}

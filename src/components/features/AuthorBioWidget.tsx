@@ -24,14 +24,14 @@ export default function AuthorBioWidget({ author }: AuthorBioWidgetProps) {
                         className="object-cover"
                     />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-gray-500 dark:text-gray-400">
+                    <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-gray-600 dark:text-gray-300">
                         {author.name?.charAt(0) || '?'}
                     </div>
                 )}
             </div>
 
             <h4 className="font-serif text-xl font-bold text-gray-900 dark:text-white mb-2">{author.name || 'TheNextTrade Team'}</h4>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
                 {author.bio || 'Contributing writer at TheNextTrade, sharing insights on forex trading strategies and market analysis.'}
             </p>
 

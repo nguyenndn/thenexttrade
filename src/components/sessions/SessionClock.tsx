@@ -55,7 +55,7 @@ export function SessionClock({ data }: SessionClockProps) {
                     <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                         Market Sessions
                     </h3>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-600">
                         Current UTC Time: <span className="font-mono font-bold text-gray-900 dark:text-white">{now.toUTCString().split(' ')[4]}</span>
                     </p>
                 </div>
@@ -75,7 +75,7 @@ export function SessionClock({ data }: SessionClockProps) {
                             <div className="flex justify-between items-center mb-2">
                                 <div className="flex items-center gap-2">
                                     <div className={`w-2 h-2 rounded-full ${isActive ? "animate-pulse" : ""}`} style={{ backgroundColor: session.color }}></div>
-                                    <span className={`font-bold text-sm ${isActive ? "text-gray-900 dark:text-white" : "text-gray-500"}`}>
+                                    <span className={`font-bold text-sm ${isActive ? "text-gray-900 dark:text-white" : "text-gray-600"}`}>
                                         {session.label}
                                     </span>
                                     {isActive && (
@@ -91,7 +91,7 @@ export function SessionClock({ data }: SessionClockProps) {
 
                             {stats && (
                                 <div className="flex items-center justify-between text-xs pl-4 border-l-2 border-gray-200 dark:border-white/10 ml-1">
-                                    <span className="text-gray-500">Your PnL:</span>
+                                    <span className="text-gray-600">Your PnL:</span>
                                     <span className={`font-bold ${stats.totalPnL > 0 ? "text-green-500" : stats.totalPnL < 0 ? "text-red-500" : "text-gray-400"}`}>
                                         {stats.totalPnL > 0 ? "+" : ""}{stats.totalPnL.toFixed(2)}
                                     </span>

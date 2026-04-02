@@ -84,7 +84,7 @@ export default async function AcademyPage() {
                             Ascent
                         </span>
                     </h1>
-                    <p className="text-lg md:text-xl mb-10 text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-lg md:text-xl mb-10 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                         Master the markets step by step. From your first trade to institutional mastery.
                     </p>
 

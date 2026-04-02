@@ -159,7 +159,7 @@ export default async function AdminUsersPage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-500 font-bold tracking-wider">
+                            <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
                                 <th className="px-6 py-5">User</th>
                                 <th className="px-6 py-5">Role</th>
                                 <th className="px-6 py-5">Joined</th>
@@ -185,7 +185,7 @@ export default async function AdminUsersPage() {
                                                 >
                                                     {user.name || "Unnamed User"}
                                                 </Link>
-                                                <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                                                <p className="text-xs text-gray-600 flex items-center gap-1 mt-0.5">
                                                     <Mail size={12} /> {user.email}
                                                 </p>
                                             </div>
@@ -232,7 +232,7 @@ export default async function AdminUsersPage() {
                             ))}
                             {users.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-600">
                                         No users found.
                                     </td>
                                 </tr>

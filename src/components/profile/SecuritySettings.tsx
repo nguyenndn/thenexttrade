@@ -31,7 +31,7 @@ export function SecuritySettings() {
                     </div>
                     <div>
                         <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Change Password</h2>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Update your password to keep your account secure.</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">Update your password to keep your account secure.</p>
                     </div>
                 </div>
 
@@ -57,7 +57,7 @@ export function SecuritySettings() {
                             { name: "confirmPassword", label: "Confirm New Password" },
                         ].map((field) => (
                             <div key={field.name}>
-                                <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">
+                                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide mb-1.5">
                                     {field.label}
                                 </label>
                                 <div className="relative">
@@ -90,7 +90,7 @@ export function SecuritySettings() {
                     </div>
                     <div>
                         <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Two-Factor Authentication (2FA)</h2>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Add an extra layer of security to your account.</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">Add an extra layer of security to your account.</p>
                     </div>
                 </div>
                 <div className="px-6 py-5">
@@ -106,7 +106,7 @@ export function SecuritySettings() {
                     </div>
                     <div>
                         <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Active Sessions</h2>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage your logged-in devices and sessions.</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">Manage your logged-in devices and sessions.</p>
                     </div>
                 </div>
                 <div className="px-6 py-5">

@@ -41,7 +41,7 @@ export function AccountSetupWidget({ hasAccount, hasApprovedLicense, hasDownload
                     Account Setup
                 </h3>
                 <div className="flex items-center gap-3">
-                    <span className="text-xs font-bold text-gray-400 dark:text-gray-500">
+                    <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
                         {completedCount}/{steps.length} complete
                     </span>
                     <Button
@@ -96,7 +96,7 @@ export function AccountSetupWidget({ hasAccount, hasApprovedLicense, hasDownload
                                     "flex-shrink-0 transition-colors",
                                     step.completed
                                         ? "text-primary"
-                                        : "text-gray-400 dark:text-gray-500"
+                                        : "text-gray-600 dark:text-gray-300"
                                 )}
                             />
 
@@ -105,7 +105,7 @@ export function AccountSetupWidget({ hasAccount, hasApprovedLicense, hasDownload
                                 "text-sm font-semibold transition-colors",
                                 step.completed
                                     ? "text-primary"
-                                    : "text-gray-500 dark:text-gray-400"
+                                    : "text-gray-600 dark:text-gray-300"
                             )}>
                                 {step.label}
                             </span>

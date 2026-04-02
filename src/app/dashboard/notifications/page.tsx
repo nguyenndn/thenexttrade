@@ -1,4 +1,4 @@
-﻿
+
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
@@ -34,7 +34,7 @@ export default async function NotificationsPage() {
 
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                 {notifications.length === 0 ? (
-                    <div className="p-16 text-center text-gray-500 dark:text-gray-400">
+                    <div className="p-16 text-center text-gray-600 dark:text-gray-300">
                         <Bell size={48} className="mx-auto mb-4 opacity-50" />
                         <h3 className="text-lg font-bold">No notifications</h3>
                         <p className="text-sm">You will receive notifications about account updates or products.</p>
@@ -46,7 +46,7 @@ export default async function NotificationsPage() {
                                 key={n.id}
                                 className={`p-6 hover:bg-gray-50 dark:hover:bg-white/5 transition flex gap-4 ${!n.isRead ? 'bg-blue-50/30 dark:bg-blue-900/5' : ''}`}
                             >
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${!n.isRead ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-gray-100 text-gray-500 dark:bg-white/10'}`}>
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${!n.isRead ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-white/10'}`}>
                                     <Bell size={20} />
                                 </div>
                                 <div className="flex-1">

@@ -30,7 +30,7 @@ export function UserGrowthChart({ data = [] }: UserGrowthChartProps) {
             <Card className="p-6 h-full flex flex-col bg-white dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 rounded-xl">
                 <div className="mb-6">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">User Growth</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">No data available</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">No data available</p>
                 </div>
                 <div className="flex-1 flex items-center justify-center text-gray-400">
                     No signups in the last 30 days
@@ -43,7 +43,7 @@ export function UserGrowthChart({ data = [] }: UserGrowthChartProps) {
         <Card className="p-6 h-full flex flex-col bg-white dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow rounded-xl">
             <div className="mb-6">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">User Growth</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">New registrations over the last 30 days</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">New registrations over the last 30 days</p>
             </div>
 
             <div className="flex-1 min-h-[300px] w-full">

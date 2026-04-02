@@ -214,7 +214,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                         title="Screenshot Report"
                         aria-label="Download screenshot"
                     >
-                        {isCapturing ? <Loader2 size={16} className="animate-spin text-gray-400" /> : <Camera size={16} className="text-gray-500" />}
+                        {isCapturing ? <Loader2 size={16} className="animate-spin text-gray-400" /> : <Camera size={16} className="text-gray-600" />}
                     </Button>
                 </div>
                 </div>
@@ -314,7 +314,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                                     >
                                         {weeklyPnL >= 0 ? "+" : "-"}{Math.abs(weeklyPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
-                                    <span className="text-[10px] opacity-80 font-medium text-gray-500 dark:text-gray-400 w-full text-center">
+                                    <span className="text-[10px] opacity-80 font-medium text-gray-600 dark:text-gray-300 w-full text-center">
                                         {weeklyTradeDays} days
                                     </span>
                                 </div>
@@ -330,15 +330,15 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
             <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-gray-200 dark:border-white/10">
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-primary" />
-                    <span className="text-xs text-gray-500 dark:text-gray-400">Profit</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-300">Profit</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <span className="text-xs text-gray-500 dark:text-gray-400">Loss</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-300">Loss</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-white/10" />
-                    <span className="text-xs text-gray-500 dark:text-gray-400">No trades</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-300">No trades</span>
                 </div>
             </div>
 

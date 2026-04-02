@@ -111,7 +111,7 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Name</label>
                     <input
                         {...register("name")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
                         placeholder="Scalping"
                     />
                     {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
@@ -123,7 +123,7 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
                     </label>
                     <input
                         {...register("slug")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
                         placeholder="scalping"
                     />
                     {errors.slug && <p className="text-red-500 text-xs">{errors.slug.message}</p>}
@@ -134,7 +134,7 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
                         type="button"
                         variant="outline"
                         onClick={onClose}
-                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
+                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
                     >Cancel
                     </Button>
                     <Button

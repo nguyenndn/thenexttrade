@@ -54,7 +54,7 @@ export function GreetingHeader({ userName, currentAccountId }: GreetingHeaderPro
                         {greeting.text}, <span className="text-primary uppercase">{userName}</span>
                     </h1>
                 </div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium italic border-l-2 border-primary pl-3 min-h-[20px]">
+                <p className="text-gray-600 dark:text-gray-300 text-sm mt-2 font-medium italic border-l-2 border-primary pl-3 min-h-[20px]">
                     {quote ? `"${quote}"` : " "}
                 </p>
             </div>

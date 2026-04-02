@@ -99,7 +99,7 @@ export default async function EABrokersPage() {
                         ))}
                         {(!brokers || brokers.length === 0) && (
                             <tr>
-                                <td colSpan={6} className="p-8 text-center text-gray-500">
+                                <td colSpan={6} className="p-8 text-center text-gray-600">
                                     No EA brokers found. Add your first partner!
                                 </td>
                             </tr>

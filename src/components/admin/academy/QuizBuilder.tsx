@@ -112,7 +112,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <Link href={finalBackLink} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-500">
+                    <Link href={finalBackLink} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-600">
                         <ArrowLeft size={20} />
                     </Link>
                     <div>
@@ -127,7 +127,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" /></svg>
                             </Button>
                         </div>
-                        <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+                        <p className="text-gray-600 dark:text-gray-300 mt-1 text-sm">
                             {quiz.description || "No description"} • {questions.length} Questions
                         </p>
                     </div>
@@ -178,7 +178,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
 
             {questions.length === 0 && (
                 <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 w-full mx-auto">
-                    <p className="text-gray-500 mb-4">No questions added yet.</p>
+                    <p className="text-gray-600 mb-4">No questions added yet.</p>
                     <div className="flex justify-center gap-3">
                         <Button
                             onClick={() => setIsImportModalOpen(true)}

@@ -74,7 +74,7 @@ export function LessonPreviewModal({ isOpen, onClose, lessonSlug, moduleTitle }:
                                 {loading ? (
                                     <div className="flex items-center gap-3">
                                         <Loader2 size={20} className="text-primary animate-spin" />
-                                        <span className="text-sm text-gray-500">Loading preview...</span>
+                                        <span className="text-sm text-gray-600">Loading preview...</span>
                                     </div>
                                 ) : lesson ? (
                                     <>
@@ -85,7 +85,7 @@ export function LessonPreviewModal({ isOpen, onClose, lessonSlug, moduleTitle }:
                                             {lesson.title}
                                         </h3>
                                         {lesson.duration && (
-                                            <div className="flex items-center gap-1.5 mt-2 text-xs text-gray-500">
+                                            <div className="flex items-center gap-1.5 mt-2 text-xs text-gray-600">
                                                 <Clock size={12} />
                                                 <span>{lesson.duration} min read</span>
                                             </div>
@@ -135,7 +135,7 @@ export function LessonPreviewModal({ isOpen, onClose, lessonSlug, moduleTitle }:
                                 </Link>
                                 <Link
                                     href="/auth/login"
-                                    className="flex items-center justify-center w-full px-6 py-2 rounded-full text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                    className="flex items-center justify-center w-full px-6 py-2 rounded-full text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
                                     Already have an account? Sign In
                                 </Link>

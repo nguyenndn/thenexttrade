@@ -58,7 +58,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 </h3>
 
                 {/* Excerpt */}
-                <p className={`text-sm line-clamp-2 mb-4 leading-relaxed ${article.excerpt ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-600 italic'}`}>
+                <p className={`text-sm line-clamp-2 mb-4 leading-relaxed ${article.excerpt ? 'text-gray-600 dark:text-gray-300' : 'text-gray-400 dark:text-gray-600 italic'}`}>
                     {article.excerpt || "No description available."}
                 </p>
 
@@ -70,7 +70,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                             {article.author?.image ? (
                                 <Image src={article.author.image} alt={article.author.name || ''} width={36} height={36} className="object-cover w-full h-full" />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500">
+                                <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-600">
                                     {article.author?.name?.charAt(0) || '?'}
                                 </div>
                             )}

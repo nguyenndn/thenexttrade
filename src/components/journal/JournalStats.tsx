@@ -60,7 +60,7 @@ export default function JournalStats({ stats }: StatsProps) {
                             <div className={`p-3 rounded-xl ${card.bg}`}>
                                 <Icon size={20} className={card.color} />
                             </div>
-                            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider">{card.title}</h3>
+                            <h3 className="text-gray-600 text-xs font-bold uppercase tracking-wider">{card.title}</h3>
                         </div>
                         <p className={`text-2xl font-black ${card.color}`}>{card.value}</p>
                         <p className="text-xs text-gray-400 font-medium mt-1">{card.desc}</p>

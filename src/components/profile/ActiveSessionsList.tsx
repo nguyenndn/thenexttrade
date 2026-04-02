@@ -56,8 +56,8 @@ export function ActiveSessionsList() {
     // Helper to categorize device icon
     const getDeviceIcon = (device: string) => {
         const d = device?.toLowerCase() || "";
-        if (d.includes("mobile") || d.includes("iphone") || d.includes("android")) return <Smartphone size={20} className="text-gray-500" />;
-        return <Monitor size={20} className="text-gray-500" />;
+        if (d.includes("mobile") || d.includes("iphone") || d.includes("android")) return <Smartphone size={20} className="text-gray-600" />;
+        return <Monitor size={20} className="text-gray-600" />;
     };
 
     // Helper to check if current (naive check, real check requires session ID matching which we might not have)
@@ -79,7 +79,7 @@ export function ActiveSessionsList() {
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Active Sessions</h3>
             <div className="space-y-4">
                 {sessions.length === 0 && (
-                    <div className="text-center text-gray-500 py-4">No active sessions found.</div>
+                    <div className="text-center text-gray-600 py-4">No active sessions found.</div>
                 )}
 
                 {sessions.map((session) => {
@@ -102,7 +102,7 @@ export function ActiveSessionsList() {
                                             </span>
                                         )}
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-0.5 flex flex-wrap gap-2">
+                                    <p className="text-xs text-gray-600 mt-0.5 flex flex-wrap gap-2">
                                         <span>{session.ip || "Unknown IP"}</span>
                                         <span className="text-gray-300 dark:text-gray-600">•</span>
                                         <span>Active {formatDistanceToNow(new Date(session.lastActive))} ago</span>

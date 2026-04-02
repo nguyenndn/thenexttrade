@@ -174,14 +174,14 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                                         <Link href={`/admin/users/${license.userId}?from=/admin/ea/accounts`} className="block hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg -m-2 p-2 transition-colors">
                                             <div>
                                                 <p className="font-bold text-gray-900 dark:text-white text-sm hover:text-primary transition-colors">{license.user.name}</p>
-                                                <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5">{license.user.email}</p>
+                                                <p className="text-gray-600 dark:text-gray-300 text-xs mt-0.5">{license.user.email}</p>
                                             </div>
                                         </Link>
                                     </td>
                                     <td className="px-6 py-4">
                                         <StatusBadge status={license.status} />
                                     </td>
-                                    <td className="px-6 py-4 text-gray-500 dark:text-gray-400 text-xs font-medium">
+                                    <td className="px-6 py-4 text-gray-600 dark:text-gray-300 text-xs font-medium">
                                         {format(new Date(license.createdAt), "dd MMM yyyy")}
                                     </td>
                                     <td className="px-6 py-4 text-right">
@@ -206,7 +206,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                             ))}
                             {filteredLicenses.length === 0 && (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-600 dark:text-gray-300">
                                         {searchTerm || filterStatus !== "ALL" ? "No matching accounts found for your filters." : "No accounts found."}
                                     </td>
                                 </tr>
@@ -215,7 +215,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                     </table>
                 </div>
                 {/* Pagination Placeholder */}
-                <div className="border-t border-gray-200 dark:border-white/5 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-500 mt-auto">
+                <div className="border-t border-gray-200 dark:border-white/5 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-600 mt-auto">
                     <span>Showing 1 - {filteredLicenses.length} of {filteredLicenses.length} accounts</span>
                     <div className="flex items-center gap-2 opacity-50 pointer-events-none">
                         <Button variant="outline" size="sm" className="h-8 text-xs">Previous</Button>

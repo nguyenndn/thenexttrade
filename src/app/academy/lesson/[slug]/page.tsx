@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         select: {
             title: true,
             content: true,
+            metaDescription: true,
             module: {
                 select: {
                     title: true,
@@ -39,7 +40,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         return { title: "Lesson Not Found | TheNextTrade Academy" };
     }
 
-    const description = `${lesson.title} — ${lesson.module.level.title}. Learn forex trading step by step with TheNextTrade Academy.`;
+    const description = lesson.metaDescription
+        || `${lesson.title} — ${lesson.module.level.title}. Learn forex trading step by step with TheNextTrade Academy.`;
 
     return {
         title: `${lesson.title} | TheNextTrade Academy`,
@@ -52,6 +54,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             description,
             type: "article",
             section: lesson.module.level.title,
+            images: [{ url: "/images/og-academy.png", width: 1200, height: 630, alt: lesson.title }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: lesson.title,
+            description,
+            images: ["/images/og-academy.png"],
         },
     };
 }
@@ -65,14 +74,28 @@ export default async function PublicLessonPage({ params }: { params: Promise<{ s
         redirect(`/dashboard/academy/lessons/${slug}`);
     }
 
-    // Fetch lesson with full context
+    // Fetch lesson with full context for cross-module navigation
     const lesson = await prisma.lesson.findUnique({
         where: { slug },
         include: {
             module: {
                 include: {
-                    level: true,
+                    level: {
+                        include: {
+                            modules: {
+                                orderBy: { order: "asc" },
+                                include: {
+                                    lessons: {
+                                        where: { status: "published" },
+                                        orderBy: { order: "asc" },
+                                        select: { id: true, title: true, slug: true, duration: true }
+                                    }
+                                }
+                            }
+                        }
+                    },
                     lessons: {
+                        where: { status: "published" },
                         orderBy: { order: "asc" },
                         select: { id: true, title: true, slug: true, duration: true }
                     }
@@ -85,9 +108,12 @@ export default async function PublicLessonPage({ params }: { params: Promise<{ s
 
     const level = lesson.module.level;
     const courseLessons = lesson.module.lessons;
-    const currentIndex = courseLessons.findIndex(l => l.id === lesson.id);
-    const nextLesson = courseLessons[currentIndex + 1];
-    const prevLesson = courseLessons[currentIndex - 1];
+
+    // Build cross-module flat list for prev/next across modules
+    const allLessonsInLevel = level.modules.flatMap(m => m.lessons);
+    const globalIndex = allLessonsInLevel.findIndex(l => l.id === lesson.id);
+    const nextLesson = allLessonsInLevel[globalIndex + 1] || null;
+    const prevLesson = allLessonsInLevel[globalIndex - 1] || null;
 
     // Level-based access control
     if (level.accessLevel === "PUBLIC") {
@@ -96,8 +122,8 @@ export default async function PublicLessonPage({ params }: { params: Promise<{ s
                 lesson={lesson}
                 level={level}
                 courseLessons={courseLessons}
-                nextLesson={nextLesson || null}
-                prevLesson={prevLesson || null}
+                nextLesson={nextLesson}
+                prevLesson={prevLesson}
             />
         );
     }

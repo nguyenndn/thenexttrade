@@ -79,7 +79,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                     key={trade.id}
                                     className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group/row"
                                 >
-                                    <td className="px-4 py-3.5 text-gray-500 font-medium whitespace-nowrap">
+                                    <td className="px-4 py-3.5 text-gray-600 font-medium whitespace-nowrap">
                                         {format(parseISO(trade.entryDate), "MMM dd, HH:mm")}
                                     </td>
                                     <td className="px-4 py-3.5 font-bold text-gray-900 dark:text-white whitespace-nowrap">
@@ -97,7 +97,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                     </td>
                                     <td className="px-4 py-3.5 whitespace-nowrap">
                                         <span
-                                            className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2 py-1 rounded ${trade.result === "WIN" ? "bg-emerald-50 dark:bg-[#00C888]/10 text-emerald-600 dark:text-[#00C888]" : trade.result === "LOSS" ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400" : "bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400"}`}
+                                            className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2 py-1 rounded ${trade.result === "WIN" ? "bg-emerald-50 dark:bg-[#00C888]/10 text-emerald-600 dark:text-[#00C888]" : trade.result === "LOSS" ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400" : "bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300"}`}
                                         >
                                             {getResultIcon(trade.result)}
                                             {trade.result}

@@ -41,7 +41,7 @@ export function StatsOverview({ stats }: StatsProps) {
             title: "Profit Factor",
             value: stats.profitFactor.toFixed(2),
             icon: Activity,
-            color: stats.profitFactor >= 1.5 ? "text-purple-500" : "text-gray-500",
+            color: stats.profitFactor >= 1.5 ? "text-purple-500" : "text-gray-600",
             bg: stats.profitFactor >= 1.5 ? "bg-purple-500/10" : "bg-gray-500/10"
         },
         {
@@ -61,7 +61,7 @@ export function StatsOverview({ stats }: StatsProps) {
                     <div key={idx} className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{card.title}</p>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">{card.title}</p>
                                 <h3 className={`text-2xl font-black ${card.color.includes('text') ? card.title === 'Total Trades' ? 'text-gray-900 dark:text-white' : card.color : 'text-gray-900 dark:text-white'}`}>
                                     {card.value}
                                 </h3>

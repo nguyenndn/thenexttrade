@@ -159,7 +159,7 @@ export function ProductList({ products }: ProductListProps) {
                             <Bot size={40} className="text-gray-300 dark:text-gray-600" aria-hidden="true" />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Products Found</h3>
-                        <p className="text-gray-500 dark:text-gray-400">
+                        <p className="text-gray-600 dark:text-gray-300">
                             {searchTerm || filterType !== "ALL"
                                 ? "Try adjusting your filters."
                                 : "Create your first EA product to get started."}
@@ -203,7 +203,7 @@ export function ProductList({ products }: ProductListProps) {
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-gray-900 dark:text-white text-base group-hover:text-primary transition-colors">{product.name}</p>
-                                                        <p className="text-xs text-gray-500 mt-0.5">{format(new Date(product.createdAt), "dd MMM yyyy")}</p>
+                                                        <p className="text-xs text-gray-600 mt-0.5">{format(new Date(product.createdAt), "dd MMM yyyy")}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -226,7 +226,7 @@ export function ProductList({ products }: ProductListProps) {
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
                                                     <div className={`w-2 h-2 rounded-full ${product.isActive ? "bg-emerald-500 shadow-[0_0_8px_hsl(var(--primary))]" : "bg-gray-300 dark:bg-gray-600"}`} />
-                                                    <span className={`text-sm font-medium ${product.isActive ? "text-gray-900 dark:text-gray-200" : "text-gray-500"}`}>
+                                                    <span className={`text-sm font-medium ${product.isActive ? "text-gray-900 dark:text-gray-200" : "text-gray-600"}`}>
                                                         {product.isActive ? "Active" : "Disabled"}
                                                     </span>
                                                 </div>
@@ -234,7 +234,7 @@ export function ProductList({ products }: ProductListProps) {
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-1">
                                                     <Link href={`/admin/ea/products/${product.id}`}>
-                                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" aria-label={`Edit ${product.name}`}>
+                                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" aria-label={`Edit ${product.name}`}>
                                                             <Edit size={16} />
                                                         </Button>
                                                     </Link>
@@ -255,7 +255,7 @@ export function ProductList({ products }: ProductListProps) {
                             </table>
                         </div>
                         {/* Pagination Placeholder */}
-                        <div className="border-t border-gray-200 dark:border-white/5 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-500">
+                        <div className="border-t border-gray-200 dark:border-white/5 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-600">
                             <span>Showing 1 - {sortedProducts.length} of {sortedProducts.length} products</span>
                             <div className="flex items-center gap-2 opacity-50 pointer-events-none">
                                 <Button variant="outline" size="sm" className="h-8 text-xs">Previous</Button>

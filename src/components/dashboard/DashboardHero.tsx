@@ -28,16 +28,16 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
             <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Balance */}
                 <div className="text-center">
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Total Balance</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">Total Balance</p>
                     <p className="text-2xl lg:text-3xl font-black tracking-tight bg-gradient-to-r from-emerald-500 to-teal-400 bg-clip-text text-transparent">
                         {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalBalance)}
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Live + Funded</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">Live + Funded</p>
                 </div>
 
                 {/* Period P&L */}
                 <div className="text-center border-l-0 lg:border-l border-gray-200 dark:border-white/10">
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Period P&L</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">Period P&L</p>
                     <div className="flex items-center justify-center gap-2">
                         {periodPnL >= 0
                             ? <TrendingUp size={20} className="text-primary" />
@@ -49,12 +49,12 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
                             {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', signDisplay: 'always' }).format(periodPnL)}
                         </p>
                     </div>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Realized P&L</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">Realized P&L</p>
                 </div>
 
                 {/* Win Rate */}
                 <div className="text-center border-l-0 lg:border-l border-gray-200 dark:border-white/10">
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Win Rate</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">Win Rate</p>
                     <div className="flex items-center justify-center gap-3">
                         <div className="relative w-14 h-14">
                             <svg className="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
@@ -73,12 +73,12 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
                             </span>
                         </div>
                     </div>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Winning trades</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">Winning trades</p>
                 </div>
 
                 {/* Trade Score */}
                 <div className="text-center border-l-0 lg:border-l border-gray-200 dark:border-white/10">
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Trade Score</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">Trade Score</p>
                     <div className="flex items-center justify-center gap-3">
                         <div className="relative w-14 h-14">
                             <svg className="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
@@ -99,7 +99,7 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
                             </span>
                         </div>
                     </div>
-                    <Link href="/dashboard/intelligence" className="text-xs text-gray-400 dark:text-gray-500 mt-1 hover:text-primary transition-colors inline-block">
+                    <Link href="/dashboard/intelligence" className="text-xs text-gray-600 dark:text-gray-300 mt-1 hover:text-primary transition-colors inline-block">
                         {tradeScore !== null ? "View Details →" : "Need 30+ trades"}
                     </Link>
                 </div>

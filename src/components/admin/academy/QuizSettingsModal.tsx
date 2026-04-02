@@ -77,7 +77,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
                         <Button
                             variant="ghost"
                             onClick={onClose}
-                            className="px-6 py-3 h-auto rounded-xl font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                            className="px-6 py-3 h-auto rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                         >
                             Cancel
                         </Button>

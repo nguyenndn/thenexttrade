@@ -48,7 +48,7 @@ export async function LeaderboardWidget() {
       {topUsers.length === 0 ? (
         <div className="text-center py-4">
           <Trophy size={24} className="mx-auto text-gray-300 dark:text-gray-600 mb-2" />
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-600 dark:text-gray-300">
             Start earning XP to appear on the leaderboard!
           </p>
           <Link
@@ -128,7 +128,7 @@ export async function LeaderboardWidget() {
           {/* My rank footer */}
           {user && myRank && !topUsers.some((u) => u.id === user.id) && (
             <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
-              <span className="text-xs text-gray-500">Your rank</span>
+              <span className="text-xs text-gray-600">Your rank</span>
               <span className="text-xs font-black text-primary">
                 #{myRank}
               </span>

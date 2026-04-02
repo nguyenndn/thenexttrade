@@ -70,7 +70,7 @@ export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
                     <Legend
                         verticalAlign="bottom"
                         height={36}
-                        formatter={(value) => <span className="text-xs text-gray-500 dark:text-gray-400 font-medium ml-1">{value}</span>}
+                        formatter={(value) => <span className="text-xs text-gray-600 dark:text-gray-300 font-medium ml-1">{value}</span>}
                     />
                 </PieChart>
             </ResponsiveContainer>

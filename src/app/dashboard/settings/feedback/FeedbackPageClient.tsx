@@ -20,7 +20,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
     OPEN: { label: "Open", color: "text-blue-500 bg-blue-500/10", icon: Clock },
     IN_PROGRESS: { label: "In Progress", color: "text-amber-500 bg-amber-500/10", icon: Loader2 },
     RESOLVED: { label: "Resolved", color: "text-primary bg-primary/10", icon: CheckCircle2 },
-    CLOSED: { label: "Closed", color: "text-gray-500 bg-gray-500/10", icon: AlertCircle },
+    CLOSED: { label: "Closed", color: "text-gray-600 bg-gray-500/10", icon: AlertCircle },
 };
 
 export default function FeedbackPageClient({ feedbacks }: FeedbackPageClientProps) {
@@ -60,7 +60,7 @@ export default function FeedbackPageClient({ feedbacks }: FeedbackPageClientProp
                                 )}>
                                     {isBug ? <Bug size={16} /> : <Lightbulb size={16} />}
                                 </div>
-                                <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                                <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
                                     {isBug ? "Bug Report" : "Feature Request"}
                                 </span>
                             </div>

@@ -37,7 +37,7 @@ export default async function AdminNotificationsPage() {
 
             <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 {broadcasts.length === 0 ? (
-                    <div className="p-12 text-center text-gray-500">
+                    <div className="p-12 text-center text-gray-600">
                         <Megaphone size={48} className="mx-auto mb-4 opacity-30" />
                         <p>No broadcasts found.</p>
                     </div>
@@ -58,7 +58,7 @@ export default async function AdminNotificationsPage() {
                                     <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="font-bold text-gray-900 dark:text-white">{b.title}</div>
-                                            <div className="text-xs text-gray-500 truncate max-w-[300px]">{b.message}</div>
+                                            <div className="text-xs text-gray-600 truncate max-w-[300px]">{b.message}</div>
                                         </td>
                                         <td className="px-6 py-4">
                                             {b.sentAt ? (
@@ -77,7 +77,7 @@ export default async function AdminNotificationsPage() {
                                         <td className="px-6 py-4 text-xs">
                                             {b.creator?.name || b.creator?.email || "Unknown"}
                                         </td>
-                                        <td className="px-6 py-4 text-xs text-gray-500">
+                                        <td className="px-6 py-4 text-xs text-gray-600">
                                             {format(new Date(b.createdAt), "dd/MM/yyyy")}
                                         </td>
                                     </tr>

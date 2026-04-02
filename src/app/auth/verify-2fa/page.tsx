@@ -63,7 +63,7 @@ export default function Verify2FAPage() {
                     </Button>
                 </form>
 
-                <Button variant="ghost" onClick={() => window.location.href = '/auth/login'} className="w-full text-center mt-6 text-sm text-gray-500 hover:text-white transition-colors hover:bg-transparent">
+                <Button variant="ghost" onClick={() => window.location.href = '/auth/login'} className="w-full text-center mt-6 text-sm text-gray-600 hover:text-white transition-colors hover:bg-transparent">
                     Back to Login
                 </Button>
             </div>

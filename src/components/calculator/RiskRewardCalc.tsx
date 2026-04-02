@@ -46,7 +46,7 @@ export function RiskRewardCalc() {
                             "relative flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-colors h-auto z-10",
                             inputs.direction === "LONG"
                                 ? "text-white hover:text-white"
-                                : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         {inputs.direction === "LONG" && (
@@ -66,7 +66,7 @@ export function RiskRewardCalc() {
                             "relative flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-colors h-auto z-10",
                             inputs.direction === "SHORT"
                                 ? "text-white hover:text-white"
-                                : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         {inputs.direction === "SHORT" && (
@@ -184,7 +184,7 @@ export function RiskRewardCalc() {
                             </div>
 
                             <div className="pt-6 border-t border-gray-100 dark:border-white/5">
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Win Rate to Breakeven</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Win Rate to Breakeven</p>
                                 <p className="text-xl font-bold text-gray-900 dark:text-white">{result.winRateToBreakeven}%</p>
                             </div>
                         </div>

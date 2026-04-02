@@ -143,7 +143,7 @@ function TimelineNode({ item, idx, unlocked }: { item: TimelineItem; idx: number
                         <span className={`text-xs font-black uppercase tracking-widest bg-gradient-to-r ${item.accentColor} bg-clip-text text-transparent`}>
                             Phase {item.phase}
                         </span>
-                        <span className="text-xs font-medium text-gray-400 dark:text-gray-500">
+                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                             {item.period}
                         </span>
                     </div>
@@ -208,7 +208,7 @@ export function AboutTimeline() {
                 transition={{ duration: 0.8 }}
             >
                 <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-white">My Journey</h2>
-                <p className="text-lg text-gray-500 dark:text-gray-400">Four phases that shaped everything</p>
+                <p className="text-lg text-gray-600 dark:text-gray-300">Four phases that shaped everything</p>
             </motion.div>
 
             <div ref={containerRef} className="relative">

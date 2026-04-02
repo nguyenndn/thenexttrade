@@ -159,7 +159,7 @@ export function RemoteSyncButton({
                     className={
                         variant === "premium" 
                             ? "flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 hover:shadow-sm border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 font-bold text-xs transition-all h-auto shadow-none" 
-                            : variant === "icon" ? "h-8 w-8 text-gray-500" : "gap-2"
+                            : variant === "icon" ? "h-8 w-8 text-gray-600" : "gap-2"
                     }
                     title={!isConnected ? "EA must be connected to sync" : "Remote Sync"}
                 >

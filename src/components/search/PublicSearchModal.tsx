@@ -101,11 +101,11 @@ export function PublicSearchTrigger({ className }: { className?: string }) {
     return (
         <button
             onClick={handleClick}
-            className={`flex items-center gap-2 px-3 py-2 rounded-full bg-gray-50 dark:bg-white/5 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-sm cursor-pointer border border-transparent ${className || ""}`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-full bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-sm cursor-pointer border border-transparent ${className || ""}`}
         >
             <Search size={16} />
             <span className="hidden sm:inline">Search...</span>
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-500 dark:text-gray-400">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
                 <span className="text-[10px] text-primary">Ctrl + K </span>
             </kbd>
         </button>

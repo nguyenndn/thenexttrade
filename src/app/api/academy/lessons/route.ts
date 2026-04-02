@@ -6,11 +6,15 @@ import { z } from "zod";
 const lessonSchema = z.object({
     title: z.string().min(1, "Title is required"),
     content: z.string().min(1, "Content is required"),
-    slug: z.string().min(1, "Slug is required"), // TODO: Auto-generate slug if not provided
+    slug: z.string().min(1, "Slug is required"),
     videoUrl: z.string().optional(),
     duration: z.number().int().optional(),
     moduleId: z.string().min(1, "Module ID is required"),
     order: z.number().int().optional(),
+    rawContent: z.string().optional(),
+    tone: z.string().optional(),
+    sourceUrls: z.array(z.string()).optional(),
+    metaDescription: z.string().optional(),
 });
 
 export async function POST(req: Request) {
@@ -25,7 +29,7 @@ export async function POST(req: Request) {
             );
         }
 
-        const { title, content, slug, videoUrl, duration, moduleId, order } = validation.data;
+        const { title, content, slug, videoUrl, duration, moduleId, order, rawContent, tone, sourceUrls, metaDescription } = validation.data;
 
         let newOrder = order;
         if (newOrder === undefined) {
@@ -45,6 +49,10 @@ export async function POST(req: Request) {
                 duration,
                 moduleId,
                 order: newOrder,
+                rawContent: rawContent || null,
+                tone: tone || null,
+                sourceUrls: sourceUrls || [],
+                metaDescription: metaDescription || null,
             },
         });
 

@@ -58,14 +58,14 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense, h
                     <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-gray-200 dark:border-white/10 w-auto inline-flex h-auto">
                         <TabsTrigger
                             value="ACCOUNTS"
-                            className="rounded-lg px-4 py-1.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
+                            className="rounded-lg px-4 py-1.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-600 dark:text-gray-300 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
                         >
                             <Wallet size={16} />
                             My Accounts
                         </TabsTrigger>
                         <TabsTrigger
                             value="MT5_EA"
-                            className="rounded-lg px-4 py-1.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
+                            className="rounded-lg px-4 py-1.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-600 dark:text-gray-300 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
                         >
                             <CustomBotIcon size={16} />
                             Expert Advisor
@@ -77,7 +77,7 @@ export function TradingSystemsClient({ licenses, products, hasApprovedLicense, h
                         </TabsTrigger>
                         <TabsTrigger
                             value="MT5_INDICATOR"
-                            className="rounded-lg px-4 py-1.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-500 dark:text-gray-400 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
+                            className="rounded-lg px-4 py-1.5 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-600 dark:text-gray-300 flex items-center gap-2 border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10"
                         >
                             <BarChart2 size={16} />
                             Indicators

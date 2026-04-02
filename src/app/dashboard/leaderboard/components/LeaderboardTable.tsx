@@ -67,7 +67,7 @@ export function LeaderboardTable({
           </svg>
         </div>
         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No rankings yet</h3>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">
+        <p className="text-gray-600 dark:text-gray-300 text-sm">
           Be the first to claim the top spot! Start learning, trading, and building your streak.
         </p>
       </div>

@@ -94,7 +94,7 @@ export function QuickActions({ userId, userEmail }: QuickActionsProps) {
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Title</label>
+                                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Title</label>
                                 <input
                                     type="text"
                                     value={notifyTitle}
@@ -104,7 +104,7 @@ export function QuickActions({ userId, userEmail }: QuickActionsProps) {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Message</label>
+                                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Message</label>
                                 <textarea
                                     value={notifyMessage}
                                     onChange={e => setNotifyMessage(e.target.value)}

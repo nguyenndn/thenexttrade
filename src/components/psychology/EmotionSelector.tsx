@@ -48,7 +48,7 @@ export function EmotionSelector({ value, onChange, label, phase = "before" }: Em
 
             {/* Neutral emotions */}
             <div>
-                <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider font-bold">
+                <p className="text-xs text-gray-600 mb-2 uppercase tracking-wider font-bold">
                     Neutral
                 </p>
                 <div className="flex flex-wrap gap-2">

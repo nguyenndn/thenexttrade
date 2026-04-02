@@ -139,7 +139,7 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
         ) : (
           <button
             disabled
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 font-bold text-sm cursor-not-allowed border border-gray-200 dark:border-white/10"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold text-sm cursor-not-allowed border border-gray-200 dark:border-white/10"
           >
             Coming Soon
           </button>

@@ -75,7 +75,7 @@ export function TabsTrigger({ value, children, className, activeIndicatorClassNa
                 "relative px-4 py-1.5 h-auto rounded-lg text-sm font-bold transition-all duration-300 flex items-center gap-2 z-10 hover:bg-transparent border",
                 isActive
                     ? (activeTextClassName || "text-gray-900 dark:text-white")
-                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 border-transparent",
+                    : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 border-transparent",
                 className
             )}
         >

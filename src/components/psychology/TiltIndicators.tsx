@@ -99,7 +99,7 @@ function IndicatorCard({
                 : 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20'
             }
         `}>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-300 mb-1">{label}</p>
             <p className={`text-2xl font-black ${isGood ? 'text-gray-900 dark:text-white' : 'text-red-500'}`}>
                 {value}
             </p>

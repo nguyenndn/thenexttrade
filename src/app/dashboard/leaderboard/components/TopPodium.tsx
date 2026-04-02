@@ -28,7 +28,7 @@ const PODIUM = [
     medalBg: "bg-gradient-to-br from-gray-300 to-gray-500",
     hasGradientRing: false,
     glowShadow: "0 0 24px 10px rgba(156,163,175,0.45), 0 0 48px 20px rgba(156,163,175,0.15)",
-    xpColor: "text-gray-500 dark:text-gray-400",
+    xpColor: "text-gray-600 dark:text-gray-300",
     podiumBg: "bg-gradient-to-t from-gray-400 to-gray-300 dark:from-gray-600 dark:to-gray-500",
     podiumH: "h-20",
     cardMt: "mt-8",
@@ -254,7 +254,7 @@ export function TopPodium({ entries, currentUserId, onUserClick, type }: TopPodi
 
                   {/* Tab-specific stats */}
                   {stats.map((stat, si) => (
-                    <div key={si} className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                    <div key={si} className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-300">
                       <stat.icon size={13} />
                       <span>{stat.text}</span>
                     </div>

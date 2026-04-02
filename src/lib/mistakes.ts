@@ -200,6 +200,6 @@ export function getMistakeSeverityColor(severity: string): string {
         case "high": return "text-red-500 bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20";
         case "medium": return "text-yellow-500 bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-500/20";
         case "low": return "text-blue-500 bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20";
-        default: return "text-gray-500 bg-gray-50 dark:bg-gray-500/10 border-gray-200 dark:border-gray-500/20";
+        default: return "text-gray-600 bg-gray-50 dark:bg-gray-500/10 border-gray-200 dark:border-gray-500/20";
     }
 }

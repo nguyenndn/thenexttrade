@@ -134,7 +134,7 @@ export default function SocialShare({ title, slug, vertical = false, articleId }
                                 <span className={`absolute -top-2 -right-2.5 text-[9px] font-black tabular-nums min-w-[16px] h-4 flex items-center justify-center rounded-full px-1 ${
                                     voted
                                         ? "bg-primary text-white"
-                                        : "bg-gray-200 dark:bg-white/15 text-gray-500 dark:text-gray-400"
+                                        : "bg-gray-200 dark:bg-white/15 text-gray-600 dark:text-gray-300"
                                 }`}>
                                     {voteCount}
                                 </span>

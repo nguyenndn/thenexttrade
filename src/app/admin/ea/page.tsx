@@ -224,7 +224,7 @@ export default async function EADashboardPage() {
 
                         <div className="space-y-3 flex-1">
                             {recentPending.length === 0 ? (
-                                <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                                <div className="text-center py-12 text-gray-600 dark:text-gray-300">
                                     <CheckCircle size={36} className="mx-auto mb-3 text-gray-300 dark:text-gray-600" aria-hidden="true" />
                                     <p className="text-sm">No pending requests</p>
                                 </div>
@@ -240,7 +240,7 @@ export default async function EADashboardPage() {
                                                 <p className="font-bold text-sm text-gray-900 dark:text-white font-mono">
                                                     {license.accountNumber}
                                                 </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                <p className="text-xs text-gray-600 dark:text-gray-300">
                                                     {license.user.name || license.user.email}
                                                 </p>
                                             </div>
@@ -268,7 +268,7 @@ export default async function EADashboardPage() {
 
                         <div className="space-y-4">
                             {brokerStats.length === 0 ? (
-                                <p className="text-sm text-gray-500 text-center py-8">No active licenses found.</p>
+                                <p className="text-sm text-gray-600 text-center py-8">No active licenses found.</p>
                             ) : (
                                 brokerStats.map((stat) => {
                                     const maxCount = brokerStats[0]._count.id || 1;

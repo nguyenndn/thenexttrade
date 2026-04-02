@@ -39,17 +39,17 @@ export default function ReferralsClient() {
                         <Gift size={24} className="text-orange-500" />
                     </div>
                     <div className="font-bold text-gray-900 dark:text-white">Invite Friends</div>
-                    <p className="text-xs text-gray-500">Earn 20% commission properly</p>
+                    <p className="text-xs text-gray-600">Earn 20% commission properly</p>
                 </div>
             </div>
 
             {/* Referral Link */}
             <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm text-center">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Share your unique link</h3>
-                <p className="text-gray-500 mb-6 max-w-md mx-auto">Copy your unique referral link and share it with your friends. When they sign up and subscribe, you'll earn commission.</p>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">Copy your unique referral link and share it with your friends. When they sign up and subscribe, you'll earn commission.</p>
 
                 <div className="max-w-xl mx-auto flex items-center gap-0">
-                    <div className="flex-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 border-r-0 rounded-l-xl px-4 py-3 text-gray-500 text-sm font-mono truncate text-left">
+                    <div className="flex-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 border-r-0 rounded-l-xl px-4 py-3 text-gray-600 text-sm font-mono truncate text-left">
                         {referralLink}
                     </div>
                     <Button
@@ -68,7 +68,7 @@ export default function ReferralsClient() {
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
-                        <thead className="bg-gray-50 dark:bg-white/5 text-gray-500 uppercase text-xs">
+                        <thead className="bg-gray-50 dark:bg-white/5 text-gray-600 uppercase text-xs">
                             <tr>
                                 <th className="px-6 py-4 font-semibold">User</th>
                                 <th className="px-6 py-4 font-semibold">Date Joined</th>
@@ -87,7 +87,7 @@ export default function ReferralsClient() {
                                             <span className="font-bold text-gray-900 dark:text-white">user_{i}@example.com</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-gray-500">Dec 2{i}, 2025</td>
+                                    <td className="px-6 py-4 text-gray-600">Dec 2{i}, 2025</td>
                                     <td className="px-6 py-4">
                                         <span className="px-2 py-1 bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-bold rounded-full">
                                             Active

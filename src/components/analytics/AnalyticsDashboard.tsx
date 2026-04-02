@@ -98,7 +98,7 @@ function AnalyticsEmptyState() {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                 No trading data yet
             </h3>
-            <p className="text-gray-500 text-center max-w-md">
+            <p className="text-gray-600 text-center max-w-md">
                 Start logging trades in your journal to see analytics here.
             </p>
         </div>

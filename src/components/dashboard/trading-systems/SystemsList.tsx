@@ -44,7 +44,7 @@ export function SystemsList({ products, isLocked }: SystemsListProps) {
                         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 dark:from-white/10 dark:to-white/5 mb-6">
                             <BarChart2 size={32} className="text-gray-300 dark:text-gray-600" />
                         </div>
-                        <p className="text-gray-500 dark:text-gray-400 font-medium">No trading systems found.</p>
+                        <p className="text-gray-600 dark:text-gray-300 font-medium">No trading systems found.</p>
                     </div>
                 ) : (
                     filteredProducts.map(product => (

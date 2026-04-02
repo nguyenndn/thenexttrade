@@ -56,9 +56,9 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
     if (!entry) return null;
 
     const isWin = entry.pnl && entry.pnl > 0;
-    const pnlColor = entry.pnl && entry.pnl > 0 ? "text-primary" : entry.pnl && entry.pnl < 0 ? "text-red-500" : "text-gray-500";
+    const pnlColor = entry.pnl && entry.pnl > 0 ? "text-primary" : entry.pnl && entry.pnl < 0 ? "text-red-500" : "text-gray-600";
     const typeColor = entry.type === "BUY" ? "bg-blue-500" : "bg-red-500";
-    const statusColor = entry.status === "OPEN" ? "bg-yellow-500/20 text-yellow-500" : "bg-gray-500/20 text-gray-500";
+    const statusColor = entry.status === "OPEN" ? "bg-yellow-500/20 text-yellow-500" : "bg-gray-500/20 text-gray-600";
 
     const currentStrategy = entry.strategy ? strategies.find(s => s.name === entry.strategy || s.id === entry.strategy) : null;
     const strategyColor = currentStrategy?.color || "#6B7280";
@@ -102,7 +102,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                 <Share2 size={18} strokeWidth={2.5} />
                                 Share
                             </Button>
-                            <SheetClose className="rounded-xl h-10 w-10 p-0 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-500 dark:text-white transition-colors">
+                            <SheetClose className="rounded-xl h-10 w-10 p-0 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-white transition-colors">
                                 <X size={20} />
                             </SheetClose>
                         </div>
@@ -123,7 +123,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                     size="icon" 
                                     onClick={onPrev}
                                     aria-label="Previous Trade"
-                                    className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed"
+                                    className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
                                 >
                                     <ChevronLeft size={24} />
                                 </Button>
@@ -137,7 +137,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                             {entry.type}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 font-mono text-sm md:text-base font-bold">
+                                    <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-mono text-sm md:text-base font-bold">
                                         <span>{entry.entryPrice}</span>
                                         <span className="text-gray-300 dark:text-white/20">➜</span>
                                         <span className={isWin ? "text-primary" : entry.pnl && entry.pnl < 0 ? "text-red-500" : ""}>
@@ -164,7 +164,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                     size="icon" 
                                     onClick={onNext}
                                     disabled={!hasNext}
-                                    className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed"
+                                    className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
                                 >
                                     <ChevronRight size={24} />
                                 </Button>
@@ -176,14 +176,14 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                         <TabsList className="bg-gray-200/50 dark:bg-[#151925] p-1.5 rounded-xl w-full sm:w-auto inline-flex h-auto mb-8">
                             <TabsTrigger
                                 value="metrics"
-                                className="rounded-xl px-6 py-3 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#2F80ED] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-lg shadow-blue-500/20 transition-all text-gray-500 dark:text-gray-400"
+                                className="rounded-xl px-6 py-3 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#2F80ED] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-lg shadow-blue-500/20 transition-all text-gray-600 dark:text-gray-300"
                             >
                                 <BarChart3 size={16} className="mr-2" />
                                 Trade Metrics
                             </TabsTrigger>
                             <TabsTrigger
                                 value="tags"
-                                className="rounded-xl px-6 py-3 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#2F80ED] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-lg shadow-blue-500/20 transition-all text-gray-500 dark:text-gray-400"
+                                className="rounded-xl px-6 py-3 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#2F80ED] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-lg shadow-blue-500/20 transition-all text-gray-600 dark:text-gray-300"
                             >
                                 <Tag size={16} className="mr-2" />
                                 Trade Tags
@@ -216,17 +216,17 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                                 </h4>
                                                 <div className="space-y-4">
                                                     <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200 dark:border-white/10">
-                                                        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Volume</span>
+                                                        <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">Volume</span>
                                                         <span className="text-sm font-black text-gray-900 dark:text-white font-mono">{entry.lotSize} Lots</span>
                                                     </div>
                                                     <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200 dark:border-white/10">
-                                                        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Open</span>
+                                                        <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">Open</span>
                                                         <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
                                                             {format(new Date(entry.entryDate), "MMM dd, HH:mm")}
                                                         </span>
                                                     </div>
                                                     <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200 dark:border-white/10">
-                                                        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Close</span>
+                                                        <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">Close</span>
                                                         <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
                                                             {entry.exitDate ? format(new Date(entry.exitDate), "MMM dd, HH:mm") : "---"}
                                                         </span>
@@ -299,13 +299,13 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                                 
                                                 <div className="grid grid-cols-2 gap-6 relative z-10">
                                                     <div>
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-1">Gross Profit</span>
+                                                        <span className="text-[10px] text-gray-600 font-bold uppercase tracking-wider block mb-1">Gross Profit</span>
                                                         <span className={cn("text-xl font-black font-mono", pnlColor)}>
                                                             {entry.pnl?.toFixed(2) || "0.00"}
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-1">Percent Gain</span>
+                                                        <span className="text-[10px] text-gray-600 font-bold uppercase tracking-wider block mb-1">Percent Gain</span>
                                                         <div className="flex items-center gap-2">
                                                             <span className={cn("text-xl font-black font-mono", pnlColor)}>
                                                                 {entry.pnl ? ((entry.pnl / 10000) * 100).toFixed(2) : "0.00"}%
@@ -313,7 +313,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                                         </div>
                                                     </div>
                                                     <div className="col-span-2 pt-4 border-t border-gray-200 dark:border-white/10">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Net Profit</span>
+                                                        <span className="text-[10px] text-gray-600 font-bold uppercase tracking-wider block mb-2">Net Profit</span>
                                                         <div className="flex items-center gap-3">
                                                             <span className={cn("text-4xl font-black font-mono tracking-tighter", pnlColor)}>
                                                                 {isWin ? "+" : ""}{entry.pnl?.toFixed(2) || "0.00"}
@@ -448,7 +448,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-gray-900 dark:text-white">Flawless Execution</p>
-                                                        <p className="text-sm text-gray-500">No trading mistakes were recorded for this entry.</p>
+                                                        <p className="text-sm text-gray-600">No trading mistakes were recorded for this entry.</p>
                                                     </div>
                                                 </div>
                                             )}
@@ -463,7 +463,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                     {/* Screenshots - Always visible at bottom */}
                     {entry.images && entry.images.length > 0 && (
                         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10">
-                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <div className="w-1.5 h-3 bg-pink-500 rounded-full"></div>
                                 Trade Screenshots
                             </h4>

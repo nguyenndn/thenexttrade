@@ -36,7 +36,7 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
         <span
           className={cn(
             "font-black text-sm",
-            entry.rank <= 3 ? "text-primary" : "text-gray-500 dark:text-gray-400"
+            entry.rank <= 3 ? "text-primary" : "text-gray-600 dark:text-gray-300"
           )}
         >
           #{entry.rank}
@@ -110,13 +110,13 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
             </div>
           </td>
           <td className="py-3.5 px-3 hidden lg:table-cell">
-            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 tabular-nums">
+            <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 tabular-nums">
               <Clock size={12} />
               {formatStudyTime(entry.studyTimeMinutes)}
             </div>
           </td>
           <td className="py-3.5 px-3 hidden lg:table-cell">
-            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 tabular-nums">
+            <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 tabular-nums">
               <FileText size={12} />
               {entry.lessonsCompleted}
             </div>
@@ -133,7 +133,7 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
             </div>
           </td>
           <td className="py-3.5 px-3 hidden sm:table-cell">
-            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 tabular-nums">
+            <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 tabular-nums">
               <Star size={12} className="text-yellow-500" />
               {entry.value.toLocaleString()} XP
             </div>
@@ -150,13 +150,13 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
             </div>
           </td>
           <td className="py-3.5 px-3 hidden sm:table-cell">
-            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 tabular-nums">
+            <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 tabular-nums">
               <Clock size={12} />
               {formatStudyTime(entry.studyTimeMinutes)}
             </div>
           </td>
           <td className="py-3.5 px-3 hidden md:table-cell">
-            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 tabular-nums">
+            <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 tabular-nums">
               <Star size={12} className="text-yellow-500" />
               {entry.value.toLocaleString()} XP
             </div>
@@ -181,7 +181,7 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
             </div>
           </td>
           <td className="py-3.5 px-3 hidden md:table-cell">
-            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 tabular-nums">
+            <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 tabular-nums">
               <TrendingUp size={12} />
               {entry.totalTrades}
             </div>

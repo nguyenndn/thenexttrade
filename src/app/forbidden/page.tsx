@@ -29,7 +29,7 @@ export default function ForbiddenPage() {
                 </h1>
 
                 {/* Description */}
-                <p className="text-base text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
+                <p className="text-base text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
                     You don&apos;t have permission to access this page.
                     Please sign in with the correct account or contact support.
                 </p>

@@ -73,7 +73,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
 
     if (!data || data.length === 0) {
         return (
-            <div className="h-[300px] w-full flex items-center justify-center font-medium text-sm text-gray-400 dark:text-gray-500">
+            <div className="h-[300px] w-full flex items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
                 No data available
             </div>
         );

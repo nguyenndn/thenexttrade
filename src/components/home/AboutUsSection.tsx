@@ -100,7 +100,7 @@ export function AboutUsSection() {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-gray-900 dark:text-white">{member.name}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{member.role}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">{member.role}</p>
                     </div>
                   </div>
                 ))}
@@ -126,9 +126,9 @@ export function AboutUsSection() {
                       <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
                         {site.name}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{site.desc}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">{site.desc}</p>
                     </div>
-                    <ExternalLink size={14} className="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors" />
+                    <ExternalLink size={14} className="text-gray-600 dark:text-gray-300 group-hover:text-primary transition-colors" />
                   </a>
                 ))}
               </div>

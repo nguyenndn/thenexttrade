@@ -90,7 +90,7 @@ export function CurrencyHeatMap() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="text-sm text-gray-600 dark:text-gray-300">
                     {lastUpdate && `Updated: ${lastUpdate.toLocaleTimeString()}`}
                 </div>
                 <button

@@ -175,7 +175,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                 <textarea
                     {...register("description")}
                     rows={4}
-                    className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[100px]"
+                    className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 min-h-[100px]"
                     placeholder="Product details..."
                 />
                 {errors.description && <p className="text-xs text-red-500 font-bold">{String(errors.description.message)}</p>}

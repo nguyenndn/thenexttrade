@@ -78,7 +78,7 @@ function CurrencyDropdown({
                         <span className="font-bold text-base flex items-center gap-2">
                             {info?.flag} {info?.code} - {info?.name}
                         </span>
-                        <ChevronDown size={16} className="text-gray-500 shrink-0" />
+                        <ChevronDown size={16} className="text-gray-600 shrink-0" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="max-h-[360px] overflow-y-auto" style={{ minWidth: '280px' }}>

@@ -28,7 +28,7 @@ export function StrategyCard({
                     <h3 className="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                         {strategy.name}
                         {isGhost && (
-                            <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full text-gray-500 font-medium">Unsaved</span>
+                            <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full text-gray-600 font-medium">Unsaved</span>
                         )}
                     </h3>
                 </div>
@@ -57,7 +57,7 @@ export function StrategyCard({
             {/* Description */}
             <div className="min-h-[40px] mb-4">
                 {strategy.description ? (
-                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
                         {strategy.description}
                     </p>
                 ) : (

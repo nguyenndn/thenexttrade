@@ -132,7 +132,7 @@ export default async function RiskManagementPage() {
             <main className="pt-28 pb-20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumb */}
-                    <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8">
+                    <nav className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mb-8">
                         <Home size={14} className="shrink-0" />
                         <Link href="/" className="hover:text-primary transition-colors">Home</Link>
                         <ChevronRight size={14} className="shrink-0" />
@@ -153,7 +153,7 @@ export default async function RiskManagementPage() {
                                 Forex Risk Management
                             </span>
                         </h1>
-                        <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                             The #1 skill that separates profitable traders from everyone else. 
                             Learn how to protect your capital and trade with confidence.
                         </p>
@@ -194,7 +194,7 @@ export default async function RiskManagementPage() {
                                         <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors mb-1">
                                             {tool.title}
                                         </h3>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                             {tool.description}
                                         </p>
                                     </div>
@@ -222,7 +222,7 @@ export default async function RiskManagementPage() {
                                             {article.title}
                                         </h4>
                                         {article.excerpt && (
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                                            <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2">
                                                 {article.excerpt}
                                             </p>
                                         )}

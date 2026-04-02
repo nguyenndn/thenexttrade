@@ -172,6 +172,39 @@ export default async function UserAcademyDashboard() {
                         </div>
                     )}
 
+                    {/* Per-Level Progress */}
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
+                        <h3 className="font-bold text-sm text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <Target size={16} className="text-primary" /> Level Progress
+                        </h3>
+                        <div className="space-y-3">
+                            {levels.map(level => {
+                                const allLessons = level.modules.flatMap(m => m.lessons);
+                                const completedInLevel = allLessons.filter(l => l.progress.some((p: any) => p.isCompleted)).length;
+                                const totalInLevel = allLessons.length;
+                                const pct = totalInLevel > 0 ? Math.round((completedInLevel / totalInLevel) * 100) : 0;
+                                return (
+                                    <div key={level.id}>
+                                        <div className="flex items-center justify-between mb-1">
+                                            <span className="text-xs font-medium text-gray-600 dark:text-gray-400 truncate pr-2">
+                                                <span className="text-primary font-bold">{String(level.order).padStart(2, '0')}</span> {level.title}
+                                            </span>
+                                            <span className="text-[10px] font-bold text-gray-400 whitespace-nowrap">
+                                                {completedInLevel}/{totalInLevel} {pct > 0 && `(${pct}%)`}
+                                            </span>
+                                        </div>
+                                        <div className="h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full rounded-full transition-all duration-500 ${pct === 100 ? 'bg-green-500' : pct > 0 ? 'bg-primary' : 'bg-transparent'}`}
+                                                style={{ width: `${pct}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
                     {/* Academy Tree (Synced with /academy) */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                         <AcademyTree levels={levels as any} basePath="/dashboard/academy" isGuest={false} completedLessonIds={completedLessonIds} devMode />
@@ -223,7 +256,7 @@ export default async function UserAcademyDashboard() {
                                         >
                                             <div className="flex-1 truncate pr-3">
                                                 <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate group-hover:text-primary transition-colors">{quiz.title}</p>
-                                                <p className="text-xs text-gray-500 truncate">
+                                                <p className="text-xs text-gray-600 truncate">
                                                     {quiz.module?.title ?? 'General'}
                                                     {attemptCount > 0 && <span> · {attemptCount} attempt{attemptCount !== 1 ? 's' : ''}</span>}
                                                 </p>

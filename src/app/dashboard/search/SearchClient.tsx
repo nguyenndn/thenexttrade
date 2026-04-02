@@ -77,7 +77,7 @@ export default function SearchClient() {
             {/* Header */}
             <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">Search Results</h1>
-                <p className="text-gray-500 text-sm mt-1">Found {results.length} results for "{query}"</p>
+                <p className="text-gray-600 text-sm mt-1">Found {results.length} results for "{query}"</p>
             </div>
 
             {/* Results Area */}
@@ -118,7 +118,7 @@ export default function SearchClient() {
                                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-1">
                                                     <HighlightText text={result.title} highlight={query || ""} />
                                                 </h3>
-                                                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                                                <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
                                                     <HighlightText text={result.description} highlight={query || ""} />
                                                 </p>
                                             </div>
@@ -130,7 +130,7 @@ export default function SearchClient() {
                             <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10">
                                 <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
-                                <p className="text-gray-500">Try adjusting your search terms or check for typos.</p>
+                                <p className="text-gray-600">Try adjusting your search terms or check for typos.</p>
                             </div>
                         )}
                     </>

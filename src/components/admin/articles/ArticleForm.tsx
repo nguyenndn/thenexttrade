@@ -45,11 +45,11 @@ interface ArticleFormProps {
 function FormSelect({ label, value, options, onChange, placeholder }: { label: string, value: string, options: { label: string, value: string }[], onChange: (val: string) => void, placeholder: string }) {
     return (
         <div className="w-full">
-            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
+            <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">{label}</label>
             <DropdownMenu className="w-full block">
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 px-3 py-2 h-auto text-left shadow-none rounded-lg focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all">
-                        <span className={value ? "text-gray-900 dark:text-gray-100 truncate pr-2" : "text-gray-500 truncate pr-2"}>
+                        <span className={value ? "text-gray-900 dark:text-gray-100 truncate pr-2" : "text-gray-600 truncate pr-2"}>
                             {options.find(o => o.value === value)?.label || placeholder}
                         </span>
                         <ChevronDown size={16} className="text-gray-400 shrink-0" aria-hidden="true" />
@@ -308,7 +308,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                 description={isEditMode ? "Edit article content and settings." : "Create a new blog post."}
                 backHref="/admin/articles"
             >
-                <span className="text-xs font-normal px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 flex items-center gap-2">
+                <span className="text-xs font-normal px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 flex items-center gap-2">
                     {draftAutoSavedAt && (
                         <span className="flex items-center gap-1 text-gray-400 border-r border-gray-300 dark:border-white/10 pr-2 mr-1">
                             <Save size={12} /> Local: {draftAutoSavedAt.toLocaleTimeString('en-US')}
@@ -399,7 +399,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                 }}
                             />
                             {/* Slug Editor */}
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
                                 <span>Permalink:</span>
                                 <span className="text-gray-400">/articles/</span>
                                 <input
@@ -583,7 +583,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         />
                         {formData.schemaType === 'HOWTO' && (
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Estimated Time (minutes)</label>
+                                <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">Estimated Time (minutes)</label>
                                 <input
                                     type="number"
                                     min={1}
@@ -596,7 +596,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         )}
 
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Publish Date</label>
+                            <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">Publish Date</label>
                             <input
                                 type="datetime-local"
                                 className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
@@ -643,7 +643,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                 <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-2 text-gray-400 group-hover:text-primary">
                                     <ImageIcon size={24} />
                                 </div>
-                                <p className="text-xs font-bold text-gray-500 group-hover:text-primary transition-colors">Choose from Media Library</p>
+                                <p className="text-xs font-bold text-gray-600 group-hover:text-primary transition-colors">Choose from Media Library</p>
                                 <p className="text-[10px] text-gray-400 mt-1">Click to browse your uploads</p>
                             </div>
                         )}
@@ -672,7 +672,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         />
 
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Tags</label>
+                            <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">Tags</label>
                             <TagInput
                                 value={formData.tags}
                                 onChange={(tags) => setFormData({ ...formData, tags })}
@@ -709,7 +709,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                         className={`text-sm py-1.5 px-3 rounded-lg cursor-default transition-colors hover:bg-gray-50 dark:hover:bg-white/5 ${
                                             heading.level === 1 ? 'font-bold text-gray-900 dark:text-white' :
                                             heading.level === 2 ? 'pl-5 text-gray-700 dark:text-gray-300' :
-                                            'pl-8 text-gray-500 dark:text-gray-400 text-xs'
+                                            'pl-8 text-gray-600 dark:text-gray-300 text-xs'
                                         }`}
                                     >
                                         <span className="flex items-center gap-2">
@@ -733,7 +733,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
         </div>
 
             {/* Footer Stats Bar */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10 p-2 flex gap-6 text-xs text-gray-500 dark:text-gray-400 justify-end px-8 z-40">
+            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10 p-2 flex gap-6 text-xs text-gray-600 dark:text-gray-300 justify-end px-8 z-40">
                 <span className="flex items-center gap-1"><FileText size={14} /> {wordCount} words</span>
                 <span className="flex items-center gap-1"><Clock size={14} /> {readingTime} min read</span>
                 <span className={`flex items-center gap-1 ${readingLevel.color}`}><BookOpen size={14} /> Level: {readingLevel.label} ({readingLevel.score})</span>

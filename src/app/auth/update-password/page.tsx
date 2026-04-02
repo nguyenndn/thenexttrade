@@ -32,7 +32,7 @@ export default function UpdatePasswordPage() {
         <div className="w-full max-w-md">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold mb-2">Set New Password</h1>
-                <p className="text-gray-500 dark:text-gray-400">
+                <p className="text-gray-600 dark:text-gray-300">
                     Your new password must be different from previously used passwords.
                 </p>
             </div>
@@ -46,9 +46,9 @@ export default function UpdatePasswordPage() {
                             type="password"
                             required
                             placeholder="Min 6 characters"
-                            className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 pl-11 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                            className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 pl-11 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                         />
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300" size={20} />
                     </div>
                 </div>
 
@@ -60,9 +60,9 @@ export default function UpdatePasswordPage() {
                             type="password"
                             required
                             placeholder="Re-enter password"
-                            className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 pl-11 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                            className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 pl-11 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                         />
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300" size={20} />
                     </div>
                 </div>
 

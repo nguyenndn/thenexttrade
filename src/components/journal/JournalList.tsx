@@ -30,7 +30,7 @@ import { Button } from "@/components/ui/Button";
 
 // Dynamic Imports for Modals
 const JournalForm = dynamic(() => import("@/components/journal/JournalForm"), {
-    loading: () => <div className="p-8 text-center text-gray-500">Loading form...</div>,
+    loading: () => <div className="p-8 text-center text-gray-600">Loading form...</div>,
     ssr: false
 });
 const TradeDetailSheet = dynamic(() => import("./TradeDetailSheet").then(mod => mod.TradeDetailSheet), {
@@ -362,7 +362,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                     {isLoading ? (
                                         <tr>
-                                            <td colSpan={14} className="px-6 py-8 text-center text-gray-500">Loading...</td>
+                                            <td colSpan={14} className="px-6 py-8 text-center text-gray-600">Loading...</td>
                                         </tr>
                                     ) : entries.length === 0 ? (
                                         <tr>
@@ -408,7 +408,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                                 {col.id === "status" && <StatusBadge status={entry.status} />}
                                                                 {col.id === "openTime" && format(new Date(entry.entryDate), "HH:mm")}
                                                                 {col.id === "closeTime" && (entry.exitDate ? format(new Date(entry.exitDate), "HH:mm") : "-")}
-                                                                {col.id === "volume" && <span className="font-mono text-gray-500">{(entry as any).lotSize || "0.00"}</span>}
+                                                                {col.id === "volume" && <span className="font-mono text-gray-600">{(entry as any).lotSize || "0.00"}</span>}
                                                                 {col.id === "pnl" && <PnLDisplay value={entry.pnl} />}
                                                                 {col.id === "tp" && <span className="font-mono text-primary font-medium">{(entry as any).takeProfit || "-"}</span>}
                                                                 {col.id === "sl" && <span className="font-mono text-red-500 font-medium">{(entry as any).stopLoss || "-"}</span>}
@@ -458,7 +458,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                         {/* Mobile View */}
                         <div className="md:hidden flex flex-col gap-3 p-4">
                             {isLoading ? (
-                                <div className="text-center text-gray-500 py-8">Loading...</div>
+                                <div className="text-center text-gray-600 py-8">Loading...</div>
                             ) : entries.length === 0 ? (
                                 <EmptyState
                                     icon={FolderOpen}

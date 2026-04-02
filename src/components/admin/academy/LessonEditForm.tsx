@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Save, Trash2, BookOpen, Clock, Eye, EyeOff } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -8,7 +8,8 @@ import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ModuleSelector } from "@/components/admin/academy/ModuleSelector";
-import { AIRewriteDialog } from "@/components/admin/academy/AIRewriteDialog";
+import { AIRewriteDialog, AIRewriteDialogRef } from "@/components/admin/academy/AIRewriteDialog";
+import { ContentSourceCard } from "@/components/admin/academy/ContentSourceCard";
 import { toast } from "sonner";
 
 interface LessonEditFormProps {
@@ -21,6 +22,10 @@ interface LessonEditFormProps {
         duration: number;
         moduleId: string;
         order: number;
+        rawContent?: string;
+        tone?: string;
+        sourceUrls?: string[];
+        metaDescription?: string;
     };
     modules: { id: string; title: string; levelTitle: string }[];
     backHref: string;
@@ -28,6 +33,7 @@ interface LessonEditFormProps {
 
 export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProps) {
     const router = useRouter();
+    const rewriteRef = useRef<AIRewriteDialogRef>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -38,6 +44,10 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
         content: lesson.content,
         moduleId: lesson.moduleId,
         status: (lesson as any).status || "draft" as "draft" | "published",
+        rawContent: lesson.rawContent || "",
+        tone: lesson.tone || "",
+        sourceUrls: lesson.sourceUrls || [] as string[],
+        metaDescription: lesson.metaDescription || "",
     });
 
     const wordCount = formData.content?.replace(/<[^>]*>?/gm, '').trim().split(/\s+/).filter(Boolean).length || 0;
@@ -120,9 +130,17 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                     <Trash2 size={18} />
                 </Button>
                 <AIRewriteDialog
-                    onApply={({ title, content }) => {
+                    ref={rewriteRef}
+                    onApply={({ title, content, rawContent, tone, sourceUrls, metaDescription }) => {
                         handleTitleChange(title);
-                        setFormData(prev => ({ ...prev, content }));
+                        setFormData(prev => ({
+                            ...prev,
+                            content,
+                            ...(rawContent && { rawContent }),
+                            ...(tone && { tone }),
+                            ...(sourceUrls?.length && { sourceUrls }),
+                            ...(metaDescription && { metaDescription }),
+                        }));
                     }}
                 />
                 <Button
@@ -146,7 +164,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                             value={formData.title}
                             onChange={e => handleTitleChange(e.target.value)}
                         />
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
                             <span>Slug:</span>
                             <span className="text-gray-400">/academy/</span>
                             <input
@@ -156,6 +174,22 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                                 className="bg-transparent border-b border-transparent hover:border-gray-300 focus:border-primary focus:outline-none text-gray-700 dark:text-gray-300 transition-colors"
                             />
                         </div>
+
+                        {/* Meta Description */}
+                        {formData.metaDescription && (
+                            <div>
+                                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1">
+                                    🔍 Meta Description <span className="font-normal text-gray-400">({formData.metaDescription.length}/160)</span>
+                                </label>
+                                <textarea
+                                    value={formData.metaDescription}
+                                    onChange={e => setFormData({ ...formData, metaDescription: e.target.value.slice(0, 160) })}
+                                    rows={2}
+                                    maxLength={160}
+                                    className="w-full px-3 py-2 text-sm bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-900/30 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 resize-none"
+                                />
+                            </div>
+                        )}
 
                         <RichTextEditor
                             content={formData.content}
@@ -168,7 +202,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                 <div className="lg:col-span-1 space-y-4">
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-4">
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Module *</label>
+                            <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">Module *</label>
                             <ModuleSelector
                                 modules={modules}
                                 value={formData.moduleId}
@@ -180,7 +214,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                     {/* Status */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-4 space-y-4">
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Status</label>
+                            <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">Status</label>
                             <div className="flex gap-2">
                                 <button
                                     type="button"
@@ -188,7 +222,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                                     className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
                                         formData.status === "draft"
                                             ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-700 dark:text-amber-400"
-                                            : "border-gray-200 dark:border-white/10 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"
+                                            : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
                                     }`}
                                 >
                                     <EyeOff size={13} /> Draft
@@ -199,7 +233,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                                     className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
                                         formData.status === "published"
                                             ? "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
-                                            : "border-gray-200 dark:border-white/10 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"
+                                            : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
                                     }`}
                                 >
                                     <Eye size={13} /> Published
@@ -211,16 +245,24 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                     {/* Word Count & Reading Time */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-4">
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-gray-500">
+                            <div className="flex items-center gap-2 text-gray-600">
                                 <BookOpen size={14} />
                                 <span className="text-xs font-medium">{wordCount.toLocaleString()} words</span>
                             </div>
-                            <div className="flex items-center gap-2 text-gray-500">
+                            <div className="flex items-center gap-2 text-gray-600">
                                 <Clock size={14} />
                                 <span className="text-xs font-medium">{readingTime} min read</span>
                             </div>
                         </div>
                     </div>
+
+                    {/* Content Source Info */}
+                    <ContentSourceCard
+                        rawContent={formData.rawContent}
+                        tone={formData.tone}
+                        sourceUrls={formData.sourceUrls}
+                        onRewrite={() => rewriteRef.current?.openWithContent(formData.rawContent)}
+                    />
                 </div>
             </div>
 

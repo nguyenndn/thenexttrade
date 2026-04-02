@@ -130,7 +130,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                 {isLoading ? (
                                     <div className="py-10 flex justify-center"><Loader2 className="animate-spin text-primary" /></div>
                                 ) : filteredQuizzes.length === 0 ? (
-                                    <p className="text-center text-gray-500 py-8">No quizzes found.</p>
+                                    <p className="text-center text-gray-600 py-8">No quizzes found.</p>
                                 ) : (
                                     filteredQuizzes.map(quiz => (
                                         <Button
@@ -141,7 +141,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                         >
                                             <div className="flex flex-col items-start text-left">
                                                 <h4 className="font-bold text-gray-900 dark:text-white text-base">{quiz.title}</h4>
-                                                <p className="text-xs text-gray-500 font-normal mt-0.5">{quiz._count?.questions || 0} Questions</p>
+                                                <p className="text-xs text-gray-600 font-normal mt-0.5">{quiz._count?.questions || 0} Questions</p>
                                             </div>
                                             <ChevronRight className="text-gray-300 group-hover:text-primary transition-colors" size={20} />
                                         </Button>
@@ -168,7 +168,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                 {isLoading ? (
                                     <div className="py-10 flex justify-center"><Loader2 className="animate-spin text-primary" /></div>
                                 ) : sourceQuestions.length === 0 ? (
-                                    <p className="text-center text-gray-500 py-8">This quiz has no questions.</p>
+                                    <p className="text-center text-gray-600 py-8">This quiz has no questions.</p>
                                 ) : (
                                     sourceQuestions.map(q => {
                                         const isSelected = selectedQuestionIds.has(q.id);
@@ -195,7 +195,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                                     </h4>
                                                     <div className="space-y-2 pl-1">
                                                         {q.options.map((opt: any) => (
-                                                            <div key={opt.id} className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-gray-400">
+                                                            <div key={opt.id} className="flex items-center gap-2.5 text-sm text-gray-600 dark:text-gray-300">
                                                                 {opt.isCorrect ? (
                                                                     <CheckCircle2 size={16} className="text-primary shrink-0" />
                                                                 ) : (
@@ -216,7 +216,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                 <Button
                                     variant="ghost"
                                     onClick={() => setStep("quiz-select")}
-                                    className="px-6 py-3 h-auto rounded-xl font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                    className="px-6 py-3 h-auto rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                                 >
                                     Back
                                 </Button>

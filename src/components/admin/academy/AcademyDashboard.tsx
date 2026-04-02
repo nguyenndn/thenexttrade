@@ -123,12 +123,12 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                             {level.title}
                         </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-6 min-h-[40px]">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-6 min-h-[40px]">
                             {level.description || "No description provided."}
                         </p>
 
                         <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-white/5">
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
                                 <Layers size={16} />
                                 <span>{level._count?.modules || level.modules?.length || 0} Modules</span>
                             </div>
@@ -152,7 +152,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                         <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <Plus size={32} className="text-gray-400 group-hover:text-primary" />
                         </div>
-                        <span className="font-bold text-gray-500 group-hover:text-primary">Create your first course</span>
+                        <span className="font-bold text-gray-600 group-hover:text-primary">Create your first course</span>
                     </Button>
                 )}
             </div>

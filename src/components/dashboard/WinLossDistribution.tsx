@@ -69,20 +69,20 @@ export function WinLossDistribution({ wins, losses, breakEvens, winRate }: WinLo
       <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-gray-200 dark:border-white/10">
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+          <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
             {wins} Wins
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+          <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
             {losses} Losses
           </span>
         </div>
         {breakEvens > 0 && (
           <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-gray-400" />
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+            <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
               {breakEvens} BE
             </span>
           </div>

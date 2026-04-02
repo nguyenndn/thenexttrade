@@ -67,13 +67,13 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
                             <GripVertical size={20} />
                         </Button>
 
-                        <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)} className="h-auto w-auto text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 rounded p-1.5">
+                        <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)} className="h-auto w-auto text-gray-600 hover:bg-gray-200 dark:hover:bg-white/10 rounded p-1.5">
                             {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                         </Button>
 
                         <div>
                             <h3 className="font-bold text-gray-900 dark:text-white text-sm">{module.title}</h3>
-                            <span className="text-xs text-gray-500">{module.lessons?.length || 0} Lessons</span>
+                            <span className="text-xs text-gray-600">{module.lessons?.length || 0} Lessons</span>
                         </div>
                     </div>
 
@@ -109,7 +109,7 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
                         <Button
                             variant="outline"
                             onClick={() => onAddLesson(module.id)}
-                            className="mt-4 w-full h-auto py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-gray-500 border border-dashed border-gray-300 dark:border-white/10 rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group"
+                            className="mt-4 w-full h-auto py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-gray-600 border border-dashed border-gray-300 dark:border-white/10 rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group"
                         >
                             <Plus size={16} className="group-hover:scale-110 transition-transform" />
                             Add Lesson

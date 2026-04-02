@@ -113,7 +113,7 @@ export function MobileBottomTabBar() {
                                         <Icon
                                             size={20}
                                             className={cn(
-                                                isActive ? "text-primary" : "text-gray-400 dark:text-gray-500"
+                                                isActive ? "text-primary" : "text-gray-600 dark:text-gray-300"
                                             )}
                                         />
                                         <span>{item.name}</span>
@@ -168,7 +168,7 @@ export function MobileBottomTabBar() {
                                     "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors relative",
                                     isActive || isSheetOpen
                                         ? "text-primary"
-                                        : "text-gray-400 dark:text-gray-500"
+                                        : "text-gray-600 dark:text-gray-300"
                                 )}
                                 aria-label={group.label}
                             >
@@ -182,14 +182,14 @@ export function MobileBottomTabBar() {
                                         "transition-colors",
                                         isActive || isSheetOpen
                                             ? "text-primary"
-                                            : "text-gray-400 dark:text-gray-500"
+                                            : "text-gray-600 dark:text-gray-300"
                                     )}
                                 />
                                 <span className={cn(
                                     "text-[10px] font-semibold",
                                     isActive || isSheetOpen
                                         ? "text-primary"
-                                        : "text-gray-400 dark:text-gray-500"
+                                        : "text-gray-600 dark:text-gray-300"
                                 )}>
                                     {group.label}
                                 </span>

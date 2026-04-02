@@ -210,7 +210,7 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
                                     />
                                     <div className="flex flex-col text-left overflow-hidden">
                                         <span className="font-medium text-sm truncate"><AccountLabelDisplay account={account} /></span>
-                                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">{account.name}</span>
+                                        <span className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 truncate">{account.name}</span>
                                     </div>
                                 </CommandItem>
                             ))}
