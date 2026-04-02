@@ -122,14 +122,14 @@ export function EAProductForm({ product }: EAProductFormProps) {
 
                 {/* Type */}
                 <div className="space-y-2">
-                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                         Type
                     </label>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
-                                className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-900 dark:text-white font-medium"
+                                className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium"
                             >
                                 <span>{typeValue === EAType.AUTO_TRADE ? "Auto Trade" : typeValue === EAType.MANUAL_ASSIST ? "Manual Assist" : "Indicator"}</span>
                                 <ChevronDown size={14} className="opacity-50" />
@@ -145,14 +145,14 @@ export function EAProductForm({ product }: EAProductFormProps) {
 
                 {/* Platform */}
                 <div className="space-y-2">
-                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                         Platform
                     </label>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
-                                className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-900 dark:text-white font-medium"
+                                className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium"
                             >
                                 <span>{platformValue === PlatformType.BOTH ? "Both (MT4 & MT5)" : platformValue === PlatformType.MT4 ? "MT4 Only" : "MT5 Only"}</span>
                                 <ChevronDown size={14} className="opacity-50" />
@@ -169,13 +169,13 @@ export function EAProductForm({ product }: EAProductFormProps) {
 
             {/* Description */}
             <div className="space-y-2">
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
                     Description
                 </label>
                 <textarea
                     {...register("description")}
                     rows={4}
-                    className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 min-h-[100px]"
+                    className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px]"
                     placeholder="Product details..."
                 />
                 {errors.description && <p className="text-xs text-red-500 font-bold">{String(errors.description.message)}</p>}

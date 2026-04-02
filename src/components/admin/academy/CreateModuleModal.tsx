@@ -87,12 +87,12 @@ export function CreateModuleModal({ isOpen, onClose, levelId, onSuccess }: Creat
                 />
 
                 <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                        Description <span className="font-normal text-gray-400 normal-case">(Optional)</span>
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                        Description <span className="font-normal text-gray-500 normal-case">(Optional)</span>
                     </label>
                     <textarea
                         {...register("description")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 min-h-[100px] resize-none font-medium"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none font-medium"
                         placeholder="Describe the key concepts covered in this module..."
                     />
                 </div>
@@ -103,7 +103,7 @@ export function CreateModuleModal({ isOpen, onClose, levelId, onSuccess }: Creat
                         variant="outline"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
+                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold rounded-xl px-6"
                     >Cancel
                     </Button>
                     <Button

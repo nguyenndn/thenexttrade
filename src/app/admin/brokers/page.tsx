@@ -19,7 +19,7 @@ export default async function AdminBrokersPage() {
             <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                 <table className="w-full text-left border-collapse">
-                    <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+                    <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
                         <tr>
                             <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Broker</th>
                             <th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Rating</th>
@@ -57,7 +57,7 @@ export default async function AdminBrokersPage() {
                                             </span>
                                         ))}
                                         {broker.features.length > 2 && (
-                                            <span className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-white/10 rounded-full text-gray-400">
+                                            <span className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-white/10 rounded-full text-gray-500">
                                                 +{broker.features.length - 2}
                                             </span>
                                         )}
@@ -80,7 +80,7 @@ export default async function AdminBrokersPage() {
                                         <Link href={`/admin/brokers/${broker.id}`} className="p-2 hover:bg-blue-500/10 text-blue-500 rounded-lg">
                                             <Edit size={16} />
                                         </Link>
-                                        <Link href={broker.affiliateUrl || '#'} target="_blank" className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 rounded-lg">
+                                        <Link href={broker.affiliateUrl || '#'} target="_blank" className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 rounded-lg">
                                             <Globe size={16} />
                                         </Link>
                                         {/* Delete Button (Ideally client component for interactivity, keeping simple here or would use form action) */}

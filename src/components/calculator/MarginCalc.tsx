@@ -51,7 +51,7 @@ export function MarginCalc() {
                                 <Button
                                     type="button"
                                     variant="ghost"
-                                    className="w-full px-4 py-3 h-auto rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium text-gray-900 dark:text-white flex items-center justify-between"
+                                    className="w-full px-4 py-3 h-auto rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium text-gray-700 dark:text-white flex items-center justify-between"
                                 >
                                     <span className="font-bold text-lg">1:{inputs.leverage}</span>
                                     <ChevronDown size={16} className="text-gray-600 shrink-0" />
@@ -98,12 +98,12 @@ export function MarginCalc() {
 
                 <div className="space-y-3">
                     <div className="bg-white dark:bg-white/5 rounded-xl p-3 flex justify-between items-center border border-gray-200 dark:border-white/10 hover:border-primary/30 transition-colors">
-                        <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">Position Value</span>
-                        <span className="text-sm font-bold text-gray-900 dark:text-white">${(inputs.lotSize * 100000 * inputs.currentPrice).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+                        <span className="text-xs font-semibold text-gray-600 dark:text-gray-500">Position Value</span>
+                        <span className="text-sm font-bold text-gray-700 dark:text-white">${(inputs.lotSize * 100000 * inputs.currentPrice).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="bg-white dark:bg-white/5 rounded-xl p-3 border border-gray-200 dark:border-white/10 hover:border-primary/30 transition-colors">
                         <div className="flex justify-between mb-1.5">
-                            <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">Margin %</span>
+                            <span className="text-xs font-semibold text-gray-600 dark:text-gray-500">Margin %</span>
                             <span className="text-xs font-bold text-primary">{((1 / inputs.leverage) * 100).toFixed(2)}%</span>
                         </div>
                         <div className="w-full bg-gray-200 dark:bg-white/10 rounded-full h-2">

@@ -21,14 +21,14 @@ export function SimilarTools({ tools }: SimilarToolsProps) {
                         <tool.icon size={20} strokeWidth={1.5} />
                     </div>
                     <div className="min-w-0 flex-1">
-                        <p className="font-bold text-sm text-gray-900 dark:text-white group-hover:text-primary transition-colors truncate">
+                        <p className="font-bold text-sm text-gray-700 dark:text-white group-hover:text-primary transition-colors truncate">
                             {tool.shortTitle}
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
                             {tool.description}
                         </p>
                     </div>
-                    <ArrowRight size={14} className="text-gray-400 group-hover:text-primary shrink-0 transition-colors" />
+                    <ArrowRight size={14} className="text-gray-500 group-hover:text-primary shrink-0 transition-colors" />
                 </Link>
             ))}
         </div>

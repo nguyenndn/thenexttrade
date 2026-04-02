@@ -381,7 +381,7 @@ export function CalculatorHub() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-gray-700 dark:text-white">
           Trading Calculators
         </h1>
         <p className="text-gray-500 text-sm mt-1">
@@ -401,7 +401,7 @@ export function CalculatorHub() {
                 flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all
                 ${activeCalc === calc.id
                   ? "bg-[#00C888] text-white shadow-lg shadow-[#00C888]/25"
-                  : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
                 }
               `}
             >
@@ -480,7 +480,7 @@ export function PositionSizeCalc() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Inputs */}
         <div className="space-y-4">
-          <h3 className="font-bold text-gray-900 dark:text-white">
+          <h3 className="font-bold text-gray-700 dark:text-white">
             Input Parameters
           </h3>
 
@@ -488,7 +488,7 @@ export function PositionSizeCalc() {
           <div className="space-y-2">
             <Label htmlFor="accountBalance">Account Balance</Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                 $
               </span>
               <Input
@@ -519,7 +519,7 @@ export function PositionSizeCalc() {
                 }
                 className="pr-7"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
                 %
               </span>
             </div>
@@ -533,7 +533,7 @@ export function PositionSizeCalc() {
                     px-3 py-1 text-xs font-medium rounded-lg transition-colors
                     ${inputs.riskPercent === pct
                       ? "bg-[#00C888] text-white"
-                      : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                      : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
                     }
                   `}
                 >
@@ -568,7 +568,7 @@ export function PositionSizeCalc() {
 
         {/* Results */}
         <div className="space-y-4">
-          <h3 className="font-bold text-gray-900 dark:text-white">
+          <h3 className="font-bold text-gray-700 dark:text-white">
             Calculated Position Size
           </h3>
 
@@ -580,31 +580,31 @@ export function PositionSizeCalc() {
                 <p className="text-4xl font-black text-[#00C888]">
                   {result.lotSize.toFixed(2)}
                 </p>
-                <p className="text-sm text-gray-400 mt-1">Standard Lots</p>
+                <p className="text-sm text-gray-500 mt-1">Standard Lots</p>
               </div>
 
               {/* Additional Results */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4">
-                  <p className="text-xs text-gray-400">Mini Lots</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-xs text-gray-500">Mini Lots</p>
+                  <p className="text-xl font-bold text-gray-700 dark:text-white">
                     {result.miniLots.toFixed(1)}
                   </p>
                 </div>
                 <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4">
-                  <p className="text-xs text-gray-400">Micro Lots</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-xs text-gray-500">Micro Lots</p>
+                  <p className="text-xl font-bold text-gray-700 dark:text-white">
                     {result.microLots}
                   </p>
                 </div>
                 <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4">
-                  <p className="text-xs text-gray-400">Units</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-xs text-gray-500">Units</p>
+                  <p className="text-xl font-bold text-gray-700 dark:text-white">
                     {result.units.toLocaleString()}
                   </p>
                 </div>
                 <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4">
-                  <p className="text-xs text-gray-400">Risk Amount</p>
+                  <p className="text-xs text-gray-500">Risk Amount</p>
                   <p className="text-xl font-bold text-red-500">
                     ${result.riskAmount.toFixed(2)}
                   </p>
@@ -687,7 +687,7 @@ export function RiskRewardCalc() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Inputs */}
         <div className="space-y-4">
-          <h3 className="font-bold text-gray-900 dark:text-white">
+          <h3 className="font-bold text-gray-700 dark:text-white">
             Trade Parameters
           </h3>
 
@@ -702,7 +702,7 @@ export function RiskRewardCalc() {
                   flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2
                   ${inputs.direction === "LONG"
                     ? "bg-green-500 text-white"
-                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-500"
                   }
                 `}
               >
@@ -716,7 +716,7 @@ export function RiskRewardCalc() {
                   flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2
                   ${inputs.direction === "SHORT"
                     ? "bg-red-500 text-white"
-                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-500"
                   }
                 `}
               >
@@ -777,7 +777,7 @@ export function RiskRewardCalc() {
 
         {/* Results */}
         <div className="space-y-4">
-          <h3 className="font-bold text-gray-900 dark:text-white">
+          <h3 className="font-bold text-gray-700 dark:text-white">
             Risk/Reward Analysis
           </h3>
 
@@ -789,7 +789,7 @@ export function RiskRewardCalc() {
                 <p className="text-4xl font-black text-purple-500">
                   {result.rrString}
                 </p>
-                <p className="text-sm text-gray-400 mt-2">
+                <p className="text-sm text-gray-500 mt-2">
                   {result.rrRatio >= 2
                     ? "✅ Good R:R ratio"
                     : result.rrRatio >= 1.5
@@ -814,7 +814,7 @@ export function RiskRewardCalc() {
                     {result.rewardPips.toFixed(1)} pips
                   </div>
                 </div>
-                <div className="flex justify-between text-xs text-gray-400">
+                <div className="flex justify-between text-xs text-gray-500">
                   <span>Risk</span>
                   <span>Reward</span>
                 </div>
@@ -824,13 +824,13 @@ export function RiskRewardCalc() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-red-50 dark:bg-red-500/10 rounded-xl p-4">
                   <p className="text-xs text-red-500">Risk (SL)</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-xl font-bold text-gray-700 dark:text-white">
                     {result.riskPips.toFixed(1)} pips
                   </p>
                 </div>
                 <div className="bg-green-50 dark:bg-green-500/10 rounded-xl p-4">
                   <p className="text-xs text-green-500">Reward (TP)</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-xl font-bold text-gray-700 dark:text-white">
                     {result.rewardPips.toFixed(1)} pips
                   </p>
                 </div>
@@ -838,13 +838,13 @@ export function RiskRewardCalc() {
 
               {/* Breakeven Win Rate */}
               <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-500">
                   <span className="font-medium">Breakeven Win Rate:</span>{" "}
-                  <span className="font-bold text-gray-900 dark:text-white">
+                  <span className="font-bold text-gray-700 dark:text-white">
                     {result.winRateToBreakeven.toFixed(1)}%
                   </span>
                 </p>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   You need to win at least {result.winRateToBreakeven.toFixed(1)}% of
                   trades to break even with this R:R ratio.
                 </p>
@@ -932,7 +932,7 @@ export function CurrencyPairSelect({ value, onChange }: CurrencyPairSelectProps)
         <span>{value}</span>
         <ChevronDown
           size={16}
-          className={`text-gray-400 transition-transform ${
+          className={`text-gray-500 transition-transform ${
             isOpen ? "rotate-180" : ""
           }`}
         />
@@ -953,7 +953,7 @@ export function CurrencyPairSelect({ value, onChange }: CurrencyPairSelectProps)
               <div className="relative">
                 <Search
                   size={14}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
                 />
                 <input
                   type="text"
@@ -969,7 +969,7 @@ export function CurrencyPairSelect({ value, onChange }: CurrencyPairSelectProps)
             <div className="overflow-y-auto max-h-60">
               {Object.entries(filteredPairs).map(([category, pairs]) => (
                 <div key={category}>
-                  <p className="px-3 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50 dark:bg-gray-800/50">
+                  <p className="px-3 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-50 dark:bg-gray-800/50">
                     {category}
                   </p>
                   {pairs.map((pair) => (

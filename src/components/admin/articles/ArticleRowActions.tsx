@@ -50,16 +50,16 @@ export function ArticleRowActions({ article }: { article: { id: string, slug: st
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" aria-label="Article Actions" className="h-8 w-8 p-0 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    <Button variant="ghost" size="icon" aria-label="Article Actions" className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors">
                         <MoreHorizontal size={18} />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-200 dark:border-white/10">
                     <DropdownMenuItem onClick={() => window.open(`/articles/${article.slug}`, '_blank')} className="font-medium cursor-pointer rounded-lg mx-1 my-1">
-                        <ArrowUpRight size={14} className="mr-2 text-gray-400" /> View
+                        <ArrowUpRight size={14} className="mr-2 text-gray-500" /> View
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => router.push(`/admin/articles/${article.id}/edit`)} className="font-medium cursor-pointer rounded-lg mx-1 my-1">
-                        <Edit2 size={14} className="mr-2 text-gray-400" /> Edit
+                        <Edit2 size={14} className="mr-2 text-gray-500" /> Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={confirmDelete} className="text-red-500 focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1">
                         <Trash2 size={14} className="mr-2" /> Delete

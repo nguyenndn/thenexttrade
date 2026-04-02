@@ -36,7 +36,7 @@ interface CommentListProps {
 export function CommentList({ comments, articleId, currentUser, onRefresh }: CommentListProps) {
     if (comments.length === 0) {
         return (
-            <div className="text-center py-10 text-gray-400">
+            <div className="text-center py-10 text-gray-500">
                 No comments yet. Be the first to share your thoughts!
             </div>
         );
@@ -115,10 +115,10 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
 
             <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                    <span className="font-bold text-gray-900 dark:text-gray-100">
+                    <span className="font-bold text-gray-700 dark:text-gray-100">
                         {comment.user.name || "Anonymous"}
                     </span>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-500">
                         {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
                     </span>
                 </div>
@@ -142,7 +142,7 @@ function CommentItem({ comment, articleId, currentUser, onRefresh }: {
                             variant="ghost"
                             onClick={confirmDelete}
                             disabled={isDeleting}
-                            className="flex items-center gap-1.5 h-auto px-2 py-1 text-gray-400 hover:text-red-500 transition-colors font-medium"
+                            className="flex items-center gap-1.5 h-auto px-2 py-1 text-gray-500 hover:text-red-500 transition-colors font-medium"
                         >
                             <Trash2 size={14} />
                             Delete

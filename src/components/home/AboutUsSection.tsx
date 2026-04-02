@@ -61,7 +61,7 @@ export function AboutUsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Brand Story — full width on tablet */}
           <div className="lg:col-span-1">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
               <Globe size={22} className="text-primary" />
               About TheNextTrade
             </h2>
@@ -71,7 +71,7 @@ export function AboutUsSection() {
                 From hard lessons to building the tools every trader deserves.
               </p>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+            <p className="text-sm text-gray-600 dark:text-gray-500 leading-relaxed mb-6">
               After years of losses, scattered learning, and chasing shortcuts, I built TheNextTrade — a free, structured trading education platform so new traders don&apos;t repeat my mistakes.
             </p>
             <Link href="/about">
@@ -88,7 +88,7 @@ export function AboutUsSection() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-8 lg:col-span-2 lg:contents">
             {/* Team & Partners */}
             <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5">Team & Partners</h3>
+              <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-5">Team & Partners</h3>
               <div className="space-y-3">
                 {TEAM.map((member, idx) => (
                   <div
@@ -99,7 +99,7 @@ export function AboutUsSection() {
                       {member.initials}
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-900 dark:text-white">{member.name}</p>
+                      <p className="text-sm font-bold text-gray-700 dark:text-white">{member.name}</p>
                       <p className="text-xs text-gray-600 dark:text-gray-300">{member.role}</p>
                     </div>
                   </div>
@@ -109,7 +109,7 @@ export function AboutUsSection() {
 
             {/* Our Sites */}
             <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5">Our Sites</h3>
+              <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-5">Our Sites</h3>
               <div className="space-y-3">
                 {SITES.map((site, idx) => (
                   <a
@@ -123,7 +123,7 @@ export function AboutUsSection() {
                       {site.initials}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
+                      <p className="text-sm font-bold text-gray-700 dark:text-white group-hover:text-primary transition-colors">
                         {site.name}
                       </p>
                       <p className="text-xs text-gray-600 dark:text-gray-300">{site.desc}</p>

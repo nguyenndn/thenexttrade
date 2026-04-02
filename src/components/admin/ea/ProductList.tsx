@@ -101,7 +101,7 @@ export function ProductList({ products }: ProductListProps) {
     }, [filteredProducts, sortField, sortDirection]);
 
     const SortIcon = ({ field }: { field: SortField }) => {
-        if (sortField !== field) return <ArrowUpDown size={14} className="ml-1 text-gray-400 opacity-50" />;
+        if (sortField !== field) return <ArrowUpDown size={14} className="ml-1 text-gray-500 opacity-50" />;
         return sortDirection === "asc" ? (
             <ChevronUp size={14} className="ml-1 text-primary" />
         ) : (
@@ -115,13 +115,13 @@ export function ProductList({ products }: ProductListProps) {
             <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
                 {/* Search */}
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
-                    <Search size={16} className="text-gray-400" aria-hidden="true" />
+                    <Search size={16} className="text-gray-500" aria-hidden="true" />
                     <input
                         type="text"
                         placeholder="Search products..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
+                        className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
                     />
                 </div>
 
@@ -137,7 +137,7 @@ export function ProductList({ products }: ProductListProps) {
                                 <span className="whitespace-nowrap flex items-center gap-1.5 font-medium">
                                     Type: <span className="text-primary font-bold">{filterType === "ALL" ? "All" : filterType.replace("_", " ")}</span>
                                 </span>
-                                <ChevronDown size={14} className="text-gray-400 group-hover:text-primary transition-colors" aria-hidden="true" />
+                                <ChevronDown size={14} className="text-gray-500 group-hover:text-primary transition-colors" aria-hidden="true" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-full md:w-48">
@@ -158,7 +158,7 @@ export function ProductList({ products }: ProductListProps) {
                         <div className="w-20 h-20 mx-auto bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6">
                             <Bot size={40} className="text-gray-300 dark:text-gray-600" aria-hidden="true" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Products Found</h3>
+                        <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">No Products Found</h3>
                         <p className="text-gray-600 dark:text-gray-300">
                             {searchTerm || filterType !== "ALL"
                                 ? "Try adjusting your filters."
@@ -169,7 +169,7 @@ export function ProductList({ products }: ProductListProps) {
                     <>
                         <div className="overflow-x-auto custom-scrollbar flex-1">
                             <table className="w-full text-left text-sm border-collapse">
-                                <thead className="bg-gray-50/50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider backdrop-blur-sm sticky top-0 z-10">
+                                <thead className="bg-gray-50/50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider backdrop-blur-sm sticky top-0 z-10">
                                     <tr>
                                         <th className="px-8 py-4 border-b border-gray-200 dark:border-white/5 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("name")}>
                                             <div className="flex items-center">Product <SortIcon field="name" /></div>
@@ -198,11 +198,11 @@ export function ProductList({ products }: ProductListProps) {
                                                         {product.thumbnail ? (
                                                             <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                                         ) : (
-                                                            <Bot size={20} className="text-gray-400" aria-hidden="true" />
+                                                            <Bot size={20} className="text-gray-500" aria-hidden="true" />
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white text-base group-hover:text-primary transition-colors">{product.name}</p>
+                                                        <p className="font-bold text-gray-700 dark:text-white text-base group-hover:text-primary transition-colors">{product.name}</p>
                                                         <p className="text-xs text-gray-600 mt-0.5">{format(new Date(product.createdAt), "dd MMM yyyy")}</p>
                                                     </div>
                                                 </div>
@@ -218,15 +218,15 @@ export function ProductList({ products }: ProductListProps) {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 font-medium text-sm">
-                                                    <Download size={16} className="text-gray-400" aria-hidden="true" />
+                                                <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-500 font-medium text-sm">
+                                                    <Download size={16} className="text-gray-500" aria-hidden="true" />
                                                     {product.totalDownloads}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
                                                     <div className={`w-2 h-2 rounded-full ${product.isActive ? "bg-emerald-500 shadow-[0_0_8px_hsl(var(--primary))]" : "bg-gray-300 dark:bg-gray-600"}`} />
-                                                    <span className={`text-sm font-medium ${product.isActive ? "text-gray-900 dark:text-gray-200" : "text-gray-600"}`}>
+                                                    <span className={`text-sm font-medium ${product.isActive ? "text-gray-700 dark:text-gray-200" : "text-gray-600"}`}>
                                                         {product.isActive ? "Active" : "Disabled"}
                                                     </span>
                                                 </div>
@@ -241,7 +241,7 @@ export function ProductList({ products }: ProductListProps) {
                                                     <Button
                                                         size="icon"
                                                         variant="ghost"
-                                                        className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                        className="h-8 w-8 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                                         onClick={() => confirmDelete(product.id)}
                                                         aria-label={`Delete ${product.name}`}
                                                     >

@@ -83,7 +83,7 @@ export function AddAccountModal({
             <div className="relative z-10 bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200 cursor-default">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                         {step === "create" && "Account Details"}
                         {step === "setup-instructions" && "Setup Instructions"}
                     </h2>
@@ -92,7 +92,7 @@ export function AddAccountModal({
                         size="icon"
                         onClick={handleClose}
                         aria-label="Close modal"
-                        className="rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                        className="rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                     >
                         <X size={20} />
                     </Button>
@@ -111,7 +111,7 @@ export function AddAccountModal({
                             />
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
                                     Label Color
                                 </label>
                                 <div className="flex flex-wrap gap-2">
@@ -183,16 +183,16 @@ export function AddAccountModal({
 
                             {/* Instructions */}
                             <div className="space-y-4">
-                                <h3 className="font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-white/10 pb-2">
+                                <h3 className="font-semibold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-2">
                                     Setup Steps
                                 </h3>
-                                <ol className="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+                                <ol className="space-y-4 text-sm text-gray-600 dark:text-gray-500">
                                     <li className="flex gap-3 items-start">
                                         <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                                             1
                                         </span>
                                         <span>
-                                            Download the <strong className="text-gray-900 dark:text-white">TheNextTrade Sync EA</strong> for {platform}.
+                                            Download the <strong className="text-gray-700 dark:text-white">TheNextTrade Sync EA</strong> for {platform}.
                                         </span>
                                     </li>
                                     <li className="flex gap-3 items-start">

@@ -94,7 +94,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                             <div className="relative" onClick={(e) => e.stopPropagation()}>
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-400">
+                                        <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors text-gray-500">
                                             <MoreVertical size={18} />
                                         </Button>
                                     </PopoverTrigger>
@@ -120,7 +120,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                             </div>
                         </div>
 
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                        <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">
                             {level.title}
                         </h3>
                         <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-6 min-h-[40px]">
@@ -150,7 +150,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                         className="flex flex-col items-center justify-center gap-4 h-[250px] w-full border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl hover:border-primary hover:bg-primary/5 transition-all group p-0 bg-transparent hover:text-primary"
                     >
                         <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <Plus size={32} className="text-gray-400 group-hover:text-primary" />
+                            <Plus size={32} className="text-gray-500 group-hover:text-primary" />
                         </div>
                         <span className="font-bold text-gray-600 group-hover:text-primary">Create your first course</span>
                     </Button>

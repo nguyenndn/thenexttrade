@@ -35,7 +35,7 @@ export default function Verify2FAPage() {
                         <Shield size={32} className="text-primary" />
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">Two-Factor Authentication</h1>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-gray-500 text-sm">
                         Enter the 6-digit code from your authenticator app to continue.
                     </p>
                 </div>

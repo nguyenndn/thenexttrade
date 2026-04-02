@@ -476,7 +476,7 @@ export function SessionDashboard() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-gray-700 dark:text-white flex items-center gap-3">
             <Clock className="text-blue-500" />
             Session Analysis
           </h1>
@@ -546,11 +546,11 @@ function QuickStatCard({
     <div className="bg-white dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
         <Icon size={16} className={color} />
-        <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">
+        <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">
           {label}
         </span>
       </div>
-      <p className="text-lg font-bold text-gray-900 dark:text-white">
+      <p className="text-lg font-bold text-gray-700 dark:text-white">
         {value}
       </p>
     </div>
@@ -577,8 +577,8 @@ function SessionLoadingSkeleton() {
 function SessionEmptyState() {
   return (
     <div className="text-center py-20">
-      <Clock size={48} className="mx-auto text-gray-400 mb-4" />
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      <Clock size={48} className="mx-auto text-gray-500 mb-4" />
+      <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">
         No session data yet
       </h3>
       <p className="text-gray-500">
@@ -622,7 +622,7 @@ interface SessionPerformanceProps {
 export function SessionPerformance({ data }: SessionPerformanceProps) {
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-      <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+      <h3 className="font-bold text-gray-700 dark:text-white mb-2">
         P&L by Session
       </h3>
       <p className="text-sm text-gray-500 mb-4">
@@ -758,7 +758,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
 
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-      <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+      <h3 className="font-bold text-gray-700 dark:text-white mb-2">
         24-Hour Trading Heatmap
       </h3>
       <p className="text-sm text-gray-500 mb-4">
@@ -776,7 +776,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                 aspect-square rounded-lg flex items-center justify-center
                 text-[10px] font-bold cursor-pointer transition-all hover:scale-110
                 ${getColor(hour)}
-                ${hour.totalTrades === 0 ? 'text-gray-400' : 'text-white'}
+                ${hour.totalTrades === 0 ? 'text-gray-500' : 'text-white'}
               `}
               title={`${hour.hourLabel} UTC\nTrades: ${hour.totalTrades}\nWin Rate: ${hour.winRate.toFixed(0)}%\nP&L: $${hour.totalPnL.toFixed(0)}`}
             >
@@ -790,7 +790,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
           {fullHours.map((hour) => (
             <div
               key={hour.hour}
-              className="text-center text-[8px] text-gray-400"
+              className="text-center text-[8px] text-gray-500"
             >
               {hour.hour}
             </div>
@@ -858,7 +858,7 @@ export function SessionRecommendations({ recommendations }: SessionRecommendatio
         <div className="p-2 bg-blue-500/20 rounded-xl">
           <Lightbulb size={20} className="text-blue-500" />
         </div>
-        <h3 className="font-bold text-gray-900 dark:text-white">
+        <h3 className="font-bold text-gray-700 dark:text-white">
           Session Insights
         </h3>
       </div>

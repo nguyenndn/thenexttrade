@@ -39,9 +39,9 @@ function AccountLabelDisplay({ account }: { account: TradingAccount }) {
 
     return (
         <span className="inline-flex items-center gap-1.5 truncate">
-            {platform && <span className="text-gray-400 font-normal">{platform}</span>}
+            {platform && <span className="text-gray-500 font-normal">{platform}</span>}
             <span className={typeColor}>{displayType}</span>
-            <span className="text-gray-600 dark:text-gray-300">- {broker} <span className="text-gray-400">{accNumber}</span></span>
+            <span className="text-gray-600 dark:text-gray-300">- {broker} <span className="text-gray-500">{accNumber}</span></span>
         </span>
     );
 }

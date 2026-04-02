@@ -74,7 +74,7 @@ export default function CreateBroadcastPage() {
     return (
         <div className="max-w-2xl mx-auto space-y-4">
             <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-3xl font-bold text-gray-700 dark:text-white">
                     Create Broadcast
                 </h1>
                 <p className="text-gray-600 dark:text-gray-300 mt-1">
@@ -94,11 +94,11 @@ export default function CreateBroadcastPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">Message</label>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Message</label>
                         <textarea
                             {...register("message")}
                             rows={4}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                             placeholder="We will be performing scheduled maintenance on..."
                         />
                         {errors.message && <p className="text-xs text-red-500">Required</p>}
@@ -106,12 +106,12 @@ export default function CreateBroadcastPage() {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Type</label>
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Type</label>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-900 dark:text-white font-medium capitalize"
+                                        className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
                                     >
                                         <span>{typeValue.toLowerCase()}</span>
                                         <ChevronDown size={14} className="opacity-50" />
@@ -127,12 +127,12 @@ export default function CreateBroadcastPage() {
                             </DropdownMenu>
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Priority</label>
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Priority</label>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-900 dark:text-white font-medium capitalize"
+                                        className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
                                     >
                                         <span>{priorityValue.toLowerCase()}</span>
                                         <ChevronDown size={14} className="opacity-50" />
@@ -164,7 +164,7 @@ export default function CreateBroadcastPage() {
                             {...register("sendAt")}
                             icon={Calendar}
                         />
-                        <p className="text-xs text-gray-400">Leave blank to send immediately.</p>
+                        <p className="text-xs text-gray-500">Leave blank to send immediately.</p>
                     </div>
 
                     <div className="flex justify-end gap-3 pt-4">

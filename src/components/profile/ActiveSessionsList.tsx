@@ -71,12 +71,12 @@ export function ActiveSessionsList() {
     };
 
     if (loading) {
-        return <div className="p-8 text-center text-gray-400"><Loader2 className="mx-auto animate-spin" /> Loading sessions...</div>;
+        return <div className="p-8 text-center text-gray-500"><Loader2 className="mx-auto animate-spin" /> Loading sessions...</div>;
     }
 
     return (
         <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Active Sessions</h3>
+            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4">Active Sessions</h3>
             <div className="space-y-4">
                 {sessions.length === 0 && (
                     <div className="text-center text-gray-600 py-4">No active sessions found.</div>
@@ -93,7 +93,7 @@ export function ActiveSessionsList() {
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <p className="font-bold text-gray-900 dark:text-white text-sm">
+                                        <p className="font-bold text-gray-700 dark:text-white text-sm">
                                             {session.device || "Unknown Device"}
                                         </p>
                                         {isCurrent && (
@@ -116,7 +116,7 @@ export function ActiveSessionsList() {
                                     size="icon"
                                     onClick={() => confirmRevoke(session.id)}
                                     isLoading={revokingId === session.id}
-                                    className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
+                                    className="text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
                                     title="Revoke Session"
                                 >
                                     {revokingId !== session.id && <LogOut size={18} />}

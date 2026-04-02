@@ -63,7 +63,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
 
                     <div className="group">
                         <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
-                            Description <span className="font-normal text-gray-400">(Optional)</span>
+                            Description <span className="font-normal text-gray-500">(Optional)</span>
                         </label>
                         <textarea
                             value={description}
@@ -77,7 +77,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
                         <Button
                             variant="ghost"
                             onClick={onClose}
-                            className="px-6 py-3 h-auto rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                            className="px-6 py-3 h-auto rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                         >
                             Cancel
                         </Button>

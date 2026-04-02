@@ -31,7 +31,7 @@ export function TopLearnersWidget({ users }: { users: TopUser[] }) {
 
     return (
         <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-amber-500" aria-hidden="true" />
                 Top Learners
             </h3>
@@ -61,7 +61,7 @@ export function TopLearnersWidget({ users }: { users: TopUser[] }) {
                                 )}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <div className="font-semibold text-gray-900 dark:text-white truncate text-sm">
+                                <div className="font-semibold text-gray-700 dark:text-white truncate text-sm">
                                     {user.name || "Anonymous"}
                                 </div>
                                 {/* Progress bar */}
@@ -78,7 +78,7 @@ export function TopLearnersWidget({ users }: { users: TopUser[] }) {
                                 <div className="font-bold text-indigo-600 dark:text-indigo-400 text-sm">
                                     {user.progressCount}
                                 </div>
-                                <div className="text-[10px] text-gray-400 uppercase font-medium">
+                                <div className="text-[10px] text-gray-500 uppercase font-medium">
                                     Lessons
                                 </div>
                             </div>
@@ -87,7 +87,7 @@ export function TopLearnersWidget({ users }: { users: TopUser[] }) {
                 })}
 
                 {users.length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+                    <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                         <Trophy className="w-10 h-10 mb-3 opacity-30" />
                         <p className="font-medium">No active learners yet</p>
                     </div>

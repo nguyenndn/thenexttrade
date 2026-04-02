@@ -18,7 +18,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps & { startIcon?: Reac
                 )}
                 <div className="relative">
                     {startIcon && (
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-10">
                             {startIcon}
                         </div>
                     )}
@@ -27,8 +27,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps & { startIcon?: Reac
                         type={type}
                         className={cn(
                             "w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all",
-                            "placeholder:text-gray-400 dark:placeholder:text-gray-600 placeholder:font-normal",
-                            "text-gray-900 dark:text-white font-medium",
+                            "placeholder:text-gray-500 dark:placeholder:text-gray-600 placeholder:font-normal",
+                            "text-gray-700 dark:text-white font-medium",
                             startIcon ? "pl-10" : "",
                             endIcon ? "pr-10" : "",
                             error ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "",
@@ -38,7 +38,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps & { startIcon?: Reac
                         {...props}
                     />
                     {endIcon && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 z-10">
                             {endIcon}
                         </div>
                     )}

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default async function AboutPage() {
     const user = await getAuthUser();
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-900 dark:text-white overflow-hidden relative">
+        <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-700 dark:text-white overflow-hidden relative">
 
             {/* Background Glows */}
             <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
@@ -36,7 +36,7 @@ export default async function AboutPage() {
                             <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 text-primary mb-2 ring-4 ring-primary/5">
                                 <Globe2 size={40} strokeWidth={1.5} />
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-white leading-tight">
+                            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-700 dark:text-white leading-tight">
                                 From Blown Accounts to <br className="hidden md:block"/>
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">Building What I Wished Existed</span>
                             </h1>
@@ -63,7 +63,7 @@ export default async function AboutPage() {
                                     <div className="w-16 h-16 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-8">
                                         <Target size={32} />
                                     </div>
-                                    <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">My Mission</h2>
+                                    <h2 className="text-3xl font-black text-gray-700 dark:text-white tracking-tight">My Mission</h2>
                                     <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
                                         To give every retail trader — regardless of budget — free access to the same quality tools and education that I spent years searching for. No paid signals. No get-rich-quick promises. Just real knowledge, structured learning, and honest resources.
                                     </p>
@@ -81,7 +81,7 @@ export default async function AboutPage() {
                                     <div className="w-16 h-16 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-8">
                                         <TrendingUp size={32} />
                                     </div>
-                                    <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">My Vision</h2>
+                                    <h2 className="text-3xl font-black text-gray-700 dark:text-white tracking-tight">My Vision</h2>
                                     <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
                                         One platform where a new trader can learn everything — from what a pip is to building a complete trading system. A place where the knowledge isn&apos;t scattered, the tools aren&apos;t paywalled, and the path is clear from day one.
                                     </p>
@@ -95,7 +95,7 @@ export default async function AboutPage() {
                 <section className="px-4 mb-24 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-16 space-y-4">
-                            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-white">What I Believe In</h2>
+                            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-700 dark:text-white">What I Believe In</h2>
                             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                                 The principles that guide every feature I build.
                             </p>
@@ -113,7 +113,7 @@ export default async function AboutPage() {
                                     <div className={`w-14 h-14 rounded-xl ${item.bg} ${item.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                                         <item.icon size={28} />
                                     </div>
-                                    <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{item.title}</h3>
+                                    <h3 className="text-xl font-bold mb-3 text-gray-700 dark:text-white">{item.title}</h3>
                                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{item.desc}</p>
                                 </div>
                             </ScrollReveal>
@@ -129,7 +129,7 @@ export default async function AboutPage() {
 
                             <div className="relative z-10 space-y-8">
                                 <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter">Ready to Start Your Journey?</h2>
-                                <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                                <p className="text-xl text-gray-500 max-w-2xl mx-auto">
                                     Don&apos;t make the mistakes I made. Start with the right tools, the right knowledge, and a clear path forward.
                                 </p>
                                 <Link

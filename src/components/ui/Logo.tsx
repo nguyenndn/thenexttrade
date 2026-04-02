@@ -15,7 +15,7 @@ export const Logo = memo(function Logo({ className, textClassName }: { className
                 className="rounded-lg group-hover:scale-105 transition-transform"
             />
             */}
-            <span className={`text-lg font-extrabold tracking-tight ${textClassName || "text-gray-900 dark:text-white"}`}>
+            <span className={`text-lg font-extrabold tracking-tight ${textClassName || "text-gray-700 dark:text-white"}`}>
                 TheNext<span className="text-primary">Trade</span>
             </span>
         </Link>

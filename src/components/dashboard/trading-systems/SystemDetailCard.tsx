@@ -89,7 +89,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                     <div className="flex-1 flex flex-col min-w-0">
                         {/* Title Row + Version */}
                         <div className="flex items-start justify-between gap-2 mb-1.5">
-                            <h3 className="text-base font-extrabold uppercase tracking-tight leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors duration-300 line-clamp-1">
+                            <h3 className="text-base font-extrabold uppercase tracking-tight leading-tight text-gray-700 dark:text-white group-hover:text-primary transition-colors duration-300 line-clamp-1">
                                 {product.name}
                             </h3>
                             <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-bold rounded-md">
@@ -155,7 +155,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
 
                         {/* Toast for Locked State */}
                         {showLockedToast && (
-                            <div className="absolute bottom-[calc(100%+8px)] right-0 w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs rounded-xl shadow-xl font-medium animate-in fade-in slide-in-from-bottom-2 z-20 text-center leading-relaxed">
+                            <div className="absolute bottom-[calc(100%+8px)] right-0 w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-700 text-xs rounded-xl shadow-xl font-medium animate-in fade-in slide-in-from-bottom-2 z-20 text-center leading-relaxed">
                                 Please connect your TheNextTrade account to unlock downloads.
                             </div>
                         )}
@@ -175,7 +175,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                     >
                         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
                             <div>
-                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Installation Guide</h2>
+                                <h2 className="text-xl font-bold text-gray-700 dark:text-white">Installation Guide</h2>
                                 <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Follow these steps to install {product.name}</p>
                             </div>
                             <Button

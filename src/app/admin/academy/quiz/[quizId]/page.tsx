@@ -294,7 +294,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
             <Button
                 onClick={addQuestion}
                 variant="outline"
-                className="w-full py-6 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-400 font-bold hover:border-primary hover:text-primary hover:bg-transparent"
+                className="w-full py-6 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-500 font-bold hover:border-primary hover:text-primary hover:bg-transparent"
             >
                 <Plus size={20} /> Add Question
             </Button>

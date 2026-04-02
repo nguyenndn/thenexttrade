@@ -62,7 +62,7 @@ const ArticleRow = memo(function ArticleRow({
                     variant="ghost"
                     size="icon"
                     onClick={() => onToggle(article.id)}
-                    className="w-auto h-auto p-0 text-gray-400 hover:bg-transparent hover:text-primary transition-colors"
+                    className="w-auto h-auto p-0 text-gray-500 hover:bg-transparent hover:text-primary transition-colors"
                 >
                     {isSelected ? (
                         <CheckSquare className="w-5 h-5 text-primary" />
@@ -82,13 +82,13 @@ const ArticleRow = memo(function ArticleRow({
                         />
                     ) : (
                         <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
-                            <FileText className="w-5 h-5 text-gray-400" />
+                            <FileText className="w-5 h-5 text-gray-500" />
                         </div>
                     )}
                     <div>
                         <Link
                             href={`/admin/articles/${article.id}/edit`}
-                            className="font-medium text-gray-900 dark:text-white hover:text-primary transition-colors line-clamp-1"
+                            className="font-medium text-gray-700 dark:text-white hover:text-primary transition-colors line-clamp-1"
                         >
                             {article.title}
                         </Link>
@@ -103,7 +103,7 @@ const ArticleRow = memo(function ArticleRow({
                     article.status === 'PUBLISHED'
                         ? 'bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400'
                         : article.status === 'DRAFT'
-                        ? 'bg-gray-100 dark:bg-gray-500/20 text-gray-700 dark:text-gray-400'
+                        ? 'bg-gray-100 dark:bg-gray-500/20 text-gray-700 dark:text-gray-500'
                         : 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400'
                 }`}>
                     {article.status === 'PUBLISHED' && <CheckCircle className="w-3 h-3" />}
@@ -111,7 +111,7 @@ const ArticleRow = memo(function ArticleRow({
                     {article.status}
                 </span>
             </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-500">
                 {article.views.toLocaleString()}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
@@ -343,7 +343,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                         <thead>
                             <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-600 font-bold tracking-wider">
                                 <th className="pl-6 pr-4 py-5 w-14">
-                                    <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
+                                    <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-500 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
                                         {selectedIds.size === articles.length && articles.length > 0 ? <CheckSquare size={20} className="text-primary" aria-hidden="true" /> : <Square size={20} aria-hidden="true" />}
                                     </Button>
                                 </th>
@@ -358,7 +358,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                             {articles.map((article) => (
                                 <tr key={article.id} className={`group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors ${selectedIds.has(article.id) ? 'bg-primary/5' : ''}`}>
                                     <td className="pl-6 pr-4 py-5 w-14">
-                                        <Button variant="ghost" onClick={() => toggleSelect(article.id)} className={`w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:bg-transparent hover:text-gray-600 ${selectedIds.has(article.id) ? 'text-primary' : ''}`} aria-label="Select Article">
+                                        <Button variant="ghost" onClick={() => toggleSelect(article.id)} className={`w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-500 hover:bg-transparent hover:text-gray-600 ${selectedIds.has(article.id) ? 'text-primary' : ''}`} aria-label="Select Article">
                                             {selectedIds.has(article.id) ? <CheckSquare size={20} aria-hidden="true" /> : <Square size={20} aria-hidden="true" />}
                                         </Button>
                                     </td>
@@ -387,7 +387,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                                     <label className="text-xs font-bold text-gray-600">Status</label>
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
-                                                            <Button variant="outline" className="w-full h-[38px] p-2 rounded justify-between font-normal bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white">
+                                                            <Button variant="outline" className="w-full h-[38px] p-2 rounded justify-between font-normal bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white">
                                                                 {quickEditData?.status === "DRAFT" ? "Draft" : quickEditData?.status === "PUBLISHED" ? "Published" : quickEditData?.status === "PENDING" ? "Pending" : "Archived"}
                                                                 <ChevronDown size={14} className="opacity-50" />
                                                             </Button>
@@ -428,15 +428,15 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                                         {article.thumbnail ? (
                                                             <img src={article.thumbnail} alt="" className="w-full h-full object-cover" />
                                                         ) : (
-                                                            <div className="flex items-center justify-center w-full h-full text-gray-400">
+                                                            <div className="flex items-center justify-center w-full h-full text-gray-500">
                                                                 <FileText size={16} aria-hidden="true" />
                                                             </div>
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">{article.title}</p>
+                                                        <p className="font-bold text-gray-700 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">{article.title}</p>
                                                         <div className="flex items-center gap-2 mt-1">
-                                                            <span className="text-xs text-gray-400 font-mono">/{article.slug}</span>
+                                                            <span className="text-xs text-gray-500 font-mono">/{article.slug}</span>
                                                             <Button
                                                                 variant="ghost"
                                                                 size="sm"
@@ -458,7 +458,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                                     ? 'bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20'
                                                     : article.status === 'ARCHIVED'
                                                         ? 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20'
-                                                        : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10'
+                                                        : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-500 border-gray-200 dark:border-white/10'
                                                     }`}>
                                                     {article.status}
                                                 </span>

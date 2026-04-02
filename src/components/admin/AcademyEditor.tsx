@@ -98,7 +98,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
                             <span className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/20 text-[#2F80ED] flex items-center justify-center font-bold text-sm">
                                 {level.order}
                             </span>
-                            <h2 className="font-bold text-lg text-gray-900 dark:text-white">{level.title}</h2>
+                            <h2 className="font-bold text-lg text-gray-700 dark:text-white">{level.title}</h2>
                         </div>
                     </div>
 
@@ -115,7 +115,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
                                         <div className="border border-gray-100 dark:border-white/5 rounded-xl p-4 bg-white dark:bg-transparent">
                                             <div className="flex items-center justify-between mb-3">
                                                 <div className="flex items-center gap-2">
-                                                    <Folder size={18} className="text-gray-400" />
+                                                    <Folder size={18} className="text-gray-500" />
                                                     <h3 className="font-semibold text-gray-800 dark:text-gray-200">{module.title}</h3>
                                                 </div>
                                                 <NextLink
@@ -148,14 +148,14 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
                                                                         </div>
                                                                         <span className="text-sm text-gray-600 dark:text-gray-300">{lesson.title}</span>
                                                                     </div>
-                                                                    <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100">{lesson.slug}</span>
+                                                                    <span className="text-xs text-gray-500 opacity-0 group-hover:opacity-100">{lesson.slug}</span>
                                                                 </div>
                                                             </SortableItem>
                                                         ))}
                                                     </SortableContext>
                                                 </DndContext>
                                                 {module.lessons.length === 0 && (
-                                                    <p className="text-xs text-gray-400 italic">No lessons yet.</p>
+                                                    <p className="text-xs text-gray-500 italic">No lessons yet.</p>
                                                 )}
                                             </div>
                                         </div>
@@ -164,7 +164,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
                             </SortableContext>
                         </DndContext>
                         {level.modules.length === 0 && (
-                            <p className="text-center text-sm text-gray-400 py-4">No modules in this level.</p>
+                            <p className="text-center text-sm text-gray-500 py-4">No modules in this level.</p>
                         )}
                     </div>
                 </div>

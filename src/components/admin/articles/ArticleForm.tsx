@@ -49,10 +49,10 @@ function FormSelect({ label, value, options, onChange, placeholder }: { label: s
             <DropdownMenu className="w-full block">
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 px-3 py-2 h-auto text-left shadow-none rounded-lg focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all">
-                        <span className={value ? "text-gray-900 dark:text-gray-100 truncate pr-2" : "text-gray-600 truncate pr-2"}>
+                        <span className={value ? "text-gray-700 dark:text-gray-100 truncate pr-2" : "text-gray-600 truncate pr-2"}>
                             {options.find(o => o.value === value)?.label || placeholder}
                         </span>
-                        <ChevronDown size={16} className="text-gray-400 shrink-0" aria-hidden="true" />
+                        <ChevronDown size={16} className="text-gray-500 shrink-0" aria-hidden="true" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="min-w-[200px] max-h-[300px] overflow-y-auto">
@@ -310,7 +310,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
             >
                 <span className="text-xs font-normal px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 flex items-center gap-2">
                     {draftAutoSavedAt && (
-                        <span className="flex items-center gap-1 text-gray-400 border-r border-gray-300 dark:border-white/10 pr-2 mr-1">
+                        <span className="flex items-center gap-1 text-gray-500 border-r border-gray-300 dark:border-white/10 pr-2 mr-1">
                             <Save size={12} /> Local: {draftAutoSavedAt.toLocaleTimeString('en-US')}
                         </span>
                     )}
@@ -381,7 +381,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                             <input
                                 type="text"
                                 placeholder="Article Title"
-                                className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none placeholder:text-gray-300 dark:placeholder:text-gray-700 text-gray-900 dark:text-white"
+                                className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none placeholder:text-gray-300 dark:placeholder:text-gray-700 text-gray-700 dark:text-white"
                                 value={formData.title}
                                 onChange={e => {
                                     const newTitle = e.target.value;
@@ -401,7 +401,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                             {/* Slug Editor */}
                             <div className="flex items-center gap-2 text-sm text-gray-600">
                                 <span>Permalink:</span>
-                                <span className="text-gray-400">/articles/</span>
+                                <span className="text-gray-500">/articles/</span>
                                 <input
                                     type="text"
                                     value={formData.slug}
@@ -446,7 +446,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
 
                     {/* SEO Settings */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
-                        <h3 className="font-bold text-gray-900 dark:text-white">SEO Settings</h3>
+                        <h3 className="font-bold text-gray-700 dark:text-white">SEO Settings</h3>
                         <div className="grid grid-cols-1 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Meta Title</label>
@@ -480,7 +480,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         {/* Publish Action */}
                         <div className="space-y-4">
                             <div className="flex justify-between items-center border-b border-gray-100 dark:border-white/10 pb-2">
-                                <h3 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider">Publish Info</h3>
+                                <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">Publish Info</h3>
                                 <Button
                                     type="button"
                                     variant="outline"
@@ -544,12 +544,12 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setFormData({ ...formData, isFeatured: !formData.isFeatured })}
-                                className={`w-auto h-auto p-0 hover:bg-transparent transition-colors ${formData.isFeatured ? 'text-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                                className={`w-auto h-auto p-0 hover:bg-transparent transition-colors ${formData.isFeatured ? 'text-primary' : 'text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                 aria-label="Toggle Featured Article"
                             >
                                 {formData.isFeatured ? <CheckSquare size={20} aria-hidden="true" /> : <Square size={20} aria-hidden="true" />}
                             </Button>
-                            <label className="text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer" onClick={() => setFormData({ ...formData, isFeatured: !formData.isFeatured })}>Featured Article</label>
+                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer" onClick={() => setFormData({ ...formData, isFeatured: !formData.isFeatured })}>Featured Article</label>
                         </div>
 
                         <FormSelect
@@ -609,7 +609,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     {/* Thumbnail */}
                     <div className="space-y-4">
                         <div className="border-b border-gray-100 dark:border-white/10 pb-2">
-                            <h3 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider">Featured Image</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">Featured Image</h3>
                         </div>
                         {formData.thumbnail ? (
                             <div className="relative aspect-video rounded-xl overflow-hidden group cursor-pointer" onClick={() => setIsMediaLibraryOpen(true)}>
@@ -640,11 +640,11 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                 onClick={() => setIsMediaLibraryOpen(true)}
                                 className="aspect-video rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-primary bg-gray-50 dark:bg-black/20 flex flex-col items-center justify-center cursor-pointer transition-all group"
                             >
-                                <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-2 text-gray-400 group-hover:text-primary">
+                                <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-2 text-gray-500 group-hover:text-primary">
                                     <ImageIcon size={24} />
                                 </div>
                                 <p className="text-xs font-bold text-gray-600 group-hover:text-primary transition-colors">Choose from Media Library</p>
-                                <p className="text-[10px] text-gray-400 mt-1">Click to browse your uploads</p>
+                                <p className="text-[10px] text-gray-500 mt-1">Click to browse your uploads</p>
                             </div>
                         )}
                     </div>
@@ -661,7 +661,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     {/* Taxonomies */}
                     <div className="space-y-4">
                         <div className="border-b border-gray-100 dark:border-white/10 pb-2">
-                            <h3 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider">Classification</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">Classification</h3>
                         </div>
                         <FormSelect
                             label="Category"
@@ -683,7 +683,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     {/* Excerpt */}
                     <div className="space-y-4">
                         <div className="border-b border-gray-100 dark:border-white/10 pb-2">
-                            <h3 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider">Excerpt</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">Excerpt</h3>
                         </div>
                         <textarea
                             className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder-gray-400"
@@ -698,7 +698,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     {tocHeadings.length > 0 && (
                         <div className="space-y-4">
                             <div className="border-b border-gray-100 dark:border-white/10 pb-2">
-                                <h3 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                                <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider flex items-center gap-2">
                                     <ListTree size={14} /> Table of Contents
                                 </h3>
                             </div>
@@ -707,7 +707,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                     <div
                                         key={heading.id}
                                         className={`text-sm py-1.5 px-3 rounded-lg cursor-default transition-colors hover:bg-gray-50 dark:hover:bg-white/5 ${
-                                            heading.level === 1 ? 'font-bold text-gray-900 dark:text-white' :
+                                            heading.level === 1 ? 'font-bold text-gray-700 dark:text-white' :
                                             heading.level === 2 ? 'pl-5 text-gray-700 dark:text-gray-300' :
                                             'pl-8 text-gray-600 dark:text-gray-300 text-xs'
                                         }`}
@@ -723,7 +723,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                                     </div>
                                 ))}
                             </nav>
-                            <p className="text-[10px] text-gray-400 italic">Auto-generated from headings</p>
+                            <p className="text-[10px] text-gray-500 italic">Auto-generated from headings</p>
                         </div>
                     )}
 

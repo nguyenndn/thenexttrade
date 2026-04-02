@@ -62,7 +62,7 @@ export function EmotionSelector({ value, onChange, label, phase = "before" }: Em
                                 "px-3 py-1.5 h-auto rounded-full text-sm font-medium transition-all flex items-center gap-1.5 border-none",
                                 value === emotion.label
                                     ? "bg-gray-500 text-white ring-2 ring-gray-300 ring-offset-2 dark:ring-offset-gray-900 hover:bg-gray-600 hover:text-white"
-                                    : "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-500/20"
+                                    : "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-500/20"
                             )}
                         >
                             <span>{emotion.icon}</span>

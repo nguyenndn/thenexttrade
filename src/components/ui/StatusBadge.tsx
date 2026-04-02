@@ -13,7 +13,7 @@ export const StatusBadge = ({ status, className = "" }: StatusBadgeProps) => {
     if (s === "OPEN" || s === "RUNNING") {
         styles = "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20 animate-pulse";
     } else if (s === "CLOSED" || s === "COMPLETED") {
-        styles = "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10";
+        styles = "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-500 border-gray-200 dark:border-white/10";
     } else if (s === "PENDING") {
         styles = "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20";
     }

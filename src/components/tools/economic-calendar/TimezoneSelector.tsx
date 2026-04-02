@@ -115,19 +115,19 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
                     : 'bg-white border-gray-200 hover:border-gray-300 text-gray-700'
                     }`}
             >
-                <Clock size={15} className="text-gray-400 shrink-0" />
+                <Clock size={15} className="text-gray-500 shrink-0" />
                 <span className="text-xs font-medium truncate">
                     <span className="opacity-70 hidden sm:inline">Time: </span>
                     <span className="opacity-70">({selectedZone.offsetDisplay})</span>
                     <span className="ml-1 font-bold text-cyan-500">{currentTime}</span>
                 </span>
-                <ChevronDown size={14} className={`text-gray-400 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={14} className={`text-gray-500 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
             </Button>
 
             {isOpen && (
                 <div className={`absolute right-0 mt-2 w-64 rounded-xl shadow-xl border overflow-hidden z-50 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'
                     }`}>
-                    <div className={`px-4 py-2 text-xs font-bold uppercase tracking-wider border-b ${isDark ? 'bg-slate-900/50 text-gray-400 border-slate-700' : 'bg-gray-50 text-gray-600 border-gray-100'
+                    <div className={`px-4 py-2 text-xs font-bold uppercase tracking-wider border-b ${isDark ? 'bg-slate-900/50 text-gray-500 border-slate-700' : 'bg-gray-50 text-gray-600 border-gray-100'
                         }`}>
                         Select Timezone
                     </div>

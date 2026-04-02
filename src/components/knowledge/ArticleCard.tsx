@@ -35,7 +35,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                 ) : (
-                    <div className="flex items-center justify-center h-full bg-gray-100 dark:bg-gray-800 text-gray-400">
+                    <div className="flex items-center justify-center h-full bg-gray-100 dark:bg-gray-800 text-gray-500">
                         <BookOpen size={48} opacity={0.5} />
                     </div>
                 )}
@@ -53,12 +53,12 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
             {/* Content */}
             <div className="px-2 pt-3 pb-1 flex flex-col flex-1">
-                <h3 className="mt-1 mb-2 text-base font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                <h3 className="mt-1 mb-2 text-base font-extrabold text-gray-700 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
                     {article.title}
                 </h3>
 
                 {/* Excerpt */}
-                <p className={`text-sm line-clamp-2 mb-4 leading-relaxed ${article.excerpt ? 'text-gray-600 dark:text-gray-300' : 'text-gray-400 dark:text-gray-600 italic'}`}>
+                <p className={`text-sm line-clamp-2 mb-4 leading-relaxed ${article.excerpt ? 'text-gray-600 dark:text-gray-300' : 'text-gray-500 dark:text-gray-600 italic'}`}>
                     {article.excerpt || "No description available."}
                 </p>
 

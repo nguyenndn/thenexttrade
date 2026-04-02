@@ -14,7 +14,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
   if (!myRank) {
     return (
       <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
-        <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+        <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-3 flex items-center gap-2">
           <Target size={16} className="text-cyan-500" />
           Your Position
         </h3>
@@ -31,7 +31,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
     <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 space-y-5">
       {/* Rank */}
       <div>
-        <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+        <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-3 flex items-center gap-2">
           <Target size={16} className="text-cyan-500" />
           Your Position
         </h3>
@@ -39,7 +39,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
           <span className="text-4xl font-black text-primary tabular-nums">
             #{rank}
           </span>
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-gray-500">
             Top {percentile}%
           </span>
         </div>
@@ -74,7 +74,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
         </div>
 
         {tierProgress.next && (
-          <p className="text-xs text-gray-400 mt-1.5 tabular-nums">
+          <p className="text-xs text-gray-500 mt-1.5 tabular-nums">
             {tierProgress.xpToNext.toLocaleString()} XP to{" "}
             {tierProgress.next.label}
           </p>
@@ -84,7 +84,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
       {/* Rivalry Tracker */}
       {rivals && (rivals.above || rivals.below) && (
         <div>
-          <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
             Rivals
           </h4>
           <div className="space-y-2">
@@ -107,7 +107,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
 
       {/* Quick Stats */}
       <div className="flex items-center gap-3 pt-2 border-t border-gray-200 dark:border-white/10">
-        <TrendingUp size={14} className="text-gray-400" />
+        <TrendingUp size={14} className="text-gray-500" />
         <span className="text-xs text-gray-600 dark:text-gray-300">
           Total: {value.toLocaleString()} XP
         </span>
@@ -127,7 +127,7 @@ function RivalRow({
 }) {
   return (
     <div className="flex items-center gap-2 py-1.5 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
-      <span className="text-xs font-bold text-gray-400 w-6">
+      <span className="text-xs font-bold text-gray-500 w-6">
         #{entry.rank}
       </span>
       <span className="text-xs text-gray-600 dark:text-gray-300 flex-1 truncate">

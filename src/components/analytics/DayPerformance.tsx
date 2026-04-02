@@ -37,8 +37,8 @@ export function DayPerformance({ data }: DayPerformanceProps) {
                     <Activity size={18} />
                 </div>
                 <div>
-                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">Performance by Day</h3>
-                    <p className="text-xs text-gray-400">Weekday distribution</p>
+                    <h3 className="font-bold text-gray-700 dark:text-white text-sm">Performance by Day</h3>
+                    <p className="text-xs text-gray-500">Weekday distribution</p>
                 </div>
             </div>
 
@@ -89,7 +89,7 @@ export function DayPerformance({ data }: DayPerformanceProps) {
             )}
 
             {hasData && bestDay && (
-                <div className="mt-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                <div className="mt-4 flex justify-between items-center text-[10px] text-gray-500 font-bold uppercase tracking-wider">
                     <span>Strongest Day: {bestDay.name}</span>
                     <span className="text-primary">+{bestDay.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
                 </div>

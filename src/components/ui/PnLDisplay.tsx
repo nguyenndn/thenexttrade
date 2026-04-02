@@ -18,7 +18,7 @@ export const PnLDisplay = ({ value, showIcon = false, currency = "$", className 
         ? "text-primary"
         : isNegative
             ? "text-red-500"
-            : "text-gray-400";
+            : "text-gray-500";
 
     return (
         <span className={`font-mono font-bold whitespace-nowrap flex items-center gap-1 ${colorClass} ${className}`}>

@@ -46,7 +46,7 @@ export function RiskRewardCalc() {
                             "relative flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-colors h-auto z-10",
                             inputs.direction === "LONG"
                                 ? "text-white hover:text-white"
-                                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         {inputs.direction === "LONG" && (
@@ -66,7 +66,7 @@ export function RiskRewardCalc() {
                             "relative flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-colors h-auto z-10",
                             inputs.direction === "SHORT"
                                 ? "text-white hover:text-white"
-                                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         {inputs.direction === "SHORT" && (
@@ -132,7 +132,7 @@ export function RiskRewardCalc() {
                                                 : inputs.entryPrice - pipDiff * ratio;
                                             setInputs({ ...inputs, takeProfit: parseFloat(tp.toFixed(5)) });
                                         }}
-                                        className="flex-1 py-2 rounded-lg text-xs font-bold bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:border-primary/50 hover:text-primary transition-all"
+                                        className="flex-1 py-2 rounded-lg text-xs font-bold bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:border-primary/50 hover:text-primary transition-all"
                                     >
                                         1:{ratio}
                                     </button>
@@ -160,7 +160,7 @@ export function RiskRewardCalc() {
                                 <span className="px-3 py-1 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-bold rounded-lg border border-red-200 dark:border-red-500/20">
                                     {result.riskPips} pips
                                 </span>
-                                <span className="text-gray-400 dark:text-gray-300">vs</span>
+                                <span className="text-gray-500 dark:text-gray-300">vs</span>
                                 <span className="px-3 py-1 bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-sm font-bold rounded-lg border border-green-200 dark:border-green-500/20">
                                     {result.rewardPips} pips
                                 </span>
@@ -185,7 +185,7 @@ export function RiskRewardCalc() {
 
                             <div className="pt-6 border-t border-gray-100 dark:border-white/5">
                                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Win Rate to Breakeven</p>
-                                <p className="text-xl font-bold text-gray-900 dark:text-white">{result.winRateToBreakeven}%</p>
+                                <p className="text-xl font-bold text-gray-700 dark:text-white">{result.winRateToBreakeven}%</p>
                             </div>
                         </div>
                     )}

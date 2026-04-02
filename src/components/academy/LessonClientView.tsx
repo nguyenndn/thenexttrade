@@ -142,7 +142,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     {/* Article Content Card */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                         <div className="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
-                            <h1 className="text-2xl lg:text-3xl font-black text-gray-900 dark:text-white leading-tight tracking-tight">
+                            <h1 className="text-2xl lg:text-3xl font-black text-gray-700 dark:text-white leading-tight tracking-tight">
                                 {lesson.title}
                             </h1>
                         </div>
@@ -157,7 +157,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                 prose-img:rounded-xl prose-img:shadow-md
                                 prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2
                                 prose-li:text-gray-600 dark:prose-li:text-gray-300
-                                prose-strong:text-gray-900 dark:prose-strong:text-white
+                                prose-strong:text-gray-700 dark:prose-strong:text-white
                                 prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto
                                 prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200
                                 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono
@@ -169,7 +169,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     {/* Completion + Navigation */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 flex items-center justify-between gap-4">
                         {prevLesson ? (
-                            <Link href={lessonPath(prevLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-400 uppercase tracking-wider">
+                            <Link href={lessonPath(prevLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 <ChevronLeft size={14} /> Previous
                             </Link>
                         ) : <span></span>}
@@ -197,7 +197,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                         </Button>
 
                         {nextLesson ? (
-                            <Link href={lessonPath(nextLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-400 uppercase tracking-wider">
+                            <Link href={lessonPath(nextLesson.slug)} className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 Next Lesson <ChevronRight size={14} />
                             </Link>
                         ) : <span></span>}
@@ -209,14 +209,14 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
 
                     {/* Module Info Card */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5 space-y-3">
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Current Module</h3>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{lesson.module.title}</h2>
+                        <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Current Module</h3>
+                        <h2 className="text-lg font-bold text-gray-700 dark:text-white leading-tight">{lesson.module.title}</h2>
                         <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
                             {lesson.module.description || "Master this module to advance your trading skills."}
                         </p>
                         {/* Module Progress */}
                         <div className="pt-2 border-t border-gray-100 dark:border-white/5">
-                            <div className="flex items-center justify-between text-xs text-gray-400 mb-2">
+                            <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                                 <span>{completedInModule}/{courseLessons.length} completed</span>
                                 <span>{courseLessons.length > 0 ? Math.round((completedInModule / courseLessons.length) * 100) : 0}%</span>
                             </div>
@@ -232,8 +232,8 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     {/* Lesson List Card */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                         <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
-                            <h3 className="font-bold text-sm text-gray-900 dark:text-white">Lessons in Module</h3>
-                            <span className="text-[10px] font-bold text-gray-400 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded">
+                            <h3 className="font-bold text-sm text-gray-700 dark:text-white">Lessons in Module</h3>
+                            <span className="text-[10px] font-bold text-gray-500 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded">
                                 {courseLessons.length} lessons
                             </span>
                         </div>
@@ -253,9 +253,9 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                             className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5 border-l-2 border-transparent cursor-not-allowed opacity-60"
                                         >
                                             <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 border border-dashed border-gray-300 dark:border-white/20 bg-gray-50 dark:bg-white/5">
-                                                <Lock size={10} className="text-gray-400" />
+                                                <Lock size={10} className="text-gray-500" />
                                             </span>
-                                            <span className="flex-1 truncate text-gray-400 dark:text-gray-600">
+                                            <span className="flex-1 truncate text-gray-500 dark:text-gray-600">
                                                 {l.title}
                                             </span>
                                         </button>
@@ -279,18 +279,18 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                                 ? "bg-primary/10 text-primary"
                                                 : isActive
                                                     ? "bg-primary text-white"
-                                                    : "bg-gray-100 dark:bg-white/5 text-gray-400"
+                                                    : "bg-gray-100 dark:bg-white/5 text-gray-500"
                                         )}>
                                             {isLessonCompleted ? <CheckCircle size={12} /> : idx + 1}
                                         </span>
                                         <span className={cn(
                                             "flex-1 truncate",
-                                            isActive ? "font-bold text-primary" : "text-gray-600 dark:text-gray-400"
+                                            isActive ? "font-bold text-primary" : "text-gray-600 dark:text-gray-500"
                                         )}>
                                             {l.title}
                                         </span>
                                         {l.duration && (
-                                            <span className="text-[10px] text-gray-400 flex items-center gap-1 shrink-0">
+                                            <span className="text-[10px] text-gray-500 flex items-center gap-1 shrink-0">
                                                 <Clock size={10} />{l.duration}
                                             </span>
                                         )}
@@ -332,7 +332,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
 
                                 if (mobileLocked) {
                                     return (
-                                        <button key={l.id} onClick={() => { setMobileMenuOpen(false); setLockedDialogLesson(l.title); }} className="w-full flex items-center gap-3 py-2.5 px-3 text-sm rounded-lg text-gray-400 opacity-50">
+                                        <button key={l.id} onClick={() => { setMobileMenuOpen(false); setLockedDialogLesson(l.title); }} className="w-full flex items-center gap-3 py-2.5 px-3 text-sm rounded-lg text-gray-500 opacity-50">
                                             <Lock size={10} className="w-5 text-center" />
                                             <span className="truncate">{l.title}</span>
                                         </button>
@@ -342,9 +342,9 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                 return (
                                     <Link key={l.id} href={lessonPath(l.slug)} className={cn(
                                         "flex items-center gap-3 py-2.5 px-3 text-sm rounded-lg transition-colors",
-                                        l.id === lesson.id ? "bg-primary/10 text-primary font-bold" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5"
+                                        l.id === lesson.id ? "bg-primary/10 text-primary font-bold" : "text-gray-600 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5"
                                     )}>
-                                        <span className="text-xs font-bold text-gray-400 w-5 text-center">{idx + 1}</span>
+                                        <span className="text-xs font-bold text-gray-500 w-5 text-center">{idx + 1}</span>
                                         <span className="truncate">{l.title}</span>
                                         {mobileCompleted && <CheckCircle size={12} className="text-primary shrink-0 ml-auto" />}
                                     </Link>
@@ -371,7 +371,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                         <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
                             <Lock size={24} className="text-amber-600 dark:text-amber-400" />
                         </div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Lesson Locked</h3>
+                        <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">Lesson Locked</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
                             <strong className="text-gray-700 dark:text-gray-300">&ldquo;{lockedDialogLesson}&rdquo;</strong>
                         </p>

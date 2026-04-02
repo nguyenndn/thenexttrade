@@ -53,11 +53,11 @@ export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
                                         </p>
                                         <div className="space-y-1">
                                             <p className="text-primary font-bold flex justify-between gap-6">
-                                                <span className="text-gray-400 text-xs font-medium uppercase tracking-widest">Mistakes</span>
+                                                <span className="text-gray-500 text-xs font-medium uppercase tracking-widest">Mistakes</span>
                                                 {data.value}
                                             </p>
                                             <p className="text-gray-300 font-bold flex justify-between gap-6">
-                                                <span className="text-gray-400 text-xs font-medium uppercase tracking-widest">% of Total</span>
+                                                <span className="text-gray-500 text-xs font-medium uppercase tracking-widest">% of Total</span>
                                                 {((data.value / total) * 100).toFixed(1)}%
                                             </p>
                                         </div>

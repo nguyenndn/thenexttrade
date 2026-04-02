@@ -33,7 +33,7 @@ export async function LeaderboardWidget() {
     <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
           <Trophy size={16} className="text-yellow-500" />
           Top Traders
         </h3>
@@ -83,10 +83,10 @@ export async function LeaderboardWidget() {
                       i === 0
                         ? "text-yellow-500"
                         : i === 1
-                          ? "text-gray-400"
+                          ? "text-gray-500"
                           : i === 2
                             ? "text-orange-400"
-                            : "text-gray-400"
+                            : "text-gray-500"
                     }`}
                   >
                     {i + 1}
@@ -113,11 +113,11 @@ export async function LeaderboardWidget() {
                     }`}
                   >
                     {u.name || "Unknown"}
-                    {isMe && <span className="text-gray-400 font-normal ml-1">(You)</span>}
+                    {isMe && <span className="text-gray-500 font-normal ml-1">(You)</span>}
                   </span>
 
                   {/* Score */}
-                  <span className="text-[10px] font-bold text-gray-400 tabular-nums">
+                  <span className="text-[10px] font-bold text-gray-500 tabular-nums">
                     {score.toLocaleString()}{scoreLabel !== "XP" ? scoreLabel : ""}
                   </span>
                 </div>

@@ -73,7 +73,7 @@ function CurrencyDropdown({
                     <Button
                         type="button"
                         variant="ghost"
-                        className="w-full px-4 py-3.5 h-auto rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-gray-900 dark:text-white flex items-center justify-between"
+                        className="w-full px-4 py-3.5 h-auto rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-gray-700 dark:text-white flex items-center justify-between"
                     >
                         <span className="font-bold text-base flex items-center gap-2">
                             {info?.flag} {info?.code} - {info?.name}
@@ -86,7 +86,7 @@ function CurrencyDropdown({
                         const groupCurrencies = CURRENCIES.filter((c) => c.group === group);
                         return (
                             <div key={group}>
-                                <div className="px-3 py-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-white/5">
+                                <div className="px-3 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-widest sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-white/5">
                                     {group} Currencies
                                 </div>
                                 {groupCurrencies.map((c) => (
@@ -170,7 +170,7 @@ export function CurrencyConverter() {
                         type="number"
                         value={amount}
                         onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-                        className="w-full px-4 py-3.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none font-bold text-lg text-gray-900 dark:text-white transition-all hover:border-gray-300 dark:hover:border-white/20"
+                        className="w-full px-4 py-3.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none font-bold text-lg text-gray-700 dark:text-white transition-all hover:border-gray-300 dark:hover:border-white/20"
                     />
                 </div>
 

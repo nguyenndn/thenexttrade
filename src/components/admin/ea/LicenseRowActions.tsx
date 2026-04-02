@@ -24,7 +24,7 @@ export function LicenseRowActions({ license, adminId }: LicenseRowActionsProps) 
 
     if (license.status !== "PENDING") {
         return (
-            <span className="text-gray-400 text-xs italic">
+            <span className="text-gray-500 text-xs italic">
                 {license.status === "APPROVED" ? "Active" : "Processed"}
             </span>
         );

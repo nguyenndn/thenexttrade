@@ -13,7 +13,7 @@ interface PendingItem {
 export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
     return (
         <div className="bg-white dark:bg-[#0B0E14] border border-gray-100 dark:border-white/5 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
                 Actions Required
                 {items.length > 0 && (
@@ -25,7 +25,7 @@ export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
 
             <div className="space-y-3 flex-1 overflow-y-auto pr-1">
                 {items.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-center text-gray-400 gap-2 min-h-[150px]">
+                    <div className="h-full flex flex-col items-center justify-center text-center text-gray-500 gap-2 min-h-[150px]">
                         <CheckCircle2 className="w-8 h-8 opacity-20" />
                         <p className="text-sm">Todo list is empty. Great job!</p>
                     </div>
@@ -45,7 +45,7 @@ export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
                             </div>
                             
                             <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate group-hover:text-amber-500 transition-colors">
+                                <h4 className="font-medium text-sm text-gray-700 dark:text-white truncate group-hover:text-amber-500 transition-colors">
                                     {item.title}
                                 </h4>
                                 <div className="flex items-center gap-2 mt-1">

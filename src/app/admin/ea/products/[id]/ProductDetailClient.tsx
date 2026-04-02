@@ -33,10 +33,10 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             {/* Recent Downloads */}
             <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
                 <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-3">
-                    <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                    <h3 className="text-base font-bold text-gray-700 dark:text-white">
                         Recent Downloads
                     </h3>
-                    <span className="text-xs font-bold text-gray-400 bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-lg">
+                    <span className="text-xs font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-lg">
                         {product._count?.downloads || 0} total
                     </span>
                 </div>
@@ -50,19 +50,19 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                                         {dl.user?.image ? (
                                             <img src={dl.user.image} alt="" className="w-8 h-8 rounded-lg object-cover" />
                                         ) : (
-                                            <Users size={14} className="text-gray-400" />
+                                            <Users size={14} className="text-gray-500" />
                                         )}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                        <p className="text-sm font-bold text-gray-700 dark:text-white truncate">
                                             {dl.user?.name || dl.user?.email || "Unknown"}
                                         </p>
-                                        <p className="text-[10px] text-gray-400 font-medium">
+                                        <p className="text-[10px] text-gray-500 font-medium">
                                             v{dl.version} · {dl.platform}
                                         </p>
                                     </div>
                                 </div>
-                                <span className="text-[10px] text-gray-400 font-medium whitespace-nowrap">
+                                <span className="text-[10px] text-gray-500 font-medium whitespace-nowrap">
                                     {new Date(dl.createdAt).toLocaleDateString("en-GB", {
                                         day: "2-digit", month: "short",
                                     })}
@@ -73,7 +73,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                 ) : (
                     <div className="text-center py-8">
                         <Download size={24} className="mx-auto text-gray-300 dark:text-gray-600 mb-2" />
-                        <p className="text-sm text-gray-400">No downloads yet</p>
+                        <p className="text-sm text-gray-500">No downloads yet</p>
                     </div>
                 )}
             </div>

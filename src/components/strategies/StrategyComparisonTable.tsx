@@ -31,7 +31,7 @@ export function StrategyComparisonTable({ data }: StrategyComparisonTableProps) 
     return (
         <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10">
-                <h3 className="font-bold text-gray-900 dark:text-white text-lg">
+                <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                     Strategy Comparison
                 </h3>
                 <p className="text-sm text-gray-600 mt-1">
@@ -63,7 +63,7 @@ export function StrategyComparisonTable({ data }: StrategyComparisonTableProps) 
                                             className="w-3 h-3 rounded-full flex-shrink-0"
                                             style={{ backgroundColor: item.color }}
                                         />
-                                        <span className="font-bold text-gray-900 dark:text-white">
+                                        <span className="font-bold text-gray-700 dark:text-white">
                                             {item.strategy}
                                         </span>
                                     </div>
@@ -139,13 +139,13 @@ export function StrategyComparisonTable({ data }: StrategyComparisonTableProps) 
                                         </span>
                                         {item.avgPnL > 0 && <ArrowUp size={12} className="text-green-500" />}
                                         {item.avgPnL < 0 && <ArrowDown size={12} className="text-red-500" />}
-                                        {item.avgPnL === 0 && <Minus size={12} className="text-gray-400" />}
+                                        {item.avgPnL === 0 && <Minus size={12} className="text-gray-500" />}
                                     </div>
                                 </td>
 
                                 {/* Trades Count */}
                                 <td className="px-6 py-4 flex flex-col items-center">
-                                    <span className="font-bold text-gray-900 dark:text-white">
+                                    <span className="font-bold text-gray-700 dark:text-white">
                                         {item.totalTrades}
                                     </span>
                                     <div className="w-16 h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-1 overflow-hidden">

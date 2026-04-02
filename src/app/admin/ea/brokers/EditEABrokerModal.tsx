@@ -130,7 +130,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border dark:border-white/5 max-w-md">
                     <DialogHeader>
-                        <DialogTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                        <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
                             Edit Broker
                         </DialogTitle>
                         <DialogDescription className="text-gray-600 dark:text-gray-300">
@@ -148,7 +148,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                         />
 
                         <div>
-                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Logo</label>
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Logo</label>
                             <FileUpload
                                 value={logo}
                                 onChange={setLogo}
@@ -190,7 +190,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                         {/* Active Toggle */}
                         <div className="flex items-center justify-between py-3 px-4 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5">
                             <div className="flex items-center gap-2">
-                                <Power size={16} className={isActive ? "text-green-500" : "text-gray-400"} />
+                                <Power size={16} className={isActive ? "text-green-500" : "text-gray-500"} />
                                 <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
                                     {isActive ? "Active" : "Inactive"}
                                 </span>

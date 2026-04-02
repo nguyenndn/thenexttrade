@@ -162,8 +162,8 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
         <>
             {/* Quiz Info Card */}
             <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5 space-y-3">
-                <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Module Quiz</h3>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{quiz.title}</h2>
+                <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Module Quiz</h3>
+                <h2 className="text-lg font-bold text-gray-700 dark:text-white leading-tight">{quiz.title}</h2>
                 {quiz.description && (
                     <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
                         {quiz.description}
@@ -171,7 +171,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                 )}
                 {/* Module Progress */}
                 <div className="pt-2 border-t border-gray-100 dark:border-white/5">
-                    <div className="flex items-center justify-between text-xs text-gray-400 mb-2">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                         <span>{completedInModule}/{moduleLessons.length} lessons</span>
                         <span>{moduleLessons.length > 0 ? Math.round((completedInModule / moduleLessons.length) * 100) : 0}%</span>
                     </div>
@@ -185,7 +185,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                 {/* Best score */}
                 {bestScore !== null && (
                     <div className="pt-2 border-t border-gray-100 dark:border-white/5 flex items-center justify-between text-xs">
-                        <span className="text-gray-400">Best score</span>
+                        <span className="text-gray-500">Best score</span>
                         <span className={cn(
                             "font-bold",
                             bestScore >= 70 ? "text-emerald-500" : "text-amber-500"
@@ -198,8 +198,8 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
             {moduleLessons.length > 0 && (
                 <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                     <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
-                        <h3 className="font-bold text-sm text-gray-900 dark:text-white">Lessons in Module</h3>
-                        <span className="text-[10px] font-bold text-gray-400 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded">
+                        <h3 className="font-bold text-sm text-gray-700 dark:text-white">Lessons in Module</h3>
+                        <span className="text-[10px] font-bold text-gray-500 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded">
                             {moduleLessons.length} lessons
                         </span>
                     </div>
@@ -213,9 +213,9 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                 return (
                                     <div key={l.id} className="flex items-center gap-3 px-4 py-3 text-sm opacity-50">
                                         <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 border border-dashed border-gray-300 dark:border-white/20 bg-gray-50 dark:bg-white/5">
-                                            <Lock size={10} className="text-gray-400" />
+                                            <Lock size={10} className="text-gray-500" />
                                         </span>
-                                        <span className="flex-1 truncate text-gray-400 dark:text-gray-600">{l.title}</span>
+                                        <span className="flex-1 truncate text-gray-500 dark:text-gray-600">{l.title}</span>
                                     </div>
                                 );
                             }
@@ -230,13 +230,13 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                         "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0",
                                         isCompleted
                                             ? "bg-primary/10 text-primary"
-                                            : "bg-gray-100 dark:bg-white/5 text-gray-400"
+                                            : "bg-gray-100 dark:bg-white/5 text-gray-500"
                                     )}>
                                         {isCompleted ? <CheckCircle size={12} /> : idx + 1}
                                     </span>
-                                    <span className="flex-1 truncate text-gray-600 dark:text-gray-400">{l.title}</span>
+                                    <span className="flex-1 truncate text-gray-600 dark:text-gray-500">{l.title}</span>
                                     {l.duration && (
-                                        <span className="text-[10px] text-gray-400 flex items-center gap-1 shrink-0">
+                                        <span className="text-[10px] text-gray-500 flex items-center gap-1 shrink-0">
                                             <Clock size={10} />{l.duration}
                                         </span>
                                     )}
@@ -257,7 +257,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
             {/* Previous Attempts */}
             {previousAttempts.length > 0 && (
                 <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5 space-y-3">
-                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Previous Attempts</h3>
+                    <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Previous Attempts</h3>
                     <div className="space-y-2">
                         {previousAttempts.map((a, idx) => (
                             <div key={idx} className="flex items-center justify-between text-xs py-1.5">
@@ -270,7 +270,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                         {a.score}%
                                     </span>
                                 </div>
-                                <span className="text-gray-400">
+                                <span className="text-gray-500">
                                     {new Date(a.completedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                 </span>
                             </div>
@@ -328,7 +328,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                     <XCircle size={48} className="mx-auto mb-4 text-red-500" />
                                 )}
 
-                                <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">
+                                <h2 className="text-2xl font-black text-gray-700 dark:text-white mb-2">
                                     {result.passed ? "Quiz Passed!" : "Not Quite..."}
                                 </h2>
                                 <p className="text-gray-600 dark:text-gray-300 mb-6">
@@ -365,7 +365,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                             <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                                 {/* Quiz Header */}
                                 <div className="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
-                                    <h1 className="text-2xl lg:text-3xl font-black text-gray-900 dark:text-white leading-tight tracking-tight">
+                                    <h1 className="text-2xl lg:text-3xl font-black text-gray-700 dark:text-white leading-tight tracking-tight">
                                         {quiz.title}
                                     </h1>
                                     {quiz.description && (
@@ -391,7 +391,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                 {/* Question */}
                                 {question && (
                                     <div className="p-6 lg:p-8">
-                                        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
+                                        <h2 className="text-lg font-bold text-gray-700 dark:text-white mb-6">
                                             {question.text}
                                         </h2>
 
@@ -419,7 +419,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                                         <span className={cn(
                                                             "text-sm font-medium pt-1",
                                                             selectedOption === option.id
-                                                                ? "text-gray-900 dark:text-white"
+                                                                ? "text-gray-700 dark:text-white"
                                                                 : "text-gray-600 dark:text-gray-300"
                                                         )}>
                                                             {option.text}

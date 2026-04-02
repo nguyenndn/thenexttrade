@@ -116,7 +116,7 @@ export function CategoryModal({ isOpen, onClose, onSuccess, category }: Category
                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Name</label>
                     <input
                         {...register("name")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                         placeholder="Market Analysis"
                     />
                     {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
@@ -124,11 +124,11 @@ export function CategoryModal({ isOpen, onClose, onSuccess, category }: Category
 
                 <div className="group">
                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                        Slug <span className="font-normal text-gray-400">(Optional)</span>
+                        Slug <span className="font-normal text-gray-500">(Optional)</span>
                     </label>
                     <input
                         {...register("slug")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                         placeholder="market-analysis"
                     />
                     {errors.slug && <p className="text-red-500 text-xs">{errors.slug.message}</p>}
@@ -136,11 +136,11 @@ export function CategoryModal({ isOpen, onClose, onSuccess, category }: Category
 
                 <div className="group">
                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                        Description <span className="font-normal text-gray-400">(Optional)</span>
+                        Description <span className="font-normal text-gray-500">(Optional)</span>
                     </label>
                     <textarea
                         {...register("description")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
                         placeholder="Describe this category..."
                     />
                 </div>
@@ -150,7 +150,7 @@ export function CategoryModal({ isOpen, onClose, onSuccess, category }: Category
                         type="button"
                         variant="outline"
                         onClick={onClose}
-                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
+                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold rounded-xl px-6"
                     >Cancel
                     </Button>
                     <Button

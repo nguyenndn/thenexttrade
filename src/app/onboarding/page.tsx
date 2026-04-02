@@ -70,7 +70,7 @@ export default function OnboardingPage() {
 
             <div className="w-full max-w-md bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 shadow-xl transition-colors duration-300">
                 <div className="text-center mb-8">
-                    <h1 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Complete Your Profile</h1>
+                    <h1 className="text-2xl font-bold mb-2 text-gray-700 dark:text-white">Complete Your Profile</h1>
                     <p className="text-gray-600 dark:text-gray-300 text-sm">Tell us a bit more about yourself to get started.</p>
                 </div>
 
@@ -94,7 +94,7 @@ export default function OnboardingPage() {
                                         className="object-cover"
                                     />
                                 ) : (
-                                    <Camera className="text-gray-400 group-hover:text-primary transition-colors" size={32} />
+                                    <Camera className="text-gray-500 group-hover:text-primary transition-colors" size={32} />
                                 )}
 
                                 {/* Overlay */}
@@ -124,7 +124,7 @@ export default function OnboardingPage() {
                             id="username"
                             required
                             placeholder="@username"
-                            className="w-full h-11 px-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 transition-all"
+                            className="w-full h-11 px-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-gray-700 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-600 transition-all"
                         />
                     </div>
 
@@ -136,7 +136,7 @@ export default function OnboardingPage() {
                             id="bio"
                             rows={3}
                             placeholder="Tell us about your trading journey..."
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 resize-none transition-all"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-gray-700 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-600 resize-none transition-all"
                         />
                     </div>
 

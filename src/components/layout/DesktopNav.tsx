@@ -16,7 +16,7 @@ export function DesktopNav() {
                     <Link
                         key={item.name}
                         href={item.href}
-                        className="relative py-1 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors group"
+                        className="relative py-1 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white transition-colors group"
                     >
                         {item.name}
                         {/* Hover underline — slides in from center */}

@@ -99,10 +99,10 @@ export function HomeFAQSection() {
 
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-white mb-3 tracking-tight">
                         Frequently Asked Questions
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-400 text-base">
+                    <p className="text-gray-600 dark:text-gray-500 text-base">
                         Quick answers to common questions
                     </p>
                 </div>
@@ -112,7 +112,7 @@ export function HomeFAQSection() {
                     <div>
                         <div className="flex items-center gap-2 mb-4">
                             <HelpCircle size={18} className="text-primary" />
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                            <h3 className="text-lg font-bold text-gray-700 dark:text-white">
                                 About TheNextTrade
                             </h3>
                         </div>
@@ -123,7 +123,7 @@ export function HomeFAQSection() {
                     <div>
                         <div className="flex items-center gap-2 mb-4">
                             <TrendingUp size={18} className="text-primary" />
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                            <h3 className="text-lg font-bold text-gray-700 dark:text-white">
                                 Trading Basics
                             </h3>
                         </div>

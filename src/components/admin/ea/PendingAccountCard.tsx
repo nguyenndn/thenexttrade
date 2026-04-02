@@ -36,13 +36,13 @@ export function PendingAccountCard({ license, onApprove, onReject }: PendingAcco
 
             {/* Info */}
             <div className="flex-1 flex flex-col items-center justify-center space-y-1 mb-6">
-                <p className="font-black text-gray-900 dark:text-white font-mono text-2xl tracking-tight">
+                <p className="font-black text-gray-700 dark:text-white font-mono text-2xl tracking-tight">
                     {license.accountNumber}
                 </p>
                 <div className="flex flex-col items-center">
                     <Link
                         href={`/admin/users/${license.userId}?from=/admin/ea/accounts/pending`}
-                        className="text-sm font-bold text-gray-400 uppercase tracking-widest hover:text-primary hover:underline transition-all"
+                        className="text-sm font-bold text-gray-500 uppercase tracking-widest hover:text-primary hover:underline transition-all"
                     >
                         {license.user.name || license.user.email}
                     </Link>

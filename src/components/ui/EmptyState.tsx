@@ -17,7 +17,7 @@ export function EmptyState({ icon: Icon, title, description, action, className }
                 <Icon size={32} className="text-gray-600 dark:text-gray-300 opacity-80" strokeWidth={1.5} />
             </div>
             {title && (
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">
                     {title}
                 </h3>
             )}

@@ -66,7 +66,7 @@ export function LeaderboardTable({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
           </svg>
         </div>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No rankings yet</h3>
+        <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">No rankings yet</h3>
         <p className="text-gray-600 dark:text-gray-300 text-sm">
           Be the first to claim the top spot! Start learning, trading, and building your streak.
         </p>
@@ -78,7 +78,7 @@ export function LeaderboardTable({
     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
-          <thead className="bg-gray-50 dark:bg-white/5 text-[11px] uppercase text-gray-400 font-bold tracking-wider">
+          <thead className="bg-gray-50 dark:bg-white/5 text-[11px] uppercase text-gray-500 font-bold tracking-wider">
             <tr>
               <th className="w-14 text-center py-3 px-3">Rank</th>
               <th className="py-3 px-3">User</th>

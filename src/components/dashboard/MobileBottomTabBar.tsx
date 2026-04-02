@@ -81,12 +81,12 @@ export function MobileBottomTabBar() {
 
                         {/* Sheet Header */}
                         <div className="flex items-center justify-between px-5 pb-3">
-                            <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                            <h3 className="text-sm font-bold text-gray-700 dark:text-white">
                                 {activeSheet.label}
                             </h3>
                             <button
                                 onClick={() => setOpenGroup(null)}
-                                className="p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/10 transition-colors"
+                                className="p-1.5 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/10 transition-colors"
                                 aria-label="Close menu"
                             >
                                 <X size={18} />

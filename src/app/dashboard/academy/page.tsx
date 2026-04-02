@@ -150,7 +150,7 @@ export default async function UserAcademyDashboard() {
                                         <span className="text-amber-400 font-bold text-xs uppercase tracking-wider">{hasStarted ? 'Ready to Resume' : 'Get Started'}</span>
                                     </div>
                                     <h3 className="text-xl font-bold text-white mb-1">{nextLesson.title}</h3>
-                                    <p className="text-gray-400 text-sm">In module: {nextLessonModuleTitle}</p>
+                                    <p className="text-gray-500 text-sm">In module: {nextLessonModuleTitle}</p>
                                 </div>
                                 <Link
                                     href={`/dashboard/academy/lessons/${nextLesson.slug}`}
@@ -174,7 +174,7 @@ export default async function UserAcademyDashboard() {
 
                     {/* Per-Level Progress */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
-                        <h3 className="font-bold text-sm text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <h3 className="font-bold text-sm text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                             <Target size={16} className="text-primary" /> Level Progress
                         </h3>
                         <div className="space-y-3">
@@ -186,10 +186,10 @@ export default async function UserAcademyDashboard() {
                                 return (
                                     <div key={level.id}>
                                         <div className="flex items-center justify-between mb-1">
-                                            <span className="text-xs font-medium text-gray-600 dark:text-gray-400 truncate pr-2">
+                                            <span className="text-xs font-medium text-gray-600 dark:text-gray-500 truncate pr-2">
                                                 <span className="text-primary font-bold">{String(level.order).padStart(2, '0')}</span> {level.title}
                                             </span>
-                                            <span className="text-[10px] font-bold text-gray-400 whitespace-nowrap">
+                                            <span className="text-[10px] font-bold text-gray-500 whitespace-nowrap">
                                                 {completedInLevel}/{totalInLevel} {pct > 0 && `(${pct}%)`}
                                             </span>
                                         </div>
@@ -232,7 +232,7 @@ export default async function UserAcademyDashboard() {
 
                     {/* Available Quizzes */}
                     <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <h3 className="font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                             <Trophy size={18} className="text-yellow-500" /> Quizzes
                         </h3>
 
@@ -255,7 +255,7 @@ export default async function UserAcademyDashboard() {
                                             className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group"
                                         >
                                             <div className="flex-1 truncate pr-3">
-                                                <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate group-hover:text-primary transition-colors">{quiz.title}</p>
+                                                <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate group-hover:text-primary transition-colors">{quiz.title}</p>
                                                 <p className="text-xs text-gray-600 truncate">
                                                     {quiz.module?.title ?? 'General'}
                                                     {attemptCount > 0 && <span> · {attemptCount} attempt{attemptCount !== 1 ? 's' : ''}</span>}

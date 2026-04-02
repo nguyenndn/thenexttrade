@@ -119,8 +119,8 @@ export default function StreakClient() {
 
                         <div className="mb-6 text-center">
                             <p className="text-gray-600 font-bold uppercase tracking-[0.2em] text-xs mb-2">Current Login Streak</p>
-                            <h2 className="text-6xl font-black text-gray-900 dark:text-white mb-2">{streak}</h2>
-                            <p className="text-sm text-gray-400 font-medium">days in a row</p>
+                            <h2 className="text-6xl font-black text-gray-700 dark:text-white mb-2">{streak}</h2>
+                            <p className="text-sm text-gray-500 font-medium">days in a row</p>
                         </div>
 
                         <Button
@@ -147,7 +147,7 @@ export default function StreakClient() {
                         </Button>
 
                         {!isCheckedInToday && (
-                            <p className="mt-4 text-xs text-gray-400">
+                            <p className="mt-4 text-xs text-gray-500">
                                 Check in before midnight
                             </p>
                         )}
@@ -182,7 +182,7 @@ export default function StreakClient() {
                                                 ? "bg-primary text-white"
                                                 : isNext
                                                     ? "bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400"
-                                                    : "bg-gray-100 dark:bg-white/10 text-gray-400"
+                                                    : "bg-gray-100 dark:bg-white/10 text-gray-500"
                                         )}>
                                             {isAchieved ? <CheckCircle size={14} /> : milestone.days}
                                         </div>
@@ -191,7 +191,7 @@ export default function StreakClient() {
                                             <div className="flex items-center justify-between mb-0.5">
                                                 <span className={cn(
                                                     "text-sm font-bold truncate",
-                                                    isAchieved ? "text-primary" : isNext ? "text-gray-900 dark:text-white" : "text-gray-600"
+                                                    isAchieved ? "text-primary" : isNext ? "text-gray-700 dark:text-white" : "text-gray-600"
                                                 )}>
                                                     {milestone.days} Day Streak
                                                 </span>
@@ -214,7 +214,7 @@ export default function StreakClient() {
             {/* Right Column: Calendar Wrapper (60%) */}
             <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col xl:col-span-3">
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-bold text-gray-900 dark:text-white">Monthly History</h3>
+                    <h3 className="font-bold text-gray-700 dark:text-white">Monthly History</h3>
                     <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-medium text-gray-600">
                         {format(currentDate, "MMMM yyyy")}
                     </div>
@@ -224,7 +224,7 @@ export default function StreakClient() {
                     {/* Days of Week */}
                     <div className="grid grid-cols-7 mb-3 gap-1 md:gap-2">
                         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => (
-                            <div key={day} className="text-center text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider">
+                            <div key={day} className="text-center text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 {day}
                             </div>
                         ))}

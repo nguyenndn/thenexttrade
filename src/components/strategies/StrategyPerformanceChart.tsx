@@ -28,7 +28,7 @@ interface Props {
 export function StrategyPerformanceChart({ data }: Props) {
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
+            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-6">
                 Strategy Performance
             </h3>
 
@@ -74,7 +74,7 @@ export function StrategyPerformanceChart({ data }: Props) {
                                                     className="w-3 h-3 rounded-full"
                                                     style={{ backgroundColor: item.color }}
                                                 />
-                                                <p className="font-bold text-gray-900 dark:text-white">
+                                                <p className="font-bold text-gray-700 dark:text-white">
                                                     {item.strategy}
                                                 </p>
                                             </div>
@@ -87,13 +87,13 @@ export function StrategyPerformanceChart({ data }: Props) {
                                                 </div>
                                                 <div className="flex justify-between gap-8">
                                                     <span className="text-gray-600">Win Rate:</span>
-                                                    <span className="font-mono text-gray-900 dark:text-white">
+                                                    <span className="font-mono text-gray-700 dark:text-white">
                                                         {(item.winRate ?? 0).toFixed(1)}%
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between gap-8">
                                                     <span className="text-gray-600">Trades:</span>
-                                                    <span className="font-mono text-gray-900 dark:text-white">
+                                                    <span className="font-mono text-gray-700 dark:text-white">
                                                         {item.totalTrades}
                                                     </span>
                                                 </div>

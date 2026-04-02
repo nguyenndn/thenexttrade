@@ -15,7 +15,7 @@ export default async function AcademyLayout({
         : null;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white font-outfit">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 text-gray-700 dark:text-white font-outfit">
             <PublicHeader user={user} profile={profile} />
             <main>
                 {children}

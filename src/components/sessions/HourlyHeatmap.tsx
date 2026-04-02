@@ -49,12 +49,12 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
         if (pnl > 0) {
             if (intensity > 0.8) return "bg-primary dark:bg-primary/90 text-white";
             if (intensity > 0.6) return "bg-primary/70 text-white";
-            if (intensity > 0.3) return "bg-primary/40 text-gray-900 dark:text-white";
+            if (intensity > 0.3) return "bg-primary/40 text-gray-700 dark:text-white";
             return "bg-primary/20 text-gray-700 dark:text-gray-300";
         } else if (pnl < 0) {
             if (intensity > 0.8) return "bg-red-500 dark:bg-red-500/90 text-white";
             if (intensity > 0.6) return "bg-red-400 dark:bg-red-500/70 text-white";
-            if (intensity > 0.3) return "bg-red-300 dark:bg-red-500/40 text-gray-900 dark:text-white";
+            if (intensity > 0.3) return "bg-red-300 dark:bg-red-500/40 text-gray-700 dark:text-white";
             return "bg-red-200 dark:bg-red-500/20 text-gray-700 dark:text-gray-300";
         } else {
             // Breakeven but traded
@@ -101,15 +101,15 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                             <p className="font-bold border-b border-gray-700 pb-2 mb-2">{hour.hourLabel} UTC</p>
                             <div className="space-y-1.5">
                                 <div className="flex justify-between items-center gap-2">
-                                    <span className="text-gray-400">Trades:</span>
+                                    <span className="text-gray-500">Trades:</span>
                                     <span className="font-medium">{hour.totalTrades}</span>
                                 </div>
                                 <div className="flex justify-between items-center gap-2">
-                                    <span className="text-gray-400">Win Rate:</span>
+                                    <span className="text-gray-500">Win Rate:</span>
                                     <span className="font-medium">{hour.winRate.toFixed(0)}%</span>
                                 </div>
                                 <div className="flex justify-between items-center gap-2">
-                                    <span className="text-gray-400">P&L:</span>
+                                    <span className="text-gray-500">P&L:</span>
                                     <span className={`font-medium ${hour.totalPnL > 0 ? "text-primary dark:text-[#00C888]" : hour.totalPnL < 0 ? "text-red-400" : "text-gray-300"}`}>
                                         {hour.totalPnL > 0 ? '+' : ''}{hour.totalPnL.toFixed(2)}
                                     </span>
@@ -125,7 +125,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                 {hoursData.map((hour) => (
                     <div
                         key={hour.hour}
-                        className="text-center text-[10px] font-medium text-gray-400"
+                        className="text-center text-[10px] font-medium text-gray-500"
                     >
                         {hour.hour}
                     </div>
@@ -136,7 +136,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
 
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm transition-shadow hover:shadow-md">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="font-bold text-gray-700 dark:text-white mb-2">
                 24-Hour Trading Heatmap
             </h3>
             <p className="text-sm text-gray-600 mb-6">

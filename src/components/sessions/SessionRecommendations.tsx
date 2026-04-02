@@ -53,7 +53,7 @@ export function SessionRecommendations({ recommendations }: SessionRecommendatio
                     <Lightbulb size={20} />
                 </div>
                 <div>
-                    <h3 className="font-bold text-gray-900 dark:text-white">
+                    <h3 className="font-bold text-gray-700 dark:text-white">
                         AI Insights
                     </h3>
                     <p className="text-xs text-indigo-600 dark:text-indigo-400 font-medium tracking-wide uppercase">

@@ -32,7 +32,7 @@ export function BrokerLogo({
                     </span>
                 </div>
                 {showName && (
-                    <span className="font-medium text-sm text-gray-900 dark:text-gray-100">
+                    <span className="font-medium text-sm text-gray-700 dark:text-gray-100">
                         {broker}
                     </span>
                 )}
@@ -60,7 +60,7 @@ export function BrokerLogo({
             </div>
 
             {showName && (
-                <span className="font-medium text-sm text-gray-900 dark:text-gray-100">
+                <span className="font-medium text-sm text-gray-700 dark:text-gray-100">
                     {brokerConfig.name}
                 </span>
             )}

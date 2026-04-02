@@ -18,7 +18,7 @@ export function PageHeader({ title, description, children, className, mobileFull
                 <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-teal-500 shrink-0" />
                 <div>
                     {title && (
-                        <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                        <h1 className="text-xl font-bold text-gray-700 dark:text-white tracking-tight">
                             {title}
                         </h1>
                     )}

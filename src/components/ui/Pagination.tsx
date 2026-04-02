@@ -53,7 +53,7 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
                                 variant: page === currentPage ? 'primary' : 'outline',
                                 className: `w-10 h-10 p-0 flex items-center justify-center rounded-xl font-bold text-sm transition-all border-white/20 dark:border-white/10 ${page === currentPage
                                     ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                                    : 'text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-white/10'
+                                    : 'text-gray-600 dark:text-gray-500 hover:bg-white/60 dark:hover:bg-white/10'
                                     }`
                             })}
                             aria-label={`Page ${page}`}

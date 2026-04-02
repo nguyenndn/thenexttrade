@@ -148,7 +148,7 @@ export default async function UserDetailPage({
         PENDING: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-400',
         APPROVED: 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400',
         REJECTED: 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400',
-        EXPIRED: 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400',
+        EXPIRED: 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-500',
         SUSPENDED: 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400',
     };
 
@@ -192,7 +192,7 @@ export default async function UserDetailPage({
                                     {user.name?.[0]?.toUpperCase() || "U"}
                                 </AvatarFallback>
                             </Avatar>
-                            <h2 className="text-xl font-black text-gray-900 dark:text-white mt-2">
+                            <h2 className="text-xl font-black text-gray-700 dark:text-white mt-2">
                                 {user.name || "Unnamed User"}
                             </h2>
                             <p className="text-sm text-gray-600 font-medium mb-3">
@@ -210,26 +210,26 @@ export default async function UserDetailPage({
                         <div className="p-4 sm:px-6 sm:py-4 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-[#1a1f2e] mt-auto">
                             <div className="grid grid-cols-2 gap-3">
                                 <div className="flex items-center gap-2.5 text-sm">
-                                    <Mail size={15} className="text-gray-400 shrink-0" />
-                                    <span className="font-medium text-gray-900 dark:text-white truncate text-xs">
+                                    <Mail size={15} className="text-gray-500 shrink-0" />
+                                    <span className="font-medium text-gray-700 dark:text-white truncate text-xs">
                                         {user.email || "No email"}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2.5 text-sm">
-                                    <Clock size={15} className="text-gray-400 shrink-0" />
-                                    <span className="font-medium text-gray-900 dark:text-white text-xs">
+                                    <Clock size={15} className="text-gray-500 shrink-0" />
+                                    <span className="font-medium text-gray-700 dark:text-white text-xs">
                                         {format(new Date(user.createdAt), "MMM d, yyyy")}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2.5 text-sm">
-                                    <Award size={15} className="text-gray-400 shrink-0" />
-                                    <span className="font-medium text-gray-900 dark:text-white text-xs">
+                                    <Award size={15} className="text-gray-500 shrink-0" />
+                                    <span className="font-medium text-gray-700 dark:text-white text-xs">
                                         Lv.{user.level} · {user.xp} XP
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2.5 text-sm">
-                                    <Globe size={15} className="text-gray-400 shrink-0" />
-                                    <span className="font-medium text-gray-900 dark:text-white text-xs">
+                                    <Globe size={15} className="text-gray-500 shrink-0" />
+                                    <span className="font-medium text-gray-700 dark:text-white text-xs">
                                         {lastActive
                                             ? formatDistanceToNow(lastActive, { addSuffix: true })
                                             : "Never"}
@@ -245,7 +245,7 @@ export default async function UserDetailPage({
                     {/* Trading Accounts */}
                     <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
                         <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                            <h3 className="text-base font-bold text-gray-900 dark:text-white">Trading Accounts</h3>
+                            <h3 className="text-base font-bold text-gray-700 dark:text-white">Trading Accounts</h3>
                             <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg">
                                 {user._count.tradingAccounts} Total
                             </span>
@@ -259,7 +259,7 @@ export default async function UserDetailPage({
                                                 <LineChart size={16} />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                                <p className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                                     {acc.name || "Unnamed Account"}
                                                     {(acc.accountType === "DEMO" || acc.server?.toLowerCase().includes('demo')) ? (
                                                         <span className="text-[11px] font-bold bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 px-1.5 py-0.5 rounded uppercase tracking-widest">Demo</span>
@@ -273,8 +273,8 @@ export default async function UserDetailPage({
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-sm font-black text-gray-900 dark:text-white">${acc.balance?.toFixed(2) || "0.00"}</p>
-                                            <span className={`inline-block mt-0.5 text-[11px] font-bold uppercase tracking-wider ${acc.status === 'CONNECTED' ? 'text-green-500' : 'text-gray-400'
+                                            <p className="text-sm font-black text-gray-700 dark:text-white">${acc.balance?.toFixed(2) || "0.00"}</p>
+                                            <span className={`inline-block mt-0.5 text-[11px] font-bold uppercase tracking-wider ${acc.status === 'CONNECTED' ? 'text-green-500' : 'text-gray-500'
                                                 }`}>
                                                 {acc.status}
                                             </span>
@@ -292,8 +292,8 @@ export default async function UserDetailPage({
                     {/* EA Licenses */}
                     <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
                         <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                            <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <Key size={18} className="text-gray-400" /> EA Licenses
+                            <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
+                                <Key size={18} className="text-gray-500" /> EA Licenses
                             </h3>
                             <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg">
                                 {user._count.EALicenses} Total
@@ -308,7 +308,7 @@ export default async function UserDetailPage({
                                                 <Key size={16} />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                                <p className="text-sm font-bold text-gray-700 dark:text-white">
                                                     {lic.broker} · #{lic.accountNumber}
                                                 </p>
                                                 <p className="text-[11px] text-gray-600 mt-0.5">
@@ -339,7 +339,7 @@ export default async function UserDetailPage({
                     <div className="grid grid-rows-2 gap-6 h-[440px] mb-6">
                     {/* Activity Overview — Compact inline stats */}
                     <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-6 overflow-hidden">
-                        <h3 className="text-base font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-white/5 pb-3 mb-4">
+                        <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-100 dark:border-white/5 pb-3 mb-4">
                             Activity Overview
                         </h3>
                         
@@ -354,7 +354,7 @@ export default async function UserDetailPage({
                                     <div className={`p-1 ${stat.bg} ${stat.color} rounded-md w-max mx-auto mb-1.5`}>
                                         <stat.icon size={14} />
                                     </div>
-                                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
+                                    <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{stat.label}</p>
                                     {stat.values.map(v => (
                                         <p key={v} className="text-[11px] font-medium text-gray-600 dark:text-gray-300">{v}</p>
                                     ))}
@@ -368,7 +368,7 @@ export default async function UserDetailPage({
                         {/* Achievements */}
                         <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
                             <div className="px-4 sm:px-6 py-3 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                                <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                     <Trophy size={16} className="text-amber-500" /> Achievements
                                 </h3>
                                 <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
@@ -404,7 +404,7 @@ export default async function UserDetailPage({
                     <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
                         {/* Recent Activity Timeline — 3/5 width */}
                         <div className="xl:col-span-3 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-6">
-                            <h3 className="text-base font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-white/5 pb-3 mb-4">
+                            <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-100 dark:border-white/5 pb-3 mb-4">
                                 Recent Activity Timeline
                             </h3>
                             {timelineEvents.length > 0 ? (
@@ -416,13 +416,13 @@ export default async function UserDetailPage({
                                                 <evt.icon size={11} />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-gray-900 dark:text-white mb-0.5">
+                                                <p className="text-sm font-bold text-gray-700 dark:text-white mb-0.5">
                                                     {evt.title}
                                                 </p>
                                                 <p className="text-xs text-gray-600 font-medium mb-1">
                                                     {evt.description}
                                                 </p>
-                                                <p className="text-[10px] text-gray-400">
+                                                <p className="text-[10px] text-gray-500">
                                                     {format(evt.date, "MMM d, yyyy · HH:mm")}
                                                 </p>
                                             </div>
@@ -442,8 +442,8 @@ export default async function UserDetailPage({
                             {/* Recent Sessions */}
                             <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
                                 <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                        <Monitor size={16} className="text-gray-400" /> Recent Sessions
+                                    <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
+                                        <Monitor size={16} className="text-gray-500" /> Recent Sessions
                                     </h3>
                                     <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
                                         {user._count.sessions}
@@ -454,10 +454,10 @@ export default async function UserDetailPage({
                                         {user.sessions.map(s => (
                                             <div key={s.id} className="p-4 sm:px-6 space-y-1">
                                                 <div className="flex items-center justify-between">
-                                                    <span className="text-xs font-bold text-gray-900 dark:text-white">
+                                                    <span className="text-xs font-bold text-gray-700 dark:text-white">
                                                         {parseBrowser(s.userAgent)}
                                                     </span>
-                                                    <span className="text-[10px] text-gray-400 font-medium">
+                                                    <span className="text-[10px] text-gray-500 font-medium">
                                                         {formatDistanceToNow(new Date(s.lastActive), { addSuffix: true })}
                                                     </span>
                                                 </div>

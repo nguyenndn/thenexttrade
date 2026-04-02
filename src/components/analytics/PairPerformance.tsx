@@ -37,8 +37,8 @@ export function PairPerformance({ data }: PairPerformanceProps) {
                     <BarChart2 size={18} />
                 </div>
                 <div>
-                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">Performance by Pair</h3>
-                    <p className="text-xs text-gray-400">Top traded symbols</p>
+                    <h3 className="font-bold text-gray-700 dark:text-white text-sm">Performance by Pair</h3>
+                    <p className="text-xs text-gray-500">Top traded symbols</p>
                 </div>
             </div>
 
@@ -92,7 +92,7 @@ export function PairPerformance({ data }: PairPerformanceProps) {
             )}
             
             {!isEmpty && bestPair && (
-                <div className="mt-4 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                <div className="mt-4 flex justify-between items-center text-[10px] text-gray-500 font-bold uppercase tracking-wider">
                     <span>Best: {bestPair.symbol}</span>
                     <span className="text-primary">+{bestPair.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
                 </div>

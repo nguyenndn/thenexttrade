@@ -51,14 +51,14 @@ export default async function NotificationsPage() {
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex justify-between items-start">
-                                        <h3 className={`text-base font-bold ${!n.isRead ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300'}`}>
+                                        <h3 className={`text-base font-bold ${!n.isRead ? 'text-gray-700 dark:text-white' : 'text-gray-600 dark:text-gray-300'}`}>
                                             {n.title}
                                         </h3>
-                                        <span className="text-xs text-gray-400 whitespace-nowrap ml-2">
+                                        <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
                                             {format(new Date(n.createdAt), "HH:mm dd/MM/yyyy", { locale: enUS })}
                                         </span>
                                     </div>
-                                    <p className="text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
+                                    <p className="text-gray-600 dark:text-gray-500 mt-1 leading-relaxed">
                                         {n.message}
                                     </p>
                                 </div>

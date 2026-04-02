@@ -253,7 +253,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                         <Link href="/dashboard/journal" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
                             <ArrowLeft size={20} className="text-gray-600" />
                         </Link>
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                        <h1 className="text-3xl font-bold text-gray-700 dark:text-white">
                             {isEditMode ? "Edit Trade" : "Log New Trade"}
                         </h1>
                     </div>
@@ -270,7 +270,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Main Info Card */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-primary rounded-full"></div>
                         Trade Details
                     </h3>
@@ -358,7 +358,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
                 {/* Price & Risk */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
                         Pricing & Risk
                     </h3>
@@ -443,7 +443,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
                 {/* Analysis */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
                         Analysis & Result
                     </h3>
@@ -457,7 +457,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 {strategies.length === 0 ? (
                                     /* Empty State — no strategies yet */
                                     <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10">
-                                        <span className="text-sm text-gray-400 flex-1">No strategies found</span>
+                                        <span className="text-sm text-gray-500 flex-1">No strategies found</span>
                                         <a
                                             href="/dashboard/strategies"
                                             target="_blank"
@@ -504,7 +504,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                     {(formData.tags || []).map((tag: string, idx: number) => (
                                         <span key={idx} className="px-2 py-1 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold border border-gray-200 dark:border-white/10 flex items-center gap-1">
                                             {tag}
-                                            <Button variant="outline" size="icon" type="button" onClick={() => removeCustomTag(tag)} aria-label={`Remove tag ${tag}`} className="w-4 h-4 hover:bg-transparent border-transparent hover:text-red-500 p-0 text-gray-400">
+                                            <Button variant="outline" size="icon" type="button" onClick={() => removeCustomTag(tag)} aria-label={`Remove tag ${tag}`} className="w-4 h-4 hover:bg-transparent border-transparent hover:text-red-500 p-0 text-gray-500">
                                                 <X size={12} />
                                             </Button>
                                         </span>
@@ -592,12 +592,12 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
                 {/* Psychology Tracking (Phase 44) */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                         <div className="p-1.5 bg-purple-500/10 text-purple-500 rounded-lg">
                             <Brain size={20} />
                         </div>
                         Psychology Tracking
-                        <span className="text-xs font-normal text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-full ml-2">Optional</span>
+                        <span className="text-xs font-normal text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-full ml-2">Optional</span>
                     </h3>
 
                     <div className="space-y-8">
@@ -640,7 +640,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                               w-12 h-12 rounded-xl font-bold text-lg transition-all border p-0
                                               ${formData.confidenceLevel === level
                                                     ? "bg-purple-500 text-white border-purple-500 ring-2 ring-purple-300 ring-offset-2 dark:ring-offset-gray-900 shadow-lg shadow-purple-500/20 hover:bg-purple-600 hover:text-white"
-                                                    : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5 border-gray-200 dark:border-white/10"
+                                                    : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-white/5 border-gray-200 dark:border-white/10"
                                                 }
                                             `}
                                         >
@@ -648,7 +648,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         </Button>
                                     ))}
                                 </div>
-                                <p className="text-xs text-gray-400">
+                                <p className="text-xs text-gray-500">
                                     1 = Uncertain, 5 = Very Confident
                                 </p>
                             </div>
@@ -667,7 +667,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                             flex-1 min-h-[50px] rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
                                             ${formData.followedPlan === true
                                                 ? "bg-green-500 text-white border-green-500 shadow-lg shadow-green-500/20 hover:bg-green-600"
-                                                : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/5"
+                                                : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-500 border-gray-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/5"
                                             }
                                           `}
                                     >
@@ -682,7 +682,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                             flex-1 min-h-[50px] rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
                                             ${formData.followedPlan === false
                                                 ? "bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20 hover:bg-red-600"
-                                                : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/5"
+                                                : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-500 border-gray-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/5"
                                             }
                                           `}
                                     >
@@ -721,7 +721,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
                 {/* Screenshots Section (Phase 53) */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-pink-500 rounded-full"></div>
                         Trade Screenshots
                     </h3>
@@ -741,7 +741,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                             const target = e.currentTarget;
                                             const parent = target.parentElement;
                                             if (parent) {
-                                                parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-400 text-sm p-4 text-center">Image failed to load<br/><span class="text-xs opacity-60 break-all">${img}</span></div>`;
+                                                parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500 text-sm p-4 text-center">Image failed to load<br/><span class="text-xs opacity-60 break-all">${img}</span></div>`;
                                             }
                                         }}
                                     />

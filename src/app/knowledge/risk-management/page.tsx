@@ -108,7 +108,7 @@ export default async function RiskManagementPage() {
     });
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white">
+        <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
             <PublicHeader user={user} />
 
             {/* SEO Schemas */}
@@ -138,7 +138,7 @@ export default async function RiskManagementPage() {
                         <ChevronRight size={14} className="shrink-0" />
                         <Link href="/knowledge" className="hover:text-primary transition-colors">Knowledge</Link>
                         <ChevronRight size={14} className="shrink-0" />
-                        <span className="text-gray-900 dark:text-white font-medium">Risk Management</span>
+                        <span className="text-gray-700 dark:text-white font-medium">Risk Management</span>
                     </nav>
 
                     {/* Hero */}
@@ -167,7 +167,7 @@ export default async function RiskManagementPage() {
                                     <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-black">{idx + 1}</span>
                                     {section.title}
                                 </h2>
-                                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+                                <p className="text-gray-600 dark:text-gray-500 leading-relaxed text-lg">
                                     {section.content}
                                 </p>
                             </section>
@@ -191,7 +191,7 @@ export default async function RiskManagementPage() {
                                         <tool.icon size={20} className={tool.color} />
                                     </div>
                                     <div className="min-w-0">
-                                        <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors mb-1">
+                                        <h3 className="font-bold text-gray-700 dark:text-white group-hover:text-primary transition-colors mb-1">
                                             {tool.title}
                                         </h3>
                                         <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -235,7 +235,7 @@ export default async function RiskManagementPage() {
                     {/* Academy CTA */}
                     <div className="bg-gradient-to-r from-primary/10 to-cyan-500/10 dark:from-primary/20 dark:to-cyan-500/20 border border-primary/20 rounded-2xl p-8 text-center">
                         <h3 className="text-xl font-bold mb-3">Ready to Master Risk Management?</h3>
-                        <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                        <p className="text-gray-600 dark:text-gray-500 mb-6 max-w-md mx-auto">
                             Our Academy includes a dedicated Level 9: Risk Manager with deep-dive lessons on every aspect of trading risk.
                         </p>
                         <Link

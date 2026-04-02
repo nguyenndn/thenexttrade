@@ -61,7 +61,7 @@ export default function LoginPage() {
       </div>
       <div className="text-center mb-8">
         <p className="text-base font-medium text-gray-600 dark:text-gray-300">Welcome back</p>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-2">Login to your account</h1>
+        <h1 className="text-3xl font-bold text-gray-700 dark:text-white mt-2">Login to your account</h1>
       </div>
 
       {/* Mode Tabs */}
@@ -71,7 +71,7 @@ export default function LoginPage() {
           onClick={() => switchMode("password")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all ${
             mode === "password"
-              ? "bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white shadow-sm"
+              ? "bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white shadow-sm"
               : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300"
           }`}
         >
@@ -83,7 +83,7 @@ export default function LoginPage() {
           onClick={() => switchMode("magic")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all ${
             mode === "magic"
-              ? "bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white shadow-sm"
+              ? "bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white shadow-sm"
               : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300"
           }`}
         >
@@ -107,8 +107,8 @@ export default function LoginPage() {
             placeholder="hello@example.com"
             label="Email"
             required
-            startIcon={<Mail size={20} className="text-gray-400" />}
-            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+            startIcon={<Mail size={20} className="text-gray-500" />}
+            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
           />
 
           <div>
@@ -118,13 +118,13 @@ export default function LoginPage() {
               placeholder="••••••••"
               label="Password"
               required
-              startIcon={<Lock size={20} className="text-gray-400" />}
+              startIcon={<Lock size={20} className="text-gray-500" />}
               endIcon={
-                <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showPassword ? "Hide password" : "Show password"}>
+                <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-500 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showPassword ? "Hide password" : "Show password"}>
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </Button>
               }
-              className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+              className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
             />
           </div>
 
@@ -135,7 +135,7 @@ export default function LoginPage() {
                 id="remember"
                 className="appearance-none h-5 w-5 rounded bg-white dark:bg-[#0B0E14] border border-gray-300 dark:border-white/20 checked:bg-primary dark:checked:bg-primary checked:border-transparent dark:checked:border-transparent checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
               />
-              <label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none">Stay signed in</label>
+              <label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-500 cursor-pointer select-none">Stay signed in</label>
             </div>
             <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline font-medium">
               Forgot your password?
@@ -168,8 +168,8 @@ export default function LoginPage() {
             placeholder="hello@example.com"
             label="Email"
             required
-            startIcon={<Mail size={20} className="text-gray-400" />}
-            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+            startIcon={<Mail size={20} className="text-gray-500" />}
+            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
           />
 
           <Button
@@ -190,7 +190,7 @@ export default function LoginPage() {
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto border border-primary/20">
             <CheckCircle className="text-primary" size={32} />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Check your email</h2>
+          <h2 className="text-xl font-bold text-gray-700 dark:text-white">Check your email</h2>
           <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
             We've sent a magic link to your email.<br />
             Click the link to sign in instantly.

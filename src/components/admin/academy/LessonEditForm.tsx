@@ -160,13 +160,13 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                         <input
                             type="text"
                             placeholder="Lesson Title"
-                            className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none placeholder:text-gray-300 dark:placeholder:text-gray-700 text-gray-900 dark:text-white"
+                            className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none placeholder:text-gray-300 dark:placeholder:text-gray-700 text-gray-700 dark:text-white"
                             value={formData.title}
                             onChange={e => handleTitleChange(e.target.value)}
                         />
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <span>Slug:</span>
-                            <span className="text-gray-400">/academy/</span>
+                            <span className="text-gray-500">/academy/</span>
                             <input
                                 type="text"
                                 value={formData.slug}
@@ -179,7 +179,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                         {formData.metaDescription && (
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1">
-                                    🔍 Meta Description <span className="font-normal text-gray-400">({formData.metaDescription.length}/160)</span>
+                                    🔍 Meta Description <span className="font-normal text-gray-500">({formData.metaDescription.length}/160)</span>
                                 </label>
                                 <textarea
                                     value={formData.metaDescription}

@@ -26,7 +26,7 @@ interface SessionPerformanceProps {
 export function SessionPerformance({ data }: SessionPerformanceProps) {
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col transition-shadow hover:shadow-md">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="font-bold text-gray-700 dark:text-white mb-2">
                 P&L by Session
             </h3>
             <p className="text-sm text-gray-600 mb-4">
@@ -59,21 +59,21 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                                             <p className="font-bold mb-1 text-sm">{data.displayName}</p>
                                             <div className="space-y-1">
                                                 <div className="flex justify-between gap-4">
-                                                    <span className="text-gray-400">P&L:</span>
+                                                    <span className="text-gray-500">P&L:</span>
                                                     <span className={`font-mono font-bold ${data.totalPnL >= 0 ? "text-primary" : "text-red-400"}`}>
                                                         ${(data.totalPnL ?? 0).toLocaleString()}
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between gap-4">
-                                                    <span className="text-gray-400">Win Rate:</span>
+                                                    <span className="text-gray-500">Win Rate:</span>
                                                     <span className="font-mono">{(data.winRate ?? 0).toFixed(0)}%</span>
                                                 </div>
                                                 <div className="flex justify-between gap-4">
-                                                    <span className="text-gray-400">Trades:</span>
+                                                    <span className="text-gray-500">Trades:</span>
                                                     <span className="font-mono">{data.totalTrades ?? 0}</span>
                                                 </div>
                                                 <div className="flex justify-between gap-4">
-                                                    <span className="text-gray-400">Profit Factor:</span>
+                                                    <span className="text-gray-500">Profit Factor:</span>
                                                     <span className="font-mono">{data.profitFactor === Infinity ? "MAX" : (data.profitFactor ?? 0).toFixed(2)}</span>
                                                 </div>
                                             </div>

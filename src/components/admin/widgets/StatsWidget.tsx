@@ -42,7 +42,7 @@ export function StatsWidget({ title, value, icon: Icon, trend, color = "blue" }:
             
             <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">{title}</p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{value}</h3>
+                <h3 className="text-2xl font-bold text-gray-700 dark:text-white">{value}</h3>
             </div>
         </div>
     );

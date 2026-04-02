@@ -91,7 +91,7 @@ export function CommentForm({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <textarea
                 {...register("content")}
-                className="w-full min-h-[140px] p-5 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all resize-none outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400 text-[15px]"
+                className="w-full min-h-[140px] p-5 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all resize-none outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-500 text-[15px]"
                 placeholder={parentId ? placeholder : "Share your thoughts..."}
                 autoFocus={autoFocus}
                 disabled={isLoading}
@@ -104,12 +104,12 @@ export function CommentForm({
                         placeholder="Name"
                         defaultValue={userName || ""}
                         readOnly={!!userName}
-                        className="w-full px-5 py-3 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400 text-[15px]"
+                        className="w-full px-5 py-3 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-500 text-[15px]"
                     />
                     <input
                         type="email"
                         placeholder="Email"
-                        className="w-full px-5 py-3 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400 text-[15px]"
+                        className="w-full px-5 py-3 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-500 text-[15px]"
                     />
                 </div>
             )}
@@ -124,7 +124,7 @@ export function CommentForm({
                         type="button"
                         variant="ghost"
                         onClick={onCancel}
-                        className="text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                        className="text-sm text-gray-500 hover:text-gray-600 dark:hover:text-gray-200"
                     >
                         Cancel
                     </Button>

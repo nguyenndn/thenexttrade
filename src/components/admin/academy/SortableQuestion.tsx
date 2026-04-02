@@ -44,13 +44,13 @@ export function SortableQuestion({ question, onEdit, onDelete }: QuestionProps) 
                     size="icon"
                     {...attributes}
                     {...listeners}
-                    className="mt-1 cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 bg-transparent hover:bg-transparent"
+                    className="mt-1 cursor-move text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 bg-transparent hover:bg-transparent"
                 >
                     <GripVertical size={20} />
                 </Button>
 
                 <div className="flex-1 space-y-3">
-                    <div className="font-medium text-gray-900 dark:text-white">
+                    <div className="font-medium text-gray-700 dark:text-white">
                         {question.text}
                     </div>
 
@@ -68,10 +68,10 @@ export function SortableQuestion({ question, onEdit, onDelete }: QuestionProps) 
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <Button variant="ghost" size="icon" onClick={onEdit} className="text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors">
+                    <Button variant="ghost" size="icon" onClick={onEdit} className="text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors">
                         <Edit size={16} />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={onDelete} className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
+                    <Button variant="ghost" size="icon" onClick={onDelete} className="text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
                         <Trash size={16} />
                     </Button>
                 </div>

@@ -56,7 +56,7 @@ export default function SignupPage() {
                 <Logo />
             </div>
             <div className="text-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Sign up</h1>
+                <h1 className="text-3xl font-bold text-gray-700 dark:text-white">Sign up</h1>
                 <p className="text-gray-600 dark:text-gray-300 mt-2 text-base">The process is simple and fast</p>
             </div>
 
@@ -73,8 +73,8 @@ export default function SignupPage() {
                     placeholder="Full Name"
                     label="Full Name"
                     required
-                    startIcon={<User size={20} className="text-gray-400" />}
-                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+                    startIcon={<User size={20} className="text-gray-500" />}
+                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
                 />
 
                 <Input
@@ -83,8 +83,8 @@ export default function SignupPage() {
                     placeholder="Email Address"
                     label="Email Address"
                     required
-                    startIcon={<Mail size={20} className="text-gray-400" />}
-                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+                    startIcon={<Mail size={20} className="text-gray-500" />}
+                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
                 />
 
                 <Input
@@ -93,13 +93,13 @@ export default function SignupPage() {
                     placeholder="Password"
                     label="Password"
                     required
-                    startIcon={<Lock size={20} className="text-gray-400" />}
+                    startIcon={<Lock size={20} className="text-gray-500" />}
                     endIcon={
-                        <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showPassword ? "Hide password" : "Show password"}>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-500 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showPassword ? "Hide password" : "Show password"}>
                             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                         </Button>
                     }
-                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
                 />
 
                 <Input
@@ -108,13 +108,13 @@ export default function SignupPage() {
                     placeholder="Confirm Password"
                     label="Confirm Password"
                     required
-                    startIcon={<Lock size={20} className="text-gray-400" />}
+                    startIcon={<Lock size={20} className="text-gray-500" />}
                     endIcon={
-                        <Button type="button" variant="ghost" size="icon" onClick={() => setShowConfirm(!showConfirm)} className="text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => setShowConfirm(!showConfirm)} className="text-gray-500 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}>
                             {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
                         </Button>
                     }
-                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
                 />
 
                 {/* Country Dropdown */}
@@ -136,7 +136,7 @@ export default function SignupPage() {
                             id="notify"
                             name="notify"
                         />
-                        <label htmlFor="notify" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
+                        <label htmlFor="notify" className="text-sm text-gray-600 dark:text-gray-500 cursor-pointer">
                             Notify me about updates & perks (No spam)
                         </label>
                     </div>
@@ -147,7 +147,7 @@ export default function SignupPage() {
                             id="terms"
                             required
                         />
-                        <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
+                        <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-500 cursor-pointer">
                             I accept the <Link href="/legal/terms-of-service" className="text-[#2F80ED] hover:underline">Terms & Conditions</Link> and <Link href="/legal/privacy-policy" className="text-[#2F80ED] hover:underline">Privacy Policy</Link>.
                         </label>
                     </div>

@@ -34,7 +34,7 @@ export function InsightBanner({ insight }: InsightBannerProps) {
                 }`}>
                     {insight.title}
                 </span>
-                <span className="text-sm text-gray-600 dark:text-gray-400 ml-2 hidden sm:inline">
+                <span className="text-sm text-gray-600 dark:text-gray-500 ml-2 hidden sm:inline">
                     — {insight.description}
                 </span>
             </div>

@@ -49,7 +49,7 @@ export function EditLevelModal({ isOpen, onClose, level }: EditLevelModalProps) 
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="max-w-md bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 p-6 rounded-xl shadow-2xl">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Edit Level</h2>
+                    <h2 className="text-xl font-bold text-gray-700 dark:text-white">Edit Level</h2>
 
                 </div>
 
@@ -64,7 +64,7 @@ export function EditLevelModal({ isOpen, onClose, level }: EditLevelModalProps) 
                     />
 
                     <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
                             Description
                         </label>
                         <div className="relative group">
@@ -75,7 +75,7 @@ export function EditLevelModal({ isOpen, onClose, level }: EditLevelModalProps) 
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={3}
-                                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-sm text-gray-700 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                                 placeholder="Describe this level..."
                             />
                         </div>
@@ -83,7 +83,7 @@ export function EditLevelModal({ isOpen, onClose, level }: EditLevelModalProps) 
                 </div>
 
                 <div className="flex justify-end gap-3 mt-8">
-                    <Button variant="outline" onClick={onClose} disabled={isLoading} className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5">Cancel
+                    <Button variant="outline" onClick={onClose} disabled={isLoading} className="text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5">Cancel
                     </Button>
                     <Button
                         onClick={handleSave}

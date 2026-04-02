@@ -67,7 +67,7 @@ export function DrawdownCalc() {
                             onChange={(e) => setInputs({ ...inputs, consecutiveLosses: parseInt(e.target.value) })}
                             className="w-full accent-primary"
                         />
-                        <div className="flex justify-between text-xs text-gray-400">
+                        <div className="flex justify-between text-xs text-gray-500">
                             <span>1</span><span>10</span><span>20</span>
                         </div>
                     </div>
@@ -85,7 +85,7 @@ export function DrawdownCalc() {
                             onChange={(e) => setInputs({ ...inputs, riskPercent: parseFloat(e.target.value) })}
                             className="w-full accent-primary"
                         />
-                        <div className="flex justify-between text-xs text-gray-400">
+                        <div className="flex justify-between text-xs text-gray-500">
                             <span>0.5%</span><span>5%</span><span>10%</span>
                         </div>
                     </div>

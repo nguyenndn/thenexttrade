@@ -210,7 +210,7 @@ export default async function EADashboardPage() {
                 <AnimatedSection delay={0.7}>
                     <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
                         <div className="flex items-center justify-between mb-5">
-                            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                            <h2 className="text-sm font-bold text-gray-700 dark:text-white uppercase tracking-wider flex items-center gap-2">
                                 <Clock className="text-amber-500" size={18} />
                                 Pending Requests
                             </h2>
@@ -237,7 +237,7 @@ export default async function EADashboardPage() {
                                         <div className="flex items-center gap-3">
                                             <BrokerLogo broker={license.broker} size={48} />
                                             <div>
-                                                <p className="font-bold text-sm text-gray-900 dark:text-white font-mono">
+                                                <p className="font-bold text-sm text-gray-700 dark:text-white font-mono">
                                                     {license.accountNumber}
                                                 </p>
                                                 <p className="text-xs text-gray-600 dark:text-gray-300">
@@ -246,7 +246,7 @@ export default async function EADashboardPage() {
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-xs text-gray-400 block mb-1">
+                                            <span className="text-xs text-gray-500 block mb-1">
                                                 {formatDistanceToNow(license.createdAt, { addSuffix: true, locale: enUS })}
                                             </span>
                                             <StatusBadge status={license.status} />
@@ -261,7 +261,7 @@ export default async function EADashboardPage() {
                 {/* Active Licenses by Broker */}
                 <AnimatedSection delay={0.8}>
                     <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm h-full">
-                        <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2 mb-5">
+                        <h2 className="text-sm font-bold text-gray-700 dark:text-white uppercase tracking-wider flex items-center gap-2 mb-5">
                             <Briefcase className="text-primary" size={18} />
                             Active by Broker
                         </h2>
@@ -279,7 +279,7 @@ export default async function EADashboardPage() {
                                             <div className="flex justify-between items-center text-sm">
                                                 <div className="flex items-center gap-3">
                                                     <BrokerLogo broker={stat.broker} size={36} />
-                                                    <span className="font-bold text-gray-900 dark:text-white capitalize group-hover:text-primary transition-colors">
+                                                    <span className="font-bold text-gray-700 dark:text-white capitalize group-hover:text-primary transition-colors">
                                                         {stat.broker.toLowerCase()}
                                                     </span>
                                                 </div>

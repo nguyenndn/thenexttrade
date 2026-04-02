@@ -29,7 +29,7 @@ export function EmotionPerformanceChart({ data, title }: EmotionPerformanceChart
 
     return (
         <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4">
+            <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-4">
                 {title}
             </h3>
 
@@ -79,7 +79,7 @@ export function EmotionPerformanceChart({ data, title }: EmotionPerformanceChart
                         <div className={`text-lg font-bold ${item.totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}>
                             {item.totalPnL >= 0 ? "+" : ""}${item.totalPnL.toFixed(2)}
                         </div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-gray-500">
                             {item.winRate.toFixed(0)}% Win ({item.totalTrades} trades)
                         </div>
                     </div>

@@ -66,11 +66,11 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border dark:border-white/5 max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                    <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
                         Approve Account
                     </DialogTitle>
                     <DialogDescription>
-                        You are approving account <span className="font-bold text-gray-900 dark:text-white">{license.accountNumber}</span> for {license.user.name || license.user.email}
+                        You are approving account <span className="font-bold text-gray-700 dark:text-white">{license.accountNumber}</span> for {license.user.name || license.user.email}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -85,7 +85,7 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
                                 {...register("expiryDate", { setValueAs: (v) => v ? new Date(v) : undefined })}
                                 icon={CalendarIcon}
                             />
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-gray-500">
                                 Leave blank for Lifetime account
                             </p>
                         </div>

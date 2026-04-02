@@ -111,10 +111,10 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumb */}
                     <div className="flex items-center gap-2 text-sm font-medium bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-xl px-5 py-3 mb-8 shadow-sm border border-[#00C888]/20">
-                        <Home size={14} className="text-white/70 dark:text-gray-400 shrink-0" />
-                        <Link href="/" className="text-white/80 dark:text-gray-400 hover:text-white transition-colors shrink-0">Home</Link>
+                        <Home size={14} className="text-white/70 dark:text-gray-500 shrink-0" />
+                        <Link href="/" className="text-white/80 dark:text-gray-500 hover:text-white transition-colors shrink-0">Home</Link>
                         <ChevronRight size={14} className="text-white/40 shrink-0" />
-                        <Link href="/tools" className="text-white/80 dark:text-gray-400 hover:text-white transition-colors shrink-0">Tools</Link>
+                        <Link href="/tools" className="text-white/80 dark:text-gray-500 hover:text-white transition-colors shrink-0">Tools</Link>
                         <ChevronRight size={14} className="text-white/40 shrink-0" />
                         <span className="text-white font-semibold truncate">Economic Calendar</span>
                     </div>
@@ -125,11 +125,11 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                             <div className="p-2 bg-pink-500/10 text-pink-500 dark:text-pink-400 rounded-lg">
                                 <Calendar size={24} />
                             </div>
-                            <h1 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                            <h1 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-700'}`}>
                                 Economic Calendar
                             </h1>
                         </div>
-                        <p className={`text-lg md:text-xl leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <p className={`text-lg md:text-xl leading-relaxed ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>
                             Real-time data on key economic events that move the markets.
                         </p>
                     </div>
@@ -150,7 +150,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                     : 'bg-white border-gray-200 hover:border-gray-300 focus:bg-gray-100 text-gray-700'
                                     }`}
                             >
-                                <Filter size={15} className="text-gray-400" />
+                                <Filter size={15} className="text-gray-500" />
                                 Filters
                             </Button>
 
@@ -172,7 +172,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                     }`}
                                 title="Refresh Data"
                             >
-                                <RefreshCw size={15} className={isLoading ? "animate-spin text-cyan-500" : "text-gray-400"} />
+                                <RefreshCw size={15} className={isLoading ? "animate-spin text-cyan-500" : "text-gray-500"} />
                                 Refresh
                             </Button>
                         </div>
@@ -200,7 +200,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                                                     ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20 hover:bg-cyan-600'
                                                     : isDark
                                                         ? 'hover:bg-slate-700 text-gray-300 hover:text-white'
-                                                        : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+                                                        : 'hover:bg-gray-100 text-gray-600 hover:text-gray-700'
                                                 }
                                             `}
                                         >
@@ -237,7 +237,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                     <div className={`rounded-xl border overflow-hidden shadow-sm ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
                         {/* Card Header with Full Date */}
                         <div className={`px-4 py-4 flex items-center justify-between border-b ${isDark ? 'border-slate-700 bg-slate-800' : 'border-gray-100 bg-white'}`}>
-                            <h2 className={`text-lg font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                            <h2 className={`text-lg font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-700'}`}>
                                 <Calendar size={18} className="text-cyan-500" />
                                 {format(selectedDate, "EEEE, d MMMM yyyy")}
                             </h2>
@@ -253,7 +253,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                         </div>
 
                         {/* Table Header */}
-                        <div className={`grid grid-cols-12 gap-2 md:gap-4 px-4 py-3 border-b text-xs font-bold uppercase tracking-wider ${isDark ? 'bg-slate-900/50 border-slate-700 text-gray-400' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                        <div className={`grid grid-cols-12 gap-2 md:gap-4 px-4 py-3 border-b text-xs font-bold uppercase tracking-wider ${isDark ? 'bg-slate-900/50 border-slate-700 text-gray-500' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
                             <div className="col-span-2 md:col-span-1">Time</div>
                             <div className="col-span-2 md:col-span-1 text-center">Cur</div>
                             <div className="col-span-2 md:col-span-1 text-center">Impact</div>
@@ -281,11 +281,11 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                             </div>
                         ) : (
                             <div className="py-16 text-center flex flex-col items-center justify-center">
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${isDark ? 'bg-slate-700 text-gray-600' : 'bg-gray-100 text-gray-400'}`}>
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${isDark ? 'bg-slate-700 text-gray-600' : 'bg-gray-100 text-gray-500'}`}>
                                     <Calendar size={24} />
                                 </div>
-                                <h3 className={`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>No Events Scheduled</h3>
-                                <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                                <h3 className={`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-700'}`}>No Events Scheduled</h3>
+                                <p className={`text-sm mt-1 ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>
                                     There are no market events for this date matching your filters.
                                 </p>
                                 <Button variant="link" onClick={() => setSelectedDate(new Date())} className="mt-4 text-sm font-bold text-pink-500 hover:text-pink-600 p-0">

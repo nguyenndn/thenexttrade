@@ -76,7 +76,7 @@ export default async function SharePage({ params }: SharePageProps) {
                                 Trade Verified
                             </span>
                         </div>
-                        <p className="text-gray-400 max-w-lg text-sm leading-relaxed italic">
+                        <p className="text-gray-500 max-w-lg text-sm leading-relaxed italic">
                             "{trade.shareDescription || "A disciplined approach to the markets. Tracking every trade to master the craft of scalping."}"
                         </p>
                     </div>
@@ -99,7 +99,7 @@ export default async function SharePage({ params }: SharePageProps) {
                                 <h2 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-white via-blue-100 to-gray-400 bg-clip-text text-transparent">
                                     Start Your Trading Journal
                                 </h2>
-                                <p className="text-gray-400 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
+                                <p className="text-gray-500 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
                                     Join thousands of traders who are mastering their psychology and strategy with TheNextTrade.
                                 </p>
                             </div>

@@ -91,14 +91,14 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
 
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                    <h2 className="text-xl font-bold text-gray-700 dark:text-white">
                         {strategy ? "Edit Strategy" : "New Strategy"}
                     </h2>
                     <Button
                         variant="outline"
                         size="icon"
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-full border-gray-200 dark:border-white/10"
+                        className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-full border-gray-200 dark:border-white/10"
                         aria-label="Close modal"
                     >
                         <X size={20} />
@@ -115,7 +115,7 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
                                 type="text"
                                 required
                                 placeholder="Trend Following"
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 text-gray-900 dark:text-white"
+                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 text-gray-700 dark:text-white"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             />
@@ -152,7 +152,7 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
                             <textarea
                                 id="description"
                                 placeholder="Brief description of when to use this strategy..."
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 text-gray-900 dark:text-white min-h-[80px]"
+                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 text-gray-700 dark:text-white min-h-[80px]"
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             />
@@ -163,7 +163,7 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
                             <textarea
                                 id="rules"
                                 placeholder="- 4h Trend aligned&#10;- RSI < 30&#10;- Bullish engulfing pattern"
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 text-gray-900 dark:text-white min-h-[120px] font-mono"
+                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 text-gray-700 dark:text-white min-h-[120px] font-mono"
                                 value={formData.rules}
                                 onChange={(e) => setFormData({ ...formData, rules: e.target.value })}
                             />

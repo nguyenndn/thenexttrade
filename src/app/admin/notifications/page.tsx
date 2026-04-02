@@ -44,7 +44,7 @@ export default async function AdminNotificationsPage() {
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+                            <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
                                 <tr>
                                     <th className="px-6 py-4">Title</th>
                                     <th className="px-6 py-4">Status</th>
@@ -57,7 +57,7 @@ export default async function AdminNotificationsPage() {
                                 {broadcasts.map((b) => (
                                     <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                                         <td className="px-6 py-4">
-                                            <div className="font-bold text-gray-900 dark:text-white">{b.title}</div>
+                                            <div className="font-bold text-gray-700 dark:text-white">{b.title}</div>
                                             <div className="text-xs text-gray-600 truncate max-w-[300px]">{b.message}</div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -71,7 +71,7 @@ export default async function AdminNotificationsPage() {
                                                 </span>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-xs text-gray-600 dark:text-gray-400">
+                                        <td className="px-6 py-4 text-xs text-gray-600 dark:text-gray-500">
                                             {b.scheduledAt ? format(new Date(b.scheduledAt), "HH:mm dd/MM/yyyy", { locale: enUS }) : "Immediate"}
                                         </td>
                                         <td className="px-6 py-4 text-xs">

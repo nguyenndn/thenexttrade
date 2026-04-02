@@ -408,7 +408,7 @@ export function EmotionSelector({ value, onChange, label }: EmotionSelectorProps
                 flex items-center gap-1.5
                 ${value === emotion.value
                   ? "bg-gray-500 text-white ring-2 ring-gray-300 ring-offset-2 dark:ring-offset-gray-900"
-                  : "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-500/20"
+                  : "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-500/20"
                 }
               `}
             >
@@ -472,10 +472,10 @@ const [formData, setFormData] = useState({
 
 // Add to form JSX after notes field
 <div className="border-t border-gray-100 dark:border-gray-800 pt-6 mt-6">
-  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+  <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
     <Brain size={20} className="text-purple-500" />
     Psychology Tracking
-    <span className="text-xs font-normal text-gray-400">(optional)</span>
+    <span className="text-xs font-normal text-gray-500">(optional)</span>
   </h3>
 
   <div className="space-y-6">
@@ -510,7 +510,7 @@ const [formData, setFormData] = useState({
               w-12 h-12 rounded-xl font-bold text-lg transition-all
               ${formData.confidenceLevel === level
                 ? "bg-purple-500 text-white ring-2 ring-purple-300 ring-offset-2 dark:ring-offset-gray-900"
-                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
               }
             `}
           >
@@ -518,7 +518,7 @@ const [formData, setFormData] = useState({
           </button>
         ))}
       </div>
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-gray-500">
         1 = Very uncertain, 5 = Very confident
       </p>
     </div>
@@ -536,7 +536,7 @@ const [formData, setFormData] = useState({
             flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2
             ${formData.followedPlan === true
               ? "bg-green-500 text-white"
-              : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+              : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
             }
           `}
         >
@@ -550,7 +550,7 @@ const [formData, setFormData] = useState({
             flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2
             ${formData.followedPlan === false
               ? "bg-red-500 text-white"
-              : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+              : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
             }
           `}
         >
@@ -682,7 +682,7 @@ export function PsychologyDashboard() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-gray-700 dark:text-white flex items-center gap-3">
             <Brain className="text-purple-500" />
             Psychology Analysis
           </h1>
@@ -719,7 +719,7 @@ export function PsychologyDashboard() {
           <h3 className="text-sm uppercase tracking-wider text-purple-500 font-bold mb-2">
             Key Insight
           </h3>
-          <p className="text-lg text-gray-900 dark:text-white">
+          <p className="text-lg text-gray-700 dark:text-white">
             You trade best when feeling <span className="font-bold text-purple-500">{bestEmotion.emotion}</span> with a{" "}
             <span className="font-bold text-green-500">{bestEmotion.winRate.toFixed(0)}% win rate</span>.
           </p>
@@ -759,8 +759,8 @@ function PsychologyLoadingSkeleton() {
 function PsychologyEmptyState() {
   return (
     <div className="text-center py-20">
-      <Brain size={48} className="mx-auto text-gray-400 mb-4" />
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      <Brain size={48} className="mx-auto text-gray-500 mb-4" />
+      <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">
         No psychology data yet
       </h3>
       <p className="text-gray-500">
@@ -806,7 +806,7 @@ export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
 
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-      <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+      <h3 className="font-bold text-gray-700 dark:text-white mb-2">
         Confidence vs Win Rate
       </h3>
       <p className="text-sm text-gray-500 mb-4">
@@ -814,7 +814,7 @@ export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
       </p>
 
       {data.length === 0 ? (
-        <div className="h-[250px] flex items-center justify-center text-gray-400">
+        <div className="h-[250px] flex items-center justify-center text-gray-500">
           No confidence data tracked yet
         </div>
       ) : (
@@ -901,7 +901,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
 
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-      <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+      <h3 className="font-bold text-gray-700 dark:text-white mb-2">
         Trading Plan Adherence
       </h3>
       <p className="text-sm text-gray-500 mb-6">
@@ -909,7 +909,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
       </p>
 
       {totalTrades === 0 ? (
-        <div className="h-[200px] flex items-center justify-center text-gray-400">
+        <div className="h-[200px] flex items-center justify-center text-gray-500">
           No plan adherence data tracked yet
         </div>
       ) : (
@@ -940,7 +940,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-black text-gray-900 dark:text-white">
+                <span className="text-2xl font-black text-gray-700 dark:text-white">
                   {adherenceRate.toFixed(0)}%
                 </span>
               </div>
@@ -959,7 +959,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
                   Followed Plan
                 </span>
               </div>
-              <p className="text-2xl font-black text-gray-900 dark:text-white">
+              <p className="text-2xl font-black text-gray-700 dark:text-white">
                 {data.followed.winRate.toFixed(0)}%
               </p>
               <p className="text-xs text-gray-500">
@@ -982,7 +982,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
                   Deviated
                 </span>
               </div>
-              <p className="text-2xl font-black text-gray-900 dark:text-white">
+              <p className="text-2xl font-black text-gray-700 dark:text-white">
                 {data.notFollowed.winRate.toFixed(0)}%
               </p>
               <p className="text-xs text-gray-500">

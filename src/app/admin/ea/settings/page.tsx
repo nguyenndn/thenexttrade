@@ -123,7 +123,7 @@ export default function EASettingsPage() {
 
             {/* General Settings */}
             <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4 mb-6">
+                <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4 mb-6">
                     <ShieldAlert className="text-red-500" size={20} />
                     General Configuration
                 </h2>
@@ -131,7 +131,7 @@ export default function EASettingsPage() {
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="font-bold text-gray-900 dark:text-white">Maintenance Mode</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white">Maintenance Mode</h3>
                             <p className="text-sm text-gray-600">Temporarily disable EA registration and API access.</p>
                         </div>
                         <Controller
@@ -148,7 +148,7 @@ export default function EASettingsPage() {
 
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="font-bold text-gray-900 dark:text-white">Auto-Approve Licenses</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white">Auto-Approve Licenses</h3>
                             <p className="text-sm text-gray-600">Automatically grant access without admin review.</p>
                         </div>
                         <Controller
@@ -167,7 +167,7 @@ export default function EASettingsPage() {
 
             {/* Email Notifications */}
             <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4 mb-6">
+                <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4 mb-6">
                     <Bell className="text-blue-500" size={20} />
                     Email Notifications
                 </h2>
@@ -190,7 +190,7 @@ export default function EASettingsPage() {
 
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-white/5">
                         <div>
-                            <h3 className="font-bold text-gray-900 dark:text-white">Send Welcome Emails</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white">Send Welcome Emails</h3>
                             <p className="text-sm text-gray-600">Notify users automatically when approved.</p>
                         </div>
                         <Controller
@@ -209,7 +209,7 @@ export default function EASettingsPage() {
 
             {/* Telegram Webhook */}
             <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm mb-10">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4 mb-6">
+                <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4 mb-6">
                     <MessageCircle className="text-sky-500" size={20} />
                     Telegram Webhook
                 </h2>
@@ -217,7 +217,7 @@ export default function EASettingsPage() {
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="font-bold text-gray-900 dark:text-white">Enable Telegram Alerts</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white">Enable Telegram Alerts</h3>
                             <p className="text-sm text-gray-600">Push notifications to a Telegram group or channel.</p>
                         </div>
                         <Controller

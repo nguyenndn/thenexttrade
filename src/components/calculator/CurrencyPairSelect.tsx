@@ -27,7 +27,7 @@ export function CurrencyPairSelect({ value, onChange, className }: CurrencyPairS
                     type="button"
                     variant="ghost"
                     className={cn(
-                        "w-full px-4 py-3 h-auto rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium text-gray-900 dark:text-white flex items-center justify-between",
+                        "w-full px-4 py-3 h-auto rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium text-gray-700 dark:text-white flex items-center justify-between",
                         className
                     )}
                 >

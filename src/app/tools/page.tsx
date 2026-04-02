@@ -16,7 +16,7 @@ export default async function ToolsPage() {
     const user = await getAuthUser();
 
     return (
-        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white">
+        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
             <PublicHeader user={user} />
 
             <main className="flex-1 pt-32 pb-20">
@@ -27,10 +27,10 @@ export default async function ToolsPage() {
                             <Wrench size={16} />
                             <span>Trader&apos;s Toolkit</span>
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-black font-heading text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
+                        <h1 className="text-4xl md:text-6xl font-black font-heading text-gray-700 dark:text-white mb-6 leading-tight tracking-tight">
                             Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-500">Trading Tools</span>
                         </h1>
-                        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-lg text-gray-600 dark:text-gray-500 max-w-2xl mx-auto leading-relaxed">
                             {ALL_TOOLS.length} free professional tools to manage risk, calculate positions, analyze levels, and stay ahead of market-moving events.
                         </p>
                     </div>

@@ -150,7 +150,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                    <h1 className="text-2xl font-black text-gray-900 tracking-tight truncate leading-none">
+                                    <h1 className="text-2xl font-black text-gray-700 tracking-tight truncate leading-none">
                                         {profile.name}
                                     </h1>
                                     <div className="flex items-center gap-2 mt-1.5">
@@ -188,7 +188,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <p className="text-4xl font-black text-gray-900 tracking-tighter leading-none">
+                                    <p className="text-4xl font-black text-gray-700 tracking-tighter leading-none">
                                         {profile.stats.totalTrades.toLocaleString()}
                                     </p>
                                     <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Trades</p>
@@ -196,12 +196,12 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                                 <div>
                                     <p className={`text-4xl font-black tracking-tighter leading-none ${profile.stats.winRate >= 50 ? "text-primary" : "text-red-500"}`}>
                                         {Math.round(profile.stats.winRate)}
-                                        <span className="text-xl text-gray-400">%</span>
+                                        <span className="text-xl text-gray-500">%</span>
                                     </p>
                                     <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Win Rate</p>
                                 </div>
                                 <div>
-                                    <p className="text-4xl font-black text-gray-900 tracking-tighter leading-none">
+                                    <p className="text-4xl font-black text-gray-700 tracking-tighter leading-none">
                                         {profile.stats.avgRR > 0 ? profile.stats.avgRR.toFixed(1) : "—"}
                                     </p>
                                     <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Avg R:R</p>
@@ -319,7 +319,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                     Join TheNextTrade
                     <ArrowUpRight size={16} />
                 </Link>
-                <p className="text-[11px] text-gray-400 mt-2">Track, analyze, and improve your trading</p>
+                <p className="text-[11px] text-gray-500 mt-2">Track, analyze, and improve your trading</p>
             </div>
         </div>
     );

@@ -151,7 +151,7 @@ export default async function AdminUsersPage() {
             {/* Table */}
             <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 <div className="p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">All Members</h3>
+                    <h3 className="text-lg font-bold text-gray-700 dark:text-white">All Members</h3>
                     <div className="flex gap-2">
                         {/* Filters could go here */}
                     </div>
@@ -181,7 +181,7 @@ export default async function AdminUsersPage() {
                                             <div className="flex flex-col">
                                                 <Link
                                                     href={`/admin/users/${user.id}`}
-                                                    className="font-bold text-gray-900 dark:text-white text-sm line-clamp-1 hover:text-primary hover:underline"
+                                                    className="font-bold text-gray-700 dark:text-white text-sm line-clamp-1 hover:text-primary hover:underline"
                                                 >
                                                     {user.name || "Unnamed User"}
                                                 </Link>
@@ -204,7 +204,7 @@ export default async function AdminUsersPage() {
                                             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </span>
-                                            <span className="text-xs text-gray-400">
+                                            <span className="text-xs text-gray-500">
                                                 {new Date(user.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                             </span>
                                         </div>
@@ -212,18 +212,18 @@ export default async function AdminUsersPage() {
                                     <td className="px-6 py-5">
                                         <div className="flex gap-2">
                                             <div className="flex flex-col items-center justify-center min-w-[60px] p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
-                                                <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Lessons</span>
-                                                <span className="text-base font-bold text-gray-900 dark:text-white">{user._count.progress}</span>
+                                                <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Lessons</span>
+                                                <span className="text-base font-bold text-gray-700 dark:text-white">{user._count.progress}</span>
                                             </div>
                                             <div className="flex flex-col items-center justify-center min-w-[60px] p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
-                                                <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Quizzes</span>
-                                                <span className="text-base font-bold text-gray-900 dark:text-white">{user._count.quizAttempts}</span>
+                                                <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Quizzes</span>
+                                                <span className="text-base font-bold text-gray-700 dark:text-white">{user._count.quizAttempts}</span>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-5 text-right">
                                         <Link href={`/admin/users/${user.id}`}>
-                                            <Button variant="ghost" className="p-2 text-gray-400 hover:text-primary dark:hover:text-primary transition-colors h-auto w-auto">
+                                            <Button variant="ghost" className="p-2 text-gray-500 hover:text-primary dark:hover:text-primary transition-colors h-auto w-auto">
                                                 <ExternalLink size={20} />
                                             </Button>
                                         </Link>

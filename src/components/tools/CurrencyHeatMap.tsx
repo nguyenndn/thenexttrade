@@ -108,7 +108,7 @@ export function CurrencyHeatMap() {
                     <div key={item.currency} className="flex items-center gap-4">
                         <div className="w-16 flex items-center gap-2">
                             <span className="text-lg">{FLAGS[item.currency]}</span>
-                            <span className="font-bold text-sm text-gray-900 dark:text-white">{item.currency}</span>
+                            <span className="font-bold text-sm text-gray-700 dark:text-white">{item.currency}</span>
                         </div>
                         <div className="flex-1 relative h-8">
                             <div className="absolute inset-0 bg-gray-100 dark:bg-white/5 rounded-lg" />
@@ -128,11 +128,11 @@ export function CurrencyHeatMap() {
                             "w-20 text-right font-bold text-sm",
                             item.strength > 0 ? "text-green-600 dark:text-green-400" :
                             item.strength < 0 ? "text-red-600 dark:text-red-400" :
-                            "text-gray-400"
+                            "text-gray-500"
                         )}>
                             {item.strength > 0 ? "+" : ""}{item.strength.toFixed(3)}%
                         </div>
-                        <div className="w-8 text-center text-xs font-bold text-gray-400">
+                        <div className="w-8 text-center text-xs font-bold text-gray-500">
                             #{idx + 1}
                         </div>
                     </div>
@@ -140,7 +140,7 @@ export function CurrencyHeatMap() {
             </div>
 
             {data.length === 0 && !loading && (
-                <div className="text-center py-12 text-gray-400">
+                <div className="text-center py-12 text-gray-500">
                     Click Refresh to load currency strength data
                 </div>
             )}

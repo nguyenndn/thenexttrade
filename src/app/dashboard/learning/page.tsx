@@ -89,7 +89,7 @@ export default async function MyLearningPage() {
                         </div>
 
                         <div className="p-6 flex-1 flex flex-col">
-                            <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-2 group-hover:text-[#2F80ED] transition-colors">{course.title}</h3>
+                            <h3 className="font-bold text-lg text-gray-700 dark:text-white mb-2 group-hover:text-[#2F80ED] transition-colors">{course.title}</h3>
                             <p className="text-gray-600 text-sm line-clamp-2 mb-4 flex-1">
                                 {course.description || "Master the forex market with this comprehensive module."}
                             </p>

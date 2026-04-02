@@ -199,7 +199,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                         <Layers size={20} />
                     </div>
                     <div>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">{level.modules.length}</p>
+                        <p className="text-2xl font-bold text-gray-700 dark:text-white">{level.modules.length}</p>
                         <p className="text-xs text-gray-600">Modules</p>
                     </div>
                 </div>
@@ -208,7 +208,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                         <FileText size={20} />
                     </div>
                     <div>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalLessons}</p>
+                        <p className="text-2xl font-bold text-gray-700 dark:text-white">{totalLessons}</p>
                         <p className="text-xs text-gray-600">Lessons</p>
                     </div>
                 </div>
@@ -217,7 +217,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                         <Clock size={20} />
                     </div>
                     <div>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalDuration}m</p>
+                        <p className="text-2xl font-bold text-gray-700 dark:text-white">{totalDuration}m</p>
                         <p className="text-xs text-gray-600">Total Duration</p>
                     </div>
                 </div>
@@ -228,7 +228,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                 {level.modules.length === 0 ? (
                     <div className="text-center py-20 bg-white dark:bg-[#151925] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
                         <Layers size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">No Modules Yet</h3>
+                        <h3 className="text-lg font-bold text-gray-700 dark:text-white">No Modules Yet</h3>
                         <p className="text-gray-600 text-sm mb-6">Start by creating your first module for this level.</p>
                         <Button onClick={() => setIsCreateModuleOpen(true)} className="gap-2">
                             <Plus size={18} /> Create Module
@@ -250,7 +250,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                         {mIndex + 1}
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-gray-900 dark:text-white">{module.title}</h3>
+                                        <h3 className="font-bold text-gray-700 dark:text-white">{module.title}</h3>
                                         <p className="text-xs text-gray-600">
                                             {module._count.lessons} lessons
                                             {module.description && ` · ${module.description}`}
@@ -263,7 +263,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                     <div onClick={e => e.stopPropagation()}>
                                         <Popover>
                                             <PopoverTrigger asChild>
-                                                <Button variant="ghost" size="icon" className="text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 h-8 w-8">
+                                                <Button variant="ghost" size="icon" className="text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 h-8 w-8">
                                                     <MoreVertical size={16} />
                                                 </Button>
                                             </PopoverTrigger>
@@ -295,8 +295,8 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
 
                                     {/* Chevron */}
                                     {expandedModules.has(module.id)
-                                        ? <ChevronDown size={18} className="text-gray-400" />
-                                        : <ChevronRight size={18} className="text-gray-400" />
+                                        ? <ChevronDown size={18} className="text-gray-500" />
+                                        : <ChevronRight size={18} className="text-gray-500" />
                                     }
                                 </div>
                             </div>
@@ -306,7 +306,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                 <div className="border-t border-gray-100 dark:border-white/5">
                                     {module.lessons.length === 0 ? (
                                         <div className="p-6 text-center">
-                                            <p className="text-sm text-gray-400 mb-3">No lessons in this module yet</p>
+                                            <p className="text-sm text-gray-500 mb-3">No lessons in this module yet</p>
                                             <Link href={`/admin/academy/lessons/create?moduleId=${module.id}`}>
                                                 <Button variant="outline" size="sm" className="gap-1 text-xs">
                                                     <Plus size={14} /> Add First Lesson
@@ -331,25 +331,25 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <GripVertical size={14} className="text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-                                                        <span className="text-xs font-mono text-gray-400 w-5">{lIndex + 1}.</span>
+                                                        <span className="text-xs font-mono text-gray-500 w-5">{lIndex + 1}.</span>
                                                         <FileText size={16} className="text-blue-400 flex-shrink-0" />
                                                         <span className="text-sm text-gray-700 dark:text-gray-300">{lesson.title}</span>
                                                         {lesson.duration && (
-                                                            <span className="text-xs text-gray-400 flex items-center gap-1">
+                                                            <span className="text-xs text-gray-500 flex items-center gap-1">
                                                                 <Clock size={12} /> {lesson.duration}m
                                                             </span>
                                                         )}
                                                     </div>
                                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                         <Link href={`/admin/academy/lessons/${lesson.id}/edit`}>
-                                                            <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-400 hover:text-primary">
+                                                            <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-500 hover:text-primary">
                                                                 <Edit size={14} />
                                                             </Button>
                                                         </Link>
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
-                                                            className="h-7 w-7 text-gray-400 hover:text-red-500"
+                                                            className="h-7 w-7 text-gray-500 hover:text-red-500"
                                                             onClick={() => confirmDelete("lesson", lesson.id, lesson.title)}
                                                         >
                                                             <Trash2 size={14} />

@@ -90,7 +90,7 @@ Used for "Cancel" or "Go Back" actions in modals.
 ```tsx
 <Button
   variant="ghost" 
-  className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
+  className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
 >
   Cancel
 </Button>
@@ -130,7 +130,7 @@ For high-impact areas requiring extra visual weight.
 ```tsx
 <div className="relative group">
     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-       <Icon size={18} className="text-gray-400 group-focus-within:text-[#00C888] transition-colors" />
+       <Icon size={18} className="text-gray-500 group-focus-within:text-[#00C888] transition-colors" />
     </div>
     <input
       type="text"
@@ -162,7 +162,7 @@ Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duy
     variant="ghost" 
     size="icon" 
     onClick={() => setChecked(!checked)} 
-    className={`w-auto h-auto p-0 hover:bg-transparent transition-colors ${checked ? 'text-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+    className={`w-auto h-auto p-0 hover:bg-transparent transition-colors ${checked ? 'text-primary' : 'text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'}`}
     aria-label="Toggle Selection"
 >
     {checked ? <CheckSquare size={20} aria-hidden="true" /> : <Square size={20} aria-hidden="true" />}
@@ -176,14 +176,14 @@ Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duy
 **Font Family:** Inter (Default)
 
 **Headings:**
-- **Page Title (Admin/Dashboard):** `text-xl font-black text-gray-900 dark:text-white tracking-tighter`
-- **Page Title (Public/Marketing):** `text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white`
+- **Page Title (Admin/Dashboard):** `text-xl font-black text-gray-700 dark:text-white tracking-tighter`
+- **Page Title (Public/Marketing):** `text-4xl md:text-5xl font-bold tracking-tight text-gray-700 dark:text-white`
 - **Section Title:** `text-2xl font-bold`
 - **Card Title:** `text-lg font-bold flex items-center gap-2` (often with a decorative accent pill)
 
 **Text:**
-- **Body:** `text-gray-500 dark:text-gray-400`
-- **Muted Label:** `text-xs font-bold text-gray-400 uppercase tracking-wider`
+- **Body:** `text-gray-500 dark:text-gray-500`
+- **Muted Label:** `text-xs font-bold text-gray-500 uppercase tracking-wider`
 
 ---
 
@@ -192,7 +192,7 @@ Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duy
 
 ### 4.1 Page Wrapper (General / Marketing)
 ```tsx
-<div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-900 dark:text-white">
+<div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-700 dark:text-white">
   <PublicHeader />
   <main className="py-20 px-4">
      <div className="max-w-4xl mx-auto">
@@ -387,8 +387,8 @@ Có **2 kiểu** Page Header tùy context:
 Dành cho các trang quản trị có nút hành động lớn ở phải. **Không hiển thị tiêu đề H1** (sidebar đã indicator) — chỉ giữ thanh phân tách + description + action buttons.
 
 - **Thanh Phân Tách:** `w-1.5 h-8 bg-primary rounded-full`
-- **Title:** `text-xl font-black text-gray-900 dark:text-white tracking-tighter`
-- **Description:** `text-base text-gray-500 dark:text-gray-400 font-medium`
+- **Title:** `text-xl font-black text-gray-700 dark:text-white tracking-tighter`
+- **Description:** `text-base text-gray-500 dark:text-gray-500 font-medium`
 - **Actions:** Cụm Button phía phải có Shadow hắt.
 
 ```tsx
@@ -396,11 +396,11 @@ Dành cho các trang quản trị có nút hành động lớn ở phải. **Kh�
     <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
             <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-            <h1 className="text-xl font-black text-gray-900 dark:text-white tracking-tighter">
+            <h1 className="text-xl font-black text-gray-700 dark:text-white tracking-tighter">
                 [Tên Trang]
             </h1>
         </div>
-        <p className="text-base text-gray-500 dark:text-gray-400 font-medium pl-4.5">
+        <p className="text-base text-gray-500 dark:text-gray-500 font-medium pl-4.5">
             [Mô tả trang ngắn gọn]
         </p>
     </div>
@@ -498,11 +498,11 @@ Cho mọi form nội bộ, sử dụng Component Input sau (thay thế cho thẻ
 ```tsx
 <div className="group">
     <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
-        Label <span className="font-normal text-gray-400">(Optional)</span>
+        Label <span className="font-normal text-gray-500">(Optional)</span>
     </label>
     <input
         type="text"
-        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-500"
         placeholder="Placeholder text..."
     />
     <p className="text-red-500 text-xs mt-1">Error message here</p>
@@ -516,11 +516,11 @@ Trên thanh công cụ Toolbar chứa Data Table, Input Search phải **chính x
 
 ```tsx
 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
-    <Search size={18} className="text-gray-400" />
+    <Search size={18} className="text-gray-500" />
     <input
         type="text"
         placeholder="Search..."
-        className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
+        className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
     />
 </div>
 ```
@@ -565,12 +565,12 @@ BẮT BUỘC tách Data Table List Overview ra thành 2 cục (Card) riêng bi�
         <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto custom-scrollbar">
                 <table className="w-full text-left border-collapse">
-                    <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+                    <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
                         <tr><th className="px-6 py-4 border-b border-gray-100 dark:border-white/5">Column 1</th></tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                         <tr className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors">
-                            <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">Data</td>
+                            <td className="px-6 py-4 font-bold text-gray-700 dark:text-white">Data</td>
                         </tr>
                     </tbody>
                 </table>

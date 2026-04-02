@@ -42,7 +42,7 @@ export function QuickActionsWidget() {
 
     return (
         <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
-            <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Quick Actions</h3>
+            <h3 className="text-lg font-bold mb-4 text-gray-700 dark:text-white">Quick Actions</h3>
             <div className="grid grid-cols-1 gap-4">
                 {actions.map((action, idx) => (
                     <Link
@@ -54,7 +54,7 @@ export function QuickActionsWidget() {
                             <action.icon size={20} aria-hidden="true" />
                         </div>
                         <div>
-                            <div className="font-bold text-gray-900 dark:text-white text-sm">{action.title}</div>
+                            <div className="font-bold text-gray-700 dark:text-white text-sm">{action.title}</div>
                             <div className="text-xs text-gray-600">{action.description}</div>
                         </div>
                     </Link>

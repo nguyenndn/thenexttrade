@@ -69,12 +69,12 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
             <span
               className={cn(
                 "font-bold text-sm truncate",
-                isCurrentUser ? "text-primary" : "text-gray-900 dark:text-white"
+                isCurrentUser ? "text-primary" : "text-gray-700 dark:text-white"
               )}
             >
               {entry.name}
               {isCurrentUser && (
-                <span className="text-xs font-normal text-gray-400 ml-1.5">(You)</span>
+                <span className="text-xs font-normal text-gray-500 ml-1.5">(You)</span>
               )}
             </span>
             <UserTierBadge
@@ -104,7 +104,7 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
             </span>
           </td>
           <td className="py-3.5 px-3 hidden sm:table-cell">
-            <div className="flex items-center gap-1 text-sm font-bold text-gray-900 dark:text-white tabular-nums">
+            <div className="flex items-center gap-1 text-sm font-bold text-gray-700 dark:text-white tabular-nums">
               <Star size={12} className="text-yellow-500" />
               {entry.value.toLocaleString()}
             </div>
@@ -144,7 +144,7 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
       {type === "academy" && (
         <>
           <td className="py-3.5 px-3">
-            <div className="flex items-center gap-1 text-sm font-bold text-gray-900 dark:text-white tabular-nums">
+            <div className="flex items-center gap-1 text-sm font-bold text-gray-700 dark:text-white tabular-nums">
               <FileText size={14} className="text-green-500" />
               {entry.value}
             </div>

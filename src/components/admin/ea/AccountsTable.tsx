@@ -107,13 +107,13 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
             {/* Toolbar Card */}
             <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
-                    <Search size={16} className="text-gray-400" aria-hidden="true" />
+                    <Search size={16} className="text-gray-500" aria-hidden="true" />
                     <input
                         type="text"
                         placeholder="Search accounts or users..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
+                        className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
                     />
                 </div>
                 <div className="flex gap-4 w-full md:w-auto overflow-x-auto">
@@ -127,7 +127,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                                 <span className="whitespace-nowrap flex items-center gap-1.5 font-medium">
                                     Status: <span className="text-primary font-bold">{filterStatus === "ALL" ? "All" : filterStatus}</span>
                                 </span>
-                                <ChevronDown size={14} className="text-gray-400 group-hover:text-primary transition-colors" aria-hidden="true" />
+                                <ChevronDown size={14} className="text-gray-500 group-hover:text-primary transition-colors" aria-hidden="true" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-full md:w-48">
@@ -146,7 +146,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
             <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
-                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
                             <tr>
                                 <th className="px-6 py-4">Account</th>
                                 <th className="px-6 py-4">Broker</th>
@@ -159,7 +159,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {filteredLicenses.map((license) => (
                                 <tr key={license.id} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
-                                    <td className="px-6 py-4 font-bold text-gray-900 dark:text-white font-mono group-hover:text-primary transition-colors">
+                                    <td className="px-6 py-4 font-bold text-gray-700 dark:text-white font-mono group-hover:text-primary transition-colors">
                                         {license.accountNumber}
                                     </td>
                                     <td className="px-6 py-4">
@@ -173,7 +173,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                                     <td className="px-6 py-4">
                                         <Link href={`/admin/users/${license.userId}?from=/admin/ea/accounts`} className="block hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg -m-2 p-2 transition-colors">
                                             <div>
-                                                <p className="font-bold text-gray-900 dark:text-white text-sm hover:text-primary transition-colors">{license.user.name}</p>
+                                                <p className="font-bold text-gray-700 dark:text-white text-sm hover:text-primary transition-colors">{license.user.name}</p>
                                                 <p className="text-gray-600 dark:text-gray-300 text-xs mt-0.5">{license.user.email}</p>
                                             </div>
                                         </Link>
@@ -197,7 +197,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                                                 </>
                                             )}
 
-                                            <Button size="icon" variant="ghost" onClick={() => confirmDelete(license)} className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 h-8 w-8 rounded-lg transition-colors" aria-label="Delete">
+                                            <Button size="icon" variant="ghost" onClick={() => confirmDelete(license)} className="text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 h-8 w-8 rounded-lg transition-colors" aria-label="Delete">
                                                 <Trash2 size={16} />
                                             </Button>
                                         </div>

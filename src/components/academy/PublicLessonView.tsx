@@ -22,7 +22,7 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
     const readingTime = lesson.duration || Math.max(1, Math.ceil(wordCount / 200));
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white">
+        <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
             <PublicHeader />
 
             {/* SEO Schemas */}
@@ -69,7 +69,7 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
                                 <GraduationCap size={14} />
                                 <span>Level {level.order}</span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                            <div className="flex items-center gap-1.5 text-xs text-gray-500">
                                 <Clock size={12} />
                                 <span>{readingTime} min read</span>
                             </div>
@@ -99,7 +99,7 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
                             <UserPlus size={20} className="text-primary" />
                             <h3 className="font-bold text-lg">Track Your Progress</h3>
                         </div>
-                        <p className="text-gray-600 dark:text-gray-400 mb-4 max-w-md mx-auto">
+                        <p className="text-gray-600 dark:text-gray-500 mb-4 max-w-md mx-auto">
                             Sign up for free to track your learning, earn XP, and unlock achievements.
                         </p>
                         <Link
@@ -117,9 +117,9 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
                                 href={`/academy/lesson/${prevLesson.slug}`}
                                 className="group flex items-center gap-3 px-5 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors max-w-[45%]"
                             >
-                                <ChevronLeft size={18} className="text-gray-400 group-hover:text-primary transition-colors shrink-0" />
+                                <ChevronLeft size={18} className="text-gray-500 group-hover:text-primary transition-colors shrink-0" />
                                 <div className="text-left min-w-0">
-                                    <div className="text-xs text-gray-400 uppercase tracking-wider">Previous</div>
+                                    <div className="text-xs text-gray-500 uppercase tracking-wider">Previous</div>
                                     <div className="text-sm font-bold truncate">{prevLesson.title}</div>
                                 </div>
                             </Link>
@@ -130,10 +130,10 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
                                 className="group flex items-center gap-3 px-5 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors max-w-[45%]"
                             >
                                 <div className="text-right min-w-0">
-                                    <div className="text-xs text-gray-400 uppercase tracking-wider">Next</div>
+                                    <div className="text-xs text-gray-500 uppercase tracking-wider">Next</div>
                                     <div className="text-sm font-bold truncate">{nextLesson.title}</div>
                                 </div>
-                                <ChevronRight size={18} className="text-gray-400 group-hover:text-primary transition-colors shrink-0" />
+                                <ChevronRight size={18} className="text-gray-500 group-hover:text-primary transition-colors shrink-0" />
                             </Link>
                         ) : (
                             <Link
@@ -164,11 +164,11 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
                                     }`}
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <span className="text-xs font-bold text-gray-400 w-6 shrink-0">{idx + 1}</span>
+                                        <span className="text-xs font-bold text-gray-500 w-6 shrink-0">{idx + 1}</span>
                                         <span className="text-sm truncate">{l.title}</span>
                                     </div>
                                     {l.duration && (
-                                        <span className="text-xs text-gray-400 shrink-0">{l.duration}m</span>
+                                        <span className="text-xs text-gray-500 shrink-0">{l.duration}m</span>
                                     )}
                                 </Link>
                             ))}

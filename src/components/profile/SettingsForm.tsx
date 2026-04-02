@@ -92,7 +92,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                                     className="object-cover"
                                 />
                             ) : (
-                                <Camera className="text-gray-400 group-hover:text-primary transition-colors" size={32} />
+                                <Camera className="text-gray-500 group-hover:text-primary transition-colors" size={32} />
                             )}
 
                             {/* Overlay */}
@@ -109,7 +109,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                         />
                     </div>
                     <div className="flex-1 text-center sm:text-left">
-                        <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Profile Picture</h3>
+                        <h3 className="font-semibold text-gray-700 dark:text-white mb-1">Profile Picture</h3>
                         <p className="text-xs text-gray-600">
                             Upload a high-quality image. <br className="hidden sm:block" />
                             JPG, GIF or PNG. Max size of 1MB.
@@ -122,7 +122,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                     <div className="space-y-2">
                         <label htmlFor="username" className="text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
                         <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">@</span>
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">@</span>
                             <input
                                 type="text"
                                 name="username"

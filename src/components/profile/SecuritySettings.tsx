@@ -30,7 +30,7 @@ export function SecuritySettings() {
                         <Key size={14} className="text-blue-500" />
                     </div>
                     <div>
-                        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Change Password</h2>
+                        <h2 className="text-sm font-semibold text-gray-700 dark:text-white">Change Password</h2>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">Update your password to keep your account secure.</p>
                     </div>
                 </div>
@@ -61,13 +61,13 @@ export function SecuritySettings() {
                                     {field.label}
                                 </label>
                                 <div className="relative">
-                                    <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                                     <input
                                         name={field.name}
                                         type="password"
                                         required
                                         minLength={field.name !== "currentPassword" ? 6 : undefined}
-                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/8 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/8 rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -89,7 +89,7 @@ export function SecuritySettings() {
                         <Shield size={14} className="text-orange-500" />
                     </div>
                     <div>
-                        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Two-Factor Authentication (2FA)</h2>
+                        <h2 className="text-sm font-semibold text-gray-700 dark:text-white">Two-Factor Authentication (2FA)</h2>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">Add an extra layer of security to your account.</p>
                     </div>
                 </div>
@@ -105,7 +105,7 @@ export function SecuritySettings() {
                         <Monitor size={14} className="text-primary" />
                     </div>
                     <div>
-                        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Active Sessions</h2>
+                        <h2 className="text-sm font-semibold text-gray-700 dark:text-white">Active Sessions</h2>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">Manage your logged-in devices and sessions.</p>
                     </div>
                 </div>

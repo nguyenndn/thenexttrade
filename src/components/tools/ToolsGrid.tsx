@@ -35,10 +35,10 @@ function ToolCard({ tool }: { tool: ToolData }) {
             <div className={`w-12 h-12 rounded-xl ${tool.iconBg} flex items-center justify-center mb-4`}>
                 <tool.icon size={24} strokeWidth={1.5} />
             </div>
-            <h3 className="text-base font-bold font-heading text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
+            <h3 className="text-base font-bold font-heading text-gray-700 dark:text-white mb-2 group-hover:text-primary transition-colors">
                 {tool.title}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed flex-1 mb-4">
+            <p className="text-sm text-gray-600 dark:text-gray-500 leading-relaxed flex-1 mb-4">
                 {tool.description}
             </p>
             <div className="flex items-center gap-2 text-sm font-bold text-primary group-hover:gap-3 transition-all">
@@ -52,10 +52,10 @@ function ToolCard({ tool }: { tool: ToolData }) {
 function ToolSection({ title, tools, accentGradient = "from-primary to-cyan-500" }: { title: string; tools: ToolData[]; accentGradient?: string }) {
     return (
         <div>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+            <h2 className="text-lg font-bold text-gray-700 dark:text-white mb-6 flex items-center gap-3">
                 <div className={`w-1 h-6 rounded-full bg-gradient-to-b ${accentGradient}`} />
                 {title}
-                <span className="text-xs text-gray-400 font-normal">({tools.length} tools)</span>
+                <span className="text-xs text-gray-500 font-normal">({tools.length} tools)</span>
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tools.map((tool) => (

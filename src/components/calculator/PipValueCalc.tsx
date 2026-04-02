@@ -49,7 +49,7 @@ export function PipValueCalc() {
                                     onClick={() => setLotSize(lt.val)}
                                     className={`relative flex-1 py-2.5 rounded-lg text-xs font-bold transition-colors z-10 ${lotSize === lt.val
                                         ? "text-white"
-                                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                                        : "text-gray-600 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white"
                                     }`}
                                 >
                                     {lotSize === lt.val && (
@@ -78,7 +78,7 @@ export function PipValueCalc() {
                     value={`${currSymbol}${totalValue.toFixed(2)}`}
                 />
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300 -mt-1">
-                    For <span className="font-bold text-gray-900 dark:text-white">{lotSize}</span> lot(s) of {pair}
+                    For <span className="font-bold text-gray-700 dark:text-white">{lotSize}</span> lot(s) of {pair}
                 </p>
 
                 {/* Quick Reference Table */}
@@ -89,8 +89,8 @@ export function PipValueCalc() {
                     <div className="divide-y divide-gray-200 dark:divide-white/5">
                         {quickPips.map((pips) => (
                             <div key={pips} className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                                <span className="text-sm text-gray-600 dark:text-gray-400">{pips} pip{pips > 1 ? "s" : ""}</span>
-                                <span className="font-bold text-sm text-gray-900 dark:text-white">
+                                <span className="text-sm text-gray-600 dark:text-gray-500">{pips} pip{pips > 1 ? "s" : ""}</span>
+                                <span className="font-bold text-sm text-gray-700 dark:text-white">
                                     {currSymbol}{(totalValue * pips).toFixed(2)}
                                 </span>
                             </div>

@@ -35,7 +35,7 @@ export function MistakeDashboard() {
                 <div className="p-4 bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-500 rounded-full mb-4">
                     <CheckCircle size={32} />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Mistakes Recorded</h3>
+                <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">No Mistakes Recorded</h3>
                 <p className="text-gray-600 max-w-md">
                     Great job! You haven't logged any mistakes for this period.
                     Keep executing your plan with discipline.
@@ -64,7 +64,7 @@ export function MistakeDashboard() {
                     <p className="text-3xl font-black text-red-500 tracking-tighter">
                         ${Math.abs(data.costOfMistakes).toFixed(2)}
                     </p>
-                    <p className="text-xs text-gray-400 font-medium mt-1.5 flex items-center gap-1.5">
+                    <p className="text-xs text-gray-500 font-medium mt-1.5 flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>
                         Total loss from mistake trades
                     </p>
@@ -79,10 +79,10 @@ export function MistakeDashboard() {
                         <p className="text-[11px] font-black uppercase tracking-wider text-gray-600 dark:text-gray-300">Performance Gap</p>
                     </div>
                     <div className="flex items-end gap-2 mb-1">
-                        <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">
+                        <p className="text-3xl font-black text-gray-700 dark:text-white tracking-tighter leading-none">
                             {(data.cleanTradeWinRate - data.mistakeTradeWinRate).toFixed(1)}%
                         </p>
-                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">diff</span>
+                        <span className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1">diff</span>
                     </div>
                     <div className="flex items-center gap-2 mt-2 text-[11px] font-bold tracking-wide uppercase">
                         <span className="text-primary">{data.cleanTradeWinRate.toFixed(0)}% clean</span>
@@ -101,15 +101,15 @@ export function MistakeDashboard() {
                     </div>
                     {mostFrequent ? (
                         <>
-                            <p className="text-lg font-black text-gray-900 dark:text-white truncate tracking-tight">
+                            <p className="text-lg font-black text-gray-700 dark:text-white truncate tracking-tight">
                                 {mostFrequent.emoji} {mostFrequent.name}
                             </p>
-                            <p className="text-xs text-gray-400 font-medium mt-1.5 flex items-center gap-1.5">
+                            <p className="text-xs text-gray-500 font-medium mt-1.5 flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
                                 Occurred {frequentStat?.count || 0} times
                             </p>
                         </>
-                    ) : (<p className="text-sm font-medium text-gray-400">None</p>)}
+                    ) : (<p className="text-sm font-medium text-gray-500">None</p>)}
                 </div>
 
                 {/* Deadliest Mistake */}
@@ -122,14 +122,14 @@ export function MistakeDashboard() {
                     </div>
                     {mostCostly ? (
                         <>
-                            <p className="text-lg font-black text-gray-900 dark:text-white truncate tracking-tight">
+                            <p className="text-lg font-black text-gray-700 dark:text-white truncate tracking-tight">
                                 {mostCostly.emoji} {mostCostly.name}
                             </p>
                             <p className="text-sm text-red-500 font-black mt-1 tracking-tight">
                                 -${Math.abs(costlyStat?.totalPnL || 0).toFixed(2)}
                             </p>
                         </>
-                    ) : (<p className="text-sm font-medium text-gray-400">None</p>)}
+                    ) : (<p className="text-sm font-medium text-gray-500">None</p>)}
                 </div>
             </div>
 
@@ -138,8 +138,8 @@ export function MistakeDashboard() {
                 <div className="bg-white dark:bg-[#1E2028] p-6 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Mistakes by Cost</h3>
-                            <p className="text-sm text-gray-400 font-medium">Identify your most expensive errors.</p>
+                            <h3 className="text-xl font-black text-gray-700 dark:text-white tracking-tight">Mistakes by Cost</h3>
+                            <p className="text-sm text-gray-500 font-medium">Identify your most expensive errors.</p>
                         </div>
                         <span className="text-[10px] font-black text-primary bg-primary/10 px-3 py-1.5 rounded-lg uppercase tracking-widest border border-primary/20">Top 5</span>
                     </div>
@@ -149,8 +149,8 @@ export function MistakeDashboard() {
                 <div className="bg-white dark:bg-[#1E2028] p-6 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Mistake Frequency</h3>
-                            <p className="text-sm text-gray-400 font-medium">Track how often these issues occur.</p>
+                            <h3 className="text-xl font-black text-gray-700 dark:text-white tracking-tight">Mistake Frequency</h3>
+                            <p className="text-sm text-gray-500 font-medium">Track how often these issues occur.</p>
                         </div>
                     </div>
                     <MistakeFrequencyChart data={data.mistakesByCategory} />

@@ -24,7 +24,7 @@ export const buttonVariants = ({
     primary: "bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25",
     secondary: "bg-[#2F80ED] hover:bg-[#2563EB] text-white shadow-lg shadow-blue-500/30",
     accent: "bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30",
-    ghost: "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5",
+    ghost: "text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5",
     link: "text-primary underline-offset-4 hover:underline",
     outline: "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-50 dark:hover:bg-white/5",
     destructive: "bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30",

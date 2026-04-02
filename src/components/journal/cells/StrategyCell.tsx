@@ -56,7 +56,7 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
                             variant="outline"
                             size="icon"
                             aria-label="Add Strategy"
-                            className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
+                            className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <Plus size={12} />
                         </Button>
@@ -66,8 +66,8 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
             <PopoverContent className="w-80 p-0 overflow-hidden" align="center" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-white/10">
-                    <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Strategy Tags</h4>
-                    <Button variant="outline" size="icon" aria-label="More Options" className="w-6 h-6 p-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <h4 className="font-semibold text-sm text-gray-700 dark:text-white">Strategy Tags</h4>
+                    <Button variant="outline" size="icon" aria-label="More Options" className="w-6 h-6 p-0 text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                         <MoreVertical size={16} />
                     </Button>
                 </div>
@@ -90,7 +90,7 @@ export function StrategyCell({ entry, strategies = [], onUpdate }: StrategyCellP
                                     {entry.strategy}
                                 </span>
                             ) : (
-                                <span className="text-xs text-gray-400 italic">No strategy selected</span>
+                                <span className="text-xs text-gray-500 italic">No strategy selected</span>
                             )}
                         </div>
 

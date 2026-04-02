@@ -66,11 +66,11 @@ export function Header({
                             variant="ghost"
                             size="icon"
                             onClick={() => setCollapsed?.(!collapsed)}
-                            className="hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="hidden lg:flex p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
                             <Menu size={20} />
                         </Button>
-                        <Logo textClassName="text-lg font-bold tracking-tight text-gray-900 dark:text-white" />
+                        <Logo textClassName="text-lg font-bold tracking-tight text-gray-700 dark:text-white" />
                     </div>
                 </div>
 

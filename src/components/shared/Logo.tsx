@@ -18,13 +18,13 @@ export const Logo = ({ className = "", size = "md" }: { className?: string; size
 
     return (
         <Link href="/" className={`font-outfit font-bold flex items-center gap-2 ${className}`}>
-            <Image
+            {/* <Image
                 src="/images/thenexttrade-avatar.png"
                 alt="TheNextTrade"
                 width={imgSizes[size]}
                 height={imgSizes[size]}
                 className="rounded-lg"
-            />
+            /> */}
             <span className={`${sizeClasses[size] || "text-xl"} tracking-tight hover:text-inherit`}>
                 The Next<span className="text-primary"> Trade</span>
             </span>

@@ -39,7 +39,7 @@ function StarRating({ rating }: { rating: number }) {
           />
         ))}
       </div>
-      <span className="text-sm font-bold text-gray-900 dark:text-white">{rating}</span>
+      <span className="text-sm font-bold text-gray-700 dark:text-white">{rating}</span>
     </div>
   );
 }
@@ -70,7 +70,7 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{item.name}</h3>
+          <h3 className="text-lg font-bold text-gray-700 dark:text-white truncate">{item.name}</h3>
           <div className="flex items-center gap-2 flex-wrap">
             {item.rating && <StarRating rating={item.rating} />}
             {(item as any).review && (
@@ -88,22 +88,22 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
         <div className={`grid ${gridCols} gap-px bg-gray-100 dark:bg-white/5 border-y border-gray-100 dark:border-white/5`}>
           {item.minDeposit && (
             <div className="bg-white dark:bg-[#1A1C24] py-3 text-center">
-              <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">
+              <div className="text-[10px] text-gray-500 uppercase tracking-wider font-medium">
                 {depositLabel}
               </div>
-              <div className="text-sm font-bold text-gray-900 dark:text-white mt-0.5">{item.minDeposit}</div>
+              <div className="text-sm font-bold text-gray-700 dark:text-white mt-0.5">{item.minDeposit}</div>
             </div>
           )}
           {item.maxLeverage && (
             <div className="bg-white dark:bg-[#1A1C24] py-3 text-center">
-              <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Leverage</div>
-              <div className="text-sm font-bold text-gray-900 dark:text-white mt-0.5">{item.maxLeverage}</div>
+              <div className="text-[10px] text-gray-500 uppercase tracking-wider font-medium">Leverage</div>
+              <div className="text-sm font-bold text-gray-700 dark:text-white mt-0.5">{item.maxLeverage}</div>
             </div>
           )}
           {item.regulation && (
             <div className="bg-white dark:bg-[#1A1C24] py-3 text-center">
-              <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Regulation</div>
-              <div className="text-sm font-bold text-gray-900 dark:text-white mt-0.5 truncate px-2">{item.regulation}</div>
+              <div className="text-[10px] text-gray-500 uppercase tracking-wider font-medium">Regulation</div>
+              <div className="text-sm font-bold text-gray-700 dark:text-white mt-0.5 truncate px-2">{item.regulation}</div>
             </div>
           )}
         </div>
@@ -165,13 +165,13 @@ export default function BrokersClient() {
           <Sparkles size={14} />
           <span>Curated by TheNextTrade</span>
         </div>
-        <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
+        <h1 className="text-4xl md:text-6xl font-black text-gray-700 dark:text-white mb-6 leading-tight tracking-tight">
           Trusted{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">
             Partners
           </span>
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg text-gray-600 dark:text-gray-500 max-w-2xl mx-auto leading-relaxed">
           Handpicked brokers, prop firms, and infrastructure we personally use and trust.
         </p>
       </div>

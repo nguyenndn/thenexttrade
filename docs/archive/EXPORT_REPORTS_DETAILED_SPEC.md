@@ -567,7 +567,7 @@ export function ReportsDashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-gray-700 dark:text-white flex items-center gap-3">
           <FileText className="text-[#00C888]" />
           Export Reports
         </h1>
@@ -617,7 +617,7 @@ export function ReportsDashboard() {
                 {report.format}
               </span>
             </div>
-            <h3 className="font-bold text-gray-900 dark:text-white">
+            <h3 className="font-bold text-gray-700 dark:text-white">
               {report.name}
             </h3>
             <p className="text-sm text-gray-500 mt-1">
@@ -629,7 +629,7 @@ export function ReportsDashboard() {
 
       {/* Date Range */}
       <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-        <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <h3 className="font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
           <Calendar size={18} className="text-[#00C888]" />
           Select Date Range
         </h3>
@@ -670,7 +670,7 @@ export function ReportsDashboard() {
             <button
               key={preset.label}
               onClick={() => setDateRange(preset.fn())}
-              className="px-3 py-1.5 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              className="px-3 py-1.5 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-500 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
               {preset.label}
             </button>
@@ -710,7 +710,7 @@ function ReportPreview({ data, onDownload }: { data: any; onDownload: () => void
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="font-bold text-gray-900 dark:text-white">
+        <h3 className="font-bold text-gray-700 dark:text-white">
           Report Preview
         </h3>
         <button
@@ -724,7 +724,7 @@ function ReportPreview({ data, onDownload }: { data: any; onDownload: () => void
 
       {/* Summary Card */}
       <div className="bg-gradient-to-br from-[#00C888]/10 to-blue-500/10 p-6 rounded-xl mb-6">
-        <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+        <h4 className="text-lg font-bold text-gray-700 dark:text-white mb-4">
           Performance Summary: {data.period}
         </h4>
         
@@ -737,19 +737,19 @@ function ReportPreview({ data, onDownload }: { data: any; onDownload: () => void
           </div>
           <div>
             <p className="text-xs text-gray-500 uppercase">Win Rate</p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">
+            <p className="text-xl font-bold text-gray-700 dark:text-white">
               {data.summary.winRate.toFixed(0)}%
             </p>
           </div>
           <div>
             <p className="text-xs text-gray-500 uppercase">Total Trades</p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">
+            <p className="text-xl font-bold text-gray-700 dark:text-white">
               {data.summary.totalTrades}
             </p>
           </div>
           <div>
             <p className="text-xs text-gray-500 uppercase">Profit Factor</p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">
+            <p className="text-xl font-bold text-gray-700 dark:text-white">
               {data.summary.profitFactor.toFixed(2)}
             </p>
           </div>
@@ -758,14 +758,14 @@ function ReportPreview({ data, onDownload }: { data: any; onDownload: () => void
 
       {/* By Pair */}
       <div className="mb-6">
-        <h4 className="font-bold text-gray-900 dark:text-white mb-3">By Pair</h4>
+        <h4 className="font-bold text-gray-700 dark:text-white mb-3">By Pair</h4>
         <div className="space-y-2">
           {data.byPair.slice(0, 5).map((pair: any) => (
             <div
               key={pair.symbol}
               className="flex justify-between items-center p-3 bg-gray-50 dark:bg-white/5 rounded-lg"
             >
-              <span className="font-medium text-gray-900 dark:text-white">
+              <span className="font-medium text-gray-700 dark:text-white">
                 {pair.symbol}
               </span>
               <div className="flex items-center gap-4 text-sm">
@@ -781,7 +781,7 @@ function ReportPreview({ data, onDownload }: { data: any; onDownload: () => void
 
       {/* Recent Trades */}
       <div>
-        <h4 className="font-bold text-gray-900 dark:text-white mb-3">Recent Trades</h4>
+        <h4 className="font-bold text-gray-700 dark:text-white mb-3">Recent Trades</h4>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

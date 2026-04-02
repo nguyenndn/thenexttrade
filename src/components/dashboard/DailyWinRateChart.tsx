@@ -26,7 +26,7 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
     if (active && payload && payload.length) {
       return (
         <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-lg">
-          <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-1">
+          <p className="text-sm font-bold text-gray-700 dark:text-gray-100 mb-1">
             {format(new Date(label), "MMM dd, yyyy")}
           </p>
           <p className="text-sm font-semibold text-primary">

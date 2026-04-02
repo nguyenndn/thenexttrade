@@ -16,7 +16,7 @@ export default function MaintenancePage() {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-4">
+                <h1 className="text-3xl font-black text-gray-700 dark:text-white mb-4">
                     We&apos;ll Be Right Back
                 </h1>
 
@@ -38,7 +38,7 @@ export default function MaintenancePage() {
                 </div>
 
                 {/* Contact info */}
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-500">
                     Need urgent help?{" "}
                     <a
                         href="mailto:support@thenexttrade.com"

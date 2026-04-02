@@ -24,7 +24,7 @@ export default function ForbiddenPage() {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-4">
+                <h1 className="text-3xl font-black text-gray-700 dark:text-white mb-4">
                     Access Denied
                 </h1>
 
@@ -53,7 +53,7 @@ export default function ForbiddenPage() {
                 </div>
 
                 {/* Contact */}
-                <p className="mt-10 text-sm text-gray-400">
+                <p className="mt-10 text-sm text-gray-500">
                     Need access?{' '}
                     <a
                         href="mailto:support@thenexttrade.com"

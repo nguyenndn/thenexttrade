@@ -81,7 +81,7 @@ export function LessonPreviewModal({ isOpen, onClose, lessonSlug, moduleTitle }:
                                         <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">
                                             {lesson.levelTitle} › {lesson.moduleTitle}
                                         </p>
-                                        <h3 className="text-lg font-black text-gray-900 dark:text-white">
+                                        <h3 className="text-lg font-black text-gray-700 dark:text-white">
                                             {lesson.title}
                                         </h3>
                                         {lesson.duration && (
@@ -92,7 +92,7 @@ export function LessonPreviewModal({ isOpen, onClose, lessonSlug, moduleTitle }:
                                         )}
                                     </>
                                 ) : (
-                                    <h3 className="text-lg font-black text-gray-900 dark:text-white">{moduleTitle}</h3>
+                                    <h3 className="text-lg font-black text-gray-700 dark:text-white">{moduleTitle}</h3>
                                 )}
                             </div>
 
@@ -110,7 +110,7 @@ export function LessonPreviewModal({ isOpen, onClose, lessonSlug, moduleTitle }:
                                         />
                                     </div>
                                 ) : (
-                                    <div className="px-6 py-8 text-center text-gray-400">
+                                    <div className="px-6 py-8 text-center text-gray-500">
                                         <BookOpen size={32} className="mx-auto mb-3 opacity-50" />
                                         <p className="text-sm">Content preview unavailable</p>
                                     </div>
@@ -135,7 +135,7 @@ export function LessonPreviewModal({ isOpen, onClose, lessonSlug, moduleTitle }:
                                 </Link>
                                 <Link
                                     href="/auth/login"
-                                    className="flex items-center justify-center w-full px-6 py-2 rounded-full text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                    className="flex items-center justify-center w-full px-6 py-2 rounded-full text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white transition-colors"
                                 >
                                     Already have an account? Sign In
                                 </Link>

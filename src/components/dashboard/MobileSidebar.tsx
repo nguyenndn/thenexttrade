@@ -59,7 +59,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                         variant="ghost"
                         size="icon"
                         onClick={onClose}
-                        className="p-1.5 h-auto w-auto text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-white/10"
+                        className="p-1.5 h-auto w-auto text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-white/10"
                         aria-label="Close sidebar"
                     >
                         <X size={18} />
@@ -108,7 +108,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                                         "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors mb-0.5",
                                         isActive
                                             ? "bg-primary/10 text-primary dark:text-primary"
-                                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                                            : "text-gray-600 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
                                     )}
                                 >
                                     {Icon && (

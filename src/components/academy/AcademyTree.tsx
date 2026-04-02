@@ -390,7 +390,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                         isLevelLocked && "opacity-40"
                                     )}
                                 >
-                                    <span className={cn("text-[10px] font-bold uppercase tracking-[0.2em]", isLevelLocked ? "text-gray-400" : colors.text)}>
+                                    <span className={cn("text-[10px] font-bold uppercase tracking-[0.2em]", isLevelLocked ? "text-gray-500" : colors.text)}>
                                         Level {level.order}
                                     </span>
                                     <h3 className={cn(
@@ -415,7 +415,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                     )}
 
                                     {isLevelLocked && (
-                                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                                        <div className="flex items-center gap-1.5 text-xs text-gray-500">
                                             <Lock size={11} />
                                             <span>Complete Level {level.order - 1} to unlock</span>
                                         </div>
@@ -428,7 +428,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                         </div>
                                     )}
 
-                                    <div className="flex items-center gap-3 text-xs text-gray-400">
+                                    <div className="flex items-center gap-3 text-xs text-gray-500">
                                         <span className="flex items-center gap-1"><Layers size={11} />{level.modules.length} modules</span>
                                         <span className="flex items-center gap-1"><BookOpen size={11} />{totalLessons} lessons</span>
                                     </div>
@@ -557,7 +557,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         )}
                                                         title={isLevelLocked ? `Complete Level ${level.order - 1} to unlock` : "Complete previous lessons to unlock"}
                                                     >
-                                                        <Lock size={12} className="text-gray-400 dark:text-gray-600 flex-shrink-0" />
+                                                        <Lock size={12} className="text-gray-500 dark:text-gray-600 flex-shrink-0" />
                                                         <span className="text-sm text-gray-600 dark:text-gray-300 truncate flex-1">{mod.title}</span>
                                                         <span className="text-[10px] text-gray-300 dark:text-gray-700 font-bold whitespace-nowrap">{mod._count.lessons}</span>
                                                     </motion.div>
@@ -689,10 +689,10 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                             )}>
                                                                 {mod.title.charAt(0)}
                                                             </div>
-                                                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors truncate flex-1">
+                                                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-white transition-colors truncate flex-1">
                                                                 {mod.title}
                                                             </span>
-                                                            <span className="text-[10px] text-gray-400 font-bold whitespace-nowrap">{mod._count.lessons}</span>
+                                                            <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap">{mod._count.lessons}</span>
                                                             <ChevronRight size={14} className={cn(
                                                                 "text-gray-300 dark:text-gray-600 group-hover:text-primary transition-all group-hover:translate-x-0.5",
                                                                 isEven ? "" : "rotate-180 group-hover:-translate-x-0.5"
@@ -726,10 +726,10 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         )}>
                                                             {mod.title.charAt(0)}
                                                         </div>
-                                                        <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors truncate flex-1">
+                                                        <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-white transition-colors truncate flex-1">
                                                             {mod.title}
                                                         </span>
-                                                        <span className="text-[10px] text-gray-400 font-bold whitespace-nowrap">{mod._count.lessons}</span>
+                                                        <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap">{mod._count.lessons}</span>
                                                         <ChevronRight size={14} className={cn(
                                                             "text-gray-300 dark:text-gray-600 group-hover:text-primary transition-all group-hover:translate-x-0.5",
                                                             isEven ? "" : "rotate-180 group-hover:-translate-x-0.5"
@@ -790,7 +790,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                     >
                         <div className="flex items-center justify-between mb-1">
                             <span className="text-xs font-bold text-gray-600 flex items-center gap-1"><FlaskConical size={12} /> DEV TEST</span>
-                            <button onClick={() => setDevOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" aria-label="Close dev panel"><X size={14} /></button>
+                            <button onClick={() => setDevOpen(false)} className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" aria-label="Close dev panel"><X size={14} /></button>
                         </div>
                         <button
                             onClick={() => handleDevAction('next')}

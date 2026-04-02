@@ -67,7 +67,7 @@ export function PublicSearchModal() {
                         className="fixed inset-0 flex items-center justify-center px-4 z-[9999] pointer-events-none"
                     >
                         <div className="flex items-center bg-white dark:bg-[#1E2028] rounded-full border border-gray-200 dark:border-gray-700 shadow-2xl px-5 py-2 gap-3 w-full max-w-xl pointer-events-auto">
-                            <Search size={20} className="text-gray-400 flex-shrink-0" />
+                            <Search size={20} className="text-gray-500 flex-shrink-0" />
                             <input
                                 ref={inputRef}
                                 type="text"
@@ -75,7 +75,7 @@ export function PublicSearchModal() {
                                 onChange={(e) => setQuery(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                                 placeholder="Search for anything..."
-                                className="flex-1 bg-transparent text-base text-gray-900 dark:text-white placeholder:text-gray-400 outline-none py-2"
+                                className="flex-1 bg-transparent text-base text-gray-700 dark:text-white placeholder:text-gray-500 outline-none py-2"
                             />
                             <button
                                 onClick={handleSearch}

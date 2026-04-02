@@ -883,12 +883,12 @@ export function ScreenshotUploader({
         </div>
       ) : (
         <>
-          <ImageIcon size={40} className="mx-auto text-gray-400 mb-3" />
+          <ImageIcon size={40} className="mx-auto text-gray-500 mb-3" />
           <p className="text-sm text-gray-500 mb-1">
             <span className="font-medium text-[#00C888]">Click to upload</span>{" "}
             or drag and drop
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-500">
             PNG, JPG, WEBP up to 10MB each
           </p>
         </>
@@ -1242,7 +1242,7 @@ export function AnnotationToolbar({
               p-2 rounded-lg transition-colors
               ${activeTool === tool.id
                 ? "bg-[#00C888] text-white"
-                : "text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                : "text-gray-600 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
               }
             `}
             title={tool.label}
@@ -1300,7 +1300,7 @@ export function AnnotationToolbar({
       <div className="flex items-center gap-2">
         <button
           onClick={onUndo}
-          className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"
+          className="p-2 text-gray-600 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"
           title="Undo"
         >
           <Undo size={18} />
@@ -1319,7 +1319,7 @@ export function AnnotationToolbar({
             px-4 py-2 rounded-lg font-medium flex items-center gap-2
             ${hasChanges
               ? "bg-[#00C888] text-white hover:bg-[#00B377]"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-gray-200 text-gray-500 cursor-not-allowed"
             }
           `}
         >
@@ -1348,7 +1348,7 @@ const [screenshots, setScreenshots] = useState<any[]>([]);
 
 // Add to form (after notes section)
 <div className="border-t border-gray-100 dark:border-gray-800 pt-6 mt-6">
-  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+  <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
     <Image size={20} className="text-[#00C888]" />
     Screenshots
   </h3>
@@ -1370,7 +1370,7 @@ const [screenshots, setScreenshots] = useState<any[]>([]);
   )}
 
   {!tradeId && (
-    <p className="text-sm text-gray-400 text-center py-4">
+    <p className="text-sm text-gray-500 text-center py-4">
       Save the trade first, then you can add screenshots
     </p>
   )}

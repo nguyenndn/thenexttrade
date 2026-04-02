@@ -44,10 +44,10 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
         const isNY = utcHour >= 13 && utcHour < 22;
 
         return [
-            { name: "Sydney", status: isSydney ? "Open" : "Closed", color: isSydney ? "text-green-500" : "text-gray-400" },
-            { name: "Tokyo", status: isTokyo ? "Open" : "Closed", color: isTokyo ? "text-cyan-500" : "text-gray-400" },
-            { name: "London", status: isLondon ? "Open" : "Closed", color: isLondon ? "text-orange-500" : "text-gray-400" },
-            { name: "New York", status: isNY ? "Open" : "Closed", color: isNY ? "text-blue-500" : "text-gray-400" },
+            { name: "Sydney", status: isSydney ? "Open" : "Closed", color: isSydney ? "text-green-500" : "text-gray-500" },
+            { name: "Tokyo", status: isTokyo ? "Open" : "Closed", color: isTokyo ? "text-cyan-500" : "text-gray-500" },
+            { name: "London", status: isLondon ? "Open" : "Closed", color: isLondon ? "text-orange-500" : "text-gray-500" },
+            { name: "New York", status: isNY ? "Open" : "Closed", color: isNY ? "text-blue-500" : "text-gray-500" },
         ];
     };
 
@@ -78,7 +78,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-2">
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                <h3 className="text-lg font-bold text-gray-700 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                     Forex Market Hours
                                 </h3>
                                 {/* Simple Live Status */}
@@ -96,7 +96,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                                 {sessions.map((s) => (
                                     <span suppressHydrationWarning key={s.name} className={`flex items-center gap-1.5 px-2 py-1 rounded border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 ${s.status === "Open" ? "border-green-500/20 bg-green-500/5" : "opacity-60"}`}>
                                         <span suppressHydrationWarning className={`w-1.5 h-1.5 rounded-full ${s.status === "Open" ? "bg-green-500" : "bg-gray-400"}`}></span>
-                                        <span suppressHydrationWarning className={s.status === "Open" ? "text-gray-900 dark:text-white font-bold" : ""}>{s.name}</span>
+                                        <span suppressHydrationWarning className={s.status === "Open" ? "text-gray-700 dark:text-white font-bold" : ""}>{s.name}</span>
                                     </span>
                                 ))}
                             </div>
@@ -121,7 +121,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-2">
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                                <h3 className="text-lg font-bold text-gray-700 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                                     Economic Calendar
                                 </h3>
                                 <div className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/10 text-gray-600">TODAY</div>
@@ -131,7 +131,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                                 <div className="flex items-start gap-3">
                                     <div className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${nextEvent.impact === 'HIGH' ? 'bg-red-500 animate-pulse' : 'bg-yellow-500'}`}></div>
                                     <div>
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white line-clamp-1">
+                                        <p className="text-sm font-bold text-gray-700 dark:text-white line-clamp-1">
                                             {nextEvent.currency} {nextEvent.title}
                                         </p>
                                         <p className="text-xs text-gray-600 mt-0.5">
@@ -145,7 +145,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                                         <Zap size={14} fill="currentColor" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-200">Calculated Stability</p>
+                                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">Calculated Stability</p>
                                         <p className="text-xs text-gray-600 mt-0.5">No high impact events pending.</p>
                                     </div>
                                 </div>

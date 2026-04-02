@@ -93,7 +93,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                             className="object-cover w-full h-full"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100 dark:bg-slate-800">
+                        <div className="w-full h-full flex items-center justify-center text-gray-500 bg-gray-100 dark:bg-slate-800">
                             <UserIcon size={16} />
                         </div>
                     )}
@@ -112,7 +112,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
 
                     {/* Header Info */}
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5">
-                        <h4 className="font-bold text-lg text-gray-900 dark:text-white leading-tight">
+                        <h4 className="font-bold text-lg text-gray-700 dark:text-white leading-tight">
                             Hello, <span className="text-primary">{userData.name}</span>
                         </h4>
 
@@ -145,7 +145,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                                         }}
                                     />
                                 </div>
-                                <p className="text-[10px] text-gray-400 mt-1">
+                                <p className="text-[10px] text-gray-500 mt-1">
                                     {tierProgress.xpToNext.toLocaleString()} XP to {tierProgress.next.label}
                                 </p>
                             </div>
@@ -167,9 +167,9 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                     <div className="p-2 space-y-1">
                         {variant !== 'dashboard' ? (
                             <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                                <LayoutDashboard size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
+                                <LayoutDashboard size={18} className="text-gray-500 group-hover:text-primary transition-colors" />
                                 <div>
-                                    <span className="block text-gray-900 dark:text-white">Dashboard</span>
+                                    <span className="block text-gray-700 dark:text-white">Dashboard</span>
                                     <span className="text-xs text-gray-600 font-normal">Overview & Learning Path</span>
                                 </div>
                             </Link>
@@ -178,12 +178,12 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                                 {/* Dashboard Specific Links */}
                                 {pathname.startsWith('/admin') ? (
                                     <Link href="/admin/settings" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                                        <Settings size={18} className="text-gray-400" />
+                                        <Settings size={18} className="text-gray-500" />
                                         Account Settings
                                     </Link>
                                 ) : (
                                     <Link href="/dashboard/settings" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                                        <Settings size={18} className="text-gray-400" />
+                                        <Settings size={18} className="text-gray-500" />
                                         Account Settings
                                     </Link>
                                 )}

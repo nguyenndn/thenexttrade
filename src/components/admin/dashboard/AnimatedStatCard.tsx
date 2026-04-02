@@ -147,10 +147,10 @@ export function AnimatedStatCard({
                 <div>
                     <p className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">{title}</p>
                     <div className="flex items-baseline gap-2 mt-2">
-                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight tabular-nums">
+                        <h3 className="text-3xl font-black text-gray-700 dark:text-white tracking-tight tabular-nums">
                             {displayValue}
                         </h3>
-                        {suffix && <span className="text-sm font-medium text-gray-400">{suffix}</span>}
+                        {suffix && <span className="text-sm font-medium text-gray-500">{suffix}</span>}
                     </div>
                 </div>
                 <div className={`p-3.5 rounded-xl ${cs.bg} ${cs.text} ${cs.ring} transition-colors`}>

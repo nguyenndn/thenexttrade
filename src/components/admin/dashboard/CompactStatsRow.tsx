@@ -30,13 +30,13 @@ export function CompactStatsRow({ stats }: { stats: CompactStat[] }) {
                     <div key={i} className="flex items-center gap-3 px-5 py-4">
                         <stat.icon
                             size={18}
-                            className={ICON_COLORS[stat.color] || "text-gray-400"}
+                            className={ICON_COLORS[stat.color] || "text-gray-500"}
                             strokeWidth={2.5}
                             aria-hidden="true"
                         />
                         <div>
-                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">{stat.title}</div>
-                            <div className="text-lg font-black text-gray-900 dark:text-white tracking-tight">{stat.value}</div>
+                            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">{stat.title}</div>
+                            <div className="text-lg font-black text-gray-700 dark:text-white tracking-tight">{stat.value}</div>
                         </div>
                     </div>
                 ))}

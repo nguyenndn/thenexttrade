@@ -60,7 +60,7 @@ export function RiskOfRuinCalc() {
                         onChange={(e) => setInputs({ ...inputs, winRate: parseInt(e.target.value) })}
                         className="w-full accent-primary"
                     />
-                    <div className="flex justify-between text-xs text-gray-400">
+                    <div className="flex justify-between text-xs text-gray-500">
                         <span>20%</span><span>50%</span><span>80%</span>
                     </div>
                 </div>
@@ -75,7 +75,7 @@ export function RiskOfRuinCalc() {
                         onChange={(e) => setInputs({ ...inputs, riskPerTrade: parseFloat(e.target.value) })}
                         className="w-full accent-primary"
                     />
-                    <div className="flex justify-between text-xs text-gray-400">
+                    <div className="flex justify-between text-xs text-gray-500">
                         <span>0.5%</span><span>5%</span><span>10%</span>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ export function RiskOfRuinCalc() {
                         onChange={(e) => setInputs({ ...inputs, rewardRisk: parseFloat(e.target.value) })}
                         className="w-full accent-primary"
                     />
-                    <div className="flex justify-between text-xs text-gray-400">
+                    <div className="flex justify-between text-xs text-gray-500">
                         <span>1:0.5</span><span>1:2.5</span><span>1:5</span>
                     </div>
                 </div>
@@ -105,7 +105,7 @@ export function RiskOfRuinCalc() {
                         onChange={(e) => setInputs({ ...inputs, ruinThreshold: parseInt(e.target.value) })}
                         className="w-full accent-primary"
                     />
-                    <div className="flex justify-between text-xs text-gray-400">
+                    <div className="flex justify-between text-xs text-gray-500">
                         <span>10%</span><span>50%</span><span>100%</span>
                     </div>
                 </div>

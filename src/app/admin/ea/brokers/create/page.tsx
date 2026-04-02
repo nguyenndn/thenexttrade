@@ -78,13 +78,13 @@ export default function CreateEABrokerPage() {
                     />
 
                     <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Logo</label>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Logo</label>
                         <FileUpload
                             value={logo}
                             onChange={setLogo}
                             className="bg-white dark:bg-black/20 w-40"
                         />
-                        <p className="text-xs text-gray-400 mt-2">Transparent PNG recommended. Square aspect ratio.</p>
+                        <p className="text-xs text-gray-500 mt-2">Transparent PNG recommended. Square aspect ratio.</p>
                     </div>
 
                     <PremiumInput

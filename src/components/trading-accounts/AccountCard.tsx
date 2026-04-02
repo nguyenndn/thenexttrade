@@ -86,7 +86,7 @@ export function AccountCard({
                             )}
                         </div>
                         <div className="min-w-0">
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[180px]" title={account.name}>
+                            <h3 className="text-lg font-bold text-gray-700 dark:text-white truncate max-w-[180px]" title={account.name}>
                                 {account.name}
                             </h3>
                             <p className="text-sm text-gray-600 font-medium mt-0.5 truncate max-w-[180px]" title={account.server || "Server Unknown"}>
@@ -121,17 +121,17 @@ export function AccountCard({
                     <div className="flex items-center gap-2">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" aria-label="Account options" className="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
+                                <Button variant="ghost" size="icon" aria-label="Account options" className="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
                                     <MoreVertical size={16} />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-50 p-1.5 rounded-xl border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#1E2028] z-[100]">
                                 <DropdownMenuItem onClick={() => onSettings(account)} className="flex items-center gap-3 px-3 py-2.5 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors">
-                                    <Settings size={16} className="text-gray-400" />
+                                    <Settings size={16} className="text-gray-500" />
                                     <span>Account Settings</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => onRegenerateKey(account.id)} className="flex items-center gap-3 px-3 py-2.5 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors">
-                                    <Key size={16} className="text-gray-400" />
+                                    <Key size={16} className="text-gray-500" />
                                     <span>Regenerate API Key</span>
                                 </DropdownMenuItem>
                                 <div className="h-px bg-gray-100 dark:bg-white/5 my-1" />
@@ -150,7 +150,7 @@ export function AccountCard({
                                         }}
                                         className="flex items-center gap-3 px-3 py-2.5 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
                                     >
-                                        <Trophy size={16} className={account.useForLeaderboard ? "text-yellow-500" : "text-gray-400"} />
+                                        <Trophy size={16} className={account.useForLeaderboard ? "text-yellow-500" : "text-gray-500"} />
                                         <span>{account.useForLeaderboard ? 'Remove from Leaderboard' : 'Use for Leaderboard'}</span>
                                     </DropdownMenuItem>
                                 )}
@@ -169,7 +169,7 @@ export function AccountCard({
                 {/* Stats / Balance (Middle) */}
                 <div className="py-5 w-full grid grid-cols-2 gap-3 min-w-0">
                     <div className="min-w-0 pr-2">
-                        <p className="text-[9px] md:text-[10px] font-black text-gray-400 tracking-widest uppercase mb-1 flex items-center gap-1.5 truncate">
+                        <p className="text-[9px] md:text-[10px] font-black text-gray-500 tracking-widest uppercase mb-1 flex items-center gap-1.5 truncate">
                             <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 shrink-0"></span>
                             Balance
                         </p>
@@ -178,7 +178,7 @@ export function AccountCard({
                         </p>
                     </div>
                     <div className="min-w-0 pl-2 border-l border-gray-200 dark:border-white/10">
-                        <p className="text-[9px] md:text-[10px] font-black text-gray-400 tracking-widest uppercase mb-1 flex items-center gap-1.5 truncate">
+                        <p className="text-[9px] md:text-[10px] font-black text-gray-500 tracking-widest uppercase mb-1 flex items-center gap-1.5 truncate">
                             <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 shrink-0"></span>
                             Equity
                         </p>
@@ -213,7 +213,7 @@ export function AccountCard({
                             className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 hover:shadow-sm border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 font-bold text-xs transition-all group/link"
                             title="View Dashboard"
                         >
-                            <ExternalLink size={14} className="text-gray-400 group-hover/link:text-primary transition-colors" />
+                            <ExternalLink size={14} className="text-gray-500 group-hover/link:text-primary transition-colors" />
                             <span>Dashboard</span>
                         </Link>
 

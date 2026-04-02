@@ -50,7 +50,7 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
         {/* Close */}
         <Button
           variant="ghost"
-          className="absolute top-3 right-3 p-1.5 z-20 text-gray-400 hover:text-gray-600 dark:hover:text-white w-auto h-auto"
+          className="absolute top-3 right-3 p-1.5 z-20 text-gray-500 hover:text-gray-600 dark:hover:text-white w-auto h-auto"
           onClick={onClose}
           aria-label="Close profile card"
         >
@@ -75,7 +75,7 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
               )}
             </div>
 
-            <h3 className="text-lg font-black text-gray-900 dark:text-white">
+            <h3 className="text-lg font-black text-gray-700 dark:text-white">
               {entry.name}
             </h3>
 
@@ -98,10 +98,10 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
                 className="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 dark:bg-white/5"
               >
                 <stat.icon size={16} className={stat.color} />
-                <span className="text-sm font-black text-gray-900 dark:text-white tabular-nums">
+                <span className="text-sm font-black text-gray-700 dark:text-white tabular-nums">
                   {stat.value}
                 </span>
-                <span className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">
+                <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">
                   {stat.label}
                 </span>
               </div>

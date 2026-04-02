@@ -227,14 +227,14 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
                 <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mt-6">
                     <div className="relative w-full sm:w-64 group">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Search size={16} className="text-gray-400 group-focus-within:text-primary transition-colors" />
+                            <Search size={16} className="text-gray-500 group-focus-within:text-primary transition-colors" />
                         </div>
                         <input
                             type="text"
                             placeholder="Search strategies..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
                         />
                     </div>
                     
@@ -244,9 +244,9 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
                                 variant="outline"
                                 className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300"
                             >
-                                <ArrowUpDown size={16} className="text-gray-400" />
+                                <ArrowUpDown size={16} className="text-gray-500" />
                                 <span>{currentSortLabel}</span>
-                                <ChevronDown size={14} className="text-gray-400" />
+                                <ChevronDown size={14} className="text-gray-500" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-[180px]">

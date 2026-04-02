@@ -63,12 +63,12 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                         <div className="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-500/20 flex items-center justify-center text-yellow-600 dark:text-yellow-400">
                             <Zap size={18} />
                         </div>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Content Shortcuts</h2>
+                        <h2 className="text-lg font-bold text-gray-700 dark:text-white">Content Shortcuts</h2>
                     </div>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={fetchShortcuts}
-                            className="text-sm font-medium text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-1 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors"
+                            className="text-sm font-medium text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 flex items-center gap-1 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors"
                             title="Reload shortcuts"
                             aria-label="Reload shortcuts"
                         >
@@ -77,7 +77,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                         <Link href="/admin/articles/shortcuts" target="_blank" className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg transition-colors">
                             <Plus size={16} /> Manage
                         </Link>
-                        <Button variant="outline" size="icon" onClick={onClose} aria-label="Close modal" className="w-auto h-auto p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl dark:hover:bg-white/5 transition-colors border-0">
+                        <Button variant="outline" size="icon" onClick={onClose} aria-label="Close modal" className="w-auto h-auto p-2 text-gray-500 hover:text-gray-600 hover:bg-gray-100 rounded-xl dark:hover:bg-white/5 transition-colors border-0">
                             <X size={20} />
                         </Button>
                     </div>
@@ -97,7 +97,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                 {/* List */}
                 <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2 min-h-[300px]">
                     {isLoading ? (
-                        <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-3">
+                        <div className="flex flex-col items-center justify-center h-full text-gray-500 gap-3">
                             <Loader2 className="animate-spin" size={24} />
                             <span className="text-sm">Loading snippets...</span>
                         </div>
@@ -114,12 +114,12 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                                 >
                                     <div className="flex items-center gap-2 w-full mb-1">
                                         <Zap size={14} className="text-yellow-500" />
-                                        <span className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate w-full transition-colors">{shortcut.name}</span>
+                                        <span className="font-semibold text-gray-700 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate w-full transition-colors">{shortcut.name}</span>
                                     </div>
                                     <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 mt-1">
                                         {shortcut.description || "No description provided."}
                                     </p>
-                                    <div className="mt-3 text-xs bg-gray-100 dark:bg-white/5 px-2 py-1 rounded text-gray-400 w-full truncate">
+                                    <div className="mt-3 text-xs bg-gray-100 dark:bg-white/5 px-2 py-1 rounded text-gray-500 w-full truncate">
                                         HTML Supported
                                     </div>
                                 </div>
@@ -129,7 +129,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                         <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 mt-4">
                             <Zap size={32} className="text-gray-300 dark:text-gray-600 mb-3" />
                             <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">No Shortcuts Found</p>
-                            <p className="text-sm text-gray-400 mb-4 max-w-sm">Create reusable content snippets to insert instantly into your articles.</p>
+                            <p className="text-sm text-gray-500 mb-4 max-w-sm">Create reusable content snippets to insert instantly into your articles.</p>
                             <Link href="/admin/articles/shortcuts" target="_blank">
                                 <Button variant="outline" size="sm" className="bg-white border-blue-200 text-blue-600 hover:bg-blue-50">Create First Shortcut</Button>
                             </Link>
