@@ -48,7 +48,7 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             variant="outline"
                             size="icon"
                             aria-label="Add Tags"
-                            className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
+                            className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <Plus size={12} />
                         </Button>
@@ -83,7 +83,7 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             {tags.map((tag: string) => (
                                 <span key={tag} className="flex items-center gap-1 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs">
                                     {tag}
-                                    <Button variant="outline" size="icon" aria-label={`Remove tag ${tag}`} onClick={() => handleRemoveTag(tag)} className="w-4 h-4 p-0 text-gray-400 hover:text-red-500 hover:bg-transparent">
+                                    <Button variant="outline" size="icon" aria-label={`Remove tag ${tag}`} onClick={() => handleRemoveTag(tag)} className="w-4 h-4 p-0 text-gray-500 hover:text-red-500 hover:bg-transparent">
                                         <X size={12} />
                                     </Button>
                                 </span>
@@ -91,7 +91,7 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                         </div>
                     )}
                     {tags.length === 0 && (
-                        <p className="text-xs text-gray-400 text-center">No tags added yet.</p>
+                        <p className="text-xs text-gray-500 text-center">No tags added yet.</p>
                     )}
                 </div>
             </DropdownMenuContent>

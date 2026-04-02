@@ -37,7 +37,7 @@ export function ProfitLossCalc() {
                             "relative flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-colors h-auto z-10",
                             inputs.direction === "LONG"
                                 ? "text-white hover:text-white"
-                                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         {inputs.direction === "LONG" && (
@@ -57,7 +57,7 @@ export function ProfitLossCalc() {
                             "relative flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-colors h-auto z-10",
                             inputs.direction === "SHORT"
                                 ? "text-white hover:text-white"
-                                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         )}
                     >
                         {inputs.direction === "SHORT" && (

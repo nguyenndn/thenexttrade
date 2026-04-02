@@ -25,7 +25,7 @@ export default function NotificationsClient() {
                         <Bell size={24} className="text-purple-500" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Notifications Preferences</h2>
+                        <h2 className="text-lg font-bold text-gray-700 dark:text-white">Notifications Preferences</h2>
                         <p className="text-gray-600 text-sm">Manage how you receive updates and alerts.</p>
                     </div>
                 </div>
@@ -33,7 +33,7 @@ export default function NotificationsClient() {
                 <div className="space-y-6">
                     {/* Email Notifications */}
                     <div>
-                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
                             <Mail size={16} /> Email Notifications
                         </h3>
                         <div className="space-y-4">
@@ -75,7 +75,7 @@ function ToggleItem({ title, description, isOn, onToggle }: { title: string, des
     return (
         <div className="flex items-center justify-between group cursor-pointer" onClick={onToggle}>
             <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-[#2F80ED] transition-colors">{title}</h4>
+                <h4 className="font-semibold text-gray-700 dark:text-white group-hover:text-[#2F80ED] transition-colors">{title}</h4>
                 <p className="text-sm text-gray-600">{description}</p>
             </div>
             <div className={`w-12 h-7 rounded-full transition-colors relative ${isOn ? 'bg-primary' : 'bg-gray-200 dark:bg-white/10'}`}>

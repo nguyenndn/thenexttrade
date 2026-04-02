@@ -339,7 +339,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                         {/* Desktop View */}
                         <div className="hidden md:block overflow-x-auto w-full">
                             <table className="w-auto min-w-full text-left text-sm whitespace-nowrap">
-                                <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+                                <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
                                     <tr>
                                         <th className="px-6 py-4 w-14"></th>
                                         {columnsConfig.map((col) => (
@@ -403,7 +403,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                         >
                                                             <div className={`w-full ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'flex justify-end pr-2' : ''}`}>
                                                                 {col.id === "date" && format(new Date(entry.entryDate), "dd MMM yyyy")}
-                                                                {col.id === "symbol" && <span className="font-bold text-gray-900 dark:text-white">{entry.symbol}</span>}
+                                                                {col.id === "symbol" && <span className="font-bold text-gray-700 dark:text-white">{entry.symbol}</span>}
                                                                 {col.id === "type" && <TradeTypeBadge type={entry.type} />}
                                                                 {col.id === "status" && <StatusBadge status={entry.status} />}
                                                                 {col.id === "openTime" && format(new Date(entry.entryDate), "HH:mm")}
@@ -442,7 +442,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                             variant="outline" 
                                                             size="icon"
                                                             onClick={() => handleEdit(entry)} 
-                                                            className="text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                            className="text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                                                         >
                                                             <Edit2 size={16} />
                                                         </Button>
@@ -471,7 +471,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                         {/* Header Row */}
                                         <div className="flex items-center gap-3 mb-3">
                                             <div className="flex items-center gap-2 flex-1">
-                                                <span className="font-bold text-gray-900 dark:text-white text-lg">{entry.symbol}</span>
+                                                <span className="font-bold text-gray-700 dark:text-white text-lg">{entry.symbol}</span>
                                                 <TradeTypeBadge type={entry.type} />
                                                 <StatusBadge status={entry.status} />
                                             </div>
@@ -492,21 +492,21 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                         {/* Info Grid */}
                                         <div className="grid grid-cols-2 gap-y-3 text-sm mb-3">
                                             <div>
-                                                <p className="text-xs text-gray-400 mb-0.5">Open Time</p>
+                                                <p className="text-xs text-gray-500 mb-0.5">Open Time</p>
                                                 <p className="font-medium text-gray-700 dark:text-gray-300">
                                                     {format(new Date(entry.entryDate), "dd MMM HH:mm")}
                                                 </p>
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-400 mb-0.5">Net Profit</p>
+                                                <p className="text-xs text-gray-500 mb-0.5">Net Profit</p>
                                                 <PnLDisplay value={entry.pnl} />
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-400 mb-0.5">Volume</p>
+                                                <p className="text-xs text-gray-500 mb-0.5">Volume</p>
                                                 <p className="font-mono text-gray-700 dark:text-gray-300">{(entry as any).lotSize || "0.00"}</p>
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-400 mb-0.5">Close Time</p>
+                                                <p className="text-xs text-gray-500 mb-0.5">Close Time</p>
                                                 <p className="font-medium text-gray-700 dark:text-gray-300">
                                                     {entry.exitDate ? format(new Date(entry.exitDate), "HH:mm") : "-"}
                                                 </p>

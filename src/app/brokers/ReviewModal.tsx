@@ -42,7 +42,7 @@ function StarRating({ rating }: { rating: number }) {
           />
         ))}
       </div>
-      <span className="text-base font-bold text-gray-900 dark:text-white">{rating}</span>
+      <span className="text-base font-bold text-gray-700 dark:text-white">{rating}</span>
     </div>
   );
 }
@@ -104,13 +104,13 @@ function ReviewModal({ item, onClose }: { item: ReviewItem; onClose: () => void 
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.name}</h3>
+            <h3 className="text-lg font-bold text-gray-700 dark:text-white">{item.name}</h3>
             <StarRating rating={item.rating} />
           </div>
           <button
             onClick={onClose}
             aria-label="Close review"
-            className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
+            className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
           >
             <X size={16} />
           </button>

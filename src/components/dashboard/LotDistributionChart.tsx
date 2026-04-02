@@ -57,7 +57,7 @@ export function LotDistributionChart({ data, height = 300, innerRadius = 60, out
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: payload[0].payload.fill }}></div>
                     <div>
                       <p className="text-sm font-medium text-gray-600">{data.name}</p>
-                      <p className="text-base font-bold text-gray-900 dark:text-white">
+                      <p className="text-base font-bold text-gray-700 dark:text-white">
                         {Number(data.value).toFixed(2)} Lots
                       </p>
                     </div>

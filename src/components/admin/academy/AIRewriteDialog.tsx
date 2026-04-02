@@ -279,11 +279,11 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                     <Sparkles size={20} className="text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">AI Content Rewriter</h3>
+                                    <h3 className="text-lg font-bold text-gray-700 dark:text-white">AI Content Rewriter</h3>
                                     <p className="text-xs text-gray-600">Multi-source rewrite with copyright protection</p>
                                 </div>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={close} disabled={isLoading} className="text-gray-400">
+                            <Button variant="ghost" size="icon" onClick={close} disabled={isLoading} className="text-gray-500">
                                 <X size={18} />
                             </Button>
                         </div>
@@ -298,7 +298,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                     className={cn(
                                         "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all",
                                         inputMode === "url"
-                                            ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm"
+                                            ? "bg-white dark:bg-white/10 text-gray-700 dark:text-white shadow-sm"
                                             : "text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
                                     )}
                                 >
@@ -310,7 +310,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                     className={cn(
                                         "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all",
                                         inputMode === "paste"
-                                            ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm"
+                                            ? "bg-white dark:bg-white/10 text-gray-700 dark:text-white shadow-sm"
                                             : "text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
                                     )}
                                 >
@@ -361,7 +361,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                         <div>
                                             <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
                                                 <Search size={12} className="inline mr-1" /> Supplementary Sources
-                                                <span className="text-gray-400 normal-case font-normal ml-1">(select up to 3)</span>
+                                                <span className="text-gray-500 normal-case font-normal ml-1">(select up to 3)</span>
                                             </label>
                                             <div className="space-y-1.5 max-h-40 overflow-y-auto">
                                                 {searchResults.map((r) => (
@@ -387,11 +387,11 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                                         <div className="min-w-0 flex-1">
                                                             <div className="flex items-center gap-1.5">
                                                                 {SOURCE_ICONS[r.source]}
-                                                                <span className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                                                                <span className="text-xs font-medium text-gray-700 dark:text-white truncate">
                                                                     {r.title}
                                                                 </span>
                                                             </div>
-                                                            <p className="text-[10px] text-gray-400 truncate mt-0.5">{r.url}</p>
+                                                            <p className="text-[10px] text-gray-500 truncate mt-0.5">{r.url}</p>
                                                         </div>
                                                     </button>
                                                 ))}
@@ -400,7 +400,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                     )}
 
                                     {hasSearched && searchResults.length === 0 && (
-                                        <p className="text-xs text-gray-400 text-center py-2">No additional sources found. You can still generate with the primary URL.</p>
+                                        <p className="text-xs text-gray-500 text-center py-2">No additional sources found. You can still generate with the primary URL.</p>
                                     )}
                                 </>
                             )}
@@ -515,7 +515,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                     <p className="text-sm text-gray-600">
                                         {mode === "summary" ? "Analyzing content..." : `Rewriting from ${totalSources} source${totalSources > 1 ? 's' : ''}...`}
                                     </p>
-                                    <p className="text-xs text-gray-400">
+                                    <p className="text-xs text-gray-500">
                                         {totalSources > 1 ? "Scraping + merging + rewriting... this may take 30-60 seconds" : "This may take 15-30 seconds"}
                                     </p>
                                 </div>
@@ -527,27 +527,27 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                     <div className="flex items-center gap-2 text-sm font-bold text-emerald-600 dark:text-emerald-400">
                                         <Check size={16} /> Generated Successfully
                                         {result.tone && (
-                                            <span className="text-xs font-normal text-gray-400">• Tone: {result.tone}</span>
+                                            <span className="text-xs font-normal text-gray-500">• Tone: {result.tone}</span>
                                         )}
                                         {(result.sourceUrls?.length || 0) > 1 && (
-                                            <span className="text-xs font-normal text-gray-400">• {result.sourceUrls!.length} sources merged</span>
+                                            <span className="text-xs font-normal text-gray-500">• {result.sourceUrls!.length} sources merged</span>
                                         )}
                                     </div>
 
                                     <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5">
-                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Title</span>
-                                        <p className="text-base font-bold text-gray-900 dark:text-white mt-1">{result.title}</p>
+                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Title</span>
+                                        <p className="text-base font-bold text-gray-700 dark:text-white mt-1">{result.title}</p>
                                     </div>
 
                                     {result.metaDescription && (
                                         <div className="p-3 bg-blue-50 dark:bg-blue-500/5 rounded-xl border border-blue-100 dark:border-blue-900/30">
                                             <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">🔍 Meta Description ({result.metaDescription.length} chars)</span>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{result.metaDescription}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-500 mt-1">{result.metaDescription}</p>
                                         </div>
                                     )}
 
                                     <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 max-h-48 overflow-y-auto">
-                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1">
                                             <Eye size={10} /> Content Preview
                                         </span>
                                         <div
@@ -561,7 +561,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
 
                         {/* Footer */}
                         <div className="flex items-center justify-between p-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] shrink-0">
-                            <p className="text-[11px] text-gray-400">
+                            <p className="text-[11px] text-gray-500">
                                 Gemini + FireCrawl + Serper · {TONES.find(t => t.id === tone)?.icon} {TONES.find(t => t.id === tone)?.label}
                             </p>
                             <div className="flex gap-2">

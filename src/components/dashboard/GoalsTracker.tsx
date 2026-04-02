@@ -24,7 +24,7 @@ const METRIC_CONFIG: Record<string, { label: string; unit: string; icon: typeof 
     maxLoss: { label: "Max Loss", unit: "$", icon: AlertTriangle },
 };
 
-const FORM_INPUT_CLASSES = "px-3 py-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary";
+const FORM_INPUT_CLASSES = "px-3 py-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-700 dark:text-white focus:ring-primary focus:border-primary";
 
 export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
     const router = useRouter();
@@ -93,13 +93,13 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
             <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                     <Target size={18} className="text-primary" />
-                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">Trading Goals</h3>
+                    <h3 className="font-bold text-gray-700 dark:text-white text-sm">Trading Goals</h3>
                 </div>
                 <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setShowForm(!showForm)}
-                    className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-lg"
+                    className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white rounded-lg"
                 >
                     {showForm ? <X size={14} /> : <Plus size={14} />}
                     {showForm ? "Cancel" : "Add"}
@@ -132,7 +132,7 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
                             placeholder="Target"
                             value={form.targetValue}
                             onChange={(e) => setForm(prev => ({ ...prev, targetValue: e.target.value }))}
-                            className={`${FORM_INPUT_CLASSES} placeholder:text-gray-400`}
+                            className={`${FORM_INPUT_CLASSES} placeholder:text-gray-500`}
                         />
                     </div>
                     <Button
@@ -151,8 +151,8 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
                 {goals.length === 0 && !showForm ? (
                     <div className="p-8 text-center">
                         <Target size={32} className="mx-auto text-gray-300 dark:text-gray-600 mb-2" />
-                        <p className="text-sm text-gray-400">No goals yet</p>
-                        <p className="text-xs text-gray-400 mt-1">Set weekly or monthly targets to stay disciplined</p>
+                        <p className="text-sm text-gray-500">No goals yet</p>
+                        <p className="text-xs text-gray-500 mt-1">Set weekly or monthly targets to stay disciplined</p>
                     </div>
                 ) : (
                     goals.map((goal) => {
@@ -173,21 +173,21 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
                                             }`}>
                                             {goal.type === "weekly" ? "W" : "M"}
                                         </span>
-                                        <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                        <span className="text-sm font-medium text-gray-700 dark:text-white">
                                             {config.label}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                        <span className="text-sm font-bold text-gray-700 dark:text-white">
                                             {formatValue(goal.metric, goal.currentValue)}
-                                            <span className="text-gray-400 font-normal"> / {formatValue(goal.metric, goal.targetValue)}</span>
+                                            <span className="text-gray-500 font-normal"> / {formatValue(goal.metric, goal.targetValue)}</span>
                                         </span>
                                         <Button
                                             variant="outline"
                                             size="icon"
                                             aria-label="Delete Goal"
                                             onClick={() => handleDelete(goal.id)}
-                                            className="w-7 h-7 p-0 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 hover:bg-red-500/10 hover:border-red-500/30 transition-all rounded-lg"
+                                            className="w-7 h-7 p-0 opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-500 hover:bg-red-500/10 hover:border-red-500/30 transition-all rounded-lg"
                                         >
                                             <Trash2 size={14} />
                                         </Button>

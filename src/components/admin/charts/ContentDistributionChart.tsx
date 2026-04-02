@@ -30,7 +30,7 @@ export function ContentDistributionChart({ data = [] }: ContentDistributionChart
     if (!data || data.length === 0) {
         return (
             <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex items-center justify-center">
-                <p className="text-gray-400">No content data available</p>
+                <p className="text-gray-500">No content data available</p>
             </div>
         );
     }
@@ -44,7 +44,7 @@ export function ContentDistributionChart({ data = [] }: ContentDistributionChart
 
     return (
         <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Content Distribution</h3>
+            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-3">Content Distribution</h3>
 
             {/* Chart + Legend side by side */}
             <div className="flex-1 flex items-center gap-4 min-h-0">
@@ -87,8 +87,8 @@ export function ContentDistributionChart({ data = [] }: ContentDistributionChart
                                     className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                                     style={{ backgroundColor: entry.color }}
                                 />
-                                <span className="text-gray-600 dark:text-gray-400 truncate flex-1">{entry.name}</span>
-                                <span className="text-gray-900 dark:text-white font-medium tabular-nums">{pct}%</span>
+                                <span className="text-gray-600 dark:text-gray-500 truncate flex-1">{entry.name}</span>
+                                <span className="text-gray-700 dark:text-white font-medium tabular-nums">{pct}%</span>
                             </div>
                         );
                     })}

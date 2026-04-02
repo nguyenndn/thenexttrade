@@ -118,7 +118,7 @@ export function FileUpload({ value, onChange, className, label = "Upload Image" 
                 </div>
             ) : (
                 <div className="flex flex-col items-center gap-2 group-hover:scale-105 transition-transform">
-                    <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm text-gray-400 group-hover:text-primary transition-colors">
+                    <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm text-gray-500 group-hover:text-primary transition-colors">
                         <Upload size={24} />
                     </div>
                     <p className="text-xs font-bold text-gray-600 group-hover:text-primary transition-colors">{label}</p>

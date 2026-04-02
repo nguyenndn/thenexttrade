@@ -29,7 +29,7 @@ export const SectionHeader = memo(function SectionHeader({
                         {subtitle}
                     </span>
                 )}
-                <h2 className="text-3xl md:text-4xl font-bold font-heading text-gray-900 dark:text-white tracking-tight flex items-center justify-center gap-3">
+                <h2 className="text-3xl md:text-4xl font-bold font-heading text-gray-700 dark:text-white tracking-tight flex items-center justify-center gap-3">
                     <span className="w-1.5 h-8 bg-primary rounded-full block"></span>
                     {title}
                 </h2>
@@ -40,7 +40,7 @@ export const SectionHeader = memo(function SectionHeader({
     return (
         <div className={`flex items-end justify-between mb-8 ${className}`}>
             <div>
-                <h2 className="text-2xl md:text-3xl font-bold font-heading text-gray-900 dark:text-white flex items-center gap-3">
+                <h2 className="text-2xl md:text-3xl font-bold font-heading text-gray-700 dark:text-white flex items-center gap-3">
                     <span className="w-1.5 h-8 bg-primary rounded-full block"></span>
                     {title}
                 </h2>

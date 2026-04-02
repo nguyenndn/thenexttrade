@@ -173,11 +173,11 @@ function QuickStatCard({
                 <div className={`p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 ${color}`}>
                     <Icon size={16} />
                 </div>
-                <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">
+                <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">
                     {label}
                 </span>
             </div>
-            <p className="text-lg font-bold text-gray-900 dark:text-white truncate">
+            <p className="text-lg font-bold text-gray-700 dark:text-white truncate">
                 {value}
             </p>
         </div>

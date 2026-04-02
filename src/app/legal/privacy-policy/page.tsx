@@ -13,14 +13,14 @@ export default function PrivacyPolicyPage() {
                 <div className="inline-flex items-center justify-center p-3 rounded-xl bg-cyan-500/10 text-cyan-500 mb-2 ring-4 ring-cyan-500/5 animate-in fade-in zoom-in slide-in-from-bottom-4 duration-500">
                     <Shield size={40} strokeWidth={1.5} />
                 </div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">Privacy Policy</h1>
+                <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-700 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">Privacy Policy</h1>
                 <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
                     Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </p>
             </div>
 
             <div className="max-w-4xl mx-auto">
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-li:text-gray-600 dark:prose-li:text-gray-400 prose-strong:text-gray-900 dark:prose-strong:text-white max-w-none transition-colors duration-300">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-700 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-500 prose-li:text-gray-600 dark:prose-li:text-gray-500 prose-strong:text-gray-700 dark:prose-strong:text-white max-w-none transition-colors duration-300">
 
 
             <h2>1. Information We Collect</h2>

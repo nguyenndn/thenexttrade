@@ -275,7 +275,7 @@ export function DateRangePicker({
                         <div className="fixed inset-x-3 top-1/2 -translate-y-1/2 z-[200] flex flex-col bg-white dark:bg-[#0B0E14] rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden">
                             {/* Overlay Header */}
                             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-white/10 shrink-0">
-                                <h3 className="font-semibold text-gray-900 dark:text-white">Select Date Range</h3>
+                                <h3 className="font-semibold text-gray-700 dark:text-white">Select Date Range</h3>
                                 <button onClick={handleCancel} className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-700">
                                     Cancel
                                 </button>
@@ -302,7 +302,7 @@ export function DateRangePicker({
                                 <Button
                                     variant="outline"
                                     onClick={handleCancel}
-                                    className="flex-1 text-gray-600 dark:text-gray-300 hover:text-gray-900 rounded-xl h-11"
+                                    className="flex-1 text-gray-600 dark:text-gray-300 hover:text-gray-700 rounded-xl h-11"
                                 >Cancel
                                 </Button>
                                 <Button
@@ -451,7 +451,7 @@ export function DateRangePicker({
                                 variant="outline"
                                 size="sm"
                                 onClick={handleCancel}
-                                className="text-gray-600 dark:text-gray-300 hover:text-gray-900"
+                                className="text-gray-600 dark:text-gray-300 hover:text-gray-700"
                             >Cancel
                             </Button>
                             <Button
@@ -546,7 +546,7 @@ export function DateRangePicker({
                             variant="outline"
                             size="sm"
                             onClick={handleCancel}
-                            className="text-gray-600 hover:text-gray-900"
+                            className="text-gray-600 hover:text-gray-700"
                         >Cancel
                         </Button>
                         <Button

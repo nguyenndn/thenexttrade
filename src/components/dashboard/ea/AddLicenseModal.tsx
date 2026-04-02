@@ -59,7 +59,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                     </div>
 
                     <div className="space-y-3">
-                        <label className="text-sm font-medium text-gray-900 dark:text-white">Select Broker</label>
+                        <label className="text-sm font-medium text-gray-700 dark:text-white">Select Broker</label>
                         <div className="grid grid-cols-1 gap-2">
                             {["EXNESS", "VANTAGE", "VTMARKETS"].map((b) => (
                                 <label key={b} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${broker === b ? 'border-primary bg-primary/5' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}>
@@ -89,7 +89,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                     <Button
                         variant="outline"
                         onClick={onClose}
-                        className="px-6 py-3 rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
+                        className="px-6 py-3 rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
                     >Cancel
                     </Button>
                     <Button

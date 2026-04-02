@@ -63,7 +63,7 @@ export default function JournalStats({ stats }: StatsProps) {
                             <h3 className="text-gray-600 text-xs font-bold uppercase tracking-wider">{card.title}</h3>
                         </div>
                         <p className={`text-2xl font-black ${card.color}`}>{card.value}</p>
-                        <p className="text-xs text-gray-400 font-medium mt-1">{card.desc}</p>
+                        <p className="text-xs text-gray-500 font-medium mt-1">{card.desc}</p>
                     </div>
                 );
             })}

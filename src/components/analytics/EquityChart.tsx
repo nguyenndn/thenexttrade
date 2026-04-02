@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function EquityChart({ data }: EquityChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="h-[300px] flex items-center justify-center text-gray-400 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
+            <div className="h-[300px] flex items-center justify-center text-gray-500 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                 No trading data available to display chart.
             </div>
         );

@@ -608,7 +608,7 @@ export function StrategyManager() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-gray-700 dark:text-white">
             Strategies
           </h1>
           <p className="text-gray-500 text-sm mt-1">
@@ -684,7 +684,7 @@ function StrategyCard({
             className="w-4 h-4 rounded-full"
             style={{ backgroundColor: strategy.color }}
           />
-          <h3 className="font-bold text-gray-900 dark:text-white">
+          <h3 className="font-bold text-gray-700 dark:text-white">
             {strategy.name}
           </h3>
         </div>
@@ -693,7 +693,7 @@ function StrategyCard({
             onClick={onEdit}
             className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
-            <Edit2 size={14} className="text-gray-400" />
+            <Edit2 size={14} className="text-gray-500" />
           </button>
           <button
             onClick={onDelete}
@@ -716,28 +716,28 @@ function StrategyCard({
         <div className="grid grid-cols-3 gap-3">
           <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-xl">
             <Target size={14} className="mx-auto mb-1 text-purple-500" />
-            <p className="text-sm font-bold text-gray-900 dark:text-white">
+            <p className="text-sm font-bold text-gray-700 dark:text-white">
               {performance.winRate.toFixed(0)}%
             </p>
-            <p className="text-[10px] text-gray-400">Win Rate</p>
+            <p className="text-[10px] text-gray-500">Win Rate</p>
           </div>
           <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-xl">
             <TrendingUp size={14} className={`mx-auto mb-1 ${performance.totalPnL >= 0 ? 'text-green-500' : 'text-red-500'}`} />
             <p className={`text-sm font-bold ${performance.totalPnL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
               ${Math.abs(performance.totalPnL).toFixed(0)}
             </p>
-            <p className="text-[10px] text-gray-400">Total P&L</p>
+            <p className="text-[10px] text-gray-500">Total P&L</p>
           </div>
           <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-xl">
             <Percent size={14} className="mx-auto mb-1 text-blue-500" />
-            <p className="text-sm font-bold text-gray-900 dark:text-white">
+            <p className="text-sm font-bold text-gray-700 dark:text-white">
               {performance.profitFactor === Infinity ? "∞" : performance.profitFactor.toFixed(1)}
             </p>
-            <p className="text-[10px] text-gray-400">PF</p>
+            <p className="text-[10px] text-gray-500">PF</p>
           </div>
         </div>
       ) : (
-        <p className="text-sm text-gray-400 text-center py-4">
+        <p className="text-sm text-gray-500 text-center py-4">
           No trades with this strategy yet
         </p>
       )}
@@ -749,9 +749,9 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div className="text-center py-12">
       <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-        <Target size={24} className="text-gray-400" />
+        <Target size={24} className="text-gray-500" />
       </div>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">
         No strategies yet
       </h3>
       <p className="text-gray-500 mb-4">
@@ -877,14 +877,14 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
       <div className="relative bg-white dark:bg-[#0B0E14] rounded-xl p-6 w-full max-w-md mx-4 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-xl font-bold text-gray-700 dark:text-white">
             {strategy ? "Edit Strategy" : "New Strategy"}
           </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
-            <X size={18} className="text-gray-400" />
+            <X size={18} className="text-gray-500" />
           </button>
         </div>
 

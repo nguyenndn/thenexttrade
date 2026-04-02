@@ -30,14 +30,14 @@ const itemVariants = {
 export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
     return (
         <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Recent Trading Activity
             </h3>
 
             <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                 {trades.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+                    <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                         <ArrowUpRight className="w-10 h-10 mb-3 opacity-30" />
                         <p className="font-medium">No recent trades</p>
                         <p className="text-xs mt-1">Trading activity will appear here</p>
@@ -62,7 +62,7 @@ export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
                                     {trade.type === "BUY" ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
                                 </div>
                                 <div>
-                                    <div className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                    <div className="font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                         {trade.symbol}
                                         <span className="text-xs font-normal text-gray-600 dark:text-gray-300">
                                             by {trade.user.name || "Unknown"}
@@ -81,7 +81,7 @@ export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
                                 )}>
                                     {(trade.pnl || 0) > 0 ? "+" : ""}{trade.pnl ? `$${trade.pnl}` : "-"}
                                 </div>
-                                <div className="text-xs text-gray-400">
+                                <div className="text-xs text-gray-500">
                                     {formatDistanceToNow(new Date(trade.createdAt), { addSuffix: true })}
                                 </div>
                             </div>

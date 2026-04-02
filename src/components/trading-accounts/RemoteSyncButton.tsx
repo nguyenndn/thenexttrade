@@ -163,7 +163,7 @@ export function RemoteSyncButton({
                     }
                     title={!isConnected ? "EA must be connected to sync" : "Remote Sync"}
                 >
-                    <RefreshCw className={variant === "premium" ? "h-4 w-4 text-gray-400 hover:text-primary" : "h-4 w-4"} />
+                    <RefreshCw className={variant === "premium" ? "h-4 w-4 text-gray-500 hover:text-primary" : "h-4 w-4"} />
                     {variant !== "icon" && <span className={variant === "premium" ? "hidden sm:inline-block" : "hidden sm:inline"}>Sync</span>}
                 </Button>
             </DialogTrigger>
@@ -184,7 +184,7 @@ export function RemoteSyncButton({
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Sync Period</label>
                             <select
-                                className="flex h-10 w-full rounded-md border border-input bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex h-10 w-full rounded-md border border-input bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-700 dark:text-gray-100 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                 value={syncPeriod}
                                 onChange={(e) => setSyncPeriod(e.target.value)}
                             >

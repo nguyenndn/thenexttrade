@@ -90,8 +90,8 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
                         className={cn(
                             "px-4 py-1.5 h-auto rounded-lg text-sm font-bold transition-colors",
                             selectedYear === year
-                                ? "bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20"
-                                : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
+                                ? "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20"
+                                : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
                         )}
                     >
                         {year}

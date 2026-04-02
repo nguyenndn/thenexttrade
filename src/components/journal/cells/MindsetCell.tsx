@@ -61,7 +61,7 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
                             variant="outline"
                             size="icon"
                             aria-label="Set Mindset"
-                            className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
+                            className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <Plus size={12} />
                         </Button>
@@ -70,7 +70,7 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
             </PopoverTrigger>
             <PopoverContent align="center" className="w-[200px] p-0" onClick={(e) => e.stopPropagation()}>
                 <div className="px-3 py-2 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5">
-                    <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Mindset (Before Entry)</h4>
+                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Mindset (Before Entry)</h4>
                 </div>
                 <div className="max-h-[300px] overflow-y-auto custom-scrollbar p-1">
                     <div className="px-2 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">Positive</div>

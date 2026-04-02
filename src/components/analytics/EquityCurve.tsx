@@ -37,13 +37,13 @@ export function EquityCurve({ data }: EquityCurveProps) {
                         <TrendingUp size={20} />
                     </div>
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white text-base">Equity Curve</h3>
-                        <p className="text-xs text-gray-400 font-medium">Cumulative Net Profit</p>
+                        <h3 className="font-bold text-gray-700 dark:text-white text-base">Equity Curve</h3>
+                        <p className="text-xs text-gray-500 font-medium">Cumulative Net Profit</p>
                     </div>
                 </div>
                 
                 <div className="text-right">
-                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Net Profit</p>
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">Net Profit</p>
                     <p className={`text-lg font-black ${totalNetProfit >= 0 ? 'text-primary' : 'text-red-500'}`}>
                         {totalNetProfit >= 0 ? '+' : ''}${Math.abs(totalNetProfit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
@@ -101,8 +101,8 @@ export function EquityCurve({ data }: EquityCurveProps) {
                                         const pnlVal = payload[0].payload.pnl as number;
                                         return (
                                             <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl">
-                                                <p className="text-[11px] font-bold text-gray-400 uppercase mb-1">{label}</p>
-                                                <p className="text-sm font-black text-gray-900 dark:text-white mb-1">
+                                                <p className="text-[11px] font-bold text-gray-500 uppercase mb-1">{label}</p>
+                                                <p className="text-sm font-black text-gray-700 dark:text-white mb-1">
                                                     Balance: ${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                 </p>
                                                 <p className={`text-xs font-bold ${pnlVal >= 0 ? 'text-primary' : 'text-red-500'}`}>

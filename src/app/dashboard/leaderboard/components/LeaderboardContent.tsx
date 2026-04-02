@@ -41,8 +41,8 @@ export function LeaderboardContent({
             <Trophy size={16} className="text-yellow-500" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white">Top 3</h3>
-            <p className="text-xs text-gray-400">Hall of Fame</p>
+            <h3 className="text-sm font-bold text-gray-700 dark:text-white">Top 3</h3>
+            <p className="text-xs text-gray-500">Hall of Fame</p>
           </div>
         </div>
         <div className="p-6">
@@ -62,8 +62,8 @@ export function LeaderboardContent({
             <Medal size={16} className="text-emerald-500" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white">{TAB_TITLES[type] || "Rankings"}</h3>
-            <p className="text-xs text-gray-400">All participants ranked by performance</p>
+            <h3 className="text-sm font-bold text-gray-700 dark:text-white">{TAB_TITLES[type] || "Rankings"}</h3>
+            <p className="text-xs text-gray-500">All participants ranked by performance</p>
           </div>
         </div>
         <div className="p-0">

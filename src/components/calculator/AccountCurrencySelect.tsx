@@ -31,7 +31,7 @@ export function AccountCurrencySelect({ value, onChange, className }: AccountCur
                         "px-3 py-2 rounded-lg text-xs font-bold transition-all border",
                         value === c.code
                             ? "bg-primary text-white border-primary shadow-sm shadow-primary/20"
-                            : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:border-primary/50"
+                            : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-gray-200 dark:border-white/10 hover:border-primary/50"
                     )}
                     title={c.name}
                 >

@@ -248,7 +248,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
             <div className="flex items-center text-sm text-gray-600">
                 <Link href="/admin/academy" className="hover:text-primary transition-colors">Academy</Link>
                 <ChevronRight size={14} className="mx-2" />
-                <span className="text-gray-900 dark:text-white font-medium">Level: {level.title}</span>
+                <span className="text-gray-700 dark:text-white font-medium">Level: {level.title}</span>
             </div>
 
             {/* Header */}
@@ -317,7 +317,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
                                                     />
                                                 ))
                                             ) : (
-                                                <div className="text-center text-xs text-gray-400 py-4 italic">
+                                                <div className="text-center text-xs text-gray-500 py-4 italic">
                                                     No lessons yet. Add one!
                                                 </div>
                                             )}

@@ -14,7 +14,7 @@ export default function AuthCodeErrorPage() {
                     <AlertTriangle className="text-red-500" size={28} />
                 </div>
 
-                <h1 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Authentication Error</h1>
+                <h1 className="text-2xl font-bold mb-2 text-gray-700 dark:text-white">Authentication Error</h1>
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-8 leading-relaxed">
                     The link you used is invalid or has expired.<br />
                     Please try again or request a new link.
@@ -29,7 +29,7 @@ export default function AuthCodeErrorPage() {
                     </Link>
                     <Link
                         href="/auth/login"
-                        className="w-full bg-gray-100 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-[#151925] text-gray-900 dark:text-white font-bold py-3.5 rounded-xl transition-all text-center text-sm"
+                        className="w-full bg-gray-100 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-[#151925] text-gray-700 dark:text-white font-bold py-3.5 rounded-xl transition-all text-center text-sm"
                     >
                         Back to Login
                     </Link>

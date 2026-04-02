@@ -63,7 +63,7 @@ export default function SearchClient() {
             <span>
                 {parts.map((part, i) =>
                     regex.test(part) ? (
-                        <span key={i} className="bg-yellow-300 dark:bg-yellow-600/50 text-gray-900 dark:text-white px-0.5 rounded">{part}</span>
+                        <span key={i} className="bg-yellow-300 dark:bg-yellow-600/50 text-gray-700 dark:text-white px-0.5 rounded">{part}</span>
                     ) : (
                         <span key={i}>{part}</span>
                     )
@@ -76,7 +76,7 @@ export default function SearchClient() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Search Results</h1>
+                <h1 className="text-xl font-bold text-gray-700 dark:text-white">Search Results</h1>
                 <p className="text-gray-600 text-sm mt-1">Found {results.length} results for "{query}"</p>
             </div>
 
@@ -111,11 +111,11 @@ export default function SearchClient() {
                                                         }`}>
                                                         {result.type}
                                                     </span>
-                                                    <span className="text-xs text-gray-400 font-medium">
+                                                    <span className="text-xs text-gray-500 font-medium">
                                                         {result.date && formatDistanceToNow(new Date(result.date), { addSuffix: true })}
                                                     </span>
                                                 </div>
-                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-1">
+                                                <h3 className="text-lg font-bold text-gray-700 dark:text-white group-hover:text-primary transition-colors line-clamp-1">
                                                     <HighlightText text={result.title} highlight={query || ""} />
                                                 </h3>
                                                 <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
@@ -129,7 +129,7 @@ export default function SearchClient() {
                         ) : (
                             <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10">
                                 <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
+                                <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">No results found</h3>
                                 <p className="text-gray-600">Try adjusting your search terms or check for typos.</p>
                             </div>
                         )}

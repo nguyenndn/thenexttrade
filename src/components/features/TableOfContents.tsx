@@ -66,7 +66,7 @@ export default function TableOfContents() {
             <div className="h-1 bg-gradient-to-r from-primary to-cyan-400" />
             
             <div className="p-5 max-h-[60vh] overflow-y-auto">
-                <div className="flex items-center gap-2 mb-4 text-gray-900 dark:text-white font-bold text-sm uppercase tracking-wider">
+                <div className="flex items-center gap-2 mb-4 text-gray-700 dark:text-white font-bold text-sm uppercase tracking-wider">
                     <List size={16} className="text-primary" />
                     <span>Contents</span>
                 </div>
@@ -83,7 +83,7 @@ export default function TableOfContents() {
                             className={`block text-[13px] py-1.5 pl-4 border-l-2 -ml-[2px] transition-all duration-200 
                                 ${activeId === heading.id
                                     ? "border-primary text-primary font-bold bg-primary/5 rounded-r-lg"
-                                    : "border-transparent text-gray-600 dark:text-gray-600 hover:text-gray-900 dark:hover:text-gray-300 hover:border-gray-300"
+                                    : "border-transparent text-gray-600 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300"
                                 }
                                 ${heading.level === 3 ? "ml-3 text-xs" : ""}
                             `}

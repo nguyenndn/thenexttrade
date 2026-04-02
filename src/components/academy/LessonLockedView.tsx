@@ -13,7 +13,7 @@ interface LessonLockedViewProps {
 
 export function LessonLockedView({ lessonTitle, levelTitle, levelOrder, moduleTitle }: LessonLockedViewProps) {
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white">
+        <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
             <PublicHeader />
 
             <BreadcrumbJsonLd items={[
@@ -57,7 +57,7 @@ export function LessonLockedView({ lessonTitle, levelTitle, levelOrder, moduleTi
                             <Sparkles size={18} />
                             <span>Sign Up Free to Unlock</span>
                         </Link>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-gray-500">
                             Already have an account?{" "}
                             <Link href="/auth/login" className="text-primary hover:underline font-bold">
                                 Log in
@@ -67,7 +67,7 @@ export function LessonLockedView({ lessonTitle, levelTitle, levelOrder, moduleTi
 
                     {/* What you get */}
                     <div className="mt-16 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/10 p-6 text-left">
-                        <h3 className="font-bold text-sm uppercase tracking-wider text-gray-400 mb-4">
+                        <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500 mb-4">
                             Free Account Includes
                         </h3>
                         <div className="space-y-3">
@@ -90,7 +90,7 @@ export function LessonLockedView({ lessonTitle, levelTitle, levelOrder, moduleTi
                     <div className="mt-10">
                         <Link
                             href="/academy"
-                            className="text-sm text-gray-400 hover:text-primary transition-colors"
+                            className="text-sm text-gray-500 hover:text-primary transition-colors"
                         >
                             ← Back to Academy
                         </Link>

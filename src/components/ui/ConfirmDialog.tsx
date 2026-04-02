@@ -89,7 +89,7 @@ export function ConfirmDialog({
                     size="icon"
                     onClick={onCancel}
                     disabled={isLoading}
-                    className="absolute top-4 right-4 p-2 w-10 h-10 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+                    className="absolute top-4 right-4 p-2 w-10 h-10 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
                 >
                     <X size={20} />
                 </Button>
@@ -103,7 +103,7 @@ export function ConfirmDialog({
 
                         {/* Content */}
                         <div className="flex-1 space-y-2">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-2 sm:mt-0">
+                            <h3 className="text-xl font-bold text-gray-700 dark:text-white mt-2 sm:mt-0">
                                 {title}
                             </h3>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed">

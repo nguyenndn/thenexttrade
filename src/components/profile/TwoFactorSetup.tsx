@@ -85,7 +85,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                             <Shield size={24} className="text-green-500" />
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Two-Factor Authentication (2FA)</h2>
+                            <h2 className="text-lg font-bold text-gray-700 dark:text-white">Two-Factor Authentication (2FA)</h2>
                             <p className="text-gray-600 text-sm">Your account is secured with an extra layer of protection.</p>
                         </div>
                     </div>
@@ -111,7 +111,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
 
                 {step === 'disable-verify' && (
                     <div className="mt-6 bg-red-50 dark:bg-white/5 rounded-xl p-6 border border-red-200 dark:border-white/10 animate-in fade-in zoom-in-95 duration-200">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-4">Verify to Disable 2FA</h3>
+                        <h3 className="font-bold text-gray-700 dark:text-white mb-4">Verify to Disable 2FA</h3>
                         <p className="text-sm text-gray-600 mb-4">Please enter your 2FA code to confirm disabling this security feature.</p>
 
                         <div className="flex gap-2">
@@ -147,10 +147,10 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
             <div className="flex justify-between items-start">
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
-                        <Shield size={24} className="text-gray-400" />
+                        <Shield size={24} className="text-gray-500" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Two-Factor Authentication (2FA)</h2>
+                        <h2 className="text-lg font-bold text-gray-700 dark:text-white">Two-Factor Authentication (2FA)</h2>
                         <p className="text-gray-600 text-sm">Add an extra layer of security to your account.</p>
                     </div>
                 </div>
@@ -175,7 +175,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
 
             {step === 'setup' && (
                 <div className="mt-6 bg-gray-50 dark:bg-white/5 rounded-xl p-6 border border-gray-200 dark:border-white/10 animate-in fade-in zoom-in-95 duration-200">
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-4">Scan QR Code</h3>
+                    <h3 className="font-bold text-gray-700 dark:text-white mb-4">Scan QR Code</h3>
                     <div className="flex flex-col md:flex-row gap-8">
                         <div className="bg-white p-4 rounded-xl border border-gray-200 dark:border-white/10 w-fit mx-auto md:mx-0">
                             {/* Supabase returns SVG string usually, need to verify format. 
@@ -215,7 +215,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                             </div>
 
                             <div>
-                                <label className="text-sm font-bold text-gray-900 dark:text-white mb-2 block">Enter Verification Code</label>
+                                <label className="text-sm font-bold text-gray-700 dark:text-white mb-2 block">Enter Verification Code</label>
                                 <div className="flex gap-2">
                                     <input
                                         type="text"

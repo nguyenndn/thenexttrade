@@ -67,7 +67,7 @@ export default async function RelatedArticlesBottom({ categoryId, currentArticle
 
     return (
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/10">
-            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
+            <h3 className="text-xl font-black text-gray-700 dark:text-white mb-6 tracking-tight">
                 You Might Also Like
             </h3>
 
@@ -87,15 +87,15 @@ export default async function RelatedArticlesBottom({ categoryId, currentArticle
                                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">No Img</div>
+                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No Img</div>
                             )}
                         </div>
 
                         <div className="p-4">
-                            <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100 leading-snug group-hover:text-primary transition-colors mb-2 line-clamp-2">
+                            <h4 className="font-bold text-sm text-gray-700 dark:text-gray-100 leading-snug group-hover:text-primary transition-colors mb-2 line-clamp-2">
                                 {article.title}
                             </h4>
-                            <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-gray-400">
+                            <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-gray-500">
                                 <Calendar size={12} />
                                 <span>{new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                             </div>

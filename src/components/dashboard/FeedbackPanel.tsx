@@ -79,13 +79,13 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                         <Send size={16} className="text-primary" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white">Feedback & Support</h3>
+                        <h3 className="text-sm font-bold text-gray-700 dark:text-white">Feedback & Support</h3>
                         <p className="text-[11px] text-gray-600">Help us improve your experience</p>
                     </div>
                 </div>
                 <button
                     onClick={onClose}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                    className="p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                     aria-label="Close panel"
                 >
                     <X size={18} />
@@ -103,7 +103,7 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                     >
                         <CheckCircle size={32} className="text-primary" />
                     </motion.div>
-                    <h4 className="text-base font-bold text-gray-900 dark:text-white">Thank you!</h4>
+                    <h4 className="text-base font-bold text-gray-700 dark:text-white">Thank you!</h4>
                     <p className="text-sm text-gray-600 mt-1 text-center">Your feedback has been submitted successfully.</p>
                 </div>
             ) : (
@@ -125,10 +125,10 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                                                 : "border-gray-100 dark:border-white/10 hover:border-gray-200 dark:hover:border-white/20 bg-gray-50/50 dark:bg-white/5"
                                         )}
                                     >
-                                        <Icon size={20} className={isActive ? t.color : "text-gray-400"} />
+                                        <Icon size={20} className={isActive ? t.color : "text-gray-500"} />
                                         <span className={cn(
                                             "text-xs font-bold",
-                                            isActive ? "text-gray-900 dark:text-white" : "text-gray-600"
+                                            isActive ? "text-gray-700 dark:text-white" : "text-gray-600"
                                         )}>
                                             {t.label}
                                         </span>
@@ -136,7 +136,7 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                                 );
                             })}
                         </div>
-                        <p className="text-[11px] text-gray-400 mt-2.5 pl-0.5">
+                        <p className="text-[11px] text-gray-500 mt-2.5 pl-0.5">
                             {types.find(t => t.key === activeType)?.description}
                         </p>
                     </div>
@@ -151,9 +151,9 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                                 : "Describe the feature you'd like to see..."
                             }
                             rows={5}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary resize-none transition-all"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary resize-none transition-all"
                         />
-                        <p className="text-[11px] text-gray-400 mt-1.5 pl-0.5">
+                        <p className="text-[11px] text-gray-500 mt-1.5 pl-0.5">
                             {message.length}/1000 characters
                         </p>
                     </div>

@@ -26,14 +26,14 @@ export function SystemsList({ products, isLocked }: SystemsListProps) {
             {/* Search Box */}
             <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-focus-within:text-primary transition-colors"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 group-focus-within:text-primary transition-colors"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </div>
                 <input
                     type="text"
                     placeholder="Search trading systems..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3.5 h-[52px] bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl text-sm outline-none text-gray-900 dark:text-white transition-all shadow-sm focus:border-primary focus:ring-1 focus:ring-primary/20"
+                    className="w-full pl-11 pr-4 py-3.5 h-[52px] bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl text-sm outline-none text-gray-700 dark:text-white transition-all shadow-sm focus:border-primary focus:ring-1 focus:ring-primary/20"
                 />
             </div>
 

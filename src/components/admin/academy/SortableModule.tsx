@@ -62,7 +62,7 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
                             size="icon"
                             {...attributes}
                             {...listeners}
-                            className="h-auto w-auto cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded bg-transparent hover:bg-transparent"
+                            className="h-auto w-auto cursor-move text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded bg-transparent hover:bg-transparent"
                         >
                             <GripVertical size={20} />
                         </Button>
@@ -72,7 +72,7 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
                         </Button>
 
                         <div>
-                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{module.title}</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white text-sm">{module.title}</h3>
                             <span className="text-xs text-gray-600">{module.lessons?.length || 0} Lessons</span>
                         </div>
                     </div>
@@ -87,13 +87,13 @@ export function SortableModule({ module, children, onAddLesson, onManageQuiz, on
                                 "text-xs h-8 px-2 border-dashed",
                                 module.quiz
                                     ? "border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-100 hover:border-blue-300"
-                                    : "text-gray-400 border-gray-300 hover:text-blue-500 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10"
+                                    : "text-gray-500 border-gray-300 hover:text-blue-500 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10"
                             )}
                         >
                             {module.quiz ? "Edit Quiz" : "Add Quiz"}
                         </Button>
 
-                        <Button variant="ghost" size="icon" onClick={() => onDelete(module.id)} className="p-2 h-auto w-auto text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
+                        <Button variant="ghost" size="icon" onClick={() => onDelete(module.id)} className="p-2 h-auto w-auto text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
                             <Trash size={16} />
                         </Button>
                     </div>

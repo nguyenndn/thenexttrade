@@ -51,11 +51,11 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
                             <div className={`p-3 rounded-xl ${stat.bg}`}>
                                 <Icon size={20} className={stat.color} />
                             </div>
-                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{stat.label}</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white text-sm">{stat.label}</h3>
 
                         </div>
                         <p className={`text-lg font-black ${stat.color}`}>{stat.value}</p>
-                        <p className="text-xs text-gray-400 font-medium mt-1">{stat.desc}</p>
+                        <p className="text-xs text-gray-500 font-medium mt-1">{stat.desc}</p>
                     </div>
                 );
             })}

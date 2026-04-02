@@ -29,7 +29,7 @@ export function WinLossDistribution({ wins, losses, breakEvens, winRate }: WinLo
   // A half pie chart goes from 180 (left) to 0 (right).
   return (
     <div className="flex flex-col h-full bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-emerald-500 p-5">
-      <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-6">Win/Loss Distribution</h3>
+      <h3 className="font-bold text-gray-700 dark:text-white text-sm mb-6">Win/Loss Distribution</h3>
       
       <div className="flex-1 relative min-h-[180px] [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
         <ResponsiveContainer width="100%" height="100%" minWidth={0}>
@@ -56,10 +56,10 @@ export function WinLossDistribution({ wins, losses, breakEvens, winRate }: WinLo
 
         {/* Center Text (Win Rate %) */}
         <div className="absolute bottom-4 left-0 w-full text-center pointer-events-none">
-          <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+          <p className="text-3xl font-black text-gray-700 dark:text-white tracking-tight">
             {winRate.toFixed(1)}%
           </p>
-          <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-1">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mt-1">
             WIN RATE
           </p>
         </div>

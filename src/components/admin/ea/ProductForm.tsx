@@ -167,7 +167,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                 {/* LEFT COLUMN: Basic Information */}
                 <div className="space-y-6">
                     <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-6">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-white/5 pb-4">
+                        <h3 className="text-lg font-bold text-gray-700 dark:text-white border-b border-gray-100 dark:border-white/5 pb-4">
                             Basic Information
                         </h3>
 
@@ -257,7 +257,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                 <div className="space-y-6">
                     {/* Thumbnail */}
                     <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
-                        <h3 className="text-base font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-white/5 pb-3">
+                        <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-100 dark:border-white/5 pb-3">
                             Thumbnail
                         </h3>
                         <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl text-center hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group relative flex flex-col items-center justify-center min-h-[360px] overflow-hidden">
@@ -287,8 +287,8 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                     <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-full group-hover:scale-110 transition-transform">
                                         <ImageIcon size={24} />
                                     </div>
-                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Upload Image</p>
-                                    <p className="text-[10px] text-gray-400">1200x630 (Rec)</p>
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-500">Upload Image</p>
+                                    <p className="text-[10px] text-gray-500">1200x630 (Rec)</p>
                                 </div>
                             )}
                         </div>
@@ -297,7 +297,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     {/* MT5 File */}
                     <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
                         <div className="flex justify-between items-center border-b border-gray-100 dark:border-white/5 pb-3">
-                            <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                            <h3 className="text-base font-bold text-gray-700 dark:text-white">
                                 MT5 File (.ex5)
                             </h3>
                             {initialData?.fileMT5 && !mt5File && (
@@ -317,7 +317,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 rounded-full group-hover:scale-110 transition-transform">
                                     <Upload size={20} />
                                 </div>
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-500">
                                     {mt5File ? mt5File.name : "Upload .ex5"}
                                 </p>
                             </div>

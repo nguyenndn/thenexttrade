@@ -32,7 +32,7 @@ export default function Error({
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-4">
+        <h1 className="text-3xl font-black text-gray-700 dark:text-white mb-4">
           Something Went Wrong
         </h1>
 
@@ -61,7 +61,7 @@ export default function Error({
         </div>
 
         {/* Contact */}
-        <p className="mt-10 text-sm text-gray-400">
+        <p className="mt-10 text-sm text-gray-500">
           Problem persists?{' '}
           <a
             href="mailto:support@thenexttrade.com"

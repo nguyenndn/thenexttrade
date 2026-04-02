@@ -112,7 +112,7 @@ export function TagInput({ value, onChange }: TagInputProps) {
                 {selectedTags.map(tag => (
                     <div key={tag.id} className="flex items-center gap-1 bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-md text-sm">
                         <span>{tag.name}</span>
-                        <Button variant="ghost" size="icon" aria-label="Remove Tag" onClick={() => removeTag(tag.id)} className="h-auto w-auto p-0 text-gray-400 hover:text-red-500 hover:bg-transparent">
+                        <Button variant="ghost" size="icon" aria-label="Remove Tag" onClick={() => removeTag(tag.id)} className="h-auto w-auto p-0 text-gray-500 hover:text-red-500 hover:bg-transparent">
                             <X size={14} />
                         </Button>
                     </div>
@@ -140,7 +140,7 @@ export function TagInput({ value, onChange }: TagInputProps) {
 
                 {(isLoading || isCreating) && (
                     <div className="absolute right-3 top-2.5">
-                        <Loader2 size={16} className="animate-spin text-gray-400" />
+                        <Loader2 size={16} className="animate-spin text-gray-500" />
                     </div>
                 )}
 

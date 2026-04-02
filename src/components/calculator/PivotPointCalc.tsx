@@ -118,7 +118,7 @@ export function PivotPointCalc() {
                                 "relative flex-1 py-2.5 rounded-lg font-bold text-xs transition-colors z-10",
                                 inputs.method === m.id
                                     ? "text-white"
-                                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                                    : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
                             )}
                         >
                             {inputs.method === m.id && (

@@ -982,10 +982,10 @@ export default function TradingAccountsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-3xl font-bold text-gray-700 dark:text-white">
           Trading Accounts
         </h1>
-        <p className="mt-2 text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-gray-500 dark:text-gray-500">
           Connect your MT4/MT5 accounts to auto-sync trades
         </p>
       </div>
@@ -1051,7 +1051,7 @@ export function AccountList() {
       <div className="flex justify-between items-center mb-6">
         <button
           onClick={fetchAccounts}
-          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200"
         >
           <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
           Refresh
@@ -1080,10 +1080,10 @@ export function AccountList() {
           <div className="w-16 h-16 mx-auto mb-4 bg-[#00C888]/10 rounded-full flex items-center justify-center">
             <Plus size={32} className="text-[#00C888]" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">
             No Trading Accounts
           </h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-4">
+          <p className="text-gray-500 dark:text-gray-500 mb-4">
             Add your first account to start syncing trades automatically
           </p>
           <button
@@ -1183,7 +1183,7 @@ export function AccountCard({ account, onUpdate }: AccountCardProps) {
           {platformIcons[account.platform] || "📊"}
         </div>
         <div>
-          <h3 className="font-semibold text-gray-900 dark:text-white">
+          <h3 className="font-semibold text-gray-700 dark:text-white">
             {account.name}
           </h3>
           <p className="text-sm text-gray-500">
@@ -1197,7 +1197,7 @@ export function AccountCard({ account, onUpdate }: AccountCardProps) {
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <p className="text-xs text-gray-500 mb-1">Total Trades</p>
-          <p className="text-lg font-bold text-gray-900 dark:text-white">
+          <p className="text-lg font-bold text-gray-700 dark:text-white">
             {account.totalTrades}
           </p>
         </div>
@@ -1223,7 +1223,7 @@ export function AccountCard({ account, onUpdate }: AccountCardProps) {
         </Link>
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+          className="p-2 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <MoreVertical size={18} />
         </button>
@@ -1332,14 +1332,14 @@ export function AddAccountModal({
       <div className="bg-white dark:bg-gray-800 rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-xl font-bold text-gray-700 dark:text-white">
             {step === "select-platform" && "Select Platform"}
             {step === "create" && "Account Details"}
             {step === "setup-instructions" && "Setup Instructions"}
           </h2>
           <button
             onClick={handleClose}
-            className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="p-2 text-gray-500 hover:text-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <X size={20} />
           </button>
@@ -1368,12 +1368,12 @@ export function AddAccountModal({
                 >
                   <span className="text-3xl">{p.icon}</span>
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-900 dark:text-white">
+                    <p className="font-semibold text-gray-700 dark:text-white">
                       {p.name}
                     </p>
                     <p className="text-sm text-gray-500">{p.description}</p>
                   </div>
-                  <ArrowRight size={20} className="text-gray-400" />
+                  <ArrowRight size={20} className="text-gray-500" />
                 </button>
               ))}
             </div>
@@ -1391,7 +1391,7 @@ export function AddAccountModal({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={`My ${platform} Account`}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white"
                 />
                 <p className="mt-1 text-xs text-gray-500">
                   Broker, account number, currency sẽ được EA tự động thu thập
@@ -1427,7 +1427,7 @@ export function AddAccountModal({
                   Your API Key (save this - only shown once!)
                 </p>
                 <div className="flex items-center gap-2">
-                  <code className="flex-1 p-3 bg-white dark:bg-gray-800 rounded-lg text-sm font-mono text-gray-900 dark:text-white break-all">
+                  <code className="flex-1 p-3 bg-white dark:bg-gray-800 rounded-lg text-sm font-mono text-gray-700 dark:text-white break-all">
                     {createdAccount.apiKey}
                   </code>
                   <button
@@ -1441,10 +1441,10 @@ export function AddAccountModal({
 
               {/* Instructions */}
               <div className="space-y-4">
-                <h3 className="font-semibold text-gray-900 dark:text-white">
+                <h3 className="font-semibold text-gray-700 dark:text-white">
                   Setup Steps:
                 </h3>
-                <ol className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+                <ol className="space-y-3 text-sm text-gray-600 dark:text-gray-500">
                   <li className="flex gap-3">
                     <span className="w-6 h-6 bg-[#00C888] text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">
                       1
@@ -2111,7 +2111,7 @@ export function AccountsSummary({ className }: AccountsSummaryProps) {
           <Activity className="text-blue-500" size={20} />
           <span className="text-sm text-gray-500">Total Trades</span>
         </div>
-        <p className="text-2xl font-bold text-gray-900 dark:text-white">
+        <p className="text-2xl font-bold text-gray-700 dark:text-white">
           {totals.totalTrades?.toLocaleString()}
         </p>
       </div>
@@ -2122,7 +2122,7 @@ export function AccountsSummary({ className }: AccountsSummaryProps) {
           <div className="w-2 h-2 rounded-full bg-[#00C888] animate-pulse" />
           <span className="text-sm text-gray-500">Connected</span>
         </div>
-        <p className="text-2xl font-bold text-gray-900 dark:text-white">
+        <p className="text-2xl font-bold text-gray-700 dark:text-white">
           {totals.connectedAccounts} / {totals.totalAccounts}
         </p>
       </div>
@@ -2133,7 +2133,7 @@ export function AccountsSummary({ className }: AccountsSummaryProps) {
           <Wallet className="text-purple-500" size={20} />
           <span className="text-sm text-gray-500">Accounts</span>
         </div>
-        <p className="text-2xl font-bold text-gray-900 dark:text-white">
+        <p className="text-2xl font-bold text-gray-700 dark:text-white">
           {totals.totalAccounts}
         </p>
       </div>

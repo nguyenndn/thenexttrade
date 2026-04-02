@@ -237,7 +237,7 @@ async function HomeFeed() {
                             </span>
                           )}
                         </div>
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                        <h4 className="text-sm font-bold text-gray-700 dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                           {article.title}
                         </h4>
                         <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-600 dark:text-gray-300">
@@ -345,7 +345,7 @@ async function HomeFeed() {
                   )}
                 </div>
                 <div className="px-2 pt-3 pb-1 flex flex-col flex-1">
-                  <h3 className="mt-1 mb-3 text-base font-extrabold text-gray-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                  <h3 className="mt-1 mb-3 text-base font-extrabold text-gray-700 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
                     {article.title}
                   </h3>
                   {/* Footer: Author + Stats */}
@@ -407,10 +407,10 @@ async function HomeFeed() {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn delay={0.1} direction="up">
           <div className="mb-16 text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-700 dark:text-white mb-6 tracking-tight">
               Your Journey to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Pro Trader</span> status
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-600 dark:text-gray-500 max-w-2xl mx-auto leading-relaxed">
               Master the markets with our structured learning path. From basics to advanced strategies, we guide you every step of the way.
             </p>
           </div>

@@ -105,7 +105,7 @@ export default function LessonView({
                             {lesson.module.title}
                         </span>
                     </div>
-                    <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-xl md:text-3xl font-bold text-gray-700 dark:text-white">
                         {lesson.title}
                     </h1>
                 </div>
@@ -124,11 +124,11 @@ export default function LessonView({
                     {/* Content Card */}
                     <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 shadow-sm">
                         <div className="prose prose-lg dark:prose-invert max-w-none 
-                            prose-headings:text-gray-900 dark:prose-headings:text-white 
+                            prose-headings:text-gray-700 dark:prose-headings:text-white 
                             prose-headings:font-bold
                             prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
                             prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                            prose-strong:text-gray-900 dark:prose-strong:text-white
+                            prose-strong:text-gray-700 dark:prose-strong:text-white
                             prose-img:rounded-xl prose-img:shadow-xl
                             prose-pre:bg-gray-900 prose-pre:text-white prose-pre:p-4 prose-pre:rounded-xl">
                             <Markdown>{lesson.content}</Markdown>
@@ -187,8 +187,8 @@ export default function LessonView({
                     {/* Module Progress Card */}
                     <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm overflow-hidden relative">
                         <div className="relative z-10">
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Current Module</p>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">{lesson.module.title}</h3>
+                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-2">Current Module</p>
+                            <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-3 leading-tight">{lesson.module.title}</h3>
                             <div className="flex items-center gap-3 text-xs text-gray-600 mb-6">
                                 <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg">
                                     <Clock size={12} />

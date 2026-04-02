@@ -57,11 +57,11 @@ export function MistakeCostChart({ data }: MistakeCostChartProps) {
                                         </p>
                                         <div className="space-y-1">
                                             <p className="text-red-400 font-bold flex justify-between gap-6">
-                                                <span className="text-gray-400 text-xs font-medium uppercase tracking-widest">Total Cost</span>
+                                                <span className="text-gray-500 text-xs font-medium uppercase tracking-widest">Total Cost</span>
                                                 -${data.absPnL.toFixed(2)}
                                             </p>
                                             <p className="text-gray-300 font-bold flex justify-between gap-6">
-                                                <span className="text-gray-400 text-xs font-medium uppercase tracking-widest">Frequency</span>
+                                                <span className="text-gray-500 text-xs font-medium uppercase tracking-widest">Frequency</span>
                                                 {data.count}
                                             </p>
                                         </div>

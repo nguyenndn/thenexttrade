@@ -147,10 +147,10 @@ function TimelineNode({ item, idx, unlocked }: { item: TimelineItem; idx: number
                             {item.period}
                         </span>
                     </div>
-                    <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
+                    <h3 className="text-xl md:text-2xl font-black text-gray-700 dark:text-white mb-3 tracking-tight">
                         {item.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    <p className="text-gray-600 dark:text-gray-500 leading-relaxed">
                         {item.story}
                     </p>
                 </div>
@@ -207,7 +207,7 @@ export function AboutTimeline() {
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
             >
-                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-white">My Journey</h2>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-700 dark:text-white">My Journey</h2>
                 <p className="text-lg text-gray-600 dark:text-gray-300">Four phases that shaped everything</p>
             </motion.div>
 

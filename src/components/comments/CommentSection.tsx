@@ -55,7 +55,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
                     <div className="p-2 bg-primary/10 rounded-xl text-primary">
                         <MessageSquare size={24} />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h2 className="text-2xl font-bold text-gray-700 dark:text-white">
                         Discussion ({comments.length})
                     </h2>
                 </div>

@@ -38,14 +38,14 @@ export default function ReferralsClient() {
                     <div className="w-12 h-12 bg-orange-100 dark:bg-orange-500/10 rounded-full flex items-center justify-center mb-2">
                         <Gift size={24} className="text-orange-500" />
                     </div>
-                    <div className="font-bold text-gray-900 dark:text-white">Invite Friends</div>
+                    <div className="font-bold text-gray-700 dark:text-white">Invite Friends</div>
                     <p className="text-xs text-gray-600">Earn 20% commission properly</p>
                 </div>
             </div>
 
             {/* Referral Link */}
             <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm text-center">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Share your unique link</h3>
+                <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">Share your unique link</h3>
                 <p className="text-gray-600 mb-6 max-w-md mx-auto">Copy your unique referral link and share it with your friends. When they sign up and subscribe, you'll earn commission.</p>
 
                 <div className="max-w-xl mx-auto flex items-center gap-0">
@@ -64,7 +64,7 @@ export default function ReferralsClient() {
             {/* Referral History */}
             <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-gray-200 dark:border-white/10">
-                    <h3 className="font-bold text-gray-900 dark:text-white">Recent Referrals</h3>
+                    <h3 className="font-bold text-gray-700 dark:text-white">Recent Referrals</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
@@ -84,7 +84,7 @@ export default function ReferralsClient() {
                                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
                                                 U{i}
                                             </div>
-                                            <span className="font-bold text-gray-900 dark:text-white">user_{i}@example.com</span>
+                                            <span className="font-bold text-gray-700 dark:text-white">user_{i}@example.com</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-gray-600">Dec 2{i}, 2025</td>

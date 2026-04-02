@@ -23,7 +23,7 @@ export function NotificationBell() {
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full border border-gray-200 dark:border-white/10 relative text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100">
+                <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full border border-gray-200 dark:border-white/10 relative text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100">
                     <Bell size={20} />
                     {unreadCount > 0 && (
                         <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-[#1E2028]">
@@ -34,7 +34,7 @@ export function NotificationBell() {
             </PopoverTrigger>
             <PopoverContent className="w-[calc(100vw-2rem)] sm:w-80 p-0 rounded-xl bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 shadow-xl" align="end" sideOffset={8}>
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
-                    <h3 className="font-bold text-gray-900 dark:text-white">Notifications</h3>
+                    <h3 className="font-bold text-gray-700 dark:text-white">Notifications</h3>
                     {unreadCount > 0 && (
                         <Button
                             variant="ghost"
@@ -73,13 +73,13 @@ export function NotificationBell() {
                                 }}
                             >
                                 <div className="flex justify-between items-start mb-1">
-                                    <h4 className={cn("text-sm font-medium", !n.isRead ? "text-gray-900 dark:text-white" : "text-gray-600 dark:text-gray-300")}>
+                                    <h4 className={cn("text-sm font-medium", !n.isRead ? "text-gray-700 dark:text-white" : "text-gray-600 dark:text-gray-300")}>
                                         {n.title}
                                     </h4>
                                     {!n.isRead && <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0 mt-1.5" />}
                                 </div>
                                 <p className="text-xs text-gray-600 line-clamp-2 mb-1">{n.message}</p>
-                                <span className="text-[10px] text-gray-400">
+                                <span className="text-[10px] text-gray-500">
                                     {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true, locale: enUS })}
                                 </span>
                             </div>

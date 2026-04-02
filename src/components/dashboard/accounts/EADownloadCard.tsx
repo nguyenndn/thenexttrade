@@ -59,7 +59,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                 {/* Info */}
                 <div className="flex-1">
                     <div className="flex justify-between items-start">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                        <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-1">
                             {product.name}
                         </h3>
                         <span className="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 px-2 py-1 rounded text-xs font-bold font-mono">

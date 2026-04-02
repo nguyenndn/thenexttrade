@@ -48,7 +48,7 @@ export function StatsOverview({ stats }: StatsProps) {
             title: "Total Trades",
             value: stats.totalTrades,
             icon: Target,
-            color: "text-gray-900",
+            color: "text-gray-700",
             bg: "bg-gray-100 dark:text-white dark:bg-white/10"
         }
     ];
@@ -62,7 +62,7 @@ export function StatsOverview({ stats }: StatsProps) {
                         <div className="flex items-start justify-between">
                             <div>
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">{card.title}</p>
-                                <h3 className={`text-2xl font-black ${card.color.includes('text') ? card.title === 'Total Trades' ? 'text-gray-900 dark:text-white' : card.color : 'text-gray-900 dark:text-white'}`}>
+                                <h3 className={`text-2xl font-black ${card.color.includes('text') ? card.title === 'Total Trades' ? 'text-gray-700 dark:text-white' : card.color : 'text-gray-700 dark:text-white'}`}>
                                     {card.value}
                                 </h3>
                             </div>
@@ -82,7 +82,7 @@ export function DetailedStats({ stats }: StatsProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 flex justify-between items-center group">
                 <div>
-                    <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Avg Win</p>
+                    <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">Avg Win</p>
                     <p className="text-xl font-bold text-primary group-hover:scale-105 transition-transform">
                         +${stats.avgWin.toFixed(2)}
                     </p>
@@ -94,7 +94,7 @@ export function DetailedStats({ stats }: StatsProps) {
 
             <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 flex justify-between items-center group">
                 <div>
-                    <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Avg Loss</p>
+                    <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">Avg Loss</p>
                     <p className="text-xl font-bold text-red-500 group-hover:scale-105 transition-transform">
                         -${Math.abs(stats.avgLoss).toFixed(2)}
                     </p>
@@ -106,8 +106,8 @@ export function DetailedStats({ stats }: StatsProps) {
 
             <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 flex justify-between items-center">
                 <div>
-                    <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Best Pair</p>
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">
+                    <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">Best Pair</p>
+                    <p className="text-xl font-bold text-gray-700 dark:text-white">
                         {stats.bestPair}
                     </p>
                 </div>
@@ -115,8 +115,8 @@ export function DetailedStats({ stats }: StatsProps) {
 
             <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 flex justify-between items-center">
                 <div>
-                    <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Worst Pair</p>
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">
+                    <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">Worst Pair</p>
+                    <p className="text-xl font-bold text-gray-700 dark:text-white">
                         {stats.worstPair}
                     </p>
                 </div>

@@ -44,7 +44,7 @@ export function AdminDashboardClient(props: Props) {
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full" />
-                        <h1 className="text-xl font-black text-gray-900 dark:text-white tracking-tighter">
+                        <h1 className="text-xl font-black text-gray-700 dark:text-white tracking-tighter">
                             {greeting} 👋
                         </h1>
                     </div>
@@ -52,7 +52,7 @@ export function AdminDashboardClient(props: Props) {
                         Here&apos;s what&apos;s happening in your platform today.
                     </p>
                 </div>
-                <div className="text-sm text-gray-400 font-medium pl-4.5 md:pl-0">
+                <div className="text-sm text-gray-500 font-medium pl-4.5 md:pl-0">
                     {dateStr}
                 </div>
             </motion.div>

@@ -67,7 +67,7 @@ export const PaginationControl = ({
             {/* Left: Info & Size Selector */}
             <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
                 <span className="hidden sm:inline">
-                    Showing <span className="font-bold text-gray-900 dark:text-gray-200">{startItem}-{endItem}</span> of <span className="font-bold text-gray-900 dark:text-gray-200">{totalItems}</span> {itemName}
+                    Showing <span className="font-bold text-gray-700 dark:text-gray-200">{startItem}-{endItem}</span> of <span className="font-bold text-gray-700 dark:text-gray-200">{totalItems}</span> {itemName}
                 </span>
 
                 <div className="flex items-center gap-2">
@@ -101,7 +101,7 @@ export const PaginationControl = ({
                     size="icon"
                     disabled={currentPage <= 1}
                     onClick={() => onPageChange(currentPage - 1)}
-                    className="text-gray-600 hover:text-gray-900 dark:hover:text-white disabled:opacity-30"
+                    className="text-gray-600 hover:text-gray-700 dark:hover:text-white disabled:opacity-30"
                 >
                     <ChevronLeft size={16} />
                 </Button>
@@ -116,13 +116,13 @@ export const PaginationControl = ({
                                 className={`w-9 h-9 px-0 sm:px-3 sm:w-auto font-bold text-sm ${
                                     p === currentPage
                                         ? 'shadow-md shadow-[#00C888]/20'
-                                        : 'text-gray-600 dark:text-gray-400'
+                                        : 'text-gray-600 dark:text-gray-500'
                                 }`}
                             >
                                 {p}
                             </Button>
                         ) : (
-                            <span key={idx} className="w-9 h-9 flex items-center justify-center text-gray-400 font-bold text-xs select-none">...</span>
+                            <span key={idx} className="w-9 h-9 flex items-center justify-center text-gray-500 font-bold text-xs select-none">...</span>
                         )
                     ))}
                 </div>
@@ -132,7 +132,7 @@ export const PaginationControl = ({
                     size="icon"
                     disabled={currentPage >= totalPages}
                     onClick={() => onPageChange(currentPage + 1)}
-                    className="text-gray-600 hover:text-gray-900 dark:hover:text-white disabled:opacity-30"
+                    className="text-gray-600 hover:text-gray-700 dark:hover:text-white disabled:opacity-30"
                 >
                     <ChevronRight size={16} />
                 </Button>

@@ -46,11 +46,11 @@ export function JournalTableFilters({
             <div className="flex flex-col md:flex-row items-center gap-4 flex-1">
                 {/* Search */}
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-primary transition-colors w-full md:w-56">
-                    <Search size={18} className="text-gray-400" />
+                    <Search size={18} className="text-gray-500" />
                     <input
                         type="text"
                         placeholder="Filter by Pair (e.g. XAUUSD)"
-                        className="bg-transparent text-sm focus:outline-none w-full text-gray-900 dark:text-white placeholder:text-gray-400"
+                        className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
                         value={searchTerm}
                         onChange={(e) => {
                             setSearchTerm(e.target.value);

@@ -17,9 +17,9 @@ This document outlines the standard styling used in the User Dashboard to ensuri
   - Background: `bg-[#00C888]/10`
   - Text: `text-[#00C888]`
 - **Inactive State:**
-  - Text: `text-gray-600` (Light) / `text-gray-400` (Dark)
+  - Text: `text-gray-600` (Light) / `text-gray-500` (Dark)
   - Hover: `hover:bg-gray-50` (Light) / `hover:bg-white/5` (Dark)
-  - Hover Text: `hover:text-gray-900` (Light) / `hover:text-white` (Dark)
+  - Hover Text: `hover:text-gray-700` (Light) / `hover:text-white` (Dark)
 
 ## 2. Page Headers (`DashboardPage`, `JournalList`, etc.)
 
@@ -28,13 +28,13 @@ Standard structure for page titles and descriptions.
 ### Structure
 ```tsx
 <div>
-    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Page Title</h1>
+    <h1 className="text-2xl font-bold text-gray-700 dark:text-white">Page Title</h1>
     <p className="text-gray-500 text-sm mt-1">Page description goes here.</p>
 </div>
 ```
 
 ### Typography
-- **Title (H1):** `text-2xl font-bold text-gray-900 dark:text-white`
+- **Title (H1):** `text-2xl font-bold text-gray-700 dark:text-white`
 - **Subtitle (P):** `text-gray-500 text-sm mt-1`
 
 ## 3. General Layout
@@ -54,7 +54,7 @@ Mọi Card trên dashboard phải tuân thủ chuẩn:
 ### Empty States
 Thống nhất thiết kế cho các trạng thái không có dữ liệu (Empty States) trong các biểu đồ/danh sách:
 ```tsx
-<div className="p-8 text-center text-gray-400 dark:text-gray-500 font-medium">
+<div className="p-8 text-center text-gray-500 dark:text-gray-500 font-medium">
     <Icon size={28} className="mx-auto mb-2 opacity-50" />
     <p className="text-sm">No data available</p>
 </div>

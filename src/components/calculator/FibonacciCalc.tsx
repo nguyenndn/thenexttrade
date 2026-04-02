@@ -56,7 +56,7 @@ export function FibonacciCalc() {
                     <button
                         onClick={() => setInputs({ ...inputs, fibType: "retracement" })}
                         className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
-                            inputs.fibType === "retracement" ? "text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                            inputs.fibType === "retracement" ? "text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
                         }`}
                     >
                         {inputs.fibType === "retracement" && (
@@ -71,7 +71,7 @@ export function FibonacciCalc() {
                     <button
                         onClick={() => setInputs({ ...inputs, fibType: "extension" })}
                         className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
-                            inputs.fibType === "extension" ? "text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                            inputs.fibType === "extension" ? "text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
                         }`}
                     >
                         {inputs.fibType === "extension" && (
@@ -158,7 +158,7 @@ export function FibonacciCalc() {
                                     {level.level}
                                 </span>
                             </div>
-                            <span className="font-mono font-bold text-gray-900 dark:text-white text-base">
+                            <span className="font-mono font-bold text-gray-700 dark:text-white text-base">
                                 {level.price.toFixed(
                                     inputs.swingHigh > 100 ? 2 : inputs.swingHigh > 10 ? 3 : 5
                                 )}

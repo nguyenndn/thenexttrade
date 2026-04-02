@@ -82,7 +82,7 @@ export default function SettingsClient() {
                                 {formData.image ? (
                                     <img src={formData.image} alt="Profile" className="w-full h-full object-cover" />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                    <div className="w-full h-full flex items-center justify-center text-gray-500">
                                         <User size={40} />
                                     </div>
                                 )}
@@ -110,12 +110,12 @@ export default function SettingsClient() {
                             </label>
                         </div>
                         <div className="pb-1">
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{formData.name || 'Your Name'}</p>
+                            <p className="text-sm font-semibold text-gray-700 dark:text-white">{formData.name || 'Your Name'}</p>
                             <p className="text-xs text-gray-600 mt-0.5">{formData.email || ''}</p>
                         </div>
                     </div>
 
-                    <p className="text-xs text-gray-400 mt-3">JPG, PNG or GIF · Max 1MB · Recommended 400×400px</p>
+                    <p className="text-xs text-gray-500 mt-3">JPG, PNG or GIF · Max 1MB · Recommended 400×400px</p>
                 </div>
             </div>
 
@@ -125,7 +125,7 @@ export default function SettingsClient() {
                     <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                         <User size={14} className="text-primary" />
                     </div>
-                    <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Personal Information</h2>
+                    <h2 className="text-sm font-semibold text-gray-700 dark:text-white">Personal Information</h2>
                 </div>
                 <div className="px-6 py-5 space-y-4">
                     <div>
@@ -134,7 +134,7 @@ export default function SettingsClient() {
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                             placeholder="Your full name"
                         />
                     </div>
@@ -144,10 +144,10 @@ export default function SettingsClient() {
                             value={formData.bio}
                             onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
                             rows={3}
-                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary resize-none transition-all"
+                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary resize-none transition-all"
                             placeholder="Tell us about your trading journey..."
                         />
-                        <p className="text-xs text-gray-400 mt-1">{formData.bio.length}/200 characters</p>
+                        <p className="text-xs text-gray-500 mt-1">{formData.bio.length}/200 characters</p>
                     </div>
                 </div>
 

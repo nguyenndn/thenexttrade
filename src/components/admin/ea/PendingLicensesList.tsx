@@ -33,7 +33,7 @@ export function PendingLicensesList({ licenses, adminId }: PendingLicensesListPr
         return (
             <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
                 <Check className="mx-auto text-gray-300 mb-4" size={48} />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">All caught up!</h3>
+                <h3 className="text-lg font-medium text-gray-700 dark:text-white">All caught up!</h3>
                 <p className="text-gray-600 mt-2">There are no pending license requests.</p>
             </div>
         );
@@ -46,23 +46,23 @@ export function PendingLicensesList({ licenses, adminId }: PendingLicensesListPr
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div className="space-y-1">
                             <div className="flex items-center gap-3">
-                                <span className="text-xl font-bold text-gray-900 dark:text-white font-mono">
+                                <span className="text-xl font-bold text-gray-700 dark:text-white font-mono">
                                     {req.accountNumber}
                                 </span>
                                 <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 font-bold tracking-wide">
                                     {req.broker}
                                 </span>
-                                <span className="text-xs text-gray-400">
+                                <span className="text-xs text-gray-500">
                                     {formatDistanceToNow(new Date(req.createdAt))} ago
                                 </span>
                             </div>
 
-                            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-500">
                                 <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-bold uppercase">
                                     {req.user.email?.substring(0, 2)}
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="font-medium text-gray-900 dark:text-white">{req.user.name || "Unknown"}</span>
+                                    <span className="font-medium text-gray-700 dark:text-white">{req.user.name || "Unknown"}</span>
                                     <span className="text-xs">{req.user.email}</span>
                                 </div>
                             </div>

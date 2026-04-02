@@ -126,12 +126,12 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
                 </>
             ) : (
                 <div className="flex flex-col items-center gap-1 group/link w-full p-2 rounded-lg transition-colors">
-                    <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-1 text-gray-400 group-hover:text-primary">
+                    <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-1 text-gray-500 group-hover:text-primary">
                         <LinkIcon size={24} />
                     </div>
                     <p className="text-xs font-bold text-gray-600 group-hover:text-primary transition-colors">Paste Chart Link</p>
 
-                    <div className="text-[10px] text-gray-400 text-center mt-1">
+                    <div className="text-[10px] text-gray-500 text-center mt-1">
                         <p>Recommended Free Hosting:</p>
                         <div className="flex gap-2 justify-center mt-1">
                             <a

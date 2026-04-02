@@ -73,12 +73,12 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                             alt={selectedCountry.name}
                             className="w-6 h-auto rounded-sm object-cover shadow-sm"
                         />
-                        <span className="text-gray-900 dark:text-white text-base truncate pr-2">{selectedCountry.name}</span>
+                        <span className="text-gray-700 dark:text-white text-base truncate pr-2">{selectedCountry.name}</span>
                     </div>
                 ) : (
                     <span className="text-gray-600 text-base">Select Country</span>
                 )}
-                <ChevronDown size={20} className={cn("text-gray-400 transition-transform shrink-0", isOpen ? "rotate-180" : "")} />
+                <ChevronDown size={20} className={cn("text-gray-500 transition-transform shrink-0", isOpen ? "rotate-180" : "")} />
             </Button>
 
             {/* Hidden Input for Form Submission */}
@@ -90,11 +90,11 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                     {/* Search Bar */}
                     <div className="p-3 border-b border-gray-200 dark:border-white/10 sticky top-0 bg-white dark:bg-[#1C1F2E] z-10">
                         <div className="relative">
-                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                             <input
                                 type="text"
                                 placeholder="Search country..."
-                                className="w-full bg-gray-50 dark:bg-[#0B0E14] text-gray-900 dark:text-white text-sm rounded-lg pl-9 pr-3 py-2 border border-gray-200 dark:border-white/10 focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50"
+                                className="w-full bg-gray-50 dark:bg-[#0B0E14] text-gray-700 dark:text-white text-sm rounded-lg pl-9 pr-3 py-2 border border-gray-200 dark:border-white/10 focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 autoFocus

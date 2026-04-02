@@ -196,7 +196,7 @@ export default function AdminQuotesPage() {
                                     <td colSpan={4} className="px-6 py-16 text-center">
                                         <div className="flex flex-col items-center justify-center text-gray-600">
                                             <QuoteIcon size={40} className="mb-3 opacity-30" />
-                                            <p className="font-bold text-gray-900 dark:text-gray-300">No quotes found</p>
+                                            <p className="font-bold text-gray-700 dark:text-gray-300">No quotes found</p>
                                             <p className="text-sm mt-1 mb-4">Click &quot;Add New&quot; to create your first quote.</p>
                                             <Button onClick={openCreateModal} variant="outline" className="text-sm shadow-sm transition-transform active:scale-95">
                                                 <Plus size={16} className="mr-1.5" /> Create Quote
@@ -223,7 +223,7 @@ export default function AdminQuotesPage() {
                                                 className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold transition-all ${
                                                     quote.isActive
                                                         ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                                        : 'bg-gray-100 text-gray-400 dark:bg-white/5 dark:text-gray-600'
+                                                        : 'bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-600'
                                                 }`}
                                             >
                                                 {quote.isActive ? 'Active' : 'Inactive'}
@@ -236,7 +236,7 @@ export default function AdminQuotesPage() {
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
-                                                            className="h-8 w-8 p-0 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors focus:ring-0 focus-visible:ring-0"
+                                                            className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors focus:ring-0 focus-visible:ring-0"
                                                             aria-label="Open Actions"
                                                         >
                                                             <MoreHorizontal size={16} />
@@ -247,7 +247,7 @@ export default function AdminQuotesPage() {
                                                             onClick={() => openEditModal(quote)}
                                                             className="flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-white/10 focus:bg-gray-50 dark:focus:bg-white/10 text-gray-700 dark:text-gray-300 transition-colors outline-none"
                                                         >
-                                                            <Pencil size={14} className="text-gray-400" />
+                                                            <Pencil size={14} className="text-gray-500" />
                                                             <span>Edit</span>
                                                         </DropdownMenuItem>
                                                         <div className="h-px bg-gray-100 dark:bg-white/10 my-1" />
@@ -290,20 +290,20 @@ export default function AdminQuotesPage() {
                         <textarea
                             value={formText}
                             onChange={(e) => setFormText(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
                             placeholder="Enter the quote text..."
                         />
                     </div>
 
                     <div className="group">
                         <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                            Author <span className="font-normal text-gray-400">(Optional)</span>
+                            Author <span className="font-normal text-gray-500">(Optional)</span>
                         </label>
                         <input
                             type="text"
                             value={formAuthor}
                             onChange={(e) => setFormAuthor(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                             placeholder="e.g. Warren Buffett"
                         />
                     </div>
@@ -313,7 +313,7 @@ export default function AdminQuotesPage() {
                             type="button"
                             variant="outline"
                             onClick={() => setModalOpen(false)}
-                            className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
+                            className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold rounded-xl px-6"
                         >
                             Cancel
                         </Button>

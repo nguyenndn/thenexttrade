@@ -17,7 +17,7 @@ interface TiltIndicatorsProps {
 export function TiltIndicators({ data }: TiltIndicatorsProps) {
     return (
         <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <AlertTriangle size={18} className="text-orange-500" />
                 Tilt Indicators
             </h3>
@@ -53,7 +53,7 @@ export function TiltIndicators({ data }: TiltIndicatorsProps) {
 
                 {/* Performance Context */}
                 <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-white/10">
-                    <h4 className="text-xs font-bold uppercase text-gray-400">
+                    <h4 className="text-xs font-bold uppercase text-gray-500">
                         Performance Context
                     </h4>
 
@@ -100,11 +100,11 @@ function IndicatorCard({
             }
         `}>
             <p className="text-xs text-gray-600 dark:text-gray-300 mb-1">{label}</p>
-            <p className={`text-2xl font-black ${isGood ? 'text-gray-900 dark:text-white' : 'text-red-500'}`}>
+            <p className={`text-2xl font-black ${isGood ? 'text-gray-700 dark:text-white' : 'text-red-500'}`}>
                 {value}
             </p>
             {subtext && (
-                <p className="text-[10px] text-gray-400 mt-1">{subtext}</p>
+                <p className="text-[10px] text-gray-500 mt-1">{subtext}</p>
             )}
         </div>
     );

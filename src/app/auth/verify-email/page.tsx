@@ -97,10 +97,10 @@ function VerifyEmailForm() {
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-primary/20">
                     <Mail className="text-primary" size={28} />
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Check your email</h1>
+                <h1 className="text-3xl font-bold text-gray-700 dark:text-white mb-2 tracking-tight">Check your email</h1>
                 <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                     We've sent an 8-digit verification code to <br/>
-                    <span className="font-bold text-gray-900 dark:text-white">{email}</span>
+                    <span className="font-bold text-gray-700 dark:text-white">{email}</span>
                 </p>
             </div>
 
@@ -123,7 +123,7 @@ function VerifyEmailForm() {
                         value={otp}
                         onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))} // Only allow numbers
                         placeholder="••••••••"
-                        className="w-full text-center tracking-[1em] font-mono text-3xl h-16 bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary focus:ring-1 focus:ring-primary rounded-xl transition-all"
+                        className="w-full text-center tracking-[1em] font-mono text-3xl h-16 bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary focus:ring-1 focus:ring-primary rounded-xl transition-all"
                         required
                         autoComplete="one-time-code"
                     />
@@ -149,7 +149,7 @@ function VerifyEmailForm() {
                         disabled={timer > 0 || resendLoading}
                         className={`font-bold flex items-center gap-1 transition-colors p-0 h-auto ${
                             timer > 0 
-                                ? 'text-gray-400 cursor-not-allowed hover:no-underline' 
+                                ? 'text-gray-500 cursor-not-allowed hover:no-underline' 
                                 : 'text-primary hover:text-[#00b078] hover:no-underline'
                         }`}
                     >
@@ -161,7 +161,7 @@ function VerifyEmailForm() {
                 </div>
                 
                 <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-                    <Link href="/auth/signup" className="text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white flex items-center justify-center gap-1 transition-colors">
+                    <Link href="/auth/signup" className="text-sm font-semibold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white flex items-center justify-center gap-1 transition-colors">
                         Use a different email <ArrowRight size={14} />
                     </Link>
                 </div>

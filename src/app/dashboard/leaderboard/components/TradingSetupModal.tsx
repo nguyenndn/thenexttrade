@@ -33,7 +33,7 @@ export function TradingSetupModal() {
         {/* Body */}
         <div className="p-6 space-y-4">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <DialogTitle className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
               <AlertTriangle size={18} className="text-amber-500" />
               No account selected
             </DialogTitle>

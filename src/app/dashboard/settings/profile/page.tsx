@@ -105,13 +105,13 @@ export default function PublicProfileSettings() {
                             <Globe size={20} className="text-primary" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-gray-900 dark:text-white">Public Profile</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white">Public Profile</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">
                                 Make your trading profile visible at{" "}
                                 {settings.username ? (
                                     <span className="text-primary font-medium">/trader/{settings.username}</span>
                                 ) : (
-                                    <span className="text-gray-400">Set a username first</span>
+                                    <span className="text-gray-500">Set a username first</span>
                                 )}
                             </p>
                         </div>
@@ -140,7 +140,7 @@ export default function PublicProfileSettings() {
                 <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
                     <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
                         Profile Headline{" "}
-                        <span className="font-normal text-gray-400">(Optional, max 160 chars)</span>
+                        <span className="font-normal text-gray-500">(Optional, max 160 chars)</span>
                     </label>
                     <input
                         type="text"
@@ -148,11 +148,11 @@ export default function PublicProfileSettings() {
                         onChange={(e) =>
                             setSettings({ ...settings, profileHeadline: e.target.value.slice(0, 160) })
                         }
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                         placeholder='e.g., "Swing Trader | London Session Specialist"'
                         maxLength={160}
                     />
-                    <p className="text-xs text-gray-400 mt-1 text-right">
+                    <p className="text-xs text-gray-500 mt-1 text-right">
                         {(settings.profileHeadline || "").length}/160
                     </p>
                 </div>
@@ -162,8 +162,8 @@ export default function PublicProfileSettings() {
             {settings.isPublicProfile && (
                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-100 dark:border-white/5">
-                        <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <Shield size={16} className="text-gray-400" />
+                        <h3 className="font-bold text-gray-700 dark:text-white flex items-center gap-2">
+                            <Shield size={16} className="text-gray-500" />
                             Privacy Controls
                         </h3>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">
@@ -207,7 +207,7 @@ export default function PublicProfileSettings() {
             {settings.isPublicProfile && (
                 <div className="rounded-xl bg-gray-50 dark:bg-white/5 p-4 border border-gray-200 dark:border-white/10">
                     <div className="flex items-start gap-3">
-                        <Shield size={16} className="text-gray-400 mt-0.5 shrink-0" />
+                        <Shield size={16} className="text-gray-500 mt-0.5 shrink-0" />
                         <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             Your account balance, P&L amounts, and individual trade details are{" "}
                             <span className="font-bold text-gray-700 dark:text-gray-300">never</span> shown
@@ -305,9 +305,9 @@ function ToggleRow({
             }`}
         >
             <div className="flex items-center gap-3 min-w-0">
-                <Icon size={16} className="text-gray-400 shrink-0" />
+                <Icon size={16} className="text-gray-500 shrink-0" />
                 <div className="min-w-0">
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">{title}</p>
+                    <p className="text-sm font-bold text-gray-700 dark:text-white">{title}</p>
                     <p className="text-xs text-gray-600 dark:text-gray-300">{description}</p>
                 </div>
             </div>

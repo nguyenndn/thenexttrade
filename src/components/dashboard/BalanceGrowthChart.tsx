@@ -110,7 +110,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                                         <p className="text-sm font-medium text-gray-600 mb-1">
                                             {format(new Date(label), "MMM dd, HH:mm")}
                                         </p>
-                                        <p className="text-base font-bold text-gray-900 dark:text-white">
+                                        <p className="text-base font-bold text-gray-700 dark:text-white">
                                             Balance: <span className="text-primary">${Number(payload[0].value).toFixed(2)}</span>
                                         </p>
                                     </div>

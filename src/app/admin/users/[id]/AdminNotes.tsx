@@ -33,8 +33,8 @@ export function AdminNotes({ userId, initialNotes }: AdminNotesProps) {
     return (
         <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
             <div className="px-4 sm:px-6 py-3 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <StickyNote size={16} className="text-gray-400" /> Admin Notes
+                <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
+                    <StickyNote size={16} className="text-gray-500" /> Admin Notes
                 </h3>
                 <button
                     onClick={handleSave}
@@ -44,7 +44,7 @@ export function AdminNotes({ userId, initialNotes }: AdminNotesProps) {
                             ? "bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400"
                             : dirty
                                 ? "bg-primary/10 text-primary hover:bg-primary/20"
-                                : "bg-gray-100 text-gray-400 dark:bg-white/5 cursor-not-allowed"
+                                : "bg-gray-100 text-gray-500 dark:bg-white/5 cursor-not-allowed"
                     }`}
                 >
                     {saving ? (
@@ -62,7 +62,7 @@ export function AdminNotes({ userId, initialNotes }: AdminNotesProps) {
                     onChange={e => setNotes(e.target.value)}
                     placeholder="Add internal notes about this user..."
                     rows={4}
-                    className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                    className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm text-gray-700 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
                 />
             </div>
         </div>

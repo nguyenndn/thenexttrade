@@ -202,7 +202,7 @@ export default function AdminFeedbackPage() {
             {!isLoading && !error && filtered.length === 0 && (
                 <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm text-center py-20">
                     <MessageSquare size={48} className="mx-auto mb-4 text-gray-300" />
-                    <h3 className="text-base font-bold text-gray-900 dark:text-white">No feedback found</h3>
+                    <h3 className="text-base font-bold text-gray-700 dark:text-white">No feedback found</h3>
                     <p className="text-sm text-gray-600 mt-1">
                         {searchQuery || filterType !== "ALL" || filterStatus !== "ALL"
                             ? "Try adjusting your filters."
@@ -241,7 +241,7 @@ export default function AdminFeedbackPage() {
                                             <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
                                                 {isBug ? "Bug Report" : "Feature Request"}
                                             </span>
-                                            <span className="text-[11px] text-gray-400">·</span>
+                                            <span className="text-[11px] text-gray-500">·</span>
                                             <div className="flex items-center gap-1.5">
                                                 {fb.user.image && (
                                                     <img src={fb.user.image} alt="" className="w-4 h-4 rounded-full" />
@@ -258,7 +258,7 @@ export default function AdminFeedbackPage() {
                                         </p>
 
                                         {/* Time */}
-                                        <p className="text-[11px] text-gray-400 mt-2">
+                                        <p className="text-[11px] text-gray-500 mt-2">
                                             {formatDistanceToNow(new Date(fb.createdAt))} ago
                                         </p>
                                     </div>

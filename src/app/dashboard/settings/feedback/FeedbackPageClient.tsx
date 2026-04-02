@@ -27,9 +27,9 @@ export default function FeedbackPageClient({ feedbacks }: FeedbackPageClientProp
     if (feedbacks.length === 0) {
         return (
             <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
-                <div className="text-center py-20 text-gray-400">
+                <div className="text-center py-20 text-gray-500">
                     <Bug size={48} className="mx-auto mb-4 opacity-50" />
-                    <h3 className="text-base font-bold text-gray-900 dark:text-white">No feedback yet</h3>
+                    <h3 className="text-base font-bold text-gray-700 dark:text-white">No feedback yet</h3>
                     <p className="text-sm mt-1">Use the floating chat button to submit bug reports or feature requests.</p>
                 </div>
             </div>
@@ -74,7 +74,7 @@ export default function FeedbackPageClient({ feedbacks }: FeedbackPageClientProp
                             {fb.message}
                         </p>
 
-                        <p className="text-[11px] text-gray-400 mt-3">
+                        <p className="text-[11px] text-gray-500 mt-3">
                             {formatDistanceToNow(new Date(fb.createdAt))} ago
                         </p>
                     </div>

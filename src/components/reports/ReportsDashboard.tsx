@@ -237,7 +237,7 @@ export function ReportsDashboard() {
                             </span>
                         </div>
 
-                        <h3 className="font-black text-lg text-gray-900 dark:text-white mb-2 tracking-tight">
+                        <h3 className="font-black text-lg text-gray-700 dark:text-white mb-2 tracking-tight">
                             {report.name}
                         </h3>
                         <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed text-left w-full">
@@ -249,7 +249,7 @@ export function ReportsDashboard() {
 
             {/* Controls Container */}
             <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow">
-                <h3 className="font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3 text-lg tracking-tight">
+                <h3 className="font-black text-gray-700 dark:text-white mb-6 flex items-center gap-3 text-lg tracking-tight">
                     <div className="p-2 bg-primary/10 text-primary rounded-xl">
                         <Calendar size={20} />
                     </div>
@@ -266,7 +266,7 @@ export function ReportsDashboard() {
                                 onChange={(e) =>
                                     setDateRange({ ...dateRange, start: new Date(e.target.value) })
                                 }
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-900 dark:text-white"
+                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-700 dark:text-white"
                             />
                         </div>
                         <div>
@@ -277,7 +277,7 @@ export function ReportsDashboard() {
                                 onChange={(e) =>
                                     setDateRange({ ...dateRange, end: new Date(e.target.value) })
                                 }
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-900 dark:text-white"
+                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-700 dark:text-white"
                             />
                         </div>
                     </div>
@@ -327,7 +327,7 @@ export function ReportsDashboard() {
                 <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm animate-in fade-in duration-500">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h3 className="font-black text-gray-900 dark:text-white text-lg tracking-tight">CSV Preview</h3>
+                            <h3 className="font-black text-gray-700 dark:text-white text-lg tracking-tight">CSV Preview</h3>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Review data and remove unnecessary columns before downloading.</p>
                         </div>
                         <Button
@@ -351,7 +351,7 @@ export function ReportsDashboard() {
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => removeColumn(index)}
-                                                    className="h-7 w-7 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10"
+                                                    className="h-7 w-7 text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10"
                                                     title="Remove Column"
                                                 >
                                                     <Trash2 size={14} />
@@ -365,7 +365,7 @@ export function ReportsDashboard() {
                                 {csvPreview.rows.slice(0, 50).map((row, rowIndex) => (
                                     <tr key={rowIndex} className="border-b border-gray-200 dark:border-white/10 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
                                         {row.map((cell, cellIndex) => (
-                                            <td key={cellIndex} className="p-4 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap truncate max-w-[200px]" title={cell}>
+                                            <td key={cellIndex} className="p-4 text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap truncate max-w-[200px]" title={cell}>
                                                 {cell}
                                             </td>
                                         ))}

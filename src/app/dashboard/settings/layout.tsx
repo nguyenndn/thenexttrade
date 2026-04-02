@@ -65,7 +65,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                                     "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors",
                                     isActive
                                         ? "border-primary text-primary"
-                                        : "border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20"
+                                        : "border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20"
                                 )}
                             >
                                 <Icon size={16} />

@@ -88,7 +88,7 @@ export function AdminNotificationBell() {
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 p-0 rounded-full text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                <Button variant="ghost" className="relative h-10 w-10 p-0 rounded-full text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white">
                     <Bell size={20} />
                     {badgeCount > 0 && (
                         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
@@ -100,7 +100,7 @@ export function AdminNotificationBell() {
 
             <PopoverContent className="w-96 p-0 rounded-xl bg-white dark:bg-[#1E2028] border-gray-100 dark:border-white/5 shadow-xl" align="end">
                 <div className="p-4 border-b border-gray-100 dark:border-white/5">
-                    <h3 className="font-bold text-gray-900 dark:text-white">Admin Alerts</h3>
+                    <h3 className="font-bold text-gray-700 dark:text-white">Admin Alerts</h3>
                 </div>
 
                 {/* Pending Licenses Alert */}
@@ -152,8 +152,8 @@ export function AdminNotificationBell() {
                                 }}
                             >
                                 <div className="flex justify-between items-start mb-1">
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{n.title}</p>
-                                    <span className="text-[10px] text-gray-400 shrink-0 ml-2">
+                                    <p className="text-sm font-medium text-gray-700 dark:text-white truncate">{n.title}</p>
+                                    <span className="text-[10px] text-gray-500 shrink-0 ml-2">
                                         {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true, locale: enUS })}
                                     </span>
                                 </div>

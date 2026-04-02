@@ -27,13 +27,13 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
                         onClick={() => setOpen(open === idx ? null : idx)}
                         className="w-full flex items-center justify-between px-5 py-4 text-left bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/[0.07] transition-colors"
                     >
-                        <span className="font-bold text-gray-900 dark:text-white text-sm pr-4">
+                        <span className="font-bold text-gray-700 dark:text-white text-sm pr-4">
                             {item.question}
                         </span>
                         <ChevronDown
                             size={18}
                             className={cn(
-                                "shrink-0 text-gray-400 transition-transform duration-200",
+                                "shrink-0 text-gray-500 transition-transform duration-200",
                                 open === idx && "rotate-180"
                             )}
                         />
@@ -45,7 +45,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
                         )}
                     >
                         <div className="overflow-hidden">
-                            <p className="px-5 pb-4 pt-1 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                            <p className="px-5 pb-4 pt-1 text-sm text-gray-600 dark:text-gray-500 leading-relaxed">
                                 {item.answer}
                             </p>
                         </div>

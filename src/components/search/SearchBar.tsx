@@ -34,7 +34,7 @@ export function SearchBar({ className, variant = "default", targetRoute = "/dash
         <div className={cn("relative w-full max-w-sm", className)}>
             <div className="relative group">
                 <Search
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary transition-colors"
                     size={20}
                 />
                 <input
@@ -43,7 +43,7 @@ export function SearchBar({ className, variant = "default", targetRoute = "/dash
                     onChange={handleChange}
                     placeholder="Search..."
                     className={cn(
-                        "w-full pl-10 pr-16 py-2 rounded-full border-none outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 text-sm font-medium",
+                        "w-full pl-10 pr-16 py-2 rounded-full border-none outline-none transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 text-sm font-medium",
                         variant === "default"
                             ? "bg-gray-50 dark:bg-white/5 focus:bg-white dark:focus:bg-white/10 focus:ring-2 focus:ring-primary/10"
                             : "bg-transparent px-0 pl-8"

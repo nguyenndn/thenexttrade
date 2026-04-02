@@ -32,7 +32,7 @@ export function EALicenseCard({ license, onRemove, isRemoving }: EALicenseCardPr
             {/* Top Row: Broker + Account + Delete */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="text-base font-black text-gray-900 dark:text-white truncate">
+                    <span className="text-base font-black text-gray-700 dark:text-white truncate">
                         {brokerName}
                     </span>
                     <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-500/20 flex-shrink-0">
@@ -72,7 +72,7 @@ export function EALicenseCard({ license, onRemove, isRemoving }: EALicenseCardPr
 
             {/* Bottom Info */}
             <div className="flex items-center justify-between pt-2 border-t border-gray-50 dark:border-white/5">
-                <span className="text-[11px] text-gray-400 font-medium">{formattedDate}</span>
+                <span className="text-[11px] text-gray-500 font-medium">{formattedDate}</span>
                 <div className="flex items-center gap-1.5">
                     {isApproved ? (
                         <CheckCircle2 size={13} className="text-emerald-500" strokeWidth={2.5} />

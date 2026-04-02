@@ -53,7 +53,7 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
         <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-cyan-500/10 text-cyan-500 mb-5 ring-4 ring-cyan-500/5">
           <Target size={32} />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+        <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-3">
           Your stats will appear here
         </h3>
         <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed max-w-md mx-auto">
@@ -93,7 +93,7 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
 
             {/* Name + Tier */}
             <div className="flex-1 min-w-0">
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white truncate mb-1">
+              <h2 className="text-2xl font-black text-gray-700 dark:text-white truncate mb-1">
                 {userName || "You"}
               </h2>
               <div className="flex items-center gap-3 flex-wrap">
@@ -104,7 +104,7 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
                   tierLabel={tierProgress.current.label}
                   size="sm"
                 />
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-gray-500">
                   {earnedCount}/{badges.length} badges
                 </span>
               </div>
@@ -115,7 +115,7 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
               <div className="text-5xl font-black text-primary tabular-nums leading-none">
                 #{rank}
               </div>
-              <span className="text-sm font-bold text-gray-400 mt-1 block">
+              <span className="text-sm font-bold text-gray-500 mt-1 block">
                 Top {percentile.toFixed(1)}%
               </span>
             </div>
@@ -127,9 +127,9 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
         {/* ═══════════════════════════════════════════════════════════ */}
         <div className="px-6 py-4 border-t border-gray-100 dark:border-white/5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Tier Progress</span>
+            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Tier Progress</span>
             {tierProgress.next && (
-              <span className="text-xs text-gray-400 tabular-nums">
+              <span className="text-xs text-gray-500 tabular-nums">
                 {tierProgress.xpToNext.toLocaleString()} XP to {tierProgress.next.label}
               </span>
             )}
@@ -176,7 +176,7 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
         {badges.length > 0 && (
           <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+              <h3 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
                 🏅 Badges & Achievements
               </h3>
               <span className="text-xs font-bold text-primary tabular-nums">
@@ -207,8 +207,8 @@ function QuickStat({ icon: Icon, label, value, color, border }: {
   return (
     <div className={cn("px-4 py-4 text-center", border && "border-l border-gray-100 dark:border-white/5")}>
       <Icon size={18} className={cn("mx-auto mb-1.5", color)} />
-      <div className="text-lg font-black text-gray-900 dark:text-white tabular-nums">{value}</div>
-      <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{label}</div>
+      <div className="text-lg font-black text-gray-700 dark:text-white tabular-nums">{value}</div>
+      <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">{label}</div>
     </div>
   );
 }
@@ -236,7 +236,7 @@ function BadgeItem({ badge }: { badge: UserBadgeInfo }) {
       </div>
       <span className={cn(
         "text-[10px] font-bold text-center leading-tight",
-        isEarned ? "text-gray-700 dark:text-gray-200" : "text-gray-400 dark:text-gray-600"
+        isEarned ? "text-gray-700 dark:text-gray-200" : "text-gray-500 dark:text-gray-600"
       )}>
         {badge.name}
       </span>

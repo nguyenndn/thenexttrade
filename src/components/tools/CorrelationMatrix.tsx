@@ -89,7 +89,7 @@ export function CorrelationMatrix() {
                                 "relative px-4 py-2 rounded-lg text-xs font-bold border transition-colors z-10",
                                 period === p.value
                                     ? "text-white border-transparent"
-                                    : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:border-primary/50"
+                                    : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-gray-200 dark:border-white/10 hover:border-primary/50"
                             )}
                         >
                             {period === p.value && (
@@ -115,7 +115,7 @@ export function CorrelationMatrix() {
 
             {/* ── Empty State ── */}
             {!matrix && !loading && (
-                <div className="text-center py-16 text-gray-400">
+                <div className="text-center py-16 text-gray-500">
                     <p className="text-lg font-bold mb-2">Select period & click Calculate</p>
                     <p className="text-sm">Fetches historical data for {PAIRS.length} pairs and calculates Pearson correlation</p>
                 </div>

@@ -93,7 +93,7 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                         <div className="flex items-center justify-between mb-6 md:mb-8">
                             <div className="flex items-center gap-1.5">
                                 <span className="font-black text-2xl tracking-tighter">
-                                    <span className="text-gray-900 dark:text-white">TheNext</span>
+                                    <span className="text-gray-700 dark:text-white">TheNext</span>
                                     <span className="text-primary">Trade</span>
                                 </span>
                             </div>
@@ -104,7 +104,7 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                         </div>
 
                         {/* Trade Header */}
-                        <div className="flex items-center gap-2 text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
                             <span className={cn("px-2 py-0.5 rounded text-white", badgeBg)}>{entry.type}</span>
                             <span>|</span>
                             <span>{Number(entry.lotSize)} Lots</span>
@@ -121,11 +121,11 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                     {/* Stats Grid */}
                     <div className="space-y-4 text-sm">
                         <div className="flex justify-between items-center pb-2 border-b border-gray-200 dark:border-white/10">
-                            <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Entry Price</span>
-                            <span className="font-black text-gray-900 dark:text-white font-mono">{Number(entry.entryPrice)}</span>
+                            <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Entry Price</span>
+                            <span className="font-black text-gray-700 dark:text-white font-mono">{Number(entry.entryPrice)}</span>
                         </div>
                         <div className="flex justify-between items-center pb-2 border-b border-gray-200 dark:border-white/10">
-                            <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Exit Price</span>
+                            <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Exit Price</span>
                             <div className="flex items-center gap-2">
                                 {isTPHit && (
                                     <span className="px-1.5 py-0.5 bg-green-500 text-white text-[9px] font-black uppercase rounded shadow-sm">
@@ -137,11 +137,11 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                                         🛡️ SL HIT
                                     </span>
                                 )}
-                                <span className="font-black text-gray-900 dark:text-white font-mono">{Number(entry.exitPrice || 0)}</span>
+                                <span className="font-black text-gray-700 dark:text-white font-mono">{Number(entry.exitPrice || 0)}</span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Gain</span>
+                            <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Gain</span>
                             <span className={cn("font-black text-lg", textColor)}>{percentGain}%</span>
                         </div>
                     </div>
@@ -159,7 +159,7 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
                         {/* Watermark / Brand in Chart */}
                         <div className="absolute top-6 right-6 flex items-center gap-2 opacity-50 z-20">
                             <Medal size={16} className="text-blue-500" />
-                            <span className="text-xs font-bold text-gray-400">Verified by TheNextTrade</span>
+                            <span className="text-xs font-bold text-gray-500">Verified by TheNextTrade</span>
                         </div>
 
                         {/* Chart */}

@@ -130,7 +130,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
     return (
         <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
             <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
                     <Search size={20} className="text-primary" />
                     Yoast SEO (Pro)
                 </h3>
@@ -178,8 +178,8 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-bold text-gray-600 uppercase">Google Preview</span>
                             <div className="flex bg-white dark:bg-white/5 rounded-lg p-1 border border-gray-200 dark:border-white/10 gap-1">
-                                <Button variant="ghost" size="icon" onClick={() => setPreviewMode('mobile')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'mobile' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-400 hover:bg-gray-100'}`}><Smartphone size={14} /></Button>
-                                <Button variant="ghost" size="icon" onClick={() => setPreviewMode('desktop')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'desktop' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-400 hover:bg-gray-100'}`}><Monitor size={14} /></Button>
+                                <Button variant="ghost" size="icon" onClick={() => setPreviewMode('mobile')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'mobile' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-500 hover:bg-gray-100'}`}><Smartphone size={14} /></Button>
+                                <Button variant="ghost" size="icon" onClick={() => setPreviewMode('desktop')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'desktop' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-500 hover:bg-gray-100'}`}><Monitor size={14} /></Button>
                             </div>
                         </div>
 
@@ -198,7 +198,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                     </div>
                     {/* SEO Analysis Results */}
                     <div>
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">SEO Analysis</h4>
+                        <h4 className="text-sm font-bold text-gray-700 dark:text-white mb-3">SEO Analysis</h4>
                         <div className="space-y-2">
                             {seoAnalysis.map((item, idx) => (
                                 <div key={idx} className="flex items-start gap-2 text-sm">
@@ -236,7 +236,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
             {activeTab === 'readability' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <div>
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">Readability Analysis</h4>
+                        <h4 className="text-sm font-bold text-gray-700 dark:text-white mb-3">Readability Analysis</h4>
                         <div className="space-y-2">
                             {readabilityAnalysis.map((item, idx) => (
                                 <div key={idx} className="flex items-start gap-2 text-sm">
@@ -247,7 +247,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                                 </div>
                             ))}
                         </div>
-                        <p className="text-xs text-gray-400 mt-4 italic">
+                        <p className="text-xs text-gray-500 mt-4 italic">
                             *Analysis based on Flesch Reading Ease score and basic sentence structure checks.
                         </p>
                     </div>
@@ -282,7 +282,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                                     {thumbnail ? (
                                         <img src={thumbnail} className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className="text-gray-400 text-xs">OG Image (1200x630)</span>
+                                        <span className="text-gray-500 text-xs">OG Image (1200x630)</span>
                                     )}
                                 </div>
                                 <div className="p-3 bg-[#f0f2f5] border-t border-gray-100">
@@ -298,7 +298,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                                     {thumbnail ? (
                                         <img src={thumbnail} className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className="text-gray-400 text-xs">Twitter Image (1200x600)</span>
+                                        <span className="text-gray-500 text-xs">Twitter Image (1200x600)</span>
                                     )}
                                 </div>
                                 <div className="p-3">

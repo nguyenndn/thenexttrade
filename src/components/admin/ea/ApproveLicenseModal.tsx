@@ -62,15 +62,15 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
                     <div className="bg-gray-50 dark:bg-[#151925] p-4 rounded-xl space-y-2 text-sm">
                         <div className="flex justify-between">
                             <span className="text-gray-600">Account:</span>
-                            <span className="font-bold text-gray-900 dark:text-white">{license.accountNumber}</span>
+                            <span className="font-bold text-gray-700 dark:text-white">{license.accountNumber}</span>
                         </div>
                         <div className="flex justify-between">
                             <span className="text-gray-600">Broker:</span>
-                            <span className="font-medium text-gray-900 dark:text-white">{license.broker}</span>
+                            <span className="font-medium text-gray-700 dark:text-white">{license.broker}</span>
                         </div>
                         <div className="flex justify-between">
                             <span className="text-gray-600">User:</span>
-                            <span className="font-medium text-gray-900 dark:text-white">{license.user.email}</span>
+                            <span className="font-medium text-gray-700 dark:text-white">{license.user.email}</span>
                         </div>
                     </div>
 
@@ -84,7 +84,7 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
 
                     {/* Expiry Settings */}
                     <div className="space-y-3">
-                        <label className="text-sm font-medium text-gray-900 dark:text-white">Expiry Date</label>
+                        <label className="text-sm font-medium text-gray-700 dark:text-white">Expiry Date</label>
                         <div className="flex flex-col gap-3">
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input

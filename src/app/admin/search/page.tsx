@@ -67,7 +67,7 @@ function AdminSearchContent() {
             <span>
                 {parts.map((part, i) =>
                     regex.test(part) ? (
-                        <span key={i} className="bg-yellow-300 dark:bg-yellow-600/50 text-gray-900 dark:text-white px-0.5 rounded">{part}</span>
+                        <span key={i} className="bg-yellow-300 dark:bg-yellow-600/50 text-gray-700 dark:text-white px-0.5 rounded">{part}</span>
                     ) : (
                         <span key={i}>{part}</span>
                     )
@@ -125,11 +125,11 @@ function AdminSearchContent() {
                                                         {result.meta.status}
                                                     </span>
                                                 )}
-                                                <span className="text-xs text-gray-400 font-medium ml-auto">
+                                                <span className="text-xs text-gray-500 font-medium ml-auto">
                                                     {result.date && formatDistanceToNow(new Date(result.date), { addSuffix: true })}
                                                 </span>
                                             </div>
-                                            <h3 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors truncate">
+                                            <h3 className="text-base font-bold text-gray-700 dark:text-white group-hover:text-primary transition-colors truncate">
                                                 <HighlightText text={result.title} highlight={query || ""} />
                                             </h3>
                                             <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
@@ -142,7 +142,7 @@ function AdminSearchContent() {
                         ) : (
                             <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
                                 <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
+                                <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">No results found</h3>
                             </div>
                         )}
                     </>

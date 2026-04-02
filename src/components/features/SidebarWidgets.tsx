@@ -46,7 +46,7 @@ async function RecentPostsWidget() {
             <div className="p-5">
                 {/* Header with accent bar */}
                 <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-bold text-gray-900 dark:text-white text-base relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-primary before:rounded-full">
+                    <h3 className="font-bold text-gray-700 dark:text-white text-base relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-primary before:rounded-full">
                         Recent Posts
                     </h3>
                 </div>
@@ -59,14 +59,14 @@ async function RecentPostsWidget() {
                                 {article.thumbnail ? (
                                     <Image src={article.thumbnail} alt={article.title} fill className="object-cover" />
                                 ) : (
-                                    <div className="w-full h-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-[10px] text-gray-400">N/A</div>
+                                    <div className="w-full h-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-[10px] text-gray-500">N/A</div>
                                 )}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200 group-hover:text-primary transition-colors leading-snug line-clamp-2">
                                     {article.title}
                                 </h4>
-                                <span className="text-xs text-gray-400 mt-1 block">
+                                <span className="text-xs text-gray-500 mt-1 block">
                                     {new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                 </span>
                             </div>
@@ -85,7 +85,7 @@ async function TagCloudWidget() {
 
     return (
         <div className="mb-8">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-blue-500 before:rounded-full">
+            <h3 className="font-bold text-gray-700 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-blue-500 before:rounded-full">
                 Tag Cloud
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -111,14 +111,14 @@ async function CategoriesWidget() {
 
     return (
         <div className="mb-8">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-purple-500 before:rounded-full">
+            <h3 className="font-bold text-gray-700 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-purple-500 before:rounded-full">
                 Categories
             </h3>
             <ul className="space-y-2">
                 {categories.map(cat => (
                     <li key={cat.id}>
                         <Link href={`/articles/category/${cat.slug}`} className="flex justify-between items-center group">
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors">
+                            <span className="text-sm font-medium text-gray-600 dark:text-gray-500 group-hover:text-primary transition-colors">
                                 {cat.name}
                             </span>
                             <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-600 px-2 py-0.5 rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
@@ -157,7 +157,7 @@ async function TopBrokersWidget() {
             <div className="p-5">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-bold text-gray-900 dark:text-white text-base relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-primary before:rounded-full">
+                    <h3 className="font-bold text-gray-700 dark:text-white text-base relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-primary before:rounded-full">
                         Top Brokers
                     </h3>
                     <Link href="/brokers" className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold hover:bg-primary/90 transition-colors shrink-0 whitespace-nowrap shadow-sm shadow-primary/20">
@@ -177,7 +177,7 @@ async function TopBrokersWidget() {
                                         <img src={broker.logo} alt={broker.name} className="w-full h-full object-contain" />
                                     </div>
                                     <div className="min-w-0">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-0.5 truncate group-hover:text-primary transition-colors">{broker.name}</h4>
+                                        <h4 className="text-sm font-bold text-gray-700 dark:text-white leading-tight mb-0.5 truncate group-hover:text-primary transition-colors">{broker.name}</h4>
                                         {broker.isRecommended && (
                                             <span className="inline-block px-1.5 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider whitespace-nowrap bg-green-100 dark:bg-[#00C888]/10 text-green-600 dark:text-[#00C888]">
                                                 Recommended
@@ -195,12 +195,12 @@ async function TopBrokersWidget() {
                             <div className="flex flex-wrap gap-1.5 mb-2">
                                 {broker.minDeposit != null && (
                                     <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5 whitespace-nowrap">
-                                        <span className="text-gray-900 dark:text-white font-black">${broker.minDeposit}</span> Min Deposit
+                                        <span className="text-gray-700 dark:text-white font-black">${broker.minDeposit}</span> Min Deposit
                                     </div>
                                 )}
                                 {broker.maxLeverage && (
                                     <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5 whitespace-nowrap">
-                                        <span className="text-gray-900 dark:text-white font-black">{broker.maxLeverage}</span> Leverage
+                                        <span className="text-gray-700 dark:text-white font-black">{broker.maxLeverage}</span> Leverage
                                     </div>
                                 )}
                             </div>

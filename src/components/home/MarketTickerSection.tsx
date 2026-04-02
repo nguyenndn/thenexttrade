@@ -111,7 +111,7 @@ export function MarketTickerSection({ initialData }: { initialData?: MarketItem[
                                 {/* Price Info */}
                                 <div className="flex flex-col">
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-sm font-mono font-bold text-gray-900 dark:text-gray-100">
+                                        <span className="text-sm font-mono font-bold text-gray-700 dark:text-gray-100">
                                             {item.price.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}
                                         </span>
                                         <span className={`flex items-center text-[10px] font-bold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>

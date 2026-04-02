@@ -37,7 +37,7 @@ const PremiumCard = React.forwardRef<HTMLDivElement, PremiumCardProps>(
                         "bg-[#151925] text-white", // Default to dark for premium feel? No, user wants light in light mode.
                         // Let's make it responsive.
                         "bg-white dark:bg-[#151925]",
-                        "text-gray-900 dark:text-white",
+                        "text-gray-700 dark:text-white",
                         "border-gray-200 dark:border-white/10",
                         "shadow-2xl"
                     ],

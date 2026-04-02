@@ -93,9 +93,9 @@ function AnalyticsEmptyState() {
     return (
         <div className="flex flex-col items-center justify-center py-20">
             <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-                <BarChart3 className="w-10 h-10 text-gray-400" />
+                <BarChart3 className="w-10 h-10 text-gray-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">
                 No trading data yet
             </h3>
             <p className="text-gray-600 text-center max-w-md">

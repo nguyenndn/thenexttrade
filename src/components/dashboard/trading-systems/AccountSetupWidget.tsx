@@ -37,7 +37,7 @@ export function AccountSetupWidget({ hasAccount, hasApprovedLicense, hasDownload
         <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
             {/* Header */}
             <div className="flex items-center justify-between px-5 pt-5 pb-3">
-                <h3 className="text-base font-extrabold text-gray-900 dark:text-white tracking-tight">
+                <h3 className="text-base font-extrabold text-gray-700 dark:text-white tracking-tight">
                     Account Setup
                 </h3>
                 <div className="flex items-center gap-3">
@@ -48,7 +48,7 @@ export function AccountSetupWidget({ hasAccount, hasApprovedLicense, hasDownload
                         variant="outline"
                         aria-label="Dismiss setup guide"
                         onClick={() => setIsDismissed(true)}
-                        className="w-7 h-7 p-0 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        className="w-7 h-7 p-0 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     >
                         <X size={15} />
                     </Button>

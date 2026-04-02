@@ -58,7 +58,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                 <div className="space-y-4">
                     <p className="text-gray-600 dark:text-gray-300">
                         Open the <strong>MQL5</strong> folder. Inside, find and open the
-                        <strong className="text-gray-900 dark:text-white mx-1">
+                        <strong className="text-gray-700 dark:text-white mx-1">
                             {type === "MT5_EA" ? "Experts" : "Indicators"}
                         </strong>
                         folder.
@@ -67,7 +67,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         <FolderOpen size={16} />
                         <span>MQL5</span>
                         <ChevronRight size={14} />
-                        <span className="font-bold text-gray-900 dark:text-white">{type === "MT5_EA" ? "Experts" : "Indicators"}</span>
+                        <span className="font-bold text-gray-700 dark:text-white">{type === "MT5_EA" ? "Experts" : "Indicators"}</span>
                     </div>
                 </div>
             )
@@ -158,7 +158,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         STEP {currentStep + 1}
                     </div>
 
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                    <h2 className="text-3xl font-bold text-gray-700 dark:text-white mb-4">
                         {steps[currentStep].title}
                     </h2>
 

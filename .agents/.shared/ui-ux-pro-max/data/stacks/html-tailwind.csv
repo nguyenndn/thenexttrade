@@ -27,7 +27,7 @@ No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 26,Forms,Focus states,Always show focus indicators,focus:ring-2 focus:ring-blue-500,Remove focus outline,focus:ring-2 focus:ring-offset-2,focus:outline-none (no replacement),High,
 27,Forms,Input sizing,Consistent input dimensions,h-10 px-3 for inputs,Inconsistent input heights,h-10 w-full px-3,Various heights per input,Medium,
 28,Forms,Disabled states,Clear disabled styling,disabled:opacity-50 disabled:cursor-not-allowed,No disabled indication,disabled:opacity-50,Same style as enabled,Medium,
-29,Forms,Placeholder styling,Style placeholder text appropriately,placeholder:text-gray-400,Dark placeholder text,placeholder:text-gray-400,Default dark placeholder,Low,
+29,Forms,Placeholder styling,Style placeholder text appropriately,placeholder:text-gray-500,Dark placeholder text,placeholder:text-gray-500,Default dark placeholder,Low,
 30,Responsive,Mobile-first approach,Start with mobile styles and add breakpoints,Default mobile + md: lg: xl:,Desktop-first approach,text-sm md:text-base,text-base max-md:text-sm,Medium,https://tailwindcss.com/docs/responsive-design
 31,Responsive,Breakpoint testing,Test at standard breakpoints,320 375 768 1024 1280 1536,Only test on development device,Test all breakpoints,Single device testing,High,
 32,Responsive,Hidden/shown utilities,Control visibility per breakpoint,hidden md:block,Different content per breakpoint,hidden md:flex,Separate mobile/desktop components,Low,https://tailwindcss.com/docs/display

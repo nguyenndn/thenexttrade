@@ -115,7 +115,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                 {view === "instructions" && pendingData && (
                     <div className="p-8">
                         <DialogHeader className="mb-6 flex flex-row items-center justify-between space-y-0 pb-0">
-                            <DialogTitle className="text-xl font-black text-gray-900 dark:text-white tracking-tight mx-auto uppercase">
+                            <DialogTitle className="text-xl font-black text-gray-700 dark:text-white tracking-tight mx-auto uppercase">
                                 IB Transfer Instructions
                             </DialogTitle>
                         </DialogHeader>
@@ -127,17 +127,17 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             </div>
                         </div>
 
-                        <h3 className="text-center text-xl font-black text-gray-900 dark:text-white mb-6">
+                        <h3 className="text-center text-xl font-black text-gray-700 dark:text-white mb-6">
                             How to Transfer to Our IB
                         </h3>
 
                         {/* Instruction List Box */}
                         <div className="bg-gray-50 dark:bg-[#151925] rounded-xl p-5 mb-6 shadow-inner max-h-[300px] overflow-y-auto">
-                            <p className="font-bold text-gray-900 dark:text-white mb-4">
+                            <p className="font-bold text-gray-700 dark:text-white mb-4">
                                 {selectedBrokerData?.name || pendingData.broker} IB Transfer Instructions:
                             </p>
                             
-                            <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400 font-medium">
+                            <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-500 font-medium">
                                 <li>1. Log in to your {selectedBrokerData?.name || pendingData.broker} client portal</li>
                                 <li>2. Go to "My Account" or "Profile" section</li>
                                 <li>3. Find "IB/Partner" or "Referral" section</li>
@@ -195,13 +195,13 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             size="icon"
                             type="button"
                             onClick={() => setView("form")}
-                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                            className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                         >
                             <XCircle size={18} />
                         </Button>
 
                         <DialogHeader className="mb-8 mt-2 flex flex-row items-center justify-center space-y-0 pb-0">
-                            <DialogTitle className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight text-center">
+                            <DialogTitle className="text-xl font-black text-gray-700 dark:text-white uppercase tracking-tight text-center">
                                 STEP 1: IB VERIFICATION
                             </DialogTitle>
                         </DialogHeader>
@@ -230,7 +230,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             </div>
                         </div>
 
-                        <h3 className="text-center text-xl font-black text-gray-900 dark:text-white mb-6">
+                        <h3 className="text-center text-xl font-black text-gray-700 dark:text-white mb-6">
                             Is your account under our IB?
                         </h3>
 
@@ -238,7 +238,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         <div className="bg-gray-50 dark:bg-[#151925] rounded-xl p-6 mb-8 text-center space-y-5">
                             <div>
                                 <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-1">Your Broker:</p>
-                                <p className="text-2xl font-black text-gray-900 dark:text-white">
+                                <p className="text-2xl font-black text-gray-700 dark:text-white">
                                     {selectedBrokerData?.name || pendingData.broker}
                                 </p>
                             </div>
@@ -290,13 +290,13 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             onClick={() => setView("verify_ib")}
                             disabled={isSubmitting}
                             aria-label="Back to previous step"
-                            className="absolute top-6 left-6 flex items-center justify-center w-8 h-8 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+                            className="absolute top-6 left-6 flex items-center justify-center w-8 h-8 rounded-full text-gray-600 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-500 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
                         >
                             <ArrowLeft size={20} />
                         </Button>
 
                         <DialogHeader className="mb-8 mt-2 flex flex-row items-center justify-center space-y-0 pb-0">
-                            <DialogTitle className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight text-center">
+                            <DialogTitle className="text-xl font-black text-gray-700 dark:text-white uppercase tracking-tight text-center">
                                 STEP 2: BALANCE CHECK
                             </DialogTitle>
                         </DialogHeader>
@@ -325,7 +325,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             </div>
                         </div>
 
-                        <h3 className="text-center text-2xl font-black text-gray-900 dark:text-white mb-6 leading-tight max-w-[280px] mx-auto">
+                        <h3 className="text-center text-2xl font-black text-gray-700 dark:text-white mb-6 leading-tight max-w-[280px] mx-auto">
                             Does your account have a minimum balance?
                         </h3>
 
@@ -381,13 +381,13 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             size="icon"
                             type="button"
                             onClick={() => setOpen(false)}
-                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                            className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                         >
                             <XCircle size={18} />
                         </Button>
                         
                         <DialogHeader className="mb-8 mt-2 flex flex-col items-center justify-center space-y-0 pb-0">
-                            <DialogTitle className="text-xl font-black text-gray-900 dark:text-white tracking-tight text-center">
+                            <DialogTitle className="text-xl font-black text-gray-700 dark:text-white tracking-tight text-center">
                                 Cannot Submit Yet
                             </DialogTitle>
                         </DialogHeader>
@@ -401,7 +401,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             </div>
                         </div>
 
-                        <h3 className="text-center text-xl font-black text-gray-900 dark:text-white mb-4">
+                        <h3 className="text-center text-xl font-black text-gray-700 dark:text-white mb-4">
                             Insufficient Balance
                         </h3>
 
@@ -447,7 +447,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                 {view === "form" && (
                     <div className="p-6">
                         <DialogHeader>
-                            <DialogTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                            <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
                                 Add New Account
                             </DialogTitle>
                             <DialogDescription className="text-gray-600 dark:text-gray-300">
@@ -491,7 +491,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                             <span className={cn(
                                                 "text-[13px] font-extrabold tracking-wide transition-colors",
                                                 selectedBroker === broker.slug 
-                                                    ? "text-gray-900 dark:text-white" 
+                                                    ? "text-gray-700 dark:text-white" 
                                                     : "text-gray-600 dark:text-gray-600 group-hover:text-gray-800 dark:group-hover:text-gray-300"
                                             )}>
                                                 {broker.name}
@@ -543,7 +543,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                     <div className="w-full border-t border-gray-200 dark:border-white/10" />
                                 </div>
                                 <div className="relative flex justify-center text-xs">
-                                    <span className="px-3 bg-white dark:bg-[#1E2028] text-gray-400 font-medium">or</span>
+                                    <span className="px-3 bg-white dark:bg-[#1E2028] text-gray-500 font-medium">or</span>
                                 </div>
                             </div>
 
@@ -578,7 +578,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 >
                                     <ArrowLeft size={18} className="text-gray-600 dark:text-gray-300" />
                                 </Button>
-                                <DialogTitle className="text-lg font-extrabold text-gray-900 dark:text-white">
+                                <DialogTitle className="text-lg font-extrabold text-gray-700 dark:text-white">
                                     Create Your Trading Account
                                 </DialogTitle>
                             </div>
@@ -599,7 +599,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                         <img src={broker.logo} alt={broker.name} className="max-w-full max-h-full object-contain" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                        <p className="text-sm font-bold text-gray-700 dark:text-white">
                                             {broker.name}
                                         </p>
                                     </div>
@@ -648,13 +648,13 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             size="icon"
                             type="button"
                             onClick={() => setOpen(false)}
-                            className="absolute h-auto w-auto top-4 right-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors z-10"
+                            className="absolute h-auto w-auto top-4 right-4 p-2 text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors z-10"
                         >
                             <XCircle size={18} />
                         </Button>
 
                         <div className="flex flex-col items-center text-center space-y-6 animate-in zoom-in duration-500">
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+                            <h2 className="text-xl font-bold text-gray-700 dark:text-white uppercase tracking-wider">
                                 Success!
                             </h2>
 

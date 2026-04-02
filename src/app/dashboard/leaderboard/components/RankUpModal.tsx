@@ -121,7 +121,7 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
         {/* Close */}
         <Button
           variant="ghost"
-          className="absolute top-3 right-3 p-1.5 z-20 text-gray-400 hover:text-gray-600 dark:hover:text-white w-auto h-auto"
+          className="absolute top-3 right-3 p-1.5 z-20 text-gray-500 hover:text-gray-600 dark:hover:text-white w-auto h-auto"
           onClick={() => setShowModal(false)}
           aria-label="Close celebration"
         >
@@ -135,14 +135,14 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
           </div>
 
           {/* Title */}
-          <h2 className="text-xl font-black text-gray-900 dark:text-white mb-2">
+          <h2 className="text-xl font-black text-gray-700 dark:text-white mb-2">
             {tierChange ? "Tier Up!" : "Rank Up!"}
           </h2>
 
           {/* Rank change */}
           {rankChange && (
             <div className="flex items-center justify-center gap-3 mb-4">
-              <span className="text-2xl font-black text-gray-400 line-through">
+              <span className="text-2xl font-black text-gray-500 line-through">
                 #{rankChange.from}
               </span>
               <ArrowUp size={20} className="text-primary" />
@@ -176,7 +176,7 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
           {/* Current XP */}
           <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
             You now have{" "}
-            <span className="font-bold text-gray-900 dark:text-white">
+            <span className="font-bold text-gray-700 dark:text-white">
               {myRank.value.toLocaleString()} XP
             </span>
           </p>

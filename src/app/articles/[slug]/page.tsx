@@ -272,7 +272,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
                 {/* ===== ARTICLE HEADER ===== */}
                 <div className="mb-10">
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white leading-[1.15] tracking-tight mb-6">
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-700 dark:text-white leading-[1.15] tracking-tight mb-6">
                         {article.title}
                     </h1>
 
@@ -349,7 +349,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-sm border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-10">
                             <div
                                 className="prose dark:prose-invert prose-lg max-w-none 
-                                prose-headings:font-black prose-headings:tracking-tight prose-headings:text-gray-900 dark:prose-headings:text-white 
+                                prose-headings:font-black prose-headings:tracking-tight prose-headings:text-gray-700 dark:prose-headings:text-white 
                                 prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-gray-100 dark:prose-h2:border-white/5
                                 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
                                 prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
@@ -357,7 +357,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                 prose-img:rounded-xl prose-img:shadow-md 
                                 prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2
                                 prose-li:text-gray-600 dark:prose-li:text-gray-300
-                                prose-strong:text-gray-900 dark:prose-strong:text-white
+                                prose-strong:text-gray-700 dark:prose-strong:text-white
                                 prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-pre:shadow-inner
                                 prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200
                                 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono"
@@ -372,7 +372,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                     <Link
                                         key={tag.id}
                                         href={`/articles/tags/${tag.slug}`}
-                                        className="px-4 py-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-full text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"
+                                        className="px-4 py-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-full text-sm font-bold text-gray-600 dark:text-gray-500 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"
                                     >
                                         #{tag.name}
                                     </Link>

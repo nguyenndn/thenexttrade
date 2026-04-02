@@ -43,7 +43,7 @@ export function SortableItem({ id, children, className, handle = true }: Sortabl
                 <div
                     {...listeners}
                     {...attributes}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 p-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 z-10"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 p-2 cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 z-10"
                 >
                     <GripVertical size={20} />
                 </div>

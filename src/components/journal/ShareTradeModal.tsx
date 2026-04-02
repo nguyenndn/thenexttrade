@@ -117,7 +117,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
 
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-white dark:bg-[#151925]">
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Share Your Trade</h2>
+                    <h2 className="text-lg font-bold text-gray-700 dark:text-white">Share Your Trade</h2>
                     {/* Close button handled by DialogContent usually, but we can have custom header actions */}
                 </div>
 
@@ -141,14 +141,14 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("basic")}
-                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-700 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Basic
                                 </Button>
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("full")}
-                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-700 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Full
                                 </Button>
@@ -170,7 +170,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                         >
                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Add Description (Optional)</span>
                             <div className={`transition-transform duration-300 ${descriptionOpen ? "rotate-180" : ""}`}>
-                                <ChevronDown size={16} className="text-gray-400" />
+                                <ChevronDown size={16} className="text-gray-500" />
                             </div>
                         </Button>
                         

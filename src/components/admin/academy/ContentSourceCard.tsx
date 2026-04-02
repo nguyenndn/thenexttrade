@@ -48,7 +48,7 @@ export function ContentSourceCard({ rawContent, tone, sourceUrls, onRewrite }: C
             {/* Tone */}
             {toneInfo && (
                 <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400">Tone:</span>
+                    <span className="text-xs text-gray-500">Tone:</span>
                     <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                         {toneInfo.icon} {toneInfo.label}
                     </span>
@@ -58,7 +58,7 @@ export function ContentSourceCard({ rawContent, tone, sourceUrls, onRewrite }: C
             {/* Source URLs */}
             {sourceUrls && sourceUrls.length > 0 && (
                 <div className="space-y-1">
-                    <span className="text-xs text-gray-400">Sources ({sourceUrls.length}):</span>
+                    <span className="text-xs text-gray-500">Sources ({sourceUrls.length}):</span>
                     {sourceUrls.map((url, i) => (
                         <a
                             key={i}
@@ -88,7 +88,7 @@ export function ContentSourceCard({ rawContent, tone, sourceUrls, onRewrite }: C
                     </button>
 
                     {showRaw && (
-                        <div className="mt-2 max-h-48 overflow-y-auto p-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-100 dark:border-white/5 text-[11px] text-gray-600 dark:text-gray-400 whitespace-pre-wrap font-mono">
+                        <div className="mt-2 max-h-48 overflow-y-auto p-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-100 dark:border-white/5 text-[11px] text-gray-600 dark:text-gray-500 whitespace-pre-wrap font-mono">
                             {rawContent.substring(0, 3000)}
                             {rawContent.length > 3000 && "\n\n... (truncated)"}
                         </div>

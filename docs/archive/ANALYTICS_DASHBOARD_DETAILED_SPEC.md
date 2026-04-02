@@ -620,7 +620,7 @@ export function AnalyticsDashboard() {
       {/* Header with filters */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-gray-700 dark:text-white">
             Analytics
           </h1>
           <p className="text-gray-500 text-sm mt-1">
@@ -678,9 +678,9 @@ function AnalyticsEmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-20">
       <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-        <BarChart3 className="w-10 h-10 text-gray-400" />
+        <BarChart3 className="w-10 h-10 text-gray-500" />
       </div>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">
         No trading data yet
       </h3>
       <p className="text-gray-500 text-center max-w-md">
@@ -783,15 +783,15 @@ export function KPICards({ summary }: KPICardsProps) {
                 <Icon size={18} className={card.color} />
               </div>
             </div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">
               {card.title}
             </h3>
-            <p className={`text-2xl font-black ${card.color.includes('green') || card.color.includes('red') ? card.color : 'text-gray-900 dark:text-white'}`}>
+            <p className={`text-2xl font-black ${card.color.includes('green') || card.color.includes('red') ? card.color : 'text-gray-700 dark:text-white'}`}>
               {card.prefix && card.prefix}
               {card.value}
             </p>
             {card.description && (
-              <p className="text-xs text-gray-400 mt-1">{card.description}</p>
+              <p className="text-xs text-gray-500 mt-1">{card.description}</p>
             )}
           </div>
         );
@@ -842,7 +842,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
 
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-      <h3 className="font-bold text-gray-900 dark:text-white mb-4">
+      <h3 className="font-bold text-gray-700 dark:text-white mb-4">
         Equity Curve
       </h3>
       
@@ -960,14 +960,14 @@ export function ProfitCalendar({ data }: ProfitCalendarProps) {
       if (intensity > 0.4) return "bg-red-400 text-white";
       return "bg-red-200 dark:bg-red-500/30 text-red-800 dark:text-red-300";
     }
-    return "bg-gray-100 dark:bg-gray-800 text-gray-400";
+    return "bg-gray-100 dark:bg-gray-800 text-gray-500";
   };
 
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-gray-900 dark:text-white">
+        <h3 className="font-bold text-gray-700 dark:text-white">
           Profit Calendar
         </h3>
         <div className="flex items-center gap-2">
@@ -994,7 +994,7 @@ export function ProfitCalendar({ data }: ProfitCalendarProps) {
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
           <div
             key={day}
-            className="text-center text-xs font-bold text-gray-400 uppercase py-2"
+            className="text-center text-xs font-bold text-gray-500 uppercase py-2"
           >
             {day}
           </div>
@@ -1089,12 +1089,12 @@ export function PairPerformance({ data }: PairPerformanceProps) {
 
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-      <h3 className="font-bold text-gray-900 dark:text-white mb-4">
+      <h3 className="font-bold text-gray-700 dark:text-white mb-4">
         Performance by Pair
       </h3>
 
       {data.length === 0 ? (
-        <div className="h-[250px] flex items-center justify-center text-gray-400">
+        <div className="h-[250px] flex items-center justify-center text-gray-500">
           No data available
         </div>
       ) : (
@@ -1212,7 +1212,7 @@ export function DayPerformance({ data }: DayPerformanceProps) {
 
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-      <h3 className="font-bold text-gray-900 dark:text-white mb-4">
+      <h3 className="font-bold text-gray-700 dark:text-white mb-4">
         Performance by Day
       </h3>
 
@@ -1308,7 +1308,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
       case "LOSS":
         return <TrendingDown size={14} className="text-red-500" />;
       default:
-        return <Minus size={14} className="text-gray-400" />;
+        return <Minus size={14} className="text-gray-500" />;
     }
   };
 
@@ -1319,14 +1319,14 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
       case "LOSS":
         return "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400";
       default:
-        return "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400";
+        return "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-500";
     }
   };
 
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-gray-900 dark:text-white">
+        <h3 className="font-bold text-gray-700 dark:text-white">
           Recent Trades
         </h3>
         <Link
@@ -1338,13 +1338,13 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
       </div>
 
       {trades.length === 0 ? (
-        <div className="py-8 text-center text-gray-400">
+        <div className="py-8 text-center text-gray-500">
           No trades to display
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider">
+            <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
               <tr>
                 <th className="px-4 py-3 rounded-l-xl">Date</th>
                 <th className="px-4 py-3">Pair</th>
@@ -1362,7 +1362,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                   <td className="px-4 py-3 text-gray-500">
                     {format(parseISO(trade.entryDate), "MMM dd, HH:mm")}
                   </td>
-                  <td className="px-4 py-3 font-bold text-gray-900 dark:text-white">
+                  <td className="px-4 py-3 font-bold text-gray-700 dark:text-white">
                     {trade.symbol}
                   </td>
                   <td className="px-4 py-3">

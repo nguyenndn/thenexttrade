@@ -135,7 +135,7 @@ export function EADashboardClient({
                                 <div className={`p-2.5 rounded-xl ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform`}>
                                     <action.icon size={18} aria-hidden="true" />
                                 </div>
-                                <span className="font-bold text-sm text-gray-900 dark:text-white">{action.title}</span>
+                                <span className="font-bold text-sm text-gray-700 dark:text-white">{action.title}</span>
                             </Link>
                         ))}
                     </div>
@@ -147,7 +147,7 @@ export function EADashboardClient({
                 <AnimatedSection delay={0.5}>
                     <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
                         <div className="flex items-center justify-between mb-5">
-                            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+                            <h2 className="text-sm font-bold text-gray-700 dark:text-white uppercase tracking-wider">
                                 Recent Activity
                             </h2>
                             <Link
@@ -181,7 +181,7 @@ export function EADashboardClient({
 
                                     {/* Info */}
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm text-gray-900 dark:text-white font-medium truncate">
+                                        <p className="text-sm text-gray-700 dark:text-white font-medium truncate">
                                             <span className="font-mono text-xs text-gray-600 dark:text-gray-300 mr-1.5">
                                                 {item.accountNumber}
                                             </span>
@@ -193,13 +193,13 @@ export function EADashboardClient({
                                                 {item.action}
                                             </span>
                                         </p>
-                                        <p className="text-xs text-gray-400 mt-0.5 truncate">
+                                        <p className="text-xs text-gray-500 mt-0.5 truncate">
                                             {item.userName || "Unknown"} · {item.broker}
                                         </p>
                                     </div>
 
                                     {/* Time */}
-                                    <span className="text-xs text-gray-400 shrink-0">
+                                    <span className="text-xs text-gray-500 shrink-0">
                                         {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true, locale: enUS })}
                                     </span>
                                 </motion.div>

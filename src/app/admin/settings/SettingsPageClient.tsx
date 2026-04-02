@@ -65,7 +65,7 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
                                     "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors",
                                     isActive
                                         ? "border-primary text-primary"
-                                        : "border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20"
+                                        : "border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20"
                                 )}
                             >
                                 <Icon size={16} />
@@ -83,7 +83,7 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
                 {activeTab === "system" && <SystemSettings initialConfig={initialConfig} />}
                 {activeTab === "notifications" && (
                     <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm">
-                        <div className="text-center py-20 text-gray-400">
+                        <div className="text-center py-20 text-gray-500">
                             <Bell size={48} className="mx-auto mb-4 opacity-50" />
                             <p>Notification settings coming soon.</p>
                         </div>
@@ -167,12 +167,12 @@ function ProfileSettings({ user }: { user: any }) {
                             </label>
                         </div>
                         <div className="pb-1">
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{user.name || 'Admin'}</p>
+                            <p className="text-sm font-semibold text-gray-700 dark:text-white">{user.name || 'Admin'}</p>
                             <p className="text-xs text-gray-600 mt-0.5">{user.email}</p>
                         </div>
                     </div>
 
-                    <p className="text-xs text-gray-400 mt-3">JPG, PNG or GIF · Max 1MB · Recommended 400×400px</p>
+                    <p className="text-xs text-gray-500 mt-3">JPG, PNG or GIF · Max 1MB · Recommended 400×400px</p>
                 </div>
             </div>
 
@@ -182,7 +182,7 @@ function ProfileSettings({ user }: { user: any }) {
                     <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                         <User size={14} className="text-primary" />
                     </div>
-                    <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Personal Information</h2>
+                    <h2 className="text-sm font-semibold text-gray-700 dark:text-white">Personal Information</h2>
                 </div>
                 <div className="px-6 py-5 space-y-4">
                     <PremiumInput
@@ -224,7 +224,7 @@ function SecuritySettings() {
                 <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                     <Lock size={14} className="text-primary" />
                 </div>
-                <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Security</h2>
+                <h2 className="text-sm font-semibold text-gray-700 dark:text-white">Security</h2>
             </div>
             <div className="px-6 py-6">
                 <div className="bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 p-4 rounded-xl text-sm font-medium">
@@ -240,7 +240,7 @@ function SecuritySettings() {
 const ToggleRow = ({ label, desc, checked, onChange }: { label: string; desc: string; checked: boolean; onChange: () => void }) => (
     <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
         <div>
-            <h4 className="font-bold text-gray-900 dark:text-white text-sm">{label}</h4>
+            <h4 className="font-bold text-gray-700 dark:text-white text-sm">{label}</h4>
             <p className="text-xs text-gray-600">{desc}</p>
         </div>
         <label className="relative inline-flex items-center cursor-pointer">
@@ -256,7 +256,7 @@ const SectionCard = ({ icon: Icon, title, children, className }: { icon: any; ti
             <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                 <Icon size={14} className="text-primary" />
             </div>
-            <h2 className="text-sm font-semibold text-gray-900 dark:text-white">{title}</h2>
+            <h2 className="text-sm font-semibold text-gray-700 dark:text-white">{title}</h2>
         </div>
         <div className="px-6 py-5 space-y-4 flex-1">{children}</div>
     </div>
@@ -327,7 +327,7 @@ function SystemSettings({ initialConfig }: { initialConfig: SettingsPageClientPr
                             onChange={(e) => setConfig((prev) => ({ ...prev, systemAnnouncement: e.target.value }))}
                             placeholder="e.g. Scheduled maintenance tonight at 22:00 UTC"
                             rows={2}
-                            className="w-full px-4 py-3 text-sm bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-gray-900 dark:text-white placeholder-gray-400 resize-none"
+                            className="w-full px-4 py-3 text-sm bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-gray-700 dark:text-white placeholder-gray-400 resize-none"
                         />
                     </div>
                 </SectionCard>
@@ -336,7 +336,7 @@ function SystemSettings({ initialConfig }: { initialConfig: SettingsPageClientPr
                 <SectionCard icon={Palette} title="Branding & SEO" className="lg:col-span-2">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-4">
-                            <h4 className="font-bold text-gray-900 dark:text-white text-sm">Site Information</h4>
+                            <h4 className="font-bold text-gray-700 dark:text-white text-sm">Site Information</h4>
                             <PremiumInput
                                 label="Site Title"
                                 value={config.siteTitle}
@@ -356,7 +356,7 @@ function SystemSettings({ initialConfig }: { initialConfig: SettingsPageClientPr
                             />
                         </div>
                         <div className="space-y-4">
-                            <h4 className="font-bold text-gray-900 dark:text-white text-sm">Social Links</h4>
+                            <h4 className="font-bold text-gray-700 dark:text-white text-sm">Social Links</h4>
                             <PremiumInput
                                 label="Telegram"
                                 value={config.socialTelegram}

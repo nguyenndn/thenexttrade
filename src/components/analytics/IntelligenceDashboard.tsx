@@ -48,7 +48,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
         yellow: { stroke: "stroke-yellow-500", text: "text-yellow-500", bg: "bg-yellow-500/10" },
         orange: { stroke: "stroke-orange-500", text: "text-orange-500", bg: "bg-orange-500/10" },
         red: { stroke: "stroke-red-500", text: "text-red-500", bg: "bg-red-500/10" },
-        gray: { stroke: "stroke-gray-400", text: "text-gray-400", bg: "bg-gray-500/10" },
+        gray: { stroke: "stroke-gray-400", text: "text-gray-500", bg: "bg-gray-500/10" },
     };
     const c = colorMap[tradeScore.color] || colorMap.gray;
 
@@ -101,7 +101,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                             <div className="p-1.5 rounded-lg bg-cyan-500/10">
                                 <Brain size={16} className="text-cyan-500" />
                             </div>
-                            <h2 className="text-sm font-bold text-gray-900 dark:text-white">Trade Score</h2>
+                            <h2 className="text-sm font-bold text-gray-700 dark:text-white">Trade Score</h2>
                         </div>
 
                         <div className="relative w-36 h-36 shrink-0">
@@ -117,7 +117,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
                                 <span className={`text-4xl font-black ${c.text}`}>{tradeScore.score}</span>
-                                <span className="text-xs font-bold text-gray-400">/ 100</span>
+                                <span className="text-xs font-bold text-gray-500">/ 100</span>
                             </div>
                         </div>
 
@@ -128,11 +128,11 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 
                     {/* ═══ COL 2: Score Breakdown ═══ */}
                     <div className="flex flex-col lg:border-r lg:border-gray-100 lg:dark:border-white/5 lg:pr-8">
-                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Score Breakdown</h3>
+                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Score Breakdown</h3>
                         <div className="flex-1 space-y-3">
                             {scoreFactors.filter(f => f.value >= 0).map((factor) => (
                                 <div key={factor.name} className="flex items-center gap-3">
-                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400 w-28 shrink-0">{factor.name}</span>
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-500 w-28 shrink-0">{factor.name}</span>
                                     <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                                         <div
                                             className={`h-full rounded-full transition-all duration-700 ${impactBg[factor.impact]}`}
@@ -152,7 +152,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2">
                                 <Gauge size={16} className="text-primary" />
-                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Behavior Risk</h3>
+                                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Behavior Risk</h3>
                             </div>
                             <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${riskBg} ${riskColor}`}>
                                 {riskLabel}
@@ -167,7 +167,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                                 style={{ width: `${100 - healthScore}%` }}
                             />
                         </div>
-                        <div className="flex items-center justify-between mt-1.5 text-[10px] font-bold text-gray-400">
+                        <div className="flex items-center justify-between mt-1.5 text-[10px] font-bold text-gray-500">
                             <span>Low</span>
                             <span>Moderate</span>
                             <span>High</span>
@@ -181,16 +181,16 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                         {/* Quick stats */}
                         <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-3 gap-3">
                             <div className="text-center">
-                                <p className="text-lg font-black text-gray-900 dark:text-white">{data.issues.length}</p>
-                                <p className="text-[11px] font-bold text-gray-400">Issues</p>
+                                <p className="text-lg font-black text-gray-700 dark:text-white">{data.issues.length}</p>
+                                <p className="text-[11px] font-bold text-gray-500">Issues</p>
                             </div>
                             <div className="text-center">
-                                <p className="text-lg font-black text-gray-900 dark:text-white">{data.strengths.length}</p>
-                                <p className="text-[11px] font-bold text-gray-400">Strengths</p>
+                                <p className="text-lg font-black text-gray-700 dark:text-white">{data.strengths.length}</p>
+                                <p className="text-[11px] font-bold text-gray-500">Strengths</p>
                             </div>
                             <div className="text-center">
                                 <p className={`text-lg font-black ${c.text}`}>{tradeScore.score}</p>
-                                <p className="text-[11px] font-bold text-gray-400">Score</p>
+                                <p className="text-[11px] font-bold text-gray-500">Score</p>
                             </div>
                         </div>
                     </div>
@@ -249,8 +249,8 @@ function AIRecommendation({ data }: { data: IntelligenceData }) {
                     <Lightbulb size={20} className="text-primary" />
                 </div>
                 <div>
-                    <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">This Week&apos;s Focus</span>
-                    <p className="text-base font-bold text-gray-900 dark:text-white mt-1 leading-relaxed">
+                    <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">This Week&apos;s Focus</span>
+                    <p className="text-base font-bold text-gray-700 dark:text-white mt-1 leading-relaxed">
                         {recommendation}
                     </p>
                     <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{context}</p>
@@ -300,12 +300,12 @@ function InsightCard({ insight }: { insight: Insight }) {
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">{insight.title}</h3>
+                            <h3 className="font-bold text-gray-700 dark:text-white text-sm">{insight.title}</h3>
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${s.badge}`}>{severityLabel[insight.severity]}</span>
                         </div>
                         <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 leading-relaxed">{insight.description}</p>
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{insight.metric}</span>
+                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{insight.metric}</span>
                             {insight.filterUrl && (
                                 <Link href={insight.filterUrl} className="text-xs font-bold text-primary hover:underline flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     View Trades <ChevronRight size={12} />
@@ -329,7 +329,7 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
             <div className="inline-flex items-center justify-center p-4 rounded-xl bg-cyan-500/10 text-cyan-500 mb-6 ring-4 ring-cyan-500/5">
                 <Brain size={32} />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">More Trades Needed</h2>
+            <h2 className="text-xl font-bold text-gray-700 dark:text-white mb-2">More Trades Needed</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
                 Complete at least 30 closed trades to unlock Trading Intelligence.
             </p>
@@ -361,8 +361,8 @@ export function IntelligenceDashboard({ data }: { data: IntelligenceData }) {
                 <div className="flex items-center gap-1.5">
                     <Crosshair size={14} className="text-primary" />
                     <span>
-                        Analyzed <span className="font-bold text-gray-900 dark:text-white">{data.totalAnalyzed.toLocaleString()}</span> trades
-                        {data.periodDays > 0 && <span className="text-gray-400"> over {data.periodDays} days</span>}
+                        Analyzed <span className="font-bold text-gray-700 dark:text-white">{data.totalAnalyzed.toLocaleString()}</span> trades
+                        {data.periodDays > 0 && <span className="text-gray-500"> over {data.periodDays} days</span>}
                     </span>
                 </div>
                 {data.issues.length > 0 && (

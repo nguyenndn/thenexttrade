@@ -39,7 +39,7 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
                         key={item.name}
                         href={item.href}
                         onClick={onClose}
-                        className={`block px-4 py-3 rounded-lg font-medium transition-colors ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-900 hover:bg-gray-50 hover:text-teal-600'}`}
+                        className={`block px-4 py-3 rounded-lg font-medium transition-colors ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-700 hover:bg-gray-50 hover:text-teal-600'}`}
                     >
                         {item.name}
                     </Link>
@@ -64,12 +64,12 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
                                         />
                                     ) : (
                                         <div className={`w-full h-full flex items-center justify-center ${isDark ? 'bg-slate-700' : 'bg-gray-200'}`}>
-                                            <UserIcon size={20} className="text-gray-400" />
+                                            <UserIcon size={20} className="text-gray-500" />
                                         </div>
                                     )}
                                 </div>
                                 <div className="min-w-0">
-                                    <p className={`font-semibold text-sm truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                    <p className={`font-semibold text-sm truncate ${isDark ? 'text-white' : 'text-gray-700'}`}>
                                         {user.name || "Trader"}
                                     </p>
                                     <p className="text-xs text-primary truncate">@{user.profile?.username || "user"}</p>
@@ -83,7 +83,7 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
                             </Link>
                             <Link href="/dashboard/settings" onClick={onClose}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-gray-700 hover:bg-gray-50'}`}>
-                                <Settings size={16} className="text-gray-400" />
+                                <Settings size={16} className="text-gray-500" />
                                 Settings
                             </Link>
                             <button

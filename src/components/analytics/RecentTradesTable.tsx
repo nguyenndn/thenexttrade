@@ -25,7 +25,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
             case "LOSS":
                 return <TrendingDown size={14} className="text-red-500" />;
             default:
-                return <Minus size={14} className="text-gray-400" />;
+                return <Minus size={14} className="text-gray-500" />;
         }
     };
 
@@ -36,7 +36,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
             case "LOSS":
                 return "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400";
             default:
-                return "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400";
+                return "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-500";
         }
     };
 
@@ -45,7 +45,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-1.5 h-6 bg-[#00C888] rounded-full"></div>
-                    <h3 className="font-bold text-gray-900 dark:text-white text-lg">
+                    <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                         Recent Trades
                     </h3>
                 </div>
@@ -58,13 +58,13 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
             </div>
 
             {trades.length === 0 ? (
-                <div className="py-8 text-center text-gray-400">
+                <div className="py-8 text-center text-gray-500">
                     No trades to display
                 </div>
             ) : (
                 <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10">
                     <table className="w-full text-left text-sm">
-                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-400 font-bold tracking-wider border-b border-gray-200 dark:border-white/10">
+                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider border-b border-gray-200 dark:border-white/10">
                             <tr>
                                 <th className="px-4 py-3">Date</th>
                                 <th className="px-4 py-3">Pair</th>
@@ -82,7 +82,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                     <td className="px-4 py-3.5 text-gray-600 font-medium whitespace-nowrap">
                                         {format(parseISO(trade.entryDate), "MMM dd, HH:mm")}
                                     </td>
-                                    <td className="px-4 py-3.5 font-bold text-gray-900 dark:text-white whitespace-nowrap">
+                                    <td className="px-4 py-3.5 font-bold text-gray-700 dark:text-white whitespace-nowrap">
                                         {trade.symbol}
                                     </td>
                                     <td className="px-4 py-3.5 whitespace-nowrap">

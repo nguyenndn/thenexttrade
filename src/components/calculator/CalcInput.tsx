@@ -43,7 +43,7 @@ export function CalcInput({
                     onChange={(e) => onChange(e.target.value)}
                     className={cn(
                         "w-full py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl",
-                        "font-bold text-lg text-gray-900 dark:text-white",
+                        "font-bold text-lg text-gray-700 dark:text-white",
                         "outline-none transition-all duration-200",
                         "focus:border-primary focus:ring-2 focus:ring-primary/20",
                         "hover:border-gray-300 dark:hover:border-white/20",

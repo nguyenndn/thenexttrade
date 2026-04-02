@@ -372,7 +372,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
             {isShortcutsPanelOpen && (
                 <div className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#0B0E14] p-4 animate-in slide-in-from-top-2 duration-200">
                     <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <h4 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                             <Keyboard size={16} /> Keyboard Shortcuts
                         </h4>
                         <Button variant="ghost" size="sm" onClick={() => setIsShortcutsPanelOpen(false)} className="text-xs h-6">Close</Button>
@@ -380,7 +380,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                         {shortcuts.map((s) => (
                             <div key={s.action} className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                                <span className="text-xs text-gray-600 dark:text-gray-400">{s.action}</span>
+                                <span className="text-xs text-gray-600 dark:text-gray-500">{s.action}</span>
                                 <div className="flex items-center gap-0.5">
                                     {s.keys.map((key) => (
                                         <kbd key={key} className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 rounded border border-gray-200 dark:border-white/10">
@@ -427,7 +427,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
             {linkDialogOpen && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setLinkDialogOpen(false)}>
                     <div className="bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4" onClick={e => e.stopPropagation()}>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Insert Link</h3>
+                        <h3 className="text-lg font-bold text-gray-700 dark:text-white">Insert Link</h3>
                         <input
                             ref={linkInputRef}
                             type="url"
@@ -452,7 +452,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
             {youtubeDialogOpen && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setYoutubeDialogOpen(false)}>
                     <div className="bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4" onClick={e => e.stopPropagation()}>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Embed YouTube Video</h3>
+                        <h3 className="text-lg font-bold text-gray-700 dark:text-white">Embed YouTube Video</h3>
                         <input
                             ref={youtubeInputRef}
                             type="url"
@@ -491,7 +491,7 @@ function ToolbarButton({ onClick, isActive, icon: Icon, title, disabled, classNa
             className={`rounded-lg transition-all group flex items-center justify-center
                 ${isActive
                     ? 'bg-primary/10 text-primary ring-1 ring-primary/20 hover:bg-primary/20 hover:text-primary'
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white'
                 }
                 ${disabled ? 'opacity-30 cursor-not-allowed' : ''}
                 ${className || ''}

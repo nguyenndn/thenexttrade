@@ -115,7 +115,7 @@ export function ReviewsSection() {
 
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-white mb-3 tracking-tight">
                         What Traders Say
                     </h2>
                     <p className="text-gray-600 dark:text-gray-300 text-base">
@@ -153,7 +153,7 @@ export function ReviewsSection() {
                                         {review.initials}
                                     </div>
                                     <div>
-                                        <p className="text-gray-900 dark:text-white font-bold text-sm">
+                                        <p className="text-gray-700 dark:text-white font-bold text-sm">
                                             {review.name}
                                         </p>
                                         <p className="text-gray-600 dark:text-gray-300 text-xs">{review.role}</p>
@@ -185,7 +185,7 @@ export function ReviewsSection() {
                             variant="ghost"
                             size="icon"
                             onClick={prev}
-                            className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white"
+                            className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white"
                         >
                             <ChevronLeft size={18} />
                         </Button>
@@ -209,7 +209,7 @@ export function ReviewsSection() {
                             variant="ghost"
                             size="icon"
                             onClick={next}
-                            className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white"
+                            className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white"
                         >
                             <ChevronRight size={18} />
                         </Button>

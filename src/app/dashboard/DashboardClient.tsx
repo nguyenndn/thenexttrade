@@ -132,7 +132,7 @@ export default function DashboardClient({
                                     <TrendingUp size={20} />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">Period Growth</h3>
+                                    <h3 className="font-bold text-gray-700 dark:text-white text-sm">Period Growth</h3>
                                     <p className="text-xs text-gray-600">Cumulative Net Profit</p>
                                 </div>
                             </div>
@@ -154,7 +154,7 @@ export default function DashboardClient({
                                 <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
                                     <PieChart size={20} />
                                 </div>
-                                <h3 className="font-bold text-gray-900 dark:text-white text-sm">Profit Distribution</h3>
+                                <h3 className="font-bold text-gray-700 dark:text-white text-sm">Profit Distribution</h3>
                             </div>
                             <div className="flex-1 min-h-0">
                                 <ProfitDistributionChart data={symbolPerformance} height={110} innerRadius={22} outerRadius={36} />
@@ -167,7 +167,7 @@ export default function DashboardClient({
                                 <div className="p-3 bg-orange-500/10 rounded-xl text-orange-500">
                                     <Layers size={20} />
                                 </div>
-                                <h3 className="font-bold text-gray-900 dark:text-white text-sm">Lot Distribution</h3>
+                                <h3 className="font-bold text-gray-700 dark:text-white text-sm">Lot Distribution</h3>
                             </div>
                             <div className="flex-1 min-h-0">
                                 <LotDistributionChart data={lotDistribution} height={110} innerRadius={22} outerRadius={36} />
@@ -185,7 +185,7 @@ export default function DashboardClient({
                                     <Trophy size={20} />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">Daily Win Rate</h3>
+                                    <h3 className="font-bold text-gray-700 dark:text-white text-sm">Daily Win Rate</h3>
                                     <p className="text-xs text-gray-600">Win % by Day</p>
                                 </div>
                             </div>
@@ -213,7 +213,7 @@ export default function DashboardClient({
                                 <CalendarRange size={20} />
                             </div>
                             <div>
-                                <h3 className="font-bold text-gray-900 dark:text-white text-sm">Monthly Analytics</h3>
+                                <h3 className="font-bold text-gray-700 dark:text-white text-sm">Monthly Analytics</h3>
                                 <p className="text-xs text-gray-600 dark:text-gray-300">Net Profit by Month</p>
                             </div>
                         </div>

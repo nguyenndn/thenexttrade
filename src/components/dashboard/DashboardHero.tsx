@@ -68,7 +68,7 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
                                     strokeDasharray={`${(winRate / 100) * 150.8} 150.8`}
                                 />
                             </svg>
-                            <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-900 dark:text-white">
+                            <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-700 dark:text-white">
                                 {winRate.toFixed(0)}%
                             </span>
                         </div>
@@ -94,7 +94,7 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
                                     />
                                 )}
                             </svg>
-                            <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-900 dark:text-white">
+                            <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-700 dark:text-white">
                                 {tradeScore !== null ? tradeScore : "--"}
                             </span>
                         </div>

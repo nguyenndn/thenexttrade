@@ -47,7 +47,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
                         {product.thumbnail ? (
                             <img src={product.thumbnail} className="w-full h-full object-cover" />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
+                            <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">No Image</div>
                         )}
                     </div>
                     <div>
@@ -82,7 +82,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
                 </div>
             </div>
 
-            <p className="text-xs text-gray-400 italic">
+            <p className="text-xs text-gray-500 italic">
                 To update .ex4/.ex5 files, use the "Upload New Version" button at the top of the page.
             </p>
         </div>

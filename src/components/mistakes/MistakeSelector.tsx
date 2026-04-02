@@ -92,7 +92,7 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
                             <span className="text-sm font-medium text-gray-600">
                                 {value.length === 0 ? "Select mistakes..." : `${value.length} mistake(s) logged`}
                             </span>
-                            <ChevronDown size={16} className="text-gray-400" />
+                            <ChevronDown size={16} className="text-gray-500" />
                         </Button>
                     )}
                 </PopoverTrigger>
@@ -110,7 +110,7 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
 
                             return (
                                 <div key={category} className="mb-4 last:mb-0">
-                                    <h4 className="sticky top-0 bg-white dark:bg-[#1E2028] z-10 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 px-2 py-1">
+                                    <h4 className="sticky top-0 bg-white dark:bg-[#1E2028] z-10 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 px-2 py-1">
                                         {category}
                                     </h4>
                                     <div className="space-y-1">
@@ -136,7 +136,7 @@ export function MistakeSelector({ value = [], onChange, label, trigger }: Mistak
                                                         </p>
                                                         {value.includes(mistake.code) && <Check size={12} />}
                                                     </div>
-                                                    <p className="text-[10px] text-gray-400 leading-tight mt-0.5">
+                                                    <p className="text-[10px] text-gray-500 leading-tight mt-0.5">
                                                         {mistake.description}
                                                     </p>
                                                 </div>

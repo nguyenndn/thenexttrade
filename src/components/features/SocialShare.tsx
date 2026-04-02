@@ -111,7 +111,7 @@ export default function SocialShare({ title, slug, vertical = false, articleId }
                 <div className="w-6 h-[1px] bg-gray-100 dark:bg-white/10 my-1"></div>
                 <button
                     onClick={copyToClipboard}
-                    className="text-gray-400 hover:text-primary hover:scale-125 transition-transform"
+                    className="text-gray-500 hover:text-primary hover:scale-125 transition-transform"
                     title="Copy Link"
                     aria-label="Copy Link"
                 >
@@ -124,7 +124,7 @@ export default function SocialShare({ title, slug, vertical = false, articleId }
                             onClick={handleVoteToggle}
                             disabled={isToggling}
                             className={`relative hover:scale-125 transition-all duration-300 disabled:opacity-70 ${
-                                voted ? "text-primary" : "text-gray-400 hover:text-primary"
+                                voted ? "text-primary" : "text-gray-500 hover:text-primary"
                             }`}
                             title={voted ? "Remove your vote" : "Mark as helpful"}
                             aria-label={voted ? "Remove your vote" : "Mark as helpful"}
@@ -148,14 +148,14 @@ export default function SocialShare({ title, slug, vertical = false, articleId }
 
     return (
         <div className="flex flex-col gap-4">
-            <h4 className="font-bold text-gray-900 dark:text-white text-xs uppercase tracking-widest text-center">Share this</h4>
+            <h4 className="font-bold text-gray-700 dark:text-white text-xs uppercase tracking-widest text-center">Share this</h4>
             <div className="flex justify-center gap-2">
                 {/* Horizontal Layout (Existing) */}
                 <a
                     href={shareLinks.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#3b5998] hover:text-white hover:border-[#3b5998] text-gray-400 transition-all rounded-full"
+                    className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#3b5998] hover:text-white hover:border-[#3b5998] text-gray-500 transition-all rounded-full"
                     title="Share on Facebook"
                     aria-label="Share on Facebook"
                 >
@@ -165,7 +165,7 @@ export default function SocialShare({ title, slug, vertical = false, articleId }
                     href={shareLinks.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#1da1f2] hover:text-white hover:border-[#1da1f2] text-gray-400 transition-all rounded-full"
+                    className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#1da1f2] hover:text-white hover:border-[#1da1f2] text-gray-500 transition-all rounded-full"
                     title="Share on Twitter"
                     aria-label="Share on Twitter"
                 >
@@ -175,7 +175,7 @@ export default function SocialShare({ title, slug, vertical = false, articleId }
                     href={shareLinks.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] text-gray-400 transition-all rounded-full"
+                    className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] text-gray-500 transition-all rounded-full"
                     title="Share on LinkedIn"
                     aria-label="Share on LinkedIn"
                 >
@@ -185,7 +185,7 @@ export default function SocialShare({ title, slug, vertical = false, articleId }
                     href={shareLinks.telegram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#0088cc] hover:text-white hover:border-[#0088cc] text-gray-400 transition-all rounded-full"
+                    className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-slate-700 hover:bg-[#0088cc] hover:text-white hover:border-[#0088cc] text-gray-500 transition-all rounded-full"
                     title="Share on Telegram"
                     aria-label="Share on Telegram"
                 >

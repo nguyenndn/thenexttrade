@@ -62,7 +62,7 @@ export default function ContactPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-900 dark:text-white relative overflow-hidden">
+        <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-700 dark:text-white relative overflow-hidden">
             
             {/* Background Glows (Premium Aesthetic) */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
@@ -77,7 +77,7 @@ export default function ContactPage() {
                     <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 text-primary mb-2 ring-4 ring-primary/5 animate-in fade-in zoom-in slide-in-from-bottom-4 duration-500">
                         <MessageSquare size={40} strokeWidth={1.5} />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-700 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
                         Let's Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00A06D]">Touch</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
@@ -89,7 +89,7 @@ export default function ContactPage() {
                     <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-12 shadow-xl relative overflow-hidden">
                         
                         <div className="relative z-10 mb-10">
-                            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Send us a message</h2>
+                            <h2 className="text-3xl font-black text-gray-700 dark:text-white tracking-tight mb-2">Send us a message</h2>
                             <p className="text-gray-600 dark:text-gray-300">Fill out the form below and we'll get back to you shortly.</p>
                         </div>
                         
@@ -165,7 +165,7 @@ export default function ContactPage() {
                                 <textarea
                                     id="message"
                                     rows={6}
-                                    className={`w-full p-5 rounded-xl bg-gray-50 dark:bg-[#151925] border ${errors.message ? "border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/20" : "border-gray-200 dark:border-white/10"} text-base outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 placeholder:font-normal text-gray-900 dark:text-white font-medium resize-none`}
+                                    className={`w-full p-5 rounded-xl bg-gray-50 dark:bg-[#151925] border ${errors.message ? "border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/20" : "border-gray-200 dark:border-white/10"} text-base outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 placeholder:font-normal text-gray-700 dark:text-white font-medium resize-none`}
                                     placeholder="Please describe your inquiry in detail..."
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}

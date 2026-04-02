@@ -39,7 +39,7 @@ export function StatCard({ title, value, change, icon: Icon, trend, color = "blu
             <div className="flex justify-between items-start">
                 <div>
                     <p className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">{title}</p>
-                    <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{value}</h3>
+                    <h3 className="text-3xl font-black mt-2 text-gray-700 dark:text-white tracking-tight">{value}</h3>
                 </div>
                 <div className={`p-3.5 rounded-xl ${colorStyles[color] || colorStyles.blue} transition-colors`}>
                     <Icon size={24} strokeWidth={2.5} aria-hidden="true" />
@@ -59,7 +59,7 @@ export function StatCard({ title, value, change, icon: Icon, trend, color = "blu
                     >
                         {change}
                     </span>
-                    <span className="text-gray-400 ml-2 text-xs uppercase tracking-wide">vs last month</span>
+                    <span className="text-gray-500 ml-2 text-xs uppercase tracking-wide">vs last month</span>
                 </div>
             )}
         </div>

@@ -625,7 +625,7 @@ export function MistakeSelector({ value, onChange, label }: MistakeSelectorProps
         </span>
         <ChevronDown
           size={16}
-          className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -649,7 +649,7 @@ export function MistakeSelector({ value, onChange, label }: MistakeSelectorProps
                     px-4 py-2.5 text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-colors
                     ${activeCategory === category
                       ? "text-[#00C888] border-b-2 border-[#00C888]"
-                      : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                      : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                     }
                   `}
                 >
@@ -675,10 +675,10 @@ export function MistakeSelector({ value, onChange, label }: MistakeSelectorProps
                 >
                   <span className="text-lg">{mistake.emoji}</span>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    <p className="text-sm font-medium text-gray-700 dark:text-white">
                       {mistake.name}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-500">
                       {mistake.description}
                     </p>
                   </div>
@@ -789,7 +789,7 @@ export function MistakeDashboard() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-gray-700 dark:text-white flex items-center gap-3">
             <AlertTriangle className="text-yellow-500" />
             Mistake Analysis
           </h1>
@@ -883,7 +883,7 @@ export function MistakeDashboard() {
 
       {/* Detailed Mistake List */}
       <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-        <h3 className="font-bold text-gray-900 dark:text-white mb-4">
+        <h3 className="font-bold text-gray-700 dark:text-white mb-4">
           All Mistakes (Sorted by Cost)
         </h3>
         
@@ -895,10 +895,10 @@ export function MistakeDashboard() {
             >
               <span className="text-2xl">{mistake.emoji}</span>
               <div className="flex-1">
-                <p className="font-bold text-gray-900 dark:text-white">
+                <p className="font-bold text-gray-700 dark:text-white">
                   {mistake.name}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500">
                   {mistake.category} • {mistake.count} occurrences
                 </p>
               </div>
@@ -906,7 +906,7 @@ export function MistakeDashboard() {
                 <p className={`font-bold ${mistake.totalPnL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {mistake.totalPnL >= 0 ? '+' : ''}${mistake.totalPnL.toFixed(0)}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500">
                   {mistake.winRate.toFixed(0)}% win rate
                 </p>
               </div>
@@ -935,11 +935,11 @@ function StatCard({
     <div className="bg-white dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
         <Icon size={14} className={color} />
-        <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">
+        <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">
           {label}
         </span>
       </div>
-      <p className="text-lg font-bold text-gray-900 dark:text-white">
+      <p className="text-lg font-bold text-gray-700 dark:text-white">
         {subValue && <span className="mr-1">{subValue}</span>}
         {value}
       </p>
@@ -965,7 +965,7 @@ function MistakeEmptyState() {
   return (
     <div className="text-center py-20">
       <CheckCircle size={48} className="mx-auto text-green-500 mb-4" />
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">
         No mistakes recorded! 🎉
       </h3>
       <p className="text-gray-500">
@@ -1016,7 +1016,7 @@ export function MistakeCostChart({ data }: MistakeCostChartProps) {
 
   return (
     <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
-      <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+      <h3 className="font-bold text-gray-700 dark:text-white mb-2">
         Cost by Mistake Type
       </h3>
       <p className="text-sm text-gray-500 mb-4">
@@ -1091,7 +1091,7 @@ const [formData, setFormData] = useState({
 
 // Add to form JSX (after psychology section or notes)
 <div className="border-t border-gray-100 dark:border-gray-800 pt-6 mt-6">
-  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+  <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
     <AlertTriangle size={20} className="text-yellow-500" />
     Mistakes (Optional)
   </h3>

@@ -80,7 +80,7 @@ export function KPICards({ summary }: KPICardsProps) {
                 const Icon = card.icon;
                 
                 // Set text color properly aligned with Journal style - clean and strong
-                let colorClass = 'text-gray-900 dark:text-white';
+                let colorClass = 'text-gray-700 dark:text-white';
                 if (card.color.includes('green')) colorClass = 'text-[#00C888]';
                 else if (card.color.includes('red')) colorClass = 'text-red-500';
 
@@ -102,7 +102,7 @@ export function KPICards({ summary }: KPICardsProps) {
                             {card.value}
                         </p>
                         {card.description && (
-                            <p className="text-xs text-gray-400 font-medium mt-1.5 flex items-center gap-1.5 relative z-10">
+                            <p className="text-xs text-gray-500 font-medium mt-1.5 flex items-center gap-1.5 relative z-10">
                                 <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${card.color.replace('text-', 'bg-')}`}></span>
                                 {card.description}
                             </p>

@@ -57,7 +57,7 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
             {/* Header: Clean & Flat */}
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h2 className="text-sm font-extrabold text-gray-900 dark:text-white tracking-tight">
+                    <h2 className="text-sm font-extrabold text-gray-700 dark:text-white tracking-tight">
                         Authorized MT5 Accounts
                     </h2>
                     <p className="text-xs text-gray-600 dark:text-gray-300">
@@ -72,7 +72,7 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
                     <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 mb-4">
                         <ShieldCheck size={24} className="text-amber-500" />
                     </div>
-                    <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
+                    <h3 className="text-base font-bold text-gray-700 dark:text-white mb-1.5">
                         Get Verified
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 max-w-xs mx-auto">

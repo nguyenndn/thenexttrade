@@ -31,7 +31,7 @@ function Calendar({
                 button_next: "p-1 hover:bg-gray-100 rounded-md text-gray-600",
                 chevron: "fill-gray-400 h-4 w-4",
                 weekdays: "flex",
-                weekday: "text-gray-400 text-xs font-medium w-9 text-center",
+                weekday: "text-gray-500 text-xs font-medium w-9 text-center",
                 week: "flex mt-1",
                 day: "h-9 w-9 text-center text-sm p-0 font-normal cursor-pointer",
                 day_button: "h-9 w-9 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-700 transition-colors",

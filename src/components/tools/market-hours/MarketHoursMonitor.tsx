@@ -98,7 +98,7 @@ export function MarketHoursMonitor() {
             <div className="relative h-14 mb-4 bg-gray-100 dark:bg-white/5 rounded-xl w-full overflow-hidden border border-gray-200 dark:border-white/5 group hover:border-primary/50 transition-colors">
                 <div className="absolute left-4 top-0 bottom-0 flex items-center z-10 pointer-events-none">
                     <div className="flex flex-col">
-                        <span className="font-bold text-sm text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                        <span className="font-bold text-sm text-gray-700 dark:text-white uppercase tracking-wider flex items-center gap-2">
                             <span className={`w-2 h-2 rounded-full ${isOpen ? 'bg-green-500 animate-pulse shadow-[0_0_8px_limegreen]' : 'bg-gray-400'}`}></span>
                             {market.name}
                         </span>
@@ -131,21 +131,21 @@ export function MarketHoursMonitor() {
         <div className="w-full bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-xl shadow-gray-200/50 dark:shadow-none">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-gray-100 dark:border-white/5 pb-6">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                         <Clock className="text-primary" />
                         Forex Market Hours
                     </h2>
                     <p className="text-sm text-gray-600 mt-1">
-                        Currently viewing in <span className="font-semibold text-gray-900 dark:text-white">{userTimezone}</span> time.
+                        Currently viewing in <span className="font-semibold text-gray-700 dark:text-white">{userTimezone}</span> time.
                     </p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                     <div className="flex gap-3 text-xs font-medium">
-                        <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400">
+                        <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-500">
                             <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div> Open
                         </div>
-                        <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400">
+                        <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-500">
                             <div className="w-2.5 h-2.5 bg-gray-300 dark:bg-gray-600 rounded-full"></div> Closed
                         </div>
                     </div>

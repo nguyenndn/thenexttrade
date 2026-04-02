@@ -70,7 +70,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                     collapsed ? "justify-center px-0 mx-2" : "",
                     isActiveStyle
                         ? "bg-primary/10 text-primary font-semibold shadow-sm"
-                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                        : "text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
                 )}
                 onClick={handleMainClick}
             >

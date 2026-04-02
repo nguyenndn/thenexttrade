@@ -184,13 +184,13 @@ export default function ShortcutsManagerPage() {
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-2">
                                             <Zap size={16} className="text-yellow-500" />
-                                            <h3 className="font-semibold text-gray-900 dark:text-white truncate" title={shortcut.name}>{shortcut.name}</h3>
+                                            <h3 className="font-semibold text-gray-700 dark:text-white truncate" title={shortcut.name}>{shortcut.name}</h3>
                                         </div>
                                         <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-1">
                                             <Button
                                                 variant="ghost" size="icon" 
                                                 onClick={() => handleOpenModal(shortcut)} 
-                                                className="w-auto h-auto p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                                                className="w-auto h-auto p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
                                                 title="Edit"
                                                 aria-label="Edit Shortcut"
                                             >
@@ -199,7 +199,7 @@ export default function ShortcutsManagerPage() {
                                             <Button
                                                 variant="ghost" size="icon"
                                                 onClick={() => confirmDelete(shortcut.id)} 
-                                                className="w-auto h-auto p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                                className="w-auto h-auto p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                                                 title="Delete"
                                                 aria-label="Delete Shortcut"
                                             >
@@ -210,7 +210,7 @@ export default function ShortcutsManagerPage() {
                                     <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 min-h-[40px] mt-1">
                                         {shortcut.description || "No description provided."}
                                     </p>
-                                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 text-xs text-gray-400 flex items-center justify-between">
+                                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 text-xs text-gray-500 flex items-center justify-between">
                                         <span>HTML Snippet</span>
                                         <span>{new Date(shortcut.createdAt).toLocaleDateString('en-US')}</span>
                                     </div>
@@ -222,7 +222,7 @@ export default function ShortcutsManagerPage() {
                             <div className="w-16 h-16 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-full flex items-center justify-center mb-4 shadow-sm">
                                 <Zap size={28} className="text-yellow-500" />
                             </div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No Shortcuts Found</h3>
+                            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">No Shortcuts Found</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
                                 You haven't created any reusable snippets yet. Create your first shortcut to start saving time while writing articles.
                             </p>
@@ -237,7 +237,7 @@ export default function ShortcutsManagerPage() {
                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleCloseModal} aria-hidden="true" />
                     <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-4xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-white/10">
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <h2 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <Zap className="text-yellow-500" size={24} />
                                 <span>{editingId ? "Edit Shortcut" : "Create New Shortcut"}</span>
                             </h2>
@@ -256,19 +256,19 @@ export default function ShortcutsManagerPage() {
                                                 value={formData.name}
                                                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                                                 placeholder="e.g. Promotional Banner"
-                                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                                                 required
                                             />
                                         </div>
                                         <div className="group">
                                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                                                Description <span className="font-normal text-gray-400">(Optional)</span>
+                                                Description <span className="font-normal text-gray-500">(Optional)</span>
                                             </label>
                                             <textarea
                                                 value={formData.description}
                                                 onChange={e => setFormData({ ...formData, description: e.target.value })}
                                                 placeholder="Brief description..."
-                                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 resize-none h-24"
+                                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 resize-none h-24"
                                             />
                                         </div>
                                     </div>

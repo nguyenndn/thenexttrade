@@ -19,7 +19,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen w-full flex-col flex items-center justify-center bg-gray-50 dark:bg-[#0B0E14] text-gray-900 dark:text-white p-4 font-outfit relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen w-full flex-col flex items-center justify-center bg-gray-50 dark:bg-[#0B0E14] text-gray-700 dark:text-white p-4 font-outfit relative overflow-hidden transition-colors duration-300">
       
       {/* Container */}
       <div className="flex w-full max-w-6xl items-center justify-center lg:justify-between gap-12 lg:gap-24 z-10">
@@ -29,7 +29,7 @@ export default function AuthLayout({
           <div className="flex flex-row items-center justify-between gap-4 py-4">
             <Link 
               href="/" 
-              className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors group"
+              className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white transition-colors group"
             >
               <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
               <span>Back to Home</span>

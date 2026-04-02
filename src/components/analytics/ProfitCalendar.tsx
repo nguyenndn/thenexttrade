@@ -155,7 +155,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
         } else if (pnl < 0) {
             return "bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100/50 dark:border-red-500/20";
         }
-        return "bg-gray-50 dark:bg-white/5 text-gray-400";
+        return "bg-gray-50 dark:bg-white/5 text-gray-500";
     };
 
     return (
@@ -167,41 +167,38 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                         <CalendarDays size={18} />
                     </div>
                     <div>
-                        <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-gray-900 dark:text-white text-sm">Profit Calendar</h3>
-                        </div>
-                        <p className="text-xs text-gray-400">Daily P&L overview</p>
+                        <h3 className="font-bold text-gray-700 dark:text-white text-sm">Profit Calendar</h3>
+                        <p className="text-xs text-gray-500">Daily P&L overview</p>
                     </div>
                 </div>
+                <p className="text-base sm:text-lg font-bold text-gray-700 dark:text-gray-200">
+                    Monthly P/L:{" "}
+                    <span className={monthlyPnL >= 0 ? 'text-primary' : 'text-red-500'}>
+                        {monthlyPnL >= 0 ? '' : '-'}${Math.abs(monthlyPnL).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                </p>
                 <div className="flex items-center gap-3">
-                <div className="flex items-center gap-4">
-                    <div className={`flex items-center justify-center px-4 py-1.5 rounded-full ${monthlyPnL >= 0 ? 'bg-primary/10 text-primary' : 'bg-red-500/10 text-red-500'} font-bold text-sm tracking-wide`}>
-                        {monthlyPnL >= 0 ? '+' : ''}${Math.abs(monthlyPnL).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </div>
-                    
-                    <div className="flex items-center gap-3">
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                            className="rounded-lg border-0"
-                            aria-label="Previous month"
-                        >
-                            <ChevronLeft size={18} />
-                        </Button>
-                        <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
-                            {format(currentMonth, "MMMM yyyy")}
-                        </span>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                            className="rounded-lg border-0"
-                            aria-label="Next month"
-                        >
-                            <ChevronRight size={18} />
-                        </Button>
-                    </div>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+                        className="rounded-lg border-0"
+                        aria-label="Previous month"
+                    >
+                        <ChevronLeft size={18} />
+                    </Button>
+                    <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
+                        {format(currentMonth, "MMMM yyyy")}
+                    </span>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+                        className="rounded-lg border-0"
+                        aria-label="Next month"
+                    >
+                        <ChevronRight size={18} />
+                    </Button>
 
                     <div className="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
 
@@ -214,13 +211,10 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                         title="Screenshot Report"
                         aria-label="Download screenshot"
                     >
-                        {isCapturing ? <Loader2 size={16} className="animate-spin text-gray-400" /> : <Camera size={16} className="text-gray-600" />}
+                        {isCapturing ? <Loader2 size={16} className="animate-spin text-gray-500" /> : <Camera size={16} className="text-gray-600" />}
                     </Button>
                 </div>
-                </div>
             </div>
-
-            {/* Horizontal Scroll Wrapper for Mobile */}
             <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
                 <div className="min-w-[768px]">
                     {/* Day headers */}
@@ -228,7 +222,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                 {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Weekly"].map(day => (
                     <div
                         key={day}
-                        className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-wider"
+                        className="text-center text-[10px] font-bold text-gray-500 uppercase tracking-wider"
                     >
                         {day}
                     </div>
@@ -274,24 +268,24 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                                         className={`
                                             min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center
                                             transition-all hover:scale-105 hover:z-10 relative border
-                                            ${hasTrades ? `${getColorClass(pnl)} cursor-pointer` : "bg-gray-50 dark:bg-white/5 text-gray-400 border-transparent cursor-default"}
+                                            ${hasTrades ? `${getColorClass(pnl)} cursor-pointer` : "bg-gray-50 dark:bg-white/5 text-gray-500 border-transparent cursor-default"}
                                         `}
                                         title={hasTrades ? `$${pnl.toFixed(2)} (${dayData?.tradeCount} trades)` : "No trades"}
                                     >
-                                        <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${hasTrades ? 'text-gray-900 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'}`}>
+                                        <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${hasTrades ? 'text-gray-700 dark:text-gray-100' : 'text-gray-700 dark:text-gray-500'}`}>
                                             {format(day, "d")}
                                         </span>
 
                                         {hasTrades ? (
                                             <div className="flex flex-col items-center mt-2.5">
                                                 {loadingDay === dateKey ? (
-                                                    <Loader2 size={16} className="animate-spin text-gray-400 mt-1" />
+                                                    <Loader2 size={16} className="animate-spin text-gray-500 mt-1" />
                                                 ) : (
                                                     <>
-                                                        <span className="text-xs sm:text-sm tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5">
-                                                            {pnl >= 0 ? "+" : ""}{formattedPnL}
+                                                        <span className="text-base sm:text-lg tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5">
+                                                            {pnl >= 0 ? "" : "-"}{formattedPnL}
                                                         </span>
-                                                        <span className="text-[10px] opacity-80 font-medium">
+                                                        <span className="text-sm opacity-80 font-medium">
                                                             {growth > 0 ? "+" : ""}{growth.toFixed(2)}%
                                                         </span>
                                                     </>
@@ -309,12 +303,12 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                                 </span>
                                 <div className="flex flex-col items-center mt-2.5 w-full">
                                     <span 
-                                        className={`w-full text-center px-0.5 text-xs sm:text-sm tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5 ${weeklyPnL >= 0 ? 'text-primary' : 'text-red-500'}`}
+                                        className={`w-full text-center px-0.5 text-base sm:text-lg tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5 ${weeklyPnL >= 0 ? 'text-primary' : 'text-red-500'}`}
                                         title={`$${Math.abs(weeklyPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                                     >
-                                        {weeklyPnL >= 0 ? "+" : "-"}{Math.abs(weeklyPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        {weeklyPnL >= 0 ? "" : "-"}{Math.abs(weeklyPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
-                                    <span className="text-[10px] opacity-80 font-medium text-gray-600 dark:text-gray-300 w-full text-center">
+                                    <span className="text-sm opacity-80 font-medium text-gray-700 dark:text-gray-300 w-full text-center">
                                         {weeklyTradeDays} days
                                     </span>
                                 </div>

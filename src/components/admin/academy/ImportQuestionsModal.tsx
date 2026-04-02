@@ -140,7 +140,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                             className="w-full flex items-center justify-between p-4 h-auto rounded-xl border border-gray-100 dark:border-white/5 hover:border-primary hover:bg-primary/5 transition-all group text-left"
                                         >
                                             <div className="flex flex-col items-start text-left">
-                                                <h4 className="font-bold text-gray-900 dark:text-white text-base">{quiz.title}</h4>
+                                                <h4 className="font-bold text-gray-700 dark:text-white text-base">{quiz.title}</h4>
                                                 <p className="text-xs text-gray-600 font-normal mt-0.5">{quiz._count?.questions || 0} Questions</p>
                                             </div>
                                             <ChevronRight className="text-gray-300 group-hover:text-primary transition-colors" size={20} />
@@ -152,7 +152,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                     ) : (
                         <div className="flex flex-col h-full">
                             <div className="px-6 mb-4 flex gap-2 justify-between items-center">
-                                <div className="text-sm font-bold text-gray-400 uppercase tracking-wider">
+                                <div className="text-sm font-bold text-gray-500 uppercase tracking-wider">
                                     Select Questions ({selectedQuestionIds.size})
                                 </div>
                                 <Button
@@ -190,7 +190,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                                     {isSelected && <Check size={14} className="text-white" />}
                                                 </div>
                                                 <div className="flex-1">
-                                                    <h4 className="font-bold text-gray-900 dark:text-white text-base mb-3 leading-snug">
+                                                    <h4 className="font-bold text-gray-700 dark:text-white text-base mb-3 leading-snug">
                                                         {q.text || "Untitled Question"}
                                                     </h4>
                                                     <div className="space-y-2 pl-1">
@@ -216,7 +216,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
                                 <Button
                                     variant="ghost"
                                     onClick={() => setStep("quiz-select")}
-                                    className="px-6 py-3 h-auto rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                    className="px-6 py-3 h-auto rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                                 >
                                     Back
                                 </Button>

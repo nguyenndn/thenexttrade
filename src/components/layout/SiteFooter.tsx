@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 
 export function SiteFooter() {
     return (
-        <footer id="site-footer" className="relative bg-slate-50 dark:bg-[#0d1117] text-gray-900 dark:text-white border-t border-gray-200 dark:border-transparent overflow-hidden transition-colors duration-300">
+        <footer id="site-footer" className="relative bg-slate-50 dark:bg-[#0d1117] text-gray-700 dark:text-white border-t border-gray-200 dark:border-transparent overflow-hidden transition-colors duration-300">
             {/* Background Effects */}
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
             <div className="absolute -top-[200px] -left-[200px] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
@@ -18,7 +18,7 @@ export function SiteFooter() {
                     <div className="lg:col-span-4 flex flex-col justify-between">
                         <div>
                             <Link href="/" className="inline-block mb-4">
-                                <h4 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">The Next <span className="text-primary">Trade</span></h4>
+                                <h4 className="text-3xl font-black tracking-tight text-gray-700 dark:text-white">The Next <span className="text-primary">Trade</span></h4>
                             </Link>
                             <p className="text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-8">
                                 Empowering global traders with institutional-grade data, expert education, and advanced analysis tools.
@@ -40,7 +40,7 @@ export function SiteFooter() {
                                         aria-label={social.label}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 transition-all hover:text-primary hover:border-primary/30 hover:bg-primary/5 hover:-translate-y-1 shadow-sm"
+                                        className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 transition-all hover:text-primary hover:border-primary/30 hover:bg-primary/5 hover:-translate-y-1 shadow-sm"
                                     >
                                         <social.icon size={18} />
                                     </a>
@@ -59,9 +59,9 @@ export function SiteFooter() {
                         <div className="w-full">
                             {/* Mobile Accordion */}
                             <details className="sm:hidden group border-b border-gray-200 dark:border-white/10">
-                                <summary className="flex justify-between items-center font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider py-4 cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden">
+                                <summary className="flex justify-between items-center font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider py-4 cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden">
                                     Academy & Insights
-                                    <span className="transition group-open:rotate-180 text-gray-400">
+                                    <span className="transition group-open:rotate-180 text-gray-500">
                                         <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="18"><path d="M6 9l6 6 6-6"></path></svg>
                                     </span>
                                 </summary>
@@ -75,7 +75,7 @@ export function SiteFooter() {
                             </details>
                             {/* Desktop View */}
                             <div className="hidden sm:block">
-                                <h4 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider mb-6">Academy & Insights</h4>
+                                <h4 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider mb-6">Academy & Insights</h4>
                                 <ul className="space-y-3">
                                     <li><Link href="/academy" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Academy</Link></li>
                                     <li><Link href="/knowledge" className="text-sm text-gray-600 hover:text-primary transition-colors">Knowledge Base</Link></li>
@@ -90,9 +90,9 @@ export function SiteFooter() {
                         <div className="w-full">
                             {/* Mobile Accordion */}
                             <details className="sm:hidden group border-b border-gray-200 dark:border-white/10">
-                                <summary className="flex justify-between items-center font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider py-4 cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden">
+                                <summary className="flex justify-between items-center font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider py-4 cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden">
                                     Trading Tools
-                                    <span className="transition group-open:rotate-180 text-gray-400">
+                                    <span className="transition group-open:rotate-180 text-gray-500">
                                         <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="18"><path d="M6 9l6 6 6-6"></path></svg>
                                     </span>
                                 </summary>
@@ -104,7 +104,7 @@ export function SiteFooter() {
                             </details>
                             {/* Desktop View */}
                             <div className="hidden sm:block">
-                                <h4 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider mb-6">Trading Tools</h4>
+                                <h4 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider mb-6">Trading Tools</h4>
                                 <ul className="space-y-3">
                                     <li><Link href="/tools/economic-calendar" className="text-sm text-gray-600 hover:text-primary transition-colors">Economic Calendar</Link></li>
                                     <li><Link href="/tools/market-hours" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Hours</Link></li>
@@ -117,9 +117,9 @@ export function SiteFooter() {
                         <div className="w-full">
                             {/* Mobile Accordion */}
                             <details className="sm:hidden group border-b border-gray-200 dark:border-white/10">
-                                <summary className="flex justify-between items-center font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider py-4 cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden">
+                                <summary className="flex justify-between items-center font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider py-4 cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden">
                                     Resources
-                                    <span className="transition group-open:rotate-180 text-gray-400">
+                                    <span className="transition group-open:rotate-180 text-gray-500">
                                         <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="18"><path d="M6 9l6 6 6-6"></path></svg>
                                     </span>
                                 </summary>
@@ -132,7 +132,7 @@ export function SiteFooter() {
                             </details>
                             {/* Desktop View */}
                             <div className="hidden sm:block">
-                                <h4 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider mb-6">Resources</h4>
+                                <h4 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider mb-6">Resources</h4>
                                 <ul className="space-y-3">
                                     <li><Link href="/brokers" className="text-sm text-gray-600 hover:text-primary transition-colors">Trusted Brokers</Link></li>
                                     <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
@@ -153,7 +153,7 @@ export function SiteFooter() {
                         </div>
                         <div>
                             <h5 className="font-bold text-orange-600 dark:text-orange-400 mb-1.5 text-sm uppercase tracking-wider">Risk Warning & Disclaimer</h5>
-                            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-500">
                                 Trading forex, cryptocurrencies, and CFDs carries a <strong className="text-orange-600 dark:text-orange-400">high level of risk</strong> and may not be suitable for all investors. You may lose more than your initial investment. Only trade with money you can afford to lose. Past performance is not indicative of future results. Please ensure you fully understand the risks involved and seek independent advice if necessary.
                             </p>
                         </div>
@@ -162,7 +162,7 @@ export function SiteFooter() {
 
                 {/* Bottom Row - Copyright & Legal */}
                 <div className="mt-8 pt-6 border-t border-gray-200 dark:border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-sm font-bold text-gray-600 dark:text-gray-400">
+                    <p className="text-sm font-bold text-gray-600 dark:text-gray-500">
                         &copy; 2026 The Next Trade. All rights reserved.
                     </p>
                     <div className="flex flex-wrap gap-4 sm:gap-6 justify-center items-center">

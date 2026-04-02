@@ -199,7 +199,7 @@ export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
                         <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-600 font-bold tracking-wider">
                             <tr>
                                 <th className="pl-6 pr-4 py-5 w-14">
-                                    <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
+                                    <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-500 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
                                         {selectedIds.size === filteredCategories.length && filteredCategories.length > 0 ? <CheckSquare size={20} className="text-primary" /> : <Square size={20} />}
                                     </Button>
                                 </th>
@@ -224,7 +224,7 @@ export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
                                     <td colSpan={5} className="px-6 py-16 text-center">
                                         <div className="flex flex-col items-center justify-center text-gray-600">
                                             <FolderOpen size={40} className="mb-3 opacity-30" />
-                                            <p className="font-bold text-gray-900 dark:text-gray-300">No categories found</p>
+                                            <p className="font-bold text-gray-700 dark:text-gray-300">No categories found</p>
                                             <p className="text-sm mt-1 mb-4">{searchQuery ? 'Try adjusting your search.' : 'Create your first category to start organizing articles.'}</p>
                                             {!searchQuery && (
                                                 <Button onClick={handleCreate} variant="outline" className="text-sm shadow-sm transition-transform active:scale-95">
@@ -238,11 +238,11 @@ export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
                                 filteredCategories.map((category: Category) => (
                                     <tr key={category.id} className={`group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors ${selectedIds.has(category.id) ? 'bg-primary/5' : ''}`}>
                                         <td className="pl-6 pr-4 py-5">
-                                            <Button variant="ghost" onClick={() => toggleSelect(category.id)} className={`w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:bg-transparent hover:text-gray-600 ${selectedIds.has(category.id) ? 'text-primary' : ''}`} aria-label="Select">
+                                            <Button variant="ghost" onClick={() => toggleSelect(category.id)} className={`w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-500 hover:bg-transparent hover:text-gray-600 ${selectedIds.has(category.id) ? 'text-primary' : ''}`} aria-label="Select">
                                                 {selectedIds.has(category.id) ? <CheckSquare size={20} /> : <Square size={20} />}
                                             </Button>
                                         </td>
-                                        <td className="px-6 py-5 font-bold text-gray-900 dark:text-white">
+                                        <td className="px-6 py-5 font-bold text-gray-700 dark:text-white">
                                             {category.name}
                                             {category.description && (
                                                 <div className="text-xs text-gray-600 font-normal mt-1">{category.description}</div>
@@ -258,13 +258,13 @@ export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
                                             <div className="flex justify-end">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8 p-0 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors focus:ring-0 focus-visible:ring-0" aria-label="Open Actions">
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors focus:ring-0 focus-visible:ring-0" aria-label="Open Actions">
                                                             <MoreHorizontal size={16} />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end" className="w-40 p-1.5 rounded-xl border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#151925] z-[100]">
                                                         <DropdownMenuItem onClick={() => handleEdit(category)} className="flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 transition-colors outline-none">
-                                                            <Edit2 size={14} className="text-gray-400" />
+                                                            <Edit2 size={14} className="text-gray-500" />
                                                             <span>Edit</span>
                                                         </DropdownMenuItem>
                                                         <div className="h-px bg-gray-100 dark:bg-white/10 my-1" />

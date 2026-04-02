@@ -105,13 +105,13 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                                     }
                                 }
                             }}
-                            className="flex h-14 w-full bg-transparent py-3 text-lg text-center outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 border-none px-10"
+                            className="flex h-14 w-full bg-transparent py-3 text-lg text-center outline-none placeholder:text-gray-500 dark:placeholder:text-gray-600 border-none px-10"
                         />
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setOpen(false)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
                             <X size={16} />
                         </Button>
@@ -129,10 +129,10 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                                         <Search size={16} className="text-primary" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">Search for &ldquo;{searchQuery}&rdquo;</p>
+                                        <p className="text-sm font-semibold text-gray-700 dark:text-white">Search for &ldquo;{searchQuery}&rdquo;</p>
                                         <p className="text-xs text-gray-600 dark:text-gray-300">Search across all trades, sessions, and more</p>
                                     </div>
-                                    <ArrowRight size={14} className="text-gray-400" />
+                                    <ArrowRight size={14} className="text-gray-500" />
                                 </Button>
                             ) : null}
                         </CommandEmpty>
@@ -149,10 +149,10 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                                         <Search size={16} className="text-primary" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">Search for &ldquo;{searchQuery}&rdquo;</p>
+                                        <p className="text-sm font-semibold text-gray-700 dark:text-white">Search for &ldquo;{searchQuery}&rdquo;</p>
                                         <p className="text-xs text-gray-600 dark:text-gray-300">Search across all trades, sessions, and more</p>
                                     </div>
-                                    <ArrowRight size={14} className="text-gray-400" />
+                                    <ArrowRight size={14} className="text-gray-500" />
                                 </CommandItem>
                             </CommandGroup>
                         )}
@@ -173,7 +173,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                                             <Icon size={16} className="text-gray-600 dark:text-gray-300" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{item.name}</p>
+                                            <p className="text-sm font-semibold text-gray-700 dark:text-white truncate">{item.name}</p>
                                             <p className="text-xs text-gray-600 dark:text-gray-300 truncate">{item.category}</p>
                                         </div>
                                         <span className="text-[10px] font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded">
@@ -187,7 +187,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
                     </CommandList>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02] text-xs text-gray-400">
+                    <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02] text-xs text-gray-500">
                         <div className="flex items-center gap-4">
                             <span className="flex items-center gap-1">
                                 <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">↑↓</kbd>

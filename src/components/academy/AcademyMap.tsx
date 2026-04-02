@@ -142,7 +142,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                     </h3>
                                     <p className="text-gray-600 font-medium">{phase.subtitle}</p>
                                 </div>
-                                <div className={cn("text-sm text-gray-400 max-w-xs", isLocked && "opacity-50")}>
+                                <div className={cn("text-sm text-gray-500 max-w-xs", isLocked && "opacity-50")}>
                                     {levelData?.description || "Advanced content for verified traders."}
                                 </div>
                             </motion.div>
@@ -152,12 +152,12 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                 <div className={cn(
                                     "w-20 h-20 rounded-full flex items-center justify-center border-4 shadow-lg transition-all duration-500 group relative",
                                     isLocked
-                                        ? "bg-gray-100 border-gray-200 text-gray-400 dark:bg-gray-900 dark:border-white/10 dark:text-gray-600 grayscale"
+                                        ? "bg-gray-100 border-gray-200 text-gray-500 dark:bg-gray-900 dark:border-white/10 dark:text-gray-600 grayscale"
                                         : levelComplete
-                                            ? "bg-white dark:bg-gray-900 border-primary text-gray-900 dark:text-white shadow-primary/30"
+                                            ? "bg-white dark:bg-gray-900 border-primary text-gray-700 dark:text-white shadow-primary/30"
                                             : levelActive
-                                                ? "bg-white dark:bg-gray-900 border-cyan-500 text-gray-900 dark:text-white shadow-cyan-500/20"
-                                                : `bg-white dark:bg-gray-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white`
+                                                ? "bg-white dark:bg-gray-900 border-cyan-500 text-gray-700 dark:text-white shadow-cyan-500/20"
+                                                : `bg-white dark:bg-gray-900 border-gray-200 dark:border-white/10 text-gray-700 dark:text-white`
                                 )}>
                                     {/* Glow Effect */}
                                     {!isLocked && (
@@ -183,7 +183,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                         </div>
                                     )}
 
-                                    <phase.icon size={32} className={cn("relative z-10", isLocked ? "text-gray-400 dark:text-gray-700" : "text-gray-900 dark:text-white")} />
+                                    <phase.icon size={32} className={cn("relative z-10", isLocked ? "text-gray-500 dark:text-gray-700" : "text-gray-700 dark:text-white")} />
                                 </div>
                             </div>
 
@@ -245,7 +245,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                                                     ? "text-amber-700 dark:text-amber-300"
                                                                     : isInProgress
                                                                         ? "text-cyan-700 dark:text-cyan-300"
-                                                                        : "text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+                                                                        : "text-gray-600 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-white"
                                                         )}>
                                                             {module.title}
                                                         </span>
@@ -256,7 +256,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                                                 {completedLessons}/{totalLessons}
                                                             </span>
                                                         ) : (
-                                                            <ChevronRight size={14} className={cn("text-gray-400 group-hover:text-primary dark:group-hover:text-white transition-colors ml-auto", index % 2 !== 0 && "rotate-180 mr-auto ml-0")} />
+                                                            <ChevronRight size={14} className={cn("text-gray-500 group-hover:text-primary dark:group-hover:text-white transition-colors ml-auto", index % 2 !== 0 && "rotate-180 mr-auto ml-0")} />
                                                         )}
                                                     </div>
                                                 </Link>
@@ -264,7 +264,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                         })}
                                     </div>
                                 ) : (
-                                    <div className="text-xs font-mono text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-white/10 rounded-lg p-3 inline-block">
+                                    <div className="text-xs font-mono text-gray-500 dark:text-gray-600 border border-gray-200 dark:border-white/10 rounded-lg p-3 inline-block">
                                         RESTRICTED AREA
                                     </div>
                                 )}

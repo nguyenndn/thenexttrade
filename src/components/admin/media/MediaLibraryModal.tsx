@@ -140,7 +140,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
             <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 cursor-default">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
                         <ImageIcon size={20} className="text-primary" /> Media Library
                     </h3>
                     <Button variant="ghost" size="icon" onClick={onClose} className="p-2 h-auto w-auto hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors">
@@ -173,18 +173,18 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                         {activeTab === 'upload' && (
                             <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl m-4 bg-gray-50 dark:bg-black/20">
                                 <div className="text-center space-y-4">
-                                    <div className="w-16 h-16 bg-gray-200 dark:bg-white/10 rounded-full flex items-center justify-center mx-auto text-gray-400">
+                                    <div className="w-16 h-16 bg-gray-200 dark:bg-white/10 rounded-full flex items-center justify-center mx-auto text-gray-500">
                                         <Upload size={32} />
                                     </div>
                                     <div>
-                                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">Drop files to upload</h4>
+                                        <h4 className="text-lg font-bold text-gray-700 dark:text-white">Drop files to upload</h4>
                                         <p className="text-gray-600 text-sm">or click to browse</p>
                                     </div>
                                     <label className="inline-flex items-center gap-2 px-6 py-2 bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl cursor-pointer transition-all">
                                         {isUploading ? <Loader2 size={18} className="animate-spin" /> : "Select Files"}
                                         <input type="file" className="hidden" accept="image/*" onChange={handleUpload} disabled={isUploading} />
                                     </label>
-                                    <p className="text-xs text-gray-400">Maximum upload file size: 50MB.</p>
+                                    <p className="text-xs text-gray-500">Maximum upload file size: 50MB.</p>
                                 </div>
                             </div>
                         )}
@@ -233,7 +233,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                     {activeTab === 'library' && selectedMedia && (
                         <div className="w-[300px] bg-gray-50 dark:bg-[#0B0E14] border-l border-gray-200 dark:border-white/10 p-4 overflow-y-auto space-y-6">
                             <div>
-                                <h4 className="font-bold text-gray-900 dark:text-white mb-2 text-sm uppercase">Item Details</h4>
+                                <h4 className="font-bold text-gray-700 dark:text-white mb-2 text-sm uppercase">Item Details</h4>
                                 <div className="aspect-video bg-gray-100 dark:bg-white/5 rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 mb-2">
                                     <img src={selectedMedia.url} className="w-full h-full object-contain" />
                                 </div>
@@ -252,10 +252,10 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                         type="text"
                                         value={selectedMedia.alt || ""}
                                         onChange={(e) => handleUpdate('alt', e.target.value)}
-                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400"
+                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
                                         placeholder="Describe this image..."
                                     />
-                                    <p className="text-[10px] text-gray-400 mt-1">Describe these images for better SEO and accessibility.</p>
+                                    <p className="text-[10px] text-gray-500 mt-1">Describe these images for better SEO and accessibility.</p>
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-600 mb-1">Caption</label>
@@ -263,7 +263,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = f
                                         rows={3}
                                         value={selectedMedia.caption || ""}
                                         onChange={(e) => handleUpdate('caption', e.target.value)}
-                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 resize-none"
+                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 resize-none"
                                         placeholder="Add a caption for this image..."
                                     />
                                 </div>

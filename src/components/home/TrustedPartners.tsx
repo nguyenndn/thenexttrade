@@ -65,7 +65,7 @@ export function TrustedPartners() {
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-white mb-3 tracking-tight">
             	Trusted Partners
           </h2>
           <p className="text-gray-600 dark:text-gray-300 text-base">
@@ -84,7 +84,7 @@ export function TrustedPartners() {
                       <cat.icon size={20} strokeWidth={2.5} />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white">{cat.title}</h3>
+                      <h3 className="text-base font-bold text-gray-700 dark:text-white">{cat.title}</h3>
                       <p className="text-xs text-gray-600 dark:text-gray-300">{cat.subtitle}</p>
                     </div>
                   </div>
@@ -122,7 +122,7 @@ export function TrustedPartners() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors truncate">
+                          <p className="text-lg font-bold text-gray-700 dark:text-white group-hover:text-primary transition-colors truncate">
                             {item.name}
                           </p>
                           <p className="text-sm text-gray-600 dark:text-gray-300 truncate">{item.desc}</p>

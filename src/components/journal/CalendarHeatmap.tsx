@@ -93,11 +93,11 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                             size="icon"
                             aria-label="Previous Month"
                             onClick={() => setCurrentMonth(prev => subMonths(prev, 1))}
-                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors"
                         >
                             <ChevronLeft size={18} />
                         </Button>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white min-w-[160px] text-center">
+                        <h3 className="text-lg font-bold text-gray-700 dark:text-white min-w-[160px] text-center">
                             {format(currentMonth, "MMMM yyyy")}
                         </h3>
                         <Button
@@ -105,7 +105,7 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                             size="icon"
                             aria-label="Next Month"
                             onClick={() => setCurrentMonth(prev => addMonths(prev, 1))}
-                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors"
                         >
                             <ChevronRight size={18} />
                         </Button>

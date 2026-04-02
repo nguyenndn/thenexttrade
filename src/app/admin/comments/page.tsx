@@ -183,7 +183,7 @@ export default function AdminCommentsPage() {
                             <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-600 font-bold tracking-wider">
                                 <tr>
                                     <th className="pl-6 pr-4 py-5 w-14">
-                                        <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
+                                        <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-500 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
                                             {selectedIds.size === filteredComments.length && filteredComments.length > 0 ? <CheckSquare size={20} className="text-primary" /> : <Square size={20} />}
                                         </Button>
                                     </th>
@@ -225,10 +225,10 @@ export default function AdminCommentsPage() {
                                 <tr>
                                     <td colSpan={5} className="py-20 text-center">
                                         <div className="flex flex-col items-center justify-center text-gray-600">
-                                            <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                                            <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-500">
                                                 <MessageSquare size={32} />
                                             </div>
-                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No comments found</h3>
+                                            <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">No comments found</h3>
                                             <p className="text-gray-600 dark:text-gray-300 max-w-sm mx-auto">Try adjusting your search or check back later.</p>
                                         </div>
                                     </td>
@@ -240,7 +240,7 @@ export default function AdminCommentsPage() {
                                         className={`group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors ${selectedIds.has(comment.id) ? 'bg-primary/5' : ''}`}
                                     >
                                         <td className="pl-6 pr-4 py-4">
-                                            <Button variant="ghost" onClick={() => toggleSelect(comment.id)} className={`w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:bg-transparent hover:text-gray-600 ${selectedIds.has(comment.id) ? 'text-primary' : ''}`} aria-label="Select Comment">
+                                            <Button variant="ghost" onClick={() => toggleSelect(comment.id)} className={`w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-500 hover:bg-transparent hover:text-gray-600 ${selectedIds.has(comment.id) ? 'text-primary' : ''}`} aria-label="Select Comment">
                                                 {selectedIds.has(comment.id) ? <CheckSquare size={20} /> : <Square size={20} />}
                                             </Button>
                                         </td>
@@ -256,7 +256,7 @@ export default function AdminCommentsPage() {
                                                     )}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <div className="font-bold text-gray-900 dark:text-white truncate max-w-[150px]">
+                                                    <div className="font-bold text-gray-700 dark:text-white truncate max-w-[150px]">
                                                         {comment.user.name || "Anonymous"}
                                                     </div>
                                                     <div className="text-xs text-gray-600 dark:text-gray-300 truncate max-w-[150px]">
@@ -269,7 +269,7 @@ export default function AdminCommentsPage() {
                                             <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-2 mb-1">
                                                 {comment.content}
                                             </div>
-                                            <div className="text-xs text-gray-400">
+                                            <div className="text-xs text-gray-500">
                                                 {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
                                             </div>
                                         </td>
@@ -289,7 +289,7 @@ export default function AdminCommentsPage() {
                                                     {comment.lesson.title}
                                                 </span>
                                             ) : (
-                                                <span className="text-sm text-gray-400">Unknown Context</span>
+                                                <span className="text-sm text-gray-500">Unknown Context</span>
                                             )}
                                         </td>
                                         <td className="py-4 px-6 text-right">
@@ -299,7 +299,7 @@ export default function AdminCommentsPage() {
                                                 isLoading={isDeleting === comment.id}
                                                 variant="ghost"
                                                 size="icon"
-                                                className="w-8 h-8 p-0 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400"
+                                                className="w-8 h-8 p-0 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-500"
                                                 aria-label={`Delete comment from ${comment.user.name || "Unknown"}`}
                                             >
                                                 {isDeleting !== comment.id && <Trash2 size={18} aria-hidden="true" />}

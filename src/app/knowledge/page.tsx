@@ -121,7 +121,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <BookOpen size={16} />
                                     <span>Knowledge Base</span>
                                 </div>
-                                <h1 className="text-4xl md:text-6xl font-bold font-heading text-gray-900 dark:text-white mb-6 leading-tight">
+                                <h1 className="text-4xl md:text-6xl font-bold font-heading text-gray-700 dark:text-white mb-6 leading-tight">
                                     Trading <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">Library</span>
                                 </h1>
                                 <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed mb-8">
@@ -197,7 +197,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                         className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 ${
                                             isActive
                                                 ? 'bg-primary text-white shadow-md shadow-primary/30'
-                                                : 'bg-white dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-primary hover:text-primary'
+                                                : 'bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border border-gray-200 dark:border-white/10 hover:border-primary hover:text-primary'
                                         }`}
                                     >
                                         <chip.icon size={14} />
@@ -225,9 +225,9 @@ export default async function LibraryPage(props: LibraryPageProps) {
                     ) : (
                         <div className="text-center py-32 rounded-xl bg-white/30 dark:bg-white/5 backdrop-blur-md border border-white/20 border-dashed">
                             <div className="inline-flex p-6 rounded-full bg-gray-50/50 dark:bg-white/5 mb-6 animate-pulse">
-                                <Search size={48} className="text-gray-400" />
+                                <Search size={48} className="text-gray-500" />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            <h3 className="text-2xl font-bold text-gray-700 dark:text-white mb-2">
                                 {query ? `No results for "${query}"` : "Library is Empty"}
                             </h3>
                             <p className="text-gray-600 dark:text-gray-300">Try adjusting your search or check back later.</p>

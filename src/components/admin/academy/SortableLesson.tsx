@@ -54,16 +54,16 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
                 </div>
 
                 <div className="flex flex-col">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">{lesson.title}</span>
-                    <span className="text-[10px] text-gray-400 font-mono">{lesson.duration ? `${lesson.duration} min` : "Text"}</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-white">{lesson.title}</span>
+                    <span className="text-[10px] text-gray-500 font-mono">{lesson.duration ? `${lesson.duration} min` : "Text"}</span>
                 </div>
             </div>
 
             <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon" onClick={() => onEdit(lesson)} className="p-1.5 h-auto w-auto text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded transition-colors">
+                <Button variant="ghost" size="icon" onClick={() => onEdit(lesson)} className="p-1.5 h-auto w-auto text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded transition-colors">
                     <Edit size={14} />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => onDelete(lesson.id)} className="p-1.5 h-auto w-auto text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded transition-colors">
+                <Button variant="ghost" size="icon" onClick={() => onDelete(lesson.id)} className="p-1.5 h-auto w-auto text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded transition-colors">
                     <Trash size={14} />
                 </Button>
             </div>

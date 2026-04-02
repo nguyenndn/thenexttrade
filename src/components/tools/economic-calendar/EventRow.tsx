@@ -40,7 +40,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
             </div>
 
             <div className="col-span-2 md:col-span-1 flex justify-center">
-                <span className="font-bold text-gray-900 dark:text-white px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-md text-xs w-12 text-center">
+                <span className="font-bold text-gray-700 dark:text-white px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-md text-xs w-12 text-center">
                     {event.currency}
                 </span>
             </div>
@@ -52,7 +52,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
             </div>
 
             <div className="col-span-6 md:col-span-5">
-                <p className="font-semibold text-gray-900 dark:text-white text-sm md:text-sm line-clamp-1 group-hover:text-cyan-500 transition-colors cursor-pointer" title={event.title}>
+                <p className="font-semibold text-gray-700 dark:text-white text-sm md:text-sm line-clamp-1 group-hover:text-cyan-500 transition-colors cursor-pointer" title={event.title}>
                     {event.title}
                 </p>
             </div>

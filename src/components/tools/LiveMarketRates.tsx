@@ -159,20 +159,20 @@ export function LiveMarketRates() {
                 <div className="flex items-center gap-3 flex-wrap">
                     {/* Search */}
                     <div className="relative flex-1 min-w-[200px]">
-                        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                         <input
                             type="text"
                             placeholder="Search pairs..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium text-gray-900 dark:text-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium text-gray-700 dark:text-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                         />
                     </div>
 
                     {/* Last updated + Refresh */}
                     <div className="flex items-center gap-3 shrink-0">
                         {lastUpdate && (
-                            <span className="text-xs text-gray-400 hidden sm:inline">
+                            <span className="text-xs text-gray-500 hidden sm:inline">
                                 {lastUpdate.toLocaleTimeString()}
                             </span>
                         )}
@@ -197,7 +197,7 @@ export function LiveMarketRates() {
                                 "relative px-4 py-2 rounded-lg text-xs font-bold border transition-colors z-10",
                                 activeCategory === cat.id
                                     ? "text-white border-transparent"
-                                    : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:border-primary/50"
+                                    : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-gray-200 dark:border-white/10 hover:border-primary/50"
                             )}
                         >
                             {activeCategory === cat.id && (
@@ -252,7 +252,7 @@ export function LiveMarketRates() {
                                 "text-xl font-black font-mono mb-1",
                                 isUp ? "text-green-600 dark:text-green-400"
                                     : isDown ? "text-red-600 dark:text-red-400"
-                                    : "text-gray-900 dark:text-white"
+                                    : "text-gray-700 dark:text-white"
                             )}>
                                 {rate ? rate.price.toFixed(decimals) : "—"}
                             </p>
@@ -262,7 +262,7 @@ export function LiveMarketRates() {
                                 "text-xs font-bold",
                                 isUp ? "text-green-600 dark:text-green-400"
                                     : isDown ? "text-red-600 dark:text-red-400"
-                                    : "text-gray-400"
+                                    : "text-gray-500"
                             )}>
                                 {rate
                                     ? `${rate.changePercent > 0 ? "+" : ""}${rate.changePercent.toFixed(2)}%`
@@ -276,7 +276,7 @@ export function LiveMarketRates() {
 
             {/* Empty State */}
             {filteredPairs.length === 0 && (
-                <div className="text-center py-12 text-gray-400">
+                <div className="text-center py-12 text-gray-500">
                     <p className="font-bold">No pairs found</p>
                     <p className="text-sm mt-1">Try adjusting your search or filter</p>
                 </div>

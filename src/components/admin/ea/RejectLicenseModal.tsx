@@ -64,11 +64,11 @@ export function RejectLicenseModal({ isOpen, onClose, license, adminId }: Reject
 
                 <div className="space-y-6 py-4">
                     <p className="text-sm text-gray-600 dark:text-gray-300">
-                        You are about to reject the request for account <span className="font-bold text-gray-900 dark:text-white">{license.accountNumber}</span>.
+                        You are about to reject the request for account <span className="font-bold text-gray-700 dark:text-white">{license.accountNumber}</span>.
                     </p>
 
                     <div className="space-y-3">
-                        <label className="text-sm font-medium text-gray-900 dark:text-white">Reason for rejection *</label>
+                        <label className="text-sm font-medium text-gray-700 dark:text-white">Reason for rejection *</label>
                         <div className="space-y-2">
                             {predefinedReasons.map((r) => (
                                 <label key={r} className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-gray-50 dark:hover:bg-[#151925] transition-colors">
@@ -96,7 +96,7 @@ export function RejectLicenseModal({ isOpen, onClose, license, adminId }: Reject
 
                         {reason === "Other" && (
                             <textarea
-                                className="w-full min-h-[80px] px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
+                                className="w-full min-h-[80px] px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm transition-all text-gray-700 dark:text-white placeholder:text-gray-500"
                                 placeholder="Violation of terms regarding..."
                                 value={customReason}
                                 onChange={(e) => setCustomReason(e.target.value)}

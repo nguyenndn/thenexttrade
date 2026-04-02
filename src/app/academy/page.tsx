@@ -46,7 +46,7 @@ export default async function AcademyPage() {
     const totalLessons = levels.reduce((s, l) => s + l.modules.reduce((ms, m) => ms + m._count.lessons, 0), 0);
 
     return (
-        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white">
+        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
             <JsonLd
                 type="Course"
                 data={{

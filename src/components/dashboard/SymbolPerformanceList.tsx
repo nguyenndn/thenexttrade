@@ -30,15 +30,15 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
             <BarChart3 size={18} />
           </div>
           <div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-sm">Performance by Symbol</h3>
-            <p className="text-xs text-gray-400">P&L and Volume per pair</p>
+            <h3 className="font-bold text-gray-700 dark:text-white text-sm">Performance by Symbol</h3>
+            <p className="text-xs text-gray-500">P&L and Volume per pair</p>
           </div>
         </div>
       </div>
 
       <div className="divide-y divide-gray-50 dark:divide-white/5 flex-1 flex flex-col overflow-hidden">
         {/* Table header */}
-        <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50 dark:bg-white/[0.02]">
+        <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 dark:bg-white/[0.02]">
           <div className="col-span-5">Symbol</div>
           <div className="col-span-3 text-right">Trades</div>
           <div className="col-span-4 text-right">P&L</div>

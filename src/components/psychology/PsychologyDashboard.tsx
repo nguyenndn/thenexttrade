@@ -167,7 +167,7 @@ export function PsychologyDashboard() {
                     <h3 className="text-sm uppercase tracking-wider text-primary font-bold mb-2 group-hover:text-primary/80 transition-colors">
                         Key Insight
                     </h3>
-                    <p className="text-lg text-gray-900 dark:text-white">
+                    <p className="text-lg text-gray-700 dark:text-white">
                         You trade best when feeling <span className="font-bold text-primary">{bestEmotion.emotion}</span> with a{" "}
                         <span className="font-bold text-green-500">{bestEmotion.winRate.toFixed(0)}% win rate</span>.
                     </p>

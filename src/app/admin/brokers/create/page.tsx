@@ -90,13 +90,13 @@ export default function CreateBrokerPage() {
 
                     {/* Logo Upload */}
                     <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Logo</label>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Logo</label>
                         <FileUpload
                             value={logo}
                             onChange={setLogo}
                             className="bg-white dark:bg-black/20 w-40"
                         />
-                        <p className="text-xs text-gray-400 mt-2">Recommended: Transparent PNG, Square aspect ratio.</p>
+                        <p className="text-xs text-gray-500 mt-2">Recommended: Transparent PNG, Square aspect ratio.</p>
                     </div>
 
                     {/* Rating */}
@@ -113,20 +113,20 @@ export default function CreateBrokerPage() {
 
                     {/* Summary */}
                     <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Summary</label>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Summary</label>
                         <textarea
                             required
                             rows={3}
                             value={summary}
                             onChange={(e) => setSummary(e.target.value)}
-                            className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary transition-all placeholder:text-gray-400 text-gray-900 dark:text-white"
+                            className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary transition-all placeholder:text-gray-500 text-gray-700 dark:text-white"
                             placeholder="Short description (e.g. Instant withdrawals...)"
                         />
                     </div>
 
                     {/* Features Array */}
                     <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Key Features</label>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Key Features</label>
                         <div className="flex gap-2 mb-3">
                             <PremiumInput
                                 value={featureInput}

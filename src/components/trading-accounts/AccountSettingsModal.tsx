@@ -120,7 +120,7 @@ export function AccountSettingsModal({
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 relative bg-white dark:bg-[#151925] z-10 shrink-0">
-                    <h2 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-3">
+                    <h2 className="text-xl font-black text-gray-700 dark:text-white flex items-center gap-3">
                         <div className="w-2.5 h-8 rounded-full shadow-sm" style={{ backgroundColor: color }} />
                         Account Settings
                     </h2>
@@ -129,7 +129,7 @@ export function AccountSettingsModal({
                         size="icon"
                         onClick={onClose}
                         aria-label="Close settings"
-                        className="w-10 h-10 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
+                        className="w-10 h-10 rounded-full text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
                     >
                         <X size={20} />
                     </Button>
@@ -138,7 +138,7 @@ export function AccountSettingsModal({
                 <div className="p-6 space-y-6 overflow-y-auto custom-scrollbar">
                     {/* General Settings */}
                     <div className="space-y-4">
-                        <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                        <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
                             General Information
                         </h3>
@@ -150,7 +150,7 @@ export function AccountSettingsModal({
                         />
 
                         <div className="pt-2">
-                            <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
+                            <label className="block text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">
                                 Account Color
                             </label>
                             <div className="flex flex-wrap gap-2.5">
@@ -179,7 +179,7 @@ export function AccountSettingsModal({
                     {/* API Key Section */}
                     <div className="space-y-3">
                         <div className="flex items-center gap-3">
-                            <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                            <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
                                 <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
                                 API Configuration
                             </h3>
@@ -234,7 +234,7 @@ export function AccountSettingsModal({
                                     onClick={fetchApiKey}
                                     disabled={isLoadingKey}
                                     aria-label="Toggle API Key visibility"
-                                    className="w-12 h-12 rounded-xl text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white shrink-0"
+                                    className="w-12 h-12 rounded-xl text-gray-600 hover:text-gray-800 dark:text-gray-500 dark:hover:text-white shrink-0"
                                 >
                                     {isLoadingKey ? <RefreshCw size={18} className="animate-spin" /> : showApiKey ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </Button>
