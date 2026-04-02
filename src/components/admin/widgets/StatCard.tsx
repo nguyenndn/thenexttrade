@@ -38,7 +38,7 @@ export function StatCard({ title, value, change, icon: Icon, trend, color = "blu
         <div className={`bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group border-t-4 ${borderTopStyles[color] || borderTopStyles.blue}`}>
             <div className="flex justify-between items-start">
                 <div>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{title}</p>
+                    <p className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">{title}</p>
                     <h3 className="text-3xl font-black mt-2 text-gray-900 dark:text-white tracking-tight">{value}</h3>
                 </div>
                 <div className={`p-3.5 rounded-xl ${colorStyles[color] || colorStyles.blue} transition-colors`}>
@@ -53,7 +53,7 @@ export function StatCard({ title, value, change, icon: Icon, trend, color = "blu
                                 ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10" 
                                 : trend === "down" 
                                     ? "bg-red-50 text-red-600 dark:bg-red-500/10" 
-                                    : "bg-gray-50 text-gray-500 dark:bg-gray-500/10"
+                                    : "bg-gray-50 text-gray-600 dark:bg-gray-500/10"
                         }`}
                         aria-label={`Trend is ${trend}`}
                     >

@@ -139,21 +139,21 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab('seo')}
-                        className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-500 hover:bg-gray-200'}`}
+                        className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
                     >
                         SEO
                     </Button>
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab('readability')}
-                        className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'readability' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-500 hover:bg-gray-200'}`}
+                        className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'readability' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
                     >
                         Readability
                     </Button>
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab('social')}
-                        className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'social' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-500 hover:bg-gray-200'}`}
+                        className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'social' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
                     >
                         Social
                     </Button>
@@ -164,7 +164,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
             {activeTab === 'seo' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <div>
-                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Focus Keyphrase</label>
+                        <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">Focus Keyphrase</label>
                         <input
                             type="text"
                             value={focusKeyword}
@@ -176,7 +176,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                     {/* Google Preview */}
                     <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-200 dark:border-white/10">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-bold text-gray-500 uppercase">Google Preview</span>
+                            <span className="text-xs font-bold text-gray-600 uppercase">Google Preview</span>
                             <div className="flex bg-white dark:bg-white/5 rounded-lg p-1 border border-gray-200 dark:border-white/10 gap-1">
                                 <Button variant="ghost" size="icon" onClick={() => setPreviewMode('mobile')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'mobile' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-400 hover:bg-gray-100'}`}><Smartphone size={14} /></Button>
                                 <Button variant="ghost" size="icon" onClick={() => setPreviewMode('desktop')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'desktop' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-400 hover:bg-gray-100'}`}><Monitor size={14} /></Button>
@@ -261,14 +261,14 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                         <Button
                             variant="ghost"
                             onClick={() => setSocialPlatform('facebook')}
-                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === 'facebook' ? 'bg-blue-50 text-blue-600 hover:bg-blue-100' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === 'facebook' ? 'bg-blue-50 text-blue-600 hover:bg-blue-100' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
                         >
                             <Facebook size={14} /> Facebook
                         </Button>
                         <Button
                             variant="ghost"
                             onClick={() => setSocialPlatform('twitter')}
-                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === 'twitter' ? 'bg-sky-50 text-sky-500 hover:bg-sky-100' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === 'twitter' ? 'bg-sky-50 text-sky-500 hover:bg-sky-100' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
                         >
                             <Twitter size={14} /> Twitter
                         </Button>
@@ -286,7 +286,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
                                     )}
                                 </div>
                                 <div className="p-3 bg-[#f0f2f5] border-t border-gray-100">
-                                    <div className="uppercase text-[10px] text-gray-500 mb-0.5">EXAMPLE.COM</div>
+                                    <div className="uppercase text-[10px] text-gray-600 mb-0.5">EXAMPLE.COM</div>
                                     <div className="font-bold text-sm text-[#050505] line-clamp-1">{title}</div>
                                     <div className="text-xs text-[#65676b] line-clamp-1">{metaDescription}</div>
                                 </div>

@@ -37,7 +37,7 @@ export function TradingSetupModal() {
               <AlertTriangle size={18} className="text-amber-500" />
               No account selected
             </DialogTitle>
-            <DialogDescription className="text-sm text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+            <DialogDescription className="text-sm text-gray-600 dark:text-gray-300 mt-2 leading-relaxed">
               To appear on the Trading leaderboard, you need to select one of your
               <strong className="text-gray-700 dark:text-gray-300"> Real trading accounts</strong>. 
               Go to your Trading Accounts page and use the <strong className="text-gray-700 dark:text-gray-300">⋮ menu → "Use for Leaderboard"</strong> option.

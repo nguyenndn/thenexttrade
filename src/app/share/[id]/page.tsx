@@ -56,7 +56,7 @@ export default async function SharePage({ params }: SharePageProps) {
                                     className="object-cover"
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-xl md:text-2xl font-bold text-gray-500">
+                                <div className="w-full h-full flex items-center justify-center text-xl md:text-2xl font-bold text-gray-600">
                                     {(trade.user.name?.[0] || "U").toUpperCase()}
                                 </div>
                             )}

@@ -15,7 +15,7 @@ export default function AuthCodeErrorPage() {
                 </div>
 
                 <h1 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Authentication Error</h1>
-                <p className="text-gray-500 dark:text-gray-400 text-sm mb-8 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-8 leading-relaxed">
                     The link you used is invalid or has expired.<br />
                     Please try again or request a new link.
                 </p>

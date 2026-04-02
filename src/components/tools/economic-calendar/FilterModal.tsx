@@ -229,7 +229,7 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                     <Button
                         onClick={onClose}
                         variant="outline"
-                        className={`rounded-lg font-medium text-sm transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-slate-700' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}`}
+                        className={`rounded-lg font-medium text-sm transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-slate-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
                     >Cancel
                     </Button>
                     <Button

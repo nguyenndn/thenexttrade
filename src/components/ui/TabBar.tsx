@@ -60,7 +60,7 @@ export function TabBar({ tabs, className, equalWidth }: TabBarProps) {
                             equalWidth && "flex-1 text-center lg:flex-none",
                             isActive
                                 ? "bg-white dark:bg-[#262A36] text-gray-900 dark:text-white shadow-sm border-gray-200 dark:border-white/10"
-                                : "text-gray-500 dark:text-gray-400 border-transparent"
+                                : "text-gray-600 dark:text-gray-300 border-transparent"
                         )}
                     >
                         {Icon && <Icon size={16} />}

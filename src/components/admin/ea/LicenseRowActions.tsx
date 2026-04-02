@@ -36,7 +36,7 @@ export function LicenseRowActions({ license, adminId }: LicenseRowActionsProps) 
                 href={getIBLink(license.broker)}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-primary px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
+                className="flex items-center gap-2 text-xs font-medium text-gray-600 hover:text-primary px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
             >
                 <ExternalLink size={14} />
                 Check IB

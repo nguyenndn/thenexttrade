@@ -37,7 +37,7 @@ export default function Error({
         </h1>
 
         {/* Description */}
-        <p className="text-base text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
+        <p className="text-base text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
           An unexpected error occurred. Our team has been notified.
           Please try again or head back home.
         </p>

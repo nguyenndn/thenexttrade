@@ -253,7 +253,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                         </div>
 
                         {/* Table Header */}
-                        <div className={`grid grid-cols-12 gap-2 md:gap-4 px-4 py-3 border-b text-xs font-bold uppercase tracking-wider ${isDark ? 'bg-slate-900/50 border-slate-700 text-gray-400' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>
+                        <div className={`grid grid-cols-12 gap-2 md:gap-4 px-4 py-3 border-b text-xs font-bold uppercase tracking-wider ${isDark ? 'bg-slate-900/50 border-slate-700 text-gray-400' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
                             <div className="col-span-2 md:col-span-1">Time</div>
                             <div className="col-span-2 md:col-span-1 text-center">Cur</div>
                             <div className="col-span-2 md:col-span-1 text-center">Impact</div>
@@ -268,7 +268,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
 
                         {/* Table Body */}
                         {isLoading ? (
-                            <div className="py-20 text-center text-gray-500">Loading events...</div>
+                            <div className="py-20 text-center text-gray-600">Loading events...</div>
                         ) : groupedEvents.length > 0 ? (
                             <div className="divide-y divide-gray-100 dark:divide-slate-700">
                                 {groupedEvents.map(event => (
@@ -281,11 +281,11 @@ export function EconomicCalendarClient({ user }: { user: any }) {
                             </div>
                         ) : (
                             <div className="py-16 text-center flex flex-col items-center justify-center">
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${isDark ? 'bg-slate-700 text-gray-500' : 'bg-gray-100 text-gray-400'}`}>
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${isDark ? 'bg-slate-700 text-gray-600' : 'bg-gray-100 text-gray-400'}`}>
                                     <Calendar size={24} />
                                 </div>
                                 <h3 className={`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>No Events Scheduled</h3>
-                                <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                                <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                     There are no market events for this date matching your filters.
                                 </p>
                                 <Button variant="link" onClick={() => setSelectedDate(new Date())} className="mt-4 text-sm font-bold text-pink-500 hover:text-pink-600 p-0">

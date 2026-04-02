@@ -65,13 +65,13 @@ export const PaginationControl = ({
     return (
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4">
             {/* Left: Info & Size Selector */}
-            <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
                 <span className="hidden sm:inline">
                     Showing <span className="font-bold text-gray-900 dark:text-gray-200">{startItem}-{endItem}</span> of <span className="font-bold text-gray-900 dark:text-gray-200">{totalItems}</span> {itemName}
                 </span>
 
                 <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Show:</span>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Show:</span>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="sm" className="font-bold flex items-center gap-1">
@@ -101,7 +101,7 @@ export const PaginationControl = ({
                     size="icon"
                     disabled={currentPage <= 1}
                     onClick={() => onPageChange(currentPage - 1)}
-                    className="text-gray-500 hover:text-gray-900 dark:hover:text-white disabled:opacity-30"
+                    className="text-gray-600 hover:text-gray-900 dark:hover:text-white disabled:opacity-30"
                 >
                     <ChevronLeft size={16} />
                 </Button>
@@ -132,7 +132,7 @@ export const PaginationControl = ({
                     size="icon"
                     disabled={currentPage >= totalPages}
                     onClick={() => onPageChange(currentPage + 1)}
-                    className="text-gray-500 hover:text-gray-900 dark:hover:text-white disabled:opacity-30"
+                    className="text-gray-600 hover:text-gray-900 dark:hover:text-white disabled:opacity-30"
                 >
                     <ChevronRight size={16} />
                 </Button>

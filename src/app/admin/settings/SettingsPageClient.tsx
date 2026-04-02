@@ -65,7 +65,7 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
                                     "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors",
                                     isActive
                                         ? "border-primary text-primary"
-                                        : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20"
+                                        : "border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20"
                                 )}
                             >
                                 <Icon size={16} />
@@ -168,7 +168,7 @@ function ProfileSettings({ user }: { user: any }) {
                         </div>
                         <div className="pb-1">
                             <p className="text-sm font-semibold text-gray-900 dark:text-white">{user.name || 'Admin'}</p>
-                            <p className="text-xs text-gray-500 mt-0.5">{user.email}</p>
+                            <p className="text-xs text-gray-600 mt-0.5">{user.email}</p>
                         </div>
                     </div>
 
@@ -195,7 +195,7 @@ function ProfileSettings({ user }: { user: any }) {
                         type="email"
                         defaultValue={user.email}
                         disabled
-                        className="cursor-not-allowed text-gray-500"
+                        className="cursor-not-allowed text-gray-600"
                     />
                 </div>
 
@@ -241,7 +241,7 @@ const ToggleRow = ({ label, desc, checked, onChange }: { label: string; desc: st
     <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
         <div>
             <h4 className="font-bold text-gray-900 dark:text-white text-sm">{label}</h4>
-            <p className="text-xs text-gray-500">{desc}</p>
+            <p className="text-xs text-gray-600">{desc}</p>
         </div>
         <label className="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" className="sr-only peer" checked={checked} onChange={onChange} />
@@ -321,7 +321,7 @@ function SystemSettings({ initialConfig }: { initialConfig: SettingsPageClientPr
                 {/* ── System Announcement (full width) ── */}
                 <SectionCard icon={Megaphone} title="System Announcement" className="lg:col-span-2">
                     <div>
-                        <p className="text-xs text-gray-500 mb-3">Display a banner across the entire site. Leave empty to hide.</p>
+                        <p className="text-xs text-gray-600 mb-3">Display a banner across the entire site. Leave empty to hide.</p>
                         <textarea
                             value={config.systemAnnouncement}
                             onChange={(e) => setConfig((prev) => ({ ...prev, systemAnnouncement: e.target.value }))}

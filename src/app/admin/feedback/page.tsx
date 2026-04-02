@@ -40,7 +40,7 @@ const statusOptions = [
     { value: "OPEN", label: "Open", color: "text-blue-500 bg-blue-500/10", icon: Clock },
     { value: "IN_PROGRESS", label: "In Progress", color: "text-amber-500 bg-amber-500/10", icon: Loader2 },
     { value: "RESOLVED", label: "Resolved", color: "text-primary bg-primary/10", icon: CheckCircle2 },
-    { value: "CLOSED", label: "Closed", color: "text-gray-500 bg-gray-500/10", icon: AlertCircle },
+    { value: "CLOSED", label: "Closed", color: "text-gray-600 bg-gray-500/10", icon: AlertCircle },
 ];
 
 type FilterType = "ALL" | "BUG" | "FEATURE";
@@ -203,7 +203,7 @@ export default function AdminFeedbackPage() {
                 <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm text-center py-20">
                     <MessageSquare size={48} className="mx-auto mb-4 text-gray-300" />
                     <h3 className="text-base font-bold text-gray-900 dark:text-white">No feedback found</h3>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                         {searchQuery || filterType !== "ALL" || filterStatus !== "ALL"
                             ? "Try adjusting your filters."
                             : "No feedback has been submitted yet."}
@@ -238,7 +238,7 @@ export default function AdminFeedbackPage() {
                                             )}>
                                                 {isBug ? <Bug size={16} /> : <Lightbulb size={16} />}
                                             </div>
-                                            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                                            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
                                                 {isBug ? "Bug Report" : "Feature Request"}
                                             </span>
                                             <span className="text-[11px] text-gray-400">·</span>
@@ -246,7 +246,7 @@ export default function AdminFeedbackPage() {
                                                 {fb.user.image && (
                                                     <img src={fb.user.image} alt="" className="w-4 h-4 rounded-full" />
                                                 )}
-                                                <span className="text-xs text-gray-500 font-medium truncate">
+                                                <span className="text-xs text-gray-600 font-medium truncate">
                                                     {fb.user.name || fb.user.email || "Unknown"}
                                                 </span>
                                             </div>

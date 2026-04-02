@@ -66,7 +66,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                             v{product.version}
                         </span>
                     </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
                         {product.description || "Professional automatic trading system."}
                     </p>
                 </div>
@@ -113,7 +113,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                     <p className="font-bold text-gray-700 dark:text-gray-300 mb-2 text-xs uppercase tracking-wider">
                         Changelog
                     </p>
-                    <div className="text-gray-500 dark:text-gray-400 whitespace-pre-line leading-relaxed">
+                    <div className="text-gray-600 dark:text-gray-300 whitespace-pre-line leading-relaxed">
                         {product.changelog}
                     </div>
                 </div>

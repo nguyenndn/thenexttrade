@@ -98,7 +98,7 @@ function VerifyEmailForm() {
                     <Mail className="text-primary" size={28} />
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Check your email</h1>
-                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                     We've sent an 8-digit verification code to <br/>
                     <span className="font-bold text-gray-900 dark:text-white">{email}</span>
                 </p>
@@ -141,7 +141,7 @@ function VerifyEmailForm() {
 
             <div className="mt-8 text-center space-y-4">
                 <div className="flex items-center justify-center text-sm">
-                    <span className="text-gray-500 dark:text-gray-400 mr-2">Didn't receive the code?</span>
+                    <span className="text-gray-600 dark:text-gray-300 mr-2">Didn't receive the code?</span>
                     <Button
                         type="button"
                         variant="link"
@@ -161,7 +161,7 @@ function VerifyEmailForm() {
                 </div>
                 
                 <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-                    <Link href="/auth/signup" className="text-sm font-semibold text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white flex items-center justify-center gap-1 transition-colors">
+                    <Link href="/auth/signup" className="text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white flex items-center justify-center gap-1 transition-colors">
                         Use a different email <ArrowRight size={14} />
                     </Link>
                 </div>

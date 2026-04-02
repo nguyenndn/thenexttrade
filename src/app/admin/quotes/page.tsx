@@ -173,7 +173,7 @@ export default function AdminQuotesPage() {
             <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
+                        <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-600 font-bold tracking-wider">
                             <tr>
                                 <th className="px-6 py-5">Quote</th>
                                 <th className="px-6 py-5 w-40">Author</th>
@@ -185,7 +185,7 @@ export default function AdminQuotesPage() {
                             {loading ? (
                                 <tr>
                                     <td colSpan={4} className="px-6 py-12 text-center">
-                                        <div className="flex items-center justify-center gap-3 text-gray-500">
+                                        <div className="flex items-center justify-center gap-3 text-gray-600">
                                             <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                                             <span className="font-medium text-sm">Loading...</span>
                                         </div>
@@ -194,7 +194,7 @@ export default function AdminQuotesPage() {
                             ) : quotes.length === 0 ? (
                                 <tr>
                                     <td colSpan={4} className="px-6 py-16 text-center">
-                                        <div className="flex flex-col items-center justify-center text-gray-500">
+                                        <div className="flex flex-col items-center justify-center text-gray-600">
                                             <QuoteIcon size={40} className="mb-3 opacity-30" />
                                             <p className="font-bold text-gray-900 dark:text-gray-300">No quotes found</p>
                                             <p className="text-sm mt-1 mb-4">Click &quot;Add New&quot; to create your first quote.</p>
@@ -213,7 +213,7 @@ export default function AdminQuotesPage() {
                                             </p>
                                         </td>
                                         <td className="px-6 py-5">
-                                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                                            <span className="text-sm text-gray-600 dark:text-gray-300">
                                                 {quote.author || '—'}
                                             </span>
                                         </td>
@@ -223,7 +223,7 @@ export default function AdminQuotesPage() {
                                                 className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold transition-all ${
                                                     quote.isActive
                                                         ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                                        : 'bg-gray-100 text-gray-400 dark:bg-white/5 dark:text-gray-500'
+                                                        : 'bg-gray-100 text-gray-400 dark:bg-white/5 dark:text-gray-600'
                                                 }`}
                                             >
                                                 {quote.isActive ? 'Active' : 'Inactive'}
@@ -290,7 +290,7 @@ export default function AdminQuotesPage() {
                         <textarea
                             value={formText}
                             onChange={(e) => setFormText(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[100px] resize-none"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
                             placeholder="Enter the quote text..."
                         />
                     </div>
@@ -303,7 +303,7 @@ export default function AdminQuotesPage() {
                             type="text"
                             value={formAuthor}
                             onChange={(e) => setFormAuthor(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
                             placeholder="e.g. Warren Buffett"
                         />
                     </div>
@@ -313,7 +313,7 @@ export default function AdminQuotesPage() {
                             type="button"
                             variant="outline"
                             onClick={() => setModalOpen(false)}
-                            className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
+                            className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
                         >
                             Cancel
                         </Button>

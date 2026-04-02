@@ -192,7 +192,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
 
                             {/* Type */}
                             <div className="flex flex-col gap-2">
-                                <label className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</label>
+                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Type</label>
                                 <div>
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
@@ -215,7 +215,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
 
                             {/* Access Tier */}
                             <div className="flex flex-col gap-2">
-                                <label className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Access Tier</label>
+                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Access Tier</label>
                                 <div>
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
@@ -238,7 +238,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
 
                         {/* Description - Rich Text */}
                         <div className="space-y-2">
-                            <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</label>
+                            <label className="text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Description</label>
                             <RichTextEditor
                                 content={form.watch("description") || ""}
                                 onChange={(html) => form.setValue("description", html, { shouldValidate: true })}
@@ -325,7 +325,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     </div>
 
                     {/* Info Note */}
-                    <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl flex items-start gap-3 text-gray-500 text-xs border border-gray-200 dark:border-white/10">
+                    <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl flex items-start gap-3 text-gray-600 text-xs border border-gray-200 dark:border-white/10">
                         <Info size={16} className="shrink-0 mt-0.5" />
                         <p>Files are uploaded to secure storage. Uploading a new file replaces the existing one.</p>
                     </div>

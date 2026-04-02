@@ -89,7 +89,7 @@ export default function PublicProfileSettings() {
 
     if (!settings) {
         return (
-            <div className="py-8 text-center text-gray-500 dark:text-gray-400">
+            <div className="py-8 text-center text-gray-600 dark:text-gray-300">
                 <p>Unable to load profile settings.</p>
             </div>
         );
@@ -106,7 +106,7 @@ export default function PublicProfileSettings() {
                         </div>
                         <div>
                             <h3 className="font-bold text-gray-900 dark:text-white">Public Profile</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">
                                 Make your trading profile visible at{" "}
                                 {settings.username ? (
                                     <span className="text-primary font-medium">/trader/{settings.username}</span>
@@ -148,7 +148,7 @@ export default function PublicProfileSettings() {
                         onChange={(e) =>
                             setSettings({ ...settings, profileHeadline: e.target.value.slice(0, 160) })
                         }
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
                         placeholder='e.g., "Swing Trader | London Session Specialist"'
                         maxLength={160}
                     />
@@ -166,7 +166,7 @@ export default function PublicProfileSettings() {
                             <Shield size={16} className="text-gray-400" />
                             Privacy Controls
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">
                             Choose what information is visible on your public profile.
                         </p>
                     </div>
@@ -208,7 +208,7 @@ export default function PublicProfileSettings() {
                 <div className="rounded-xl bg-gray-50 dark:bg-white/5 p-4 border border-gray-200 dark:border-white/10">
                     <div className="flex items-start gap-3">
                         <Shield size={16} className="text-gray-400 mt-0.5 shrink-0" />
-                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                        <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             Your account balance, P&L amounts, and individual trade details are{" "}
                             <span className="font-bold text-gray-700 dark:text-gray-300">never</span> shown
                             on your public profile. Only aggregate statistics (win rate, trade count, etc.)
@@ -308,7 +308,7 @@ function ToggleRow({
                 <Icon size={16} className="text-gray-400 shrink-0" />
                 <div className="min-w-0">
                     <p className="text-sm font-bold text-gray-900 dark:text-white">{title}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">{description}</p>
                 </div>
             </div>
             <ToggleSwitch enabled={enabled} onToggle={onToggle} />

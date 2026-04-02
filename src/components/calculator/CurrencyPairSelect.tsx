@@ -32,7 +32,7 @@ export function CurrencyPairSelect({ value, onChange, className }: CurrencyPairS
                     )}
                 >
                     <span className="font-bold text-lg">{value}</span>
-                    <ChevronDown size={16} className="text-gray-500 shrink-0" />
+                    <ChevronDown size={16} className="text-gray-600 shrink-0" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="max-h-[280px] overflow-y-auto">

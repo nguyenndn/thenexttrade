@@ -58,7 +58,7 @@ export default memo(function QuoteDisplay({ isDark }: { isDark: boolean }) {
 
                 <div className="flex items-center gap-3 mt-6">
                     <span className="w-8 h-px bg-gradient-to-r from-transparent to-gray-400 dark:to-gray-600"></span>
-                    <p className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                    <p className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
                         {quote.author}
                     </p>
                     <span className="w-8 h-px bg-gradient-to-l from-transparent to-gray-400 dark:to-gray-600"></span>

@@ -91,7 +91,7 @@ function AdminSearchContent() {
                     </div>
                 ) : (hasSearched && query) ? (
                     <>
-                        <h2 className="text-sm font-bold text-gray-500 mb-4 border-b pb-2 border-gray-200 dark:border-white/10">
+                        <h2 className="text-sm font-bold text-gray-600 mb-4 border-b pb-2 border-gray-200 dark:border-white/10">
                             Results for &quot;{query}&quot;
                         </h2>
 
@@ -107,7 +107,7 @@ function AdminSearchContent() {
                                             ? 'bg-blue-50 text-blue-500 dark:bg-blue-500/10'
                                             : result.type === 'user'
                                                 ? 'bg-purple-50 text-purple-500 dark:bg-purple-500/10'
-                                                : 'bg-gray-50 text-gray-500'
+                                                : 'bg-gray-50 text-gray-600'
                                             }`}>
                                             {result.type === 'article' ? <FileText size={20} /> : <UserIcon size={20} />}
                                         </div>
@@ -132,7 +132,7 @@ function AdminSearchContent() {
                                             <h3 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors truncate">
                                                 <HighlightText text={result.title} highlight={query || ""} />
                                             </h3>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                                            <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
                                                 <HighlightText text={result.description} highlight={query || ""} />
                                             </p>
                                         </div>

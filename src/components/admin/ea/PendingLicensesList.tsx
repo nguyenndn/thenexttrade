@@ -34,7 +34,7 @@ export function PendingLicensesList({ licenses, adminId }: PendingLicensesListPr
             <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
                 <Check className="mx-auto text-gray-300 mb-4" size={48} />
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">All caught up!</h3>
-                <p className="text-gray-500 mt-2">There are no pending license requests.</p>
+                <p className="text-gray-600 mt-2">There are no pending license requests.</p>
             </div>
         );
     }
@@ -73,7 +73,7 @@ export function PendingLicensesList({ licenses, adminId }: PendingLicensesListPr
                                 href={getIBLink(req.broker)}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="hidden md:flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-primary px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
+                                className="hidden md:flex items-center gap-2 text-xs font-medium text-gray-600 hover:text-primary px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition"
                             >
                                 <ExternalLink size={14} />
                                 Check IB

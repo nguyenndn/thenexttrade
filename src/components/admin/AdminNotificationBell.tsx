@@ -88,7 +88,7 @@ export function AdminNotificationBell() {
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 p-0 rounded-full text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                <Button variant="ghost" className="relative h-10 w-10 p-0 rounded-full text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
                     <Bell size={20} />
                     {badgeCount > 0 && (
                         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
@@ -130,7 +130,7 @@ export function AdminNotificationBell() {
                 {/* Notifications List */}
                 <div className="max-h-[300px] overflow-y-auto">
                     {notifications.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500">
+                        <div className="p-8 text-center text-gray-600">
                             <Bell size={24} className="mx-auto mb-2 opacity-50" />
                             <p className="text-xs">No new notifications</p>
                         </div>
@@ -157,7 +157,7 @@ export function AdminNotificationBell() {
                                         {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true, locale: enUS })}
                                     </span>
                                 </div>
-                                <p className="text-xs text-gray-500 line-clamp-2">{n.message}</p>
+                                <p className="text-xs text-gray-600 line-clamp-2">{n.message}</p>
                             </div>
                         ))
                     )}

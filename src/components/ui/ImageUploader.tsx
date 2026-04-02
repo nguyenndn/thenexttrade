@@ -67,7 +67,7 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
                         variant="ghost"
                         type="button"
                         onClick={() => setIsInputVisible(false)}
-                        className="flex-1 py-1.5 h-auto text-xs font-bold text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg hover:text-gray-500"
+                        className="flex-1 py-1.5 h-auto text-xs font-bold text-gray-600 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg hover:text-gray-600"
                     >
                         Cancel
                     </Button>
@@ -129,7 +129,7 @@ export function ImageUploader({ value, onChange, className }: ImageUploaderProps
                     <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-1 text-gray-400 group-hover:text-primary">
                         <LinkIcon size={24} />
                     </div>
-                    <p className="text-xs font-bold text-gray-500 group-hover:text-primary transition-colors">Paste Chart Link</p>
+                    <p className="text-xs font-bold text-gray-600 group-hover:text-primary transition-colors">Paste Chart Link</p>
 
                     <div className="text-[10px] text-gray-400 text-center mt-1">
                         <p>Recommended Free Hosting:</p>

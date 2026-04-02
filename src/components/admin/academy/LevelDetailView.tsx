@@ -200,7 +200,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                     </div>
                     <div>
                         <p className="text-2xl font-bold text-gray-900 dark:text-white">{level.modules.length}</p>
-                        <p className="text-xs text-gray-500">Modules</p>
+                        <p className="text-xs text-gray-600">Modules</p>
                     </div>
                 </div>
                 <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 p-4 flex items-center gap-3">
@@ -209,7 +209,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                     </div>
                     <div>
                         <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalLessons}</p>
-                        <p className="text-xs text-gray-500">Lessons</p>
+                        <p className="text-xs text-gray-600">Lessons</p>
                     </div>
                 </div>
                 <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 p-4 flex items-center gap-3">
@@ -218,7 +218,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                     </div>
                     <div>
                         <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalDuration}m</p>
-                        <p className="text-xs text-gray-500">Total Duration</p>
+                        <p className="text-xs text-gray-600">Total Duration</p>
                     </div>
                 </div>
             </div>
@@ -229,7 +229,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                     <div className="text-center py-20 bg-white dark:bg-[#151925] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
                         <Layers size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">No Modules Yet</h3>
-                        <p className="text-gray-500 text-sm mb-6">Start by creating your first module for this level.</p>
+                        <p className="text-gray-600 text-sm mb-6">Start by creating your first module for this level.</p>
                         <Button onClick={() => setIsCreateModuleOpen(true)} className="gap-2">
                             <Plus size={18} /> Create Module
                         </Button>
@@ -251,7 +251,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-gray-900 dark:text-white">{module.title}</h3>
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-xs text-gray-600">
                                             {module._count.lessons} lessons
                                             {module.description && ` · ${module.description}`}
                                         </p>

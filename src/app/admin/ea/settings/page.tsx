@@ -132,7 +132,7 @@ export default function EASettingsPage() {
                     <div className="flex items-center justify-between">
                         <div>
                             <h3 className="font-bold text-gray-900 dark:text-white">Maintenance Mode</h3>
-                            <p className="text-sm text-gray-500">Temporarily disable EA registration and API access.</p>
+                            <p className="text-sm text-gray-600">Temporarily disable EA registration and API access.</p>
                         </div>
                         <Controller
                             control={control}
@@ -149,7 +149,7 @@ export default function EASettingsPage() {
                     <div className="flex items-center justify-between">
                         <div>
                             <h3 className="font-bold text-gray-900 dark:text-white">Auto-Approve Licenses</h3>
-                            <p className="text-sm text-gray-500">Automatically grant access without admin review.</p>
+                            <p className="text-sm text-gray-600">Automatically grant access without admin review.</p>
                         </div>
                         <Controller
                             control={control}
@@ -185,13 +185,13 @@ export default function EASettingsPage() {
                         {errors.adminAlertEmail && (
                             <p className="text-red-500 text-xs mt-1">{errors.adminAlertEmail.message}</p>
                         )}
-                        <p className="text-xs text-gray-500 mt-2">Where to send new pending request alerts.</p>
+                        <p className="text-xs text-gray-600 mt-2">Where to send new pending request alerts.</p>
                     </div>
 
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-white/5">
                         <div>
                             <h3 className="font-bold text-gray-900 dark:text-white">Send Welcome Emails</h3>
-                            <p className="text-sm text-gray-500">Notify users automatically when approved.</p>
+                            <p className="text-sm text-gray-600">Notify users automatically when approved.</p>
                         </div>
                         <Controller
                             control={control}
@@ -218,7 +218,7 @@ export default function EASettingsPage() {
                     <div className="flex items-center justify-between">
                         <div>
                             <h3 className="font-bold text-gray-900 dark:text-white">Enable Telegram Alerts</h3>
-                            <p className="text-sm text-gray-500">Push notifications to a Telegram group or channel.</p>
+                            <p className="text-sm text-gray-600">Push notifications to a Telegram group or channel.</p>
                         </div>
                         <Controller
                             control={control}

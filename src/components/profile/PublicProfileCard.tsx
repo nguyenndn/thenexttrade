@@ -60,7 +60,7 @@ function ShareButton({ username }: { username: string }) {
     return (
         <button
             onClick={handleShare}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold text-gray-600 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all"
         >
             {copied ? <Check size={12} className="text-primary" /> : <Share2 size={12} />}
             {copied ? "Copied" : "Share"}
@@ -75,7 +75,7 @@ function getScoreInfo(score: number) {
     if (score >= 90) return { label: "Legendary", text: "text-yellow-600" };
     if (score >= 75) return { label: "Epic", text: "text-blue-600" };
     if (score >= 60) return { label: "Rare", text: "text-cyan-600" };
-    if (score >= 40) return { label: "Common", text: "text-gray-500" };
+    if (score >= 40) return { label: "Common", text: "text-gray-600" };
     return { label: "Beginner", text: "text-orange-500" };
 }
 
@@ -120,7 +120,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                         <div className="flex items-center justify-between px-6 pt-5 relative z-20">
                             <div className="flex items-center gap-2">
                                 <Zap size={12} className="text-primary" />
-                                <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">
+                                <span className="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
                                     Trading Card
                                 </span>
                             </div>
@@ -154,7 +154,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                                         {profile.name}
                                     </h1>
                                     <div className="flex items-center gap-2 mt-1.5">
-                                        <span className="text-sm text-gray-500 font-medium">@{profile.username}</span>
+                                        <span className="text-sm text-gray-600 font-medium">@{profile.username}</span>
                                         <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-primary text-white tracking-wide">
                                             LV {profile.level}
                                         </span>
@@ -168,7 +168,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                             </div>
 
                             {profile.headline && (
-                                <p className="text-xs text-gray-500 mt-3 leading-relaxed line-clamp-2">{profile.headline}</p>
+                                <p className="text-xs text-gray-600 mt-3 leading-relaxed line-clamp-2">{profile.headline}</p>
                             )}
                         </div>
 
@@ -180,8 +180,8 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                         {/* ═══ STATS GRID 2×2 ═══ */}
                         <div className="px-6 py-5 relative z-20">
                             <div className="flex items-center gap-1 mb-4">
-                                <Shield size={10} className="text-gray-500" />
-                                <span className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">
+                                <Shield size={10} className="text-gray-600" />
+                                <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">
                                     Verified · 90d
                                 </span>
                             </div>
@@ -191,34 +191,34 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                                     <p className="text-4xl font-black text-gray-900 tracking-tighter leading-none">
                                         {profile.stats.totalTrades.toLocaleString()}
                                     </p>
-                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-1">Trades</p>
+                                    <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Trades</p>
                                 </div>
                                 <div>
                                     <p className={`text-4xl font-black tracking-tighter leading-none ${profile.stats.winRate >= 50 ? "text-primary" : "text-red-500"}`}>
                                         {Math.round(profile.stats.winRate)}
                                         <span className="text-xl text-gray-400">%</span>
                                     </p>
-                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-1">Win Rate</p>
+                                    <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Win Rate</p>
                                 </div>
                                 <div>
                                     <p className="text-4xl font-black text-gray-900 tracking-tighter leading-none">
                                         {profile.stats.avgRR > 0 ? profile.stats.avgRR.toFixed(1) : "—"}
                                     </p>
-                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-1">Avg R:R</p>
+                                    <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Avg R:R</p>
                                 </div>
                                 {profile.stats.tradeScore !== null && profile.visibility.showTradeScore && scoreInfo ? (
                                     <div>
                                         <p className={`text-4xl font-black tracking-tighter leading-none ${scoreInfo.text}`}>
                                             {profile.stats.tradeScore}
                                         </p>
-                                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-1">
+                                        <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">
                                             Score · <span className={`${scoreInfo.text} font-black`}>{scoreInfo.label}</span>
                                         </p>
                                     </div>
                                 ) : (
                                     <div>
                                         <p className="text-4xl font-black text-gray-300 tracking-tighter leading-none">—</p>
-                                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-1">Score</p>
+                                        <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Score</p>
                                     </div>
                                 )}
                             </div>
@@ -232,7 +232,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                         {/* ═══ PAIRS: Mini badges ═══ */}
                         {profile.topPairs && profile.topPairs.length > 0 && profile.visibility.showPairStats && (
                             <div className="px-6 py-4 relative z-20">
-                                <p className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3">
+                                <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] mb-3">
                                     Top Pairs
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
@@ -257,8 +257,8 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                                 <div className="mx-6"><div className="h-[1px] bg-gray-100" /></div>
                                 <div className="px-6 py-4 relative z-20">
                                     <div className="flex items-center gap-1 mb-3">
-                                        <Award size={10} className="text-gray-500" />
-                                        <span className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">
+                                        <Award size={10} className="text-gray-600" />
+                                        <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">
                                             Achievements
                                         </span>
                                     </div>
@@ -284,8 +284,8 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                                 <div className="mx-6"><div className="h-[1px] bg-gray-100" /></div>
                                 <div className="px-6 py-4 relative z-20">
                                     <div className="flex items-center gap-1 mb-2">
-                                        <Clock size={10} className="text-gray-500" />
-                                        <span className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Session</span>
+                                        <Clock size={10} className="text-gray-600" />
+                                        <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">Session</span>
                                     </div>
                                     <div className="flex items-baseline gap-2">
                                         <span className="text-sm font-black text-gray-700">{profile.preferredSession.name}</span>
@@ -298,10 +298,10 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                         {/* ═══ FOOTER ═══ */}
                         <div className="px-6 py-4 relative z-20">
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-gray-500 tracking-wider">
+                                <span className="text-[10px] font-bold text-gray-600 tracking-wider">
                                     Est. {joinDate}
                                 </span>
-                                <span className="text-[10px] font-bold text-gray-500 tracking-wider">
+                                <span className="text-[10px] font-bold text-gray-600 tracking-wider">
                                     #{String(profile.level).padStart(4, "0")}
                                 </span>
                             </div>

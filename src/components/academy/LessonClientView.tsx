@@ -105,12 +105,12 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                         Academy
                     </Link>
                     <ChevronRight size={14} className="text-gray-300 dark:text-gray-600" />
-                    <span className="text-gray-500 dark:text-gray-400">{lesson.module.level?.title || 'Level'}</span>
+                    <span className="text-gray-600 dark:text-gray-300">{lesson.module.level?.title || 'Level'}</span>
                     <ChevronRight size={14} className="text-gray-300 dark:text-gray-600" />
                     <span className="text-gray-700 dark:text-gray-200 font-bold">{lesson.module.title}</span>
                 </div>
                 <div className="flex items-center gap-3 text-base font-bold w-full sm:w-auto">
-                    <div className="flex items-center gap-1.5 text-gray-500 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
+                    <div className="flex items-center gap-1.5 text-gray-600 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
                         <BookOpen size={14} />
                         <span>{currentIndex + 1}/{courseLessons.length}</span>
                     </div>
@@ -211,7 +211,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5 space-y-3">
                         <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Current Module</h3>
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{lesson.module.title}</h2>
-                        <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">
+                        <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
                             {lesson.module.description || "Master this module to advance your trading skills."}
                         </p>
                         {/* Module Progress */}
@@ -372,10 +372,10 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                             <Lock size={24} className="text-amber-600 dark:text-amber-400" />
                         </div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Lesson Locked</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
                             <strong className="text-gray-700 dark:text-gray-300">&ldquo;{lockedDialogLesson}&rdquo;</strong>
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-5">
                             You need to complete the previous lessons first before accessing this one. Keep up the great work!
                         </p>
                         <div className="flex gap-3 justify-center">

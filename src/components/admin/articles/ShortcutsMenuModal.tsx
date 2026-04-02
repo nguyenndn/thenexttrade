@@ -68,7 +68,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                     <div className="flex items-center gap-2">
                         <button
                             onClick={fetchShortcuts}
-                            className="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-1 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors"
+                            className="text-sm font-medium text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-1 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors"
                             title="Reload shortcuts"
                             aria-label="Reload shortcuts"
                         >
@@ -116,7 +116,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                                         <Zap size={14} className="text-yellow-500" />
                                         <span className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate w-full transition-colors">{shortcut.name}</span>
                                     </div>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">
+                                    <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 mt-1">
                                         {shortcut.description || "No description provided."}
                                     </p>
                                     <div className="mt-3 text-xs bg-gray-100 dark:bg-white/5 px-2 py-1 rounded text-gray-400 w-full truncate">
@@ -128,7 +128,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 mt-4">
                             <Zap size={32} className="text-gray-300 dark:text-gray-600 mb-3" />
-                            <p className="text-gray-500 dark:text-gray-400 font-medium mb-1">No Shortcuts Found</p>
+                            <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">No Shortcuts Found</p>
                             <p className="text-sm text-gray-400 mb-4 max-w-sm">Create reusable content snippets to insert instantly into your articles.</p>
                             <Link href="/admin/articles/shortcuts" target="_blank">
                                 <Button variant="outline" size="sm" className="bg-white border-blue-200 text-blue-600 hover:bg-blue-50">Create First Shortcut</Button>

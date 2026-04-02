@@ -104,7 +104,7 @@ export function PositionSizeCalc() {
 
                 <div className="bg-white dark:bg-white/5 rounded-xl p-3 border border-gray-200 dark:border-white/10 hover:border-primary/30 transition-colors">
                     <div className="flex justify-between text-sm">
-                        <span className="text-gray-500 dark:text-gray-400">Pip Value (Standard)</span>
+                        <span className="text-gray-600 dark:text-gray-300">Pip Value (Standard)</span>
                         <span className="font-bold text-gray-900 dark:text-white">${result ? result.pipValue.toFixed(2) : "0.00"}</span>
                     </div>
                 </div>

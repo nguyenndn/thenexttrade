@@ -140,7 +140,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                     <h3 className={cn("text-2xl font-black uppercase tracking-wider bg-clip-text text-transparent bg-gradient-to-r", phase.color, isLocked && "from-gray-400 to-gray-300 dark:from-gray-600 dark:to-gray-500")}>
                                         {phase.title}
                                     </h3>
-                                    <p className="text-gray-500 font-medium">{phase.subtitle}</p>
+                                    <p className="text-gray-600 font-medium">{phase.subtitle}</p>
                                 </div>
                                 <div className={cn("text-sm text-gray-400 max-w-xs", isLocked && "opacity-50")}>
                                     {levelData?.description || "Advanced content for verified traders."}
@@ -233,7 +233,7 @@ export default function AcademyMap({ levels, userProgress, basePath = "/academy"
                                                                     ? "bg-amber-400 text-white"
                                                                     : isInProgress
                                                                         ? "bg-cyan-500 text-white"
-                                                                        : "bg-gray-100 dark:bg-black/50 text-gray-500 dark:text-gray-400 group-hover:bg-primary group-hover:text-white"
+                                                                        : "bg-gray-100 dark:bg-black/50 text-gray-600 dark:text-gray-300 group-hover:bg-primary group-hover:text-white"
                                                         )}>
                                                             {isComplete ? <CheckCircle size={14} /> : module.title.charAt(0)}
                                                         </div>

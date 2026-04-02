@@ -289,7 +289,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                         className="object-cover"
                                     />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-sm font-bold text-gray-500 dark:text-gray-400">
+                                    <div className="w-full h-full flex items-center justify-center text-sm font-bold text-gray-600 dark:text-gray-300">
                                         {article.author.name?.charAt(0) || '?'}
                                     </div>
                                 )}
@@ -385,7 +385,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         {/* Helpful Vote (mobile only — desktop uses sidebar) */}
                         <div className="mt-8 flex items-center gap-3 lg:hidden">
                             <HelpfulButton articleId={article.id} />
-                            <span className="text-sm text-gray-400 dark:text-gray-500">Did you find this article helpful?</span>
+                            <span className="text-sm text-gray-600 dark:text-gray-300">Did you find this article helpful?</span>
                         </div>
 
                         {/* Related Articles */}

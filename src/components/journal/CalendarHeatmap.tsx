@@ -115,11 +115,11 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                     <div className="hidden sm:flex items-center gap-4 text-sm">
                         <div className="flex items-center gap-1.5">
                             <TrendingUp size={14} className="text-emerald-500" />
-                            <span className="text-gray-500 dark:text-gray-400">{monthSummary.winDays} win</span>
+                            <span className="text-gray-600 dark:text-gray-300">{monthSummary.winDays} win</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <TrendingDown size={14} className="text-red-500" />
-                            <span className="text-gray-500 dark:text-gray-400">{monthSummary.lossDays} loss</span>
+                            <span className="text-gray-600 dark:text-gray-300">{monthSummary.lossDays} loss</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <span className={`font-bold ${monthSummary.totalPnl >= 0 ? "text-emerald-500" : "text-red-500"}`}>
@@ -146,7 +146,7 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                 {/* Weekday Headers */}
                 <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
                     {weekDays.map(day => (
-                        <div key={day} className="text-center text-xs font-medium text-gray-400 dark:text-gray-500 py-1">
+                        <div key={day} className="text-center text-xs font-medium text-gray-600 dark:text-gray-300 py-1">
                             {day}
                         </div>
                     ))}
@@ -177,7 +177,7 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                                 {/* Day Number */}
                                 <span className={`text-xs font-medium ${data && data.pnl > 0 ? "text-emerald-900 dark:text-emerald-100" :
                                         data && data.pnl < 0 ? "text-red-900 dark:text-red-100" :
-                                            "text-gray-400 dark:text-gray-500"
+                                            "text-gray-600 dark:text-gray-300"
                                     }`}>
                                     {format(day, "d")}
                                 </span>
@@ -186,7 +186,7 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
                                 {data && (
                                     <span className={`text-[10px] font-bold leading-tight ${data.pnl > 0 ? "text-emerald-800 dark:text-emerald-200" :
                                             data.pnl < 0 ? "text-red-800 dark:text-red-200" :
-                                                "text-gray-500"
+                                                "text-gray-600"
                                         }`}>
                                         {data.pnl > 0 ? "+" : ""}{data.pnl.toFixed(0)}
                                     </span>
@@ -194,7 +194,7 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
 
                                 {/* Trade Count Badge */}
                                 {data && data.tradeCount > 0 && (
-                                    <span className="absolute top-0.5 right-0.5 text-[8px] font-medium text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span className="absolute top-0.5 right-0.5 text-[8px] font-medium text-gray-600 dark:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity">
                                         {data.tradeCount}t
                                     </span>
                                 )}
@@ -205,15 +205,15 @@ export function CalendarHeatmap({ dailyData, onDayClick }: CalendarHeatmapProps)
 
                 {/* Legend */}
                 <div className="flex items-center justify-center gap-4 mt-4 pt-3 border-t border-gray-200 dark:border-white/10">
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                    <div className="flex items-center gap-1.5 text-xs text-gray-600">
                         <div className="w-3 h-3 rounded bg-red-500/60" />
                         <span>Loss</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                    <div className="flex items-center gap-1.5 text-xs text-gray-600">
                         <div className="w-3 h-3 rounded bg-gray-200 dark:bg-white/10" />
                         <span>Break Even</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                    <div className="flex items-center gap-1.5 text-xs text-gray-600">
                         <div className="w-3 h-3 rounded bg-emerald-500/60" />
                         <span>Win</span>
                     </div>

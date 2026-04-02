@@ -60,7 +60,7 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
                     <h2 className="text-sm font-extrabold text-gray-900 dark:text-white tracking-tight">
                         Authorized MT5 Accounts
                     </h2>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">
+                    <p className="text-xs text-gray-600 dark:text-gray-300">
                         Terminals allowed to run your EA
                     </p>
                 </div>
@@ -75,7 +75,7 @@ export function AccountsList({ licenses, eaBrokers }: AccountsListProps) {
                     <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
                         Get Verified
                     </h3>
-                    <p className="text-sm text-gray-400 dark:text-gray-500 mb-6 max-w-xs mx-auto">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 max-w-xs mx-auto">
                         Submit your MT5 account to unlock premium EAs
                     </p>
                     <div className="inline-block">

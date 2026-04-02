@@ -188,7 +188,7 @@ export function AccountSettingsModal({
 
                         <div className="p-4 bg-gray-50/80 dark:bg-white/[0.02] rounded-xl border border-gray-200 dark:border-white/10 shadow-inner">
                             <div className="flex items-center justify-between mb-2">
-                                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">API Key</label>
+                                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider">API Key</label>
                                 <Button
                                     variant="outline"
                                     size="sm"
@@ -234,7 +234,7 @@ export function AccountSettingsModal({
                                     onClick={fetchApiKey}
                                     disabled={isLoadingKey}
                                     aria-label="Toggle API Key visibility"
-                                    className="w-12 h-12 rounded-xl text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white shrink-0"
+                                    className="w-12 h-12 rounded-xl text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white shrink-0"
                                 >
                                     {isLoadingKey ? <RefreshCw size={18} className="animate-spin" /> : showApiKey ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </Button>
@@ -251,7 +251,7 @@ export function AccountSettingsModal({
                                     </Button>
                                 )}
                             </div>
-                            <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
+                            <p className="text-[11px] font-medium text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Use this key in your EA settings. Keep it secret and do not share it with anyone.
                             </p>
                         </div>

@@ -99,7 +99,7 @@ export function GoalsTracker({ goals: initialGoals }: GoalsTrackerProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => setShowForm(!showForm)}
-                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-lg"
+                    className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-lg"
                 >
                     {showForm ? <X size={14} /> : <Plus size={14} />}
                     {showForm ? "Cancel" : "Add"}

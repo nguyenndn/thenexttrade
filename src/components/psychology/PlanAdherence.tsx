@@ -55,10 +55,10 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
                     <div className="p-4 bg-green-50 dark:bg-green-500/10 rounded-xl border border-green-100 dark:border-green-500/20">
                         <div className="text-sm font-bold text-green-700 dark:text-green-400 mb-1">Followed Plan</div>
                         <div className="flex justify-between items-end">
-                            <div className="text-2xl font-bold text-gray-900 dark:text-white">{data.followed.count} <span className="text-xs font-normal text-gray-500">trades</span></div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-white">{data.followed.count} <span className="text-xs font-normal text-gray-600">trades</span></div>
                             <div className="text-right">
                                 <div className="text-sm font-bold text-green-600 dark:text-green-400">{data.followed.winRate.toFixed(1)}% WR</div>
-                                <div className="text-xs text-gray-500">${data.followed.totalPnL.toFixed(2)}</div>
+                                <div className="text-xs text-gray-600">${data.followed.totalPnL.toFixed(2)}</div>
                             </div>
                         </div>
                     </div>
@@ -66,10 +66,10 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
                     <div className="p-4 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
                         <div className="text-sm font-bold text-red-700 dark:text-red-400 mb-1">Deviated</div>
                         <div className="flex justify-between items-end">
-                            <div className="text-2xl font-bold text-gray-900 dark:text-white">{data.notFollowed.count} <span className="text-xs font-normal text-gray-500">trades</span></div>
+                            <div className="text-2xl font-bold text-gray-900 dark:text-white">{data.notFollowed.count} <span className="text-xs font-normal text-gray-600">trades</span></div>
                             <div className="text-right">
                                 <div className="text-sm font-bold text-red-600 dark:text-red-400">{data.notFollowed.winRate.toFixed(1)}% WR</div>
-                                <div className="text-xs text-gray-500">${data.notFollowed.totalPnL.toFixed(2)}</div>
+                                <div className="text-xs text-gray-600">${data.notFollowed.totalPnL.toFixed(2)}</div>
                             </div>
                         </div>
                     </div>

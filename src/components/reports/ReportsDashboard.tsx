@@ -218,7 +218,7 @@ export function ReportsDashboard() {
                   p-3.5 rounded-xl transition-all duration-300 shadow-sm
                   ${selectedType === report.id
                                         ? "bg-primary text-white shadow-primary/20"
-                                        : "bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-primary/10 group-hover:text-primary"
+                                        : "bg-gray-50 dark:bg-white/5 text-gray-600 group-hover:bg-primary/10 group-hover:text-primary"
                                     }
                 `}
                             >
@@ -240,7 +240,7 @@ export function ReportsDashboard() {
                         <h3 className="font-black text-lg text-gray-900 dark:text-white mb-2 tracking-tight">
                             {report.name}
                         </h3>
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400 leading-relaxed text-left w-full">
+                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed text-left w-full">
                             {report.description}
                         </p>
                     </Button>
@@ -259,7 +259,7 @@ export function ReportsDashboard() {
                 <div className="flex flex-col xl:flex-row gap-4 items-end">
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
                         <div>
-                            <label className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 block">Start Date</label>
+                            <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2.5 block">Start Date</label>
                             <input
                                 type="date"
                                 value={format(dateRange.start, "yyyy-MM-dd")}
@@ -270,7 +270,7 @@ export function ReportsDashboard() {
                             />
                         </div>
                         <div>
-                            <label className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 block">End Date</label>
+                            <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2.5 block">End Date</label>
                             <input
                                 type="date"
                                 value={format(dateRange.end, "yyyy-MM-dd")}
@@ -296,7 +296,7 @@ export function ReportsDashboard() {
 
                 {/* Quick Select Pills */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
-                    <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest sm:mr-2">Quick Presets:</span>
+                    <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 uppercase tracking-widest sm:mr-2">Quick Presets:</span>
                     <div className="flex flex-wrap items-center gap-2.5">
                         {[
                             { label: "This Month", fn: () => ({ start: startOfMonth(now), end: endOfMonth(now) }) },
@@ -328,7 +328,7 @@ export function ReportsDashboard() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
                             <h3 className="font-black text-gray-900 dark:text-white text-lg tracking-tight">CSV Preview</h3>
-                            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Review data and remove unnecessary columns before downloading.</p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Review data and remove unnecessary columns before downloading.</p>
                         </div>
                         <Button
                             onClick={handleDownloadCustomCSV}
@@ -344,7 +344,7 @@ export function ReportsDashboard() {
                             <thead>
                                 <tr className="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
                                     {csvPreview.headers.map((header, index) => (
-                                        <th key={index} className="p-4 text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap min-w-[120px] group">
+                                        <th key={index} className="p-4 text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 whitespace-nowrap min-w-[120px] group">
                                             <div className="flex items-center justify-between gap-2">
                                                 <span>{header}</span>
                                                 <Button 
@@ -373,7 +373,7 @@ export function ReportsDashboard() {
                                 ))}
                                 {csvPreview.rows.length > 50 && (
                                     <tr>
-                                        <td colSpan={csvPreview.headers.length} className="p-4 text-center text-sm font-medium text-gray-500 dark:text-gray-400 italic bg-gray-50/50 dark:bg-white/5">
+                                        <td colSpan={csvPreview.headers.length} className="p-4 text-center text-sm font-medium text-gray-600 dark:text-gray-300 italic bg-gray-50/50 dark:bg-white/5">
                                             Showing first 50 rows of {csvPreview.rows.length} total rows.
                                         </td>
                                     </tr>

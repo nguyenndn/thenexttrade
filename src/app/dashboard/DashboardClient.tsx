@@ -133,11 +133,11 @@ export default function DashboardClient({
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-gray-900 dark:text-white text-sm">Period Growth</h3>
-                                    <p className="text-xs text-gray-500">Cumulative Net Profit</p>
+                                    <p className="text-xs text-gray-600">Cumulative Net Profit</p>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-xs text-gray-500">Net Profit</p>
+                                <p className="text-xs text-gray-600">Net Profit</p>
                                 <p className={`text-sm font-bold ${(chartData[chartData.length - 1]?.balance || 0) >= 0 ? "text-primary" : "text-red-500"}`}>
                                     {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', signDisplay: 'always' }).format(chartData[chartData.length - 1]?.balance || 0)}
                                 </p>
@@ -186,7 +186,7 @@ export default function DashboardClient({
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-gray-900 dark:text-white text-sm">Daily Win Rate</h3>
-                                    <p className="text-xs text-gray-500">Win % by Day</p>
+                                    <p className="text-xs text-gray-600">Win % by Day</p>
                                 </div>
                             </div>
                         </div>
@@ -214,7 +214,7 @@ export default function DashboardClient({
                             </div>
                             <div>
                                 <h3 className="font-bold text-gray-900 dark:text-white text-sm">Monthly Analytics</h3>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">Net Profit by Month</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-300">Net Profit by Month</p>
                             </div>
                         </div>
                         <MonthlyAnalyticsChart data={monthlyAnalytics} />

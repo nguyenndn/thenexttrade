@@ -41,7 +41,7 @@ export function FibonacciCalc() {
     }, [inputs]);
 
     const getLevelColor = (levelStr: string) => {
-        if (levelStr === "0.0%" || levelStr === "100.0%") return "text-gray-500 dark:text-gray-400";
+        if (levelStr === "0.0%" || levelStr === "100.0%") return "text-gray-600 dark:text-gray-300";
         if (levelStr === "38.2%" || levelStr === "61.8%") return "text-primary";
         if (levelStr === "50.0%") return "text-cyan-600 dark:text-cyan-400";
         if (levelStr === "161.8%" || levelStr === "261.8%") return "text-amber-600 dark:text-amber-400";
@@ -56,7 +56,7 @@ export function FibonacciCalc() {
                     <button
                         onClick={() => setInputs({ ...inputs, fibType: "retracement" })}
                         className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
-                            inputs.fibType === "retracement" ? "text-white" : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                            inputs.fibType === "retracement" ? "text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                         }`}
                     >
                         {inputs.fibType === "retracement" && (
@@ -71,7 +71,7 @@ export function FibonacciCalc() {
                     <button
                         onClick={() => setInputs({ ...inputs, fibType: "extension" })}
                         className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
-                            inputs.fibType === "extension" ? "text-white" : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                            inputs.fibType === "extension" ? "text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                         }`}
                     >
                         {inputs.fibType === "extension" && (
@@ -90,7 +90,7 @@ export function FibonacciCalc() {
                     <button
                         onClick={() => setInputs({ ...inputs, trend: "uptrend" })}
                         className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
-                            inputs.trend === "uptrend" ? "text-white" : "text-gray-500 dark:text-gray-300"
+                            inputs.trend === "uptrend" ? "text-white" : "text-gray-600 dark:text-gray-300"
                         }`}
                     >
                         {inputs.trend === "uptrend" && (
@@ -105,7 +105,7 @@ export function FibonacciCalc() {
                     <button
                         onClick={() => setInputs({ ...inputs, trend: "downtrend" })}
                         className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
-                            inputs.trend === "downtrend" ? "text-white" : "text-gray-500 dark:text-gray-300"
+                            inputs.trend === "downtrend" ? "text-white" : "text-gray-600 dark:text-gray-300"
                         }`}
                     >
                         {inputs.trend === "downtrend" && (

@@ -82,7 +82,7 @@ export function LeaderboardTabs({ activeType, equalWidth = true }: LeaderboardTa
               equalWidth && "flex-1 text-center lg:flex-none",
               isActive
                 ? cn(tab.activeBg, tab.activeColor, tab.activeGlow)
-                : "text-gray-400 dark:text-gray-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300 hover:bg-white/50 dark:hover:bg-white/5"
+                : "text-gray-600 dark:text-gray-300 border-transparent hover:text-gray-600 dark:hover:text-gray-300 hover:bg-white/50 dark:hover:bg-white/5"
             )}
           >
             <Icon

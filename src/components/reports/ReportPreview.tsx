@@ -64,7 +64,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* By Strategy */}
                 <div>
-                    <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-500">By Strategy</h4>
+                    <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-600">By Strategy</h4>
                     <div className="space-y-3">
                         {data.byStrategy.slice(0, 5).map((strat: any) => (
                             <div
@@ -75,13 +75,13 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                     <span className="font-bold text-gray-900 dark:text-white text-sm">
                                         {strat.name}
                                     </span>
-                                    <span className="text-xs text-gray-500">{strat.trades} trades</span>
+                                    <span className="text-xs text-gray-600">{strat.trades} trades</span>
                                 </div>
                                 <div className="text-right">
                                     <div className={`font-bold ${strat.pnl >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                         {strat.pnl >= 0 ? '+' : ''}${strat.pnl.toFixed(0)}
                                     </div>
-                                    <div className="text-xs text-gray-500">{strat.winRate.toFixed(0)}% WR</div>
+                                    <div className="text-xs text-gray-600">{strat.winRate.toFixed(0)}% WR</div>
                                 </div>
                             </div>
                         ))}
@@ -90,7 +90,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
 
                 {/* By Pair */}
                 <div>
-                    <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-500">Top Pairs</h4>
+                    <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-600">Top Pairs</h4>
                     <div className="space-y-3">
                         {data.byPair.slice(0, 5).map((pair: any) => (
                             <div
@@ -101,7 +101,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                     {pair.symbol}
                                 </span>
                                 <div className="flex items-center gap-4 text-sm">
-                                    <span className="text-gray-500">{pair.trades} trades</span>
+                                    <span className="text-gray-600">{pair.trades} trades</span>
                                     <span className={`font-bold ${pair.pnl >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                         {pair.pnl >= 0 ? '+' : ''}${pair.pnl.toFixed(0)}
                                     </span>
@@ -114,10 +114,10 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
 
             {/* Recent Trades Table */}
             <div className="mt-8">
-                <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-500">Recent Trades</h4>
+                <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-600">Recent Trades</h4>
                 <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10">
                     <table className="w-full text-sm">
-                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase font-bold text-gray-500">
+                        <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase font-bold text-gray-600">
                             <tr>
                                 <th className="px-4 py-3 text-left whitespace-nowrap">Date</th>
                                 <th className="px-4 py-3 text-left whitespace-nowrap">Symbol</th>
@@ -150,7 +150,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">No trades found in this period.</td>
+                                    <td colSpan={5} className="px-4 py-8 text-center text-gray-600">No trades found in this period.</td>
                                 </tr>
                             )}
                         </tbody>

@@ -56,7 +56,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                         variant="outline"
                         size="icon"
                         onClick={onClose}
-                        className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 transition-colors border-0"
+                        className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 transition-colors border-0"
                         aria-label="Close"
                     >
                         <X size={20} />
@@ -69,7 +69,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                     <div className="px-6 py-4">
                         <div className="flex justify-between items-end pl-4">
                             <div className="border-l-[3px] border-[#3B82F6] pl-4">
-                                <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Net P&L</p>
+                                <p className="text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-widest mb-1">Net P&L</p>
                                 <h3 className={`text-[2.25rem] font-bold leading-tight tracking-tight ${netPnl >= 0 ? 'text-[#3B82F6]' : 'text-red-500'}`}>
                                     {netPnl >= 0 ? '+' : ''}{netPnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </h3>
@@ -95,13 +95,13 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                     <div className="px-6 py-5 border-t border-gray-200 dark:border-white/10">
                         <div className="flex justify-between items-center mb-5">
                             <div>
-                                <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-1 font-medium italic">Start Balance</p>
+                                <p className="text-[11px] text-gray-600 dark:text-gray-300 mb-1 font-medium italic">Start Balance</p>
                                 <p className="text-base font-bold text-gray-900 dark:text-white">
                                     ${startBalance?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                                 </p>
                             </div>
                             <div className="text-right">
-                                <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-1 font-medium italic">End Balance</p>
+                                <p className="text-[11px] text-gray-600 dark:text-gray-300 mb-1 font-medium italic">End Balance</p>
                                 <p className="text-base font-bold text-gray-900 dark:text-white">
                                     ${endBalance?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                                 </p>
@@ -110,12 +110,12 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
 
                         <div className="space-y-4">
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500 dark:text-gray-400">Deposit</span>
+                                <span className="text-gray-600 dark:text-gray-300">Deposit</span>
                                 <span className="font-bold text-gray-900 dark:text-white">${deposit.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
-                                    <span className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-100 dark:bg-white/10 text-[9px] font-bold text-gray-500 dark:text-gray-400">$</span>
+                                <span className="text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
+                                    <span className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-100 dark:bg-white/10 text-[9px] font-bold text-gray-600 dark:text-gray-300">$</span>
                                     Commissions & Fees
                                 </span>
                                 <span className="font-bold text-gray-900 dark:text-white">
@@ -132,7 +132,7 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                             <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Trading Stats</span>
                         </div>
 
-                        <div className="flex justify-between text-xs mb-6 text-gray-500 dark:text-gray-400">
+                        <div className="flex justify-between text-xs mb-6 text-gray-600 dark:text-gray-300">
                             <span>Buys <span className="font-bold text-gray-900 dark:text-white ml-1">{stats?.buys || 0}</span></span>
                             <span>Sells <span className="font-bold text-gray-900 dark:text-white ml-1">{stats?.sells || 0}</span></span>
                             <span>Total Trades <span className="font-bold text-gray-900 dark:text-white ml-1">{stats?.totalTrades || trades.length}</span></span>
@@ -140,17 +140,17 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
 
                         <div className="space-y-4">
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500 dark:text-gray-400">Best Trade</span>
+                                <span className="text-gray-600 dark:text-gray-300">Best Trade</span>
                                 <span className="font-bold text-[#3B82F6]">{stats?.bestTrade ? '$' + stats.bestTrade.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '$0.00'}</span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500 dark:text-gray-400">Worst Trade</span>
+                                <span className="text-gray-600 dark:text-gray-300">Worst Trade</span>
                                 <span className="font-bold text-red-500">
                                     {stats?.worstTrade ? (stats.worstTrade > 0 ? '' : '-') + '$' + Math.abs(stats.worstTrade).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '$0.00'}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500 dark:text-gray-400">Avg Hold Time</span>
+                                <span className="text-gray-600 dark:text-gray-300">Avg Hold Time</span>
                                 <span className="font-bold text-gray-900 dark:text-white">{stats?.avgHoldTimeMinutes || 0} min</span>
                             </div>
                         </div>
@@ -159,19 +159,19 @@ export function DayTradeList({ date, trades, stats, startBalance, endBalance, on
                     {/* Bottom Percentages Grid */}
                     <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-white/5 border-t border-gray-200 dark:border-white/10">
                         <div className="p-4 text-center">
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 mb-1.5 font-bold uppercase tracking-wider">Winrate</p>
+                            <p className="text-[10px] text-gray-600 dark:text-gray-300 mb-1.5 font-bold uppercase tracking-wider">Winrate</p>
                             <p className="font-bold text-gray-900 dark:text-white text-base">
                                 {stats?.winrate ? stats.winrate.toFixed(2) : '0'}%
                             </p>
                         </div>
                         <div className="p-4 text-center bg-gray-50/30 dark:bg-white/[0.01]">
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 mb-1.5 font-bold uppercase tracking-wider">Profit Factor</p>
+                            <p className="text-[10px] text-gray-600 dark:text-gray-300 mb-1.5 font-bold uppercase tracking-wider">Profit Factor</p>
                             <p className="font-bold text-[#3B82F6] text-base">
                                 {stats?.profitFactor ? stats.profitFactor.toFixed(2) : '0'}
                             </p>
                         </div>
                         <div className="p-4 text-center">
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 mb-1.5 font-bold uppercase tracking-wider">Expectancy</p>
+                            <p className="text-[10px] text-gray-600 dark:text-gray-300 mb-1.5 font-bold uppercase tracking-wider">Expectancy</p>
                             <p className="font-bold text-[#3B82F6] text-base">
                                 {stats?.expectancy ? stats.expectancy.toFixed(2) : '0'}
                             </p>

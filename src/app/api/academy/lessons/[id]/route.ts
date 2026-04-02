@@ -10,7 +10,11 @@ const lessonUpdateSchema = z.object({
     videoUrl: z.string().optional().nullable(),
     duration: z.number().int().optional(),
     order: z.number().int().optional(),
-    moduleId: z.string().optional(), // In case of moving lesson
+    moduleId: z.string().optional(),
+    rawContent: z.string().optional().nullable(),
+    tone: z.string().optional().nullable(),
+    sourceUrls: z.array(z.string()).optional(),
+    metaDescription: z.string().optional().nullable(),
 });
 
 export async function GET(

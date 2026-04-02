@@ -124,7 +124,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                     <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Question Text</label>
                     <textarea
                         {...register("text")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[80px] resize-none"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 min-h-[80px] resize-none"
                         placeholder="What is the maximum leverage in forex trading?"
                     />
                     {errors.text && <p className="text-red-500 text-xs">{errors.text.message}</p>}
@@ -157,7 +157,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                                 <div className="flex-1">
                                     <input
                                         {...register(`options.${index}.text` as const)}
-                                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
                                         placeholder={`Option ${index + 1}`}
                                     />
                                     {errors.options?.[index]?.text && (
@@ -197,7 +197,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
                         variant="outline"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
+                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
                     >Cancel
                     </Button>
                     <Button

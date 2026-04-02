@@ -251,7 +251,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
                         <Link href="/dashboard/journal" className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
-                            <ArrowLeft size={20} className="text-gray-500" />
+                            <ArrowLeft size={20} className="text-gray-600" />
                         </Link>
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                             {isEditMode ? "Edit Trade" : "Log New Trade"}
@@ -331,7 +331,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         onClick={() => setFormData(p => ({ ...p, type }))}
                                         className={`flex-1 h-full text-sm font-bold transition-all rounded-lg ${formData.type === type
                                             ? type === 'BUY' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'bg-red-500 text-white shadow-lg shadow-red-500/30'
-                                            : 'bg-transparent text-gray-500 hover:bg-white dark:hover:bg-white/5'
+                                            : 'bg-transparent text-gray-600 hover:bg-white dark:hover:bg-white/5'
                                             }`}
                                     >
                                         {type}
@@ -488,7 +488,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                             variant="outline"
                                             onClick={fetchStrategies}
                                             aria-label="Refresh strategies"
-                                            className="p-3 w-12 h-12 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-500 hover:text-primary"
+                                            className="p-3 w-12 h-12 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-600 hover:text-primary"
                                             title="Refresh strategies"
                                         >
                                             <RefreshCw size={18} />
@@ -569,7 +569,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                                 onClick={() => setFormData(p => ({ ...p, result: res }))}
                                                 className={`flex-1 py-4 text-xs font-bold transition-all rounded-lg ${formData.result === res
                                                     ? 'bg-gray-900 border-gray-900 text-white dark:bg-white dark:text-black dark:border-white hover:bg-gray-800'
-                                                    : 'border-gray-200 text-gray-500 hover:border-gray-300 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'
+                                                    : 'border-gray-200 text-gray-600 hover:border-gray-300 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'
                                                     }`}
                                             >
                                                 {res}
@@ -820,7 +820,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                             type="button"
                             onClick={onCancel}
                             variant="outline"
-                            className="rounded-xl font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="rounded-xl font-bold text-gray-600 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >Cancel
                         </Button>
                     ) : (

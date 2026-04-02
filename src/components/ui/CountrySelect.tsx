@@ -65,7 +65,7 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                 disabled={loading}
             >
                 {loading ? (
-                    <span className="text-gray-500 text-sm">Loading countries...</span>
+                    <span className="text-gray-600 text-sm">Loading countries...</span>
                 ) : selectedCountry ? (
                     <div className="flex items-center gap-3">
                         <img
@@ -76,7 +76,7 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                         <span className="text-gray-900 dark:text-white text-base truncate pr-2">{selectedCountry.name}</span>
                     </div>
                 ) : (
-                    <span className="text-gray-500 text-base">Select Country</span>
+                    <span className="text-gray-600 text-base">Select Country</span>
                 )}
                 <ChevronDown size={20} className={cn("text-gray-400 transition-transform shrink-0", isOpen ? "rotate-180" : "")} />
             </Button>
@@ -133,7 +133,7 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
                                 </Button>
                             ))
                         ) : (
-                            <div className="p-4 text-center text-sm text-gray-500">No country found</div>
+                            <div className="p-4 text-center text-sm text-gray-600">No country found</div>
                         )}
                     </div>
                 </div>

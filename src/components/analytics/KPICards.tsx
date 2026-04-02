@@ -68,7 +68,7 @@ export function KPICards({ summary }: KPICardsProps) {
             title: "Total Trades",
             value: summary.totalTrades.toString(),
             icon: Activity,
-            color: "text-gray-500",
+            color: "text-gray-600",
             bg: "bg-gray-50 dark:bg-gray-500/10",
             description: `${summary.currentStreak.count} ${summary.currentStreak.type} streak`,
         },
@@ -94,7 +94,7 @@ export function KPICards({ summary }: KPICardsProps) {
                                 <Icon size={20} className={card.color} strokeWidth={2.5} />
                             </div>
                         </div>
-                        <h3 className="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1.5 relative z-10">
+                        <h3 className="text-[11px] font-bold uppercase tracking-widest text-gray-600 dark:text-gray-300 mb-1.5 relative z-10">
                             {card.title}
                         </h3>
                         <p className={`text-[28px] font-bold tracking-tight ${colorClass} group-hover:scale-[1.02] transform origin-left transition-transform relative z-10`}>

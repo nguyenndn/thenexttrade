@@ -383,7 +383,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
                                 <span className="text-xs text-gray-600 dark:text-gray-400">{s.action}</span>
                                 <div className="flex items-center gap-0.5">
                                     {s.keys.map((key) => (
-                                        <kbd key={key} className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded border border-gray-200 dark:border-white/10">
+                                        <kbd key={key} className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 rounded border border-gray-200 dark:border-white/10">
                                             {key}
                                         </kbd>
                                     ))}
@@ -491,7 +491,7 @@ function ToolbarButton({ onClick, isActive, icon: Icon, title, disabled, classNa
             className={`rounded-lg transition-all group flex items-center justify-center
                 ${isActive
                     ? 'bg-primary/10 text-primary ring-1 ring-primary/20 hover:bg-primary/20 hover:text-primary'
-                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white'
                 }
                 ${disabled ? 'opacity-30 cursor-not-allowed' : ''}
                 ${className || ''}

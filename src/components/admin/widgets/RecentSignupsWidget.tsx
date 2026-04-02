@@ -39,7 +39,7 @@ export function RecentSignupsWidget({ users }: { users: NewUser[] }) {
                             <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                                 {user.name || "Unknown User"}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
                                 {user.email}
                             </p>
                         </div>

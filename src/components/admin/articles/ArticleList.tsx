@@ -92,7 +92,7 @@ const ArticleRow = memo(function ArticleRow({
                         >
                             {article.title}
                         </Link>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                        <span className="text-sm text-gray-600 dark:text-gray-300">
                             {article.category.name}
                         </span>
                     </div>
@@ -114,7 +114,7 @@ const ArticleRow = memo(function ArticleRow({
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                 {article.views.toLocaleString()}
             </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                 {new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
@@ -341,7 +341,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
+                            <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-600 font-bold tracking-wider">
                                 <th className="pl-6 pr-4 py-5 w-14">
                                     <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
                                         {selectedIds.size === articles.length && articles.length > 0 ? <CheckSquare size={20} className="text-primary" aria-hidden="true" /> : <Square size={20} aria-hidden="true" />}
@@ -368,7 +368,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                             {/* Quick Edit Form (Same as before) */}
                                             <div className="flex gap-4 items-end animate-in fade-in">
                                                 <div className="flex-1 space-y-2">
-                                                    <label className="text-xs font-bold text-gray-500">Title</label>
+                                                    <label className="text-xs font-bold text-gray-600">Title</label>
                                                     <input
                                                         className="w-full p-2 rounded border"
                                                         value={quickEditData?.title}
@@ -376,7 +376,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                                     />
                                                 </div>
                                                 <div className="flex-1 space-y-2">
-                                                    <label className="text-xs font-bold text-gray-500">Slug</label>
+                                                    <label className="text-xs font-bold text-gray-600">Slug</label>
                                                     <input
                                                         className="w-full p-2 rounded border"
                                                         value={quickEditData?.slug}
@@ -384,7 +384,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                                     />
                                                 </div>
                                                 <div className="w-40 space-y-2">
-                                                    <label className="text-xs font-bold text-gray-500">Status</label>
+                                                    <label className="text-xs font-bold text-gray-600">Status</label>
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
                                                             <Button variant="outline" className="w-full h-[38px] p-2 rounded justify-between font-normal bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white">
@@ -484,7 +484,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
 
                 {/* Footer / Pagination */}
                 <div className="p-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-600">
                         Page {pagination.currentPage} of {pagination.totalPages}
                     </div>
                     <div className="flex gap-2">

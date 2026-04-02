@@ -118,7 +118,7 @@ export function PivotPointCalc() {
                                 "relative flex-1 py-2.5 rounded-lg font-bold text-xs transition-colors z-10",
                                 inputs.method === m.id
                                     ? "text-white"
-                                    : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                             )}
                         >
                             {inputs.method === m.id && (
@@ -180,7 +180,7 @@ export function PivotPointCalc() {
                                 )}>
                                     {level.label}
                                 </div>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">
                                     {level.label === "PP" ? "Pivot Point" :
                                      level.label.startsWith("R") ? `Resistance ${level.label[1]}` :
                                      `Support ${level.label[1]}`}

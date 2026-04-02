@@ -14,13 +14,13 @@ export default function CookiePolicyPage() {
                     <Cookie size={40} strokeWidth={1.5} />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">Cookie Policy</h1>
-                <p className="text-xl text-gray-500 dark:text-gray-400 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
                     Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </p>
             </div>
 
             <div className="max-w-4xl mx-auto">
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-500 dark:prose-p:text-gray-400 prose-li:text-gray-500 dark:prose-li:text-gray-400 prose-strong:text-gray-900 dark:prose-strong:text-white max-w-none transition-colors duration-300">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-li:text-gray-600 dark:prose-li:text-gray-400 prose-strong:text-gray-900 dark:prose-strong:text-white max-w-none transition-colors duration-300">
 
 
             <h2>1. What Are Cookies?</h2>

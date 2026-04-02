@@ -165,7 +165,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                 <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Module Quiz</h3>
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{quiz.title}</h2>
                 {quiz.description && (
-                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
                         {quiz.description}
                     </p>
                 )}
@@ -293,14 +293,14 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                     {quiz.module && (
                         <>
                             <ChevronRight size={14} className="text-gray-300 dark:text-gray-600" />
-                            <span className="text-gray-500 dark:text-gray-400">{quiz.module.level.title}</span>
+                            <span className="text-gray-600 dark:text-gray-300">{quiz.module.level.title}</span>
                             <ChevronRight size={14} className="text-gray-300 dark:text-gray-600" />
                             <span className="text-gray-700 dark:text-gray-200 font-bold">{quiz.module.title}</span>
                         </>
                     )}
                 </div>
                 <div className="flex items-center gap-3 text-base font-bold w-full sm:w-auto">
-                    <div className="flex items-center gap-1.5 text-gray-500 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
+                    <div className="flex items-center gap-1.5 text-gray-600 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
                         <Trophy size={14} />
                         <span>Quiz</span>
                     </div>
@@ -331,7 +331,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                 <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">
                                     {result.passed ? "Quiz Passed!" : "Not Quite..."}
                                 </h2>
-                                <p className="text-gray-500 dark:text-gray-400 mb-6">
+                                <p className="text-gray-600 dark:text-gray-300 mb-6">
                                     {result.passed
                                         ? "Great job! You've mastered this module."
                                         : "Review the material and try again. You need 70% to pass."}
@@ -341,7 +341,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                     {result.score}%
                                 </div>
 
-                                <p className="text-sm text-gray-500 mb-8">
+                                <p className="text-sm text-gray-600 mb-8">
                                     {result.correctCount} / {result.totalQuestions} correct
                                 </p>
 
@@ -369,14 +369,14 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                         {quiz.title}
                                     </h1>
                                     {quiz.description && (
-                                        <p className="text-sm text-gray-500 mt-2">{quiz.description}</p>
+                                        <p className="text-sm text-gray-600 mt-2">{quiz.description}</p>
                                     )}
                                 </div>
                                 <div className="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
                                 {/* Progress bar */}
                                 <div className="px-6 lg:px-8 pt-5 pb-2">
-                                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                                    <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
                                         <span>Question {currentQuestion + 1} of {totalQuestions}</span>
                                         <span>{Object.keys(answers).length} answered</span>
                                     </div>
@@ -412,7 +412,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                                             "flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border transition-colors",
                                                             selectedOption === option.id
                                                                 ? "bg-primary text-white border-primary"
-                                                                : "bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10"
+                                                                : "bg-gray-100 dark:bg-white/5 text-gray-600 border-gray-200 dark:border-white/10"
                                                         )}>
                                                             {String.fromCharCode(65 + idx)}
                                                         </span>
@@ -438,7 +438,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                     variant="outline"
                                     onClick={handlePrev}
                                     disabled={currentQuestion === 0}
-                                    className="text-gray-500 rounded-xl"
+                                    className="text-gray-600 rounded-xl"
                                 >
                                     Previous
                                 </Button>

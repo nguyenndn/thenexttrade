@@ -57,7 +57,7 @@ export default function SignupPage() {
             </div>
             <div className="text-center mb-6">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Sign up</h1>
-                <p className="text-gray-500 dark:text-gray-400 mt-2 text-base">The process is simple and fast</p>
+                <p className="text-gray-600 dark:text-gray-300 mt-2 text-base">The process is simple and fast</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -95,7 +95,7 @@ export default function SignupPage() {
                     required
                     startIcon={<Lock size={20} className="text-gray-400" />}
                     endIcon={
-                        <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-white" aria-label={showPassword ? "Hide password" : "Show password"}>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showPassword ? "Hide password" : "Show password"}>
                             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                         </Button>
                     }
@@ -110,7 +110,7 @@ export default function SignupPage() {
                     required
                     startIcon={<Lock size={20} className="text-gray-400" />}
                     endIcon={
-                        <Button type="button" variant="ghost" size="icon" onClick={() => setShowConfirm(!showConfirm)} className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-white" aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => setShowConfirm(!showConfirm)} className="text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}>
                             {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
                         </Button>
                     }
@@ -120,7 +120,7 @@ export default function SignupPage() {
                 {/* Country Dropdown */}
                 <div className="w-full">
                     <label className="label pb-1">
-                        <span className="label-text font-medium text-gray-500 dark:text-gray-400 text-sm">Country</span>
+                        <span className="label-text font-medium text-gray-600 dark:text-gray-300 text-sm">Country</span>
                     </label>
                     <CountrySelect
                         value={country}
@@ -166,7 +166,7 @@ export default function SignupPage() {
             </form>
 
             <div className="mt-8 text-center">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                     Already have an account?{" "}
                     <Link href="/auth/login" className="font-semibold text-[#2F80ED] hover:underline">
                         Sign In

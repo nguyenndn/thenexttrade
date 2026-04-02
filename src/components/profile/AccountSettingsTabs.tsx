@@ -26,7 +26,7 @@ export function AccountSettingsTabs({ user, profile }: AccountSettingsTabsProps)
                         onClick={() => setActiveTab('profile')}
                         className={`flex items-center gap-2 px-4 py-2 h-auto rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'profile'
                             ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm hover:bg-white dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white'
-                            : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-transparent'
+                            : 'text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-transparent'
                             }`}
                     >
                         <UserIcon size={16} />
@@ -37,7 +37,7 @@ export function AccountSettingsTabs({ user, profile }: AccountSettingsTabsProps)
                         onClick={() => setActiveTab('security')}
                         className={`flex items-center gap-2 px-4 py-2 h-auto rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'security'
                             ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm hover:bg-white dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white'
-                            : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-transparent'
+                            : 'text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-transparent'
                             }`}
                     >
                         <Shield size={16} />

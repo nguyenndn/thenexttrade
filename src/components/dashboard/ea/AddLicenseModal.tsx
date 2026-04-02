@@ -89,7 +89,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                     <Button
                         variant="outline"
                         onClick={onClose}
-                        className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
+                        className="px-6 py-3 rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
                     >Cancel
                     </Button>
                     <Button

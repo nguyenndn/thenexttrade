@@ -63,7 +63,7 @@ export function CalcResultCard({ label, value, valueColor, className }: CalcResu
                 className,
             )}
         >
-            <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+            <p className="text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-1">
                 {label}
             </p>
             <p className={cn("text-xl md:text-2xl font-black", valueColor || "text-gray-900 dark:text-white")}>

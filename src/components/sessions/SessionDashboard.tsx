@@ -134,7 +134,7 @@ export function SessionDashboard() {
                             label="Worst Hour"
                             value={data.worstHour !== null ? `${data.worstHour.toString().padStart(2, '0')}:00 UTC` : "-"}
                             icon={Moon}
-                            color="text-gray-500"
+                            color="text-gray-600"
                         />
                     </div>
 

@@ -19,7 +19,7 @@ export function ChartEmptyState({
             <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
                 {title}
             </h4>
-            <p className="text-xs text-gray-500 dark:text-gray-400 max-w-[200px]">
+            <p className="text-xs text-gray-600 dark:text-gray-300 max-w-[200px]">
                 {description}
             </p>
         </div>

@@ -60,7 +60,7 @@ export default function OnboardingPage() {
                 <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 dark:bg-black/80 backdrop-blur-sm">
                     <Loader2 size={40} className="animate-spin text-primary mb-4" />
                     <p className="text-gray-700 dark:text-gray-300 font-medium text-lg">Setting up your account...</p>
-                    <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Please wait, this may take a moment.</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Please wait, this may take a moment.</p>
                 </div>
             )}
 
@@ -71,7 +71,7 @@ export default function OnboardingPage() {
             <div className="w-full max-w-md bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 shadow-xl transition-colors duration-300">
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Complete Your Profile</h1>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">Tell us a bit more about yourself to get started.</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm">Tell us a bit more about yourself to get started.</p>
                 </div>
 
                 <form action={handleSubmit} className="space-y-6">
@@ -110,7 +110,7 @@ export default function OnboardingPage() {
                                 onChange={handleImageChange}
                             />
                         </div>
-                        <p className={`text-xs ${error?.includes("Image size") ? "text-red-500 dark:text-red-400" : "text-gray-500 dark:text-gray-400"}`}>
+                        <p className={`text-xs ${error?.includes("Image size") ? "text-red-500 dark:text-red-400" : "text-gray-600 dark:text-gray-300"}`}>
                             {error?.includes("Image size") ? "File too large (>1MB)" : "Click to upload avatar (Max 1MB)"}
                         </p>
                     </div>

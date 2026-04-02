@@ -80,7 +80,7 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                     </div>
                     <div>
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white">Feedback & Support</h3>
-                        <p className="text-[11px] text-gray-500">Help us improve your experience</p>
+                        <p className="text-[11px] text-gray-600">Help us improve your experience</p>
                     </div>
                 </div>
                 <button
@@ -104,7 +104,7 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                         <CheckCircle size={32} className="text-primary" />
                     </motion.div>
                     <h4 className="text-base font-bold text-gray-900 dark:text-white">Thank you!</h4>
-                    <p className="text-sm text-gray-500 mt-1 text-center">Your feedback has been submitted successfully.</p>
+                    <p className="text-sm text-gray-600 mt-1 text-center">Your feedback has been submitted successfully.</p>
                 </div>
             ) : (
                 <>
@@ -128,7 +128,7 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                                         <Icon size={20} className={isActive ? t.color : "text-gray-400"} />
                                         <span className={cn(
                                             "text-xs font-bold",
-                                            isActive ? "text-gray-900 dark:text-white" : "text-gray-500"
+                                            isActive ? "text-gray-900 dark:text-white" : "text-gray-600"
                                         )}>
                                             {t.label}
                                         </span>

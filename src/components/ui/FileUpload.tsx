@@ -88,7 +88,7 @@ export function FileUpload({ value, onChange, className, label = "Upload Image" 
             {isUploading ? (
                 <div className="flex flex-col items-center justify-center text-primary gap-2">
                     <Loader2 className="animate-spin" size={24} />
-                    <span className="text-xs font-bold text-gray-500">Uploading...</span>
+                    <span className="text-xs font-bold text-gray-600">Uploading...</span>
                 </div>
             ) : value ? (
                 <div className="relative w-full h-full">
@@ -121,7 +121,7 @@ export function FileUpload({ value, onChange, className, label = "Upload Image" 
                     <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm text-gray-400 group-hover:text-primary transition-colors">
                         <Upload size={24} />
                     </div>
-                    <p className="text-xs font-bold text-gray-500 group-hover:text-primary transition-colors">{label}</p>
+                    <p className="text-xs font-bold text-gray-600 group-hover:text-primary transition-colors">{label}</p>
                 </div>
             )}
         </div>

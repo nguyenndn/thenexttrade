@@ -256,7 +256,7 @@ export function DateRangePicker({
                     onClick={() => setOpen(true)}
                     className={cn(
                         "flex items-center justify-start h-auto gap-2 px-3 py-2 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
-                        !value && "text-gray-500"
+                        !value && "text-gray-600"
                     )}
                 >
                     <div className="p-1.5 bg-primary/10 text-primary rounded-lg shrink-0">
@@ -276,7 +276,7 @@ export function DateRangePicker({
                             {/* Overlay Header */}
                             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-white/10 shrink-0">
                                 <h3 className="font-semibold text-gray-900 dark:text-white">Select Date Range</h3>
-                                <button onClick={handleCancel} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700">
+                                <button onClick={handleCancel} className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-700">
                                     Cancel
                                 </button>
                             </div>
@@ -418,7 +418,7 @@ export function DateRangePicker({
                             id="date"
                             className={cn(
                                 "flex items-center justify-start h-auto gap-2 px-3 py-2 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
-                                !value && "text-gray-500"
+                                !value && "text-gray-600"
                             )}
                         >
                             <div className="p-1.5 bg-primary/10 text-primary rounded-lg shrink-0">
@@ -513,7 +513,7 @@ export function DateRangePicker({
                         id="date"
                         className={cn(
                             "flex items-center justify-start h-auto gap-2 px-3 py-2 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
-                            !value && "text-gray-500"
+                            !value && "text-gray-600"
                         )}
                     >
                         <div className="p-1.5 bg-primary/10 text-primary rounded-lg shrink-0">

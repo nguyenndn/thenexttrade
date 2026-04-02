@@ -59,7 +59,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                         variant="ghost"
                         size="icon"
                         onClick={onClose}
-                        className="p-1.5 h-auto w-auto text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-white/10"
+                        className="p-1.5 h-auto w-auto text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-white/10"
                         aria-label="Close sidebar"
                     >
                         <X size={18} />
@@ -94,7 +94,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                                 {/* Section Label */}
                                 {sectionLabel && (
                                     <div className={cn("px-3 pb-1.5", index > 0 && "mt-4 pt-3 border-t border-gray-100 dark:border-white/8")}>
-                                        <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 tracking-widest uppercase">
+                                        <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 tracking-widest uppercase">
                                             {sectionLabel}
                                         </span>
                                     </div>
@@ -114,7 +114,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                                     {Icon && (
                                         <Icon
                                             size={18}
-                                            className={isActive ? "text-primary" : "text-gray-400 dark:text-gray-500"}
+                                            className={isActive ? "text-primary" : "text-gray-600 dark:text-gray-300"}
                                         />
                                     )}
                                     <span>{item.name}</span>
@@ -130,7 +130,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                     <Button
                         variant="ghost"
                         onClick={() => { onClose(); signout(); }}
-                        className="flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left justify-start font-medium text-sm"
+                        className="flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left justify-start font-medium text-sm"
                     >
                         <LogOut size={18} className="shrink-0" />
                         <span>Logout</span>

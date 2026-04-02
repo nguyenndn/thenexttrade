@@ -179,7 +179,11 @@ model Lesson {
   title       String
   slug        String   @unique
   content     String   @db.Text // Markdown or HTML
-  videoUrl    String?
+  rawContent  String?  @db.Text         // Raw scraped content (backup for re-rewrite)
+  tone        String?  @db.VarChar(30)  // Tone used: conversational, mentor, etc.
+  sourceUrls       String[] @default([])     // Source URLs used for AI rewrite
+  metaDescription  String?  @db.VarChar(160) // SEO meta description
+  videoUrl         String?
   duration    Int?     // Minutes
   status      String   @default("draft") // draft | published
   moduleId    String

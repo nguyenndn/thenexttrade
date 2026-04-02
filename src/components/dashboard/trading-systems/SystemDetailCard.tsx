@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -32,7 +32,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                 return;
             }
 
-            // Silent download — fetch as blob, trigger via hidden link
+            // Silent download � fetch as blob, trigger via hidden link
             const fileRes = await fetch(json.data.url);
             const blob = await fileRes.blob();
             const blobUrl = URL.createObjectURL(blob);
@@ -63,7 +63,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
         <>
             <div className="group relative bg-white dark:bg-[#0B0E14] rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 hover:shadow-md transition-shadow">
                 <div className="flex flex-row p-4 gap-4">
-                    {/* Thumbnail — Small Square */}
+                    {/* Thumbnail � Small Square */}
                     <div
                         className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#151925] dark:to-[#0B0E14] border border-gray-200 dark:border-white/10 cursor-pointer"
                         onClick={() => product.thumbnail && setIsImagePreviewOpen(true)}
@@ -85,14 +85,14 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                         )}
                     </div>
 
-                    {/* Content — Right Side */}
+                    {/* Content � Right Side */}
                     <div className="flex-1 flex flex-col min-w-0">
                         {/* Title Row + Version */}
                         <div className="flex items-start justify-between gap-2 mb-1.5">
                             <h3 className="text-base font-extrabold uppercase tracking-tight leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors duration-300 line-clamp-1">
                                 {product.name}
                             </h3>
-                            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/5 text-gray-500 dark:text-gray-400 text-[10px] font-bold rounded-md">
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-bold rounded-md">
                                 {product.version}
                             </span>
                         </div>
@@ -112,7 +112,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                         </div>
 
                         {/* Description */}
-                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">
+                        <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-2">
                             {product.description || "Professional trading system designed for optimal performance."}
                         </p>
                     </div>
@@ -145,7 +145,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                             className={cn(
                                 "flex items-center justify-center gap-2 h-8 rounded-lg px-4 font-bold text-xs transition-all duration-300",
                                 isLocked 
-                                    ? "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-white/10"
+                                    ? "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10"
                                     : "bg-amber-500 hover:bg-amber-600 text-white shadow-[0_4px_15px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.4)]"
                             )}
                         >
@@ -176,7 +176,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
                             <div>
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">Installation Guide</h2>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Follow these steps to install {product.name}</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Follow these steps to install {product.name}</p>
                             </div>
                             <Button
                                 variant="outline"
@@ -184,7 +184,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                                 onClick={() => setIsGuideModalOpen(false)}
                                 className="w-10 h-10 p-0 rounded-xl"
                             >
-                                <X size={20} className="text-gray-500" />
+                                <X size={20} className="text-gray-600" />
                             </Button>
                         </div>
                         <div className="p-6 md:p-8 max-h-[75vh] overflow-y-auto">
@@ -225,7 +225,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
                             onClick={() => setZoomLevel(prev => Math.max(25, prev - 25))}
                             title="Zoom Out"
                         >
-                            <span className="text-lg font-bold">−</span>
+                            <span className="text-lg font-bold">-</span>
                         </Button>
                         <span className="min-w-[60px] text-center text-sm font-bold text-white font-mono">
                             {zoomLevel}%

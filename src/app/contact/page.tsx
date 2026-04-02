@@ -80,7 +80,7 @@ export default function ContactPage() {
                     <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
                         Let's Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00A06D]">Touch</span>
                     </h1>
-                    <p className="text-xl md:text-2xl text-gray-500 dark:text-gray-400 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                    <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
                         Have a question about our ecosystem, pricing, or need technical support? Drop us a message below.
                     </p>
                 </div>
@@ -90,7 +90,7 @@ export default function ContactPage() {
                         
                         <div className="relative z-10 mb-10">
                             <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Send us a message</h2>
-                            <p className="text-gray-500 dark:text-gray-400">Fill out the form below and we'll get back to you shortly.</p>
+                            <p className="text-gray-600 dark:text-gray-300">Fill out the form below and we'll get back to you shortly.</p>
                         </div>
                         
                         {/* Status Alerts */}
@@ -165,7 +165,7 @@ export default function ContactPage() {
                                 <textarea
                                     id="message"
                                     rows={6}
-                                    className={`w-full p-5 rounded-xl bg-gray-50 dark:bg-[#151925] border ${errors.message ? "border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/20" : "border-gray-200 dark:border-white/10"} text-base outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 placeholder:font-normal text-gray-900 dark:text-white font-medium resize-none`}
+                                    className={`w-full p-5 rounded-xl bg-gray-50 dark:bg-[#151925] border ${errors.message ? "border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/20" : "border-gray-200 dark:border-white/10"} text-base outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 placeholder:font-normal text-gray-900 dark:text-white font-medium resize-none`}
                                     placeholder="Please describe your inquiry in detail..."
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
@@ -188,7 +188,7 @@ export default function ContactPage() {
                                     <span>Send Message</span>
                                 </Button>
                                 
-                                <p className="text-xs text-center sm:text-left text-gray-500 dark:text-gray-500 font-medium max-w-[200px]">
+                                <p className="text-xs text-center sm:text-left text-gray-600 dark:text-gray-600 font-medium max-w-[200px]">
                                     By submitting this form, you agree to our <a href="/legal/privacy-policy" className="underline hover:text-gray-300 transition-colors">Privacy Policy</a>.
                                 </p>
                             </div>

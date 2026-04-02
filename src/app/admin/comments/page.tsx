@@ -180,7 +180,7 @@ export default function AdminCommentsPage() {
                 <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full text-left border-collapse">
-                            <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
+                            <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 text-xs uppercase text-gray-600 font-bold tracking-wider">
                                 <tr>
                                     <th className="pl-6 pr-4 py-5 w-14">
                                         <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
@@ -224,12 +224,12 @@ export default function AdminCommentsPage() {
                             ) : filteredComments.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} className="py-20 text-center">
-                                        <div className="flex flex-col items-center justify-center text-gray-500">
+                                        <div className="flex flex-col items-center justify-center text-gray-600">
                                             <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
                                                 <MessageSquare size={32} />
                                             </div>
                                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No comments found</h3>
-                                            <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">Try adjusting your search or check back later.</p>
+                                            <p className="text-gray-600 dark:text-gray-300 max-w-sm mx-auto">Try adjusting your search or check back later.</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -250,7 +250,7 @@ export default function AdminCommentsPage() {
                                                     {comment.user.image ? (
                                                         <img src={comment.user.image} alt={comment.user.name || "User"} className="w-full h-full object-cover" />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500">
+                                                        <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-600">
                                                             {(comment.user.name || "U").charAt(0)}
                                                         </div>
                                                     )}
@@ -259,7 +259,7 @@ export default function AdminCommentsPage() {
                                                     <div className="font-bold text-gray-900 dark:text-white truncate max-w-[150px]">
                                                         {comment.user.name || "Anonymous"}
                                                     </div>
-                                                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[150px]">
+                                                    <div className="text-xs text-gray-600 dark:text-gray-300 truncate max-w-[150px]">
                                                         {comment.user.email}
                                                     </div>
                                                 </div>

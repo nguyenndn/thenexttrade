@@ -66,7 +66,7 @@ export function PopularArticlesWidget({ articles }: { articles: Article[] }) {
                                         className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full"
                                     />
                                 </div>
-                                <div className="mt-2 text-xs text-gray-500 dark:text-gray-500">
+                                <div className="mt-2 text-xs text-gray-600 dark:text-gray-600">
                                     by {article.author.name || "Unknown"}
                                 </div>
                             </Link>

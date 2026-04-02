@@ -82,7 +82,7 @@ export function CreateLevelModal({ isOpen, onClose }: CreateLevelModalProps) {
                     </label>
                     <textarea
                         {...register("description")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[100px] resize-none font-medium"
+                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 min-h-[100px] resize-none font-medium"
                         placeholder="Describe what students will learn in this level..."
                     />
                 </div>
@@ -93,7 +93,7 @@ export function CreateLevelModal({ isOpen, onClose }: CreateLevelModalProps) {
                         variant="outline"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
+                        className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-bold rounded-xl px-6"
                     >Cancel
                     </Button>
                     <Button

@@ -111,7 +111,7 @@ export default function SettingsClient() {
                         </div>
                         <div className="pb-1">
                             <p className="text-sm font-semibold text-gray-900 dark:text-white">{formData.name || 'Your Name'}</p>
-                            <p className="text-xs text-gray-500 mt-0.5">{formData.email || ''}</p>
+                            <p className="text-xs text-gray-600 mt-0.5">{formData.email || ''}</p>
                         </div>
                     </div>
 
@@ -129,7 +129,7 @@ export default function SettingsClient() {
                 </div>
                 <div className="px-6 py-5 space-y-4">
                     <div>
-                        <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Display Name</label>
+                        <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide mb-1.5">Display Name</label>
                         <input
                             type="text"
                             value={formData.name}
@@ -139,7 +139,7 @@ export default function SettingsClient() {
                         />
                     </div>
                     <div>
-                        <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Bio</label>
+                        <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide mb-1.5">Bio</label>
                         <textarea
                             value={formData.bio}
                             onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}

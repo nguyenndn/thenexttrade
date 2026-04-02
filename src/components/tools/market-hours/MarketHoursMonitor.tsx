@@ -102,7 +102,7 @@ export function MarketHoursMonitor() {
                             <span className={`w-2 h-2 rounded-full ${isOpen ? 'bg-green-500 animate-pulse shadow-[0_0_8px_limegreen]' : 'bg-gray-400'}`}></span>
                             {market.name}
                         </span>
-                        <span className="text-[10px] text-gray-500 font-mono mt-0.5">
+                        <span className="text-[10px] text-gray-600 font-mono mt-0.5">
                             {openTimeString} - {closeTimeString}
                         </span>
                     </div>
@@ -135,7 +135,7 @@ export function MarketHoursMonitor() {
                         <Clock className="text-primary" />
                         Forex Market Hours
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                         Currently viewing in <span className="font-semibold text-gray-900 dark:text-white">{userTimezone}</span> time.
                     </p>
                 </div>
@@ -159,7 +159,7 @@ export function MarketHoursMonitor() {
             <div className="relative">
                 {/* Time Scale */}
                 {/* Time Scale */}
-                <div className="flex justify-between text-[10px] text-gray-500 dark:text-gray-400 font-mono mb-2 px-[1px] select-none">
+                <div className="flex justify-between text-[10px] text-gray-600 dark:text-gray-300 font-mono mb-2 px-[1px] select-none">
                     {Array.from({ length: 25 }, (_, i) => i).map((h) => (
                         <div key={h} className="relative w-0 flex justify-center">
                             <span className="absolute font-bold">{h}</span>
@@ -200,7 +200,7 @@ export function MarketHoursMonitor() {
                         <span className="w-2 h-2 rounded-full bg-orange-500"></span>
                         Tokyo Session
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                         Often considered the "calm before the storm". Liquidity is lower, and pairs often trade in ranges.
                         Key pairs to watch include <span className="font-medium text-gray-700 dark:text-gray-300">USD/JPY</span> and <span className="font-medium text-gray-700 dark:text-gray-300">AUD/USD</span>.
                     </p>
@@ -211,7 +211,7 @@ export function MarketHoursMonitor() {
                         <span className="w-2 h-2 rounded-full bg-red-500"></span>
                         London Session
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                         The heartbeat of the forex market. Trends frequently originate here.
                         Expect highest volatility and volume, specifically in <span className="font-medium text-gray-700 dark:text-gray-300">GBP</span> and <span className="font-medium text-gray-700 dark:text-gray-300">EUR</span> crosses.
                     </p>
@@ -222,7 +222,7 @@ export function MarketHoursMonitor() {
                         <span className="w-2 h-2 rounded-full bg-green-500"></span>
                         New York Session
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                         High liquidity at the open. The <span className="text-purple-500 font-bold">Overlap</span> with London (approx. 4 hours) is the peak trading time of the day.
                         Major economic news (USD) is often released early in this session.
                     </p>

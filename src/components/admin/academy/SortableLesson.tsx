@@ -44,7 +44,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
                     size="icon"
                     {...attributes}
                     {...listeners}
-                    className="h-auto w-auto p-1.5 cursor-move text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 bg-transparent hover:bg-transparent"
+                    className="h-auto w-auto p-1.5 cursor-move text-gray-300 hover:text-gray-600 dark:hover:text-gray-200 bg-transparent hover:bg-transparent"
                 >
                     <GripVertical size={16} />
                 </Button>

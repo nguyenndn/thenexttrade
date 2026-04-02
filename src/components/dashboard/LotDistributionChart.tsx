@@ -20,7 +20,7 @@ const COLORS = ['hsl(var(--primary))', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899
 export function LotDistributionChart({ data, height = 300, innerRadius = 60, outerRadius = 80 }: LotDistributionChartProps) {
   if (!data || data.length === 0) {
     return (
-      <div className={`w-full flex items-center justify-center font-medium text-sm text-gray-400 dark:text-gray-500`} style={{ height }}>
+      <div className={`w-full flex items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300`} style={{ height }}>
         No data available
       </div>
     );
@@ -56,7 +56,7 @@ export function LotDistributionChart({ data, height = 300, innerRadius = 60, out
                   <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: payload[0].payload.fill }}></div>
                     <div>
-                      <p className="text-sm font-medium text-gray-500">{data.name}</p>
+                      <p className="text-sm font-medium text-gray-600">{data.name}</p>
                       <p className="text-base font-bold text-gray-900 dark:text-white">
                         {Number(data.value).toFixed(2)} Lots
                       </p>
@@ -73,7 +73,7 @@ export function LotDistributionChart({ data, height = 300, innerRadius = 60, out
             align="right"
             iconType="circle"
             wrapperStyle={{ paddingRight: "10px" }}
-            formatter={(value) => <span className="text-gray-500 dark:text-gray-400 text-xs font-medium ml-1">{value}</span>}
+            formatter={(value) => <span className="text-gray-600 dark:text-gray-300 text-xs font-medium ml-1">{value}</span>}
           />
         </PieChart>
       </ResponsiveContainer>

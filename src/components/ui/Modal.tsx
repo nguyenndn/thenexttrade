@@ -50,7 +50,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
                         variant="ghost"
                         size="icon"
                         onClick={onClose}
-                        className="rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-500 transition-colors"
+                        className="rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-600 transition-colors"
                     >
                         <X size={20} />
                     </Button>

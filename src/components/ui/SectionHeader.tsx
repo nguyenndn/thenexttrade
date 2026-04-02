@@ -45,7 +45,7 @@ export const SectionHeader = memo(function SectionHeader({
                     {title}
                 </h2>
                 {subtitle && (
-                    <p className="text-gray-500 dark:text-gray-400 mt-2 ml-5 text-sm">
+                    <p className="text-gray-600 dark:text-gray-300 mt-2 ml-5 text-sm">
                         {subtitle}
                     </p>
                 )}

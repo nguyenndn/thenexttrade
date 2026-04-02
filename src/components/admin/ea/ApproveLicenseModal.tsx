@@ -61,15 +61,15 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
                     {/* Summary */}
                     <div className="bg-gray-50 dark:bg-[#151925] p-4 rounded-xl space-y-2 text-sm">
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Account:</span>
+                            <span className="text-gray-600">Account:</span>
                             <span className="font-bold text-gray-900 dark:text-white">{license.accountNumber}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Broker:</span>
+                            <span className="text-gray-600">Broker:</span>
                             <span className="font-medium text-gray-900 dark:text-white">{license.broker}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-gray-500">User:</span>
+                            <span className="text-gray-600">User:</span>
                             <span className="font-medium text-gray-900 dark:text-white">{license.user.email}</span>
                         </div>
                     </div>
@@ -125,7 +125,7 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
                     <Button
                         onClick={handleApprove}
                         disabled={isLoading}
-                        className="rounded-xl font-bold border-none disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed dark:disabled:bg-gray-800 dark:disabled:text-gray-500"
+                        className="rounded-xl font-bold border-none disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed dark:disabled:bg-gray-800 dark:disabled:text-gray-600"
                     >
                         {isLoading ? "Approving..." : "Confirm Approval"}
                     </Button>

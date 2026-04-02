@@ -400,10 +400,10 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                     )}>
                                         {level.title}
                                     </h3>
-                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 -mt-1">
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300 -mt-1">
                                         {LEVEL_SUBTITLES[level.order] || ""}
                                     </p>
-                                    <p className={cn("text-sm text-gray-500 dark:text-gray-400 max-w-xs leading-relaxed", (!hasContent || isLevelLocked) && "opacity-50")}>
+                                    <p className={cn("text-sm text-gray-600 dark:text-gray-300 max-w-xs leading-relaxed", (!hasContent || isLevelLocked) && "opacity-50")}>
                                         {level.description || "Advanced content coming soon."}
                                     </p>
 
@@ -558,7 +558,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         title={isLevelLocked ? `Complete Level ${level.order - 1} to unlock` : "Complete previous lessons to unlock"}
                                                     >
                                                         <Lock size={12} className="text-gray-400 dark:text-gray-600 flex-shrink-0" />
-                                                        <span className="text-sm text-gray-400 dark:text-gray-500 truncate flex-1">{mod.title}</span>
+                                                        <span className="text-sm text-gray-600 dark:text-gray-300 truncate flex-1">{mod.title}</span>
                                                         <span className="text-[10px] text-gray-300 dark:text-gray-700 font-bold whitespace-nowrap">{mod._count.lessons}</span>
                                                     </motion.div>
                                                 );
@@ -684,7 +684,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         >
                                                             <div className={cn(
                                                                 "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0",
-                                                                "bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400",
+                                                                "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300",
                                                                 "group-hover:bg-primary group-hover:text-white transition-colors"
                                                             )}>
                                                                 {mod.title.charAt(0)}
@@ -721,7 +721,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                     >
                                                         <div className={cn(
                                                             "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0",
-                                                            "bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400",
+                                                            "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300",
                                                             "group-hover:bg-primary group-hover:text-white transition-colors"
                                                         )}>
                                                             {mod.title.charAt(0)}
@@ -789,7 +789,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                         className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-3 space-y-2 min-w-[200px]"
                     >
                         <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-bold text-gray-500 flex items-center gap-1"><FlaskConical size={12} /> DEV TEST</span>
+                            <span className="text-xs font-bold text-gray-600 flex items-center gap-1"><FlaskConical size={12} /> DEV TEST</span>
                             <button onClick={() => setDevOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" aria-label="Close dev panel"><X size={14} /></button>
                         </div>
                         <button

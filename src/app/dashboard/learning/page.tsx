@@ -90,14 +90,14 @@ export default async function MyLearningPage() {
 
                         <div className="p-6 flex-1 flex flex-col">
                             <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-2 group-hover:text-[#2F80ED] transition-colors">{course.title}</h3>
-                            <p className="text-gray-500 text-sm line-clamp-2 mb-4 flex-1">
+                            <p className="text-gray-600 text-sm line-clamp-2 mb-4 flex-1">
                                 {course.description || "Master the forex market with this comprehensive module."}
                             </p>
 
                             {/* Progress Bar */}
                             <div className="space-y-2 mb-4">
                                 <div className="flex justify-between text-xs font-medium">
-                                    <span className="text-gray-500">{course.completedCount} / {course.totalLessons} Completed</span>
+                                    <span className="text-gray-600">{course.completedCount} / {course.totalLessons} Completed</span>
                                     <span className="text-[#2F80ED]">{course.progress}%</span>
                                 </div>
                                 <div className="h-2 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
@@ -130,7 +130,7 @@ export default async function MyLearningPage() {
 
             {courses.length === 0 && (
                 <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
-                    <p className="text-gray-500">No courses available at the moment.</p>
+                    <p className="text-gray-600">No courses available at the moment.</p>
                 </div>
             )}
         </div>

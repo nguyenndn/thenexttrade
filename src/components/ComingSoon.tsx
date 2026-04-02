@@ -9,7 +9,7 @@ export default function ComingSoonPage({ title, description }: { title: string, 
                 <Construction size={48} className="text-cyan-500" />
             </div>
             <h1 className="text-3xl font-bold mb-4">{title}</h1>
-            <p className="text-gray-500 dark:text-gray-400 max-w-md mb-8">
+            <p className="text-gray-600 dark:text-gray-300 max-w-md mb-8">
                 {description || "This feature is currently under development. Check back soon for updates!"}
             </p>
             <Link href="/" className="px-6 py-3 bg-cyan-500 text-white font-bold rounded-xl hover:bg-cyan-600 transition-colors">

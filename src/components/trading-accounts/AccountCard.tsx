@@ -72,7 +72,7 @@ export function AccountCard({
                 {/* Broker Badge & Options */}
                 <div className="flex justify-between items-start mb-auto w-full">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gray-50/50 dark:bg-black/20 flex items-center justify-center font-black text-gray-500 border border-gray-200 dark:border-white/10 shadow-inner shrink-0 relative overflow-hidden">
+                        <div className="w-12 h-12 rounded-xl bg-gray-50/50 dark:bg-black/20 flex items-center justify-center font-black text-gray-600 border border-gray-200 dark:border-white/10 shadow-inner shrink-0 relative overflow-hidden">
                             {getPlatformIcon(account.platform) ? (
                                 <NextImage
                                     src={getPlatformIcon(account.platform)!}
@@ -89,7 +89,7 @@ export function AccountCard({
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[180px]" title={account.name}>
                                 {account.name}
                             </h3>
-                            <p className="text-sm text-gray-500 font-medium mt-0.5 truncate max-w-[180px]" title={account.server || "Server Unknown"}>
+                            <p className="text-sm text-gray-600 font-medium mt-0.5 truncate max-w-[180px]" title={account.server || "Server Unknown"}>
                                 {account.server || "Server Unknown"}
                             </p>
                             {(accountType || account.accountNumber || account.useForLeaderboard) && (

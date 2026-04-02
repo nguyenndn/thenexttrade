@@ -33,7 +33,7 @@ export function CalcInput({
                 {Icon && (
                     <Icon
                         size={18}
-                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300 pointer-events-none"
                     />
                 )}
                 <input
@@ -52,7 +52,7 @@ export function CalcInput({
                     )}
                 />
                 {suffix && (
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-400 dark:text-gray-500 pointer-events-none">
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-600 dark:text-gray-300 pointer-events-none">
                         {suffix}
                     </span>
                 )}

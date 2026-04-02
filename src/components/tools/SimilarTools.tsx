@@ -24,7 +24,7 @@ export function SimilarTools({ tools }: SimilarToolsProps) {
                         <p className="font-bold text-sm text-gray-900 dark:text-white group-hover:text-primary transition-colors truncate">
                             {tool.shortTitle}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
                             {tool.description}
                         </p>
                     </div>

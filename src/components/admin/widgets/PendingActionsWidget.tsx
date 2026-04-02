@@ -49,14 +49,14 @@ export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
                                     {item.title}
                                 </h4>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                    <span className="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1">
                                         <Clock className="w-3 h-3" />
                                         {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                     </span>
                                     {item.author && (
                                         <>
                                             <span className="text-gray-300 dark:text-gray-600">•</span>
-                                            <span className="text-xs text-gray-500 dark:text-gray-400">by {item.author}</span>
+                                            <span className="text-xs text-gray-600 dark:text-gray-300">by {item.author}</span>
                                         </>
                                     )}
                                 </div>

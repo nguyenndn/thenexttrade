@@ -133,7 +133,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                         <DialogTitle className="text-xl font-bold text-gray-900 dark:text-white">
                             Edit Broker
                         </DialogTitle>
-                        <DialogDescription className="text-gray-500 dark:text-gray-400">
+                        <DialogDescription className="text-gray-600 dark:text-gray-300">
                             Update broker information for Trading Systems.
                         </DialogDescription>
                     </DialogHeader>

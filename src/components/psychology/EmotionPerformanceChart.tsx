@@ -75,7 +75,7 @@ export function EmotionPerformanceChart({ data, title }: EmotionPerformanceChart
             <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {sortedData.slice(0, 4).map((item) => (
                     <div key={item.emotion} className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-200 dark:border-white/10">
-                        <div className="text-xs text-gray-500 uppercase font-bold">{item.emotion}</div>
+                        <div className="text-xs text-gray-600 uppercase font-bold">{item.emotion}</div>
                         <div className={`text-lg font-bold ${item.totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}>
                             {item.totalPnL >= 0 ? "+" : ""}${item.totalPnL.toFixed(2)}
                         </div>

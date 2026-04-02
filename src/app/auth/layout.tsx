@@ -29,7 +29,7 @@ export default function AuthLayout({
           <div className="flex flex-row items-center justify-between gap-4 py-4">
             <Link 
               href="/" 
-              className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors group"
+              className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors group"
             >
               <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
               <span>Back to Home</span>
@@ -47,7 +47,7 @@ export default function AuthLayout({
             Build Your Trading<br />
             <span className="text-[#00C888]">Edge</span>
           </h2>
-          <p className="text-lg text-gray-500 dark:text-gray-400 mb-10 leading-relaxed font-outfit">
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-10 leading-relaxed font-outfit">
             Stop guessing and start improving. Gain deep insights into your habits, master your psychology, and refine your strategy with data-driven journaling.
           </p>
 
@@ -59,7 +59,7 @@ export default function AuthLayout({
               </div>
               <div>
                 <h3 className="font-bold text-lg text-[#00C888]">Data-Driven Insights</h3>
-                <p className="text-sm text-gray-500">Identify patterns and optimize your win rate</p>
+                <p className="text-sm text-gray-600">Identify patterns and optimize your win rate</p>
               </div>
             </div>
 
@@ -70,7 +70,7 @@ export default function AuthLayout({
               </div>
               <div>
                 <h3 className="font-bold text-lg text-[#2F80ED]">Psychology Mastery</h3>
-                <p className="text-sm text-gray-500">Train your mind for disciplined execution</p>
+                <p className="text-sm text-gray-600">Train your mind for disciplined execution</p>
               </div>
             </div>
 
@@ -81,7 +81,7 @@ export default function AuthLayout({
               </div>
               <div>
                 <h3 className="font-bold text-lg text-[#A855F7]">Smart Trade Journal</h3>
-                <p className="text-sm text-gray-500">Seamlessly log and review every setup</p>
+                <p className="text-sm text-gray-600">Seamlessly log and review every setup</p>
               </div>
             </div>
           </div>

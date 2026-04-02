@@ -145,7 +145,7 @@ export function AnimatedStatCard({
         >
             <div className="flex justify-between items-start">
                 <div>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{title}</p>
+                    <p className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">{title}</p>
                     <div className="flex items-baseline gap-2 mt-2">
                         <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight tabular-nums">
                             {displayValue}
@@ -171,7 +171,7 @@ export function AnimatedStatCard({
                                 ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
                                 : trendPercent < 0
                                 ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
-                                : "bg-gray-50 text-gray-500 dark:bg-gray-500/10"
+                                : "bg-gray-50 text-gray-600 dark:bg-gray-500/10"
                         }`}
                     >
                         {trendPercent > 0 ? "+" : ""}{trendPercent}%

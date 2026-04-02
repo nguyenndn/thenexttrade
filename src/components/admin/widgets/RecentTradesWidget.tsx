@@ -64,11 +64,11 @@ export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
                                 <div>
                                     <div className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                         {trade.symbol}
-                                        <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
+                                        <span className="text-xs font-normal text-gray-600 dark:text-gray-300">
                                             by {trade.user.name || "Unknown"}
                                         </span>
                                     </div>
-                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                    <div className="text-xs text-gray-600 dark:text-gray-300">
                                         Entry: {trade.entryPrice}
                                     </div>
                                 </div>

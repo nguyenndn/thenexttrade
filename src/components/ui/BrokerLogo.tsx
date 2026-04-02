@@ -27,7 +27,7 @@ export function BrokerLogo({
                     className="relative flex-shrink-0 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden flex items-center justify-center"
                     style={{ width: size, height: size }}
                 >
-                    <span className="text-xs font-bold text-gray-500 dark:text-gray-300">
+                    <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
                         {broker.substring(0, 2)}
                     </span>
                 </div>

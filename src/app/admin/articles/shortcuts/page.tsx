@@ -207,7 +207,7 @@ export default function ShortcutsManagerPage() {
                                             </Button>
                                         </div>
                                     </div>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 min-h-[40px] mt-1">
+                                    <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 min-h-[40px] mt-1">
                                         {shortcut.description || "No description provided."}
                                     </p>
                                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 text-xs text-gray-400 flex items-center justify-between">
@@ -223,7 +223,7 @@ export default function ShortcutsManagerPage() {
                                 <Zap size={28} className="text-yellow-500" />
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No Shortcuts Found</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
                                 You haven't created any reusable snippets yet. Create your first shortcut to start saving time while writing articles.
                             </p>
                         </div>
@@ -256,7 +256,7 @@ export default function ShortcutsManagerPage() {
                                                 value={formData.name}
                                                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                                                 placeholder="e.g. Promotional Banner"
-                                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
                                                 required
                                             />
                                         </div>
@@ -268,7 +268,7 @@ export default function ShortcutsManagerPage() {
                                                 value={formData.description}
                                                 onChange={e => setFormData({ ...formData, description: e.target.value })}
                                                 placeholder="Brief description..."
-                                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 resize-none h-24"
+                                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 resize-none h-24"
                                             />
                                         </div>
                                     </div>

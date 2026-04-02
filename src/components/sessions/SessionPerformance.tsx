@@ -29,7 +29,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
             <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                 P&L by Session
             </h3>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-gray-600 mb-4">
                 Total profit/loss for each trading session
             </p>
 
@@ -104,7 +104,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                             className="w-3 h-3 rounded-full"
                             style={{ backgroundColor: session.color }}
                         />
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-600">
                             {session.displayName}
                         </span>
                     </div>

@@ -12,7 +12,7 @@ export default function Loading() {
       </div>
       
       <div className="flex flex-col items-center gap-2">
-        <span className="text-sm font-medium text-gray-400 dark:text-gray-500 tracking-wide animate-pulse">
+        <span className="text-sm font-medium text-gray-600 dark:text-gray-300 tracking-wide animate-pulse">
           Loading dashboard...
         </span>
         <div className="flex gap-1.5 justify-center">

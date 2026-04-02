@@ -36,7 +36,7 @@ export function MistakeDashboard() {
                     <CheckCircle size={32} />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Mistakes Recorded</h3>
-                <p className="text-gray-500 max-w-md">
+                <p className="text-gray-600 max-w-md">
                     Great job! You haven't logged any mistakes for this period.
                     Keep executing your plan with discipline.
                 </p>
@@ -59,7 +59,7 @@ export function MistakeDashboard() {
                         <div className="p-3 bg-red-500/10 text-red-500 dark:text-red-400 rounded-xl group-hover:bg-red-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <DollarSign size={22} strokeWidth={2.5} />
                         </div>
-                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Cost of Mistakes</p>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-600 dark:text-gray-300">Cost of Mistakes</p>
                     </div>
                     <p className="text-3xl font-black text-red-500 tracking-tighter">
                         ${Math.abs(data.costOfMistakes).toFixed(2)}
@@ -76,7 +76,7 @@ export function MistakeDashboard() {
                         <div className="p-3 bg-blue-500/10 text-blue-500 dark:text-blue-400 rounded-xl group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <TrendingDown size={22} strokeWidth={2.5} />
                         </div>
-                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Performance Gap</p>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-600 dark:text-gray-300">Performance Gap</p>
                     </div>
                     <div className="flex items-end gap-2 mb-1">
                         <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">
@@ -97,7 +97,7 @@ export function MistakeDashboard() {
                         <div className="p-3 bg-amber-500/10 text-amber-500 dark:text-amber-400 rounded-xl group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <AlertTriangle size={22} strokeWidth={2.5} />
                         </div>
-                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Frequent Issue</p>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-600 dark:text-gray-300">Frequent Issue</p>
                     </div>
                     {mostFrequent ? (
                         <>
@@ -118,7 +118,7 @@ export function MistakeDashboard() {
                         <div className="p-3 bg-purple-500/10 text-purple-500 dark:text-purple-400 rounded-xl group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300 shadow-sm">
                             <XCircle size={22} strokeWidth={2.5} />
                         </div>
-                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Costliest Mistake</p>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-gray-600 dark:text-gray-300">Costliest Mistake</p>
                     </div>
                     {mostCostly ? (
                         <>

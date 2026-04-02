@@ -55,7 +55,7 @@ export function QuickActionsWidget() {
                         </div>
                         <div>
                             <div className="font-bold text-gray-900 dark:text-white text-sm">{action.title}</div>
-                            <div className="text-xs text-gray-500">{action.description}</div>
+                            <div className="text-xs text-gray-600">{action.description}</div>
                         </div>
                     </Link>
                 ))}

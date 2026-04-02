@@ -47,7 +47,7 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
         {/* List */}
         <div className="flex-1 overflow-y-auto custom-scrollbar divide-y divide-gray-50 dark:divide-white/5">
           {data.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center p-8 text-center text-gray-400 dark:text-gray-500 font-medium">
+            <div className="h-full flex flex-col items-center justify-center p-8 text-center text-gray-600 dark:text-gray-300 font-medium">
               <BarChart3 size={28} className="mb-2 opacity-50" />
               <p className="text-sm">No data available</p>
             </div>
@@ -60,7 +60,7 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
                 <div className="col-span-5 font-bold text-sm text-gray-800 dark:text-gray-200">
                   {item.symbol}
                 </div>
-                <div className="col-span-3 text-right text-xs text-gray-500 font-medium">
+                <div className="col-span-3 text-right text-xs text-gray-600 font-medium">
                   {item.trades}
                 </div>
                 <div className={`col-span-4 text-right font-bold text-sm ${item.pnl >= 0 ? "text-primary" : "text-red-500"}`}>

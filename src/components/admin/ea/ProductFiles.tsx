@@ -69,7 +69,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
                             {uploading ? <Loader2 className="animate-spin mr-2" size={16} /> : <Upload className="mr-2" size={16} />}
                             Upload New
                         </Button>
-                        <p className="text-xs text-gray-500 mt-2">Recommended: 500x500px, JPG/PNG</p>
+                        <p className="text-xs text-gray-600 mt-2">Recommended: 500x500px, JPG/PNG</p>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
             <div className="grid grid-cols-1 gap-4">
                 <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10">
                     <p className="font-bold text-gray-700 dark:text-gray-300 text-sm mb-1">MT5 File</p>
-                    <p className="text-xs text-gray-500 font-mono break-all">{product.fileMT5 || "Not uploaded"}</p>
+                    <p className="text-xs text-gray-600 font-mono break-all">{product.fileMT5 || "Not uploaded"}</p>
                 </div>
             </div>
 

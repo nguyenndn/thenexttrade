@@ -206,7 +206,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                 );
                             })}
                         </div>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                        <span className="text-sm text-gray-600 dark:text-gray-300">
                             {totalCount} {totalCount === 1 ? 'article' : 'articles'}
                         </span>
                     </div>
@@ -230,7 +230,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                                 {query ? `No results for "${query}"` : "Library is Empty"}
                             </h3>
-                            <p className="text-gray-500 dark:text-gray-400">Try adjusting your search or check back later.</p>
+                            <p className="text-gray-600 dark:text-gray-300">Try adjusting your search or check back later.</p>
                         </div>
                     )}
                 </div>

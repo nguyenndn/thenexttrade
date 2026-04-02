@@ -118,7 +118,7 @@ export default function StreakClient() {
                         </div>
 
                         <div className="mb-6 text-center">
-                            <p className="text-gray-500 font-bold uppercase tracking-[0.2em] text-xs mb-2">Current Login Streak</p>
+                            <p className="text-gray-600 font-bold uppercase tracking-[0.2em] text-xs mb-2">Current Login Streak</p>
                             <h2 className="text-6xl font-black text-gray-900 dark:text-white mb-2">{streak}</h2>
                             <p className="text-sm text-gray-400 font-medium">days in a row</p>
                         </div>
@@ -159,7 +159,7 @@ export default function StreakClient() {
                     {/* BOTTOM PART: Rewards Timeline */}
                     <div className="flex-1 w-full bg-gray-50/50 dark:bg-white/[0.02] overflow-hidden flex flex-col">
                         <div className="p-4 pb-2">
-                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Upcoming Rewards</h4>
+                            <h4 className="text-xs font-bold text-gray-600 uppercase tracking-wider">Upcoming Rewards</h4>
                         </div>
 
                         <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3 custom-scrollbar">
@@ -191,7 +191,7 @@ export default function StreakClient() {
                                             <div className="flex items-center justify-between mb-0.5">
                                                 <span className={cn(
                                                     "text-sm font-bold truncate",
-                                                    isAchieved ? "text-primary" : isNext ? "text-gray-900 dark:text-white" : "text-gray-500"
+                                                    isAchieved ? "text-primary" : isNext ? "text-gray-900 dark:text-white" : "text-gray-600"
                                                 )}>
                                                     {milestone.days} Day Streak
                                                 </span>
@@ -201,7 +201,7 @@ export default function StreakClient() {
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-xs text-gray-500 truncate">{milestone.reward}</p>
+                                            <p className="text-xs text-gray-600 truncate">{milestone.reward}</p>
                                         </div>
                                     </div>
                                 );
@@ -215,7 +215,7 @@ export default function StreakClient() {
             <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col xl:col-span-3">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="font-bold text-gray-900 dark:text-white">Monthly History</h3>
-                    <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-medium text-gray-500">
+                    <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-medium text-gray-600">
                         {format(currentDate, "MMMM yyyy")}
                     </div>
                 </div>

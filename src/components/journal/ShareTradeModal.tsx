@@ -126,7 +126,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
 
                     {/* Controls Row */}
                     <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Preview</span>
+                        <span className="text-sm font-bold text-gray-600 uppercase tracking-wider">Preview</span>
                         <div className="flex items-center gap-3">
                             <Button
                                 variant="outline"
@@ -141,14 +141,14 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("basic")}
-                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-500 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Basic
                                 </Button>
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("full")}
-                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-500 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-900 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Full
                                 </Button>
@@ -186,7 +186,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                                     ></textarea>
                                     <div className="absolute bottom-6 right-6 pointer-events-none">
                                         {isSaving ? (
-                                            <span className="text-xs text-gray-500 font-medium px-2 py-1 rounded-md bg-white/80 dark:bg-[#1E2028]/90 backdrop-blur-sm shadow-sm flex items-center gap-1 animate-pulse border border-gray-200 dark:border-white/10">Saving...</span>
+                                            <span className="text-xs text-gray-600 font-medium px-2 py-1 rounded-md bg-white/80 dark:bg-[#1E2028]/90 backdrop-blur-sm shadow-sm flex items-center gap-1 animate-pulse border border-gray-200 dark:border-white/10">Saving...</span>
                                         ) : lastSaved ? (
                                              <div className="bg-white/90 dark:bg-[#1E2028]/90 backdrop-blur-sm rounded-full p-0.5 shadow-sm border border-green-100 dark:border-green-500/20">
                                                 <CheckCircle2 size={16} className="text-green-500" />
@@ -205,13 +205,13 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
                             <input 
                                 readOnly
                                 value={shareUrl}
-                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl pl-4 pr-14 py-3 text-sm text-gray-500 font-mono focus:outline-none focus:border-blue-500 transition-colors"
+                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl pl-4 pr-14 py-3 text-sm text-gray-600 font-mono focus:outline-none focus:border-blue-500 transition-colors"
                             />
                             <div className="absolute right-2 top-1/2 -translate-y-1/2">
                                 <Button 
                                     onClick={handleCopy} 
                                     variant="outline" 
-                                    className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400"
+                                    className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300"
                                 >
                                     {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
                                 </Button>
@@ -221,7 +221,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
 
                     {/* Footer Actions */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-white/10">
-                        <div className="text-sm text-gray-500 italic">
+                        <div className="text-sm text-gray-600 italic">
                             {isSaving ? "Saving changes..." : lastSaved ? "Changes saved" : ""}
                         </div>
                         <Button onClick={onClose} className="font-bold rounded-xl">

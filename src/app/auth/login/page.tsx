@@ -60,7 +60,7 @@ export default function LoginPage() {
         <Logo />
       </div>
       <div className="text-center mb-8">
-        <p className="text-base font-medium text-gray-500 dark:text-gray-400">Welcome back</p>
+        <p className="text-base font-medium text-gray-600 dark:text-gray-300">Welcome back</p>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-2">Login to your account</h1>
       </div>
 
@@ -72,7 +72,7 @@ export default function LoginPage() {
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all ${
             mode === "password"
               ? "bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white shadow-sm"
-              : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+              : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300"
           }`}
         >
           <Lock size={16} />
@@ -84,7 +84,7 @@ export default function LoginPage() {
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all ${
             mode === "magic"
               ? "bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white shadow-sm"
-              : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+              : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300"
           }`}
         >
           <Sparkles size={16} />
@@ -108,7 +108,7 @@ export default function LoginPage() {
             label="Email"
             required
             startIcon={<Mail size={20} className="text-gray-400" />}
-            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
           />
 
           <div>
@@ -120,11 +120,11 @@ export default function LoginPage() {
               required
               startIcon={<Lock size={20} className="text-gray-400" />}
               endIcon={
-                <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-white" aria-label={showPassword ? "Hide password" : "Show password"}>
+                <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showPassword ? "Hide password" : "Show password"}>
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </Button>
               }
-              className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+              className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
             />
           </div>
 
@@ -157,7 +157,7 @@ export default function LoginPage() {
       {mode === "magic" && !magicLinkSent && (
         <form onSubmit={handleMagicLink} className="space-y-6">
           <div className="text-center mb-2">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               Enter your email and we'll send you a magic link to sign in instantly — no password needed.
             </p>
           </div>
@@ -169,7 +169,7 @@ export default function LoginPage() {
             label="Email"
             required
             startIcon={<Mail size={20} className="text-gray-400" />}
-            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
+            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-base py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-900 dark:focus:text-white h-12 transition-colors"
           />
 
           <Button
@@ -191,7 +191,7 @@ export default function LoginPage() {
             <CheckCircle className="text-primary" size={32} />
           </div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Check your email</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+          <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
             We've sent a magic link to your email.<br />
             Click the link to sign in instantly.
           </p>
@@ -205,7 +205,7 @@ export default function LoginPage() {
         </div>
       )}
 
-      <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
+      <p className="text-center text-sm text-gray-600 dark:text-gray-300 mt-8">
         Don't have an account?{" "}
         <Link href="/auth/signup" className="font-semibold text-primary hover:underline">
           Sign up

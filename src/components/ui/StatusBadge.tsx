@@ -8,7 +8,7 @@ interface StatusBadgeProps {
 export const StatusBadge = ({ status, className = "" }: StatusBadgeProps) => {
     const s = status.toUpperCase();
 
-    let styles = "bg-gray-100 text-gray-500 border-gray-200"; // Default
+    let styles = "bg-gray-100 text-gray-600 border-gray-200"; // Default
 
     if (s === "OPEN" || s === "RUNNING") {
         styles = "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20 animate-pulse";

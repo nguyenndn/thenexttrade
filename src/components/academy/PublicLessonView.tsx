@@ -18,6 +18,8 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
     const sanitizedContent = DOMPurify.sanitize(lesson.content);
     const currentIndex = courseLessons.findIndex(l => l.id === lesson.id);
+    const wordCount = lesson.content?.replace(/<[^>]*>?/gm, '').trim().split(/\s+/).filter(Boolean).length || 0;
+    const readingTime = lesson.duration || Math.max(1, Math.ceil(wordCount / 200));
 
     return (
         <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-900 dark:text-white">
@@ -52,12 +54,12 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
             <main className="pt-28 pb-20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumb */}
-                    <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8">
+                    <nav className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mb-8">
                         <Link href="/academy" className="hover:text-primary transition-colors">Academy</Link>
                         <span>/</span>
-                        <span className="text-gray-400 dark:text-gray-500">{level.title}</span>
+                        <span className="text-gray-600 dark:text-gray-300">{level.title}</span>
                         <span>/</span>
-                        <span className="text-gray-400 dark:text-gray-500">{lesson.module.title}</span>
+                        <span className="text-gray-600 dark:text-gray-300">{lesson.module.title}</span>
                     </nav>
 
                     {/* Header */}
@@ -67,17 +69,15 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
                                 <GraduationCap size={14} />
                                 <span>Level {level.order}</span>
                             </div>
-                            {lesson.duration && (
-                                <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                                    <Clock size={12} />
-                                    <span>{lesson.duration} min read</span>
-                                </div>
-                            )}
+                            <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                                <Clock size={12} />
+                                <span>{readingTime} min read</span>
+                            </div>
                         </div>
                         <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">
                             {lesson.title}
                         </h1>
-                        <p className="text-gray-500 dark:text-gray-400">
+                        <p className="text-gray-600 dark:text-gray-300">
                             {lesson.module.title} — Lesson {currentIndex + 1} of {courseLessons.length}
                         </p>
                     </div>

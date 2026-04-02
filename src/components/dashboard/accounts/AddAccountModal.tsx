@@ -216,10 +216,10 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             </div>
                             <div className="w-16 h-[2px] bg-gray-200 dark:bg-white/10" />
                             <div className="flex items-center gap-2 opacity-50">
-                                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 flex items-center justify-center font-bold text-sm">
+                                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 flex items-center justify-center font-bold text-sm">
                                     2
                                 </div>
-                                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Balance</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-300">Balance</span>
                             </div>
                         </div>
 
@@ -237,20 +237,20 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         {/* IB Info Box */}
                         <div className="bg-gray-50 dark:bg-[#151925] rounded-xl p-6 mb-8 text-center space-y-5">
                             <div>
-                                <p className="text-sm font-bold text-gray-400 dark:text-gray-500 mb-1">Your Broker:</p>
+                                <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-1">Your Broker:</p>
                                 <p className="text-2xl font-black text-gray-900 dark:text-white">
                                     {selectedBrokerData?.name || pendingData.broker}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-gray-400 dark:text-gray-500 mb-1">IB Code/Number:</p>
+                                <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-1">IB Code/Number:</p>
                                 <p className="text-3xl font-black text-amber-500 tracking-wider">
                                     {selectedBrokerData?.ibCode || "Check Partner Link"}
                                 </p>
                             </div>
                         </div>
 
-                        <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-10 max-w-[320px] mx-auto leading-relaxed">
+                        <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-10 max-w-[320px] mx-auto leading-relaxed">
                             Your trading account must be registered under our Introducing Broker (IB) to receive free access to the EA.
                         </p>
 
@@ -290,7 +290,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             onClick={() => setView("verify_ib")}
                             disabled={isSubmitting}
                             aria-label="Back to previous step"
-                            className="absolute top-6 left-6 flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+                            className="absolute top-6 left-6 flex items-center justify-center w-8 h-8 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
                         >
                             <ArrowLeft size={20} />
                         </Button>
@@ -331,7 +331,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
 
                         {/* Balance Info Box */}
                         <div className="bg-[#F8F9FA] dark:bg-[#151925] rounded-xl p-6 mb-8 text-center space-y-2">
-                            <p className="text-sm font-bold text-gray-400 dark:text-gray-500">
+                            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
                                 Minimum Required Balance:
                             </p>
                             <p className="text-5xl font-black text-[#00C888] tracking-tight">
@@ -339,7 +339,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             </p>
                         </div>
 
-                        <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-8 max-w-[280px] mx-auto leading-relaxed">
+                        <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-8 max-w-[280px] mx-auto leading-relaxed">
                             A minimum balance of $500 is required to use the EA effectively.
                         </p>
 
@@ -405,7 +405,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             Insufficient Balance
                         </h3>
 
-                        <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-8 px-4 leading-relaxed max-w-[300px] mx-auto">
+                        <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-8 px-4 leading-relaxed max-w-[300px] mx-auto">
                             Please fund your account with at least $500 before submitting your MT5 account for EA access.
                         </p>
 
@@ -450,7 +450,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             <DialogTitle className="text-xl font-bold text-gray-900 dark:text-white">
                                 Add New Account
                             </DialogTitle>
-                            <DialogDescription className="text-gray-500 dark:text-gray-400">
+                            <DialogDescription className="text-gray-600 dark:text-gray-300">
                                 Enter your trading account information to activate license.
                             </DialogDescription>
                         </DialogHeader>
@@ -492,7 +492,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                                 "text-[13px] font-extrabold tracking-wide transition-colors",
                                                 selectedBroker === broker.slug 
                                                     ? "text-gray-900 dark:text-white" 
-                                                    : "text-gray-500 dark:text-gray-500 group-hover:text-gray-800 dark:group-hover:text-gray-300"
+                                                    : "text-gray-600 dark:text-gray-600 group-hover:text-gray-800 dark:group-hover:text-gray-300"
                                             )}>
                                                 {broker.name}
                                             </span>
@@ -576,13 +576,13 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                     className="p-1.5 h-auto w-auto rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                                     aria-label="Go back"
                                 >
-                                    <ArrowLeft size={18} className="text-gray-500 dark:text-gray-400" />
+                                    <ArrowLeft size={18} className="text-gray-600 dark:text-gray-300" />
                                 </Button>
                                 <DialogTitle className="text-lg font-extrabold text-gray-900 dark:text-white">
                                     Create Your Trading Account
                                 </DialogTitle>
                             </div>
-                            <DialogDescription className="text-sm text-gray-500 dark:text-gray-400 mt-1 pl-8">
+                            <DialogDescription className="text-sm text-gray-600 dark:text-gray-300 mt-1 pl-8">
                                 Sign up with a supported broker below to get started with our EAs.
                             </DialogDescription>
                         </DialogHeader>
@@ -614,7 +614,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                             Register
                                         </a>
                                     ) : (
-                                        <span className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 text-xs font-bold flex-shrink-0">
+                                        <span className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs font-bold flex-shrink-0">
                                             Coming soon
                                         </span>
                                     )}
@@ -623,7 +623,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         </div>
 
                         {/* Info Footer */}
-                        <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-6 leading-relaxed">
+                        <p className="text-xs text-center text-gray-600 dark:text-gray-300 mt-6 leading-relaxed">
                             Once registered, return here and enter your MT5 account number to activate your license.
                         </p>
 
@@ -672,7 +672,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 <h3 className="text-2xl font-black text-[#00C888] uppercase tracking-wide">
                                     Account Submitted!
                                 </h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[280px] mx-auto leading-relaxed">
+                                <p className="text-sm text-gray-600 dark:text-gray-300 max-w-[280px] mx-auto leading-relaxed">
                                     Your MT5 account has been submitted for review. We'll notify you once it's approved.
                                 </p>
                             </div>
