@@ -9,168 +9,221 @@ import {
     Shield,
     Zap,
     ArrowRight,
-    ExternalLink
+    ExternalLink,
+    ChevronRight,
+    Award,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { CopyTradingRegistrationModal } from "./CopyTradingRegistrationModal";
 
 // TODO: Replace with real data from PVSR API — GET /api/copy-trading/stats
 const globalStats = [
-    { label: "Total Capital", value: "$2.4M", icon: DollarSign, color: "text-primary" },
-    { label: "Total Profit", value: "$847K", icon: TrendingUp, color: "text-emerald-500" },
-    { label: "Active Accounts", value: "156", icon: Users, color: "text-blue-500" },
-    { label: "Win Rate", value: "72.4%", icon: BarChart3, color: "text-amber-500" },
+    { label: "Total Capital", value: "$2.4M", icon: DollarSign, trend: "+12.3%", trendUp: true },
+    { label: "Total Profit", value: "$847K", icon: TrendingUp, trend: "+8.7%", trendUp: true },
+    { label: "Active Accounts", value: "156", icon: Users, trend: "+24", trendUp: true },
+    { label: "Win Rate", value: "72.4%", icon: BarChart3, trend: "+2.1%", trendUp: true },
 ];
 
-const features = [
+const advantages = [
     {
         icon: Zap,
         title: "Ultra-Low Latency",
-        description: "Millisecond-level signal broadcast between master and slave terminals.",
-        gradient: "from-amber-500/10 to-orange-500/10 dark:from-amber-500/5 dark:to-orange-500/5",
-        iconColor: "text-amber-500",
+        stat: "<50ms",
+        description: "Signal broadcast between master and slave terminals.",
+        accent: "bg-amber-400",
+        statColor: "text-amber-500",
+        iconBg: "bg-amber-50 dark:bg-amber-500/10 text-amber-500",
     },
     {
         icon: Shield,
         title: "Your Money, Your Control",
-        description: "No deposits required. 100% control of your funds at your broker.",
-        gradient: "from-blue-500/10 to-cyan-500/10 dark:from-blue-500/5 dark:to-cyan-500/5",
-        iconColor: "text-blue-500",
+        stat: "100%",
+        description: "No deposits required. Full control of your funds.",
+        accent: "bg-primary",
+        statColor: "text-primary",
+        iconBg: "bg-emerald-50 dark:bg-emerald-500/10 text-primary",
     },
     {
         icon: TrendingUp,
         title: "Transparent Performance",
-        description: "Live verified results. Milestone-based profit sharing model.",
-        gradient: "from-emerald-500/10 to-green-500/10 dark:from-emerald-500/5 dark:to-green-500/5",
-        iconColor: "text-emerald-500",
+        stat: "Live",
+        description: "Verified results. Milestone-based profit sharing.",
+        accent: "bg-sky-400",
+        statColor: "text-sky-500",
+        iconBg: "bg-sky-50 dark:bg-sky-500/10 text-sky-500",
+    },
+    {
+        icon: Award,
+        title: "PVSR Capital",
+        stat: "Pro",
+        description: "Institutional-grade strategies with proven track record.",
+        accent: "bg-rose-400",
+        statColor: "text-rose-500",
+        iconBg: "bg-rose-50 dark:bg-rose-500/10 text-rose-500",
     },
 ];
 
-const steps = [
-    { step: "01", title: "Register", description: "Submit your MT5 account details." },
-    { step: "02", title: "Connect", description: "We set up the copy trading connection." },
-    { step: "03", title: "Trade", description: "Trades are mirrored in real-time." },
+const howItWorks = [
+    { step: "01", title: "Register", description: "Submit your MT5 account details through our secure portal.", active: true },
+    { step: "02", title: "Get Approved", description: "Our team reviews and connects your account within 24h." },
+    { step: "03", title: "Start Copying", description: "Trades are mirrored in real-time to your MT5 terminal." },
 ];
 
 export function CopyTradingOverview() {
     const [showRegistration, setShowRegistration] = useState(false);
 
     return (
-        <div className="space-y-4 md:space-y-6">
-            {/* Hero Section */}
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6 border border-gray-200 dark:border-white/[0.06]">
-                <div className="relative z-10">
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-                            Partnership
+        <div className="space-y-5">
+            {/* Hero — Compact, high-impact */}
+            <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1A1D27] p-6 md:p-8 border border-gray-200 dark:border-white/[0.06]">
+                {/* Background pattern */}
+                <div className="absolute inset-0 opacity-[0.04] dark:opacity-[0.03]" style={{
+                    backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+                    backgroundSize: '24px 24px',
+                }} />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px]" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/8 rounded-full blur-[60px]" />
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div className="flex-1 max-w-lg">
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className="px-2.5 py-0.5 rounded-md bg-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
+                                Partnership
+                            </div>
+                            <span className="text-gray-500 text-xs">PVSR Capital</span>
                         </div>
-                        <span className="text-gray-500 dark:text-gray-400 text-sm">Powered by PVSR Capital</span>
+                        <h2 className="text-2xl md:text-3xl font-black text-gray-800 dark:text-white leading-tight mb-2">
+                            Precision Execution
+                            <br />
+                            <span className="text-primary">Engines</span>
+                        </h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-5 max-w-md">
+                            Institutional-grade copy trading with ultra-low latency. Connect your MT5 account and let verified strategies work for you.
+                        </p>
+                        <div className="flex gap-3 flex-wrap">
+                            <Button
+                                onClick={() => setShowRegistration(true)}
+                                className="bg-primary hover:bg-primary/90 text-white font-bold px-5 py-2.5 text-sm rounded-xl flex items-center gap-2 shadow-lg shadow-primary/20"
+                            >
+                                Get Started <ArrowRight size={16} />
+                            </Button>
+                            <a href="https://pvsrcapital.com/performance" target="_blank" rel="noopener noreferrer">
+                                <Button variant="outline" className="font-bold px-5 py-2.5 text-sm rounded-xl flex items-center gap-2 border-gray-300 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5">
+                                    Live Performance <ExternalLink size={14} />
+                                </Button>
+                            </a>
+                        </div>
                     </div>
-                    <h2 className="text-2xl font-black mb-1 text-gray-800 dark:text-white">Precision Execution Engines</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xl mb-4">
-                        Institutional-grade copy trading with ultra-low latency. Connect your MT5 account and let verified strategies work for you.
-                    </p>
-                    <div className="flex gap-3 flex-wrap">
+
+                    {/* Stats mini-grid inside hero */}
+                    <div className="grid grid-cols-2 gap-3 w-full md:w-auto md:min-w-[280px]">
+                        {globalStats.map((stat) => (
+                            <div
+                                key={stat.label}
+                                className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm rounded-xl border border-gray-200 dark:border-white/[0.06] px-3.5 py-3 hover:bg-white dark:hover:bg-white/[0.07] transition-colors shadow-sm dark:shadow-none"
+                            >
+                                <div className="flex items-center gap-1.5 mb-1">
+                                    <stat.icon size={12} className="text-gray-500" />
+                                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{stat.label}</span>
+                                </div>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-lg font-black text-gray-800 dark:text-white">{stat.value}</span>
+                                    <span className={`text-[10px] font-bold ${stat.trendUp ? "text-emerald-400" : "text-red-400"}`}>
+                                        {stat.trend}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Advantages — Horizontal ribbon */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {advantages.map((adv) => (
+                    <div
+                        key={adv.title}
+                        className="group bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] overflow-hidden hover:shadow-md dark:hover:border-white/10 transition-all"
+                    >
+                        {/* Colored top bar */}
+                        <div className={`h-1 ${adv.accent}`} />
+                        <div className="p-4">
+                            <div className="flex items-center justify-between mb-2.5">
+                                <div className={`p-2 rounded-lg ${adv.iconBg} transition-colors`}>
+                                    <adv.icon size={16} />
+                                </div>
+                                <span className={`text-lg font-black ${adv.statColor}`}>{adv.stat}</span>
+                            </div>
+                            <h3 className="font-bold text-sm text-gray-700 dark:text-white mb-0.5">{adv.title}</h3>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{adv.description}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* How It Works + Pricing — Side by side */}
+            <div className="grid md:grid-cols-5 gap-4">
+                {/* How It Works — 3 cols */}
+                <div className="md:col-span-3 bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] p-5">
+                    <h3 className="text-sm font-black text-gray-700 dark:text-white uppercase tracking-wider mb-4">How It Works</h3>
+                    <div className="space-y-0">
+                        {howItWorks.map((step, i) => (
+                            <div key={step.step} className="flex gap-4 items-start group">
+                                {/* Timeline */}
+                                <div className="flex flex-col items-center">
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${
+                                        i === 0
+                                            ? "bg-primary/10 text-primary"
+                                            : "bg-gray-100 dark:bg-white/5 text-gray-400"
+                                    }`}>
+                                        {step.step}
+                                    </div>
+                                    {i < howItWorks.length - 1 && (
+                                        <div className="w-px h-8 bg-gray-200 dark:bg-white/10 my-1" />
+                                    )}
+                                </div>
+                                {/* Content */}
+                                <div className="pb-4">
+                                    <h4 className="font-bold text-sm text-gray-700 dark:text-white">{step.title}</h4>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{step.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Profit Sharing — 2 cols */}
+                <div className="md:col-span-2 bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] p-5 flex flex-col">
+                    <h3 className="text-sm font-black text-gray-700 dark:text-white uppercase tracking-wider mb-4">Profit Sharing</h3>
+                    <div className="space-y-3 flex-1">
+                        <div className="rounded-xl border-2 border-primary/30 bg-primary/5 dark:bg-primary/[0.07] p-4">
+                            <div className="flex items-center justify-between mb-1">
+                                <span className="text-[10px] font-black text-primary uppercase tracking-widest">Phase 1 — Recovery</span>
+                                <span className="text-2xl font-black text-primary">10%</span>
+                            </div>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">Until total profit equals your initial deposit.</p>
+                        </div>
+                        <div className="rounded-xl border border-gray-200 dark:border-white/[0.06] bg-gray-50 dark:bg-white/[0.02] p-4">
+                            <div className="flex items-center justify-between mb-1">
+                                <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Phase 2 — Growth</span>
+                                <span className="text-2xl font-black text-gray-700 dark:text-white">20%</span>
+                            </div>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">After 100% profit milestone reached.</p>
+                        </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-gray-100 dark:border-white/5">
                         <Button
                             onClick={() => setShowRegistration(true)}
-                            className="bg-primary hover:bg-primary/90 text-white font-bold px-5 py-2.5 text-sm rounded-xl flex items-center gap-2"
+                            className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"
                         >
-                            Get Started <ArrowRight size={16} />
+                            Register Now <ChevronRight size={14} />
                         </Button>
-                        <a href="https://pvsrcapital.com/performance" target="_blank" rel="noopener noreferrer">
-                            <Button variant="outline" className="font-bold px-5 py-2.5 text-sm rounded-xl flex items-center gap-2">
-                                View Live Performance <ExternalLink size={14} />
-                            </Button>
-                        </a>
+                        <p className="text-[10px] text-gray-400 text-center mt-2">
+                            Your capital stays in your MT5 account. We never hold your funds.
+                        </p>
                     </div>
                 </div>
-            </div>
-
-            {/* Global Stats — TODO: fetch from PVSR API */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {globalStats.map((stat) => (
-                    <div
-                        key={stat.label}
-                        className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] px-4 py-3 hover:shadow-md transition-shadow flex items-center gap-3"
-                    >
-                        <div className={`p-2 rounded-lg bg-gray-100 dark:bg-white/5 ${stat.color}`}>
-                            <stat.icon size={18} />
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-700 dark:text-gray-400">{stat.label}</p>
-                            <p className="text-lg font-black text-gray-700 dark:text-white leading-tight">{stat.value}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Features */}
-            <div className="grid md:grid-cols-3 gap-4">
-                {features.map((feature) => (
-                    <div
-                        key={feature.title}
-                        className={`bg-gradient-to-br ${feature.gradient} rounded-xl border border-gray-200 dark:border-white/[0.06] px-4 py-3 hover:shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-3`}
-                    >
-                        <div className={`p-2 rounded-lg ${feature.iconColor} bg-white/60 dark:bg-white/5 shrink-0`}>
-                            <feature.icon size={18} />
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-base text-gray-700 dark:text-white">{feature.title}</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{feature.description}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* How It Works */}
-            <div className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] p-6">
-                <h3 className="text-base font-bold text-gray-700 dark:text-white mb-5 text-center">How It Works</h3>
-                <div className="grid md:grid-cols-3 gap-6">
-                    {steps.map((step, i) => (
-                        <div key={step.step} className="text-center relative">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                                <span className="text-primary font-black text-sm">{step.step}</span>
-                            </div>
-                            <h4 className="font-bold text-sm text-gray-700 dark:text-white mb-1">{step.title}</h4>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{step.description}</p>
-                            {i < steps.length - 1 && (
-                                <ArrowRight size={14} className="hidden md:block absolute top-5 -right-3 text-gray-300 dark:text-gray-600" />
-                            )}
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Pricing */}
-            <div className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] p-6">
-                <h3 className="text-base font-bold text-gray-700 dark:text-white mb-1 text-center">Transparent Profit Sharing</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-5">No hidden fees — you only share profits when you actually profit.</p>
-
-                <div className="grid md:grid-cols-2 gap-4 max-w-xl mx-auto">
-                    <div className="rounded-xl border-2 border-primary/30 bg-primary/5 p-5 text-center">
-                        <div className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Phase 1 — Capital Recovery</div>
-                        <div className="text-3xl font-black text-primary mb-1">10%</div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Until total profit equals your initial deposit.</p>
-                    </div>
-                    <div className="rounded-xl border border-gray-200 dark:border-white/[0.06] bg-gray-50 dark:bg-white/[0.03] p-5 text-center">
-                        <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Phase 2 — Growth</div>
-                        <div className="text-3xl font-black text-gray-700 dark:text-white mb-1">20%</div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">After 100% profit milestone.</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* CTA */}
-            <div className="text-center py-2">
-                <Button
-                    onClick={() => setShowRegistration(true)}
-                    className="bg-primary hover:bg-primary/90 text-white font-bold px-6 py-2.5 rounded-xl text-sm"
-                >
-                    Register Now — Setup in 24h
-                </Button>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    Your capital stays in your MT5 account. We never hold your funds.
-                </p>
             </div>
 
             <CopyTradingRegistrationModal
