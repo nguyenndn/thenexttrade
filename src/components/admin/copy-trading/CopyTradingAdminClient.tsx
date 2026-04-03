@@ -82,13 +82,13 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
         if (status) params.set("status", status); else params.delete("status");
         params.set("page", "1");
         router.replace(`${pathname}?${params.toString()}`);
-    }, [searchParams.toString(), router, pathname]);
+    }, [searchParams, router, pathname]);
 
     const handlePageChange = useCallback((newPage: number) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set("page", newPage.toString());
         router.push(`${pathname}?${params.toString()}`);
-    }, [searchParams.toString(), router, pathname]);
+    }, [searchParams, router, pathname]);
 
     const handleAction = async (id: string, action: "approve" | "reject") => {
         setActionLoading(id);

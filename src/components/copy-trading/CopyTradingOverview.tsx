@@ -169,7 +169,7 @@ export function CopyTradingOverview() {
                     Register Now — Setup in 24h
                 </Button>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    Your capital stays in your MT5 account. We never holds your funds.
+                    Your capital stays in your MT5 account. We never hold your funds.
                 </p>
             </div>
 

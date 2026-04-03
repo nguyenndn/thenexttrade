@@ -2,11 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-    TrendingUp,
-    DollarSign,
-    BarChart3,
-    ArrowUpRight,
-    AlertTriangle,
     Copy,
     ArrowRight,
     Clock,
@@ -62,10 +57,7 @@ export function CopyTradingMyAccount() {
         }
     };
 
-    const handleRegistrationSuccess = () => {
-        setShowRegistration(false);
-        fetchRegistrations();
-    };
+
 
     if (isLoading) {
         return (
