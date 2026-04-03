@@ -39,7 +39,7 @@ const prisma = new PrismaClient({
 
 async function main() {
   const sql = fs.readFileSync(
-    path.join(__dirname, 'migrations', '20260402231541_sync_academy_and_profile', 'migration.sql'),
+    path.join(__dirname, 'migrations', '20260403063000_add_copy_trading_registration', 'migration.sql'),
     'utf-8'
   );
 
