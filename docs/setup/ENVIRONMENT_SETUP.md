@@ -65,6 +65,11 @@ npm run dev:prod
 DATABASE_URL="postgresql://postgres:ServBay.dev@localhost:5432/gsn_crm"
 REDIS_URL="redis://localhost:6379"
 NODE_ENV="development"
+
+# AI Content Pipeline
+GEMINI_API_KEY="xxx"
+FIRECRAWL_API_KEY="xxx"
+SERPER_API_KEY="xxx"
 ```
 
 ### Production (.env.production)

@@ -32,6 +32,16 @@ The project uses Next.js API Routes (Serverless Functions) to interact with the 
 - `GET /api/strategies` - List strategies.
 - `POST /api/strategies` - Create strategy.
 
+### AI Content Pipeline
+- `POST /api/ai/search` - Search for supplementary sources.
+    - Body: `{ query: "forex risk management" }`
+    - Provider: Serper.dev (Google, Reddit, X results)
+    - Response: `{ results: [{ title, url, snippet }] }`
+- `POST /api/ai/rewrite` - Multi-source AI content rewrite.
+    - Body: `{ url: "...", tone: "conversational", supplementaryUrls?: [...] }`
+    - Provider: FireCrawl (scrape) + Gemini 2.5 Flash (rewrite)
+    - Response: `{ title, content, metaDescription, tone, sourceUrls }`
+
 ## Error Handling
 All API responses follow a standard format for errors:
 ```json
@@ -44,3 +54,4 @@ All API responses follow a standard format for errors:
 
 ## Authentication
 All API routes are protected. Requests must include a valid session cookie from Supabase Auth.
+AI endpoints (`/api/ai/*`) require admin role.

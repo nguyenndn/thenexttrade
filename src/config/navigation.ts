@@ -25,7 +25,9 @@ import {
     Bookmark,
     FolderTree,
     Quote,
-    MoreHorizontal
+    MoreHorizontal,
+    Copy,
+    Shield
 } from "lucide-react";
 
 export const menuItems = [
@@ -108,6 +110,18 @@ export const dashboardMenuItems = [
         name: "EA & Indicators",
         href: "/dashboard/trading-systems",
         icon: Bot,
+    },
+
+    // --- INVESTING ---
+    {
+        name: "Copy Trading",
+        href: "/dashboard/copy-trading",
+        icon: Copy,
+    },
+    {
+        name: "Funded Challenge",
+        href: "/dashboard/funded-challenge",
+        icon: Shield,
     }
 ];
 
@@ -124,6 +138,10 @@ export const adminMenuItems = [
 
     // --- EDUCATION ---
     { name: "Academy", href: "/admin/academy", icon: GraduationCap },
+
+    // --- INVESTING ---
+    { name: "Copy Trading", href: "/admin/copy-trading", icon: Copy },
+    { name: "Funded Challenge", href: "/admin/funded-challenge", icon: Shield },
 
     // --- SYSTEM ---
     { name: "EA Management", href: "/admin/ea", icon: Bot },
@@ -166,6 +184,8 @@ export const dashboardMenuGroups = [
             { name: "Academy", href: "/dashboard/academy", icon: GraduationCap },
             { name: "Leaderboard", href: "/dashboard/leaderboard", icon: Trophy },
             { name: "EA & Indicators", href: "/dashboard/trading-systems", icon: Bot },
+            { name: "Copy Trading", href: "/dashboard/copy-trading", icon: Copy },
+            { name: "Funded Challenge", href: "/dashboard/funded-challenge", icon: Shield },
         ],
     },
 ];

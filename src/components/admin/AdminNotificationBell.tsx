@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 type AdminNotification = {
     id: string;
-    type: "NEW_LICENSE_REQUEST" | "BROADCAST_SENT" | "SYSTEM_ALERT";
+    type: "NEW_LICENSE_REQUEST" | "NEW_COPY_TRADING_REQUEST" | "BROADCAST_SENT" | "SYSTEM_ALERT";
     title: string;
     message: string;
     link: string;
@@ -22,12 +22,13 @@ type AdminNotification = {
 
 type AdminStats = {
     pendingLicenses: number;
+    pendingCopyTrading: number;
     unreadNotifications: number;
 };
 
 export function AdminNotificationBell() {
     const [notifications, setNotifications] = useState<AdminNotification[]>([]);
-    const [stats, setStats] = useState<AdminStats>({ pendingLicenses: 0, unreadNotifications: 0 });
+    const [stats, setStats] = useState<AdminStats>({ pendingLicenses: 0, pendingCopyTrading: 0, unreadNotifications: 0 });
     const [viewedPendingCount, setViewedPendingCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
@@ -51,6 +52,7 @@ export function AdminNotificationBell() {
                         setNotifications(data.data.notifications);
                         setStats({
                             pendingLicenses: data.data.pendingLicenses,
+                            pendingCopyTrading: data.data.pendingCopyTrading || 0,
                             unreadNotifications: data.data.unreadCount,
                         });
 
@@ -83,7 +85,7 @@ export function AdminNotificationBell() {
     const effectivePendingCount = Math.max(0, stats.pendingLicenses - viewedPendingCount);
     // unreadNotifications is currently hardcoded to 0 in API, so mostly relying on pending licenses
     // If we enable real notifications later, we sum them up here.
-    const badgeCount = effectivePendingCount + stats.unreadNotifications;
+    const badgeCount = effectivePendingCount + stats.unreadNotifications + stats.pendingCopyTrading;
 
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -122,6 +124,29 @@ export function AdminNotificationBell() {
                                     {stats.pendingLicenses} pending requests
                                 </p>
                                 <p className="text-xs text-orange-600 dark:text-orange-400">Click to view details</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Pending Copy Trading Alert */}
+                {stats.pendingCopyTrading > 0 && (
+                    <div
+                        className="p-4 bg-primary/5 dark:bg-primary/10 cursor-pointer hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors border-b border-gray-100 dark:border-white/5"
+                        onClick={() => {
+                            setIsOpen(false);
+                            router.push("/admin/copy-trading");
+                        }}
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
+                                <Users size={20} />
+                            </div>
+                            <div>
+                                <p className="font-bold text-primary text-sm">
+                                    {stats.pendingCopyTrading} copy trading request{stats.pendingCopyTrading > 1 ? "s" : ""}
+                                </p>
+                                <p className="text-xs text-primary/70">Click to review</p>
                             </div>
                         </div>
                     </div>

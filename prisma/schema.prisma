@@ -78,6 +78,9 @@ model User {
   EALicenses    EALicense[]
   eaDownloads   EADownload[]
 
+  // Copy Trading
+  copyTradingRegistrations CopyTradingRegistration[]
+
   // ============================================
   // NOTIFICATION SYSTEM RELATIONS
   // ============================================
@@ -1002,6 +1005,11 @@ enum NotificationType {
   LICENSE_EXPIRED       // EA license expired
   NEW_EA_VERSION        // New EA version available
   
+  // Copy Trading
+  COPY_TRADING_REGISTERED  // New copy trading registration (admin)
+  COPY_TRADING_APPROVED    // Copy trading approved (user)
+  COPY_TRADING_REJECTED    // Copy trading rejected (user)
+  
   // Admin Broadcast
   ANNOUNCEMENT          // General announcement
   MAINTENANCE           // Scheduled maintenance
@@ -1215,4 +1223,57 @@ model Quote {
 
   @@index([type])
   @@index([isActive])
+}
+
+// ============================================================================
+// COPY TRADING
+// ============================================================================
+
+enum CopyTradingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model CopyTradingRegistration {
+  id                String              @id @default(uuid())
+  
+  // Owner
+  userId            String              @db.Uuid
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Personal Info (snapshot at registration time)
+  fullName          String
+  email             String
+  telegramHandle    String?
+  tradingCapital    Float               @default(0)
+  
+  // Broker & MT5
+  brokerName        String              // "Exness", "VTMarkets", "Any Broker"
+  customBrokerName  String?             @map("custom_broker_name")
+  mt5Server         String?             @map("mt5_server")
+  customServer      String?             @map("custom_server")
+  mt5AccountNumber  String              @map("mt5_account_number")
+  masterPassword    String?             @map("master_password") // TODO: encrypt before storing
+  
+  // Extra
+  message           String?             @db.Text
+  
+  // Status
+  status            CopyTradingStatus   @default(PENDING)
+  
+  // Admin Actions
+  reviewedBy        String?             @map("reviewed_by") @db.Uuid
+  reviewedAt        DateTime?           @map("reviewed_at") @db.Timestamptz
+  rejectReason      String?             @map("reject_reason") @db.Text
+  adminNote         String?             @map("admin_note") @db.Text
+  
+  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+  
+  @@unique([mt5AccountNumber, brokerName])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("copy_trading_registrations")
 }
