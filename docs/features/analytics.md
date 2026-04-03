@@ -22,11 +22,14 @@ An interactive line chart showing account balance growth over time.
 - Shows drawdown periods.
 
 ### 3. Profit Calendar (Heatmap)
-Visualizes daily performance:
-- **Green:** Profitable day.
-- **Red:** Losing day.
-- **Gray:** No trading activity.
-- Intensity based on profit magnitude.
+Visualizes daily performance with weekly summaries:
+- **Header:** Title + centered "Monthly P/L: $XXX" + month navigation + screenshot
+- **Green cells:** Profitable day (`text-base/lg` bold PnL + `text-sm` growth %).
+- **Red cells:** Losing day.
+- **Gray cells:** No trading activity.
+- **Weekly column:** Aggregated weekly PnL + trade day count.
+- **Features:** Click day for trade detail sheet, screenshot export (3x resolution).
+- **Note:** PnL values show no `+` prefix; only `-` for losses.
 
 ### 4. Performance by Breakdown
 - **By Symbol:** Which pairs are most profitable?

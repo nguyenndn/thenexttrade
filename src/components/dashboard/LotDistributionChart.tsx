@@ -36,7 +36,7 @@ export function LotDistributionChart({ data, height = 300, innerRadius = 60, out
           <Pie
             data={chartData}
             cx="35%"
-            cy="50%"
+            cy="50%" 
             innerRadius={innerRadius}
             outerRadius={outerRadius}
             paddingAngle={5}

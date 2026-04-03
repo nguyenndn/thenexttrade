@@ -1,141 +1,93 @@
 # 📚 Documentation Index
 
-Welcome to TheNextTrade documentation! All documentation has been reorganized for clarity.
+Welcome to TheNextTrade documentation! Organized for clarity and easy navigation.
 
 ## 🎯 Start Here
 
 **New to the project?** Read in this order:
-1. [README.md](README.md) - Project overview & quick start
-2. [docs/QUICK_START.md](docs/QUICK_START.md) - Daily development workflow
-3. [docs/SERVER_STARTUP_GUIDE.md](docs/SERVER_STARTUP_GUIDE.md) - Server deployment
-4. [docs/ENVIRONMENT_SETUP.md](docs/ENVIRONMENT_SETUP.md) - Environment configuration
+1. [ENVIRONMENT_SETUP.md](setup/ENVIRONMENT_SETUP.md) - Quick start + environment configuration
+2. [overview.md](architecture/overview.md) - System architecture
+3. [VERCEL_DEPLOYMENT.md](deployment/VERCEL_DEPLOYMENT.md) - Production deployment
 
 ## 📁 Documentation Structure
 
 ```
-📦 Root Level (you are here)
-├── README.md                      # ⭐ Project overview & quick start
-├── PROJECT_STATUS.md              # Current development status
-├── OPTIMIZATION_PLAN.md           # Performance optimization roadmap
-├── VERCEL_DEPLOYMENT.md           # Deployment instructions
+📁 docs/
+├── README.md                              # ⭐ This index
 │
-📁 docs/ - Main Documentation Hub
-├── README.md                      # Documentation index
-├── QUICK_START.md                 # ⭐ Daily workflow guide
-├── SERVER_STARTUP_GUIDE.md        # 🚀 Server deployment & startup
-├── ENVIRONMENT_SETUP.md           # Environment configuration
-├── LOCAL_DEVELOPMENT.md           # Local dev options
+├── 📁 api/                                # API Documentation
+│   └── endpoints.md                       # All API endpoints reference
 │
-├── performance/                   # Performance documentation
-│   ├── PERFORMANCE_AUDIT_REPORT.md      # Issues identified
-│   ├── PERFORMANCE_OPTIMIZATION_SPEC.md # Solutions & implementation
-│   └── IMPLEMENTATION_CHECKLIST.md      # Task tracking
+├── 📁 architecture/                       # System Architecture
+│   ├── overview.md                        # Tech stack + system diagram
+│   ├── database-schema.md                 # Prisma models + ER diagram
+│   └── routes.md                          # All routes (public/dashboard/admin/api)
 │
-├── planning/                      # Project planning
-│   ├── PROJECT_STRUCTURE.md       # Code organization
-│   ├── DEVELOPMENT_PROCESS.md     # Dev workflow
-│   ├── PLAN.md                    # Project plan
-│   └── SUPABASE_SETUP.md          # Database setup
+├── 📁 deployment/                         # Production Deployment
+│   └── VERCEL_DEPLOYMENT.md               # Vercel deploy guide + env vars
 │
-├── architecture/                  # System Architecture
-│   ├── overview.md                # System overview
-│   ├── database.md                # Database ER models
-│   └── routes.md                  # App routing and page structure
+├── 📁 design-system/                      # UI/UX Standards
+│   └── USER_DASHBOARD_SPECS.md            # Colors, typography, components
 │
-├── BA/                            # Business analysis
-│   ├── academy.md
-│   ├── admin_dashboard.md
-│   ├── auth_user.md
-│   ├── cms_news.md
-│   ├── notification_system.md
-│   └── trading_tools.md
+├── 📁 features/                           # Feature Documentation
+│   ├── academy.md                         # 12-level curriculum + AI pipeline
+│   ├── analytics.md                       # Dashboard + Profit Calendar
+│   ├── authentication.md                  # Auth flow (Supabase)
+│   ├── trader-tools.md                    # Risk Calculator, Market Hours, etc.
+│   └── trading-journal.md                 # Journal + trade logging
 │
-├── design-system/                 # UI/UX specifications
-│   └── USER_DASHBOARD_SPECS.md
+├── 📁 setup/                              # Development Setup
+│   └── ENVIRONMENT_SETUP.md               # Quick start + env management
 │
-├── setup/                         # Database & infra setup
-│   ├── FIX_PERMISSIONS.sql
-│   ├── FIX_STORAGE_RLS_V2.sql
-│   └── SUPABASE_TRIGGER.sql
-│
-├── sprints/                       # Sprint planning
-│   ├── SPRINT1_TASKS.md
-│   ├── SPRINT2_TASKS.md
-│   ├── SPRINT3_TASKS.md
-│   └── SPRINT4_TASKS.md
-│
-└── api/                           # API documentation
+└── 📁 templates/                          # Email Templates
+    ├── supabase_email_template.html       # Confirm email
+    ├── supabase_magic_link_template.html   # Magic link login
+    └── supabase_reset_password_template.html # Password reset
 ```
 
-## 🚀 Common Tasks
+## 🚀 Quick Reference
 
 ### Daily Development
 ```bash
-npm run dev:local      # Start with local database
+npm run dev:local      # Start with local database (FAST ⚡)
 npm run dev:prod       # Start with production database
 ```
-📖 See: [docs/QUICK_START.md](docs/QUICK_START.md)
-
-### Environment Management
-```bash
-npm run env:local      # Switch to local environment
-npm run env:prod       # Switch to production
-```
-📖 See: [docs/ENVIRONMENT_SETUP.md](docs/ENVIRONMENT_SETUP.md)
 
 ### Database
 ```bash
 npm run db:migrate     # Run migrations
 npm run db:seed        # Seed database
+npm run db:studio      # Database GUI
 ```
-📖 See: [docs/planning/SUPABASE_SETUP.md](docs/planning/SUPABASE_SETUP.md)
 
-### Performance Testing
+### Deployment
 ```bash
-npm run perf:test      # Run performance tests
+git push origin main   # Auto-deploy to Vercel
 ```
-📖 See: [docs/performance/](docs/performance/)
 
-## 📖 Quick Links by Role
+## 📖 By Topic
 
-### For Developers
-- [QUICK_START.md](docs/QUICK_START.md) - Get started quickly
-- [PROJECT_STRUCTURE.md](docs/planning/PROJECT_STRUCTURE.md) - Code organization
-- [DEVELOPMENT_PROCESS.md](docs/planning/DEVELOPMENT_PROCESS.md) - Workflow
-
-### For Performance Engineers
-- [PERFORMANCE_AUDIT_REPORT.md](docs/performance/PERFORMANCE_AUDIT_REPORT.md) - Analysis
-- [PERFORMANCE_OPTIMIZATION_SPEC.md](docs/performance/PERFORMANCE_OPTIMIZATION_SPEC.md) - Specs
-- [IMPLEMENTATION_CHECKLIST.md](docs/performance/IMPLEMENTATION_CHECKLIST.md) - Tasks
-
-### For Product Managers
-- [PROJECT_STATUS.md](PROJECT_STATUS.md) - Current status
-- [BA/](docs/BA/) - Business analysis docs
-- [sprints/](docs/sprints/) - Sprint planning
-
-### For Designers
-- [design-system/USER_DASHBOARD_SPECS.md](docs/design-system/USER_DASHBOARD_SPECS.md)
-- [routes.md](docs/architecture/routes.md)
-
-## 📝 File Naming Convention
-
-- **ALL_CAPS.md** - Important top-level documents
-- **lowercase-with-dashes.md** - Regular documentation
-- **CATEGORY_NAME.md** - Categorized docs (e.g., SPRINT1_TASKS.md)
-
-## 🔍 Can't Find Something?
-
-1. Check [docs/README.md](docs/README.md) for detailed documentation index
-2. Use GitHub search or IDE search (Ctrl/Cmd + Shift + F)
-3. Check git history for moved files: `git log --all --full-history -- "**/filename.md"`
+| Topic | File |
+|-------|------|
+| **Getting Started** | [ENVIRONMENT_SETUP.md](setup/ENVIRONMENT_SETUP.md) |
+| **Architecture** | [overview.md](architecture/overview.md) |
+| **Database Schema** | [database-schema.md](architecture/database-schema.md) |
+| **All Routes** | [routes.md](architecture/routes.md) |
+| **API Endpoints** | [endpoints.md](api/endpoints.md) |
+| **Deploy to Vercel** | [VERCEL_DEPLOYMENT.md](deployment/VERCEL_DEPLOYMENT.md) |
+| **UI Standards** | [USER_DASHBOARD_SPECS.md](design-system/USER_DASHBOARD_SPECS.md) |
+| **Academy & AI** | [academy.md](features/academy.md) |
+| **Analytics** | [analytics.md](features/analytics.md) |
+| **Authentication** | [authentication.md](features/authentication.md) |
+| **Trading Journal** | [trading-journal.md](features/trading-journal.md) |
+| **Trader Tools** | [trader-tools.md](features/trader-tools.md) |
 
 ## ✅ Documentation Standards
 
 - All docs use Markdown format
 - Use relative links for internal references
 - Keep docs up-to-date with code changes
-- Add table of contents for docs >100 lines
 
 ---
 
-**Last Updated:** January 23, 2026
+**Last Updated:** April 3, 2026 · **Total: 14 files**

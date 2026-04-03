@@ -178,6 +178,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                             // Admin groups
                             "Articles": "CONTENT",
                             "Academy": "EDUCATION",
+                            "Copy Trading": "INVESTING",
                             "EA Management": "SYSTEM",
                         }
                         : {
@@ -186,6 +187,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                             "Trading Journal": "EXECUTION",
                             "Analytics Hub": "REVIEW",
                             "Academy": "RESOURCES",
+                            "Copy Trading": "INVESTING",
                         };
 
                     const sectionLabel = sectionNames[item.name];

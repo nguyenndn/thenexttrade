@@ -27,10 +27,17 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const limit = parseInt(searchParams.get("limit") || "5");
 
-        const [pendingLicenses, recentRequests] = await Promise.all([
+        const [pendingLicenses, recentRequests, pendingCopyTrading, recentCopyTrading] = await Promise.all([
             prisma.eALicense.count({ where: { status: AccountStatus.PENDING } }),
             prisma.eALicense.findMany({
                 where: { status: AccountStatus.PENDING },
+                orderBy: { createdAt: "desc" },
+                take: limit,
+                include: { user: { select: { email: true, name: true } } },
+            }),
+            prisma.copyTradingRegistration.count({ where: { status: "PENDING" } }),
+            prisma.copyTradingRegistration.findMany({
+                where: { status: "PENDING" },
                 orderBy: { createdAt: "desc" },
                 take: limit,
                 include: { user: { select: { email: true, name: true } } },
@@ -47,10 +54,25 @@ export async function GET(request: NextRequest) {
             createdAt: license.createdAt.toISOString(),
         }));
 
+        const copyTradingNotifications = recentCopyTrading.map(reg => ({
+            id: `ct-${reg.id}`,
+            type: "NEW_COPY_TRADING_REQUEST" as const,
+            title: "New Copy Trading",
+            message: `${reg.user.name || reg.user.email} — ${reg.brokerName} ${reg.mt5AccountNumber}`,
+            link: "/admin/copy-trading",
+            isRead: false,
+            createdAt: reg.createdAt.toISOString(),
+        }));
+
+        const allNotifications = [...notifications, ...copyTradingNotifications]
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            .slice(0, limit);
+
         return NextResponse.json(createSuccessResponse({
-            notifications,
+            notifications: allNotifications,
             pendingLicenses,
-            unreadCount: 0, // Set to 0 to avoid double counting in frontend (pendingLicenses + unreadNotifications)
+            pendingCopyTrading,
+            unreadCount: pendingCopyTrading,
         }));
     } catch (error) {
         console.error("GET Admin Notifications Error:", error);
