@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "re
 import {
     Sparkles, Loader2, Link2, RefreshCw, Check, X, Eye, ClipboardPaste,
     Search, Globe, MessageCircle, Twitter, Plus, Trash2, Shield, FileText,
+    SearchCode,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
@@ -29,6 +30,7 @@ interface AIRewriteDialogProps {
         sourceUrls?: string[];
         metaDescription?: string;
     }) => void;
+    lessonTitle?: string;
 }
 
 export interface AIRewriteDialogRef {
@@ -61,7 +63,7 @@ const SOURCE_ICONS = {
 // ============================================================================
 
 export const AIRewriteDialog = forwardRef<AIRewriteDialogRef, AIRewriteDialogProps>(
-function AIRewriteDialogInner({ onApply }, ref) {
+function AIRewriteDialogInner({ onApply, lessonTitle }, ref) {
     const [isOpen, setIsOpen] = useState(false);
 
     useImperativeHandle(ref, () => ({
@@ -75,7 +77,10 @@ function AIRewriteDialogInner({ onApply }, ref) {
     // Input
     const [primaryUrl, setPrimaryUrl] = useState("");
     const [pastedContent, setPastedContent] = useState("");
-    const [inputMode, setInputMode] = useState<"url" | "paste">("url");
+    const [inputMode, setInputMode] = useState<"url" | "paste" | "search">("url");
+
+    // Keyword search
+    const [searchKeyword, setSearchKeyword] = useState("");
 
     // Search
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -101,16 +106,38 @@ function AIRewriteDialogInner({ onApply }, ref) {
 
     const inputRef = useRef<HTMLInputElement>(null);
 
+    const keywordRef = useRef<HTMLInputElement>(null);
+
     useEffect(() => {
-        if (isOpen) setTimeout(() => inputRef.current?.focus(), 150);
-    }, [isOpen]);
+        if (isOpen) {
+            if (inputMode === "search") {
+                setTimeout(() => keywordRef.current?.focus(), 150);
+            } else {
+                setTimeout(() => inputRef.current?.focus(), 150);
+            }
+        }
+    }, [isOpen, inputMode]);
+
+    // Auto-populate keyword from lesson title when switching to search mode
+    useEffect(() => {
+        if (inputMode === "search" && lessonTitle && !searchKeyword) {
+            // Extract clean keyword from lesson title (remove hooks after "—" or "–")
+            const keyword = lessonTitle
+                .split(/\s*[—–]\s*/)[0] // Take part before em dash
+                .replace(/[?!.]/g, "") // Remove punctuation
+                .trim();
+            setSearchKeyword(keyword);
+            setTimeout(() => keywordRef.current?.focus(), 150);
+        }
+    }, [inputMode, lessonTitle, searchKeyword]);
 
     // ========================================================================
     // SEARCH HANDLER
     // ========================================================================
 
     const handleSearch = async () => {
-        if (!primaryUrl.trim()) return toast.warning("Please enter a URL first");
+        if (inputMode === "url" && !primaryUrl.trim()) return toast.warning("Please enter a URL first");
+        if (inputMode === "search" && !searchKeyword.trim()) return toast.warning("Please enter a keyword");
 
         setIsSearching(true);
         setSearchResults([]);
@@ -118,17 +145,27 @@ function AIRewriteDialogInner({ onApply }, ref) {
         setHasSearched(false);
 
         try {
-            // Extract topic from URL (simple: use last path segment)
-            const urlPath = new URL(primaryUrl.trim()).pathname;
-            const topic = urlPath
-                .split("/").filter(Boolean).pop()
-                ?.replace(/-/g, " ").replace(/_/g, " ")
-                || "forex trading";
+            let topic: string;
+
+            if (inputMode === "search") {
+                // Keyword mode: use keyword directly
+                topic = searchKeyword.trim();
+            } else {
+                // URL mode: extract topic from URL path
+                const urlPath = new URL(primaryUrl.trim()).pathname;
+                topic = urlPath
+                    .split("/").filter(Boolean).pop()
+                    ?.replace(/-/g, " ").replace(/_/g, " ")
+                    || "forex trading";
+            }
 
             const res = await fetch("/api/ai/search", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ topic, primaryUrl: primaryUrl.trim() }),
+                body: JSON.stringify({
+                    topic,
+                    primaryUrl: inputMode === "url" ? primaryUrl.trim() : undefined,
+                }),
             });
 
             const data = await res.json();
@@ -140,7 +177,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
             if (data.results?.length > 0) {
                 toast.success(`Found ${data.results.length} related sources`);
             } else {
-                toast.info("No additional sources found");
+                toast.info("No sources found. Try different keywords.");
             }
         } catch (err: any) {
             toast.error(err.message);
@@ -149,15 +186,17 @@ function AIRewriteDialogInner({ onApply }, ref) {
         }
     };
 
+    const maxSearchSources = inputMode === "search" ? 4 : 3;
+
     const toggleSearchResult = (url: string) => {
         setSelectedUrls(prev => {
             const next = new Set(prev);
             if (next.has(url)) {
                 next.delete(url);
-            } else if (next.size < 3) {
+            } else if (next.size < maxSearchSources) {
                 next.add(url);
             } else {
-                toast.warning("Maximum 3 supplementary sources");
+                toast.warning(`Maximum ${maxSearchSources} sources`);
             }
             return next;
         });
@@ -170,16 +209,30 @@ function AIRewriteDialogInner({ onApply }, ref) {
     const handleGenerate = async () => {
         if (inputMode === "url" && !primaryUrl.trim()) return toast.warning("Please paste a URL");
         if (inputMode === "paste" && !pastedContent.trim()) return toast.warning("Please paste some content");
+        if (inputMode === "search" && selectedUrls.size === 0) return toast.warning("Please search and select at least 1 source");
 
         setIsLoading(true);
         setError("");
         setResult(null);
 
         try {
-            // Build URL list: primary + selected supplements
-            const urls = inputMode === "url"
-                ? [primaryUrl.trim(), ...Array.from(selectedUrls)]
-                : [];
+            // Build URL list based on mode
+            let urls: string[] = [];
+            if (inputMode === "url") {
+                urls = [primaryUrl.trim(), ...Array.from(selectedUrls)];
+            } else if (inputMode === "search") {
+                urls = Array.from(selectedUrls);
+            }
+
+            // Build snippets map for fallback (search mode)
+            const snippetsMap: Record<string, string> | undefined =
+                inputMode === "search"
+                    ? Object.fromEntries(
+                        searchResults
+                            .filter(r => selectedUrls.has(r.url) && r.snippet)
+                            .map(r => [r.url, `${r.title}\n\n${r.snippet}`])
+                    )
+                    : undefined;
 
             const res = await fetch("/api/ai/rewrite", {
                 method: "POST",
@@ -189,6 +242,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
                     pastedContent: inputMode === "paste" ? pastedContent.trim() : undefined,
                     mode,
                     tone,
+                    snippets: snippetsMap,
                 }),
             });
 
@@ -235,6 +289,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
         setResult(null);
         setPrimaryUrl("");
         setPastedContent("");
+        setSearchKeyword("");
         setSearchResults([]);
         setSelectedUrls(new Set());
         setHasSearched(false);
@@ -245,8 +300,8 @@ function AIRewriteDialogInner({ onApply }, ref) {
     // COMPUTED
     // ========================================================================
 
-    const totalSources = inputMode === "url" ? 1 + selectedUrls.size : 1;
-    const copyrightScore = Math.min(5, totalSources >= 2 ? 5 : totalSources >= 1 ? 3 : 0);
+    const totalSources = inputMode === "url" ? 1 + selectedUrls.size : inputMode === "search" ? selectedUrls.size : 1;
+    const copyrightScore = Math.min(5, totalSources >= 3 ? 5 : totalSources >= 2 ? 4 : totalSources >= 1 ? 3 : 0);
 
     // ========================================================================
     // RENDER
@@ -315,6 +370,18 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                     )}
                                 >
                                     <ClipboardPaste size={13} /> Paste Content
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setInputMode("search")}
+                                    className={cn(
+                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all",
+                                        inputMode === "search"
+                                            ? "bg-white dark:bg-white/10 text-gray-700 dark:text-white shadow-sm"
+                                            : "text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
+                                    )}
+                                >
+                                    <SearchCode size={13} /> Search Topic
                                 </button>
                             </div>
 
@@ -422,6 +489,101 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                 </div>
                             )}
 
+                            {/* Search Topic */}
+                            {inputMode === "search" && (
+                                <>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
+                                            <SearchCode size={12} className="inline mr-1" /> Search Topic
+                                            {lessonTitle && (
+                                                <span className="text-gray-500 normal-case font-normal ml-1">(from lesson title)</span>
+                                            )}
+                                        </label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                ref={keywordRef}
+                                                type="text"
+                                                value={searchKeyword}
+                                                onChange={e => setSearchKeyword(e.target.value)}
+                                                onKeyDown={e => { if (e.key === "Enter") handleSearch(); }}
+                                                placeholder="e.g. What is a Pip, Fibonacci Retracement, Risk Management"
+                                                disabled={isLoading}
+                                                className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                onClick={handleSearch}
+                                                disabled={isSearching || !searchKeyword.trim() || isLoading}
+                                                className="px-4 gap-1.5 shrink-0"
+                                            >
+                                                {isSearching ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
+                                                Search
+                                            </Button>
+                                        </div>
+                                        <p className="text-[10px] text-gray-500 mt-1.5">💡 Tip: Use forex-specific keywords for better results. Select 2-4 sources for best copyright protection.</p>
+                                    </div>
+
+                                    {/* Search Loading */}
+                                    {isSearching && (
+                                        <div className="flex items-center justify-center gap-2 py-4 text-sm text-gray-600">
+                                            <Loader2 size={14} className="animate-spin" />
+                                            Searching Google, Reddit & X for "{searchKeyword}"...
+                                        </div>
+                                    )}
+
+                                    {/* Search Results */}
+                                    {hasSearched && searchResults.length > 0 && (
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
+                                                <Search size={12} className="inline mr-1" /> Select Sources to Merge
+                                                <span className="text-gray-500 normal-case font-normal ml-1">(pick 1-4, more = better protection)</span>
+                                            </label>
+                                            <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                                                {searchResults.map((r) => (
+                                                    <button
+                                                        key={r.url}
+                                                        type="button"
+                                                        onClick={() => toggleSearchResult(r.url)}
+                                                        className={cn(
+                                                            "w-full text-left p-2.5 rounded-lg border transition-all flex items-start gap-2.5",
+                                                            selectedUrls.has(r.url)
+                                                                ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-800 ring-1 ring-amber-200 dark:ring-amber-800"
+                                                                : "bg-gray-50 dark:bg-white/5 border-gray-150 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-white/10"
+                                                        )}
+                                                    >
+                                                        <div className={cn(
+                                                            "w-4 h-4 rounded border-2 mt-0.5 shrink-0 flex items-center justify-center transition-all",
+                                                            selectedUrls.has(r.url)
+                                                                ? "bg-amber-500 border-amber-500"
+                                                                : "border-gray-300 dark:border-gray-600"
+                                                        )}>
+                                                            {selectedUrls.has(r.url) && <Check size={10} className="text-white" />}
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="flex items-center gap-1.5">
+                                                                {SOURCE_ICONS[r.source]}
+                                                                <span className="text-xs font-medium text-gray-700 dark:text-white truncate">
+                                                                    {r.title}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-[10px] text-gray-500 truncate mt-0.5">{r.url}</p>
+                                                            {r.snippet && (
+                                                                <p className="text-[10px] text-gray-500 mt-1 line-clamp-2">{r.snippet}</p>
+                                                            )}
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {hasSearched && searchResults.length === 0 && (
+                                        <p className="text-xs text-gray-500 text-center py-2">No sources found. Try different keywords.</p>
+                                    )}
+                                </>
+                            )}
+
                             {/* Tone Selector */}
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
@@ -495,6 +657,12 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                 {totalSources >= 2 && <span className="text-emerald-500">• {totalSources} sources → merge enabled ✅</span>}
                                 {totalSources < 2 && inputMode === "url" && (
                                     <span className="text-amber-500">• Add more sources for stronger protection</span>
+                                )}
+                                {inputMode === "search" && totalSources === 0 && (
+                                    <span className="text-amber-500">• Search and select sources above</span>
+                                )}
+                                {inputMode === "search" && totalSources === 1 && (
+                                    <span className="text-amber-500">• Select more sources for stronger protection</span>
                                 )}
                             </div>
 
@@ -579,7 +747,7 @@ function AIRewriteDialogInner({ onApply }, ref) {
                                 {!result ? (
                                     <Button
                                         onClick={handleGenerate}
-                                        disabled={isLoading || (inputMode === "url" ? !primaryUrl.trim() : !pastedContent.trim())}
+                                        disabled={isLoading || (inputMode === "url" ? !primaryUrl.trim() : inputMode === "paste" ? !pastedContent.trim() : selectedUrls.size === 0)}
                                         className="gap-2 shadow-lg shadow-primary/30"
                                     >
                                         {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}

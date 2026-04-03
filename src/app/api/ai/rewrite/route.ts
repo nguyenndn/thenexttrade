@@ -101,6 +101,52 @@ async function scrapeUrl(url: string): Promise<{ content: string; images: Extrac
 }
 
 // ============================================================================
+// FALLBACK: Simple fetch + HTML text extraction
+// ============================================================================
+
+async function fallbackScrape(url: string): Promise<{ content: string; title: string }> {
+    try {
+        const res = await fetch(url, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml",
+            },
+            signal: AbortSignal.timeout(10000),
+        });
+
+        if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+
+        const html = await res.text();
+
+        // Extract title
+        const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+        const title = titleMatch?.[1]?.trim() || "";
+
+        // Strip HTML tags, scripts, styles → plain text
+        const textContent = html
+            .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+            .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+            .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, "")
+            .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, "")
+            .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, "")
+            .replace(/<[^>]+>/g, " ")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/\s+/g, " ")
+            .trim();
+
+        if (textContent.length < 100) throw new Error("Not enough text content");
+
+        return { content: textContent.substring(0, 5000), title };
+    } catch {
+        throw new Error(`Fallback scrape failed for ${url}`);
+    }
+}
+
+// ============================================================================
 // MULTI-SOURCE SCRAPING
 // ============================================================================
 
@@ -111,19 +157,23 @@ interface ScrapedSource {
     images: ExtractedImage[];
 }
 
-async function scrapeMultipleSources(urls: string[]): Promise<{
+async function scrapeMultipleSources(
+    urls: string[],
+    snippets?: Record<string, string>,
+): Promise<{
     sources: ScrapedSource[];
     mergedContent: string;
     allImages: ExtractedImage[];
     rawContent: string;
 }> {
-    // Scrape all URLs in parallel
+    // Phase 1: Try FireCrawl for all URLs
     const results = await Promise.allSettled(
         urls.map(url => scrapeUrl(url))
     );
 
     const sources: ScrapedSource[] = [];
     const allImages: ExtractedImage[] = [];
+    const failedUrls: string[] = [];
 
     results.forEach((result, i) => {
         if (result.status === "fulfilled") {
@@ -134,11 +184,49 @@ async function scrapeMultipleSources(urls: string[]): Promise<{
                 images: result.value.images,
             });
             allImages.push(...result.value.images);
+        } else {
+            failedUrls.push(urls[i]);
         }
     });
 
+    // Phase 2: For failed URLs, try fallback simple fetch
+    if (failedUrls.length > 0) {
+        const fallbackResults = await Promise.allSettled(
+            failedUrls.map(url => fallbackScrape(url))
+        );
+
+        const stillFailed: string[] = [];
+        fallbackResults.forEach((result, i) => {
+            if (result.status === "fulfilled") {
+                sources.push({
+                    url: failedUrls[i],
+                    content: result.value.content,
+                    title: result.value.title,
+                    images: [],
+                });
+            } else {
+                stillFailed.push(failedUrls[i]);
+            }
+        });
+
+        // Phase 3: For still-failed URLs, use snippet from search results
+        if (stillFailed.length > 0 && snippets) {
+            for (const url of stillFailed) {
+                const snippet = snippets[url];
+                if (snippet && snippet.length > 20) {
+                    sources.push({
+                        url,
+                        content: snippet,
+                        title: new URL(url).hostname,
+                        images: [],
+                    });
+                }
+            }
+        }
+    }
+
     if (sources.length === 0) {
-        throw new Error("Failed to scrape any of the provided URLs");
+        throw new Error("Failed to scrape any of the provided URLs. Try selecting different sources.");
     }
 
     // Build merged content for the prompt (labeled by source)
@@ -235,6 +323,7 @@ export async function POST(req: NextRequest) {
             pastedContent,
             mode = "rewrite",
             tone = "",        // new: tone selection
+            snippets,         // new: snippet fallbacks from search results
         } = body;
 
         // Resolve URL list (support both legacy single URL and new multi-URL)
@@ -258,7 +347,7 @@ export async function POST(req: NextRequest) {
             allImages = extracted.images;
             rawContent = pastedContent;
         } else {
-            const result = await scrapeMultipleSources(urlList);
+            const result = await scrapeMultipleSources(urlList, snippets);
             sourceContent = result.mergedContent;
             allImages = result.allImages;
             rawContent = result.rawContent;

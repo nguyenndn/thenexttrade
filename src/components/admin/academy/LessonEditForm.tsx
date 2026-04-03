@@ -131,6 +131,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
                 </Button>
                 <AIRewriteDialog
                     ref={rewriteRef}
+                    lessonTitle={formData.title}
                     onApply={({ title, content, rawContent, tone, sourceUrls, metaDescription }) => {
                         handleTitleChange(title);
                         setFormData(prev => ({
