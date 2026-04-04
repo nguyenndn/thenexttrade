@@ -4,7 +4,7 @@ import { TabBar } from "@/components/ui/TabBar";
 import { FileText, Clock } from "lucide-react";
 
 import { useState, useEffect } from "react";
-import { Edit2, ArrowUpDown, ScrollText } from "lucide-react";
+import { Edit2, ArrowUpDown, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -26,6 +26,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { JournalTableFilters } from "@/components/journal/JournalTableFilters";
 import { FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 
 // Dynamic Imports for Modals
@@ -33,9 +34,7 @@ const JournalForm = dynamic(() => import("@/components/journal/JournalForm"), {
     loading: () => <div className="p-8 text-center text-gray-600">Loading form...</div>,
     ssr: false
 });
-const TradeDetailSheet = dynamic(() => import("./TradeDetailSheet").then(mod => mod.TradeDetailSheet), {
-    ssr: false
-});
+import { TradeDetailSheet } from "./TradeDetailSheet";
 
 import { updateJournalEntry } from "@/actions/journal";
 
@@ -57,7 +56,6 @@ const getColumnWidthClass = (colId: string) => {
             return 'text-center min-w-[130px]';
         case 'type':
         case 'volume':
-        case 'status':
             return 'text-center min-w-[100px]';
         default:
             return 'text-left min-w-[120px]';
@@ -66,7 +64,7 @@ const getColumnWidthClass = (colId: string) => {
 
 const getColumnAlignmentClass = (colId: string) => {
     if (['pnl', 'tp', 'sl'].includes(colId)) return 'justify-end pr-2';
-    if (['openTime', 'closeTime', 'type', 'volume', 'mindset', 'status'].includes(colId)) return 'justify-center whitespace-nowrap';
+    if (['openTime', 'closeTime', 'type', 'volume', 'mindset'].includes(colId)) return 'justify-center whitespace-nowrap';
     return 'justify-start whitespace-nowrap';
 };
 
@@ -139,7 +137,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
 
     // Column Visibility State
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set([
-        "symbol", "type", "volume", "pnl", "strategy", "mindset", "customTags", "mistakes", "status"
+        "symbol", "type", "volume", "pnl", "strategy", "mindset", "customTags", "mistakes"
     ]));
     const [isColumnsLoaded, setIsColumnsLoaded] = useState(false);
 
@@ -150,7 +148,6 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
         { id: "date", label: "Date" },
         { id: "symbol", label: "Symbol" },
         { id: "type", label: "Type" },
-        { id: "status", label: "Status" },
         { id: "openTime", label: "Open Time" },
         { id: "closeTime", label: "Close Time" },
         { id: "volume", label: "Volume" },
@@ -379,18 +376,27 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                             <tr key={entry.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="icon"
-                                                            aria-label={`View Details for ${entry.symbol}`}
-                                                            onClick={() => {
-                                                                setSelectedDetailEntry(entry);
-                                                                setIsDetailOpen(true);
-                                                            }}
-                                                            className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all hover:scale-110 active:scale-95 group/icon"
-                                                        >
-                                                            <ScrollText size={16} className="group-hover/icon:rotate-3 transition-transform" />
-                                                        </Button>
+                                                        <TooltipProvider delayDuration={200}>
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="icon"
+                                                                        aria-label={`View Details for ${entry.symbol}`}
+                                                                        onClick={() => {
+                                                                            setSelectedDetailEntry(entry);
+                                                                            setIsDetailOpen(true);
+                                                                        }}
+                                                                        className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all hover:scale-110 active:scale-95 group/detail"
+                                                                    >
+                                                                        <ArrowUpRight size={14} className="transition-transform group-hover/detail:translate-x-0.5 group-hover/detail:-translate-y-0.5" />
+                                                                    </Button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent side="bottom" className="font-bold">
+                                                                    Details
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
                                                     </div>
                                                 </td>
                                                 {columnsConfig.map((col) => (
@@ -405,7 +411,6 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                                 {col.id === "date" && format(new Date(entry.entryDate), "dd MMM yyyy")}
                                                                 {col.id === "symbol" && <span className="font-bold text-gray-700 dark:text-white">{entry.symbol}</span>}
                                                                 {col.id === "type" && <TradeTypeBadge type={entry.type} />}
-                                                                {col.id === "status" && <StatusBadge status={entry.status} />}
                                                                 {col.id === "openTime" && format(new Date(entry.entryDate), "HH:mm")}
                                                                 {col.id === "closeTime" && (entry.exitDate ? format(new Date(entry.exitDate), "HH:mm") : "-")}
                                                                 {col.id === "volume" && <span className="font-mono text-gray-600">{(entry as any).lotSize || "0.00"}</span>}
@@ -475,18 +480,27 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                 <TradeTypeBadge type={entry.type} />
                                                 <StatusBadge status={entry.status} />
                                             </div>
-                                            <Button
-                                                variant="outline"
-                                                size="icon"
-                                                aria-label={`View Details for ${entry.symbol}`}
-                                                onClick={() => {
-                                                    setSelectedDetailEntry(entry);
-                                                    setIsDetailOpen(true);
-                                                }}
-                                                className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all"
-                                            >
-                                                <ScrollText size={16} />
-                                            </Button>
+                                            <TooltipProvider delayDuration={200}>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            aria-label={`View Details for ${entry.symbol}`}
+                                                            onClick={() => {
+                                                                setSelectedDetailEntry(entry);
+                                                                setIsDetailOpen(true);
+                                                            }}
+                                                            className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all"
+                                                        >
+                                                            <ArrowUpRight size={14} />
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="bottom" className="font-bold">
+                                                        Details
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
                                         </div>
                                         
                                         {/* Info Grid */}

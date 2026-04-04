@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "re
 import {
     Sparkles, Loader2, Link2, RefreshCw, Check, X, Eye, ClipboardPaste,
     Search, Globe, MessageCircle, Twitter, Plus, Trash2, Shield, FileText,
-    SearchCode,
+    SearchCode, ExternalLink, Youtube,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
@@ -18,7 +18,7 @@ interface SearchResult {
     title: string;
     url: string;
     snippet: string;
-    source: "google" | "reddit" | "twitter";
+    source: "google" | "reddit" | "twitter" | "youtube";
 }
 
 interface AIRewriteDialogProps {
@@ -52,10 +52,11 @@ const TONES = [
     { id: "tactical", label: "Tactical", icon: "🎯", desc: "Step-by-step" },
 ] as const;
 
-const SOURCE_ICONS = {
+const SOURCE_ICONS: Record<string, React.ReactNode> = {
     google: <Globe size={13} className="text-blue-500" />,
     reddit: <MessageCircle size={13} className="text-orange-500" />,
     twitter: <Twitter size={13} className="text-sky-500" />,
+    youtube: <Youtube size={13} className="text-red-500" />,
 };
 
 // ============================================================================
@@ -324,7 +325,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle }, ref) {
             {isOpen && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={close}>
                     <div
-                        className="bg-white dark:bg-[#1a1e2e] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200 flex flex-col"
+                        className="bg-white dark:bg-[#1a1e2e] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200 flex flex-col"
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Header */}
@@ -430,7 +431,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle }, ref) {
                                                 <Search size={12} className="inline mr-1" /> Supplementary Sources
                                                 <span className="text-gray-500 normal-case font-normal ml-1">(select up to 3)</span>
                                             </label>
-                                            <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                                            <div className="space-y-1.5 max-h-72 overflow-y-auto">
                                                 {searchResults.map((r) => (
                                                     <button
                                                         key={r.url}
@@ -460,6 +461,16 @@ function AIRewriteDialogInner({ onApply, lessonTitle }, ref) {
                                                             </div>
                                                             <p className="text-[10px] text-gray-500 truncate mt-0.5">{r.url}</p>
                                                         </div>
+                                                        <a
+                                                            href={r.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            onClick={e => e.stopPropagation()}
+                                                            className="shrink-0 p-1 rounded hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                                            title="Preview in new tab"
+                                                        >
+                                                            <ExternalLink size={12} className="text-gray-400" />
+                                                        </a>
                                                     </button>
                                                 ))}
                                             </div>
@@ -539,7 +550,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle }, ref) {
                                                 <Search size={12} className="inline mr-1" /> Select Sources to Merge
                                                 <span className="text-gray-500 normal-case font-normal ml-1">(pick 1-4, more = better protection)</span>
                                             </label>
-                                            <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                                            <div className="space-y-1.5 max-h-72 overflow-y-auto">
                                                 {searchResults.map((r) => (
                                                     <button
                                                         key={r.url}
@@ -572,6 +583,16 @@ function AIRewriteDialogInner({ onApply, lessonTitle }, ref) {
                                                                 <p className="text-[10px] text-gray-500 mt-1 line-clamp-2">{r.snippet}</p>
                                                             )}
                                                         </div>
+                                                        <a
+                                                            href={r.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            onClick={e => e.stopPropagation()}
+                                                            className="shrink-0 p-1 rounded hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                                            title="Preview in new tab"
+                                                        >
+                                                            <ExternalLink size={12} className="text-gray-400" />
+                                                        </a>
                                                     </button>
                                                 ))}
                                             </div>

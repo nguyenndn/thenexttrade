@@ -4,7 +4,7 @@ import * as React from "react"
 import { useState } from "react"
 import { format } from "date-fns"
 import { ShareTradeModal } from "./ShareTradeModal"
-import { Share2, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Clock, Info, DollarSign, Tag, Brain, BarChart3, MessageSquare, AlertTriangle, X, Medal, Target, ShieldAlert } from "lucide-react"
+import { Share2, ArrowLeft, ArrowRight, TrendingUp, TrendingDown, Clock, Info, DollarSign, Tag, Brain, BarChart3, MessageSquare, AlertTriangle, X, Medal, Target, ShieldAlert } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/Sheet"
 import { Button } from "@/components/ui/Button"
@@ -74,7 +74,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
             {/* Main Sheet Container - Dark Mode BG #0F1117 */}
-            <SheetContent className="sm:max-w-4xl p-0 gap-0 bg-gray-50 dark:bg-[#0F1117] border-l border-gray-200 dark:border-white/10 overflow-y-auto">
+            <SheetContent className="sm:max-w-4xl p-0 gap-0 bg-gray-50 dark:bg-[#0F1117] border-l border-gray-200 dark:border-white/10 overflow-y-auto scrollbar-hide">
                 {/* 
                   A11y Requirement: Radix DialogContent requires a DialogTitle. 
                   Since we build our own visual header below, we hide the official one for screen readers.
@@ -87,7 +87,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                 </VisuallyHidden>
 
                 {/* Header Section */}
-                <div className="sticky top-0 z-10 bg-gray-50/80 dark:bg-[#0F1117]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 px-8 py-6">
+                <div className="sticky top-0 z-10 bg-gray-50/80 dark:bg-[#0F1117]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <h2 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -97,7 +97,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                         <div className="flex items-center gap-2">
                             <Button
                                 onClick={() => setShowShareModal(true)}
-                                className="bg-primary hover:bg-[#00a872] text-white shadow-lg shadow-primary/30 rounded-xl px-5 font-bold flex items-center gap-2 transition-all border-none h-10"
+                                className="bg-gradient-to-r from-primary to-emerald-400 hover:from-[#00a872] hover:to-emerald-500 text-white shadow-lg shadow-primary/30 rounded-xl px-5 font-bold flex items-center gap-2 transition-all border-none h-10"
                             >
                                 <Share2 size={18} strokeWidth={2.5} />
                                 Share
@@ -109,9 +109,9 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                     </div>
                 </div>
 
-                <div className="p-8 space-y-8">
+                <div className="p-6 space-y-5">
                     {/* Hero Card - Premium Glass/Glow Effect */}
-                    <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-8 md:p-10 shadow-xl border border-gray-200 dark:border-white/10 overflow-hidden group">
+                    <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 shadow-xl border border-gray-200 dark:border-white/10 overflow-hidden group">
                         {/* Decorative Glow */}
                         <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-blue-500/20 transition-all duration-700"></div>
 
@@ -123,9 +123,9 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                     size="icon" 
                                     onClick={onPrev}
                                     aria-label="Previous Trade"
-                                    className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                                    className="h-10 w-10 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
                                 >
-                                    <ChevronLeft size={24} />
+                                    <ArrowLeft size={18} strokeWidth={2} />
                                 </Button>
 
                                 <div>
@@ -164,28 +164,28 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                     size="icon" 
                                     onClick={onNext}
                                     disabled={!hasNext}
-                                    className="h-12 w-12 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                                    className="h-10 w-10 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
                                 >
-                                    <ChevronRight size={24} />
+                                    <ArrowRight size={18} strokeWidth={2} />
                                 </Button>
                             </div>
                         </div>
                     </div>
 
                     <Tabs defaultValue="metrics" className="w-full">
-                        <TabsList className="bg-gray-200/50 dark:bg-[#151925] p-1.5 rounded-xl w-full sm:w-auto inline-flex h-auto mb-8">
+                        <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-gray-200 dark:border-white/10 w-auto inline-flex h-auto mb-5">
                             <TabsTrigger
                                 value="metrics"
-                                className="rounded-xl px-6 py-3 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#2F80ED] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-lg shadow-blue-500/20 transition-all text-gray-600 dark:text-gray-300"
+                                className="rounded-lg px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 border whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10 text-gray-600 dark:text-gray-300 border-transparent"
                             >
-                                <BarChart3 size={16} className="mr-2" />
+                                <BarChart3 size={16} />
                                 Trade Metrics
                             </TabsTrigger>
                             <TabsTrigger
                                 value="tags"
-                                className="rounded-xl px-6 py-3 text-sm font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-[#2F80ED] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-lg shadow-blue-500/20 transition-all text-gray-600 dark:text-gray-300"
+                                className="rounded-lg px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 border whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10 text-gray-600 dark:text-gray-300 border-transparent"
                             >
-                                <Tag size={16} className="mr-2" />
+                                <Tag size={16} />
                                 Trade Tags
                             </TabsTrigger>
                         </TabsList>
@@ -336,19 +336,19 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                         <TabsContent value="tags" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             {/* Unified Analysis Card - Premium Grid Layout */}
                             <div className="space-y-6 pt-2">
-                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-6 flex items-center gap-2 pl-2">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4 flex items-center gap-2 pl-2">
                                     <Brain size={14} />
                                     Trade Analysis & Context
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl p-8 space-y-8">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl p-5 space-y-5">
                                     {/* Strategy & Psychology */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-6 rounded-xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
                                             <div className="absolute -top-10 -right-10 text-blue-500/5 rotate-12 pointer-events-none">
                                                 <Target size={120} strokeWidth={1} />
                                             </div>
-                                            <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
+                                            <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2 relative z-10">
                                                 <Target size={12} className="text-blue-500" /> Strategy Executed
                                             </h4>
                                             <div className="relative z-10">
@@ -374,11 +374,11 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-6 rounded-xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
+                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
                                             <div className="absolute -bottom-6 -right-6 text-purple-500/5 -rotate-12 pointer-events-none">
                                                 <Brain size={120} strokeWidth={1} />
                                             </div>
-                                            <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
+                                            <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2 relative z-10">
                                                 <Brain size={12} className="text-purple-500" /> Psychological State
                                             </h4>
                                             <div className="relative z-10">
@@ -400,8 +400,8 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                     </div>
 
                                     {/* Custom Tags */}
-                                    <div className="pt-8 border-t border-gray-200 dark:border-white/10">
-                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                    <div className="pt-5 border-t border-gray-200 dark:border-white/10">
+                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
                                             <Tag size={12} className="text-primary" /> Filtering Tags
                                         </h4>
                                         <div className="flex flex-wrap gap-2">
@@ -422,8 +422,8 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                     </div>
 
                                     {/* Mistakes */}
-                                    <div className="pt-8 border-t border-gray-200 dark:border-white/10">
-                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                    <div className="pt-5 border-t border-gray-200 dark:border-white/10">
+                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
                                             <ShieldAlert size={12} className="text-red-500" /> Execution Flaws
                                         </h4>
                                         <div className="flex flex-wrap gap-2">
@@ -442,7 +442,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                                     </span>
                                                 )
                                             }) : (
-                                                <div className="w-full p-6 border border-primary/20 bg-primary/5 rounded-xl flex items-center justify-center gap-3">
+                                                <div className="w-full p-4 border border-primary/20 bg-primary/5 rounded-xl flex items-center justify-center gap-3">
                                                     <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center">
                                                         <Medal size={20} />
                                                     </div>
