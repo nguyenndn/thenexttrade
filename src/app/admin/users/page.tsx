@@ -78,18 +78,34 @@ async function getHeroStats() {
 }
 
 async function getUserStats() {
-    const thirtyDaysAgo = subDays(new Date(), 30);
+    const sevenDaysAgo = subDays(new Date(), 7);
 
-    const [roles, activityData] = await Promise.all([
+    const [roles, recentActivity] = await Promise.all([
         prisma.profile.groupBy({
             by: ['role'],
             _count: { role: true }
         }),
-        Promise.resolve(Array.from({ length: 7 }).map((_, i) => ({
-            name: format(subDays(new Date(), 6 - i), 'EEE'),
-            value: Math.floor(Math.random() * 20) + 5
-        }))),
+        prisma.userProgress.findMany({
+            where: { completedAt: { gte: sevenDaysAgo, not: null } },
+            select: { completedAt: true }
+        }),
     ]);
+
+    // Build real 7-day activity chart from lesson completions
+    const activityMap = new Map<string, number>();
+    for (let i = 6; i >= 0; i--) {
+        const day = format(subDays(new Date(), i), 'EEE');
+        activityMap.set(day, 0);
+    }
+    recentActivity.forEach(p => {
+        if (p.completedAt) {
+            const day = format(new Date(p.completedAt), 'EEE');
+            if (activityMap.has(day)) {
+                activityMap.set(day, (activityMap.get(day) || 0) + 1);
+            }
+        }
+    });
+    const activityData = Array.from(activityMap.entries()).map(([name, value]) => ({ name, value }));
 
     const totalForRoles = await prisma.user.count();
     const roleData = [

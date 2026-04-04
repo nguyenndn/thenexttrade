@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { YoutubeTranscript } from "youtube-transcript";
 import { readFile } from "fs/promises";
 import path from "path";
 
@@ -166,60 +167,106 @@ async function scrapeMultipleSources(
     allImages: ExtractedImage[];
     rawContent: string;
 }> {
-    // Phase 1: Try FireCrawl for all URLs
-    const results = await Promise.allSettled(
-        urls.map(url => scrapeUrl(url))
-    );
+    // Separate YouTube URLs from regular URLs
+    const youtubeUrls: string[] = [];
+    const regularUrls: string[] = [];
+
+    for (const url of urls) {
+        if (url.includes("youtube.com/watch") || url.includes("youtu.be/")) {
+            youtubeUrls.push(url);
+        } else {
+            regularUrls.push(url);
+        }
+    }
 
     const sources: ScrapedSource[] = [];
     const allImages: ExtractedImage[] = [];
-    const failedUrls: string[] = [];
 
-    results.forEach((result, i) => {
-        if (result.status === "fulfilled") {
-            sources.push({
-                url: urls[i],
-                content: result.value.content,
-                title: result.value.title,
-                images: result.value.images,
-            });
-            allImages.push(...result.value.images);
-        } else {
-            failedUrls.push(urls[i]);
-        }
-    });
+    // Phase 0: Extract YouTube transcripts
+    if (youtubeUrls.length > 0) {
+        const ytResults = await Promise.allSettled(
+            youtubeUrls.map(async (url) => {
+                const videoId = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)?.[1];
+                if (!videoId) throw new Error("Invalid YouTube URL");
 
-    // Phase 2: For failed URLs, try fallback simple fetch
-    if (failedUrls.length > 0) {
-        const fallbackResults = await Promise.allSettled(
-            failedUrls.map(url => fallbackScrape(url))
+                const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+                const fullText = transcript.map(t => t.text).join(" ");
+
+                if (fullText.length < 100) throw new Error("Transcript too short");
+
+                return {
+                    content: fullText.substring(0, 6000),
+                    title: `YouTube Video (${videoId})`,
+                };
+            })
         );
 
-        const stillFailed: string[] = [];
-        fallbackResults.forEach((result, i) => {
+        ytResults.forEach((result, i) => {
             if (result.status === "fulfilled") {
                 sources.push({
-                    url: failedUrls[i],
+                    url: youtubeUrls[i],
                     content: result.value.content,
                     title: result.value.title,
                     images: [],
                 });
+            }
+        });
+    }
+
+    // Phase 1: Try FireCrawl for regular URLs
+    if (regularUrls.length > 0) {
+        const results = await Promise.allSettled(
+            regularUrls.map(url => scrapeUrl(url))
+        );
+
+        const failedUrls: string[] = [];
+
+        results.forEach((result, i) => {
+            if (result.status === "fulfilled") {
+                sources.push({
+                    url: regularUrls[i],
+                    content: result.value.content,
+                    title: result.value.title,
+                    images: result.value.images,
+                });
+                allImages.push(...result.value.images);
             } else {
-                stillFailed.push(failedUrls[i]);
+                failedUrls.push(regularUrls[i]);
             }
         });
 
-        // Phase 3: For still-failed URLs, use snippet from search results
-        if (stillFailed.length > 0 && snippets) {
-            for (const url of stillFailed) {
-                const snippet = snippets[url];
-                if (snippet && snippet.length > 20) {
+        // Phase 2: For failed URLs, try fallback simple fetch
+        if (failedUrls.length > 0) {
+            const fallbackResults = await Promise.allSettled(
+                failedUrls.map(url => fallbackScrape(url))
+            );
+
+            const stillFailed: string[] = [];
+            fallbackResults.forEach((result, i) => {
+                if (result.status === "fulfilled") {
                     sources.push({
-                        url,
-                        content: snippet,
-                        title: new URL(url).hostname,
+                        url: failedUrls[i],
+                        content: result.value.content,
+                        title: result.value.title,
                         images: [],
                     });
+                } else {
+                    stillFailed.push(failedUrls[i]);
+                }
+            });
+
+            // Phase 3: For still-failed URLs, use snippet from search results
+            if (stillFailed.length > 0 && snippets) {
+                for (const url of stillFailed) {
+                    const snippet = snippets[url];
+                    if (snippet && snippet.length > 20) {
+                        sources.push({
+                            url,
+                            content: snippet,
+                            title: new URL(url).hostname,
+                            images: [],
+                        });
+                    }
                 }
             }
         }

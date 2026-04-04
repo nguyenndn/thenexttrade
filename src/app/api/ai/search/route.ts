@@ -6,7 +6,7 @@ interface SearchResult {
     title: string;
     url: string;
     snippet: string;
-    source: "google" | "reddit" | "twitter";
+    source: "google" | "reddit" | "twitter" | "youtube";
 }
 
 async function serperSearch(query: string): Promise<SearchResult[]> {
@@ -62,38 +62,50 @@ export async function POST(req: NextRequest) {
         }
 
         // Run 3 targeted searches in parallel
-        const [generalResults, redditResults, twitterResults] = await Promise.all([
-            serperSearch(`${topic} forex education guide`).catch(() => []),
-            serperSearch(`${topic} forex site:reddit.com`).catch(() => []),
-            serperSearch(`${topic} forex trading site:x.com OR site:twitter.com`).catch(() => []),
+        const [educationResults, forumResults, socialResults] = await Promise.all([
+            // Primary: Educational articles from forex learning sites
+            serperSearch(`${topic} forex trading explained tutorial`).catch(() => []),
+            // Secondary: Community discussions (Reddit, forums)
+            serperSearch(`${topic} forex site:reddit.com OR site:forexfactory.com`).catch(() => []),
+            // Tertiary: Quick insights from X/Twitter
+            serperSearch(`${topic} forex site:x.com OR site:twitter.com`).catch(() => []),
         ]);
 
-        // Tag sources
+        // Tag sources with smart detection
+        const detectSource = (url: string, fallback: SearchResult["source"]): SearchResult["source"] => {
+            if (url.includes("youtube.com") || url.includes("youtu.be")) return "youtube";
+            if (url.includes("reddit.com")) return "reddit";
+            if (url.includes("x.com") || url.includes("twitter.com")) return "twitter";
+            return fallback;
+        };
+
         const allResults: SearchResult[] = [
-            ...generalResults,
-            ...redditResults.map(r => ({ ...r, source: "reddit" as const })),
-            ...twitterResults.map(r => ({ ...r, source: "twitter" as const })),
+            ...educationResults.map(r => ({ ...r, source: detectSource(r.url, "google") })),
+            ...forumResults.map(r => ({ ...r, source: detectSource(r.url, "reddit") })),
+            ...socialResults.map(r => ({ ...r, source: detectSource(r.url, "twitter") })),
         ];
 
-        // Deduplicate by URL & filter out primary URL
+        // Deduplicate by URL & filter out primary URL + unscrapeble sites
+        const BLOCKED_DOMAINS = ["tiktok.com", "instagram.com"];
         const seen = new Set<string>();
         const unique = allResults.filter(r => {
             const normalized = r.url.replace(/\/$/, "").toLowerCase();
+            if (BLOCKED_DOMAINS.some(d => normalized.includes(d))) return false;
             if (seen.has(normalized)) return false;
             if (primaryUrl && normalized.includes(primaryUrl.replace(/\/$/, "").toLowerCase())) return false;
             seen.add(normalized);
             return true;
         });
 
-        // Sort: Reddit & Twitter first (diversity), then Google
+        // Sort: Educational articles first, then YouTube, then Reddit, then Twitter
         const sorted = unique.sort((a, b) => {
-            const order = { reddit: 0, twitter: 1, google: 2 };
-            return order[a.source] - order[b.source];
+            const order: Record<string, number> = { google: 0, youtube: 1, reddit: 2, twitter: 3 };
+            return (order[a.source] ?? 4) - (order[b.source] ?? 4);
         });
 
         return NextResponse.json({
             topic,
-            results: sorted.slice(0, 8),
+            results: sorted.slice(0, 10),
             totalFound: sorted.length,
         });
     } catch (error: any) {
