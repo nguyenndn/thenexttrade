@@ -48,7 +48,10 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
         return set;
     }, [courseLessons, completedLessonIds]);
 
-    const sanitizedContent = useMemo(() => DOMPurify.sanitize(lesson.content), [lesson.content]);
+    const sanitizedContent = useMemo(() => DOMPurify.sanitize(lesson.content, {
+        ADD_ATTR: ['style', 'loading'],
+        ADD_TAGS: ['figure', 'figcaption'],
+    }), [lesson.content]);
 
     const handleComplete = async () => {
         setCompleting(true);
@@ -154,14 +157,16 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3
                                 prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300
                                 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold
-                                prose-img:rounded-xl prose-img:shadow-md
+                                prose-img:rounded-xl prose-img:shadow-md prose-img:mx-auto
                                 prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2
                                 prose-li:text-gray-600 dark:prose-li:text-gray-300
                                 prose-strong:text-gray-700 dark:prose-strong:text-white
                                 prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto
                                 prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200
                                 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono
-                                [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-gray-200 dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-gray-200 dark:[&_td]:border-white/10"
+                                [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-gray-200 dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-gray-200 dark:[&_td]:border-white/10
+                                [&_figure]:text-center [&_figure]:my-8
+                                [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3"
                             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
                     </div>
@@ -300,16 +305,27 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                         </div>
 
                         {/* Quiz link if available */}
-                        {quiz && (
-                            <div className="p-4 border-t border-gray-100 dark:border-white/10">
-                                <Link
-                                    href={isDashboard ? `/dashboard/academy/quiz/${quiz.id}` : `/academy/quiz/${quiz.id}`}
-                                    className="flex items-center gap-2 text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline"
-                                >
-                                    <Trophy size={14} className="shrink-0" /> Take Module Quiz
-                                </Link>
-                            </div>
-                        )}
+                        {quiz && (() => {
+                            const allLessonsCompleted = courseLessons.every((l: any) => completedLessonIds.includes(l.id));
+                            return (
+                                <div className="p-4 border-t border-gray-100 dark:border-white/10">
+                                    {allLessonsCompleted ? (
+                                        <Link
+                                            href={isDashboard ? `/dashboard/academy/quiz/${quiz.id}` : `/academy/quiz/${quiz.id}`}
+                                            className="flex items-center gap-2 text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline"
+                                        >
+                                            <Trophy size={14} className="shrink-0" /> Take Module Quiz
+                                        </Link>
+                                    ) : (
+                                        <div className="flex items-center gap-2 text-sm font-bold text-gray-400 dark:text-gray-600 cursor-not-allowed">
+                                            <Lock size={14} className="shrink-0" />
+                                            <span>Take Module Quiz</span>
+                                            <span className="text-[10px] font-normal text-gray-400 dark:text-gray-600 ml-auto">Complete all lessons first</span>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })()}
                     </div>
                 </div>
             </div>

@@ -42,13 +42,13 @@ export interface AIRewriteDialogRef {
 // ============================================================================
 
 const TONES = [
-    { id: "conversational", label: "Chat", icon: "💬", desc: "Friendly, casual" },
+    { id: "conversational", label: "Conversational", icon: "💬", desc: "Friendly, casual" },
     { id: "mentor", label: "Mentor", icon: "🧭", desc: "Experience-based" },
-    { id: "storytelling", label: "Story", icon: "📖", desc: "Narrative style" },
-    { id: "edutainment", label: "Fun", icon: "🎪", desc: "Humor + learning" },
-    { id: "professional", label: "Pro", icon: "👔", desc: "Formal, data" },
+    { id: "storytelling", label: "Storytelling", icon: "📖", desc: "Narrative style" },
+    { id: "edutainment", label: "Edutainment", icon: "🎪", desc: "Humor + learning" },
+    { id: "professional", label: "Professional", icon: "👔", desc: "Formal, data" },
     { id: "analytical", label: "Analytical", icon: "📊", desc: "Compare, analyze" },
-    { id: "motivational", label: "Motivate", icon: "🔥", desc: "Inspiring energy" },
+    { id: "motivational", label: "Motivational", icon: "🔥", desc: "Inspiring energy" },
     { id: "tactical", label: "Tactical", icon: "🎯", desc: "Step-by-step" },
 ] as const;
 

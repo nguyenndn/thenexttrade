@@ -188,7 +188,7 @@ export default function ContactPage() {
                                     <span>Send Message</span>
                                 </Button>
                                 
-                                <p className="text-xs text-center sm:text-left text-gray-600 dark:text-gray-600 font-medium max-w-[200px]">
+                                <p className="text-xs text-center sm:text-left text-gray-600 dark:text-gray-600 font-medium md:whitespace-nowrap">
                                     By submitting this form, you agree to our <a href="/legal/privacy-policy" className="underline hover:text-gray-300 transition-colors">Privacy Policy</a>.
                                 </p>
                             </div>
