@@ -99,13 +99,12 @@ function TimelineNode({ item, idx, unlocked }: { item: TimelineItem; idx: number
                                 animate={{ opacity: [0, 0.5, 0], scale: [0.5, 2, 3] }}
                                 transition={{ duration: 1.5, ease: "easeOut", delay: 0.1 }}
                             />
-                            {/* Persistent subtle glow */}
+                            {/* Persistent breathing glow */}
                             <motion.div
                                 className="absolute -inset-2 rounded-full"
                                 style={{ boxShadow: `0 0 15px 4px ${item.glowColor}` }}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: [0, 0.4, 0.3] }}
-                                transition={{ duration: 0.8, delay: 0.5 }}
+                                animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.15, 1] }}
+                                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                             />
                         </>
                     )}
@@ -122,8 +121,8 @@ function TimelineNode({ item, idx, unlocked }: { item: TimelineItem; idx: number
                         transition={{ duration: 1, ease: "easeOut" }}
                     >
                         <motion.div
-                            animate={unlocked ? { rotate: [0, -15, 15, 0], scale: [1, 1.3, 1] } : {}}
-                            transition={{ duration: 0.6, delay: 0.3 }}
+                            animate={unlocked ? { rotate: [0, -15, 15, 0], scale: [1, 1.3, 1], y: [0, -2, 0, 2, 0] } : {}}
+                            transition={{ duration: 0.6, delay: 0.3, y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 } }}
                         >
                             <Icon size={20} strokeWidth={2.5} />
                         </motion.div>

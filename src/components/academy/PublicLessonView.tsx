@@ -16,7 +16,10 @@ interface PublicLessonViewProps {
 
 export function PublicLessonView({ lesson, level, courseLessons, nextLesson, prevLesson }: PublicLessonViewProps) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
-    const sanitizedContent = DOMPurify.sanitize(lesson.content);
+    const sanitizedContent = DOMPurify.sanitize(lesson.content, {
+        ADD_ATTR: ['style', 'loading'],
+        ADD_TAGS: ['figure', 'figcaption'],
+    });
     const currentIndex = courseLessons.findIndex(l => l.id === lesson.id);
     const wordCount = lesson.content?.replace(/<[^>]*>?/gm, '').trim().split(/\s+/).filter(Boolean).length || 0;
     const readingTime = lesson.duration || Math.max(1, Math.ceil(wordCount / 200));
@@ -87,9 +90,11 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
                         className="prose prose-lg dark:prose-invert max-w-none mb-12
                             prose-headings:font-bold prose-headings:tracking-tight
                             prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                            prose-img:rounded-xl prose-img:shadow-lg
+                            prose-img:rounded-xl prose-img:shadow-lg prose-img:mx-auto
                             prose-code:text-primary prose-code:bg-primary/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md
-                            prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1"
+                            prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1
+                            [&_figure]:text-center [&_figure]:my-8
+                            [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3"
                         dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                     />
 

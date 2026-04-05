@@ -24,8 +24,8 @@ export default async function LevelDetailPage({
                             title: true,
                             slug: true,
                             order: true,
-                            duration: true,
-                            content: false,
+                            content: true,
+                            status: true,
                         },
                     },
                     _count: {

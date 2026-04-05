@@ -25,6 +25,27 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
 
         if (!quiz) return NextResponse.json({ error: "Quiz not found" }, { status: 404 });
 
+        // GUARD: Verify all module lessons are completed before allowing submission
+        if (quiz.moduleId) {
+            const moduleLessons = await prisma.lesson.findMany({
+                where: { moduleId: quiz.moduleId },
+                select: { id: true }
+            });
+            const completedCount = await prisma.userProgress.count({
+                where: {
+                    userId,
+                    isCompleted: true,
+                    lessonId: { in: moduleLessons.map(l => l.id) }
+                }
+            });
+            if (completedCount < moduleLessons.length) {
+                return NextResponse.json(
+                    { error: "You must complete all module lessons before taking the quiz." },
+                    { status: 403 }
+                );
+            }
+        }
+
         let correctCount = 0;
         const totalQuestions = quiz.questions.length;
 
@@ -38,7 +59,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
         });
 
         const score = Math.round((correctCount / totalQuestions) * 100);
-        const passed = score >= 70; // 70% passing grade
+        const passed = score >= 75; // 75% passing grade
 
         // Save attempt
         const attempt = await prisma.userQuizAttempt.create({

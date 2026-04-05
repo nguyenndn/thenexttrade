@@ -142,14 +142,14 @@ export default async function UserAcademyDashboard() {
 
                     {/* Focus Banner (Next Lesson) */}
                     {nextLesson ? (
-                        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-[#1E2028] dark:to-[#151925] border border-gray-200 dark:border-white/10 p-6 shadow-xl">
+                        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-white via-emerald-50 to-teal-50 dark:from-[#1E2028] dark:to-[#151925] border border-emerald-200/60 dark:border-white/10 p-6 shadow-sm">
                             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                                 <div>
                                     <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                                        <span className="text-amber-400 font-bold text-xs uppercase tracking-wider">{hasStarted ? 'Ready to Resume' : 'Get Started'}</span>
+                                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                        <span className="text-primary font-bold text-xs uppercase tracking-wider">{hasStarted ? 'Ready to Resume' : 'Get Started'}</span>
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-1">{nextLesson.title}</h3>
+                                    <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-1">{nextLesson.title}</h3>
                                     <p className="text-gray-500 text-sm">In module: {nextLessonModuleTitle}</p>
                                 </div>
                                 <Link
@@ -160,7 +160,8 @@ export default async function UserAcademyDashboard() {
                                 </Link>
                             </div>
                             {/* Decor */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                            <div className="absolute -top-8 -right-8 w-48 h-48 bg-primary/5 dark:bg-primary/10 rounded-full blur-[60px] pointer-events-none" />
+                            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-teal-200/30 dark:bg-teal-500/10 rounded-full blur-[40px] pointer-events-none" />
                         </div>
                     ) : (
                         <div className="p-6 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
@@ -172,38 +173,6 @@ export default async function UserAcademyDashboard() {
                         </div>
                     )}
 
-                    {/* Per-Level Progress */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
-                        <h3 className="font-bold text-sm text-gray-700 dark:text-white mb-4 flex items-center gap-2">
-                            <Target size={16} className="text-primary" /> Level Progress
-                        </h3>
-                        <div className="space-y-3">
-                            {levels.map(level => {
-                                const allLessons = level.modules.flatMap(m => m.lessons);
-                                const completedInLevel = allLessons.filter(l => l.progress.some((p: any) => p.isCompleted)).length;
-                                const totalInLevel = allLessons.length;
-                                const pct = totalInLevel > 0 ? Math.round((completedInLevel / totalInLevel) * 100) : 0;
-                                return (
-                                    <div key={level.id}>
-                                        <div className="flex items-center justify-between mb-1">
-                                            <span className="text-xs font-medium text-gray-600 dark:text-gray-500 truncate pr-2">
-                                                <span className="text-primary font-bold">{String(level.order).padStart(2, '0')}</span> {level.title}
-                                            </span>
-                                            <span className="text-[10px] font-bold text-gray-500 whitespace-nowrap">
-                                                {completedInLevel}/{totalInLevel} {pct > 0 && `(${pct}%)`}
-                                            </span>
-                                        </div>
-                                        <div className="h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
-                                            <div
-                                                className={`h-full rounded-full transition-all duration-500 ${pct === 100 ? 'bg-green-500' : pct > 0 ? 'bg-primary' : 'bg-transparent'}`}
-                                                style={{ width: `${pct}%` }}
-                                            />
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
 
                     {/* Academy Tree (Synced with /academy) */}
                     <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
@@ -213,7 +182,7 @@ export default async function UserAcademyDashboard() {
                 </div>
 
                 {/* Sidebar Stats */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {/* Daily Streak */}
                     <div className="bg-gradient-to-br from-primary to-teal-600 p-6 rounded-xl text-white shadow-lg shadow-primary/20 relative overflow-hidden">
                         <div className="relative z-10">

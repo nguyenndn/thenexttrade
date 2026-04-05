@@ -19,7 +19,16 @@ interface Lesson {
     title: string;
     slug: string;
     order: number;
-    duration: number | null;
+    content: string;
+    status: string;
+}
+
+/** Calculate reading time in minutes from HTML content (avg 200 words/min) */
+function getReadingTime(content: string): number {
+    if (!content || content.trim().length === 0) return 0;
+    const text = content.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+    const wordCount = text.split(" ").filter(Boolean).length;
+    return Math.max(1, Math.ceil(wordCount / 200));
 }
 
 interface Module {
@@ -174,7 +183,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
 
     const totalLessons = level.modules.reduce((sum, m) => sum + m.lessons.length, 0);
     const totalDuration = level.modules.reduce(
-        (sum, m) => sum + m.lessons.reduce((ls, l) => ls + (l.duration || 0), 0), 0
+        (sum, m) => sum + m.lessons.reduce((ls, l) => ls + getReadingTime(l.content), 0), 0
     );
 
     return (
@@ -334,9 +343,9 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                         <span className="text-xs font-mono text-gray-500 w-5">{lIndex + 1}.</span>
                                                         <FileText size={16} className="text-blue-400 flex-shrink-0" />
                                                         <span className="text-sm text-gray-700 dark:text-gray-300">{lesson.title}</span>
-                                                        {lesson.duration && (
+                                                        {lesson.content && lesson.content.trim().length > 0 && (
                                                             <span className="text-xs text-gray-500 flex items-center gap-1">
-                                                                <Clock size={12} /> {lesson.duration}m
+                                                                <Clock size={12} /> {getReadingTime(lesson.content)}m
                                                             </span>
                                                         )}
                                                     </div>

@@ -68,9 +68,22 @@ export default async function DashboardQuizPage({ params }: { params: Promise<{ 
     });
     const completedLessonIds = userProgress.map(p => p.lessonId);
 
+    // ── GUARD: Block quiz access if not all module lessons are completed ──
+    const allModuleLessonsCompleted = moduleLessonIds.length > 0 && moduleLessonIds.every(id => completedLessonIds.includes(id));
+    if (!allModuleLessonsCompleted && quiz.module) {
+        const firstLesson = quiz.module.lessons[0];
+        const redirectUrl = firstLesson
+            ? `/dashboard/academy/lessons/${firstLesson.slug}`
+            : '/dashboard/academy';
+        redirect(redirectUrl);
+    }
+
     const bestScore = previousAttempts.length > 0
         ? Math.max(...previousAttempts.map(a => a.score))
         : null;
+
+    // First lesson slug for back button
+    const firstLessonSlug = quiz.module?.lessons?.[0]?.slug || null;
 
     return (
         <QuizClient
@@ -83,6 +96,7 @@ export default async function DashboardQuizPage({ params }: { params: Promise<{ 
             bestScore={bestScore}
             moduleLessons={quiz.module?.lessons || []}
             completedLessonIds={completedLessonIds}
+            firstLessonSlug={firstLessonSlug}
         />
     );
 }

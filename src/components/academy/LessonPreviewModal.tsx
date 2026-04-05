@@ -106,7 +106,7 @@ export function LessonPreviewModal({ isOpen, onClose, lessonSlug, moduleTitle }:
                                     <div className="px-6 py-5">
                                         <div
                                             className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed"
-                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(lesson.content.replace(/\n/g, '<br/>')) }}
+                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(lesson.content.replace(/\n/g, '<br/>'), { ADD_ATTR: ['style', 'loading'], ADD_TAGS: ['figure', 'figcaption'] }) }}
                                         />
                                     </div>
                                 ) : (

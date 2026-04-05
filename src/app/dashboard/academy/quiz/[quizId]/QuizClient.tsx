@@ -43,9 +43,10 @@ interface QuizProps {
     bestScore: number | null;
     moduleLessons: ModuleLesson[];
     completedLessonIds: string[];
+    firstLessonSlug: string | null;
 }
 
-export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, completedLessonIds }: QuizProps) {
+export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, completedLessonIds, firstLessonSlug }: QuizProps) {
     const router = useRouter();
     const draftKey = `quiz-draft-${quiz.id}`;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -300,6 +301,12 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                     )}
                 </div>
                 <div className="flex items-center gap-3 text-base font-bold w-full sm:w-auto">
+                    {firstLessonSlug && (
+                        <Link href={`/dashboard/academy/lessons/${firstLessonSlug}`} className="flex items-center gap-1.5 text-gray-500 hover:text-primary px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 transition-colors text-sm">
+                            <BookOpen size={14} />
+                            <span>Back to Lessons</span>
+                        </Link>
+                    )}
                     <div className="flex items-center gap-1.5 text-gray-600 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
                         <Trophy size={14} />
                         <span>Quiz</span>
@@ -334,7 +341,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                                     {result.passed
                                         ? "Great job! You've mastered this module."
-                                        : "Review the material and try again. You need 70% to pass."}
+                                        : "Review the material and try again. You need 75% to pass."}
                                 </p>
 
                                 <div className="text-5xl font-black mb-6" style={{ color: result.passed ? '#00C888' : '#ef4444' }}>
