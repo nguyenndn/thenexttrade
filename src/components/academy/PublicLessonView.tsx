@@ -1,5 +1,4 @@
 import Link from "next/link";
-import DOMPurify from "isomorphic-dompurify";
 import { ChevronLeft, ChevronRight, Clock, BookOpen, GraduationCap, UserPlus, Lock, Sparkles } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -15,11 +14,7 @@ interface PublicLessonViewProps {
 }
 
 export function PublicLessonView({ lesson, level, courseLessons, nextLesson, prevLesson, isPremiumLocked }: PublicLessonViewProps) {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
-    const sanitizedContent = DOMPurify.sanitize(lesson.content, {
-        ADD_ATTR: ['style', 'loading'],
-        ADD_TAGS: ['figure', 'figcaption'],
-    });
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";    
     const currentIndex = courseLessons.findIndex(l => l.id === lesson.id);
     const wordCount = lesson.content?.replace(/<[^>]*>?/gm, '').trim().split(/\s+/).filter(Boolean).length || 0;
     const readingTime = lesson.duration || Math.max(1, Math.ceil(wordCount / 200));
@@ -106,7 +101,7 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
                                 prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1
                                 [&_figure]:text-center [&_figure]:my-8
                                 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3"
-                            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                            dangerouslySetInnerHTML={{ __html: lesson.content }}
                         />
                         {isPremiumLocked && (
                             <div className="absolute flex items-end justify-center pb-8 bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-white via-white/90 dark:from-[#0B0E14] dark:via-[#0B0E14]/90 to-transparent pointer-events-none" />

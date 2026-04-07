@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, GraduationCap, BookOpen, Clock, Menu, X, Lock, Trophy } from "lucide-react";
 import { celebrateXP } from "@/lib/celebrate";
-import DOMPurify from "isomorphic-dompurify";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -47,11 +46,6 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
         }
         return set;
     }, [courseLessons, completedLessonIds]);
-
-    const sanitizedContent = useMemo(() => DOMPurify.sanitize(lesson.content, {
-        ADD_ATTR: ['style', 'loading'],
-        ADD_TAGS: ['figure', 'figcaption'],
-    }), [lesson.content]);
 
     const handleComplete = async () => {
         setCompleting(true);
@@ -168,7 +162,7 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                 [&_figure]:text-center [&_figure]:my-8
                                 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3
                                 lesson-footer-compact"
-                            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                            dangerouslySetInnerHTML={{ __html: lesson.content }}
                         />
                     </div>
 
