@@ -105,9 +105,18 @@ Pillar 5: Pro Trading (L11-12) → Psychology, Advanced Execution
 7. QUICK RECAP (3-5 bullets)
    - Key takeaways only
 
-8. QUICK WIN (CTA/Action)
+8. 🎯 YOUR ACTION STEP (h4 — compact footer)
    - One thing reader can DO in 5 minutes
    - Apply: Activation Energy → make it trivially easy
+   - Format: <h4>🎯 Your Action Step</h4> + <p>action</p>
+
+9. 📚 NEXT LESSON (h4 — compact footer)
+   - Link to next lesson in curriculum
+   - Write directly into HTML:
+     <div class="lesson-footer">
+     <h4>📚 Next Lesson</h4>
+     <p>Continue your journey → <strong>Next Lesson Title</strong></p>
+     </div>
 ```
 
 ### 2.2 Copywriting Quality Rules
@@ -222,7 +231,19 @@ CONTENT QUALITY
 - [ ] At least 1 concrete trade example with full numbers
 - [ ] FAQ section (3-4 questions)
 - [ ] Quick Recap (3-5 bullets)
-- [ ] Quick Win (actionable in 5 min)
+
+🖼️ ILLUSTRATIONS (MANDATORY)
+- [ ] 2-3 custom infographic images per lesson (use generate_image tool)
+- [ ] Images must visualize KEY CONCEPTS from the lesson (not decorative)
+- [ ] Style: dark theme, trading-focused, professional infographic
+- [ ] Wrap in <figure> with <figcaption> describing the image
+- [ ] Upload to media library, embed in lesson HTML
+- [ ] Examples: comparison charts, process flows, checklists, anatomy diagrams
+
+🎯 LESSON FOOTER (MANDATORY)
+- [ ] "🎯 Your Action Step" present (h4) — actionable in 5 min
+- [ ] "📚 Next Lesson" present (h4 in div.lesson-footer) — correct next title
+- [ ] Run relevant `node prisma/seed-level-XX.js` to sync DB
 
 VOICE & STYLE
 - [ ] Sounds like a real trader, not a textbook
@@ -243,6 +264,12 @@ COPYRIGHT SAFETY
 - [ ] Different structure than sources
 - [ ] Original examples with new numbers
 - [ ] "Captain TheNextTrade" voice (not source voice)
+
+⚠️ FILE PRESERVATION (CRITICAL)
+- [ ] **.md file MUST BE KEPT** — NEVER delete raw research .md files
+- [ ] .md file = raw source content (search + scrape output) — valuable reference
+- [ ] .html file = final lesson content — sits ALONGSIDE .md in the same folder
+- [ ] After writing HTML, folder should contain BOTH: `lesson-slug.md` + `lesson-slug.html`
 ```
 
 ---

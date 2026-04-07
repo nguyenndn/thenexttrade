@@ -20,6 +20,7 @@ import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import Youtube from '@tiptap/extension-youtube';
 import Placeholder from '@tiptap/extension-placeholder';
+import { Figure, FigCaption } from './extensions/figure';
 
 import {
     Bold, Italic, Underline as UnderlineIcon, Strikethrough, Highlighter,
@@ -95,7 +96,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
             TextStyle,
             Color,
             Highlight.configure({ multicolor: true }),
-            TextAlign.configure({ types: ['heading', 'paragraph'] }),
+            TextAlign.configure({ types: ['heading', 'paragraph', 'figcaption'] }),
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
@@ -135,6 +136,8 @@ export function RichTextEditor({ content, onChange, editable = true, className =
                 HTMLAttributes: { class: 'not-prose pl-2' },
             }),
             TaskItem.configure({ nested: true }),
+            Figure,
+            FigCaption,
             Placeholder.configure({
                 placeholder: 'Start writing amazingly...',
             }),
@@ -260,6 +263,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
         { keys: ['Ctrl', 'Shift', '1'], action: 'Heading 1' },
         { keys: ['Ctrl', 'Shift', '2'], action: 'Heading 2' },
         { keys: ['Ctrl', 'Shift', '3'], action: 'Heading 3' },
+        { keys: ['Ctrl', 'Shift', '4'], action: 'Heading 4' },
         { keys: ['Ctrl', 'Shift', '8'], action: 'Bullet List' },
         { keys: ['Ctrl', 'Shift', '7'], action: 'Ordered List' },
         { keys: ['Ctrl', 'Shift', 'B'], action: 'Blockquote' },
@@ -294,6 +298,20 @@ export function RichTextEditor({ content, onChange, editable = true, className =
                             <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} isActive={editor.isActive('heading', { level: 1 })} icon={Heading1} title="H1" />
                             <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} isActive={editor.isActive('heading', { level: 2 })} icon={Heading2} title="H2" />
                             <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} isActive={editor.isActive('heading', { level: 3 })} icon={Heading3} title="H3" />
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+                                title="H4"
+                                className={`rounded-lg transition-all flex items-center justify-center
+                                    ${editor.isActive('heading', { level: 4 })
+                                        ? 'bg-primary/10 text-primary ring-1 ring-primary/20 hover:bg-primary/20 hover:text-primary'
+                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white'
+                                    }
+                                `}
+                            >
+                                <span className="text-xs font-bold">H4</span>
+                            </Button>
                         </div>
 
                         {/* Formatting */}

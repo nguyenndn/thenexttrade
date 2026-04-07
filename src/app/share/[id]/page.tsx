@@ -104,7 +104,7 @@ export default async function SharePage({ params }: SharePageProps) {
                                 </p>
                             </div>
 
-                            <Link href="/auth/register">
+                            <Link href="/auth/signup">
                                 <Button className="h-12 md:h-14 px-8 md:px-10 rounded-xl font-bold text-base md:text-lg bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300">
                                     Get Started Free
                                     <ArrowRight size={18} className="md:w-5 md:h-5 ml-2" />

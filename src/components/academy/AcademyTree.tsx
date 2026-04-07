@@ -428,6 +428,13 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                         </div>
                                     )}
 
+                                    {isGuest && level.accessLevel !== "PUBLIC" && (
+                                        <div className="flex items-center gap-1.5 text-xs font-bold text-amber-500">
+                                            <Lock size={11} />
+                                            <span>PREMIUM</span>
+                                        </div>
+                                    )}
+
                                     <div className="flex items-center gap-3 text-xs text-gray-500">
                                         <span className="flex items-center gap-1"><Layers size={11} />{level.modules.length} modules</span>
                                         <span className="flex items-center gap-1"><BookOpen size={11} />{totalLessons} lessons</span>
@@ -474,7 +481,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                             <Lock size={24} className="text-gray-300 dark:text-gray-700" />
                                         </motion.div>
                                     ) : (
-                                        <Link href={`${basePath}/lessons/${currentSlug}`} className="block group">
+                                        <Link href={`${isGuest ? '/academy/lesson' : '/dashboard/academy/lessons'}/${currentSlug}`} className="block group">
                                             <motion.div
                                                 animate={{ y: [0, -6, 0], rotate: [0, 3, 0, -3, 0] }}
                                                 transition={{ duration: 4 + index * 0.3, repeat: Infinity, ease: "easeInOut" }}
@@ -575,7 +582,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         transition={{ duration: 0.3, delay: modIndex * 0.05 }}
                                                     >
                                                         <Link
-                                                            href={`${basePath}/lessons/${modFirstSlug}`}
+                                                            href={`${isGuest ? '/academy/lesson' : '/dashboard/academy/lessons'}/${modFirstSlug}`}
                                                             className={cn(
                                                                 "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs",
                                                                 "bg-emerald-50 dark:bg-emerald-500/5 border-emerald-200 dark:border-emerald-500/20",
@@ -629,7 +636,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                                                         />
                                                         <Link
-                                                            href={`${basePath}/lessons/${moduleTargetSlug}`}
+                                                            href={`${isGuest ? '/academy/lesson' : '/dashboard/academy/lessons'}/${moduleTargetSlug}`}
                                                             className={cn(
                                                                 "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-[85%] sm:max-w-xs relative z-10",
                                                                 "bg-white dark:bg-white/[0.03] border-primary/60 dark:border-primary/40",
@@ -659,6 +666,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
 
                                             // === DEFAULT (no progress / guest) ===
                                             if (isGuest) {
+                                                const isPremiumLevel = level.accessLevel !== "PUBLIC";
                                                 return (
                                                     <motion.div
                                                         key={mod.id}
@@ -667,14 +675,8 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         viewport={{ once: true }}
                                                         transition={{ duration: 0.3, delay: modIndex * 0.05 }}
                                                     >
-                                                        <button
-                                                            onClick={() => {
-                                                            if (level.accessLevel === "PUBLIC" && modFirstSlug) {
-                                                                router.push(`/academy/lesson/${modFirstSlug}`);
-                                                            } else {
-                                                                setPreviewModal({ lessonSlug: modFirstSlug!, moduleTitle: mod.title });
-                                                            }
-                                                        }}
+                                                        <Link
+                                                            href={`${isGuest ? '/academy/lesson' : '/dashboard/academy/lessons'}/${modFirstSlug}`}
                                                             className={cn(
                                                                 "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left",
                                                                 "bg-white dark:bg-white/[0.03] border-gray-200 dark:border-white/10",
@@ -684,10 +686,10 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         >
                                                             <div className={cn(
                                                                 "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0",
-                                                                "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300",
+                                                                isPremiumLevel ? "bg-amber-100 dark:bg-amber-500/10 text-amber-500" : "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300",
                                                                 "group-hover:bg-primary group-hover:text-white transition-colors"
                                                             )}>
-                                                                {mod.title.charAt(0)}
+                                                                {isPremiumLevel ? <Lock size={12} /> : mod.title.charAt(0)}
                                                             </div>
                                                             <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-white transition-colors truncate flex-1">
                                                                 {mod.title}
@@ -697,7 +699,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                                 "text-gray-300 dark:text-gray-600 group-hover:text-primary transition-all group-hover:translate-x-0.5",
                                                                 isEven ? "" : "rotate-180 group-hover:-translate-x-0.5"
                                                             )} />
-                                                        </button>
+                                                        </Link>
                                                     </motion.div>
                                                 );
                                             }
@@ -711,7 +713,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                     transition={{ duration: 0.3, delay: modIndex * 0.05 }}
                                                 >
                                                     <Link
-                                                        href={`${basePath}/lessons/${modFirstSlug}`}
+                                                        href={`${isGuest ? '/academy/lesson' : '/dashboard/academy/lessons'}/${modFirstSlug}`}
                                                         className={cn(
                                                             "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs",
                                                             "bg-white dark:bg-white/[0.03] border-gray-200 dark:border-white/10",

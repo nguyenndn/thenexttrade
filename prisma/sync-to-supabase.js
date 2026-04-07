@@ -58,6 +58,10 @@ async function main() {
   console.log(`   Found: ${levels.length} levels, ${modules.length} modules, ${lessons.length} lessons`);
   console.log(`   Found: ${categories.length} categories, ${tags.length} tags, ${articles.length} articles, ${articleTags.length} article-tags\n`);
 
+  // 1.5 Clear remote academy data
+  console.log('🧹 Clearing remote Academy data (Levels, Modules, Lessons) to ensure clean sync...');
+  await remotePrisma.level.deleteMany({});
+
   // 2. Sync Levels
   console.log('📚 Syncing Levels...');
   for (const level of levels) {

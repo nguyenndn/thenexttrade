@@ -390,3 +390,38 @@ textarea,
 .recharts-responsive-container {
   outline: none !important;
 }
+
+/* ===== Academy Lesson Footer (Action Step + Next Lesson) ===== */
+.lesson-footer-compact .lesson-footer {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+}
+
+.dark .lesson-footer-compact .lesson-footer {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.lesson-footer-compact .lesson-footer h4 {
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  margin: 0 0 0.25rem 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+.lesson-footer-compact .lesson-footer p {
+  font-size: 0.8125rem !important;
+  margin: 0 !important;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.lesson-footer-compact .lesson-footer p strong {
+  font-weight: 600;
+}

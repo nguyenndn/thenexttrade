@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
 import { PublicLessonView } from "@/components/academy/PublicLessonView";
-import { LessonLockedView } from "@/components/academy/LessonLockedView";
 import type { Metadata } from "next";
 
 // SSG for public lessons
@@ -115,26 +114,16 @@ export default async function PublicLessonPage({ params }: { params: Promise<{ s
     const nextLesson = allLessonsInLevel[globalIndex + 1] || null;
     const prevLesson = allLessonsInLevel[globalIndex - 1] || null;
 
-    // Level-based access control
-    if (level.accessLevel === "PUBLIC") {
-        return (
-            <PublicLessonView
-                lesson={lesson}
-                level={level}
-                courseLessons={courseLessons}
-                nextLesson={nextLesson}
-                prevLesson={prevLesson}
-            />
-        );
-    }
+    const isPremiumLocked = level.accessLevel !== "PUBLIC";
 
-    // Member-only level — show locked preview
     return (
-        <LessonLockedView
-            lessonTitle={lesson.title}
-            levelTitle={level.title}
-            levelOrder={level.order}
-            moduleTitle={lesson.module.title}
+        <PublicLessonView
+            lesson={lesson}
+            level={level}
+            courseLessons={courseLessons}
+            nextLesson={nextLesson}
+            prevLesson={prevLesson}
+            isPremiumLocked={isPremiumLocked}
         />
     );
 }
