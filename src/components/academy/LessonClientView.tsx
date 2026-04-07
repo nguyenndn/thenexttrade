@@ -166,7 +166,8 @@ export default function LessonClientView({ lesson, courseLessons, nextLesson, pr
                                 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono
                                 [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-gray-200 dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-gray-200 dark:[&_td]:border-white/10
                                 [&_figure]:text-center [&_figure]:my-8
-                                [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3"
+                                [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3
+                                lesson-footer-compact"
                             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
                     </div>
