@@ -1,4 +1,4 @@
-﻿import { Metadata } from "next";
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
@@ -14,7 +14,7 @@ export default async function TradingSystemsPage() {
     const user = await getAuthUser();
 
     if (!user) {
-        redirect("/auth/signin");
+        redirect("/auth/login");
     }
 
     // OPTIMIZED: Fetch all data in parallel

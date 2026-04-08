@@ -74,6 +74,8 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                         const childRouteMap: Record<string, string> = {
                             "/dashboard/sessions": "/dashboard/journal",
                             "/dashboard/reports": "/dashboard/analytics",
+                            "/dashboard/reports/weekly": "/dashboard/analytics",
+                            "/dashboard/reports/monthly": "/dashboard/analytics",
                             "/dashboard/mistakes": "/dashboard/analytics",
                         };
                         const effectivePath = childRouteMap[pathname] || pathname;

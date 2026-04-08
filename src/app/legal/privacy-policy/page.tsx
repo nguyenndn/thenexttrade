@@ -1,4 +1,4 @@
-﻿import { Metadata } from 'next';
+import { Metadata } from 'next';
 import { Shield } from 'lucide-react';
 
 export const metadata: Metadata = {

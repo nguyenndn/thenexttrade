@@ -43,7 +43,7 @@ export default async function AnalyticsPage({
     const user = await getAuthUser();
 
     if (!user) {
-        redirect("/auth/signin");
+        redirect("/auth/login");
     }
 
     // 1. Account & Date Filters

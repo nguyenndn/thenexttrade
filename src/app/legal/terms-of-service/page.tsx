@@ -1,4 +1,4 @@
-﻿import { Metadata } from 'next';
+import { Metadata } from 'next';
 import { Scale } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -47,7 +47,7 @@ export default function TermsOfServicePage() {
             </ul>
 
             <h2>3. Trading Disclaimer</h2>
-            <h3>Past Performance ≠ Future Results</h3>
+            <h3>Past Performance ? Future Results</h3>
             <p>
                 Past performance of any trading system, methodology, or strategy is not indicative of future results. Historical data should not be relied upon as a predictor of future performance.
             </p>
@@ -105,7 +105,7 @@ export default function TermsOfServicePage() {
             </p>
 
             <div className="mt-8 p-4 bg-gray-50 dark:bg-[#151925] rounded-xl text-sm text-gray-600 dark:text-gray-300 italic text-center border border-gray-200 dark:border-white/5">
-                Thank you for choosing TheNextTrade. Trade smart, manage your risk, and master the markets. 📈
+                Thank you for choosing TheNextTrade. Trade smart, manage your risk, and master the markets. ??
             </div>
                 </div>
             </div>

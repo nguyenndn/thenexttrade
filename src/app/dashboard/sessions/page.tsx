@@ -1,4 +1,4 @@
-﻿import { SessionDashboard } from "@/components/sessions/SessionDashboard";
+import { SessionDashboard } from "@/components/sessions/SessionDashboard";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";

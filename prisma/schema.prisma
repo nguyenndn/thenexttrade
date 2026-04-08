@@ -100,6 +100,9 @@ model User {
   // Upvotes
   articleVotes       ArticleVote[]
 
+  // Trading Reports
+  tradingReports     TradingReport[]
+
   @@index([createdAt])
   @@index([email])
   
@@ -491,6 +494,12 @@ model TradingAccount {
   
   apiKeyExpiresAt DateTime? @map("api_key_expires_at")
   ipWhitelist     String[]  @default([]) @map("ip_whitelist")
+
+  // Trading Rules (Soft Nudge Protection)
+  maxDailyLoss        Float?    @map("max_daily_loss")       // Max loss per day in account currency
+  maxDailyTrades      Int?      @map("max_daily_trades")     // Max number of trades per day
+  maxRiskPercent       Float?    @map("max_risk_percent")     // Max risk % per trade
+  cooldownAfterLosses  Int?      @map("cooldown_after_losses") // Consecutive losses before cooldown alert
 
   syncHistory     SyncHistory[]
   importHistory   ImportHistory[]
@@ -1015,6 +1024,11 @@ enum NotificationType {
   MAINTENANCE           // Scheduled maintenance
   PROMOTION             // Promotional message
   FEATURE_UPDATE        // New feature announcement
+  
+  // Trading Reports
+  WEEKLY_REPORT         // Weekly report ready
+  MONTHLY_REPORT        // Monthly report ready
+  NO_TRADES_NUDGE       // No trades this period nudge
 }
 
 enum NotificationPriority {
@@ -1276,4 +1290,72 @@ model CopyTradingRegistration {
   @@index([status])
   @@index([createdAt])
   @@map("copy_trading_registrations")
+}
+
+// ============================================================================
+// TRADING REPORTS
+// ============================================================================
+
+enum ReportType {
+  WEEKLY
+  MONTHLY
+}
+
+model TradingReport {
+  id          String       @id @default(cuid())
+  userId      String       @db.Uuid
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type        ReportType   // WEEKLY, MONTHLY
+  periodStart DateTime     @db.Timestamptz
+  periodEnd   DateTime     @db.Timestamptz
+  periodLabel String       // "Week 14, 2026" or "April 2026"
+  
+  // Core Stats (pre-computed)
+  totalTrades    Int       @default(0)
+  winCount       Int       @default(0)
+  lossCount      Int       @default(0)
+  winRate        Float     @default(0)
+  netPnL         Float     @default(0)
+  grossProfit    Float     @default(0)
+  grossLoss      Float     @default(0)
+  profitFactor   Float     @default(0)
+  avgWin         Float     @default(0)
+  avgLoss        Float     @default(0)
+  largestWin     Float     @default(0)
+  largestLoss    Float     @default(0)
+  
+  // Comparison vs Previous Period
+  prevPnL        Float?
+  prevWinRate    Float?
+  prevTrades     Int?
+  
+  // Breakdowns (JSON for flexibility)
+  bySymbol       Json?     @db.JsonB  // [{symbol, trades, pnl, winRate}]
+  byStrategy     Json?     @db.JsonB  // [{name, trades, pnl, winRate}]
+  bySession      Json?     @db.JsonB  // [{session, trades, pnl}]
+  byDay          Json?     @db.JsonB  // [{date, trades, pnl}]
+  
+  // Psychology Stats
+  avgConfidence     Float?
+  planCompliance    Float?   // % followed plan
+  topEmotions       Json?    @db.JsonB  // [{emotion, count}]
+  
+  // Mistake Recap
+  topMistakes       Json?    @db.JsonB  // [{mistakeId, name, count}]
+  
+  // Top/Bottom Trades
+  bestTrades        Json?    @db.JsonB  // [{symbol, pnl, date}]
+  worstTrades       Json?    @db.JsonB  // [{symbol, pnl, date}]
+  
+  // Email Status
+  emailSent      Boolean   @default(false)
+  emailSentAt    DateTime? @db.Timestamptz
+  
+  createdAt      DateTime  @default(now()) @db.Timestamptz
+  
+  @@unique([userId, type, periodStart])
+  @@index([userId, type])
+  @@index([createdAt])
+  @@map("trading_reports")
 }

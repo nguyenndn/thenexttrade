@@ -34,7 +34,7 @@ export default async function IntelligencePage({
     const user = await getAuthUser();
 
     if (!user) {
-        redirect("/auth/signin");
+        redirect("/auth/login");
     }
 
     // Account filter

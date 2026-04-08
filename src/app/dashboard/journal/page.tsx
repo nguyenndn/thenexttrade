@@ -1,4 +1,4 @@
-﻿import JournalList from "@/components/journal/JournalList";
+import JournalList from "@/components/journal/JournalList";
 import { Metadata } from "next";
 import { getJournalEntries, getUserTags } from "@/actions/journal";
 import { getStrategies } from "@/actions/strategies";

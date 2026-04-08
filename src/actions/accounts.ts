@@ -48,6 +48,11 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                 apiKey: false,
                 currency: true,
                 isDefault: true,
+                // Trading Rules (Soft Nudge)
+                maxDailyLoss: true,
+                maxDailyTrades: true,
+                maxRiskPercent: true,
+                cooldownAfterLosses: true,
             },
             skip,
             take: limit,

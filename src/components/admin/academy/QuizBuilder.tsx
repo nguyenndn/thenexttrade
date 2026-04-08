@@ -1,4 +1,4 @@
-﻿
+
 "use client";
 
 import { useState } from "react";
@@ -128,7 +128,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                             </Button>
                         </div>
                         <p className="text-gray-600 dark:text-gray-300 mt-1 text-sm">
-                            {quiz.description || "No description"} • {questions.length} Questions
+                            {quiz.description || "No description"} � {questions.length} Questions
                         </p>
                     </div>
                 </div>

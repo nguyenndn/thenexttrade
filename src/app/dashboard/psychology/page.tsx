@@ -1,4 +1,4 @@
-﻿import { PsychologyDashboard } from "@/components/psychology/PsychologyDashboard";
+import { PsychologyDashboard } from "@/components/psychology/PsychologyDashboard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -1,4 +1,4 @@
-﻿import { Metadata } from "next";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Trading Library | Free Forex Articles & Guides",
