@@ -3,7 +3,7 @@ import { Cookie } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'Cookie Policy | TheNextTrade',
-    description: 'Information about how TheNextTradeuses cookies.',
+    description: 'Information about how TheNextTrade uses cookies.',
 };
 
 export default function CookiePolicyPage() {
@@ -28,7 +28,7 @@ export default function CookiePolicyPage() {
                 Cookies are small data files placed on your computer or mobile device when you visit a website. They are widely used by online service providers to facilitate and help to make the interaction between users and websites faster and easier, as well as to provide reporting information.
             </p>
             <p>
-                Cookies set by the website owner (in this case, TheNextTrade) are called "first-party cookies." Cookies set by parties other than the website owner are called "third-party cookies." We use both to provide you with a seamless and secure trading journal experience.
+                Cookies set by the website owner (in this case, TheNextTrade) are called &quot;first-party cookies.&quot; Cookies set by parties other than the website owner are called &quot;third-party cookies.&quot; We use both to provide you with a seamless and secure trading journal experience.
             </p>
 
             <h2>2. How We Use Cookies</h2>
@@ -37,7 +37,7 @@ export default function CookiePolicyPage() {
             </p>
             <ul>
                 <li><strong>Essential / Strictly Necessary Cookies:</strong> These cookies are critical to the operation of our platform. They enable secure login, session management, and access to premium features (like your Trading Journal and Dashboards). Without these, our services cannot function properly.</li>
-                <li><strong>Performance and Analytics Cookies:</strong> We use these to understand how users interact with our site—for instance, which Academy pages are visited most often or how much time is spent analyzing trades. This helps us optimize performance and improve the user experience.</li>
+                <li><strong>Performance and Analytics Cookies:</strong> We use these to understand how users interact with our site - for instance, which Academy pages are visited most often or how much time is spent analyzing trades. This helps us optimize performance and improve the user experience.</li>
                 <li><strong>Preference Cookies:</strong> These cookies allow us to remember your choices, such as your preferred theme (Dark or Light mode), layout settings, and language preferences, saving you the trouble of continually re-entering this information.</li>
                 <li><strong>Security Cookies:</strong> Used to authenticate users, prevent fraudulent use of login credentials, and protect user data from unauthorized parties.</li>
             </ul>
