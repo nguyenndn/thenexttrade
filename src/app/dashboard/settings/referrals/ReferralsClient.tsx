@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Users, Copy, DollarSign, TrendingUp, Gift } from 'lucide-react';
 import { useState } from 'react';

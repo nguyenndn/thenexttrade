@@ -17,7 +17,7 @@ export default async function NotificationsPage() {
     const user = await getAuthUser();
 
     if (!user) {
-        redirect("/auth/signin");
+        redirect("/auth/login");
     }
 
     const notifications = await prisma.notification.findMany({

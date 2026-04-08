@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
@@ -40,8 +40,8 @@ export function DashboardFilter({ currentAccountId, className, hideDateFilter, e
         }
     }, [startStr, endStr]);
 
-    // Guard to prevent infinite loop: router.replace() triggers SSR re-render → 
-    // component re-mounts → effect re-runs → loop. useRef persists across renders.
+    // Guard to prevent infinite loop: router.replace() triggers SSR re-render ? 
+    // component re-mounts ? effect re-runs ? loop. useRef persists across renders.
     const hasInitialized = useRef(false);
 
     // Default to Saved Range or Today on mount if URL is empty

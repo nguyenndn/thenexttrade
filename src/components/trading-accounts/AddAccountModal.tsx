@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { X, Copy, Download, Check, MonitorPlay } from "lucide-react";

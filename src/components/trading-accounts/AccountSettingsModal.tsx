@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { X, Save, Copy, Check, Eye, EyeOff, RefreshCw, Trash2, AlertTriangle } from "lucide-react";
+import { X, Save, Copy, Check, Eye, EyeOff, RefreshCw, Trash2, AlertTriangle, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
 import { updateTradingAccount, revealApiKey, regenerateAccountKey } from "@/actions/accounts";
+import { updateTradingRules } from "@/actions/trading-rules";
 
 interface AccountSettingsModalProps {
     isOpen: boolean;
@@ -56,6 +57,12 @@ export function AccountSettingsModal({
     const [apiKey, setApiKey] = useState<string | null>(null);
     const [isLoadingKey, setIsLoadingKey] = useState(false);
 
+    // Trading Rules state
+    const [maxDailyLoss, setMaxDailyLoss] = useState<string>(account.maxDailyLoss?.toString() || "");
+    const [maxDailyTrades, setMaxDailyTrades] = useState<string>(account.maxDailyTrades?.toString() || "");
+    const [maxRiskPercent, setMaxRiskPercent] = useState<string>(account.maxRiskPercent?.toString() || "");
+    const [cooldownAfterLosses, setCooldownAfterLosses] = useState<string>(account.cooldownAfterLosses?.toString() || "");
+
     if (!isOpen) return null;
 
     async function handleSave() {
@@ -64,19 +71,26 @@ export function AccountSettingsModal({
             const result = await updateTradingAccount(account.id, {
                 name,
                 color,
-                // autoSync is NOT in schema? Schema has isDefault.
-                // AccountSettingsModal has autoSync state but schema in actions.ts doesn't. 
-                // I need to add autoSync to schema if I want to update it. Use 'isDefault' if that's what was meant, or add autoSync.
-                // The original code had autoSync.
-                // I should add autoSync to schema.
-                balance: account.balance, // Required by schema
-                currency: account.currency, // Required by schema
+                balance: account.balance,
+                currency: account.currency,
             });
 
             if (result.error) throw new Error(result.error);
 
             toast.success("Account settings updated successfully");
-            onUpdate(); // Calling parent refresh (which will be router.refresh)
+
+            // Save Trading Rules separately
+            const rulesResult = await updateTradingRules(account.id, {
+                maxDailyLoss: maxDailyLoss ? parseFloat(maxDailyLoss) : null,
+                maxDailyTrades: maxDailyTrades ? parseInt(maxDailyTrades) : null,
+                maxRiskPercent: maxRiskPercent ? parseFloat(maxRiskPercent) : null,
+                cooldownAfterLosses: cooldownAfterLosses ? parseInt(cooldownAfterLosses) : null,
+            });
+            if (rulesResult.error) {
+                toast.error("Failed to save trading rules");
+            }
+
+            onUpdate();
             onClose();
         } catch (error: any) {
             toast.error(error.message || "Failed to update settings");
@@ -173,6 +187,49 @@ export function AccountSettingsModal({
                                     </Button>
                                 ))}
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Trading Rules (Soft Nudge) */}
+                    <div className="space-y-4">
+                        <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                            Trading Protection Rules
+                            <span className="text-[9px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-md tracking-wider uppercase ml-1">Optional</span>
+                        </h3>
+                        <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed -mt-1">
+                            Set limits to protect your discipline. Dashboard will show alerts when you approach or exceed these.
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <PremiumInput
+                                label={`Max Daily Loss (${account.currency || 'USD'})`}
+                                type="number"
+                                value={maxDailyLoss}
+                                onChange={(e) => setMaxDailyLoss(e.target.value)}
+                                placeholder="e.g. 200"
+                            />
+                            <PremiumInput
+                                label="Max Trades / Day"
+                                type="number"
+                                value={maxDailyTrades}
+                                onChange={(e) => setMaxDailyTrades(e.target.value)}
+                                placeholder="e.g. 5"
+                            />
+                            <PremiumInput
+                                label="Max Risk % / Trade"
+                                type="number"
+                                value={maxRiskPercent}
+                                onChange={(e) => setMaxRiskPercent(e.target.value)}
+                                placeholder="e.g. 2"
+                            />
+                            <PremiumInput
+                                label="Cooldown After Losses"
+                                type="number"
+                                value={cooldownAfterLosses}
+                                onChange={(e) => setCooldownAfterLosses(e.target.value)}
+                                placeholder="e.g. 3"
+                            />
                         </div>
                     </div>
 

@@ -114,6 +114,8 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     const childRouteMap: Record<string, string> = {
         "/dashboard/sessions": "/dashboard/journal",
         "/dashboard/reports": "/dashboard/analytics",
+        "/dashboard/reports/weekly": "/dashboard/analytics",
+        "/dashboard/reports/monthly": "/dashboard/analytics",
         "/dashboard/mistakes": "/dashboard/analytics",
         "/dashboard/intelligence": "/dashboard/analytics",
     };

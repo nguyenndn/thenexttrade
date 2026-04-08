@@ -16,7 +16,7 @@ export default async function TradingAccountsPage({
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const user = await getAuthUser();
-    if (!user) redirect("/auth/signin");
+    if (!user) redirect("/auth/login");
 
     const resolvedParams = await searchParams;
     const page = typeof resolvedParams.page === "string" ? parseInt(resolvedParams.page) : 1;

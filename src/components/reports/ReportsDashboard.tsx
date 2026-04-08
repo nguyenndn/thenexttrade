@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format, startOfMonth, endOfMonth, subMonths } from "date-fns";
 import { toast } from "sonner";
 import {
@@ -9,20 +9,37 @@ import {
     FileSpreadsheet,
     Calendar,
     TrendingUp,
-    Trash2
+    Trash2,
+    CalendarDays,
+    CalendarRange,
 } from "lucide-react";
 import { ReportPreview } from "./ReportPreview";
+import { ReportView } from "./ReportView";
 import { Button } from "@/components/ui/Button";
 
 interface ReportType {
     id: string;
     name: string;
     description: string;
-    format: "pdf" | "csv";
+    format: "pdf" | "csv" | "auto";
     icon: any;
 }
 
 const REPORT_TYPES: ReportType[] = [
+    {
+        id: "weekly-review",
+        name: "Weekly Review",
+        description: "Automated weekly trading performance review",
+        format: "auto",
+        icon: CalendarDays,
+    },
+    {
+        id: "monthly-review",
+        name: "Monthly Review",
+        description: "Big picture monthly performance trends",
+        format: "auto",
+        icon: CalendarRange,
+    },
     {
         id: "monthly",
         name: "Monthly Performance",
@@ -71,16 +88,52 @@ const parseCSVLine = (line: string) => {
 
 export function ReportsDashboard() {
     const now = new Date();
-    const [selectedType, setSelectedType] = useState<string>("monthly");
+    const [selectedType, setSelectedType] = useState<string>("weekly-review");
     const [dateRange, setDateRange] = useState({
-        start: startOfMonth(subMonths(now, 1)), // Default to last month
+        start: startOfMonth(subMonths(now, 1)),
         end: endOfMonth(subMonths(now, 1)),
     });
     const [isGenerating, setIsGenerating] = useState(false);
     const [previewData, setPreviewData] = useState<any>(null);
     const [csvPreview, setCsvPreview] = useState<{ headers: string[]; rows: string[][] } | null>(null);
+    const [reviewReports, setReviewReports] = useState<any[]>([]);
+    const [reviewTotal, setReviewTotal] = useState(0);
+    const [reviewLoading, setReviewLoading] = useState(false);
+    const [reviewLoaded, setReviewLoaded] = useState<string | null>(null);
 
-    const selectedReport = REPORT_TYPES.find((r) => r.id === selectedType);
+    const isReviewType = selectedType === "weekly-review" || selectedType === "monthly-review";
+    const isExportType = selectedType === "monthly" || selectedType === "trades" || selectedType === "tax";
+
+    // Auto-load weekly review on mount
+    useEffect(() => {
+        handleSelectType("weekly-review");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handleSelectType = async (id: string) => {
+        setSelectedType(id);
+        setPreviewData(null);
+        setCsvPreview(null);
+
+        // Auto-load review reports
+        if (id === "weekly-review" || id === "monthly-review") {
+            if (reviewLoaded === id) return; // Already loaded
+            setReviewLoading(true);
+            try {
+                const { getReports } = await import("@/actions/reports");
+                const type = id === "weekly-review" ? "WEEKLY" : "MONTHLY";
+                const { reports, total } = await getReports(type as any, 1, 20);
+                setReviewReports(reports);
+                setReviewTotal(total);
+                setReviewLoaded(id);
+            } catch (error) {
+                console.error("Failed to load reports:", error);
+                toast.error("Failed to load reports");
+            } finally {
+                setReviewLoading(false);
+            }
+        }
+    };
 
     const handleGenerate = async () => {
         try {
@@ -194,194 +247,217 @@ export function ReportsDashboard() {
         <div className="space-y-4 animate-in fade-in duration-500">
 
             {/* Report Type Selection */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {REPORT_TYPES.map((report) => (
-                    <Button
-                        variant="ghost"
-                        key={report.id}
-                        onClick={() => {
-                            setSelectedType(report.id);
-                            setPreviewData(null);
-                            setCsvPreview(null);
-                        }}
-                        className={`
-              relative text-left p-6 h-auto rounded-xl border-2 transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal
-              ${selectedType === report.id
-                                ? "border-primary bg-primary/5 shadow-md shadow-primary/10 hover:bg-primary/5"
-                                : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-md transition-shadow"
-                            }
-            `}
-                    >
-                        <div className="flex items-start justify-between mb-6 w-full">
-                            <div
-                                className={`
-                  p-3.5 rounded-xl transition-all duration-300 shadow-sm
-                  ${selectedType === report.id
-                                        ? "bg-primary text-white shadow-primary/20"
-                                        : "bg-gray-50 dark:bg-white/5 text-gray-600 group-hover:bg-primary/10 group-hover:text-primary"
-                                    }
-                `}
-                            >
-                                <report.icon size={22} strokeWidth={2.5} />
-                            </div>
-                            <span
-                                className={`
-                  text-[10px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-lg border
-                  ${report.format === "pdf"
-                                        ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
-                                        : "bg-primary/10 text-primary dark:text-primary border-primary/20"
-                                    }
-                `}
-                            >
-                                {report.format}
-                            </span>
-                        </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                {REPORT_TYPES.map((report) => {
+                    const isSelected = selectedType === report.id;
 
-                        <h3 className="font-black text-lg text-gray-700 dark:text-white mb-2 tracking-tight">
-                            {report.name}
-                        </h3>
-                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed text-left w-full">
-                            {report.description}
-                        </p>
-                    </Button>
-                ))}
-            </div>
-
-            {/* Controls Container */}
-            <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow">
-                <h3 className="font-black text-gray-700 dark:text-white mb-6 flex items-center gap-3 text-lg tracking-tight">
-                    <div className="p-2 bg-primary/10 text-primary rounded-xl">
-                        <Calendar size={20} />
-                    </div>
-                    Configure Report Range
-                </h3>
-
-                <div className="flex flex-col xl:flex-row gap-4 items-end">
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
-                        <div>
-                            <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2.5 block">Start Date</label>
-                            <input
-                                type="date"
-                                value={format(dateRange.start, "yyyy-MM-dd")}
-                                onChange={(e) =>
-                                    setDateRange({ ...dateRange, start: new Date(e.target.value) })
-                                }
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-700 dark:text-white"
-                            />
-                        </div>
-                        <div>
-                            <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2.5 block">End Date</label>
-                            <input
-                                type="date"
-                                value={format(dateRange.end, "yyyy-MM-dd")}
-                                onChange={(e) =>
-                                    setDateRange({ ...dateRange, end: new Date(e.target.value) })
-                                }
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-700 dark:text-white"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="w-full xl:w-auto">
+                    return (
                         <Button
-                            onClick={handleGenerate}
-                            isLoading={isGenerating}
-                            className="w-full xl:w-auto"
+                            variant="ghost"
+                            key={report.id}
+                            onClick={() => handleSelectType(report.id)}
+                            className={`
+                                relative text-left p-5 h-auto rounded-xl border-2 transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal
+                                ${isSelected
+                                    ? "border-primary bg-primary/5 shadow-md shadow-primary/10 hover:bg-primary/5"
+                                    : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-md transition-shadow"
+                                }
+                            `}
                         >
-                            {!isGenerating && <Download size={20} strokeWidth={2.5} />}
-                            <span>{isGenerating ? "Processing..." : "Generate Preview"}</span>
+                            <div className="flex items-start justify-between mb-4 w-full">
+                                <div
+                                    className={`
+                                        p-3 rounded-xl transition-all duration-300 shadow-sm
+                                        ${isSelected
+                                            ? "bg-primary text-white shadow-primary/20"
+                                            : "bg-gray-50 dark:bg-white/5 text-gray-600 group-hover:bg-primary/10 group-hover:text-primary"
+                                        }
+                                    `}
+                                >
+                                    <report.icon size={20} strokeWidth={2.5} />
+                                </div>
+                                <span
+                                    className={`
+                                        text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg border
+                                        ${report.format === "pdf"
+                                            ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+                                            : report.format === "auto"
+                                                ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+                                                : "bg-primary/10 text-primary dark:text-primary border-primary/20"
+                                        }
+                                    `}
+                                >
+                                    {report.format}
+                                </span>
+                            </div>
+                            <h3 className="font-black text-base text-gray-700 dark:text-white mb-1.5 tracking-tight">
+                                {report.name}
+                            </h3>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 leading-relaxed text-left w-full">
+                                {report.description}
+                            </p>
                         </Button>
-                    </div>
-                </div>
-
-                {/* Quick Select Pills */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
-                    <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 uppercase tracking-widest sm:mr-2">Quick Presets:</span>
-                    <div className="flex flex-wrap items-center gap-2.5">
-                        {[
-                            { label: "This Month", fn: () => ({ start: startOfMonth(now), end: endOfMonth(now) }) },
-                            { label: "Last Month", fn: () => ({ start: startOfMonth(subMonths(now, 1)), end: endOfMonth(subMonths(now, 1)) }) },
-                            { label: "Last 3 Months", fn: () => ({ start: startOfMonth(subMonths(now, 2)), end: endOfMonth(now) }) },
-                            { label: "YTD", fn: () => ({ start: new Date(now.getFullYear(), 0, 1), end: now }) },
-                        ].map((preset) => (
-                            <Button
-                                variant="outline"
-                                key={preset.label}
-                                onClick={() => setDateRange(preset.fn())}
-                                className="px-4 py-2 text-[11px] font-black uppercase tracking-wider bg-transparent border-2 border-slate-200/80 dark:border-slate-800 hover:border-primary/60 dark:hover:border-primary/50 text-slate-500 dark:text-slate-400 hover:text-primary hover:dark:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-xl transition-all duration-300"
-                            >
-                                {preset.label}
-                            </Button>
-                        ))}
-                    </div>
-                </div>
+                    );
+                })}
             </div>
 
-            {/* PDF Preview Area */}
-            {previewData && selectedType === "monthly" && (
-                <ReportPreview data={previewData} onDownload={handleDownloadPDF} />
+            {/* Review Reports Inline (Weekly/Monthly) */}
+            {isReviewType && (
+                <div className="animate-in fade-in duration-500">
+                    {reviewLoading ? (
+                        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-12 text-center shadow-sm">
+                            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+                            <p className="text-sm text-gray-500">Loading reports...</p>
+                        </div>
+                    ) : (
+                        <ReportView
+                            reports={reviewReports as any}
+                            total={reviewTotal}
+                            type={selectedType === "weekly-review" ? "weekly" : "monthly"}
+                        />
+                    )}
+                </div>
             )}
 
-            {/* CSV Preview Area */}
-            {csvPreview && (selectedType === "trades" || selectedType === "tax") && (
-                <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm animate-in fade-in duration-500">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h3 className="font-black text-gray-700 dark:text-white text-lg tracking-tight">CSV Preview</h3>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Review data and remove unnecessary columns before downloading.</p>
+            {/* Export Controls (for PDF/CSV types) */}
+            {isExportType && (
+                <>
+                    <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow">
+                        <h3 className="font-black text-gray-700 dark:text-white mb-6 flex items-center gap-3 text-lg tracking-tight">
+                            <div className="p-2 bg-primary/10 text-primary rounded-xl">
+                                <Calendar size={20} />
+                            </div>
+                            Configure Report Range
+                        </h3>
+
+                        <div className="flex flex-col xl:flex-row gap-4 items-end">
+                            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+                                <div>
+                                    <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2.5 block">Start Date</label>
+                                    <input
+                                        type="date"
+                                        value={format(dateRange.start, "yyyy-MM-dd")}
+                                        onChange={(e) =>
+                                            setDateRange({ ...dateRange, start: new Date(e.target.value) })
+                                        }
+                                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-700 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2.5 block">End Date</label>
+                                    <input
+                                        type="date"
+                                        value={format(dateRange.end, "yyyy-MM-dd")}
+                                        onChange={(e) =>
+                                            setDateRange({ ...dateRange, end: new Date(e.target.value) })
+                                        }
+                                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-700 dark:text-white"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="w-full xl:w-auto">
+                                <Button
+                                    onClick={handleGenerate}
+                                    isLoading={isGenerating}
+                                    className="w-full xl:w-auto"
+                                >
+                                    {!isGenerating && <Download size={20} strokeWidth={2.5} />}
+                                    <span>{isGenerating ? "Processing..." : "Generate Preview"}</span>
+                                </Button>
+                            </div>
                         </div>
-                        <Button
-                            onClick={handleDownloadCustomCSV}
-                            className="w-full sm:w-auto"
-                        >
-                            <Download size={18} strokeWidth={2.5} />
-                            Download Final CSV
-                        </Button>
+
+                        {/* Quick Select Pills */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
+                            <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 uppercase tracking-widest sm:mr-2">Quick Presets:</span>
+                            <div className="flex flex-wrap items-center gap-2.5">
+                                {[
+                                    { label: "This Month", fn: () => ({ start: startOfMonth(now), end: endOfMonth(now) }) },
+                                    { label: "Last Month", fn: () => ({ start: startOfMonth(subMonths(now, 1)), end: endOfMonth(subMonths(now, 1)) }) },
+                                    { label: "Last 3 Months", fn: () => ({ start: startOfMonth(subMonths(now, 2)), end: endOfMonth(now) }) },
+                                    { label: "YTD", fn: () => ({ start: new Date(now.getFullYear(), 0, 1), end: now }) },
+                                ].map((preset) => (
+                                    <Button
+                                        variant="outline"
+                                        key={preset.label}
+                                        onClick={() => setDateRange(preset.fn())}
+                                        className="px-4 py-2 text-[11px] font-black uppercase tracking-wider bg-transparent border-2 border-slate-200/80 dark:border-slate-800 hover:border-primary/60 dark:hover:border-primary/50 text-slate-500 dark:text-slate-400 hover:text-primary hover:dark:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-xl transition-all duration-300"
+                                    >
+                                        {preset.label}
+                                    </Button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10 custom-scrollbar">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
-                                    {csvPreview.headers.map((header, index) => (
-                                        <th key={index} className="p-4 text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 whitespace-nowrap min-w-[120px] group">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <span>{header}</span>
-                                                <Button 
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => removeColumn(index)}
-                                                    className="h-7 w-7 text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10"
-                                                    title="Remove Column"
-                                                >
-                                                    <Trash2 size={14} />
-                                                </Button>
-                                            </div>
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {csvPreview.rows.slice(0, 50).map((row, rowIndex) => (
-                                    <tr key={rowIndex} className="border-b border-gray-200 dark:border-white/10 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
-                                        {row.map((cell, cellIndex) => (
-                                            <td key={cellIndex} className="p-4 text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap truncate max-w-[200px]" title={cell}>
-                                                {cell}
-                                            </td>
+                    {/* PDF Preview Area */}
+                    {previewData && selectedType === "monthly" && (
+                        <ReportPreview data={previewData} onDownload={handleDownloadPDF} />
+                    )}
+
+                    {/* CSV Preview Area */}
+                    {csvPreview && (selectedType === "trades" || selectedType === "tax") && (
+                        <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm animate-in fade-in duration-500">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                                <div>
+                                    <h3 className="font-black text-gray-700 dark:text-white text-lg tracking-tight">CSV Preview</h3>
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Review data and remove unnecessary columns before downloading.</p>
+                                </div>
+                                <Button
+                                    onClick={handleDownloadCustomCSV}
+                                    className="w-full sm:w-auto"
+                                >
+                                    <Download size={18} strokeWidth={2.5} />
+                                    Download Final CSV
+                                </Button>
+                            </div>
+
+                            <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10 custom-scrollbar">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
+                                            {csvPreview.headers.map((header, index) => (
+                                                <th key={index} className="p-4 text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 whitespace-nowrap min-w-[120px] group">
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <span>{header}</span>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => removeColumn(index)}
+                                                            className="h-7 w-7 text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10"
+                                                            title="Remove Column"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </Button>
+                                                    </div>
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {csvPreview.rows.slice(0, 50).map((row, rowIndex) => (
+                                            <tr key={rowIndex} className="border-b border-gray-200 dark:border-white/10 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
+                                                {row.map((cell, cellIndex) => (
+                                                    <td key={cellIndex} className="p-4 text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap truncate max-w-[200px]" title={cell}>
+                                                        {cell}
+                                                    </td>
+                                                ))}
+                                            </tr>
                                         ))}
-                                    </tr>
-                                ))}
-                                {csvPreview.rows.length > 50 && (
-                                    <tr>
-                                        <td colSpan={csvPreview.headers.length} className="p-4 text-center text-sm font-medium text-gray-600 dark:text-gray-300 italic bg-gray-50/50 dark:bg-white/5">
-                                            Showing first 50 rows of {csvPreview.rows.length} total rows.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                        {csvPreview.rows.length > 50 && (
+                                            <tr>
+                                                <td colSpan={csvPreview.headers.length} className="p-4 text-center text-sm font-medium text-gray-600 dark:text-gray-300 italic bg-gray-50/50 dark:bg-white/5">
+                                                    Showing first 50 rows of {csvPreview.rows.length} total rows.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

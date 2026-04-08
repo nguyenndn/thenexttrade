@@ -10,6 +10,7 @@ import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, get
 import { getDashboardInsight } from "@/lib/briefing-queries";
 import { format } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
+import { TradingAlertBanner } from "@/components/dashboard/TradingAlertBanner";
 
 
 export const dynamic = "force-dynamic";
@@ -32,7 +33,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     const user = await getAuthUser();
 
     if (!user) {
-        redirect("/auth/signin");
+        redirect("/auth/login");
     }
 
     // 1. Config & Filters
@@ -230,21 +231,26 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     };
 
     return (
-        <DashboardClient
-            userName={userData?.name || "Trader"}
-            dashboardData={dashboardData}
-            chartData={chartData}
-            recentTrades={recentTrades}
-            symbolPerformance={symbolPerformance}
-            currentAccountId={accountId}
-            monthlyAnalytics={monthly.map(m => ({ date: m.date, value: m.profit }))}
-            dailyWinRates={dailyWinRates}
-            bestTrades={topTrades.best}
-            worstTrades={topTrades.worst}
-            symbolAnalytics={symbolAnalytics}
-            lotDistribution={lotDistribution}
-            tradeScore={tradeScore}
-            insight={insightData}
-        />
+        <>
+            {/* Trading Protection Alerts */}
+            <TradingAlertBanner />
+            
+            <DashboardClient
+                userName={userData?.name || "Trader"}
+                dashboardData={dashboardData}
+                chartData={chartData}
+                recentTrades={recentTrades}
+                symbolPerformance={symbolPerformance}
+                currentAccountId={accountId}
+                monthlyAnalytics={monthly.map(m => ({ date: m.date, value: m.profit }))}
+                dailyWinRates={dailyWinRates}
+                bestTrades={topTrades.best}
+                worstTrades={topTrades.worst}
+                symbolAnalytics={symbolAnalytics}
+                lotDistribution={lotDistribution}
+                tradeScore={tradeScore}
+                insight={insightData}
+            />
+        </>
     );
 }

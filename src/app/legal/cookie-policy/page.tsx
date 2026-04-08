@@ -1,4 +1,4 @@
-﻿import { Metadata } from 'next';
+import { Metadata } from 'next';
 import { Cookie } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -37,7 +37,7 @@ export default function CookiePolicyPage() {
             </p>
             <ul>
                 <li><strong>Essential / Strictly Necessary Cookies:</strong> These cookies are critical to the operation of our platform. They enable secure login, session management, and access to premium features (like your Trading Journal and Dashboards). Without these, our services cannot function properly.</li>
-                <li><strong>Performance and Analytics Cookies:</strong> We use these to understand how users interact with our site—for instance, which Academy pages are visited most often or how much time is spent analyzing trades. This helps us optimize performance and improve the user experience.</li>
+                <li><strong>Performance and Analytics Cookies:</strong> We use these to understand how users interact with our site�for instance, which Academy pages are visited most often or how much time is spent analyzing trades. This helps us optimize performance and improve the user experience.</li>
                 <li><strong>Preference Cookies:</strong> These cookies allow us to remember your choices, such as your preferred theme (Dark or Light mode), layout settings, and language preferences, saving you the trouble of continually re-entering this information.</li>
                 <li><strong>Security Cookies:</strong> Used to authenticate users, prevent fraudulent use of login credentials, and protect user data from unauthorized parties.</li>
             </ul>
