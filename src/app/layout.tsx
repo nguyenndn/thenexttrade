@@ -33,16 +33,17 @@ export const metadata: Metadata = {
   keywords: ["Forex", "Trading Journal", "Position Calculator", "Trading Education", "CRM", "Risk Management"],
   authors: [{ name: "TheNextTrade Team" }],
   creator: "TheNextTrade Team",
+  manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://thenexttrade.com", // Placeholder
+    url: "https://thenexttrade.com",
     title: "TheNextTrade - Professional Forex Trading Tools",
     description: "Master the markets with advanced tools and education.",
     siteName: "TheNextTrade",
     images: [
       {
-        url: "/og-image.jpg", // We should create this asset later
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "TheNextTrade Dashboard",
@@ -56,8 +57,13 @@ export const metadata: Metadata = {
     creator: "@thenexttrade",
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/icons/icon-192x192.png",
+    apple: "/icons/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "TheNextTrade",
   },
   alternates: {
     types: {
@@ -82,7 +88,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <script dangerouslySetInnerHTML={{ __html: `history.scrollRestoration = "manual"` }} />
+        <script dangerouslySetInnerHTML={{ __html: `
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/sw.js');
+            });
+          }
+        `}} />
       </head>
       <body className={`${sourceSans.variable} ${lexend.variable} font-sans bg-white dark:bg-[#0F1117]`}>
         <NextTopLoader
