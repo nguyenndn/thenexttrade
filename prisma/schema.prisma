@@ -103,6 +103,9 @@ model User {
   // Trading Reports
   tradingReports     TradingReport[]
 
+  // Academy Certificates
+  certificates       Certificate[]
+
   @@index([createdAt])
   @@index([email])
   
@@ -159,6 +162,7 @@ model Level {
   order       Int      @unique // 1, 2, 3
   accessLevel String   @default("PUBLIC") // "PUBLIC" | "MEMBER"
   modules     Module[]
+  certificates Certificate[]
   
   createdAt   DateTime @default(now()) @db.Timestamptz
   updatedAt   DateTime @updatedAt @db.Timestamptz
@@ -701,6 +705,19 @@ model UserQuizAttempt {
   completedAt DateTime @default(now()) @db.Timestamptz
 }
 
+model Certificate {
+  id          String   @id @default(cuid())
+  userId      String   @db.Uuid
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  levelId     String
+  level       Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  
+  score       Int      // Average quiz score across all modules in this level
+  earnedAt    DateTime @default(now()) @db.Timestamptz
+
+  @@unique([userId, levelId])
+  @@index([userId])
+}
 
 enum PlanStatus {
   ACTIVE
