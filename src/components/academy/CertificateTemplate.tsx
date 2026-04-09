@@ -1,6 +1,6 @@
 "use client";
 
-import { Award } from "lucide-react";
+import { Award, Crown } from "lucide-react";
 
 interface CertificateTemplateProps {
     userName: string;
@@ -8,6 +8,7 @@ interface CertificateTemplateProps {
     levelOrder: number;
     score: number;
     earnedAt: string;
+    variant?: "level" | "master";
 }
 
 export function CertificateTemplate({
@@ -15,8 +16,16 @@ export function CertificateTemplate({
     levelTitle,
     levelOrder,
     score,
-    earnedAt
+    earnedAt,
+    variant = "level"
 }: CertificateTemplateProps) {
+    const isMaster = variant === "master";
+    const accentColor = isMaster ? "#FBBF24" : "#00C888";
+    const bgColor = isMaster ? "#1a1408" : "#0c1220";
+    const gradientFrom = isMaster ? "rgba(251,191,36,0.15)" : "rgba(0,200,136,0.15)";
+    const gradientTo = isMaster ? "rgba(251,191,36,0.05)" : "rgba(0,200,136,0.05)";
+    const borderAccent = isMaster ? "rgba(251,191,36,0.3)" : "rgba(0,200,136,0.3)";
+
     const dateStr = new Date(earnedAt).toLocaleDateString('en-US', {
         year: 'numeric', month: 'long', day: 'numeric'
     });
@@ -27,7 +36,7 @@ export function CertificateTemplate({
             style={{
                 width: 1200,
                 height: 850,
-                background: "#0c1220",
+                background: bgColor,
                 position: "relative",
                 fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
                 overflow: "hidden",
@@ -46,23 +55,33 @@ export function CertificateTemplate({
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    opacity: 0.15,
+                    opacity: isMaster ? 0.1 : 0.15,
                     pointerEvents: "none"
                 }}
             />
 
+            {/* Gold shimmer overlay for master */}
+            {isMaster && (
+                <div style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "radial-gradient(ellipse at 50% 0%, rgba(251,191,36,0.08) 0%, transparent 60%)",
+                    pointerEvents: "none"
+                }} />
+            )}
+
             {/* Corner brackets — 4 corners */}
             <svg style={{ position: "absolute", top: 20, left: 20 }} width="60" height="60" viewBox="0 0 60 60" fill="none">
-                <path d="M2 40V2h38" stroke="#00C888" strokeWidth="3" strokeLinecap="round" />
+                <path d="M2 40V2h38" stroke={accentColor} strokeWidth="3" strokeLinecap="round" />
             </svg>
             <svg style={{ position: "absolute", top: 20, right: 20 }} width="60" height="60" viewBox="0 0 60 60" fill="none">
-                <path d="M20 2h38v38" stroke="#00C888" strokeWidth="3" strokeLinecap="round" />
+                <path d="M20 2h38v38" stroke={accentColor} strokeWidth="3" strokeLinecap="round" />
             </svg>
             <svg style={{ position: "absolute", bottom: 20, left: 20 }} width="60" height="60" viewBox="0 0 60 60" fill="none">
-                <path d="M2 20v38h38" stroke="#00C888" strokeWidth="3" strokeLinecap="round" />
+                <path d="M2 20v38h38" stroke={accentColor} strokeWidth="3" strokeLinecap="round" />
             </svg>
             <svg style={{ position: "absolute", bottom: 20, right: 20 }} width="60" height="60" viewBox="0 0 60 60" fill="none">
-                <path d="M20 58h38V20" stroke="#00C888" strokeWidth="3" strokeLinecap="round" />
+                <path d="M20 58h38V20" stroke={accentColor} strokeWidth="3" strokeLinecap="round" />
             </svg>
 
             {/* Center blur — soft shadow for text readability */}
@@ -74,7 +93,7 @@ export function CertificateTemplate({
                 width: "90%",
                 height: "85%",
                 borderRadius: "50%",
-                background: "radial-gradient(ellipse at center, #0c1220 0%, rgba(12,18,32,0.9) 15%, rgba(12,18,32,0.7) 30%, rgba(12,18,32,0.45) 45%, rgba(12,18,32,0.2) 60%, rgba(12,18,32,0.05) 80%, transparent 100%)",
+                background: `radial-gradient(ellipse at center, ${bgColor} 0%, ${bgColor}e6 15%, ${bgColor}b3 30%, ${bgColor}73 45%, ${bgColor}33 60%, ${bgColor}0d 80%, transparent 100%)`,
                 filter: "blur(30px)",
                 pointerEvents: "none"
             }} />
@@ -96,31 +115,45 @@ export function CertificateTemplate({
                     <span style={{ fontSize: 22, fontWeight: 800, color: "#fff", letterSpacing: 1 }}>
                         TheNext
                     </span>
-                    <span style={{ fontSize: 22, fontWeight: 800, color: "#00C888", letterSpacing: 1 }}>
+                    <span style={{ fontSize: 22, fontWeight: 800, color: accentColor, letterSpacing: 1 }}>
                         Trade
                     </span>
                 </div>
 
                 {/* Big Title */}
                 <div style={{
-                    fontSize: 52,
+                    fontSize: isMaster ? 48 : 52,
                     fontWeight: 900,
-                    color: "#fff",
+                    color: isMaster ? accentColor : "#fff",
                     lineHeight: 1.1,
                     marginBottom: 6,
                     letterSpacing: -1
                 }}>
-                    Academy Certificate
+                    {isMaster ? "Master Trader Certificate" : "Academy Certificate"}
                 </div>
 
                 {/* Subtitle line */}
                 <div style={{
                     width: 260,
                     height: 1,
-                    background: "#00C888",
+                    background: accentColor,
                     borderRadius: 2,
-                    marginBottom: 40
+                    marginBottom: isMaster ? 20 : 40
                 }} />
+
+                {/* Master subtitle */}
+                {isMaster && (
+                    <div style={{
+                        fontSize: 14,
+                        color: "rgba(251,191,36,0.7)",
+                        fontWeight: 600,
+                        letterSpacing: 3,
+                        marginBottom: 24,
+                        textTransform: "uppercase" as const
+                    }}>
+                        ★ ALL 12 LEVELS COMPLETED ★
+                    </div>
+                )}
 
                 {/* Proudly presented to */}
                 <div style={{
@@ -151,21 +184,24 @@ export function CertificateTemplate({
                     color: "rgba(255,255,255,0.8)",
                     fontWeight: 400,
                     marginBottom: 16,
-                    maxWidth: 500,
+                    maxWidth: 550,
                     lineHeight: 1.6
                 }}>
-                    Who has successfully completed all quizzes and assessments in
+                    {isMaster
+                        ? "Who has demonstrated exceptional dedication and successfully completed the entire TheNextTrade Academy program"
+                        : "Who has successfully completed all quizzes and assessments in"
+                    }
                 </div>
 
                 {/* Level title */}
                 <div style={{
-                    fontSize: 36,
+                    fontSize: isMaster ? 32 : 36,
                     fontWeight: 800,
-                    color: "#00C888",
+                    color: accentColor,
                     marginBottom: 32,
                     lineHeight: 1.2
                 }}>
-                    Level {levelOrder}: {levelTitle}
+                    {isMaster ? "TheNextTrade Academy Graduate" : `Level ${levelOrder}: ${levelTitle}`}
                 </div>
 
                 {/* Score box */}
@@ -187,16 +223,16 @@ export function CertificateTemplate({
 
                     {/* Score */}
                     <div style={{
-                        background: "linear-gradient(135deg, rgba(0,200,136,0.15), rgba(0,200,136,0.05))",
-                        border: "1px solid rgba(0,200,136,0.3)",
+                        background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
+                        border: `1px solid ${borderAccent}`,
                         borderRadius: 12,
                         padding: "12px 32px",
                         textAlign: "center"
                     }}>
                         <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", letterSpacing: 2, marginBottom: 4, textTransform: "uppercase" as const }}>
-                            SCORE
+                            {isMaster ? "AVG SCORE" : "SCORE"}
                         </div>
-                        <div style={{ fontSize: 36, fontWeight: 900, color: "#00C888" }}>
+                        <div style={{ fontSize: 36, fontWeight: 900, color: accentColor }}>
                             {score}%
                         </div>
                     </div>
@@ -207,7 +243,7 @@ export function CertificateTemplate({
                             CERT ID
                         </div>
                         <div style={{ fontSize: 14, color: "#fff", fontWeight: 600, fontFamily: "monospace" }}>
-                            TNT-L{levelOrder}
+                            {isMaster ? "TNT-MASTER" : `TNT-L${levelOrder}`}
                         </div>
                     </div>
                 </div>
@@ -230,21 +266,28 @@ export function CertificateTemplate({
                 </div>
             </div>
 
-            {/* Award badge — top right */}
+            {/* Badge — top right */}
             <div style={{
                 position: "absolute",
                 top: 40,
                 right: 50,
-                width: 64,
-                height: 64,
+                width: isMaster ? 72 : 64,
+                height: isMaster ? 72 : 64,
                 borderRadius: "50%",
-                background: "linear-gradient(135deg, #FBBF24, #F59E0B)",
+                background: isMaster
+                    ? "linear-gradient(135deg, #FBBF24, #D97706)"
+                    : "linear-gradient(135deg, #FBBF24, #F59E0B)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 8px 32px rgba(245, 158, 11, 0.3)"
+                boxShadow: isMaster
+                    ? "0 8px 32px rgba(251, 191, 36, 0.5)"
+                    : "0 8px 32px rgba(245, 158, 11, 0.3)"
             }}>
-                <Award size={32} color="#fff" />
+                {isMaster
+                    ? <Crown size={36} color="#fff" />
+                    : <Award size={32} color="#fff" />
+                }
             </div>
 
             {/* Logo — top left */}

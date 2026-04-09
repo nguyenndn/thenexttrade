@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Download, Lock, Share2, Award, Eye, X } from "lucide-react";
+import { Download, Lock, Share2, Award, Crown, Eye, X } from "lucide-react";
 import { toast } from "sonner";
 import * as htmlToImage from "html-to-image";
 import { CertificateTemplate } from "./CertificateTemplate";
@@ -16,10 +16,11 @@ interface CertificateCardProps {
     passedQuizzes: number;
     totalQuizzes: number;
     userName: string;
+    variant?: "level" | "master";
 }
 
-// Brand gradient matching website primary green
-const CERT_GRADIENT = { from: "#00C888", to: "#0d9488" };
+const LEVEL_GRADIENT = { from: "#00C888", to: "#0d9488" };
+const MASTER_GRADIENT = { from: "#FBBF24", to: "#D97706" };
 
 export function CertificateCard({
     levelTitle,
@@ -30,8 +31,11 @@ export function CertificateCard({
     earnedAt,
     passedQuizzes,
     totalQuizzes,
-    userName
+    userName,
+    variant = "level"
 }: CertificateCardProps) {
+    const isMaster = variant === "master";
+    const gradient = isMaster ? MASTER_GRADIENT : LEVEL_GRADIENT;
     const [showPreview, setShowPreview] = useState(false);
     const templateRef = useRef<HTMLDivElement>(null);
     const [downloading, setDownloading] = useState(false);
@@ -64,10 +68,10 @@ export function CertificateCard({
             const dataUrl = await htmlToImage.toPng(el, {
                 quality: 1,
                 pixelRatio: 2,
-                backgroundColor: "#0c1220"
+                backgroundColor: isMaster ? "#1a1408" : "#0c1220"
             });
             const link = document.createElement("a");
-            link.download = `TheNextTrade-Certificate-Level${levelOrder}.png`;
+            link.download = isMaster ? `TheNextTrade-Master-Certificate.png` : `TheNextTrade-Certificate-Level${levelOrder}.png`;
             link.href = dataUrl;
             document.body.appendChild(link);
             link.click();
@@ -89,7 +93,9 @@ export function CertificateCard({
     }, [downloading, showPreview]);
 
     const handleShare = async () => {
-        const text = `🎓 I just earned my Level ${levelOrder}: ${levelTitle} certificate on TheNextTrade Academy with a ${score}% score! #ForexTrading #TheNextTrade`;
+        const text = isMaster
+            ? `🏆 I just completed the entire TheNextTrade Academy program with a ${score}% average score! Master Trader Certified! #ForexTrading #TheNextTrade`
+            : `🎓 I just earned my Level ${levelOrder}: ${levelTitle} certificate on TheNextTrade Academy with a ${score}% score! #ForexTrading #TheNextTrade`;
         if (navigator.share) {
             try {
                 await navigator.share({ text, url: "https://thenexttrade.com/academy" });
@@ -135,7 +141,7 @@ export function CertificateCard({
         <>
             <div
                 className="relative rounded-xl overflow-hidden shadow-lg group"
-                style={{ background: `linear-gradient(to bottom right, ${CERT_GRADIENT.from}, ${CERT_GRADIENT.to})` }}
+                style={{ background: `linear-gradient(to bottom right, ${gradient.from}, ${gradient.to})` }}
             >
                 {/* Decorative glow */}
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-[60px] pointer-events-none" />
@@ -143,14 +149,18 @@ export function CertificateCard({
 
                 <div className="relative z-10 p-6 text-white">
                     {/* Award icon — gold, top-right */}
-                    <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-yellow-400/90 shadow-md shadow-yellow-500/30 flex items-center justify-center">
-                        <Award size={20} className="text-white" />
+                    <div className={`absolute top-4 right-4 ${isMaster ? 'w-12 h-12' : 'w-10 h-10'} rounded-full ${isMaster ? 'bg-white/20 shadow-lg shadow-white/10' : 'bg-yellow-400/90 shadow-md shadow-yellow-500/30'} flex items-center justify-center`}>
+                        {isMaster ? <Crown size={24} className="text-white" /> : <Award size={20} className="text-white" />}
                     </div>
 
                     {/* Title — centered, bold */}
                     <div className="text-center mb-4">
-                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">Level {levelOrder}</span>
-                        <h3 className="text-xl font-black mt-1 leading-tight">{levelTitle}</h3>
+                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">
+                            {isMaster ? "★ ALL LEVELS COMPLETED ★" : `Level ${levelOrder}`}
+                        </span>
+                        <h3 className={`${isMaster ? 'text-2xl' : 'text-xl'} font-black mt-1 leading-tight`}>
+                            {isMaster ? "Master Trader" : levelTitle}
+                        </h3>
                     </div>
 
                     <div className="flex items-center justify-center gap-6 text-sm mb-4">
@@ -202,12 +212,14 @@ export function CertificateCard({
                     >
                         {/* Modal header */}
                         <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 bg-gray-100 backdrop-blur-sm border-b border-gray-200">
-                            <h3 className="text-gray-800 font-bold text-sm">Certificate Preview — Level {levelOrder}</h3>
+                            <h3 className="text-gray-800 font-bold text-sm">
+                                {isMaster ? "Master Trader Certificate Preview" : `Certificate Preview — Level ${levelOrder}`}
+                            </h3>
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={handleDownload}
                                     className="flex items-center gap-2 px-4 py-2 text-white rounded-lg text-xs font-bold transition-colors hover:opacity-90"
-                                    style={{ background: "#00C888" }}
+                                    style={{ background: isMaster ? "#D97706" : "#00C888" }}
                                 >
                                     <Download size={14} /> Download PNG
                                 </button>
@@ -221,13 +233,14 @@ export function CertificateCard({
                         </div>
 
                         {/* Certificate template */}
-                        <div ref={templateRef} className="bg-[#0F1119]">
+                        <div ref={templateRef} className={isMaster ? "bg-[#1a1408]" : "bg-[#0F1119]"}>
                             <CertificateTemplate
                                 userName={userName}
                                 levelTitle={levelTitle}
                                 levelOrder={levelOrder}
                                 score={score ?? 0}
                                 earnedAt={earnedAt ?? new Date().toISOString()}
+                                variant={variant}
                             />
                         </div>
                     </div>
