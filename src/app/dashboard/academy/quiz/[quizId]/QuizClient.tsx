@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import {
     CheckCircle, XCircle, Trophy, ArrowRight, RotateCcw,
-    ChevronRight, GraduationCap, BookOpen, Clock, Menu, X, Lock
+    ChevronRight, GraduationCap, BookOpen, Clock, Menu, X, Lock, Award
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -85,6 +85,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
         correctCount: number;
         totalQuestions: number;
     } | null>(null);
+    const [certificateEarned, setCertificateEarned] = useState(false);
 
     // Save draft
     useEffect(() => {
@@ -138,6 +139,9 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
             const data = await res.json();
             setResult(data.results);
             clearDraft();
+            if (data.results.certificateEarned) {
+                setCertificateEarned(true);
+            }
             if (data.results.passed) {
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 toast.success(`Passed! Score: ${data.results.score}%`);
@@ -365,6 +369,24 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                     </Link>
                                 </div>
                             </div>
+
+                            {/* Certificate Earned Banner */}
+                            {certificateEarned && (
+                                <div className="mx-8 mb-8 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                                            <Award size={20} className="text-amber-500" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="font-bold text-amber-600 dark:text-amber-400 text-sm">🎓 Level Certificate Earned!</p>
+                                            <p className="text-xs text-amber-600/70 dark:text-amber-400/70">You&apos;ve passed all quizzes in this level.</p>
+                                        </div>
+                                        <Link href="/dashboard/academy/certificates" className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap">
+                                            View Certificate
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <>

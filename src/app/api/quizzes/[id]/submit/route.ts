@@ -17,6 +17,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
         const quiz = await prisma.quiz.findUnique({
             where: { id: params.id },
             include: {
+                module: { select: { id: true, levelId: true } },
                 questions: {
                     include: { options: true }
                 }
@@ -71,13 +72,78 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
             }
         });
 
+        // ── AUTO-GRANT CERTIFICATE ──
+        // When user passes, check if ALL quizzes in the level are now passed
+        let certificateEarned = false;
+        if (passed && quiz.module?.levelId) {
+            try {
+                const levelId = quiz.module.levelId;
+
+                // Find all modules in this level that have quizzes
+                const modulesWithQuizzes = await prisma.module.findMany({
+                    where: { levelId, quiz: { isNot: null } },
+                    select: {
+                        quiz: {
+                            select: { id: true }
+                        }
+                    }
+                });
+
+                const quizIds = modulesWithQuizzes
+                    .map(m => m.quiz?.id)
+                    .filter((id): id is string => !!id);
+
+                if (quizIds.length > 0) {
+                    // Check if user has passed ALL quizzes in this level
+                    // Get best attempt per quiz
+                    const passedQuizzes = await prisma.userQuizAttempt.findMany({
+                        where: {
+                            userId,
+                            quizId: { in: quizIds },
+                            passed: true
+                        },
+                        distinct: ['quizId'],
+                        select: { quizId: true, score: true }
+                    });
+
+                    if (passedQuizzes.length === quizIds.length) {
+                        // All quizzes passed! Calculate average score
+                        // Get best score per quiz
+                        const bestScores = await Promise.all(
+                            quizIds.map(async (qId) => {
+                                const best = await prisma.userQuizAttempt.findFirst({
+                                    where: { userId, quizId: qId, passed: true },
+                                    orderBy: { score: 'desc' },
+                                    select: { score: true }
+                                });
+                                return best?.score ?? 0;
+                            })
+                        );
+                        const avgScore = Math.round(bestScores.reduce((a, b) => a + b, 0) / bestScores.length);
+
+                        // Upsert certificate
+                        await prisma.certificate.upsert({
+                            where: { userId_levelId: { userId, levelId } },
+                            create: { userId, levelId, score: avgScore },
+                            update: { score: avgScore, earnedAt: new Date() }
+                        });
+                        certificateEarned = true;
+                    }
+                }
+            } catch (certError) {
+                console.error("Certificate grant error:", certError);
+                // Don't fail the quiz submission if certificate logic fails
+            }
+        }
+
         return NextResponse.json({
             attempt,
             results: {
                 correctCount,
                 totalQuestions,
                 score,
-                passed
+                passed,
+                certificateEarned
             }
         });
 

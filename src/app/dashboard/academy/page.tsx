@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { GraduationCap, Trophy, ArrowRight, Zap, Target, BookOpen } from "lucide-react";
+import { GraduationCap, Trophy, ArrowRight, Zap, Target, BookOpen, Award } from "lucide-react";
 import Link from "next/link";
 import { AcademyTree } from "@/components/academy/AcademyTree";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -20,7 +20,7 @@ export default async function UserAcademyDashboard() {
     const userId = user.id;
 
     // Parallel Fetching for Performance
-    const [completedLessons, totalLessons, levels, userData, allQuizzes] = await Promise.all([
+    const [completedLessons, totalLessons, levels, userData, allQuizzes, certificates, totalLevels] = await Promise.all([
         prisma.userProgress.count({ where: { userId, isCompleted: true } }),
         prisma.lesson.count(),
         prisma.level.findMany({
@@ -70,6 +70,7 @@ export default async function UserAcademyDashboard() {
             select: {
                 id: true,
                 title: true,
+                moduleId: true,
                 module: { select: { title: true } },
                 _count: { select: { attempts: { where: { userId } } } },
                 attempts: {
@@ -79,7 +80,13 @@ export default async function UserAcademyDashboard() {
                     select: { score: true, passed: true }
                 }
             }
-        })
+        }),
+        // Certificates earned
+        prisma.certificate.findMany({
+            where: { userId },
+            select: { levelId: true }
+        }),
+        prisma.level.count()
     ]);
 
     // Find Next Lesson (Resume Logic)
@@ -117,6 +124,7 @@ export default async function UserAcademyDashboard() {
     const overallProgress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
     const currentStreak = userData?.streak || 0;
     const hasStarted = completedLessons > 0;
+    const earnedCerts = certificates.length;
 
     return (
         <div className="space-y-4">
@@ -205,44 +213,101 @@ export default async function UserAcademyDashboard() {
                             <Trophy size={18} className="text-yellow-500" /> Quizzes
                         </h3>
 
-                        {allQuizzes.length === 0 ? (
-                            <EmptyState
-                                icon={Target}
-                                description="No quizzes available yet. Complete lessons to unlock quizzes."
-                                className="border border-dashed border-gray-200 dark:border-white/10 rounded-xl"
-                            />
-                        ) : (
-                            <div className="space-y-1">
-                                {allQuizzes.map(quiz => {
-                                    const bestAttempt = quiz.attempts[0];
-                                    const hasPassed = bestAttempt?.passed;
-                                    const attemptCount = quiz._count?.attempts ?? 0;
-                                    return (
-                                        <a
-                                            key={quiz.id}
-                                            href={`/dashboard/academy/quiz/${quiz.id}`}
-                                            className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group"
-                                        >
-                                            <div className="flex-1 truncate pr-3">
-                                                <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate group-hover:text-primary transition-colors">{quiz.title}</p>
-                                                <p className="text-xs text-gray-600 truncate">
-                                                    {quiz.module?.title ?? 'General'}
-                                                    {attemptCount > 0 && <span> · {attemptCount} attempt{attemptCount !== 1 ? 's' : ''}</span>}
-                                                </p>
-                                            </div>
-                                            {hasPassed ? (
-                                                <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400">✓ {bestAttempt.score}%</span>
-                                            ) : bestAttempt ? (
-                                                <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400">{bestAttempt.score}%</span>
-                                            ) : (
-                                                <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400">New</span>
-                                            )}
-                                        </a>
+                        {(() => {
+                            // Build set of moduleIds where ALL lessons are completed
+                            const completedModuleIds = new Set<string>();
+                            for (const level of levels) {
+                                for (const mod of level.modules) {
+                                    const allDone = mod.lessons.length > 0 && mod.lessons.every(
+                                        (l: any) => l.progress.some((p: any) => p.isCompleted)
                                     );
-                                })}
-                            </div>
-                        )}
+                                    if (allDone) completedModuleIds.add(mod.id);
+                                }
+                            }
+
+                            // Filter: show quizzes that are unlocked OR already attempted
+                            const actionableQuizzes = allQuizzes.filter(q => {
+                                const hasAttempt = (q._count?.attempts ?? 0) > 0;
+                                const isUnlocked = q.moduleId ? completedModuleIds.has(q.moduleId) : true;
+                                return hasAttempt || isUnlocked;
+                            });
+
+                            const passedCount = allQuizzes.filter(q => q.attempts[0]?.passed).length;
+
+                            if (actionableQuizzes.length === 0) {
+                                return (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between text-xs text-gray-500">
+                                            <span>{passedCount}/{allQuizzes.length} passed</span>
+                                        </div>
+                                        <EmptyState
+                                            icon={Target}
+                                            description="Complete all lessons in a module to unlock its quiz."
+                                            className="border border-dashed border-gray-200 dark:border-white/10 rounded-xl"
+                                        />
+                                    </div>
+                                );
+                            }
+
+                            return (
+                                <div className="space-y-1 max-h-[280px] overflow-y-auto">
+                                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2 px-1">
+                                        <span>{passedCount}/{allQuizzes.length} passed</span>
+                                        <span>{actionableQuizzes.length} available</span>
+                                    </div>
+                                    {actionableQuizzes.map(quiz => {
+                                        const bestAttempt = quiz.attempts[0];
+                                        const hasPassed = bestAttempt?.passed;
+                                        const attemptCount = quiz._count?.attempts ?? 0;
+                                        return (
+                                            <a
+                                                key={quiz.id}
+                                                href={`/dashboard/academy/quiz/${quiz.id}`}
+                                                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group"
+                                            >
+                                                <div className="flex-1 truncate pr-3">
+                                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate group-hover:text-primary transition-colors">{quiz.title}</p>
+                                                    <p className="text-xs text-gray-600 truncate">
+                                                        {quiz.module?.title ?? 'General'}
+                                                        {attemptCount > 0 && <span> · {attemptCount} attempt{attemptCount !== 1 ? 's' : ''}</span>}
+                                                    </p>
+                                                </div>
+                                                {hasPassed ? (
+                                                    <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400">✓ {bestAttempt.score}%</span>
+                                                ) : bestAttempt ? (
+                                                    <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400">{bestAttempt.score}%</span>
+                                                ) : (
+                                                    <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400">New</span>
+                                                )}
+                                            </a>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })()}
                     </div>
+
+                    {/* Certificates Progress */}
+                    <Link href="/dashboard/academy/certificates" className="block">
+                        <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:border-primary/30 transition-colors group">
+                            <h3 className="font-bold text-gray-700 dark:text-white mb-3 flex items-center gap-2">
+                                <Award size={18} className="text-primary" /> Certificates
+                            </h3>
+                            <div className="flex items-baseline gap-2 mb-3">
+                                <span className="text-3xl font-black text-primary">{earnedCerts}</span>
+                                <span className="text-gray-500 text-sm">/ {totalLevels} levels</span>
+                            </div>
+                            <div className="w-full h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden mb-3">
+                                <div
+                                    className="h-full bg-primary rounded-full transition-all duration-500"
+                                    style={{ width: `${totalLevels > 0 ? (earnedCerts / totalLevels) * 100 : 0}%` }}
+                                />
+                            </div>
+                            <p className="text-xs text-gray-500 group-hover:text-primary transition-colors">
+                                {earnedCerts > 0 ? `${earnedCerts} certificate${earnedCerts > 1 ? 's' : ''} earned →` : 'Pass all quizzes in a level to earn a certificate →'}
+                            </p>
+                        </div>
+                    </Link>
                 </div>
             </div>
         </div>
