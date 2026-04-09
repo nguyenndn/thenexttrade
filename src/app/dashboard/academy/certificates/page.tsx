@@ -3,7 +3,7 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CertificateCard } from "@/components/academy/CertificateCard";
-import { GraduationCap, Lock, Trophy } from "lucide-react";
+import { GraduationCap, Lock, Trophy, Crown } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = 'force-dynamic';
@@ -60,6 +60,15 @@ export default async function CertificatesPage() {
     const totalLevels = levels.length;
     const displayName = userName?.name || userName?.profile?.username || "Trader";
 
+    // Master Certificate: all levels completed
+    const allLevelsCompleted = totalLevels > 0 && earnedCount >= totalLevels;
+    const masterAvgScore = allLevelsCompleted
+        ? Math.round(certificates.reduce((sum, c) => sum + c.score, 0) / certificates.length)
+        : 0;
+    const masterEarnedAt = allLevelsCompleted
+        ? certificates.reduce((latest, c) => c.earnedAt > latest ? c.earnedAt : latest, certificates[0].earnedAt).toISOString()
+        : null;
+
     return (
         <div className="space-y-4">
             <PageHeader
@@ -74,6 +83,57 @@ export default async function CertificatesPage() {
                 </div>
             </PageHeader>
 
+            {/* Master Certificate — shown at top when all levels completed */}
+            {allLevelsCompleted && (
+                <div className="relative">
+                    {/* Glow backdrop */}
+                    <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400/20 via-amber-400/10 to-yellow-400/20 rounded-2xl blur-xl pointer-events-none" />
+                    <div className="relative">
+                        <div className="flex items-center gap-2 mb-2">
+                            <Crown size={16} className="text-yellow-500" />
+                            <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-widest">
+                                Master Certificate
+                            </span>
+                        </div>
+                        <CertificateCard
+                            levelTitle="TheNextTrade Academy"
+                            levelOrder={0}
+                            levelDescription="Completed all 12 levels of the professional forex trading program"
+                            isEarned={true}
+                            score={masterAvgScore}
+                            earnedAt={masterEarnedAt}
+                            passedQuizzes={totalLevels}
+                            totalQuizzes={totalLevels}
+                            userName={displayName}
+                            variant="master"
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* Not yet completed — locked master card teaser */}
+            {!allLevelsCompleted && (
+                <div className="relative rounded-xl border-2 border-dashed border-yellow-400/30 bg-gradient-to-r from-yellow-400/5 to-amber-400/5 p-6 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-yellow-400/10 flex items-center justify-center flex-shrink-0">
+                        <Lock size={20} className="text-yellow-500/50" />
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                            Master Trader Certificate
+                        </h3>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                            Complete all {totalLevels} levels to unlock the Master Trader Certificate. {earnedCount}/{totalLevels} completed.
+                        </p>
+                    </div>
+                    <div className="ml-auto">
+                        <div className="text-2xl font-black text-yellow-400/30">
+                            🏆
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Level Certificates Grid */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {levels.map(level => {
                     const cert = certMap.get(level.id);
