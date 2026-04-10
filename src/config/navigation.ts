@@ -13,7 +13,6 @@ import {
     Activity,
     Tag,
     MessageSquare,
-    Briefcase,
     Bot,
     Download,
     BarChart3,
@@ -146,7 +145,6 @@ export const adminMenuItems = [
     // --- SYSTEM ---
     { name: "EA Management", href: "/admin/ea", icon: Bot },
     { name: "Users", href: "/admin/users", icon: Users },
-    { name: "Brokers", href: "/admin/brokers", icon: Briefcase },
     { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
