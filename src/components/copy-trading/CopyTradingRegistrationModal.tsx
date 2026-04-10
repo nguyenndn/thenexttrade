@@ -85,6 +85,7 @@ const brokerServers: Record<string, string[]> = {
 };
 
 const brokerOptions = [...Object.keys(brokerServers), "Any Broker"];
+const OTHER_SERVER = "__OTHER__";
 
 export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
     const [step, setStep] = useState(1);
@@ -137,6 +138,7 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
     if (!isOpen) return null;
 
     const isCustomBroker = formData.brokerName === "Any Broker";
+    const isCustomServer = formData.mt5Server === OTHER_SERVER;
 
     const updateField = (field: string, value: string | boolean) => {
         setFormData((prev) => {
@@ -181,7 +183,7 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
         formData.telegramHandle &&
         formData.tradingCapital &&
         formData.brokerName &&
-        (isCustomBroker ? formData.customBrokerName && formData.customServer : formData.mt5Server) &&
+        (isCustomBroker ? formData.customBrokerName && formData.customServer : (isCustomServer ? formData.customServer : formData.mt5Server)) &&
         formData.mt5AccountNumber &&
         formData.termsAccepted;
 
@@ -310,7 +312,7 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
                                                 className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/[0.06] px-4 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-left"
                                             >
                                                 <span className={formData.mt5Server ? "text-gray-700 dark:text-gray-100 truncate pr-2" : "text-gray-400 truncate pr-2"}>
-                                                    {formData.mt5Server || "Select server"}
+                                                    {formData.mt5Server === OTHER_SERVER ? "Other (type manually)" : formData.mt5Server || "Select server"}
                                                 </span>
                                                 <ChevronDown size={16} className={`text-gray-500 shrink-0 transition-transform ${serverDropdownOpen ? "rotate-180" : ""}`} />
                                             </button>
@@ -334,31 +336,63 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
 
                                                     {/* Options list */}
                                                     <div className="max-h-[220px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
-                                                        {filteredServers.length === 0 ? (
-                                                            <div className="px-4 py-3 text-xs text-gray-400 text-center">No servers found</div>
+                                                        {filteredServers.length === 0 && !serverSearch.trim() ? (
+                                                            <div className="px-4 py-3 text-xs text-gray-400 text-center">No servers available</div>
                                                         ) : (
-                                                            filteredServers.map((server) => (
-                                                                <button
-                                                                    key={server}
-                                                                    type="button"
-                                                                    onClick={() => {
-                                                                        updateField("mt5Server", server);
-                                                                        setServerDropdownOpen(false);
-                                                                        setServerSearch("");
-                                                                    }}
-                                                                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5 transition-colors ${
-                                                                        formData.mt5Server === server
-                                                                            ? "text-primary font-bold bg-primary/5"
-                                                                            : "text-gray-700 dark:text-gray-300"
-                                                                    }`}
-                                                                >
-                                                                    {server}
-                                                                </button>
-                                                            ))
+                                                            <>
+                                                                {filteredServers.map((server) => (
+                                                                    <button
+                                                                        key={server}
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            updateField("mt5Server", server);
+                                                                            updateField("customServer", "");
+                                                                            setServerDropdownOpen(false);
+                                                                            setServerSearch("");
+                                                                        }}
+                                                                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5 transition-colors ${
+                                                                            formData.mt5Server === server
+                                                                                ? "text-primary font-bold bg-primary/5"
+                                                                                : "text-gray-700 dark:text-gray-300"
+                                                                        }`}
+                                                                    >
+                                                                        {server}
+                                                                    </button>
+                                                                ))}
+                                                                {filteredServers.length === 0 && serverSearch.trim() && (
+                                                                    <div className="px-4 py-2 text-xs text-gray-400 text-center">No match found</div>
+                                                                )}
+                                                            </>
                                                         )}
+                                                    </div>
+                                                    {/* Other option — always visible (outside scroll) */}
+                                                    <div className="border-t border-gray-100 dark:border-white/5">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                updateField("mt5Server", OTHER_SERVER);
+                                                                setServerDropdownOpen(false);
+                                                                setServerSearch("");
+                                                            }}
+                                                            className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-white/5 transition-colors ${
+                                                                formData.mt5Server === OTHER_SERVER
+                                                                    ? "text-primary font-bold bg-primary/5"
+                                                                    : "text-gray-500 dark:text-gray-400 italic"
+                                                            }`}
+                                                        >
+                                                            Other (type manually)
+                                                        </button>
                                                     </div>
                                                 </div>
                                             )}
+                                        </div>
+                                    )}
+
+                                    {/* Custom Server input — when 'Other' selected from dropdown */}
+                                    {!isCustomBroker && isCustomServer && (
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-600 dark:text-gray-300 mb-1">Server Name *</label>
+                                            <input type="text" value={formData.customServer} onChange={(e) => updateField("customServer", e.target.value)} placeholder="e.g., Exness-MT5Real42" className={inputClass} autoFocus />
                                         </div>
                                     )}
 

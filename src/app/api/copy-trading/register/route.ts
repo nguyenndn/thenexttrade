@@ -50,8 +50,13 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "This MT5 account is already registered for copy trading" }, { status: 409 });
         }
 
+        const isOtherServer = mt5Server === "__OTHER__";
         const resolvedBroker = isCustomBroker ? customBrokerName!.trim() : brokerName;
-        const resolvedServer = isCustomBroker ? customServer?.trim() || "" : mt5Server;
+        const resolvedServer = isCustomBroker
+            ? customServer?.trim() || ""
+            : isOtherServer
+                ? customServer?.trim() || ""
+                : mt5Server;
 
         // Create registration
         const registration = await prisma.copyTradingRegistration.create({
@@ -63,8 +68,8 @@ export async function POST(request: NextRequest) {
                 tradingCapital: parseFloat(tradingCapital) || 0,
                 brokerName: isCustomBroker ? "Any Broker" : brokerName,
                 customBrokerName: isCustomBroker ? customBrokerName.trim() : null,
-                mt5Server: isCustomBroker ? null : mt5Server,
-                customServer: isCustomBroker ? customServer?.trim() || null : null,
+                mt5Server: resolvedServer || null,
+                customServer: (isCustomBroker || isOtherServer) ? customServer?.trim() || null : null,
                 mt5AccountNumber: mt5AccountNumber.trim(),
                 masterPassword: masterPassword || null, // TODO: encrypt
                 message: message?.trim() || null,

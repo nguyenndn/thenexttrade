@@ -1,6 +1,8 @@
 
 "use client";
 
+import { useState, useEffect, useMemo } from "react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, LogOut } from "lucide-react";
@@ -34,10 +36,44 @@ interface MobileSidebarProps {
 
 export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
     const pathname = usePathname();
+    const [disabledFlags, setDisabledFlags] = useState<Set<string>>(new Set());
+    const [flagsLoaded, setFlagsLoaded] = useState(false);
+
+    const rawItems = items ?? dashboardMenuItems;
+
+    useEffect(() => {
+        const flagKeys = rawItems
+            .filter((i: any) => i.featureFlag)
+            .map((i: any) => i.featureFlag);
+        if (flagKeys.length === 0) {
+            setFlagsLoaded(true);
+            return;
+        }
+
+        fetch(`/api/feature-flags?keys=${flagKeys.join(",")}`)
+            .then(res => res.json())
+            .then(data => {
+                const disabled = new Set<string>();
+                for (const [key, enabled] of Object.entries(data.flags || {})) {
+                    if (!enabled) disabled.add(key);
+                }
+                setDisabledFlags(disabled);
+            })
+            .catch(() => {})
+            .finally(() => setFlagsLoaded(true));
+    }, []);
+
+    const navItems = useMemo(() =>
+        rawItems.filter((item: any) => {
+            if (!item.featureFlag) return true;
+            if (!flagsLoaded) return false;
+            return !disabledFlags.has(item.featureFlag);
+        }),
+        [rawItems, disabledFlags, flagsLoaded]
+    );
 
     if (!isOpen) return null;
 
-    const navItems = items ?? dashboardMenuItems;
     const isAdmin = navItems[0]?.href === "/admin";
     const sectionNames = isAdmin ? adminSectionNames : userSectionNames;
 

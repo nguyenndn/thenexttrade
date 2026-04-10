@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import {
     Copy,
@@ -29,6 +29,7 @@ import {
     Unplug,
     RefreshCw,
     AlertTriangle,
+    Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { CopyTradingRegistrationModal } from "./CopyTradingRegistrationModal";
@@ -523,7 +524,12 @@ export function CopyTradingMyAccount() {
     }>({ isOpen: false, title: "", message: "", confirmLabel: "", confirmColor: "red", action: async () => {} });
     const [confirmLoading, setConfirmLoading] = useState(false);
 
+    const fetchingRef = useRef<Set<string>>(new Set());
+    const hasFetchedRef = useRef(false);
+
     useEffect(() => {
+        if (hasFetchedRef.current) return;
+        hasFetchedRef.current = true;
         fetchRegistrations();
     }, []);
 
@@ -533,13 +539,14 @@ export function CopyTradingMyAccount() {
             if (res.ok) {
                 const data = await res.json();
                 setRegistrations(data.registrations || []);
-                // Auto-expand first approved/disconnected account
-                const firstActive = (data.registrations || []).find(
+                // Fetch PVSR data for all approved accounts (for status badge)
+                const approvedAccounts = (data.registrations || []).filter(
                     (r: Registration) => r.status === "APPROVED" || r.status === "DISCONNECTED"
                 );
-                if (firstActive) {
-                    setExpandedId(firstActive.id);
-                    fetchPvsrData(firstActive.mt5AccountNumber);
+                approvedAccounts.forEach((r: Registration) => fetchPvsrData(r.mt5AccountNumber));
+                // Auto-expand first one
+                if (approvedAccounts.length > 0) {
+                    setExpandedId(approvedAccounts[0].id);
                 }
             }
         } catch {
@@ -550,7 +557,8 @@ export function CopyTradingMyAccount() {
     };
 
     const fetchPvsrData = async (mt5Account: string) => {
-        if (pvsrCache[mt5Account] || loadingPvsr[mt5Account]) return;
+        if (fetchingRef.current.has(mt5Account)) return;
+        fetchingRef.current.add(mt5Account);
         setLoadingPvsr(prev => ({ ...prev, [mt5Account]: true }));
         try {
             const res = await fetch(`/api/copy-trading/account/${mt5Account}`);
@@ -561,6 +569,7 @@ export function CopyTradingMyAccount() {
         } catch {
             // silently fail
         } finally {
+            fetchingRef.current.delete(mt5Account);
             setLoadingPvsr(prev => ({ ...prev, [mt5Account]: false }));
         }
     };
@@ -637,6 +646,33 @@ export function CopyTradingMyAccount() {
         });
     };
 
+    const reconnectAccount = (reg: Registration) => {
+        setConfirmDialog({
+            isOpen: true,
+            title: "Reconnect Account?",
+            message: `This will send a reconnection request for MT5 account ${reg.mt5AccountNumber}. Your account will be reviewed by the PVSR team before reactivation.`,
+            confirmLabel: "Reconnect",
+            confirmColor: "primary",
+            action: async () => {
+                const res = await fetch("/api/copy-trading/reconnect", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mt5AccountNumber: reg.mt5AccountNumber }),
+                });
+                if (res.ok) {
+                    setRegistrations(prev => prev.map(r =>
+                        r.id === reg.id ? { ...r, status: "PENDING" as const, disconnectedAt: null, disconnectReason: null } : r
+                    ));
+                    setExpandedId(null);
+                    toast.success("Reconnection request sent! Awaiting approval.");
+                } else {
+                    const data = await res.json().catch(() => null);
+                    toast.error(data?.error || "Failed to send reconnection request");
+                }
+            },
+        });
+    };
+
     const handleConfirm = async () => {
         setConfirmLoading(true);
         try {
@@ -689,10 +725,12 @@ export function CopyTradingMyAccount() {
             {registrations.map((reg) => {
                 const sd = statusDisplay[reg.status] || statusDisplay.PENDING;
                 const broker = reg.brokerName === "Any Broker" ? (reg.customBrokerName || "Custom Broker") : reg.brokerName;
-                const server = reg.brokerName === "Any Broker" ? (reg.customServer || "—") : (reg.mt5Server || "—");
+                const server = reg.customServer || reg.mt5Server || "—";
                 const StatusIcon = sd.icon;
                 const isExpanded = expandedId === reg.id;
                 const hasPerformance = reg.status === "APPROVED" || reg.status === "DISCONNECTED";
+                const pvsrInfo = pvsrCache[reg.mt5AccountNumber];
+                const capital = pvsrInfo?.accountInfo?.balance ?? reg.tradingCapital;
 
                 return (
                     <div key={reg.id} className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] overflow-hidden">
@@ -703,12 +741,28 @@ export function CopyTradingMyAccount() {
                                 <span className="text-sm font-bold">{sd.label}</span>
                                 <span className="text-sm font-semibold hidden sm:inline">— {sd.sublabel}</span>
                             </div>
-                            {reg.status === "APPROVED" && (
-                                <div className="flex items-center gap-1.5">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="text-sm font-bold">Active</span>
-                                </div>
-                            )}
+                            {reg.status === "APPROVED" && (() => {
+                                const acctStatus = pvsrInfo?.accountInfo?.accountStatus;
+                                const isOnline = acctStatus === "ONLINE";
+                                const isOffline = acctStatus === "OFFLINE";
+                                return (
+                                    <div className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-[0.08em] backdrop-blur-sm shadow-sm ${
+                                        isOnline
+                                            ? "bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 ring-1 ring-emerald-500/25"
+                                            : isOffline
+                                            ? "bg-gray-900/5 text-gray-500 dark:bg-white/5 dark:text-gray-400 ring-1 ring-gray-500/15"
+                                            : "bg-gray-900/5 text-gray-400 dark:bg-white/5 dark:text-gray-500 ring-1 ring-gray-500/10"
+                                    }`}>
+                                        <span className="relative flex h-2 w-2">
+                                            {isOnline && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-50" />}
+                                            <span className={`relative inline-flex rounded-full h-2 w-2 ${
+                                                isOnline ? "bg-emerald-500" : isOffline ? "bg-gray-400 dark:bg-gray-500" : "bg-gray-300 dark:bg-gray-600"
+                                            }`} />
+                                        </span>
+                                        {isOnline ? "Online" : isOffline ? "Offline" : "Awaiting"}
+                                    </div>
+                                );
+                            })()}
                         </div>
 
                         {/* Account details */}
@@ -747,7 +801,7 @@ export function CopyTradingMyAccount() {
                                     </div>
                                     <div>
                                         <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Capital</span>
-                                        <p className="text-sm font-bold text-gray-700 dark:text-white mt-0.5">${reg.tradingCapital.toLocaleString()}</p>
+                                        <p className="text-sm font-bold text-gray-700 dark:text-white mt-0.5">{formatCurrency(capital)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -804,12 +858,21 @@ export function CopyTradingMyAccount() {
                                             >
                                                 <Trash2 size={12} /> Delete
                                             </button>
-                                            <button
-                                                onClick={() => setShowRegistration(true)}
-                                                className="flex items-center gap-1 text-[11px] font-bold text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded-lg hover:bg-primary/5"
-                                            >
-                                                <RefreshCw size={12} /> Register Again
-                                            </button>
+                                            {reg.status === "DISCONNECTED" ? (
+                                                <button
+                                                    onClick={() => reconnectAccount(reg)}
+                                                    className="flex items-center gap-1 text-[11px] font-bold text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded-lg hover:bg-primary/5"
+                                                >
+                                                    <RefreshCw size={12} /> Reconnect
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => setShowRegistration(true)}
+                                                    className="flex items-center gap-1 text-[11px] font-bold text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded-lg hover:bg-primary/5"
+                                                >
+                                                    <RefreshCw size={12} /> Register Again
+                                                </button>
+                                            )}
                                         </>
                                     )}
                                 </div>
@@ -840,6 +903,15 @@ export function CopyTradingMyAccount() {
                     </div>
                 );
             })}
+
+            {/* Add Account button */}
+            <button
+                onClick={() => setShowRegistration(true)}
+                className="w-full py-4 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
+            >
+                <Plus size={16} />
+                Add Another Account
+            </button>
 
             <CopyTradingRegistrationModal
                 isOpen={showRegistration}
