@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import {
     Copy,
@@ -25,6 +25,10 @@ import {
     Layers,
     Landmark,
     BadgeCheck,
+    Trash2,
+    Unplug,
+    RefreshCw,
+    AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { CopyTradingRegistrationModal } from "./CopyTradingRegistrationModal";
@@ -37,6 +41,7 @@ import {
     ResponsiveContainer,
     AreaChart,
 } from "recharts";
+import type { PVSRAccountDetail } from "@/lib/pvsr-client";
 
 type Registration = {
     id: string;
@@ -49,60 +54,11 @@ type Registration = {
     customServer: string | null;
     mt5AccountNumber: string;
     tradingCapital: number;
-    status: "PENDING" | "APPROVED" | "REJECTED";
+    status: "PENDING" | "APPROVED" | "REJECTED" | "DISCONNECTED";
     rejectReason: string | null;
+    disconnectedAt: string | null;
+    disconnectReason: string | null;
     createdAt: string;
-};
-
-// Mock performance data — will be replaced by PVSR Capital API
-interface AccountPerformance {
-    highestBalance: number;
-    balance: number;
-    totalProfit: number;
-    growth: number;
-    winRate: number;
-    wins: number;
-    losses: number;
-    totalTrades: number;
-    profitFactor: number;
-    swap: number;
-    commission: number;
-    maxDrawdown: { percent: number; amount: number };
-    equityData: { date: string; balance: number }[];
-    calendar: Record<string, number>;
-}
-
-const mockPerformance: Record<string, AccountPerformance> = {
-    // Keyed by mt5AccountNumber — will be matched from API
-    "default": {
-        highestBalance: 15339.23,
-        balance: 15325.54,
-        totalProfit: 4824.87,
-        growth: 48.25,
-        winRate: 68.8,
-        wins: 176,
-        losses: 80,
-        totalTrades: 256,
-        profitFactor: 3.53,
-        swap: 0.00,
-        commission: 0.00,
-        maxDrawdown: { percent: 100.00, amount: 1143.01 },
-        equityData: [
-            { date: "03/25", balance: 10000 },
-            { date: "03/26", balance: 10250 },
-            { date: "03/27", balance: 11800 },
-            { date: "03/28", balance: 14200 },
-            { date: "03/29", balance: 14950 },
-            { date: "03/30", balance: 15100 },
-            { date: "03/31", balance: 15050 },
-            { date: "04/01", balance: 15200 },
-            { date: "04/02", balance: 15325 },
-        ],
-        calendar: {
-            "2026-04-01": 1651.63,
-            "2026-04-02": 113.45,
-        },
-    },
 };
 
 function formatCurrency(value: number, showSign = false) {
@@ -119,7 +75,7 @@ function getCalendarDays(year: number, month: number) {
     return days;
 }
 
-const statusDisplay = {
+const statusDisplay: Record<string, { label: string; sublabel: string; color: string; dotColor: string; icon: React.ComponentType<{ size?: number }> }> = {
     PENDING: {
         label: "Pending Review",
         sublabel: "Your registration is being reviewed by our team",
@@ -128,8 +84,8 @@ const statusDisplay = {
         icon: Clock,
     },
     APPROVED: {
-        label: "Approved",
-        sublabel: "Account approved — awaiting connection setup",
+        label: "Connected",
+        sublabel: "Your account is actively copy trading",
         color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
         dotColor: "bg-emerald-500",
         icon: CheckCircle2,
@@ -141,36 +97,115 @@ const statusDisplay = {
         dotColor: "bg-red-500",
         icon: XCircle,
     },
+    DISCONNECTED: {
+        label: "Disconnected",
+        sublabel: "Account is no longer connected",
+        color: "bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20",
+        dotColor: "bg-gray-500",
+        icon: Unplug,
+    },
 };
 
-// ── Performance Section (inline for approved accounts) ────────────────────────
-function AccountPerformanceView({ reg }: { reg: Registration }) {
+// ── Confirm Dialog ────────────────────────────────────────────────────────────
+function ConfirmDialog({
+    isOpen,
+    title,
+    message,
+    confirmLabel,
+    confirmColor = "red",
+    onConfirm,
+    onCancel,
+    isLoading,
+}: {
+    isOpen: boolean;
+    title: string;
+    message: string;
+    confirmLabel: string;
+    confirmColor?: "red" | "primary";
+    onConfirm: () => void;
+    onCancel: () => void;
+    isLoading: boolean;
+}) {
+    if (!isOpen) return null;
+    const colorClasses = confirmColor === "red"
+        ? "bg-red-500 hover:bg-red-600 text-white shadow-red-500/20"
+        : "bg-primary hover:bg-primary/90 text-white shadow-primary/20";
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl max-w-md w-full p-6">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className={`p-2.5 rounded-xl ${confirmColor === "red" ? "bg-red-500/10" : "bg-primary/10"}`}>
+                        <AlertTriangle size={20} className={confirmColor === "red" ? "text-red-500" : "text-primary"} />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-white">{title}</h3>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">{message}</p>
+                <div className="flex gap-3 justify-end">
+                    <button
+                        onClick={onCancel}
+                        disabled={isLoading}
+                        className="px-4 py-2.5 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={onConfirm}
+                        disabled={isLoading}
+                        className={`px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all flex items-center gap-2 ${colorClasses} disabled:opacity-50`}
+                    >
+                        {isLoading && <Loader2 size={14} className="animate-spin" />}
+                        {confirmLabel}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ── Performance Section ───────────────────────────────────────────────────────
+function AccountPerformanceView({ reg, pvsrData }: { reg: Registration; pvsrData: PVSRAccountDetail | null }) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
-    const perf = mockPerformance[reg.mt5AccountNumber] || mockPerformance["default"];
 
     const [calYear, setCalYear] = useState(2026);
-    const [calMonth, setCalMonth] = useState(3);
+    const [calMonth, setCalMonth] = useState(3); // April
+
+    if (!pvsrData?.performance) {
+        return (
+            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                <div className="flex flex-col items-center py-10 text-gray-500">
+                    <BarChart3 size={32} className="mb-3 opacity-30" />
+                    <p className="text-sm font-bold">No trading data available yet</p>
+                    <p className="text-xs mt-1">Performance data will appear after the first trade</p>
+                </div>
+            </div>
+        );
+    }
+
+    const perf = pvsrData.performance;
+    const acctInfo = pvsrData.accountInfo;
+    const isFrozen = reg.status === "DISCONNECTED";
+
     const monthName = new Date(calYear, calMonth).toLocaleString("en-US", { month: "long", year: "numeric" });
     const calendarDays = getCalendarDays(calYear, calMonth);
-
     const weeks: (number | null)[][] = [];
     for (let i = 0; i < calendarDays.length; i += 7) {
         weeks.push(calendarDays.slice(i, i + 7));
     }
 
-    const monthlyTotal = Object.entries(perf.calendar)
+    const monthlyTotal = Object.entries(perf.dailyCalendar)
         .filter(([key]) => {
             const d = new Date(key);
             return d.getFullYear() === calYear && d.getMonth() === calMonth;
         })
-        .reduce((sum, [, val]) => sum + val, 0);
+        .reduce((sum, [, val]) => sum + val.profit, 0);
 
     const getWeeklyTotal = (week: (number | null)[]): number => {
         return week.reduce<number>((sum, day) => {
             if (!day) return sum;
             const key = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-            return sum + (perf.calendar[key] || 0);
+            return sum + (perf.dailyCalendar[key]?.profit || 0);
         }, 0);
     };
 
@@ -183,50 +218,87 @@ function AccountPerformanceView({ reg }: { reg: Registration }) {
         else setCalMonth(calMonth + 1);
     };
 
+    // Map growthChartArray for recharts
+    const equityData = perf.growthChartArray.map(p => ({
+        date: new Date(p.date).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit" }),
+        balance: p.balance,
+        dailyProfit: p.dailyProfit,
+    }));
+
     return (
         <div className="space-y-4 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
+            {/* Frozen banner for disconnected */}
+            {isFrozen && (
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                    <WifiOff size={14} className="text-gray-500" />
+                    <p className="text-xs font-bold text-gray-500">Disconnected — showing historical data</p>
+                </div>
+            )}
+
+            {/* Account Info bar */}
+            {acctInfo && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm rounded-xl p-3">
+                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Balance</span>
+                        <p className="text-base font-black text-gray-800 dark:text-white mt-0.5">{formatCurrency(acctInfo.balance)}</p>
+                    </div>
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm rounded-xl p-3">
+                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Equity</span>
+                        <p className="text-base font-black text-gray-800 dark:text-white mt-0.5">{formatCurrency(acctInfo.equity)}</p>
+                    </div>
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm rounded-xl p-3">
+                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Status</span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                            {acctInfo.accountStatus === "ONLINE"
+                                ? <><Wifi size={12} className="text-emerald-500" /><span className="text-sm font-bold text-emerald-500">Online</span></>
+                                : <><WifiOff size={12} className="text-gray-400" /><span className="text-sm font-bold text-gray-400">Offline</span></>
+                            }
+                        </div>
+                    </div>
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm rounded-xl p-3">
+                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Drawdown</span>
+                        <p className="text-base font-black text-red-500 mt-0.5">{acctInfo.drawdownPercent.toFixed(2)}%</p>
+                    </div>
+                </div>
+            )}
+
             {/* Stats row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl p-4">
                     <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Highest Balance</span>
-                    <p className="text-lg font-black text-primary mt-1">{formatCurrency(perf.highestBalance)}</p>
+                    <p className="text-lg font-black text-primary mt-1">{formatCurrency(perf.coreMetrics.highestBalance)}</p>
                 </div>
                 <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl p-4">
-                    <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Balance</span>
-                    <p className="text-lg font-black text-gray-800 dark:text-white mt-1">{formatCurrency(perf.balance)}</p>
-                </div>
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl p-4">
-                    <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Total Profit</span>
-                    <p className="text-lg font-black text-primary mt-1">{formatCurrency(perf.totalProfit, true)}</p>
+                    <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Net Profit</span>
+                    <p className="text-lg font-black text-primary mt-1">{formatCurrency(perf.advancedStats.totalNetProfit, true)}</p>
                 </div>
                 <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl p-4">
                     <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Growth</span>
                     <div className="flex items-center gap-1.5 mt-1">
                         <TrendingUp size={16} className="text-primary" />
-                        <p className="text-lg font-black text-primary">+{perf.growth}%</p>
+                        <p className="text-lg font-black text-primary">+{perf.advancedStats.growthPercent}%</p>
                     </div>
+                </div>
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl p-4">
+                    <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Max Drawdown</span>
+                    <p className="text-lg font-black text-red-500 mt-1">{perf.advancedStats.maxDrawdownPercent.toFixed(2)}%</p>
                 </div>
             </div>
 
-            {/* Win Rate + Key Stats + Swap/Commission */}
+            {/* Win Rate + Key Stats + Recovery */}
             <div className="grid md:grid-cols-3 gap-3">
-                {/* Win Rate Donut — matches DashboardHero style */}
+                {/* Win Rate Donut */}
                 <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl p-6 flex flex-col items-center justify-center">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-3">Win Rate</p>
                     <div className="relative w-20 h-20 mb-2">
                         <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
                             <circle cx="40" cy="40" r="34" stroke={isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.08)"} strokeWidth="6" fill="none" />
-                            <circle
-                                cx="40" cy="40" r="34"
-                                stroke="hsl(var(--primary))"
-                                strokeWidth="6"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeDasharray={`${(perf.winRate / 100) * 213.6} 213.6`}
+                            <circle cx="40" cy="40" r="34" stroke="hsl(var(--primary))" strokeWidth="6" fill="none" strokeLinecap="round"
+                                strokeDasharray={`${(perf.advancedStats.winRatePercent / 100) * 213.6} 213.6`}
                             />
                         </svg>
                         <span className="absolute inset-0 flex items-center justify-center text-base font-black text-gray-700 dark:text-white">
-                            {perf.winRate}%
+                            {perf.advancedStats.winRatePercent}%
                         </span>
                     </div>
                     <p className="text-xs text-gray-600 dark:text-gray-300">Winning trades</p>
@@ -235,18 +307,19 @@ function AccountPerformanceView({ reg }: { reg: Registration }) {
                 {/* Key Stats */}
                 <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl p-5 flex flex-col justify-center">
                     <div className="space-y-3 text-sm">
-                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Wins / Losses</span><span className="font-black text-gray-700 dark:text-white">{perf.wins}W / {perf.losses}L</span></div>
-                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Total Trades</span><span className="font-black text-gray-700 dark:text-white">{perf.totalTrades}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Profit Factor</span><span className="font-black text-gray-700 dark:text-white">{perf.profitFactor.toFixed(2)}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Max Drawdown</span><span className="font-black text-red-500">{perf.maxDrawdown.percent.toFixed(2)}%</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Wins / Losses</span><span className="font-black text-gray-700 dark:text-white">{perf.advancedStats.winCount}W / {perf.advancedStats.lossCount}L</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Total Trades</span><span className="font-black text-gray-700 dark:text-white">{perf.advancedStats.totalTrades}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Profit Factor</span><span className="font-black text-gray-700 dark:text-white">{perf.advancedStats.profitFactor.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Recovery Factor</span><span className="font-black text-gray-700 dark:text-white">{perf.advancedStats.recoveryFactor.toFixed(1)}</span></div>
                     </div>
                 </div>
 
-                {/* Swap/Commission + Verified badge */}
+                {/* Best/Worst + Verified */}
                 <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl p-5 flex flex-col justify-between">
                     <div className="space-y-3 text-sm">
-                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Swap</span><span className={`font-black ${perf.swap >= 0 ? "text-primary" : "text-red-500"}`}>{formatCurrency(perf.swap, true)}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Commission</span><span className="font-black text-gray-700 dark:text-white">{formatCurrency(perf.commission)}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Best Trade</span><span className="font-black text-primary">{formatCurrency(perf.advancedStats.bestTrade, true)}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Worst Trade</span><span className="font-black text-red-500">{formatCurrency(perf.advancedStats.worstTrade)}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500 font-bold text-[11px] uppercase">Avg Hold Time</span><span className="font-black text-gray-700 dark:text-white">{perf.advancedStats.avgHoldTime}</span></div>
                     </div>
                     <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 mt-4">
                         <BadgeCheck size={16} className="text-primary shrink-0" />
@@ -255,7 +328,7 @@ function AccountPerformanceView({ reg }: { reg: Registration }) {
                 </div>
             </div>
 
-            {/* Equity Curve — matches EquityCurve from /dashboard/analytics */}
+            {/* Equity Curve */}
             <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200">
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-3">
@@ -269,8 +342,8 @@ function AccountPerformanceView({ reg }: { reg: Registration }) {
                     </div>
                     <div className="text-right">
                         <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">Net Profit</p>
-                        <p className={`text-lg font-black ${perf.totalProfit >= 0 ? "text-primary" : "text-red-500"}`}>
-                            {formatCurrency(perf.totalProfit, true)}
+                        <p className={`text-lg font-black ${perf.advancedStats.totalNetProfit >= 0 ? "text-primary" : "text-red-500"}`}>
+                            {formatCurrency(perf.advancedStats.totalNetProfit, true)}
                         </p>
                     </div>
                 </div>
@@ -278,67 +351,36 @@ function AccountPerformanceView({ reg }: { reg: Registration }) {
                 <div className="h-[340px] w-full overflow-x-auto overflow-y-hidden [&_svg]:outline-none [&_.recharts-wrapper]:outline-none scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800 pb-2">
                     <div className="min-w-[600px] h-full">
                         <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                            <AreaChart data={perf.equityData} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
+                            <AreaChart data={equityData} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
                                 <defs>
                                     <linearGradient id={`ctGrad-${reg.id}`} x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="0%" stopColor="#00C888" stopOpacity={0.2} />
                                         <stop offset="100%" stopColor="#00C888" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    vertical={false}
-                                    stroke={isDark ? "rgba(255,255,255,0.05)" : "#F3F4F6"}
-                                />
-                                <XAxis
-                                    dataKey="date"
-                                    axisLine={false}
-                                    tickLine={false}
-                                    tick={{ fontSize: 11, fill: "#9CA3AF", fontWeight: 500 }}
-                                    dy={15}
-                                    minTickGap={40}
-                                />
-                                <YAxis
-                                    axisLine={false}
-                                    tickLine={false}
-                                    tick={{ fontSize: 11, fill: "#9CA3AF", fontWeight: 500 }}
-                                    tickFormatter={(v) => `$${v.toLocaleString()}`}
-                                    domain={["auto", "auto"]}
-                                    width={80}
-                                />
-                                <Tooltip
-                                    content={({ active, payload, label }) => {
-                                        if (active && payload && payload.length) {
-                                            return (
-                                                <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl">
-                                                    <p className="text-[11px] font-bold text-gray-500 uppercase mb-1">{label}</p>
-                                                    <p className="text-sm font-black text-gray-700 dark:text-white">
-                                                        Balance: {formatCurrency(payload[0].value as number)}
-                                                    </p>
-                                                </div>
-                                            );
-                                        }
-                                        return null;
-                                    }}
-                                />
-                                <Area
-                                    type="monotone"
-                                    dataKey="balance"
-                                    stroke="#00C888"
-                                    strokeWidth={3}
-                                    fillOpacity={1}
-                                    fill={`url(#ctGrad-${reg.id})`}
-                                    animationDuration={1500}
-                                />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "rgba(255,255,255,0.05)" : "#F3F4F6"} />
+                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#9CA3AF", fontWeight: 500 }} dy={15} minTickGap={40} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#9CA3AF", fontWeight: 500 }} tickFormatter={(v) => `$${v.toLocaleString()}`} domain={["auto", "auto"]} width={80} />
+                                <Tooltip content={({ active, payload, label }) => {
+                                    if (active && payload && payload.length) {
+                                        return (
+                                            <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl">
+                                                <p className="text-[11px] font-bold text-gray-500 uppercase mb-1">{label}</p>
+                                                <p className="text-sm font-black text-gray-700 dark:text-white">Balance: {formatCurrency(payload[0].value as number)}</p>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }} />
+                                <Area type="monotone" dataKey="balance" stroke="#00C888" strokeWidth={3} fillOpacity={1} fill={`url(#ctGrad-${reg.id})`} animationDuration={1500} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
             </div>
 
-            {/* Trading Calendar — matches ProfitCalendar from /dashboard/analytics */}
+            {/* Trading Calendar */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
-                {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-2.5">
                         <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -356,35 +398,24 @@ function AccountPerformanceView({ reg }: { reg: Registration }) {
                         </span>
                     </p>
                     <div className="flex items-center gap-3">
-                        <button
-                            onClick={prevMonth}
-                            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                        >
+                        <button onClick={prevMonth} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
                             <ChevronLeft size={18} className="text-gray-500" />
                         </button>
-                        <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
-                            {monthName}
-                        </span>
-                        <button
-                            onClick={nextMonth}
-                            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                        >
+                        <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">{monthName}</span>
+                        <button onClick={nextMonth} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
                             <ChevronRight size={18} className="text-gray-500" />
                         </button>
                     </div>
                 </div>
 
-                {/* Scrollable calendar grid */}
                 <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
                     <div className="min-w-[768px]">
-                        {/* Day headers */}
                         <div className="grid grid-cols-8 gap-2 mb-2">
                             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Weekly"].map((d) => (
                                 <div key={d} className="text-center text-[10px] font-bold text-gray-500 uppercase tracking-wider">{d}</div>
                             ))}
                         </div>
 
-                        {/* Calendar grid */}
                         <div className="grid grid-cols-8 gap-2">
                             {weeks.map((week, wi) => {
                                 const paddedWeek = [...week];
@@ -394,7 +425,7 @@ function AccountPerformanceView({ reg }: { reg: Registration }) {
                                 paddedWeek.forEach((day) => {
                                     if (day) {
                                         const k = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-                                        if (perf.calendar[k] !== undefined) weeklyTradeDays++;
+                                        if (perf.dailyCalendar[k] !== undefined) weeklyTradeDays++;
                                     }
                                 });
 
@@ -404,26 +435,19 @@ function AccountPerformanceView({ reg }: { reg: Registration }) {
                                             if (!day) return <div key={`w${wi}-e${di}`} className="min-h-[80px]" />;
 
                                             const key = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-                                            const pnl = perf.calendar[key];
-                                            const hasPnl = pnl !== undefined;
+                                            const entry = perf.dailyCalendar[key];
+                                            const hasPnl = entry !== undefined;
+                                            const pnl = entry?.profit ?? 0;
 
                                             return (
-                                                <div
-                                                    key={`w${wi}-d${di}`}
-                                                    className={`
-                                                        min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center
-                                                        transition-all hover:scale-105 hover:z-10 relative border
-                                                        ${hasPnl
-                                                            ? pnl >= 0
-                                                                ? "bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary border-emerald-100/50 dark:border-primary/20"
-                                                                : "bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100/50 dark:border-red-500/20"
-                                                            : "bg-gray-50 dark:bg-white/5 text-gray-500 border-transparent"
-                                                        }
-                                                    `}
+                                                <div key={`w${wi}-d${di}`}
+                                                    className={`min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center transition-all hover:scale-105 hover:z-10 relative border
+                                                        ${hasPnl ? pnl >= 0
+                                                            ? "bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary border-emerald-100/50 dark:border-primary/20"
+                                                            : "bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100/50 dark:border-red-500/20"
+                                                        : "bg-gray-50 dark:bg-white/5 text-gray-500 border-transparent"}`}
                                                 >
-                                                    <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${
-                                                        hasPnl ? "text-gray-700 dark:text-gray-100" : "text-gray-700 dark:text-gray-500"
-                                                    }`}>
+                                                    <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${hasPnl ? "text-gray-700 dark:text-gray-100" : "text-gray-700 dark:text-gray-500"}`}>
                                                         {day}
                                                     </span>
                                                     {hasPnl && (
@@ -439,13 +463,9 @@ function AccountPerformanceView({ reg }: { reg: Registration }) {
 
                                         {/* Weekly Summary Cell */}
                                         <div className="min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 relative shadow-sm hover:shadow-md transition-all hover:scale-105 hover:z-10">
-                                            <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${weeklyTotal_w >= 0 ? "text-primary" : "text-red-500"}`}>
-                                                W{wi + 1}
-                                            </span>
+                                            <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${weeklyTotal_w >= 0 ? "text-primary" : "text-red-500"}`}>W{wi + 1}</span>
                                             <div className="flex flex-col items-center mt-2.5 w-full">
-                                                <span className={`w-full text-center px-0.5 text-base sm:text-lg tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5 ${
-                                                    weeklyTotal_w >= 0 ? "text-primary" : "text-red-500"
-                                                }`}>
+                                                <span className={`w-full text-center px-0.5 text-base sm:text-lg tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5 ${weeklyTotal_w >= 0 ? "text-primary" : "text-red-500"}`}>
                                                     {formatCurrency(weeklyTotal_w, true)}
                                                 </span>
                                                 <span className="text-sm opacity-80 font-medium text-gray-700 dark:text-gray-300 w-full text-center">
@@ -487,6 +507,21 @@ export function CopyTradingMyAccount() {
     const [isLoading, setIsLoading] = useState(true);
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
+    // PVSR data cache per mt5 account
+    const [pvsrCache, setPvsrCache] = useState<Record<string, PVSRAccountDetail | null>>({});
+    const [loadingPvsr, setLoadingPvsr] = useState<Record<string, boolean>>({});
+
+    // Confirm dialog state
+    const [confirmDialog, setConfirmDialog] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+        confirmLabel: string;
+        confirmColor: "red" | "primary";
+        action: () => Promise<void>;
+    }>({ isOpen: false, title: "", message: "", confirmLabel: "", confirmColor: "red", action: async () => {} });
+    const [confirmLoading, setConfirmLoading] = useState(false);
+
     useEffect(() => {
         fetchRegistrations();
     }, []);
@@ -497,14 +532,107 @@ export function CopyTradingMyAccount() {
             if (res.ok) {
                 const data = await res.json();
                 setRegistrations(data.registrations || []);
-                // Auto-expand first approved account
-                const firstApproved = (data.registrations || []).find((r: Registration) => r.status === "APPROVED");
-                if (firstApproved) setExpandedId(firstApproved.id);
+                // Auto-expand first approved/disconnected account
+                const firstActive = (data.registrations || []).find(
+                    (r: Registration) => r.status === "APPROVED" || r.status === "DISCONNECTED"
+                );
+                if (firstActive) {
+                    setExpandedId(firstActive.id);
+                    fetchPvsrData(firstActive.mt5AccountNumber);
+                }
             }
         } catch {
             // silently fail
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const fetchPvsrData = async (mt5Account: string) => {
+        if (pvsrCache[mt5Account] || loadingPvsr[mt5Account]) return;
+        setLoadingPvsr(prev => ({ ...prev, [mt5Account]: true }));
+        try {
+            const res = await fetch(`/api/copy-trading/account/${mt5Account}`);
+            if (res.ok) {
+                const data = await res.json();
+                setPvsrCache(prev => ({ ...prev, [mt5Account]: data }));
+            }
+        } catch {
+            // silently fail
+        } finally {
+            setLoadingPvsr(prev => ({ ...prev, [mt5Account]: false }));
+        }
+    };
+
+    const handleExpand = (reg: Registration) => {
+        const isExpanding = expandedId !== reg.id;
+        setExpandedId(isExpanding ? reg.id : null);
+        if (isExpanding && (reg.status === "APPROVED" || reg.status === "DISCONNECTED")) {
+            fetchPvsrData(reg.mt5AccountNumber);
+        }
+    };
+
+    // ── Actions ───────────────────────────────────────────────────────────────
+    const cancelRegistration = (reg: Registration) => {
+        setConfirmDialog({
+            isOpen: true,
+            title: "Cancel Registration?",
+            message: `This will cancel your pending registration for MT5 account ${reg.mt5AccountNumber}. You can register again later.`,
+            confirmLabel: "Cancel Registration",
+            confirmColor: "red",
+            action: async () => {
+                const res = await fetch(`/api/copy-trading/account/${reg.mt5AccountNumber}/delete`, { method: "DELETE" });
+                if (res.ok) {
+                    setRegistrations(prev => prev.filter(r => r.id !== reg.id));
+                }
+            },
+        });
+    };
+
+    const disconnectAccount = (reg: Registration) => {
+        setConfirmDialog({
+            isOpen: true,
+            title: "Disconnect Account?",
+            message: `This will disconnect your MT5 account ${reg.mt5AccountNumber} from copy trading. You will stop receiving trade signals. Historical data will be preserved.`,
+            confirmLabel: "Disconnect",
+            confirmColor: "red",
+            action: async () => {
+                const res = await fetch(`/api/copy-trading/account/${reg.mt5AccountNumber}/disconnect`, { method: "POST" });
+                if (res.ok) {
+                    setRegistrations(prev => prev.map(r =>
+                        r.id === reg.id ? { ...r, status: "DISCONNECTED" as const, disconnectedAt: new Date().toISOString() } : r
+                    ));
+                }
+            },
+        });
+    };
+
+    const deleteRegistration = (reg: Registration) => {
+        setConfirmDialog({
+            isOpen: true,
+            title: "Delete Registration?",
+            message: `This will permanently remove the registration for MT5 account ${reg.mt5AccountNumber}. This action cannot be undone.`,
+            confirmLabel: "Delete",
+            confirmColor: "red",
+            action: async () => {
+                const res = await fetch(`/api/copy-trading/account/${reg.mt5AccountNumber}/delete`, { method: "DELETE" });
+                if (res.ok) {
+                    setRegistrations(prev => prev.filter(r => r.id !== reg.id));
+                    if (expandedId === reg.id) setExpandedId(null);
+                }
+            },
+        });
+    };
+
+    const handleConfirm = async () => {
+        setConfirmLoading(true);
+        try {
+            await confirmDialog.action();
+        } catch {
+            // silently fail
+        } finally {
+            setConfirmLoading(false);
+            setConfirmDialog(prev => ({ ...prev, isOpen: false }));
         }
     };
 
@@ -543,16 +671,14 @@ export function CopyTradingMyAccount() {
 
     return (
         <div className="space-y-4">
-
-
             {/* Account cards */}
             {registrations.map((reg) => {
-                const sd = statusDisplay[reg.status];
+                const sd = statusDisplay[reg.status] || statusDisplay.PENDING;
                 const broker = reg.brokerName === "Any Broker" ? (reg.customBrokerName || "Custom Broker") : reg.brokerName;
                 const server = reg.brokerName === "Any Broker" ? (reg.customServer || "—") : (reg.mt5Server || "—");
                 const StatusIcon = sd.icon;
                 const isExpanded = expandedId === reg.id;
-                const isApproved = reg.status === "APPROVED";
+                const hasPerformance = reg.status === "APPROVED" || reg.status === "DISCONNECTED";
 
                 return (
                     <div key={reg.id} className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] overflow-hidden">
@@ -563,10 +689,10 @@ export function CopyTradingMyAccount() {
                                 <span className="text-sm font-bold">{sd.label}</span>
                                 <span className="text-sm font-semibold hidden sm:inline">— {sd.sublabel}</span>
                             </div>
-                            {isApproved && (
+                            {reg.status === "APPROVED" && (
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="text-sm font-bold">Awaiting connection</span>
+                                    <span className="text-sm font-bold">Active</span>
                                 </div>
                             )}
                         </div>
@@ -621,14 +747,62 @@ export function CopyTradingMyAccount() {
                                 </div>
                             )}
 
-                            {/* Footer + expand toggle for approved accounts */}
+                            {/* Disconnect info */}
+                            {reg.status === "DISCONNECTED" && reg.disconnectedAt && (
+                                <div className="mt-3 px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10">
+                                    <p className="text-xs text-gray-500">
+                                        <span className="font-bold">Disconnected:</span>{" "}
+                                        {new Date(reg.disconnectedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                        {reg.disconnectReason && ` — ${reg.disconnectReason}`}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Footer: actions + expand toggle */}
                             <div className="mt-3 pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                                <span className="text-[11px] text-gray-500">
-                                    Submitted {new Date(reg.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                                </span>
-                                {isApproved && (
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[11px] text-gray-500">
+                                        Submitted {new Date(reg.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                    </span>
+
+                                    {/* Action buttons per status */}
+                                    {reg.status === "PENDING" && (
+                                        <button
+                                            onClick={() => cancelRegistration(reg)}
+                                            className="ml-2 flex items-center gap-1 text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors px-2 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10"
+                                        >
+                                            <Trash2 size={12} /> Cancel
+                                        </button>
+                                    )}
+                                    {reg.status === "APPROVED" && (
+                                        <button
+                                            onClick={() => disconnectAccount(reg)}
+                                            className="ml-2 flex items-center gap-1 text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors px-2 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10"
+                                        >
+                                            <Unplug size={12} /> Disconnect
+                                        </button>
+                                    )}
+                                    {(reg.status === "REJECTED" || reg.status === "DISCONNECTED") && (
+                                        <>
+                                            <button
+                                                onClick={() => deleteRegistration(reg)}
+                                                className="ml-2 flex items-center gap-1 text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors px-2 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10"
+                                            >
+                                                <Trash2 size={12} /> Delete
+                                            </button>
+                                            <button
+                                                onClick={() => setShowRegistration(true)}
+                                                className="flex items-center gap-1 text-[11px] font-bold text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded-lg hover:bg-primary/5"
+                                            >
+                                                <RefreshCw size={12} /> Register Again
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+
+                                {hasPerformance && (
                                     <button
-                                        onClick={() => setExpandedId(isExpanded ? null : reg.id)}
+                                        onClick={() => handleExpand(reg)}
                                         className="flex items-center gap-1 text-xs font-bold text-primary hover:text-primary/80 transition-colors"
                                     >
                                         {isExpanded ? "Hide" : "View"} Performance
@@ -638,8 +812,15 @@ export function CopyTradingMyAccount() {
                             </div>
 
                             {/* Inline Performance (expanded) */}
-                            {isApproved && isExpanded && (
-                                <AccountPerformanceView reg={reg} />
+                            {hasPerformance && isExpanded && (
+                                loadingPvsr[reg.mt5AccountNumber] ? (
+                                    <div className="flex items-center justify-center py-12 mt-4 border-t border-gray-100 dark:border-white/5">
+                                        <Loader2 className="w-5 h-5 animate-spin text-gray-400 mr-2" />
+                                        <span className="text-sm text-gray-500 font-medium">Loading performance data...</span>
+                                    </div>
+                                ) : (
+                                    <AccountPerformanceView reg={reg} pvsrData={pvsrCache[reg.mt5AccountNumber] || null} />
+                                )
                             )}
                         </div>
                     </div>
@@ -649,6 +830,18 @@ export function CopyTradingMyAccount() {
             <CopyTradingRegistrationModal
                 isOpen={showRegistration}
                 onClose={() => { setShowRegistration(false); fetchRegistrations(); }}
+            />
+
+            {/* Confirm Dialog */}
+            <ConfirmDialog
+                isOpen={confirmDialog.isOpen}
+                title={confirmDialog.title}
+                message={confirmDialog.message}
+                confirmLabel={confirmDialog.confirmLabel}
+                confirmColor={confirmDialog.confirmColor}
+                onConfirm={handleConfirm}
+                onCancel={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+                isLoading={confirmLoading}
             />
         </div>
     );

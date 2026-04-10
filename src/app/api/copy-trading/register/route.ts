@@ -50,6 +50,9 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "This MT5 account is already registered for copy trading" }, { status: 409 });
         }
 
+        const resolvedBroker = isCustomBroker ? customBrokerName!.trim() : brokerName;
+        const resolvedServer = isCustomBroker ? customServer?.trim() || "" : mt5Server;
+
         // Create registration
         const registration = await prisma.copyTradingRegistration.create({
             data: {
@@ -87,6 +90,19 @@ export async function POST(request: NextRequest) {
             });
         }
 
+        // Forward to PVSR Capital (fire-and-forget — don't block user)
+        syncToPVSR({
+            clientName: fullName.trim(),
+            email: email.trim(),
+            phone: "",
+            telegram: telegramHandle?.trim() || "",
+            mt5Account: mt5AccountNumber.trim(),
+            mt5Server: resolvedServer,
+            broker: resolvedBroker,
+        }).catch((err) => {
+            console.error("[PVSR Sync] Failed to forward registration:", err);
+        });
+
         return NextResponse.json({ success: true, id: registration.id }, { status: 201 });
     } catch (error: any) {
         console.error("Copy Trading Register Error:", error);
@@ -97,5 +113,49 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+}
+
+// ============================================================================
+// PVSR CAPITAL SYNC — Forward registration to PVSR API
+// ============================================================================
+
+interface PVSRRegistrationPayload {
+    clientName: string;
+    email: string;
+    phone: string;
+    telegram: string;
+    mt5Account: string;
+    mt5Server: string;
+    broker: string;
+}
+
+async function syncToPVSR(payload: PVSRRegistrationPayload): Promise<void> {
+    const apiUrl = process.env.PVSR_API_URL;
+    const apiKey = process.env.PVSR_API_KEY;
+
+    if (!apiUrl || !apiKey) {
+        console.warn("[PVSR Sync] PVSR_API_URL or PVSR_API_KEY not configured — skipping sync");
+        return;
+    }
+
+    const response = await fetch(`${apiUrl}/clients`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-api-key": apiKey,
+        },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(10_000), // 10s timeout
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        console.log(`[PVSR Sync] ✅ Registration forwarded successfully — ID: ${data.registrationId}`);
+    } else if (response.status === 409) {
+        console.log(`[PVSR Sync] ⚠️ Account already exists on PVSR — ${payload.mt5Account}`);
+    } else {
+        console.error(`[PVSR Sync] ❌ Failed (${response.status}):`, data.error);
     }
 }
