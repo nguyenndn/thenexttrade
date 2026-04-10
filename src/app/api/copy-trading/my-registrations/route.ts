@@ -29,6 +29,8 @@ export async function GET() {
                 tradingCapital: true,
                 status: true,
                 rejectReason: true,
+                disconnectedAt: true,
+                disconnectReason: true,
                 createdAt: true,
             },
         });
