@@ -843,33 +843,6 @@ model UserBadge {
 // BROKER MANAGEMENT (ADDED IN SPRINT 3)
 // ============================================================================
 
-model Broker {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  logo        String   // URL
-  rating      Float    @default(0) // 0-5
-  summary     String?  @db.Text    // Short description
-  
-  features    String[] // List of key features (Unlimited Leverage, etc)
-  
-  affiliateUrl String? // "Open Account" Link
-  reviewUrl    String? // Internal Review Link
-  website      String? // Official Site
-  
-  minDeposit   Float?
-  maxLeverage  String?
-  regulation   String?
-  
-  isRecommended Boolean @default(false)
-  isVisible     Boolean @default(true)
-  
-  order       Int      @default(0) // Custom ordering
-  
-  createdAt   DateTime @default(now()) @db.Timestamptz
-  updatedAt   DateTime @updatedAt @db.Timestamptz
-}
-
 // ============================================================================
 // EA LICENSE MANAGEMENT (NEW - V2.0)
 // ============================================================================
@@ -1264,6 +1237,7 @@ enum CopyTradingStatus {
   PENDING
   APPROVED
   REJECTED
+  DISCONNECTED
 }
 
 model CopyTradingRegistration {
@@ -1298,6 +1272,15 @@ model CopyTradingRegistration {
   reviewedAt        DateTime?           @map("reviewed_at") @db.Timestamptz
   rejectReason      String?             @map("reject_reason") @db.Text
   adminNote         String?             @map("admin_note") @db.Text
+
+  // Disconnect tracking
+  disconnectedAt    DateTime?           @map("disconnected_at") @db.Timestamptz
+  disconnectReason  String?             @map("disconnect_reason") @db.Text
+
+  // Partner Integration
+  partnerCode       String?             @map("partner_code")
+  partner           Partner?            @relation(fields: [partnerCode], references: [partnerCode])
+  phone             String?             @db.VarChar(20)
   
   createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz
   updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz
@@ -1307,6 +1290,27 @@ model CopyTradingRegistration {
   @@index([status])
   @@index([createdAt])
   @@map("copy_trading_registrations")
+}
+
+// ============================================================================
+// PARTNER INTEGRATION (PVSR API)
+// ============================================================================
+
+model Partner {
+  id              Int       @id @default(autoincrement())
+  partnerCode     String    @unique @map("partner_code")
+  partnerName     String    @map("partner_name")
+  apiKeyHash      String    @map("api_key_hash")
+  webhookUrl      String?   @map("webhook_url")
+  allowedIps      String?   @map("allowed_ips")
+  allowedDomains  String?   @map("allowed_domains")
+  status          String    @default("ACTIVE")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  registrations   CopyTradingRegistration[]
+
+  @@map("partners")
 }
 
 // ============================================================================

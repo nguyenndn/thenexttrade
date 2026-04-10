@@ -132,20 +132,10 @@ async function CategoriesWidget() {
     );
 }
 
-const getTopBrokers = unstable_cache(
-    async () => {
-        return await prisma.broker.findMany({
-            where: { isVisible: true },
-            orderBy: [{ isRecommended: 'desc' }, { order: 'asc' }],
-            take: 3,
-        });
-    },
-    ['sidebar-top-brokers'],
-    { revalidate: 600, tags: ['brokers'] } // Cache for 10 mins
-);
+import partnersData from '@/config/partners.json';
 
-async function TopBrokersWidget() {
-    const brokers = await getTopBrokers();
+function TopBrokersWidget() {
+    const brokers = partnersData.brokers.items.filter((b: any) => b.active !== false).slice(0, 3);
 
     if (brokers.length === 0) return null;
 
@@ -167,35 +157,40 @@ async function TopBrokersWidget() {
 
                 {/* Broker List */}
                 <div className="space-y-4">
-                    {brokers.map((broker, i) => (
-                        <div key={broker.id} className="group">
+                    {brokers.map((broker: any, i: number) => (
+                        <div key={broker.name} className="group">
                             {/* Broker Header Row */}
                             <div className="flex items-start justify-between mb-2.5 gap-2">
                                 <div className="flex items-center gap-3 min-w-0">
                                     <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-white flex items-center justify-center overflow-hidden p-[5px] shrink-0 border border-gray-200 dark:border-white/10 shadow-sm">
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={broker.logo} alt={broker.name} className="w-full h-full object-contain" />
+                                        {broker.logo ? (
+                                            <Image src={broker.logo} alt={broker.name} width={32} height={32} className="w-full h-full object-contain" />
+                                        ) : (
+                                            <span className="text-xs font-bold text-gray-500">{broker.initials}</span>
+                                        )}
                                     </div>
                                     <div className="min-w-0">
                                         <h4 className="text-sm font-bold text-gray-700 dark:text-white leading-tight mb-0.5 truncate group-hover:text-primary transition-colors">{broker.name}</h4>
-                                        {broker.isRecommended && (
+                                        {broker.badge && (
                                             <span className="inline-block px-1.5 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider whitespace-nowrap bg-green-100 dark:bg-[#00C888]/10 text-green-600 dark:text-[#00C888]">
-                                                Recommended
+                                                {broker.badge}
                                             </span>
                                         )}
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-1 text-amber-500 text-[13px] font-bold shrink-0 pt-0.5">
-                                    <Star size={12} className="fill-current" />
-                                    <span>{broker.rating.toFixed(1)}</span>
-                                </div>
+                                {broker.rating && (
+                                    <div className="flex items-center gap-1 text-amber-500 text-[13px] font-bold shrink-0 pt-0.5">
+                                        <Star size={12} className="fill-current" />
+                                        <span>{broker.rating.toFixed(1)}</span>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Info Tags */}
                             <div className="flex flex-wrap gap-1.5 mb-2">
-                                {broker.minDeposit != null && (
+                                {broker.minDeposit && (
                                     <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5 whitespace-nowrap">
-                                        <span className="text-gray-700 dark:text-white font-black">${broker.minDeposit}</span> Min Deposit
+                                        <span className="text-gray-700 dark:text-white font-black">{broker.minDeposit}</span> Min Deposit
                                     </div>
                                 )}
                                 {broker.maxLeverage && (
@@ -206,9 +201,9 @@ async function TopBrokersWidget() {
                             </div>
 
                             {/* Features Checkmarks */}
-                            {broker.features.length > 0 && (
+                            {broker.features && broker.features.length > 0 && (
                                 <div className="flex flex-wrap gap-1.5">
-                                    {broker.features.slice(0, 2).map((feat, j) => (
+                                    {broker.features.slice(0, 2).map((feat: string, j: number) => (
                                         <div key={j} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-50 dark:bg-[#00C888]/10 text-[10px] font-bold text-green-600 dark:text-[#00C888] leading-none">
                                             <Check size={10} strokeWidth={3} className="opacity-80 shrink-0" />
                                             <span>{feat}</span>
