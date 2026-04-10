@@ -42,6 +42,7 @@ import {
     AreaChart,
 } from "recharts";
 import type { PVSRAccountDetail } from "@/lib/pvsr-client";
+import { toast } from "sonner";
 
 type Registration = {
     id: string;
@@ -584,6 +585,10 @@ export function CopyTradingMyAccount() {
                 const res = await fetch(`/api/copy-trading/account/${reg.mt5AccountNumber}/delete`, { method: "DELETE" });
                 if (res.ok) {
                     setRegistrations(prev => prev.filter(r => r.id !== reg.id));
+                    toast.success("Registration cancelled successfully");
+                } else {
+                    const data = await res.json().catch(() => null);
+                    toast.error(data?.error || "Failed to cancel registration");
                 }
             },
         });
@@ -602,6 +607,10 @@ export function CopyTradingMyAccount() {
                     setRegistrations(prev => prev.map(r =>
                         r.id === reg.id ? { ...r, status: "DISCONNECTED" as const, disconnectedAt: new Date().toISOString() } : r
                     ));
+                    toast.success("Account disconnected. You will no longer receive trade signals.");
+                } else {
+                    const data = await res.json().catch(() => null);
+                    toast.error(data?.error || "Failed to disconnect account");
                 }
             },
         });
@@ -619,6 +628,10 @@ export function CopyTradingMyAccount() {
                 if (res.ok) {
                     setRegistrations(prev => prev.filter(r => r.id !== reg.id));
                     if (expandedId === reg.id) setExpandedId(null);
+                    toast.success("Registration deleted successfully");
+                } else {
+                    const data = await res.json().catch(() => null);
+                    toast.error(data?.error || "Failed to delete registration");
                 }
             },
         });
@@ -628,8 +641,9 @@ export function CopyTradingMyAccount() {
         setConfirmLoading(true);
         try {
             await confirmDialog.action();
-        } catch {
-            // silently fail
+        } catch (error) {
+            toast.error("An unexpected error occurred. Please try again.");
+            console.error("[Copy Trading] Action error:", error);
         } finally {
             setConfirmLoading(false);
             setConfirmDialog(prev => ({ ...prev, isOpen: false }));
