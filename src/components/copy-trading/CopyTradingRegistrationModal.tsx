@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { X, Send, Loader2, CheckCircle2, Shield, ChevronDown, Eye, EyeOff } from "lucide-react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { X, Send, Loader2, CheckCircle2, Shield, ChevronDown, Eye, EyeOff, Search } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
@@ -91,6 +91,10 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [serverSearch, setServerSearch] = useState("");
+    const [serverDropdownOpen, setServerDropdownOpen] = useState(false);
+    const serverDropdownRef = useRef<HTMLDivElement>(null);
+    const serverInputRef = useRef<HTMLInputElement>(null);
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
@@ -109,6 +113,26 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
     const availableServers = useMemo(() => {
         return formData.brokerName ? brokerServers[formData.brokerName] || [] : [];
     }, [formData.brokerName]);
+
+    const filteredServers = useMemo(() => {
+        if (!serverSearch.trim()) return availableServers;
+        return availableServers.filter(s =>
+            s.toLowerCase().includes(serverSearch.toLowerCase())
+        );
+    }, [availableServers, serverSearch]);
+
+    // Close server dropdown on click outside
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (serverDropdownRef.current && !serverDropdownRef.current.contains(e.target as Node)) {
+                setServerDropdownOpen(false);
+            }
+        }
+        if (serverDropdownOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [serverDropdownOpen]);
 
     if (!isOpen) return null;
 
@@ -272,26 +296,69 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
                                         </div>
                                     )}
 
-                                    {/* Server Selection */}
+                                    {/* Server Selection — Searchable */}
                                     {formData.brokerName && !isCustomBroker && (
-                                        <div>
+                                        <div ref={serverDropdownRef} className="relative">
                                             <label className="block text-xs font-bold text-gray-600 dark:text-gray-300 mb-1">MT5 Server *</label>
-                                            <DropdownMenu className="w-full block">
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="outline" className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/[0.06] px-4 py-2.5 h-auto text-left shadow-none rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all">
-                                                        <span className={formData.mt5Server ? "text-gray-700 dark:text-gray-100 truncate pr-2" : "text-gray-400 truncate pr-2"}>
-                                                            {formData.mt5Server || "Select server"}
-                                                        </span>
-                                                        <ChevronDown size={16} className="text-gray-500 shrink-0" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="start" className="min-w-[250px] max-h-[300px] overflow-y-auto">
-                                                    <DropdownMenuItem onClick={() => updateField("mt5Server", "")}>Select server</DropdownMenuItem>
-                                                    {availableServers.map((server) => (
-                                                        <DropdownMenuItem key={server} onClick={() => updateField("mt5Server", server)}>{server}</DropdownMenuItem>
-                                                    ))}
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setServerDropdownOpen(!serverDropdownOpen);
+                                                    setServerSearch("");
+                                                    setTimeout(() => serverInputRef.current?.focus(), 50);
+                                                }}
+                                                className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/[0.06] px-4 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-left"
+                                            >
+                                                <span className={formData.mt5Server ? "text-gray-700 dark:text-gray-100 truncate pr-2" : "text-gray-400 truncate pr-2"}>
+                                                    {formData.mt5Server || "Select server"}
+                                                </span>
+                                                <ChevronDown size={16} className={`text-gray-500 shrink-0 transition-transform ${serverDropdownOpen ? "rotate-180" : ""}`} />
+                                            </button>
+
+                                            {serverDropdownOpen && (
+                                                <div className="absolute z-50 mt-1 w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden">
+                                                    {/* Search input */}
+                                                    <div className="p-2 border-b border-gray-100 dark:border-white/5">
+                                                        <div className="relative">
+                                                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                                            <input
+                                                                ref={serverInputRef}
+                                                                type="text"
+                                                                value={serverSearch}
+                                                                onChange={(e) => setServerSearch(e.target.value)}
+                                                                placeholder="Search server..."
+                                                                className="w-full pl-8 pr-3 py-2 text-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/[0.06] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 text-gray-700 dark:text-white placeholder-gray-400"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Options list */}
+                                                    <div className="max-h-[220px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
+                                                        {filteredServers.length === 0 ? (
+                                                            <div className="px-4 py-3 text-xs text-gray-400 text-center">No servers found</div>
+                                                        ) : (
+                                                            filteredServers.map((server) => (
+                                                                <button
+                                                                    key={server}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        updateField("mt5Server", server);
+                                                                        setServerDropdownOpen(false);
+                                                                        setServerSearch("");
+                                                                    }}
+                                                                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5 transition-colors ${
+                                                                        formData.mt5Server === server
+                                                                            ? "text-primary font-bold bg-primary/5"
+                                                                            : "text-gray-700 dark:text-gray-300"
+                                                                    }`}
+                                                                >
+                                                                    {server}
+                                                                </button>
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
