@@ -108,6 +108,44 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     const isCollapsed = collapsed ?? false;
     // const [collapsed, setCollapsed] = useState(false); // Removed local state
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+    const [disabledFlags, setDisabledFlags] = useState<Set<string>>(new Set());
+    const [flagsLoaded, setFlagsLoaded] = useState(false);
+
+    // Check if any items use feature flags
+    const hasFlaggedItems = useMemo(() => items.some((i: any) => i.featureFlag), [items]);
+
+    // Fetch feature flags to hide disabled items
+    useEffect(() => {
+        const flagKeys = items
+            .filter((i: any) => i.featureFlag)
+            .map((i: any) => i.featureFlag);
+        if (flagKeys.length === 0) {
+            setFlagsLoaded(true);
+            return;
+        }
+
+        fetch(`/api/feature-flags?keys=${flagKeys.join(",")}`)
+            .then(res => res.json())
+            .then(data => {
+                const disabled = new Set<string>();
+                for (const [key, enabled] of Object.entries(data.flags || {})) {
+                    if (!enabled) disabled.add(key);
+                }
+                setDisabledFlags(disabled);
+            })
+            .catch(() => {})
+            .finally(() => setFlagsLoaded(true));
+    }, []);
+
+    // Filter out items with disabled feature flags (hide flagged items until loaded)
+    const visibleItems = useMemo(() =>
+        items.filter((item: any) => {
+            if (!item.featureFlag) return true;
+            if (!flagsLoaded) return false; // hide until flags loaded
+            return !disabledFlags.has(item.featureFlag);
+        }),
+        [items, disabledFlags, flagsLoaded]
+    );
 
     // Map child tab routes to their parent menu item routes
     // (These routes are accessed via TabBar but not shown in sidebar)
@@ -137,7 +175,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
              }
         }
         
-        items.forEach((item: any) => {
+        visibleItems.forEach((item: any) => {
             checkMatch(item.href);
             if (item.items) {
                 item.items.forEach((sub: any) => checkMatch(sub.href));
@@ -145,11 +183,11 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
         });
         
         return bestMatch || null;
-    }, [pathname, items]);
+    }, [pathname, visibleItems]);
 
     useEffect(() => {
         if (!pathname) return;
-        const activeGroup = items.find((item: any) => {
+        const activeGroup = visibleItems.find((item: any) => {
             if (item.href !== "#" && pathname === item.href) return true;
             if (item.items) {
                 return item.items.some((sub: any) => pathname === sub.href || pathname.startsWith(`${sub.href}/`));
@@ -160,7 +198,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
         if (activeGroup) {
             setExpandedGroup(activeGroup.name);
         }
-    }, [pathname, items]);
+    }, [pathname, visibleItems]);
 
     return (
         <aside className={cn(
@@ -171,9 +209,9 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
             {/* Navigation Items */}
             <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
 
-                {items.map((item: any, index: number) => {
+                {visibleItems.map((item: any, index: number) => {
                     // Detect if we're in Admin sidebar by checking first item href
-                    const isAdmin = items[0]?.href === "/admin";
+                    const isAdmin = visibleItems[0]?.href === "/admin";
 
                     const sectionNames: Record<string, string> = isAdmin
                         ? {

@@ -4,6 +4,8 @@ description: Automates the process of staging, committing, and pushing code to G
 
 # Push Code Workflow (/push_code)
 
+> ⛔ **CRITICAL RULE:** NEVER run `git add`, `git commit`, or `git push` unless the user **explicitly** invokes `/push_code` or asks to commit/push. This workflow is the ONLY way to interact with git. Do NOT commit or push as part of any other task.
+
 ## Pre-Push Checks (BẮT BUỘC trước khi commit)
 Chạy `/check_syntax` trước — đảm bảo:
 - [ ] `npx tsc --noEmit` → 0 errors

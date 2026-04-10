@@ -42,8 +42,8 @@ export async function GET(
             return NextResponse.json({ error: "Account not found" }, { status: 404 });
         }
 
-        // Call PVSR API (or mock)
-        const detail = await getAccountDetail(mt5Account, registration.status);
+        // Call PVSR API
+        const detail = await getAccountDetail(mt5Account);
 
         if (!detail) {
             return NextResponse.json({ error: "Failed to fetch account detail" }, { status: 502 });

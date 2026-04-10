@@ -26,7 +26,8 @@ import {
     Quote,
     MoreHorizontal,
     Copy,
-    Shield
+    Shield,
+    MessageCircle,
 } from "lucide-react";
 
 export const menuItems = [
@@ -110,6 +111,11 @@ export const dashboardMenuItems = [
         href: "/dashboard/trading-systems",
         icon: Bot,
     },
+    {
+        name: "Community",
+        href: "/dashboard/community",
+        icon: MessageCircle,
+    },
 
     // --- INVESTING ---
     {
@@ -121,6 +127,7 @@ export const dashboardMenuItems = [
         name: "Funded Challenge",
         href: "/dashboard/funded-challenge",
         icon: Shield,
+        featureFlag: "feature_funded_challenge",
     }
 ];
 
@@ -183,7 +190,7 @@ export const dashboardMenuGroups = [
             { name: "Leaderboard", href: "/dashboard/leaderboard", icon: Trophy },
             { name: "EA & Indicators", href: "/dashboard/trading-systems", icon: Bot },
             { name: "Copy Trading", href: "/dashboard/copy-trading", icon: Copy },
-            { name: "Funded Challenge", href: "/dashboard/funded-challenge", icon: Shield },
+            { name: "Funded Challenge", href: "/dashboard/funded-challenge", icon: Shield, featureFlag: "feature_funded_challenge" },
         ],
     },
 ];

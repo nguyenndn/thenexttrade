@@ -74,6 +74,11 @@ Before modifying any file:
 2. Identify dependent files
 3. Update ALL affected files together
 
+### ⛔ Git Control (CRITICAL)
+- **NEVER** run `git add`, `git commit`, or `git push` unless the user **explicitly** requests it or invokes `/push_code`
+- Completing a coding task does NOT mean commit/push — wait for user instruction
+- Only the `/push_code` workflow handles git operations
+
 ---
 
 ## 5. SOCRATIC GATE

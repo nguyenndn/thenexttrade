@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
     Trophy,
@@ -10,9 +11,13 @@ import {
     CheckCircle2,
     ArrowRight,
     Zap,
-    AlertTriangle
+    AlertTriangle,
+    Construction,
+    Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+
+const FEATURE_KEY = "feature_funded_challenge";
 
 const challenges = [
     {
@@ -86,6 +91,67 @@ const benefits = [
 ];
 
 export default function FundedChallengePage() {
+    const [enabled, setEnabled] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        fetch(`/api/feature-flags?keys=${FEATURE_KEY}`)
+            .then((res) => res.json())
+            .then((data) => setEnabled(data.flags?.[FEATURE_KEY] ?? false))
+            .catch(() => setEnabled(false));
+    }, []);
+
+    // Loading
+    if (enabled === null) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+            </div>
+        );
+    }
+
+    // Feature disabled — Coming Soon
+    if (!enabled) {
+        return (
+            <div className="space-y-4 md:space-y-6">
+                <PageHeader
+                    title="Funded Challenge"
+                    description="Trade with our capital — coming soon."
+                />
+
+                <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
+                    <div className="relative mb-6">
+                        <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 flex items-center justify-center">
+                            <Trophy size={44} className="text-amber-500" />
+                        </div>
+                        <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <Construction size={20} className="text-primary" />
+                        </div>
+                    </div>
+
+                    <h2 className="text-xl font-black text-gray-800 dark:text-white mb-2">
+                        Coming Soon
+                    </h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md leading-relaxed mb-6">
+                        We&apos;re building a funded trading program where you can prove your skills
+                        and trade with our capital. Stay tuned for updates!
+                    </p>
+
+                    <div className="flex flex-wrap gap-2 justify-center">
+                        {["Up to $100K Capital", "90% Profit Split", "2-Phase Evaluation"].map((item) => (
+                            <span
+                                key={item}
+                                className="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-500 dark:text-gray-400"
+                            >
+                                {item}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Feature enabled — full page
     return (
         <div className="space-y-4 md:space-y-6">
             <PageHeader
