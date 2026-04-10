@@ -8,12 +8,12 @@
  */
 
 // ============================================================================
-// TYPES — Match PVSR API spec v2.3 Section 3.2
+// TYPES — Match PVSR API spec v2.4
 // ============================================================================
 
 export interface PVSRAccountDetail {
     success: boolean;
-    status: "PENDING" | "APPROVED" | "REJECTED" | "DISCONNECTED";
+    status: "PENDING" | "APPROVED" | "REJECTED" | "DISCONNECTED" | "DELETED";
     accountInfo: PVSRAccountInfo | null;
     performance: PVSRPerformance | null;
 }
@@ -259,7 +259,7 @@ export async function getAccountDetail(mt5Account: string, localStatus?: string)
  */
 export async function deleteRegistration(mt5Account: string): Promise<PVSRDeleteResult> {
     if (USE_MOCK) {
-        return { success: true, message: "Registration deleted successfully (mock)" };
+        return { success: true, message: "Registration cancelled successfully." };
     }
 
     try {

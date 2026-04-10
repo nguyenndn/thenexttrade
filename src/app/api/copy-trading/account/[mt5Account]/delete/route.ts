@@ -44,12 +44,12 @@ export async function DELETE(
             );
         }
 
-        // If PENDING, also notify PVSR to delete
-        if (registration.status === CopyTradingStatus.PENDING) {
+        // Notify PVSR for PENDING/REJECTED (PVSR does not accept DELETE for DISCONNECTED)
+        if (registration.status === CopyTradingStatus.PENDING || registration.status === CopyTradingStatus.REJECTED) {
             const result = await deleteRegistration(mt5Account);
             if (!result.success) {
+                // 409 = race condition (admin changed status concurrently)
                 console.warn("[Copy Trading] PVSR delete failed (continuing local delete):", result.message);
-                // Still delete locally even if PVSR fails — best effort
             }
         }
 
