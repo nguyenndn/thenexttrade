@@ -259,7 +259,7 @@
       {
         "active": true,
         "name": "RoboForex",
-        "desc": "12,000+ Assets • 1:2000 Leverage",
+        "desc": "11,000+ Assets • 1:2000 Leverage",
         "badge": null,
         "badgeType": "green",
         "logo": "/images/brokers/roboforex.png",
@@ -271,14 +271,14 @@
         "maxLeverage": "1:2000",
         "regulation": "FSC Belize, FinaCom",
         "features": [
-          "12,000+ trading instruments",
+          "11,000+ trading instruments",
           "Leverage up to 1:2000",
           "5 account types available",
           "€2.5M insurance coverage"
         ],
         "review": {
-          "summary": "RoboForex offers the **widest asset range** with 12,000+ instruments and leverage up to 1:2000. Backed by **€2.5M insurance** and FinaCom membership.",
-          "pros": ["12,000+ instruments — largest range", "Up to 1:2000 leverage", "€2.5M insurance protection", "FinaCom Category A member", "$10 minimum deposit"],
+          "summary": "RoboForex offers the **widest asset range** with 11,000+ instruments and leverage up to 1:2000. Backed by **€2.5M insurance** and FinaCom membership.",
+          "pros": ["11,000+ instruments — largest range", "Up to 1:2000 leverage", "€2.5M insurance protection", "FinaCom Category A member", "$10 minimum deposit"],
           "cons": ["Offshore regulation only (FSC Belize)", "High leverage auto-reduces above $10K equity", "Not available in US, Canada, Japan"],
           "bestFor": "Traders who want the **widest product range** with high leverage and insurance protection.",
           "verdict": "**4.1/5** — Best instrument variety with solid insurance backing."
@@ -343,7 +343,7 @@
       {
         "active": true,
         "name": "TMGM",
-        "desc": "ASIC Regulated • 12,000+ Assets",
+        "desc": "ASIC Regulated • 11,000+ Assets",
         "badge": null,
         "badgeType": "green",
         "logo": "/images/brokers/tmgm.png",
@@ -356,13 +356,13 @@
         "regulation": "ASIC, FMA, VFSC",
         "features": [
           "ASIC (Australia) regulated",
-          "12,000+ tradable instruments",
+          "11,000+ tradable instruments",
           "Raw spreads from 0.0 pips",
           "MT4, MT5 & IRESS platforms"
         ],
         "review": {
-          "summary": "TMGM (TradeMax Global Markets) is an **ASIC-regulated broker** offering access to **12,000+ instruments** including forex, stocks, indices, and crypto CFDs.",
-          "pros": ["ASIC regulated — top-tier trust", "12,000+ instruments available", "Raw spreads from 0.0 on Edge account", "MT4, MT5 & IRESS platforms", "Segregated client funds"],
+          "summary": "TMGM (TradeMax Global Markets) is an **ASIC-regulated broker** offering access to **11,000+ instruments** including forex, stocks, indices, and crypto CFDs.",
+          "pros": ["ASIC regulated — top-tier trust", "11,000+ instruments available", "Raw spreads from 0.0 on Edge account", "MT4, MT5 & IRESS platforms", "Segregated client funds"],
           "cons": ["$100 minimum deposit", "IRESS accounts need $5,000", "Commission on Edge accounts ($7/lot)"],
           "bestFor": "Active traders who want **ASIC regulation** with a massive instrument selection.",
           "verdict": "**4.2/5** — Strong ASIC-regulated broker with impressive product range."

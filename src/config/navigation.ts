@@ -56,6 +56,11 @@ export const menuItems = [
         href: "/brokers",
         type: "link" as const,
     },
+    {
+        name: "Community",
+        href: "/community",
+        type: "link" as const,
+    },
 ];
 
 export const dashboardMenuItems = [
@@ -144,6 +149,9 @@ export const adminMenuItems = [
 
     // --- EDUCATION ---
     { name: "Academy", href: "/admin/academy", icon: GraduationCap },
+
+    // --- COMMUNITY ---
+    { name: "Community", href: "/admin/community", icon: MessageCircle },
 
     // --- INVESTING ---
     { name: "Copy Trading", href: "/admin/copy-trading", icon: Copy },
