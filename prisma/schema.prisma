@@ -106,6 +106,9 @@ model User {
   // Academy Certificates
   certificates       Certificate[]
 
+  // VIP Requests
+  vipRequests        VipRequest[]
+
   @@index([createdAt])
   @@index([email])
   
@@ -1009,6 +1012,10 @@ enum NotificationType {
   COPY_TRADING_APPROVED    // Copy trading approved (user)
   COPY_TRADING_REJECTED    // Copy trading rejected (user)
   
+  // VIP Community
+  VIP_APPROVED             // VIP request approved (user)
+  VIP_REJECTED             // VIP request rejected (user)
+  
   // Admin Broadcast
   ANNOUNCEMENT          // General announcement
   MAINTENANCE           // Scheduled maintenance
@@ -1379,4 +1386,51 @@ model TradingReport {
   @@index([userId, type])
   @@index([createdAt])
   @@map("trading_reports")
+}
+
+// ============================================================================
+// VIP REQUEST SYSTEM
+// ============================================================================
+
+enum VipRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model VipRequest {
+  id              String           @id @default(uuid())
+  
+  // Owner
+  userId          String           @db.Uuid
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Broker Info
+  broker          String           @db.VarChar(50)  // "EXNESS", "VANTAGE", "VTMARKETS"
+  accountNumber   String           @db.VarChar(50)
+  balance         String           @db.VarChar(50)  // String for flexible formatting
+  
+  // User Info
+  fullName        String?          @db.VarChar(100)
+  email           String
+  country         String?          @db.VarChar(100) // Required for Exness
+  telegramId      String           @db.VarChar(100)
+  screenshotUrl   String?          // Supabase storage URL (required for Exness)
+  
+  // Status
+  status          VipRequestStatus @default(PENDING)
+  
+  // Admin Actions
+  adminNote       String?          @db.Text
+  reviewedBy      String?
+  reviewedAt      DateTime?        @db.Timestamptz
+  rejectReason    String?          @db.Text
+  
+  createdAt       DateTime         @default(now()) @db.Timestamptz
+  updatedAt       DateTime         @updatedAt @db.Timestamptz
+  
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("vip_requests")
 }
