@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Loader2, AlertCircle, Plus, Brain, Check, X, RefreshCw, ExternalLink } from "lucide-react";
+import { ArrowLeft, Save, Loader2, AlertCircle, Plus, Brain, Check, X, RefreshCw, ExternalLink, ChevronDown } from "lucide-react";
 import { EmotionSelector } from "@/components/psychology/EmotionSelector";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
 
@@ -15,6 +15,7 @@ import { StrategyModal } from "@/components/strategies/StrategyModal";
 import { calculateProfitLoss } from "@/lib/calculators";
 import { formatAccountLabel, transformImageUrl } from "@/lib/utils";
 import { celebrateXP } from "@/lib/celebrate";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface JournalFormProps {
     initialData?: any;
@@ -176,7 +177,7 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
             }
 
             // Convert numbers
-            const payload = {
+            const payload: any = {
                 ...formData,
                 images: currentImages,
                 entryPrice: parseFloat(formData.entryPrice),
@@ -200,6 +201,23 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                 // Screenshots (Phase 53) - Handled above in currentImages
             };
 
+            // For synced trades, strip locked core data to prevent
+            // unintended overwrites (e.g. entryDate timezone drift changing sort order)
+            if (isSynced) {
+                delete payload.symbol;
+                delete payload.type;
+                delete payload.entryPrice;
+                delete payload.exitPrice;
+                delete payload.stopLoss;
+                delete payload.takeProfit;
+                delete payload.lotSize;
+                delete payload.pnl;
+                delete payload.entryDate;
+                delete payload.status;
+                delete payload.result;
+                delete payload.accountId;
+            }
+
             const url = isEditMode ? `/api/journal-entries/${initialData.id}` : "/api/journal-entries";
             const method = isEditMode ? "PUT" : "POST";
 
@@ -222,13 +240,12 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                     message: "Trade Logged Successfully!",
                     badge: responseData.gamification.isFirstTrade ? "First Trade" : null,
                 });
-            } else {
-                toast.success(isEditMode ? "Trade updated successfully" : "Trade logged successfully");
             }
 
             if (onSuccess) {
                 onSuccess();
             } else {
+                toast.success(isEditMode ? "Trade updated successfully" : "Trade logged successfully");
                 router.push("/dashboard/journal");
                 router.refresh();
             }
@@ -468,21 +485,47 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                         </a>
                                     </div>
                                 ) : (
-                                    /* Has strategies — show select + refresh */
+                                    /* Has strategies — show dropdown + refresh */
                                     <div className="flex gap-2">
-                                        <select
-                                            name="strategy"
-                                            value={formData.strategy}
-                                            onChange={handleChange}
-                                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:outline-none"
-                                        >
-                                            <option value="">No Strategy</option>
-                                            {strategies.map((s: any) => (
-                                                <option key={s.id} value={s.name}>
-                                                    {s.name}
-                                                </option>
-                                            ))}
-                                        </select>
+                                        <DropdownMenu className="flex-1">
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    className="w-full justify-between p-3 h-auto rounded-xl bg-gray-50 dark:bg-black/20 border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 text-sm font-medium"
+                                                >
+                                                    <span className={`flex items-center gap-2 ${formData.strategy ? "text-gray-700 dark:text-white" : "text-gray-500"}`}>
+                                                        {formData.strategy ? (
+                                                            <>
+                                                                <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: strategies.find((s: any) => s.name === formData.strategy)?.color || '#6366F1' }} />
+                                                                {formData.strategy}
+                                                            </>
+                                                        ) : "No Strategy"}
+                                                    </span>
+                                                    <ChevronDown size={16} className="text-gray-400" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="start" className="max-h-[240px] overflow-y-auto">
+                                                <DropdownMenuItem
+                                                    onClick={() => setFormData(p => ({ ...p, strategy: "" }))}
+                                                    className={!formData.strategy ? "bg-gray-100 dark:bg-white/10" : ""}
+                                                >
+                                                    No Strategy
+                                                </DropdownMenuItem>
+                                                {strategies.map((s: any) => (
+                                                    <DropdownMenuItem
+                                                        key={s.id}
+                                                        onClick={() => setFormData(p => ({ ...p, strategy: s.name }))}
+                                                        className={formData.strategy === s.name ? "bg-gray-100 dark:bg-white/10" : ""}
+                                                    >
+                                                        <span className="flex items-center gap-2">
+                                                            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: s.color || '#6366F1' }} />
+                                                            {s.name}
+                                                        </span>
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                         <Button
                                             type="button"
                                             variant="outline"
@@ -561,20 +604,30 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                                 <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Exit Reason / Result</label>
                                 <div className="space-y-3">
                                     <div className="flex gap-2">
-                                        {["WIN", "LOSS", "BREAK_EVEN"].map(res => (
-                                            <Button
-                                                key={res}
-                                                type="button"
-                                                variant={formData.result === res ? "primary" : "outline"}
-                                                onClick={() => setFormData(p => ({ ...p, result: res }))}
-                                                className={`flex-1 py-4 text-xs font-bold transition-all rounded-lg ${formData.result === res
-                                                    ? 'bg-gray-900 border-gray-900 text-white dark:bg-white dark:text-black dark:border-white hover:bg-gray-800'
-                                                    : 'border-gray-200 text-gray-600 hover:border-gray-300 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'
-                                                    }`}
-                                            >
-                                                {res}
-                                            </Button>
-                                        ))}
+                                        {(["WIN", "LOSS", "BREAK_EVEN"] as const).map(res => {
+                                            const isActive = formData.result === res;
+                                            const activeColorMap: Record<string, string> = {
+                                                WIN: 'bg-emerald-500 border-emerald-500 text-white hover:bg-emerald-600 dark:bg-emerald-500 dark:border-emerald-500 dark:text-white',
+                                                LOSS: 'bg-red-500 border-red-500 text-white hover:bg-red-600 dark:bg-red-500 dark:border-red-500 dark:text-white',
+                                                BREAK_EVEN: 'bg-gray-500 border-gray-500 text-white hover:bg-gray-600 dark:bg-gray-500 dark:border-gray-500 dark:text-white',
+                                            };
+                                            const labelMap: Record<string, string> = { WIN: "WIN", LOSS: "LOSS", BREAK_EVEN: "EVEN" };
+                                            return (
+                                                <Button
+                                                    key={res}
+                                                    type="button"
+                                                    variant={isActive ? "primary" : "outline"}
+                                                    disabled={isSynced}
+                                                    onClick={() => setFormData(p => ({ ...p, result: res }))}
+                                                    className={`flex-1 py-4 text-xs font-bold transition-all rounded-lg ${isActive
+                                                        ? activeColorMap[res]
+                                                        : `border-gray-200 text-gray-600 hover:border-gray-300 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`
+                                                        }`}
+                                                >
+                                                    {labelMap[res]}
+                                                </Button>
+                                            );
+                                        })}
                                     </div>
                                     <textarea
                                         name="exitReason"

@@ -490,6 +490,94 @@ function detectInsights(data: {
 }
 
 // ============================================================================
+// SCORE HISTORY — Lightweight score computation for trend tracking
+// ============================================================================
+
+export interface ScoreHistoryPoint {
+    weekStart: string;
+    weekEnd: string;
+    score: number;
+    trades: number;
+    label: string;
+    color: string;
+}
+
+/**
+ * Lightweight score calculation — only 5 queries instead of 9.
+ * Used for score history chart where we don't need full insight detection.
+ */
+async function getQuickScore(
+    userId: string,
+    accountId?: string,
+    startDate?: Date,
+    endDate?: Date
+): Promise<{ score: number; trades: number; label: string; color: string }> {
+    const [stats, revenge, planCompliance, riskDiscipline] = await Promise.all([
+        getKeyStats(userId, accountId, startDate, endDate),
+        getRevengeTradePatterns(userId, accountId, startDate, endDate),
+        getPlanCompliance(userId, accountId, startDate, endDate),
+        getRiskDiscipline(userId, accountId, startDate, endDate),
+    ]);
+
+    if (stats.totalTrades < 5) {
+        return { score: -1, trades: stats.totalTrades, label: "N/A", color: "gray" };
+    }
+
+    const avgRR = stats.avgLoss > 0 ? stats.avgWin / stats.avgLoss : 0;
+
+    const result = calculateTradeScore({
+        winRate: stats.winRate,
+        avgRR,
+        planCompliance: planCompliance.planComplianceRate >= 0 ? planCompliance.planComplianceRate : 70,
+        slUsageRate: riskDiscipline,
+        revengeTradeCount: revenge.count,
+        overtradingDays: 0, // Skip day-of-week analysis for speed
+        weakPairCount: 0,   // Skip symbol analysis for speed
+        emotionLossRate: 0,  // Skip emotion analysis for speed
+    });
+
+    return { score: result.score, trades: stats.totalTrades, label: result.label, color: result.color };
+}
+
+/**
+ * Get score history for the last N weeks.
+ * Returns weekly score data points for trend chart.
+ */
+export async function getScoreHistory(
+    userId: string,
+    accountId?: string,
+    weeks: number = 12
+): Promise<ScoreHistoryPoint[]> {
+    const now = new Date();
+    const weekRanges: Array<{ start: Date; end: Date }> = [];
+
+    for (let i = weeks - 1; i >= 0; i--) {
+        const weekEnd = new Date(now);
+        weekEnd.setDate(weekEnd.getDate() - i * 7);
+        weekEnd.setHours(23, 59, 59, 999);
+
+        const weekStart = new Date(weekEnd);
+        weekStart.setDate(weekStart.getDate() - 6);
+        weekStart.setHours(0, 0, 0, 0);
+
+        weekRanges.push({ start: weekStart, end: weekEnd });
+    }
+
+    const results = await Promise.all(
+        weekRanges.map(({ start, end }) => getQuickScore(userId, accountId, start, end))
+    );
+
+    return results.map((r, i) => ({
+        weekStart: weekRanges[i].start.toISOString().split("T")[0],
+        weekEnd: weekRanges[i].end.toISOString().split("T")[0],
+        score: r.score,
+        trades: r.trades,
+        label: r.label,
+        color: r.color,
+    }));
+}
+
+// ============================================================================
 // MAIN ORCHESTRATOR
 // ============================================================================
 

@@ -4,7 +4,7 @@ import { TabBar } from "@/components/ui/TabBar";
 import { FileText, Clock } from "lucide-react";
 
 import { useState, useEffect } from "react";
-import { Edit2, ArrowUpDown, ArrowUpRight } from "lucide-react";
+import { Edit2, ArrowUpDown, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -389,7 +389,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                                         }}
                                                                         className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all hover:scale-110 active:scale-95 group/detail"
                                                                     >
-                                                                        <ArrowUpRight size={14} className="transition-transform group-hover/detail:translate-x-0.5 group-hover/detail:-translate-y-0.5" />
+                                                                        <Activity size={14} className="transition-all duration-300 group-hover/detail:scale-110 group-hover/detail:text-primary" />
                                                                     </Button>
                                                                 </TooltipTrigger>
                                                                 <TooltipContent side="bottom" className="font-bold">
@@ -493,7 +493,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                             }}
                                                             className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all"
                                                         >
-                                                            <ArrowUpRight size={14} />
+                                                            <Activity size={14} className="transition-all duration-300 hover:scale-110 hover:text-primary" />
                                                         </Button>
                                                     </TooltipTrigger>
                                                     <TooltipContent side="bottom" className="font-bold">

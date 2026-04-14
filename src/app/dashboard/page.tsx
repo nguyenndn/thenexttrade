@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
 import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution } from "@/lib/analytics-queries";
-import { getDashboardInsight } from "@/lib/briefing-queries";
+import { getIntelligenceData } from "@/lib/smart-analytics";
 import { format } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { TradingAlertBanner } from "@/components/dashboard/TradingAlertBanner";
@@ -127,7 +127,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         symbolStats,
         topTrades,
         lotDistribution,
-        insightData,
+        intelligenceData,
     ] = await Promise.all([
         // User Info (name + streak only)
         prisma.user.findUnique({
@@ -162,21 +162,63 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         getTopTrades(user.id, accountId, startDate, endDate),
         // Lot Distribution
         getLotDistribution(user.id, accountId, startDate, endDate),
-        // AI Insight for banner
-        getDashboardInsight(user.id, accountId).catch(() => null),
+        // Intelligence data (filtered by same date range as dashboard) — used for Trade Score + Insight Banner
+        getIntelligenceData(user.id, accountId, startDate, endDate, accountTimezone).catch(() => null),
     ]);
 
     // Destructure stats from cached result
     const { stats, monthly } = dashboardStats;
 
-    // Trade Score (requires >= 30 trades)
-    let tradeScore: number | null = null;
-    if (stats.totalTrades >= 30) {
-        try {
-            const { getIntelligenceData } = await import("@/lib/smart-analytics");
-            const intelligence = await getIntelligenceData(user.id, accountId);
-            tradeScore = intelligence.tradeScore.score;
-        } catch { /* not enough data */ }
+    // Extract Trade Score + Insight from Intelligence data
+    const tradeScore = intelligenceData?.hasEnoughData ? intelligenceData.tradeScore.score : null;
+
+    // Generate insight banner from intelligence top issue/recommendation
+    let insightData: { icon: string; title: string; description: string } | null = null;
+    if (intelligenceData?.hasEnoughData) {
+        const topIssue = intelligenceData.issues[0];
+        if (topIssue) {
+            let headline = "";
+            let context = "";
+            if (topIssue.id.includes("revenge")) {
+                headline = "Emotional control is your #1 growth area";
+                context = `${topIssue.metric} detected — directly impacting your score.`;
+            } else if (topIssue.id.includes("overtrading")) {
+                headline = "Trade frequency is hurting your edge";
+                context = `${topIssue.metric}. Quality over quantity.`;
+            } else if (topIssue.id.includes("weak")) {
+                headline = "Pair selection is diluting your performance";
+                context = topIssue.metric;
+            } else if (topIssue.id.includes("emotion")) {
+                headline = "Emotions are a leading indicator of losses";
+                context = topIssue.metric;
+            } else if (topIssue.id.includes("risk") || topIssue.id.includes("sl")) {
+                headline = "Risk management gaps detected";
+                context = topIssue.metric;
+            } else if (topIssue.id.includes("plan")) {
+                headline = "Trading without a plan is costing you";
+                context = topIssue.metric;
+            } else {
+                headline = topIssue.title;
+                context = topIssue.metric;
+            }
+            insightData = {
+                icon: topIssue.severity === "critical" ? "AlertTriangle" : topIssue.icon || "Brain",
+                title: headline,
+                description: context,
+            };
+        } else if (intelligenceData.strengths.length > 0) {
+            insightData = {
+                icon: "Sparkles",
+                title: "No critical issues — keep it up!",
+                description: intelligenceData.strengths[0].title,
+            };
+        } else {
+            insightData = {
+                icon: "Brain",
+                title: "Consistent execution detected",
+                description: "No significant behavioral issues found.",
+            };
+        }
     }
 
     // 3. Post-Processing & Formatting
@@ -250,6 +292,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
                 lotDistribution={lotDistribution}
                 tradeScore={tradeScore}
                 insight={insightData}
+                intelligenceScore={tradeScore}
             />
         </>
     );

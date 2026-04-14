@@ -51,6 +51,7 @@ interface DashboardClientProps {
     lotDistribution: { name: string; value: number }[];
     tradeScore: number | null;
     insight: { icon: string; title: string; description: string } | null;
+    intelligenceScore?: number | null;
 }
 
 export default function DashboardClient({
@@ -68,6 +69,7 @@ export default function DashboardClient({
     lotDistribution,
     tradeScore,
     insight,
+    intelligenceScore,
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -101,7 +103,7 @@ export default function DashboardClient({
             <GreetingHeader userName={userName} currentAccountId={currentAccountId} />
 
             {/* AI Insight Banner */}
-            {insight && <InsightBanner insight={insight} />}
+            {insight && <InsightBanner insight={insight} score={intelligenceScore} />}
 
             {/* Hero Stats Bar (4 columns) */}
             <DashboardHero 

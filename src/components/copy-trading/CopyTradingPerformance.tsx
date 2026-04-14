@@ -18,6 +18,8 @@ import {
     Landmark,
     BadgeCheck,
     Loader2,
+    Camera,
+    CalendarDays,
 } from "lucide-react";
 import {
     Area,
@@ -28,6 +30,9 @@ import {
     ResponsiveContainer,
     AreaChart,
 } from "recharts";
+import * as htmlToImage from "html-to-image";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface AccountPerformance {
@@ -155,7 +160,7 @@ function formatCurrency(value: number, showSign = false) {
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 export function CopyTradingPerformance() {
     const { theme } = useTheme();
@@ -165,6 +170,8 @@ export function CopyTradingPerformance() {
     const [selectedId, setSelectedId] = useState(mockAccounts[0]?.id || "");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const calendarRef = useRef<HTMLDivElement>(null);
+    const [isCapturing, setIsCapturing] = useState(false);
     const data = mockAccounts.find((a) => a.id === selectedId) || mockAccounts[0];
     const hasMultiple = mockAccounts.length > 1;
 
@@ -222,6 +229,31 @@ export function CopyTradingPerformance() {
         if (calMonth === 11) { setCalYear(calYear + 1); setCalMonth(0); }
         else setCalMonth(calMonth + 1);
     };
+
+    const handleScreenshot = useCallback(async () => {
+        if (!calendarRef.current) return;
+        try {
+            setIsCapturing(true);
+            const dataUrl = await htmlToImage.toPng(calendarRef.current, {
+                quality: 1,
+                pixelRatio: 3,
+                backgroundColor: document.documentElement.classList.contains('dark') ? '#1A1D27' : '#ffffff',
+                style: { margin: '0' },
+            });
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `Trading-Calendar-${monthName.replace(' ', '-')}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast.success('Screenshot saved successfully!');
+        } catch (error: any) {
+            console.error('Screenshot error:', error);
+            toast.error(error instanceof Error ? error.message : (error?.message || 'Failed to capture screenshot'));
+        } finally {
+            setIsCapturing(false);
+        }
+    }, [monthName]);
 
     return (
         <div className="space-y-4">
@@ -432,17 +464,59 @@ export function CopyTradingPerformance() {
             {/* Row 3: Trading Calendar + Account Info */}
             <div className="grid lg:grid-cols-5 gap-4">
                 {/* Trading Calendar — 3 cols */}
-                <div className="lg:col-span-3 bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] p-5">
+                <div ref={calendarRef} className="lg:col-span-3 bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] p-5">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-black text-gray-700 dark:text-white uppercase tracking-wider">Trading Calendar</h3>
-                        <div className="flex items-center gap-2">
-                            <button onClick={prevMonth} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
-                                <ChevronLeft size={16} className="text-gray-400" />
-                            </button>
-                            <span className="text-xs font-bold text-gray-700 dark:text-white min-w-[120px] text-center">{monthName}</span>
-                            <button onClick={nextMonth} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
-                                <ChevronRight size={16} className="text-gray-400" />
-                            </button>
+                        <div className="flex items-center gap-2.5">
+                            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                                <CalendarDays size={18} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-gray-700 dark:text-white text-sm">Trading Calendar</h3>
+                                <p className="text-xs text-gray-500">Daily P&L overview</p>
+                            </div>
+                        </div>
+                        <p className="text-base sm:text-lg font-bold text-gray-700 dark:text-gray-200 hidden sm:block">
+                            Monthly P/L:{" "}
+                            <span className={monthlyTotal >= 0 ? 'text-primary' : 'text-red-500'}>
+                                {formatCurrency(monthlyTotal, true)}
+                            </span>
+                        </p>
+                        <div className="flex items-center gap-3">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={prevMonth}
+                                className="rounded-lg border-0"
+                                aria-label="Previous month"
+                            >
+                                <ChevronLeft size={18} />
+                            </Button>
+                            <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
+                                {monthName}
+                            </span>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={nextMonth}
+                                className="rounded-lg border-0"
+                                aria-label="Next month"
+                            >
+                                <ChevronRight size={18} />
+                            </Button>
+
+                            <div className="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
+
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={handleScreenshot}
+                                disabled={isCapturing}
+                                className={`rounded-lg ${isCapturing ? 'opacity-50' : ''}`}
+                                title="Screenshot Report"
+                                aria-label="Download screenshot"
+                            >
+                                {isCapturing ? <Loader2 size={16} className="animate-spin text-gray-500" /> : <Camera size={16} className="text-gray-600" />}
+                            </Button>
                         </div>
                     </div>
 

@@ -36,6 +36,10 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
     const [isSaving, setIsSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
+    // Track what was last saved to detect real changes (fixes Full→Basic→Full not saving)
+    const savedModeRef = useRef(entry.shareMode || "full");
+    const savedDescRef = useRef(entry.shareDescription || "");
+
     // Screenshot state
     const [isCapturing, setIsCapturing] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
@@ -70,19 +74,21 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
         }
     };
 
-    // Save on changes
+    // Save on changes — compare against local refs instead of stale props
     useEffect(() => {
-        if (open && (debouncedDescription !== (entry.shareDescription || "") || mode !== (entry.shareMode || "full"))) {
+        if (open && (debouncedDescription !== savedDescRef.current || mode !== savedModeRef.current)) {
             setIsSaving(true);
             updateShareSettings(entry.id, { 
                 mode, 
                 description: debouncedDescription 
             }).then(() => {
+                savedModeRef.current = mode;
+                savedDescRef.current = debouncedDescription;
                 setIsSaving(false);
                 setLastSaved(new Date());
             });
         }
-    }, [mode, debouncedDescription, entry.id, open, entry.shareDescription, entry.shareMode]);
+    }, [mode, debouncedDescription, entry.id, open]);
 
     if (!entry) return null;
 

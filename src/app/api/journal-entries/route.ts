@@ -19,13 +19,19 @@ const journalEntrySchema = z.object({
     result: z.enum(["WIN", "LOSS", "BREAK_EVEN"]).optional().nullable(),
     pnl: z.number().optional().nullable(),
     notes: z.string().optional(),
-    entryReason: z.string().optional(),
-    exitReason: z.string().optional(),
+    entryReason: z.string().optional().nullable(),
+    exitReason: z.string().optional().nullable(),
     images: z.array(z.string()).optional().default([]),
     accountId: z.string().optional().nullable(),
     strategy: z.string().optional().nullable(),
     // Phase 45
     mistakes: z.array(z.string()).optional().default([]),
+    tags: z.array(z.string()).optional().default([]),
+    emotionBefore: z.string().optional().nullable(),
+    emotionAfter: z.string().optional().nullable(),
+    confidenceLevel: z.number().int().min(1).max(5).optional().nullable(),
+    followedPlan: z.boolean().optional().nullable(),
+    notesPsychology: z.string().optional().nullable(),
 });
 
 export async function POST(request: Request) {
@@ -135,6 +141,11 @@ export async function GET(request: Request) {
                 orderBy: { [sortBy]: sortOrder },
                 skip,
                 take: limit,
+                include: {
+                    account: {
+                        select: { accountType: true },
+                    },
+                },
             }),
             prisma.journalEntry.count({ where }),
             prisma.journalEntry.aggregate({

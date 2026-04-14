@@ -267,8 +267,8 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                                         onClick={() => handleDayClick(dateKey, hasTrades || false)}
                                         className={`
                                             min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center
-                                            transition-all hover:scale-105 hover:z-10 relative border
-                                            ${hasTrades ? `${getColorClass(pnl)} cursor-pointer` : "bg-gray-50 dark:bg-white/5 text-gray-500 border-transparent cursor-default"}
+                                            transition-all relative border
+                                            ${hasTrades ? `${getColorClass(pnl)} cursor-pointer hover:brightness-95 dark:hover:brightness-110` : "bg-gray-50 dark:bg-white/5 text-gray-500 border-transparent cursor-default"}
                                         `}
                                         title={hasTrades ? `$${pnl.toFixed(2)} (${dayData?.tradeCount} trades)` : "No trades"}
                                     >
@@ -297,7 +297,7 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
                             })}
 
                             {/* Weekly Summary Cell */}
-                            <div className="min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 relative shadow-sm hover:shadow-md transition-all hover:scale-105 hover:z-10">
+                            <div className="min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 relative shadow-sm hover:shadow-md transition-all">
                                 <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${weeklyPnL >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                     W{weekIndex + 1}
                                 </span>

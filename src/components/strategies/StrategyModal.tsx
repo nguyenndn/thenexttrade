@@ -24,7 +24,7 @@ interface StrategyModalProps {
 }
 
 const COLORS = [
-    "hsl(var(--primary))", "#10B981", "#3B82F6", "#0EA5E9", "#6366F1",
+    "#00C785", "#10B981", "#3B82F6", "#0EA5E9", "#6366F1",
     "#8B5CF6", "#A855F7", "#D946EF", "#EC4899", "#F43F5E",
     "#EF4444", "#F97316", "#F59E0B", "#EAB308", "#84CC16",
     "#14B8A6", "#06B6D4", "#64748B", "#475569", "#1E293B"
