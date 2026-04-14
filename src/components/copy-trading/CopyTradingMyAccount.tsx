@@ -30,8 +30,11 @@ import {
     RefreshCw,
     AlertTriangle,
     Plus,
+    Camera,
+    CalendarDays,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import * as htmlToImage from "html-to-image";
 import { CopyTradingRegistrationModal } from "./CopyTradingRegistrationModal";
 import {
     Area,
@@ -172,6 +175,8 @@ function AccountPerformanceView({ reg, pvsrData }: { reg: Registration; pvsrData
 
     const [calYear, setCalYear] = useState(2026);
     const [calMonth, setCalMonth] = useState(3); // April
+    const calendarRef = useRef<HTMLDivElement>(null);
+    const [isCapturing, setIsCapturing] = useState(false);
 
     if (!pvsrData?.performance) {
         return (
@@ -219,6 +224,31 @@ function AccountPerformanceView({ reg, pvsrData }: { reg: Registration; pvsrData
         if (calMonth === 11) { setCalYear(calYear + 1); setCalMonth(0); }
         else setCalMonth(calMonth + 1);
     };
+
+    const handleScreenshot = React.useCallback(async () => {
+        if (!calendarRef.current) return;
+        try {
+            setIsCapturing(true);
+            const dataUrl = await htmlToImage.toPng(calendarRef.current, {
+                quality: 1,
+                pixelRatio: 3,
+                backgroundColor: isDark ? '#1E2028' : '#ffffff',
+                style: { margin: '0' },
+            });
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `Trading-Calendar-${monthName.replace(' ', '-')}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast.success('Screenshot saved successfully!');
+        } catch (error: any) {
+            console.error('Screenshot error:', error);
+            toast.error(error instanceof Error ? error.message : (error?.message || 'Failed to capture screenshot'));
+        } finally {
+            setIsCapturing(false);
+        }
+    }, [monthName, isDark]);
 
     // Map growthChartArray for recharts
     const equityData = perf.growthChartArray.map(p => ({
@@ -382,31 +412,59 @@ function AccountPerformanceView({ reg, pvsrData }: { reg: Registration; pvsrData
             </div>
 
             {/* Trading Calendar */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
+            <div ref={calendarRef} className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-2.5">
                         <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                            <BarChart3 size={18} />
+                            <CalendarDays size={18} />
                         </div>
                         <div>
                             <h3 className="font-bold text-gray-700 dark:text-white text-sm">Trading Calendar</h3>
                             <p className="text-xs text-gray-500">Daily P&L overview</p>
                         </div>
                     </div>
-                    <p className="text-base sm:text-lg font-bold text-gray-700 dark:text-gray-200">
+                    <p className="text-base sm:text-lg font-bold text-gray-700 dark:text-gray-200 hidden sm:block">
                         Monthly P/L:{" "}
                         <span className={monthlyTotal >= 0 ? "text-primary" : "text-red-500"}>
                             {formatCurrency(monthlyTotal, true)}
                         </span>
                     </p>
                     <div className="flex items-center gap-3">
-                        <button onClick={prevMonth} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
-                            <ChevronLeft size={18} className="text-gray-500" />
-                        </button>
-                        <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">{monthName}</span>
-                        <button onClick={nextMonth} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
-                            <ChevronRight size={18} className="text-gray-500" />
-                        </button>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={prevMonth}
+                            className="rounded-lg border-0"
+                            aria-label="Previous month"
+                        >
+                            <ChevronLeft size={18} />
+                        </Button>
+                        <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
+                            {monthName}
+                        </span>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={nextMonth}
+                            className="rounded-lg border-0"
+                            aria-label="Next month"
+                        >
+                            <ChevronRight size={18} />
+                        </Button>
+
+                        <div className="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
+
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleScreenshot}
+                            disabled={isCapturing}
+                            className={`rounded-lg ${isCapturing ? 'opacity-50' : ''}`}
+                            title="Screenshot Report"
+                            aria-label="Download screenshot"
+                        >
+                            {isCapturing ? <Loader2 size={16} className="animate-spin text-gray-500" /> : <Camera size={16} className="text-gray-600" />}
+                        </Button>
                     </div>
                 </div>
 
@@ -443,10 +501,10 @@ function AccountPerformanceView({ reg, pvsrData }: { reg: Registration; pvsrData
 
                                             return (
                                                 <div key={`w${wi}-d${di}`}
-                                                    className={`min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center transition-all hover:scale-105 hover:z-10 relative border
+                                                    className={`min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center transition-all relative border
                                                         ${hasPnl ? pnl >= 0
-                                                            ? "bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary border-emerald-100/50 dark:border-primary/20"
-                                                            : "bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100/50 dark:border-red-500/20"
+                                                            ? "bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary border-emerald-100/50 dark:border-primary/20 hover:brightness-95 dark:hover:brightness-110"
+                                                            : "bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100/50 dark:border-red-500/20 hover:brightness-95 dark:hover:brightness-110"
                                                         : "bg-gray-50 dark:bg-white/5 text-gray-500 border-transparent"}`}
                                                 >
                                                     <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${hasPnl ? "text-gray-700 dark:text-gray-100" : "text-gray-700 dark:text-gray-500"}`}>
@@ -464,7 +522,7 @@ function AccountPerformanceView({ reg, pvsrData }: { reg: Registration; pvsrData
                                         })}
 
                                         {/* Weekly Summary Cell */}
-                                        <div className="min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 relative shadow-sm hover:shadow-md transition-all hover:scale-105 hover:z-10">
+                                        <div className="min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 relative shadow-sm hover:shadow-md transition-all">
                                             <span className={`text-[10px] font-bold absolute top-1.5 left-2 ${weeklyTotal_w >= 0 ? "text-primary" : "text-red-500"}`}>W{wi + 1}</span>
                                             <div className="flex flex-col items-center mt-2.5 w-full">
                                                 <span className={`w-full text-center px-0.5 text-base sm:text-lg tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5 ${weeklyTotal_w >= 0 ? "text-primary" : "text-red-500"}`}>

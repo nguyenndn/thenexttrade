@@ -19,11 +19,18 @@ const journalEntryUpdateSchema = z.object({
     result: z.enum(["WIN", "LOSS", "BREAK_EVEN"]).optional().nullable(),
     pnl: z.number().optional().nullable(),
     notes: z.string().optional(),
-    entryReason: z.string().optional(),
-    exitReason: z.string().optional(),
+    entryReason: z.string().optional().nullable(),
+    exitReason: z.string().optional().nullable(),
     images: z.array(z.string()).optional(),
     strategy: z.string().optional().nullable(),
     mistakes: z.array(z.string()).optional(),
+    tags: z.array(z.string()).optional(),
+    accountId: z.string().optional().nullable(),
+    emotionBefore: z.string().optional().nullable(),
+    emotionAfter: z.string().optional().nullable(),
+    confidenceLevel: z.number().int().min(1).max(5).optional().nullable(),
+    followedPlan: z.boolean().optional().nullable(),
+    notesPsychology: z.string().optional().nullable(),
 });
 
 export async function GET(
@@ -76,9 +83,20 @@ export async function PUT(
         const body = await request.json();
         const validatedData = journalEntryUpdateSchema.parse(body);
 
+        // CRITICAL: Only update fields that were explicitly sent in the request body.
+        // Zod transforms can convert undefined (absent field) to null,
+        // which would unintentionally overwrite existing DB values (e.g. exitDate → null).
+        const updateData: Record<string, unknown> = {};
+        const validated = validatedData as Record<string, unknown>;
+        for (const key of Object.keys(validated)) {
+            if (key in body) {
+                updateData[key] = validated[key];
+            }
+        }
+
         const updated = await prisma.journalEntry.update({
             where: { id: params.id },
-            data: validatedData
+            data: updateData
         });
 
         return NextResponse.json(updated);

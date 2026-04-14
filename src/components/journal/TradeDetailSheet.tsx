@@ -186,7 +186,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                 className="rounded-lg px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 border whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:border-gray-200 dark:data-[state=active]:border-white/10 text-gray-600 dark:text-gray-300 border-transparent"
                             >
                                 <Tag size={16} />
-                                Trade Tags
+                                Trade Context
                             </TabsTrigger>
                         </TabsList>
 
@@ -338,64 +338,108 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                             <div className="space-y-6 pt-2">
                                 <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4 flex items-center gap-2 pl-2">
                                     <Brain size={14} />
-                                    Trade Analysis & Context
+                                    Trade Analysis
                                 </h3>
 
                                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl p-5 space-y-5">
-                                    {/* Strategy & Psychology */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
-                                            <div className="absolute -top-10 -right-10 text-blue-500/5 rotate-12 pointer-events-none">
-                                                <Target size={120} strokeWidth={1} />
-                                            </div>
-                                            <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2 relative z-10">
-                                                <Target size={12} className="text-blue-500" /> Strategy Executed
-                                            </h4>
-                                            <div className="relative z-10">
-                                                {entry.strategy ? (
-                                                    <span
-                                                        className="px-5 py-2.5 rounded-xl text-sm font-black uppercase tracking-wider border"
-                                                        style={{
-                                                            backgroundColor: `${strategyColor}15`,
-                                                            color: strategyColor,
-                                                            borderColor: `${strategyColor}30`
-                                                        }}
-                                                    >
-                                                        {currentStrategy?.name || entry.strategy}
-                                                    </span>
-                                                ) : (
-                                                    <div className="py-2">
-                                                         <EmptyState 
-                                                            icon={Target} 
-                                                            title="No Strategy Selected" 
-                                                            description="This trade was logged without a specific system."
-                                                        />
-                                                    </div>
-                                                )}
-                                            </div>
+                                    {/* Strategy - Compact Inline Row */}
+                                    <div className="flex items-center gap-3 bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200 dark:border-white/10">
+                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2 shrink-0">
+                                            <Target size={12} className="text-blue-500" /> Strategy
+                                        </h4>
+                                        {entry.strategy ? (
+                                            <span
+                                                className="px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border"
+                                                style={{
+                                                    backgroundColor: `${strategyColor}15`,
+                                                    color: strategyColor,
+                                                    borderColor: `${strategyColor}30`
+                                                }}
+                                            >
+                                                {currentStrategy?.name || entry.strategy}
+                                            </span>
+                                        ) : (
+                                            <span className="text-xs text-gray-400 italic">No strategy selected</span>
+                                        )}
+                                    </div>
+
+                                    {/* Entry Reason & Exit Reason */}
+                                    {((entry as any).entryReason || (entry as any).exitReason) && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {(entry as any).entryReason && (
+                                                <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-200 dark:border-white/10">
+                                                    <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                        <MessageSquare size={12} className="text-blue-500" /> Entry Reason
+                                                    </h4>
+                                                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                        {(entry as any).entryReason}
+                                                    </p>
+                                                </div>
+                                            )}
+                                            {(entry as any).exitReason && (
+                                                <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-200 dark:border-white/10">
+                                                    <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                        <MessageSquare size={12} className="text-orange-500" /> Exit Reason
+                                                    </h4>
+                                                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                        {(entry as any).exitReason}
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
-                                        <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
-                                            <div className="absolute -bottom-6 -right-6 text-purple-500/5 -rotate-12 pointer-events-none">
-                                                <Brain size={120} strokeWidth={1} />
-                                            </div>
-                                            <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2 relative z-10">
-                                                <Brain size={12} className="text-purple-500" /> Psychological State
-                                            </h4>
-                                            <div className="relative z-10">
-                                                {entry.mindset ? (
-                                                    <span className="px-5 py-2.5 bg-purple-500/10 text-purple-500 rounded-xl text-sm font-black uppercase tracking-wider border border-purple-500/20 shadow-inner">
-                                                        {entry.mindset}
-                                                    </span>
-                                                ) : (
-                                                    <div className="py-2">
-                                                         <EmptyState 
-                                                            icon={Brain} 
-                                                            title="Mindset Not Recorded" 
-                                                            description="Emotion tracking was skipped for this execution."
-                                                        />
+                                    )}
+
+                                    {/* Psychological State - Full Width */}
+                                    <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-200 dark:border-white/10 relative overflow-hidden">
+                                        <div className="absolute -bottom-6 -right-6 text-purple-500/5 -rotate-12 pointer-events-none">
+                                            <Brain size={120} strokeWidth={1} />
+                                        </div>
+                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2 relative z-10">
+                                            <Brain size={12} className="text-purple-500" /> Psychological State
+                                        </h4>
+                                        <div className="relative z-10">
+                                            {(entry as any).emotionBefore || (entry as any).emotionAfter || (entry as any).confidenceLevel ? (
+                                                <div className="space-y-3">
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {(entry as any).emotionBefore && (
+                                                            <span className="px-4 py-2 bg-purple-500/10 text-purple-500 rounded-xl text-xs font-black uppercase tracking-wider border border-purple-500/20">
+                                                                Before: {(entry as any).emotionBefore}
+                                                            </span>
+                                                        )}
+                                                        {(entry as any).emotionAfter && (
+                                                            <span className="px-4 py-2 bg-indigo-500/10 text-indigo-500 rounded-xl text-xs font-black uppercase tracking-wider border border-indigo-500/20">
+                                                                After: {(entry as any).emotionAfter}
+                                                            </span>
+                                                        )}
+                                                        {(entry as any).confidenceLevel && (
+                                                            <span className="px-4 py-2 bg-amber-500/10 text-amber-600 rounded-xl text-xs font-black uppercase tracking-wider border border-amber-500/20">
+                                                                Confidence: {(entry as any).confidenceLevel}/5
+                                                            </span>
+                                                        )}
+                                                        {(entry as any).followedPlan !== null && (entry as any).followedPlan !== undefined && (
+                                                            <span className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border ${(entry as any).followedPlan
+                                                                ? 'bg-green-500/10 text-green-500 border-green-500/20'
+                                                                : 'bg-red-500/10 text-red-500 border-red-500/20'
+                                                            }`}>
+                                                                {(entry as any).followedPlan ? '✓ Followed Plan' : '✗ Deviated'}
+                                                            </span>
+                                                        )}
                                                     </div>
-                                                )}
-                                            </div>
+                                                    {(entry as any).notesPsychology && (
+                                                        <p className="text-sm text-gray-600 dark:text-gray-400 italic border-l-2 border-purple-500/30 pl-3">
+                                                            {(entry as any).notesPsychology}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="py-2">
+                                                     <EmptyState 
+                                                        icon={Brain} 
+                                                        title="Mindset Not Recorded" 
+                                                        description="Emotion tracking was skipped for this execution."
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 

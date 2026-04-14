@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
-import { getIntelligenceData } from "@/lib/smart-analytics";
+import { getIntelligenceData, getScoreHistory } from "@/lib/smart-analytics";
 import { IntelligenceDashboard } from "@/components/analytics/IntelligenceDashboard";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 import { TabBar } from "@/components/ui/TabBar";
@@ -82,13 +82,22 @@ export default async function IntelligencePage({
     const startDate = parseLocalStartOfDay(startDateParam, accountTimezone);
     const endDate = parseLocalEndOfDay(endDateParam, accountTimezone);
 
+    // Calculate previous period (equal length, immediately before current)
+    let prevStartDate: Date | undefined;
+    let prevEndDate: Date | undefined;
+    if (startDate && endDate) {
+        const periodMs = endDate.getTime() - startDate.getTime();
+        prevEndDate = new Date(startDate.getTime() - 1); // 1ms before current start
+        prevStartDate = new Date(prevEndDate.getTime() - periodMs);
+    }
+
     return (
         <div className="space-y-4">
             <PageHeader
                 title="Trading Intelligence"
                 description="Pattern detection and insights from your trading data."
             >
-                <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
+                <DashboardFilter currentAccountId={accountId ?? undefined} />
             </PageHeader>
             <div className="mb-4">
                 <TabBar tabs={analyticsTabs} equalWidth />
@@ -102,7 +111,11 @@ export default async function IntelligencePage({
                     accountId={accountId}
                     startDate={startDate}
                     endDate={endDate}
+                    prevStartDate={prevStartDate}
+                    prevEndDate={prevEndDate}
                     timezone={accountTimezone}
+                    dateFrom={startDateParam}
+                    dateTo={endDateParam}
                 />
             </Suspense>
         </div>
@@ -114,17 +127,42 @@ async function IntelligenceDataLoader({
     accountId,
     startDate,
     endDate,
+    prevStartDate,
+    prevEndDate,
     timezone,
+    dateFrom,
+    dateTo,
 }: {
     userId: string;
     accountId?: string;
     startDate?: Date;
     endDate?: Date;
+    prevStartDate?: Date;
+    prevEndDate?: Date;
     timezone?: string;
+    dateFrom?: string;
+    dateTo?: string;
 }) {
-    const data = await getIntelligenceData(userId, accountId, startDate, endDate, timezone);
+    // Fetch current data, previous period data, and score history in parallel
+    const [data, previousData, scoreHistory] = await Promise.all([
+        getIntelligenceData(userId, accountId, startDate, endDate, timezone),
+        prevStartDate && prevEndDate
+            ? getIntelligenceData(userId, accountId, prevStartDate, prevEndDate, timezone)
+            : Promise.resolve(null),
+        getScoreHistory(userId, accountId, 12),
+    ]);
 
-    return <IntelligenceDashboard data={data} />;
+    return (
+        <IntelligenceDashboard
+            data={data}
+            previousData={previousData}
+            scoreHistory={scoreHistory}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            prevDateFrom={prevStartDate?.toISOString().split("T")[0]}
+            prevDateTo={prevEndDate?.toISOString().split("T")[0]}
+        />
+    );
 }
 
 function IntelligenceLoadingSkeleton() {
@@ -134,19 +172,17 @@ function IntelligenceLoadingSkeleton() {
                 <div className="h-6 w-40 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
                 <div className="h-6 w-20 bg-gray-200 dark:bg-white/5 rounded-full animate-pulse" />
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-4 xl:col-span-3">
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 h-72 animate-pulse" />
-                </div>
-                <div className="lg:col-span-8 xl:col-span-9 space-y-3">
-                    {[1, 2, 3].map((i) => (
-                        <div
-                            key={i}
-                            className="bg-white dark:bg-[#1E2028] rounded-xl p-5 border border-gray-200 dark:border-white/10 h-28 animate-pulse"
-                        />
-                    ))}
-                </div>
+            <div className="h-20 bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {[1, 2, 3].map((i) => (
+                    <div
+                        key={i}
+                        className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 h-48 animate-pulse"
+                    />
+                ))}
             </div>
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 h-64 animate-pulse" />
         </div>
     );
 }
+

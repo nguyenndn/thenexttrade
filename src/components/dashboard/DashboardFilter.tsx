@@ -11,9 +11,10 @@ interface DashboardFilterProps {
     className?: string;
     hideDateFilter?: boolean;
     equalWidth?: boolean;
+    defaultToAllTime?: boolean;
 }
 
-export function DashboardFilter({ currentAccountId, className, hideDateFilter, equalWidth }: DashboardFilterProps) {
+export function DashboardFilter({ currentAccountId, className, hideDateFilter, equalWidth, defaultToAllTime }: DashboardFilterProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -40,13 +41,13 @@ export function DashboardFilter({ currentAccountId, className, hideDateFilter, e
         }
     }, [startStr, endStr]);
 
-    // Guard to prevent infinite loop: router.replace() triggers SSR re-render ? 
-    // component re-mounts ? effect re-runs ? loop. useRef persists across renders.
+    // Guard to prevent infinite loop: router.replace() triggers SSR re-render →
+    // component re-mounts → effect re-runs → loop. useRef persists across renders.
     const hasInitialized = useRef(false);
 
     // Default to Saved Range or Today on mount if URL is empty
     useEffect(() => {
-        if (hideDateFilter) return;
+        if (hideDateFilter || defaultToAllTime) return;
         if (hasInitialized.current) return;
 
         const start = searchParams.get("from");

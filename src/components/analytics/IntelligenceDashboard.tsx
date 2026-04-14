@@ -3,6 +3,7 @@
 import {
     AlertTriangle,
     TrendingDown,
+    TrendingUp,
     BarChart3,
     Frown,
     Clock,
@@ -17,9 +18,25 @@ import {
     Crosshair,
     Lightbulb,
     Gauge,
+    ArrowUpRight,
+    ArrowDownRight,
+    Minus,
+    Activity,
+    Target,
 } from "lucide-react";
 import Link from "next/link";
-import type { IntelligenceData, Insight, InsightSeverity } from "@/lib/smart-analytics";
+import {
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    AreaChart,
+    ReferenceLine,
+} from "recharts";
+import type { IntelligenceData, Insight, InsightSeverity, ScoreHistoryPoint } from "@/lib/smart-analytics";
+import { format, parseISO } from "date-fns";
 
 // ============================================================================
 // ICON MAP
@@ -29,6 +46,267 @@ const iconMap: Record<string, React.ElementType> = {
     Clock, Calendar, ClipboardCheck,
     ClipboardX: ClipboardXIcon, Shield, ShieldOff,
 };
+
+// ============================================================================
+// PERIOD COMPARISON BANNER
+// ============================================================================
+function PeriodComparison({
+    current,
+    previous,
+    prevDateFrom,
+    prevDateTo,
+}: {
+    current: IntelligenceData;
+    previous: IntelligenceData;
+    prevDateFrom?: string;
+    prevDateTo?: string;
+}) {
+    if (!previous.hasEnoughData) return null;
+
+    // Format previous period label
+    let prevPeriodLabel = "vs previous period";
+    if (prevDateFrom && prevDateTo) {
+        try {
+            const from = format(parseISO(prevDateFrom), "MMM d");
+            const to = format(parseISO(prevDateTo), "MMM d, yyyy");
+            prevPeriodLabel = from === to ? `vs ${to}` : `vs ${from} – ${to}`;
+        } catch {
+            prevPeriodLabel = `vs ${prevDateFrom} – ${prevDateTo}`;
+        }
+    }
+
+    const scoreDelta = current.tradeScore.score - previous.tradeScore.score;
+    const issuesDelta = current.issues.length - previous.issues.length;
+    const strengthsDelta = current.strengths.length - previous.strengths.length;
+    const winRateDelta = current.quickStats.winRate - previous.quickStats.winRate;
+    const rrDelta = current.quickStats.avgRR - previous.quickStats.avgRR;
+
+    const DeltaBadge = ({ value, invert = false, suffix = "" }: { value: number; invert?: boolean; suffix?: string }) => {
+        const isPositive = invert ? value < 0 : value > 0;
+        const displayVal = Math.abs(value);
+
+        if (value === 0) {
+            return (
+                <span className="inline-flex items-center gap-1 text-sm font-bold text-gray-400 dark:text-gray-500">
+                    <Minus size={14} /> 0{suffix}
+                </span>
+            );
+        }
+
+        return (
+            <span className={`inline-flex items-center gap-0.5 text-sm font-bold ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
+                {isPositive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                {value > 0 ? "+" : "-"}{suffix === "%" ? displayVal.toFixed(1) : displayVal}{suffix}
+            </span>
+        );
+    };
+
+    const cards = [
+        {
+            label: "Score",
+            value: String(current.tradeScore.score),
+            prev: String(previous.tradeScore.score),
+            delta: <DeltaBadge value={scoreDelta} />,
+            accent: "border-l-indigo-500",
+        },
+        {
+            label: "Win Rate",
+            value: `${current.quickStats.winRate.toFixed(1)}%`,
+            prev: `${previous.quickStats.winRate.toFixed(1)}%`,
+            delta: <DeltaBadge value={winRateDelta} suffix="%" />,
+            accent: "border-l-blue-500",
+        },
+        {
+            label: "Risk:Reward",
+            value: current.quickStats.avgRR.toFixed(2),
+            prev: previous.quickStats.avgRR.toFixed(2),
+            delta: <DeltaBadge value={Math.round(rrDelta * 100) / 100} />,
+            accent: "border-l-cyan-500",
+        },
+        {
+            label: "Issues",
+            value: String(current.issues.length),
+            prev: String(previous.issues.length),
+            delta: <DeltaBadge value={issuesDelta} invert />,
+            accent: "border-l-red-500",
+        },
+        {
+            label: "Strengths",
+            value: String(current.strengths.length),
+            prev: String(previous.strengths.length),
+            delta: <DeltaBadge value={strengthsDelta} />,
+            accent: "border-l-emerald-500",
+        },
+    ];
+
+    return (
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
+            <div className="flex items-center gap-2.5 mb-5">
+                <div className="p-2 rounded-lg bg-indigo-500/10">
+                    <Activity size={18} className="text-indigo-500" />
+                </div>
+                <div>
+                    <h3 className="text-sm font-bold text-gray-700 dark:text-white">Period Comparison</h3>
+                    <p className="text-xs text-gray-500">{prevPeriodLabel}</p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                {cards.map((card) => (
+                    <div
+                        key={card.label}
+                        className={`text-center p-4 rounded-xl bg-gray-50 dark:bg-white/[0.03] border-l-[3px] ${card.accent} ${
+                            card.label === "Strengths" ? "col-span-2 sm:col-span-1" : ""
+                        }`}
+                    >
+                        <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{card.label}</p>
+                        <div className="flex items-center justify-center gap-2 mb-1">
+                            <span className="text-2xl font-black text-gray-800 dark:text-white">{card.value}</span>
+                            {card.delta}
+                        </div>
+                        <p className="text-xs text-gray-400 dark:text-gray-500">was {card.prev}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+
+// ============================================================================
+// SCORE HISTORY CHART
+// ============================================================================
+function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
+    // Filter out weeks with no trades (score = -1)
+    const validData = data.filter((d) => d.score >= 0);
+
+    if (validData.length < 3) return null;
+
+    const chartData = validData.map((d) => ({
+        ...d,
+        weekLabel: format(parseISO(d.weekStart), "MMM d"),
+    }));
+
+    const avgScore = Math.round(chartData.reduce((sum, d) => sum + d.score, 0) / chartData.length);
+    const latestScore = chartData[chartData.length - 1]?.score ?? 0;
+    const firstScore = chartData[0]?.score ?? 0;
+    const trend = latestScore - firstScore;
+
+    const getScoreColor = (score: number) => {
+        if (score >= 75) return "#10B981";
+        if (score >= 60) return "#3B82F6";
+        if (score >= 40) return "#F59E0B";
+        return "#EF4444";
+    };
+
+    return (
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
+            <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg bg-violet-500/10">
+                        <TrendingUp size={16} className="text-violet-500" />
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-700 dark:text-white">Score Trend</h3>
+                        <p className="text-xs text-gray-500">Weekly score over {validData.length} weeks</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-4">
+                    <div className="text-right">
+                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Average</p>
+                        <p className="text-base font-black text-gray-700 dark:text-white">{avgScore}</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Trend</p>
+                        <div className="flex items-center gap-1 justify-end">
+                            {trend >= 0 ? (
+                                <ArrowUpRight size={14} className="text-emerald-500" />
+                            ) : (
+                                <ArrowDownRight size={14} className="text-red-500" />
+                            )}
+                            <p className={`text-base font-black ${trend >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                                {trend >= 0 ? "+" : ""}{trend}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="h-[220px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                        <defs>
+                            <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.2} />
+                                <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(156,163,175,0.1)" />
+                        <XAxis
+                            dataKey="weekLabel"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 11, fill: "#9CA3AF", fontWeight: 500 }}
+                            dy={10}
+                        />
+                        <YAxis
+                            domain={[0, 100]}
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 11, fill: "#9CA3AF", fontWeight: 500 }}
+                            width={40}
+                        />
+                        <ReferenceLine y={50} stroke="rgba(156,163,175,0.2)" strokeDasharray="3 3" />
+                        <Tooltip
+                            content={({ active, payload }) => {
+                                if (active && payload && payload.length) {
+                                    const d = payload[0].payload as ScoreHistoryPoint & { weekLabel: string };
+                                    return (
+                                        <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl">
+                                            <p className="text-[11px] font-bold text-gray-500 uppercase mb-1">
+                                                Week of {d.weekLabel}
+                                            </p>
+                                            <p className="text-sm font-black" style={{ color: getScoreColor(d.score) }}>
+                                                Score: {d.score}
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-0.5">
+                                                {d.trades} trades · {d.label}
+                                            </p>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            }}
+                        />
+                        <Area
+                            type="monotone"
+                            dataKey="score"
+                            stroke="#8B5CF6"
+                            strokeWidth={2.5}
+                            fillOpacity={1}
+                            fill="url(#scoreGradient)"
+                            animationDuration={1500}
+                            dot={(props: any) => {
+                                const { cx, cy, payload } = props;
+                                return (
+                                    <circle
+                                        key={`dot-${payload.weekStart}`}
+                                        cx={cx}
+                                        cy={cy}
+                                        r={4}
+                                        fill={getScoreColor(payload.score)}
+                                        stroke="white"
+                                        strokeWidth={2}
+                                    />
+                                );
+                            }}
+                        />
+                    </AreaChart>
+                </ResponsiveContainer>
+            </div>
+        </div>
+    );
+}
 
 // ============================================================================
 // UNIFIED SCORE & RISK PANEL — Full-width, 3 columns
@@ -201,59 +479,107 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 }
 
 // ============================================================================
-// AI RECOMMENDATION — Single actionable advice (UNIQUE to Intelligence)
+// AI RECOMMENDATION — Data-driven intelligence brief
 // ============================================================================
 function AIRecommendation({ data }: { data: IntelligenceData }) {
-    // Pick the most impactful recommendation from issues
-    let recommendation = "";
-    let context = "";
+    const score = data.tradeScore.score;
+    const { winRate, avgRR } = data.quickStats;
+    const issueCount = data.issues.length;
+    const strengthCount = data.strengths.length;
+
+    // Dynamic score assessment
+    const scoreAssessment = score >= 75
+        ? { label: "Strong", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10" }
+        : score >= 60
+            ? { label: "Good", color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10" }
+            : score >= 40
+                ? { label: "Needs Work", color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/10" }
+                : { label: "At Risk", color: "text-red-600 dark:text-red-400", bg: "bg-red-500/10" };
+
+    // Build data-driven narrative
+    let headline = "";
+    let narrative = "";
+    let priorityAction = "";
+    let priorityIcon: React.ElementType = Lightbulb;
 
     const topIssue = data.issues[0];
+
     if (topIssue) {
-        // Generate specific recommendation based on the issue type
+        // Generate dynamic recommendation with actual data
         if (topIssue.id.includes("revenge")) {
-            recommendation = "After any loss, wait at least 15 minutes before entering a new trade.";
-            context = "Revenge trading is your biggest behavioral risk right now.";
+            const revengeCount = topIssue.metric;
+            headline = "Emotional control is your #1 growth area";
+            narrative = `Your data shows ${revengeCount} — trades opened within 1 hour after a loss. These trades have a significantly higher loss rate, directly dragging your score to ${score}/100.`;
+            priorityAction = "Implement a mandatory 15-minute cooldown after any losing trade. Set a timer.";
+            priorityIcon = AlertTriangle;
         } else if (topIssue.id.includes("overtrading")) {
-            recommendation = "Set a maximum of 3-5 trades per day and stop when you hit the limit.";
-            context = "Overtrading tends to erode your edge on high-volume days.";
-        } else if (topIssue.id.includes("weak_pair")) {
-            recommendation = "Remove your weakest pair from your watchlist for the next 2 weeks.";
-            context = "Focusing on your strongest pairs increases consistency.";
+            headline = "Trade frequency is hurting your edge";
+            narrative = `${topIssue.metric}. On high-volume days, your win rate drops well below your ${winRate.toFixed(1)}% average. Fewer, higher-quality setups would improve your score.`;
+            priorityAction = "Cap yourself at 3-5 trades per session. Quality over quantity.";
+            priorityIcon = TrendingUp;
+        } else if (topIssue.id.includes("weak")) {
+            headline = "Pair selection is diluting your performance";
+            narrative = `${topIssue.description} Meanwhile your overall win rate is ${winRate.toFixed(1)}%. Cutting underperforming pairs would immediately boost your score.`;
+            priorityAction = "Remove your weakest pair from your watchlist for the next 2 weeks.";
+            priorityIcon = Target;
         } else if (topIssue.id.includes("emotion")) {
-            recommendation = "Log your emotional state before each trade. Avoid trading when stressed or frustrated.";
-            context = "Your emotional entries correlate with higher loss rates.";
-        } else if (topIssue.id.includes("sl") || topIssue.id.includes("risk")) {
-            recommendation = "Always set a stop-loss before entry. No exceptions.";
-            context = "Missing stop-losses expose your account to outsized risk.";
+            headline = "Your emotions are a leading indicator of losses";
+            narrative = `${topIssue.description} This pattern is measurable and consistent in your data, making it one of the most actionable improvements available.`;
+            priorityAction = "Rate your mental state 1-5 before each trade. Skip trading below 3.";
+            priorityIcon = Brain;
+        } else if (topIssue.id.includes("risk") || topIssue.id.includes("sl")) {
+            headline = "Risk management gaps are your biggest exposure";
+            narrative = `${topIssue.description} Without consistent stop-losses, a single outlier trade can erase weeks of progress. This is the fastest path to improving your score.`;
+            priorityAction = "Set your stop-loss before entry on every single trade. No exceptions.";
+            priorityIcon = ShieldOff;
         } else if (topIssue.id.includes("plan")) {
-            recommendation = "Use a written checklist for every trade: setup, entry, stop, target.";
-            context = "Trades without a plan have a significantly lower win rate.";
+            headline = "Trading without a plan is costing you";
+            narrative = `${topIssue.description} Your data shows a clear correlation between plan adherence and win rate. Disciplined trades consistently outperform impulsive ones.`;
+            priorityAction = "Use a pre-trade checklist: setup confirmed, entry, stop, and target defined.";
+            priorityIcon = ClipboardXIcon;
         } else {
-            recommendation = topIssue.description;
-            context = topIssue.title;
+            headline = topIssue.title;
+            narrative = topIssue.description;
+            priorityAction = `Focus on improving this area to raise your score above ${score}.`;
+            priorityIcon = AlertTriangle;
         }
-    } else if (data.strengths.length > 0) {
-        const topStrength = data.strengths[0];
-        recommendation = `Keep leveraging this: ${topStrength.description}`;
-        context = "No critical issues found. Focus on maintaining your strengths.";
+    } else if (strengthCount > 0) {
+        headline = "No critical issues — focus on consistency";
+        narrative = `Your trading patterns are solid with a ${winRate.toFixed(1)}% win rate and ${avgRR.toFixed(2)} R:R. You have ${strengthCount} identified strength${strengthCount > 1 ? "s" : ""}. The key now is protecting your edge through discipline.`;
+        priorityAction = "Maintain your current process. Review your strengths weekly to ensure they stay consistent.";
+        priorityIcon = Sparkles;
     } else {
-        recommendation = "Continue following your trading plan consistently.";
-        context = "Your patterns look balanced. Stay disciplined.";
+        headline = "Consistent execution detected";
+        narrative = `Score: ${score}/100 with ${winRate.toFixed(1)}% win rate and ${avgRR.toFixed(2)} R:R. No significant behavioral issues found. Continue executing your plan.`;
+        priorityAction = "Stay disciplined. Small, consistent improvements compound over time.";
+        priorityIcon = Lightbulb;
     }
 
+    const PriorityIcon = priorityIcon;
+
     return (
-        <div className="bg-gradient-to-br from-cyan-500/5 via-primary/5 to-transparent dark:from-cyan-500/10 dark:via-primary/10 dark:to-transparent rounded-xl p-5 border border-gray-200 dark:border-white/10 col-span-full">
-            <div className="flex items-start gap-4">
-                <div className="p-2.5 rounded-xl bg-primary/10 shrink-0">
-                    <Lightbulb size={20} className="text-primary" />
-                </div>
-                <div>
-                    <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">This Week&apos;s Focus</span>
-                    <p className="text-base font-bold text-gray-700 dark:text-white mt-1 leading-relaxed">
-                        {recommendation}
-                    </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{context}</p>
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+            <div className={`h-0.5 ${score >= 75 ? "bg-emerald-500" : score >= 60 ? "bg-blue-500" : score >= 40 ? "bg-amber-500" : "bg-red-500"}`} />
+            <div className="px-4 py-3">
+                <div className="flex items-start gap-3">
+                    <div className={`p-2 rounded-lg ${scoreAssessment.bg} shrink-0 mt-0.5`}>
+                        <PriorityIcon size={16} className={scoreAssessment.color} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                            <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Intelligence Brief</span>
+                            <span className={`px-1.5 py-px rounded-full text-[10px] font-bold ${scoreAssessment.bg} ${scoreAssessment.color}`}>
+                                {score} · {scoreAssessment.label}
+                            </span>
+                        </div>
+                        <h3 className="text-sm font-bold text-gray-800 dark:text-white leading-snug">{headline}</h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">{narrative}</p>
+                        <div className="flex items-center gap-1.5 mt-2 text-xs">
+                            <Target size={12} className="text-primary shrink-0" />
+                            <span className="font-bold text-primary">Action:</span>
+                            <span className="text-gray-600 dark:text-gray-300">{priorityAction}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -349,47 +675,67 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
 // ============================================================================
 // MAIN DASHBOARD
 // ============================================================================
-export function IntelligenceDashboard({ data }: { data: IntelligenceData }) {
+export function IntelligenceDashboard({
+    data,
+    previousData,
+    scoreHistory,
+    dateFrom,
+    dateTo,
+    prevDateFrom,
+    prevDateTo,
+}: {
+    data: IntelligenceData;
+    previousData?: IntelligenceData | null;
+    scoreHistory?: ScoreHistoryPoint[];
+    dateFrom?: string;
+    dateTo?: string;
+    prevDateFrom?: string;
+    prevDateTo?: string;
+}) {
     if (!data.hasEnoughData) {
         return <EmptyState totalTrades={data.totalAnalyzed} />;
+    }
+
+    // Format date range for display
+    let dateRangeLabel = "";
+    if (dateFrom && dateTo) {
+        try {
+            const from = format(parseISO(dateFrom), "MMM d, yyyy");
+            const to = format(parseISO(dateTo), "MMM d, yyyy");
+            dateRangeLabel = from === to ? from : `${from} – ${to}`;
+        } catch {
+            dateRangeLabel = `${dateFrom} – ${dateTo}`;
+        }
     }
 
     return (
         <div className="space-y-4">
             {/* Header */}
-            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                 <div className="flex items-center gap-1.5">
                     <Crosshair size={14} className="text-primary" />
                     <span>
                         Analyzed <span className="font-bold text-gray-700 dark:text-white">{data.totalAnalyzed.toLocaleString()}</span> trades
-                        {data.periodDays > 0 && <span className="text-gray-500"> over {data.periodDays} days</span>}
+                        {dateRangeLabel && (
+                            <span className="text-gray-500"> · {dateRangeLabel}</span>
+                        )}
+                        {!dateRangeLabel && data.periodDays > 0 && (
+                            <span className="text-gray-500"> over {data.periodDays} days</span>
+                        )}
                     </span>
                 </div>
-                {data.issues.length > 0 && (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                        {data.issues.length} {data.issues.length === 1 ? "issue" : "issues"}
-                    </span>
-                )}
-                {data.strengths.length > 0 && (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-                        {data.strengths.length} {data.strengths.length === 1 ? "strength" : "strengths"}
-                    </span>
-                )}
             </div>
 
             {/* AI Recommendation — top priority, full width */}
             <AIRecommendation data={data} />
 
-            {/* Unified Score & Risk Panel — full width, 3 columns */}
-            <ScoreAndRiskPanel data={data} />
-
-            {/* Insights Grid */}
+            {/* Insights Grid — Issues + Strengths (moved up for visibility) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {data.issues.length > 0 && (
                     <div className={data.strengths.length === 0 ? "lg:col-span-2" : ""}>
                         <div className="flex items-center gap-2 mb-3">
                             <AlertTriangle size={16} className="text-red-500" />
-                            <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Issues Detected</h3>
+                            <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Issues Detected ({data.issues.length})</h3>
                         </div>
                         <div className="space-y-3">
                             {data.issues.map((insight) => <InsightCard key={insight.id} insight={insight} />)}
@@ -400,7 +746,7 @@ export function IntelligenceDashboard({ data }: { data: IntelligenceData }) {
                     <div className={data.issues.length === 0 ? "lg:col-span-2" : ""}>
                         <div className="flex items-center gap-2 mb-3">
                             <Sparkles size={16} className="text-emerald-500" />
-                            <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Your Strengths</h3>
+                            <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Your Strengths ({data.strengths.length})</h3>
                         </div>
                         <div className="space-y-3">
                             {data.strengths.map((insight) => <InsightCard key={insight.id} insight={insight} />)}
@@ -414,6 +760,19 @@ export function IntelligenceDashboard({ data }: { data: IntelligenceData }) {
                     </div>
                 )}
             </div>
+
+            {/* Period Comparison — only when previous data available */}
+            {previousData && previousData.hasEnoughData && (
+                <PeriodComparison current={data} previous={previousData} prevDateFrom={prevDateFrom} prevDateTo={prevDateTo} />
+            )}
+
+            {/* Unified Score & Risk Panel — full width, 3 columns */}
+            <ScoreAndRiskPanel data={data} />
+
+            {/* Score History Chart */}
+            {scoreHistory && scoreHistory.length >= 3 && (
+                <ScoreHistoryChart data={scoreHistory} />
+            )}
         </div>
     );
 }
