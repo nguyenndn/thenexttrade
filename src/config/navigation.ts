@@ -197,6 +197,7 @@ export const dashboardMenuGroups = [
             { name: "Academy", href: "/dashboard/academy", icon: GraduationCap },
             { name: "Leaderboard", href: "/dashboard/leaderboard", icon: Trophy },
             { name: "EA & Indicators", href: "/dashboard/trading-systems", icon: Bot },
+            { name: "Community", href: "/dashboard/community", icon: MessageCircle },
             { name: "Copy Trading", href: "/dashboard/copy-trading", icon: Copy },
             { name: "Funded Challenge", href: "/dashboard/funded-challenge", icon: Shield, featureFlag: "feature_funded_challenge" },
         ],
