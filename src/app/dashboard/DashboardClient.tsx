@@ -1,13 +1,12 @@
 "use client";
 
 import { useTheme } from "@/components/providers/ThemeProvider";
-import { TrendingUp, Trophy, PieChart, Layers, CalendarRange } from "lucide-react";
+import { TrendingUp, Trophy, PieChart as PieChartIcon, Layers, CalendarRange, Gauge } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
 import { GreetingHeader } from "@/components/dashboard/GreetingHeader";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
-import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { InsightBanner } from "@/components/dashboard/InsightBanner";
 
 // Lazy load chart components — only loaded when user scrolls to them
@@ -20,7 +19,8 @@ const MonthlyAnalyticsChart = dynamic(() => import("@/components/dashboard/Month
 const TopTradesList = dynamic(() => import("@/components/dashboard/TopTradesList").then(m => m.TopTradesList), { loading: () => <ChartSkeleton /> });
 const SymbolPerformanceList = dynamic(() => import("@/components/dashboard/SymbolPerformanceList").then(m => m.SymbolPerformanceList), { loading: () => <ChartSkeleton /> });
 const RecentTradesMini = dynamic(() => import("@/components/dashboard/RecentTradesMini").then(m => m.RecentTradesMini), { loading: () => <ChartSkeleton /> });
-const WinLossDistribution = dynamic(() => import("@/components/dashboard/WinLossDistribution").then(m => m.WinLossDistribution), { loading: () => <ChartSkeleton /> });
+const TradingSessionsCard = dynamic(() => import("@/components/dashboard/TradingSessionsCard").then(m => m.TradingSessionsCard), { loading: () => <ChartSkeleton /> });
+const DayOfWeekCard = dynamic(() => import("@/components/dashboard/DayOfWeekCard").then(m => m.DayOfWeekCard), { loading: () => <ChartSkeleton /> });
 
 interface DashboardClientProps {
     userName?: string;
@@ -52,6 +52,8 @@ interface DashboardClientProps {
     tradeScore: number | null;
     insight: { icon: string; title: string; description: string } | null;
     intelligenceScore?: number | null;
+    sessionPerformance: { session: string; trades: number; pnl: number; winRate: number }[];
+    dayOfWeekPerformance: { day: string; dayIndex: number; pnl: number; tradeCount: number; winRate: number }[];
 }
 
 export default function DashboardClient({
@@ -70,6 +72,8 @@ export default function DashboardClient({
     tradeScore,
     insight,
     intelligenceScore,
+    sessionPerformance,
+    dayOfWeekPerformance,
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -90,6 +94,7 @@ export default function DashboardClient({
         setSelectedTrade(null); // null = create mode
         setShowTradeModal(true);
     };
+
 
     return (
         <div className="space-y-4">
@@ -118,16 +123,9 @@ export default function DashboardClient({
             {/* === Dashboard Grid: 12-col layout matching reference === */}
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
 
-                {/* --- ROW 1: Stats vertical (3) + Period Growth (6) + Distributions (3) --- */}
-                <div className="xl:col-span-3 min-w-0">
-                    <StatsGrid data={{
-                        profitFactor: dashboardData.profitFactor,
-                        avgWin: dashboardData.avgWin,
-                        avgLoss: dashboardData.avgLoss
-                    }} vertical />
-                </div>
-                <div className="xl:col-span-6 min-w-0">
-                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-primary h-full">
+                {/* --- ROW 1: Period Growth (8) + Quick Stats & Distribution Sidebar (4) --- */}
+                <div className="xl:col-span-8 min-w-0">
+                    <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-primary h-[420px] overflow-hidden">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -135,11 +133,11 @@ export default function DashboardClient({
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-gray-700 dark:text-white text-sm">Period Growth</h3>
-                                    <p className="text-xs text-gray-600">Cumulative Net Profit</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400">Cumulative Net Profit</p>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-xs text-gray-600">Net Profit</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400">Net Profit</p>
                                 <p className={`text-sm font-bold ${(chartData[chartData.length - 1]?.balance || 0) >= 0 ? "text-primary" : "text-red-500"}`}>
                                     {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', signDisplay: 'always' }).format(chartData[chartData.length - 1]?.balance || 0)}
                                 </p>
@@ -148,38 +146,113 @@ export default function DashboardClient({
                         <BalanceGrowthChart data={chartData} />
                     </div>
                 </div>
-                <div className="xl:col-span-3 min-w-0">
-                    <div className="flex flex-col gap-4 h-full">
-                        {/* Profit Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-blue-500 flex flex-col overflow-hidden flex-1">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
-                                    <PieChart size={20} />
+                <div className="xl:col-span-4 min-w-0">
+                    <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-teal-500 h-[420px] flex flex-col divide-y divide-gray-100 dark:divide-white/5 overflow-hidden">
+                        {/* Header */}
+                        <div className="px-5 pt-5 pb-3">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-teal-500/10 rounded-lg text-teal-500">
+                                    <Gauge size={20} />
                                 </div>
-                                <h3 className="font-bold text-gray-700 dark:text-white text-sm">Profit Distribution</h3>
-                            </div>
-                            <div className="flex-1 min-h-0">
-                                <ProfitDistributionChart data={symbolPerformance} height={110} innerRadius={22} outerRadius={36} />
+                                <div>
+                                    <h3 className="font-bold text-gray-700 dark:text-white text-sm">Quick Stats</h3>
+                                    <p className="text-xs text-gray-500">Key Metrics & Distribution</p>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Lot Distribution */}
-                        <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-orange-500 flex flex-col overflow-hidden flex-1">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="p-3 bg-orange-500/10 rounded-xl text-orange-500">
-                                    <Layers size={20} />
+                        {/* Quick Stats */}
+                        <div className="px-5 py-4">
+                            <div className="flex divide-x divide-gray-200 dark:divide-white/10">
+                                <div className="text-center flex-1 px-2">
+                                    <p className="text-2xl font-black text-blue-500">{dashboardData.profitFactor.toFixed(2)}</p>
+                                    <p className="text-[11px] text-gray-500 font-semibold mt-0.5">Profit Factor</p>
                                 </div>
-                                <h3 className="font-bold text-gray-700 dark:text-white text-sm">Lot Distribution</h3>
+                                <div className="text-center flex-1 px-2">
+                                    <p className="text-2xl font-black text-primary">${dashboardData.avgWin.toFixed(0)}</p>
+                                    <p className="text-[11px] text-gray-500 font-semibold mt-0.5">Avg Win</p>
+                                </div>
+                                <div className="text-center flex-1 px-2">
+                                    <p className="text-2xl font-black text-red-500">${dashboardData.avgLoss.toFixed(0)}</p>
+                                    <p className="text-[11px] text-gray-500 font-semibold mt-0.5">Avg Loss</p>
+                                </div>
                             </div>
-                            <div className="flex-1 min-h-0">
-                                <LotDistributionChart data={lotDistribution} height={110} innerRadius={22} outerRadius={36} />
+                        </div>
+
+                        <div className="px-5 py-4 flex-1 min-h-0 flex flex-col">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                    <PieChartIcon size={14} className="text-blue-500" />
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Profit by Symbol</h4>
+                                </div>
+                                <span className={`text-xs font-black ${symbolPerformance.reduce((s, d) => s + d.value, 0) >= 0 ? 'text-primary' : 'text-red-500'}`}>
+                                    ${Math.abs(symbolPerformance.reduce((s, d) => s + d.value, 0)).toFixed(0)}
+                                </span>
+                            </div>
+                            <div className="space-y-2.5 overflow-y-auto flex-1 min-h-0">
+                                {symbolPerformance.length === 0 ? (
+                                    <p className="text-xs text-gray-400 text-center py-2">No data</p>
+                                ) : (
+                                    symbolPerformance.map((item, i) => {
+                                        const maxAbs = Math.max(...symbolPerformance.map(d => Math.abs(d.value)), 1);
+                                        const pct = (Math.abs(item.value) / maxAbs) * 100;
+                                        const colors = ['hsl(var(--primary))', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899', '#EF4444'];
+                                        return (
+                                            <div key={item.name} className="flex items-center gap-2.5">
+                                                <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: colors[i % colors.length] }} />
+                                                <span className="text-xs font-bold text-gray-700 dark:text-gray-200 w-16 truncate">{item.name}</span>
+                                                <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: colors[i % colors.length] }} />
+                                                </div>
+                                                <span className={`text-xs font-black min-w-[55px] text-right ${item.value >= 0 ? 'text-primary' : 'text-red-500'}`}>
+                                                    {item.value >= 0 ? '+' : ''}{item.value.toFixed(0)}
+                                                </span>
+                                            </div>
+                                        );
+                                    })
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="px-5 py-4 flex-1 min-h-0 flex flex-col">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                    <Layers size={14} className="text-orange-500" />
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Lot by Symbol</h4>
+                                </div>
+                                <span className="text-xs font-black text-gray-700 dark:text-gray-200">
+                                    {lotDistribution.reduce((s, d) => s + d.value, 0).toFixed(2)} lots
+                                </span>
+                            </div>
+                            <div className="space-y-2.5 overflow-y-auto flex-1 min-h-0">
+                                {lotDistribution.length === 0 ? (
+                                    <p className="text-xs text-gray-400 text-center py-2">No data</p>
+                                ) : (
+                                    lotDistribution.filter(d => d.value > 0).map((item, i) => {
+                                        const totalLots = lotDistribution.reduce((s, d) => s + d.value, 0);
+                                        const pct = totalLots > 0 ? (item.value / totalLots) * 100 : 0;
+                                        const colors = ['hsl(var(--primary))', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899', '#EF4444'];
+                                        return (
+                                            <div key={item.name} className="flex items-center gap-2.5">
+                                                <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: colors[i % colors.length] }} />
+                                                <span className="text-xs font-bold text-gray-700 dark:text-gray-200 w-16 truncate">{item.name}</span>
+                                                <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: colors[i % colors.length] }} />
+                                                </div>
+                                                <span className="text-xs font-black text-gray-600 dark:text-gray-300 min-w-[55px] text-right">
+                                                    {item.value.toFixed(2)}
+                                                </span>
+                                            </div>
+                                        );
+                                    })
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* --- ROW 2: Daily Win Rate (8) + Win/Loss Distribution (4) --- */}
-                <div className="xl:col-span-8 min-w-0">
+                {/* --- ROW 2: Daily Win Rate (12) — Full Width --- */}
+                <div className="xl:col-span-12 min-w-0">
                     <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-green-500 h-full">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
@@ -195,16 +268,24 @@ export default function DashboardClient({
                         <DailyWinRateChart data={dailyWinRates} height={250} />
                     </div>
                 </div>
-                <div className="xl:col-span-4 min-w-0">
-                     <WinLossDistribution 
-                        wins={dashboardData.winCount} 
-                        losses={dashboardData.lossCount} 
-                        breakEvens={dashboardData.breakEvenCount} 
-                        winRate={dashboardData.winRate} 
-                     />
+
+                {/* --- ROW 3: Trading Sessions (5) + Day of Week (7) --- */}
+                <div className="xl:col-span-5 min-w-0">
+                    <TradingSessionsCard data={sessionPerformance} />
+                </div>
+                <div className="xl:col-span-7 min-w-0">
+                    <DayOfWeekCard data={dayOfWeekPerformance} />
                 </div>
 
-                {/* --- ROW 3: Top Trades (5) + Monthly Analytics (7) --- */}
+                {/* --- ROW 4: Recent Trades (5) + Symbol Performance (7) --- */}
+                <div className="xl:col-span-5 min-w-0">
+                    <RecentTradesMini trades={recentTrades} />
+                </div>
+                <div className="xl:col-span-7 min-w-0">
+                    <SymbolPerformanceList data={symbolAnalytics} />
+                </div>
+
+                {/* --- ROW 5: Top Trades (5) + Monthly Analytics (7) --- */}
                 <div className="xl:col-span-5 min-w-0">
                     <TopTradesList bestTrades={bestTrades} worstTrades={worstTrades} />
                 </div>
@@ -221,14 +302,6 @@ export default function DashboardClient({
                         </div>
                         <MonthlyAnalyticsChart data={monthlyAnalytics} />
                     </div>
-                </div>
-
-                {/* --- ROW 4: Recent Trades (5) + Symbol Performance (7) --- */}
-                <div className="xl:col-span-5 min-w-0">
-                    <RecentTradesMini trades={recentTrades} />
-                </div>
-                <div className="xl:col-span-7 min-w-0">
-                    <SymbolPerformanceList data={symbolAnalytics} />
                 </div>
             </div>
         </div>

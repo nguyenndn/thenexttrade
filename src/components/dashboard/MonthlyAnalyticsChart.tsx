@@ -1,19 +1,18 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from "recharts";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
 interface MonthlyAnalyticsChartProps {
     data: {
-        date: string; // "2024-01-01"
-        value: number; // PnL % or $
+        date: string;
+        value: number;
     }[];
 }
 
 export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
-    // 1. Group data by Year
     const yearGroups = useMemo(() => {
         const groups: Record<number, any[]> = {};
         data.forEach(item => {
@@ -21,11 +20,9 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
             const year = date.getFullYear();
             if (!groups[year]) groups[year] = [];
 
-            // Normalize to Month name
             const monthShort = date.toLocaleString('default', { month: 'short' });
-            const monthIndex = date.getMonth(); // 0-11 for sorting
+            const monthIndex = date.getMonth();
 
-            // Check if month already exists (accumulate if needed, though usually 1 entry/month)
             const existing = groups[year].find((d: any) => d.monthIndex === monthIndex);
             if (existing) {
                 existing.value += item.value;
@@ -39,8 +36,6 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
             }
         });
 
-        // Fill missing months for better chart? Or just show active?
-        // Myfxbook usually shows all months.
         Object.keys(groups).forEach(yearStr => {
             const y = parseInt(yearStr);
             const currentMonths = groups[y];
@@ -61,10 +56,9 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
         return groups;
     }, [data]);
 
-    const years = Object.keys(yearGroups).map(Number).sort((a, b) => b - a); // Descending
+    const years = Object.keys(yearGroups).map(Number).sort((a, b) => b - a);
     const [selectedYear, setSelectedYear] = useState<number>(years[0] || new Date().getFullYear());
 
-    // Effect to update selected year if years change
     if (years.length > 0 && !years.includes(selectedYear)) {
         setSelectedYear(years[0]);
     }
@@ -78,6 +72,22 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
             </div>
         );
     }
+
+    const CustomTooltip = ({ active, payload }: any) => {
+        if (!active || !payload?.length) return null;
+        const d = payload[0].payload;
+        return (
+            <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl backdrop-blur-sm">
+                <p className="text-xs font-bold text-gray-700 dark:text-gray-100 mb-1">{d.month}</p>
+                <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${d.value >= 0 ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                    <p className={`text-sm font-black ${d.value >= 0 ? 'text-primary' : 'text-red-500'}`}>
+                        {d.value >= 0 ? "+" : ""}${Number(d.value).toFixed(2)}
+                    </p>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="h-full flex flex-col">
@@ -105,33 +115,37 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
                         data={chartData}
                         margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
                     >
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" className="dark:stroke-white/5" />
+                        <defs>
+                            <linearGradient id="monthProfitGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                            </linearGradient>
+                            <linearGradient id="monthLossGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#EF4444" stopOpacity={1} />
+                                <stop offset="100%" stopColor="#EF4444" stopOpacity={0.6} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" opacity={0.15} />
+                        <ReferenceLine y={0} stroke="var(--border-color)" strokeOpacity={0.5} />
                         <XAxis
                             dataKey="monthName"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#9CA3AF', fontSize: 11 }}
+                            tick={{ fill: 'var(--text-secondary)', fontSize: 11 }}
                         />
                         <YAxis
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#9CA3AF', fontSize: 11 }}
+                            tick={{ fill: 'var(--text-secondary)', fontSize: 11 }}
                             tickFormatter={(value) => `$${value}`}
                         />
-                        <Tooltip
-                            cursor={{ fill: 'transparent' }}
-                            contentStyle={{
-                                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                borderRadius: '8px',
-                                border: 'none',
-                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                            }}
-                            formatter={(value: any) => [`$${Number(value).toFixed(2)}`, "Gain"]}
-                            labelStyle={{ color: '#6B7280', marginBottom: '4px' }}
-                        />
-                        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={40}>
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--hover-bg)', opacity: 0.06 }} />
+                        <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={36}>
                             {chartData.map((entry: any, index: number) => (
-                                <Cell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--primary))' : '#F87171'} />
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={entry.value >= 0 ? 'url(#monthProfitGradient)' : 'url(#monthLossGradient)'}
+                                />
                             ))}
                         </Bar>
                     </BarChart>

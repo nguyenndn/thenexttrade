@@ -34,7 +34,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden h-[360px] flex flex-col border-t-4 border-t-indigo-500">
+        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden h-[400px] flex flex-col border-t-4 border-t-indigo-500">
             {/* Header */}
             <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -75,7 +75,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
                         {displayTrades.map((trade) => (
                         <div
                             key={trade.id}
-                            className="grid grid-cols-12 gap-2 items-center px-5 py-3 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-default"
+                            className="grid grid-cols-12 gap-2 items-center px-5 h-[56px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-default"
                         >
                             <div className="col-span-4 flex items-center gap-2">
                                 <span className="font-bold text-sm text-gray-800 dark:text-gray-200">
