@@ -146,6 +146,33 @@ export async function getDailyPerformance(userId: string, accountId?: string, st
 }
 
 /**
+ * Get Intraday Performance (trade-by-trade) for single-day chart
+ * Returns individual trades with timestamps for cumulative profit line
+ */
+export async function getIntradayPerformance(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
+    const dateFilter = startDate && endDate
+        ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
+        : Prisma.empty;
+
+    const result = await prisma.$queryRaw`
+        SELECT 
+            "exitDate" as "date",
+            (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl"
+        FROM "JournalEntry"
+        WHERE "userId" = ${userId}::uuid
+        AND "status" = 'CLOSED'
+        AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
+        ${dateFilter}
+        ORDER BY "exitDate" ASC
+    `;
+
+    return (result as any[]).map(row => ({
+        date: (row.date as Date).toISOString(),
+        pnl: Number(row.pnl || 0),
+    }));
+}
+
+/**
  * Get Symbol Performance for Pie Chart & List
  */
 /**
@@ -331,4 +358,47 @@ export async function getCurrentStreak(userId: string, accountId?: string): Prom
     }
 
     return { type: firstResult === 'WIN' ? 'win' : 'loss', count };
+}
+
+/**
+ * Get Trading Session Performance (Asian, London, New York)
+ * Groups trades by the forex session of their entry time (UTC)
+ */
+export async function getSessionPerformance(userId: string, accountId?: string, startDate?: Date, endDate?: Date) {
+    const dateFilter = startDate && endDate
+        ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
+        : Prisma.empty;
+
+    const result = await prisma.$queryRaw`
+        SELECT 
+            CASE 
+                WHEN EXTRACT(HOUR FROM "entryDate") >= 21 OR EXTRACT(HOUR FROM "entryDate") < 6 THEN 'Sydney'
+                WHEN EXTRACT(HOUR FROM "entryDate") >= 0 AND EXTRACT(HOUR FROM "entryDate") < 9 THEN 'Tokyo'
+                WHEN EXTRACT(HOUR FROM "entryDate") >= 8 AND EXTRACT(HOUR FROM "entryDate") < 17 THEN 'London'
+                WHEN EXTRACT(HOUR FROM "entryDate") >= 13 AND EXTRACT(HOUR FROM "entryDate") < 22 THEN 'New York'
+                ELSE 'Off-Hours'
+            END as "session",
+            COUNT(*) as "tradeCount",
+            SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount"
+        FROM "JournalEntry"
+        WHERE "userId" = ${userId}::uuid
+        AND "status" = 'CLOSED'
+        AND "entryDate" IS NOT NULL
+        AND (${accountId ? accountId : '1'} = '1' OR "accountId" = ${accountId})
+        ${dateFilter}
+        GROUP BY 1
+        ORDER BY "netProfit" DESC
+    `;
+
+    const sessionOrder = ['Sydney', 'Tokyo', 'London', 'New York'];
+    const mapped = (result as any[]).map(row => ({
+        session: row.session as string,
+        trades: Number(row.tradeCount || 0),
+        pnl: Number(row.netProfit || 0),
+        winRate: Number(row.tradeCount) > 0 ? (Number(row.winCount) / Number(row.tradeCount)) * 100 : 0,
+    }));
+
+    return sessionOrder
+        .map(s => mapped.find(m => m.session === s) || { session: s, trades: 0, pnl: 0, winRate: 0 });
 }

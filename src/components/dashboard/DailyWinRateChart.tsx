@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from "recharts";
 import { format } from "date-fns";
 
 interface DailyWinRateChartProps {
@@ -24,35 +24,66 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      const winRate = Number(payload[0].value);
+      const entry = payload[0].payload;
+      const hasData = entry.trades > 0;
       return (
-        <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-lg">
-          <p className="text-sm font-bold text-gray-700 dark:text-gray-100 mb-1">
+        <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl backdrop-blur-sm">
+          <p className="text-xs font-bold text-gray-700 dark:text-gray-100 mb-1.5">
             {format(new Date(label), "MMM dd, yyyy")}
           </p>
-          <p className="text-sm font-semibold text-primary">
-            Win Rate: {payload[0].value}%
-          </p>
-          <p className="text-xs text-gray-600 mt-1">
-            {payload[0].payload.wins} wins / {payload[0].payload.trades} trades
-          </p>
+          {hasData ? (
+            <>
+              <div className="flex items-center gap-2 mb-1">
+                <div className={`w-2 h-2 rounded-full ${winRate >= 50 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                <p className={`text-sm font-black ${winRate >= 50 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                  {winRate.toFixed(1)}% Win Rate
+                </p>
+              </div>
+              <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                {entry.wins} wins / {entry.trades} trades
+              </p>
+            </>
+          ) : (
+            <p className="text-xs text-gray-400 italic">No trades</p>
+          )}
         </div>
       );
     }
     return null;
   };
 
+  // Determine tick interval based on data length
+  const tickInterval = data.length > 60 ? 6 : data.length > 30 ? 3 : data.length > 14 ? 1 : 0;
+
   return (
     <div className="w-full [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none" style={{ height }}>
       <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <BarChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" opacity={0.3} />
+          <defs>
+            <linearGradient id="winGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+            </linearGradient>
+            <linearGradient id="lossGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#F59E0B" stopOpacity={1} />
+              <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.6} />
+            </linearGradient>
+            <linearGradient id="zeroGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#D1D5DB" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="#D1D5DB" stopOpacity={0.2} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" opacity={0.15} />
+          <ReferenceLine y={50} stroke="hsl(var(--primary))" strokeDasharray="6 4" strokeOpacity={0.3} label={{ value: "50%", position: "right", fontSize: 9, fill: "hsl(var(--primary))", fontWeight: 600 }} />
           <XAxis
             dataKey="date"
             tickFormatter={(value) => format(new Date(value), "MMM dd")}
             axisLine={false}
             tickLine={false}
             tick={{ fontSize: 10, fill: "var(--text-secondary)" }}
-            minTickGap={30}
+            interval={tickInterval}
+            minTickGap={20}
           />
           <YAxis
             axisLine={false}
@@ -60,19 +91,20 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
             tick={{ fontSize: 10, fill: "var(--text-secondary)" }}
             domain={[0, 100]}
             ticks={[0, 25, 50, 75, 100]}
+            tickFormatter={(v) => `${v}%`}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--hover-bg)', opacity: 0.1 }} />
-          <Bar dataKey="winRate" radius={[4, 4, 0, 0]} maxBarSize={40}>
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--hover-bg)', opacity: 0.06 }} />
+          <Bar dataKey="winRate" radius={[4, 4, 0, 0]} maxBarSize={28}>
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                // Color logic: 
-                // High win rate (>50%) = Green
-                // Low win rate (<50% but >0) = Amber/Orange? 
-                // 0% with trades = Red?
-                // Let's keep it simple green for now, or maybe gradient?
-                // User said "Daily Win Rate", usually expected to be Green.
-                fill={entry.trades === 0 ? 'transparent' : entry.winRate >= 50 ? 'hsl(var(--primary))' : '#F59E0B'}
+                fill={
+                  entry.trades === 0
+                    ? 'url(#zeroGradient)'
+                    : entry.winRate >= 50
+                      ? 'url(#winGradient)'
+                      : 'url(#lossGradient)'
+                }
               />
             ))}
           </Bar>

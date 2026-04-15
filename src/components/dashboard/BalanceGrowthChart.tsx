@@ -120,10 +120,10 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                         }}
                     />
                     <Area
-                        type="monotone"
+                        type="basis"
                         dataKey="balance"
                         stroke="hsl(var(--primary))"
-                        strokeWidth={3}
+                        strokeWidth={2.5}
                         fillOpacity={1}
                         fill="url(#colorBalance)"
                     />

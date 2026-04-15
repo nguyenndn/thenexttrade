@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 
 import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
-import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution } from "@/lib/analytics-queries";
+import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution, getSessionPerformance, getDayOfWeekPerformance, getIntradayPerformance } from "@/lib/analytics-queries";
 import { getIntelligenceData } from "@/lib/smart-analytics";
 import { format } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
@@ -127,6 +127,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         symbolStats,
         topTrades,
         lotDistribution,
+        sessionPerformance,
+        dayOfWeekPerformance,
         intelligenceData,
     ] = await Promise.all([
         // User Info (name + streak only)
@@ -162,6 +164,10 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         getTopTrades(user.id, accountId, startDate, endDate),
         // Lot Distribution
         getLotDistribution(user.id, accountId, startDate, endDate),
+        // Session Performance
+        getSessionPerformance(user.id, accountId, startDate, endDate),
+        // Day of Week Performance
+        getDayOfWeekPerformance(user.id, accountId, startDate, endDate, accountTimezone),
         // Intelligence data (filtered by same date range as dashboard) — used for Trade Score + Insight Banner
         getIntelligenceData(user.id, accountId, startDate, endDate, accountTimezone).catch(() => null),
     ]);
@@ -224,22 +230,86 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     // 3. Post-Processing & Formatting
     const totalBalance = accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
 
-    // Chart Data: Convert Daily PnL to Cumulative Growth
-    let cumulativePnL = 0;
-    const chartData = dailyPerformance.map(day => {
-        cumulativePnL += day.value;
-        return {
-            date: day.date,
-            balance: Number(cumulativePnL.toFixed(2)) // Chart expects "balance" key
-        };
-    });
+    // Chart Data: Convert to Cumulative Growth
+    // For single-day: use trade-level timestamps for intraday line
+    const isSingleDay = fromParam === toParam;
+    let chartData: { date: string; balance: number }[];
 
-    // Daily Win Rate for Chart (if needed by component)
-    const dailyWinRates = dailyPerformance.map(day => ({
+    if (isSingleDay) {
+        // Fetch intraday trade-by-trade data
+        const intradayTrades = await getIntradayPerformance(user.id, accountId, startDate, endDate);
+        
+        // Aggregate into 15-minute time buckets for smooth line
+        const BUCKET_MS = 15 * 60 * 1000; // 15 minutes
+        const dayStartTime = new Date(`${fromParam}T00:00:00`).getTime();
+        const nowTime = Date.now();
+        
+        // Build cumulative PnL per trade first
+        let cumPnl = 0;
+        const tradePoints = intradayTrades.map(t => {
+            cumPnl += t.pnl;
+            return { time: new Date(t.date).getTime(), balance: cumPnl };
+        });
+        
+        // Generate time buckets from 00:00 to now
+        chartData = [{ date: `${fromParam}T00:00:00`, balance: 0 }];
+        let lastBalance = 0;
+        
+        for (let bucketTime = dayStartTime + BUCKET_MS; bucketTime <= nowTime; bucketTime += BUCKET_MS) {
+            // Find the latest trade before/at this bucket time
+            const tradesBeforeBucket = tradePoints.filter(tp => tp.time <= bucketTime);
+            if (tradesBeforeBucket.length > 0) {
+                lastBalance = tradesBeforeBucket[tradesBeforeBucket.length - 1].balance;
+            }
+            chartData.push({
+                date: new Date(bucketTime).toISOString(),
+                balance: Number(lastBalance.toFixed(2))
+            });
+        }
+        
+        // Ensure final point is at current time with latest balance
+        if (tradePoints.length > 0) {
+            const finalBalance = tradePoints[tradePoints.length - 1].balance;
+            chartData.push({
+                date: new Date(nowTime).toISOString(),
+                balance: Number(finalBalance.toFixed(2))
+            });
+        }
+    } else {
+        // Multi-day: use daily aggregation
+        let cumulativePnL = 0;
+        chartData = dailyPerformance.map(day => {
+            cumulativePnL += day.value;
+            return {
+                date: day.date,
+                balance: Number(cumulativePnL.toFixed(2))
+            };
+        });
+    }
+
+    // Daily Win Rate for Chart — fill ALL dates in range (not just days with trades)
+    const winRateMap = new Map(dailyPerformance.map(day => [day.date, day]));
+    const allDailyWinRates: { date: string; winRate: number; trades: number; wins: number }[] = [];
+    if (startDate && endDate) {
+        const cursor = new Date(startDate);
+        const end = new Date(endDate);
+        while (cursor <= end) {
+            const dateStr = format(cursor, 'yyyy-MM-dd');
+            const existing = winRateMap.get(dateStr);
+            allDailyWinRates.push({
+                date: dateStr,
+                winRate: existing?.winRate || 0,
+                trades: existing?.tradeCount || 0,
+                wins: existing?.winCount || 0,
+            });
+            cursor.setDate(cursor.getDate() + 1);
+        }
+    }
+    const dailyWinRates = allDailyWinRates.length > 0 ? allDailyWinRates : dailyPerformance.map(day => ({
         date: day.date,
         winRate: day.winRate,
-        trades: day.tradeCount || 0, // Using returned tradeCount
-        wins: day.winCount || 0      // Using returned winCount
+        trades: day.tradeCount || 0,
+        wins: day.winCount || 0
     }));
 
     // Symbol Performance for Pie Chart (Top 5 by Gross Profit)
@@ -293,6 +363,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
                 tradeScore={tradeScore}
                 insight={insightData}
                 intelligenceScore={tradeScore}
+                sessionPerformance={sessionPerformance}
+                dayOfWeekPerformance={dayOfWeekPerformance}
             />
         </>
     );
