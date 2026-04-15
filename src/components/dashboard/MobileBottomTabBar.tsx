@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, Bug, Lightbulb } from "lucide-react";
@@ -10,6 +10,44 @@ import { dashboardMenuGroups } from "@/config/navigation";
 export function MobileBottomTabBar() {
     const pathname = usePathname();
     const [openGroup, setOpenGroup] = useState<string | null>(null);
+    const [disabledFlags, setDisabledFlags] = useState<Set<string>>(new Set());
+    const [flagsLoaded, setFlagsLoaded] = useState(false);
+
+    // Fetch feature flags to hide disabled items
+    useEffect(() => {
+        const allFlags: string[] = [];
+        for (const group of dashboardMenuGroups) {
+            for (const item of group.items) {
+                if ((item as any).featureFlag) allFlags.push((item as any).featureFlag);
+            }
+        }
+        if (allFlags.length === 0) { setFlagsLoaded(true); return; }
+
+        fetch(`/api/feature-flags?keys=${allFlags.join(",")}`)
+            .then(res => res.json())
+            .then(data => {
+                const disabled = new Set<string>();
+                for (const [key, enabled] of Object.entries(data.flags || {})) {
+                    if (!enabled) disabled.add(key);
+                }
+                setDisabledFlags(disabled);
+            })
+            .catch(() => {})
+            .finally(() => setFlagsLoaded(true));
+    }, []);
+
+    // Filter groups: remove items with disabled feature flags
+    const filteredGroups = useMemo(() => {
+        return dashboardMenuGroups.map(group => ({
+            ...group,
+            items: group.items.filter(item => {
+                const flag = (item as any).featureFlag;
+                if (!flag) return true;
+                if (!flagsLoaded) return false;
+                return !disabledFlags.has(flag);
+            }),
+        }));
+    }, [disabledFlags, flagsLoaded]);
 
     // Close sheet on route change
     useEffect(() => {
@@ -39,7 +77,7 @@ export function MobileBottomTabBar() {
         };
         const effectivePath = childRouteMap[pathname] || pathname;
 
-        for (const group of dashboardMenuGroups) {
+        for (const group of filteredGroups) {
             for (const item of group.items) {
                 if (effectivePath === item.href || effectivePath.startsWith(`${item.href}/`)) {
                     return group.label;
@@ -54,7 +92,7 @@ export function MobileBottomTabBar() {
     }, []);
 
     const activeSheet = openGroup
-        ? dashboardMenuGroups.find(g => g.label === openGroup)
+        ? filteredGroups.find(g => g.label === openGroup)
         : null;
 
     return (
@@ -157,7 +195,7 @@ export function MobileBottomTabBar() {
             {/* Tab Bar */}
             <nav className="fixed bottom-0 inset-x-0 z-50 lg:hidden bg-white dark:bg-[#151925] border-t border-gray-200 dark:border-white/10 safe-area-bottom">
                 <div className="flex items-center justify-around h-16 px-2">
-                    {dashboardMenuGroups.map((group) => {
+                    {filteredGroups.map((group) => {
                         const Icon = group.icon;
                         const isActive = activeGroupLabel === group.label;
                         const isSheetOpen = openGroup === group.label;

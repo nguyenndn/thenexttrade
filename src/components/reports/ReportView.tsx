@@ -91,19 +91,19 @@ function BreakdownTable({ data, title }: { data: any[] | null; title: string }) 
             <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-3">{title}</h3>
             <div className="space-y-2">
                 {data.map((item, i) => (
-                    <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/5 last:border-0">
-                        <div className="flex items-center gap-2">
-                            <span className="text-xs font-mono bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded">{i + 1}</span>
-                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">{item.name}</span>
+                        <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/5 last:border-0">
+                            <div className="flex items-center gap-2 min-w-0">
+                                <span className="text-xs font-mono bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded shrink-0">{i + 1}</span>
+                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{item.name}</span>
+                            </div>
+                            <div className="flex items-center gap-3 sm:gap-4 text-xs shrink-0 ml-2">
+                                <span className="text-gray-500 hidden sm:inline">{item.trades} trades</span>
+                                <span className="text-gray-500">{item.winRate?.toFixed(0)}% WR</span>
+                                <span className={`font-bold ${item.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                                    {item.pnl >= 0 ? "+" : ""}${item.pnl?.toFixed(2)}
+                                </span>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-4 text-xs">
-                            <span className="text-gray-500">{item.trades} trades</span>
-                            <span className="text-gray-500">{item.winRate?.toFixed(0)}% WR</span>
-                            <span className={`font-bold ${item.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}>
-                                {item.pnl >= 0 ? "+" : ""}${item.pnl?.toFixed(2)}
-                            </span>
-                        </div>
-                    </div>
                 ))}
             </div>
         </div>

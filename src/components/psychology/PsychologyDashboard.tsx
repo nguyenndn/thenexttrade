@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import { format, startOfMonth, endOfMonth } from "date-fns";
 import { toast } from "sonner";
-import { Brain, AlertTriangle, Target, TrendingUp, TrendingDown } from "lucide-react";
+import { Brain, AlertTriangle, Target, TrendingUp, TrendingDown, Heart, Star, Sparkles, ClipboardCheck } from "lucide-react";
 
 import { EmotionPerformanceChart } from "./EmotionPerformanceChart";
 import { ConfidenceCorrelation } from "./ConfidenceCorrelation";
 import { PlanAdherence } from "./PlanAdherence";
 import { TiltIndicators } from "./TiltIndicators";
+import { EmotionTrendChart } from "./EmotionTrendChart";
+import { TradingMoodHeatmap } from "./TradingMoodHeatmap";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
@@ -45,11 +47,26 @@ interface PsychologyData {
         currentLossStreak: number;
         maxLossStreak: number;
         sizingUpCount: number;
-        // NEW indicators
         overtradingDays: number;
         winStreakSizeUp: number;
         notFollowingPlanStreak: number;
     };
+    emotionTrend: Array<{
+        weekStart: string;
+        winRate: number;
+        avgPnL: number;
+        tradeCount: number;
+        dominantEmotion: string;
+    }>;
+    moodHeatmap: Array<{
+        day: string;
+        slots: Array<{
+            slot: string;
+            trades: number;
+            winRate: number;
+            dominantEmotion: string;
+        }>;
+    }>;
 }
 
 export function PsychologyDashboard() {
@@ -129,17 +146,75 @@ export function PsychologyDashboard() {
                 />
             </PageHeader>
 
+            {/* Summary Stats Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                    {
+                        label: "Emotions Logged",
+                        value: `${data.emotionBeforeStats.reduce((s, e) => s + e.totalTrades, 0)}`,
+                        sub: "trades with emotion",
+                        color: "text-indigo-500",
+                        bg: "bg-indigo-50 dark:bg-indigo-500/10",
+                        border: "border-t-indigo-500",
+                        icon: Heart,
+                    },
+                    {
+                        label: "Most Frequent",
+                        value: data.emotionBeforeStats.length > 0
+                            ? data.emotionBeforeStats.reduce((a, b) => a.totalTrades > b.totalTrades ? a : b).emotion
+                            : "—",
+                        sub: "dominant mood",
+                        color: "text-amber-500",
+                        bg: "bg-amber-50 dark:bg-amber-500/10",
+                        border: "border-t-amber-500",
+                        icon: Star,
+                    },
+                    {
+                        label: "Best Emotion",
+                        value: bestEmotion ? bestEmotion.emotion : "—",
+                        sub: bestEmotion ? `${bestEmotion.winRate.toFixed(0)}% win rate` : "need data",
+                        color: "text-primary",
+                        bg: "bg-primary/10",
+                        border: "border-t-primary",
+                        icon: Sparkles,
+                    },
+                    {
+                        label: "Plan Adherence",
+                        value: `${data.planAdherenceStats.followed.count + data.planAdherenceStats.notFollowed.count > 0
+                            ? ((data.planAdherenceStats.followed.count / (data.planAdherenceStats.followed.count + data.planAdherenceStats.notFollowed.count)) * 100).toFixed(0)
+                            : 0}%`,
+                        sub: `${data.planAdherenceStats.followed.count} followed`,
+                        color: "text-purple-500",
+                        bg: "bg-purple-50 dark:bg-purple-500/10",
+                        border: "border-t-purple-500",
+                        icon: ClipboardCheck,
+                    },
+                ].map((stat) => {
+                    const Icon = stat.icon;
+                    return (
+                        <div key={stat.label} className={`bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-200 border-t-4 ${stat.border}`}>
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className={`p-3 rounded-xl ${stat.bg}`}>
+                                    <Icon size={20} className={stat.color} />
+                                </div>
+                                <h3 className="text-gray-600 text-xs font-bold uppercase tracking-wider">{stat.label}</h3>
+                            </div>
+                            <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
+                            <p className="text-xs text-gray-500 font-medium mt-1">{stat.sub}</p>
+                        </div>
+                    );
+                })}
+            </div>
+
             {/* Tilt Warning Banner */}
             {hasTiltWarning && (
-                <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl p-5 flex gap-4">
-                    <div className="flex-shrink-0 pt-0.5">
-                        <AlertTriangle className="text-red-500" size={20} />
-                    </div>
+                <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3 flex gap-3 items-start">
+                    <AlertTriangle className="text-red-500 shrink-0 mt-0.5" size={16} />
                     <div className="space-y-1 w-full">
-                        <h4 className="font-bold text-red-700 dark:text-red-400">
+                        <h4 className="text-sm font-bold text-red-700 dark:text-red-400">
                             Tilt Warning Detected
                         </h4>
-                        <ul className="text-sm text-red-600 dark:text-red-300 list-disc list-inside mt-2">
+                        <ul className="text-xs text-red-600 dark:text-red-300 list-disc list-inside space-y-0.5">
                             {data.tiltIndicators.revengeTradeCount > 0 && (
                                 <li>You made <strong>{data.tiltIndicators.revengeTradeCount} revenge trade(s)</strong>. Stop and reset.</li>
                             )}
@@ -152,7 +227,6 @@ export function PsychologyDashboard() {
                             {data.tiltIndicators.avgPnLAfterLoss < 0 && (
                                 <li>Performance drops after losses. Take a break to reset mental state.</li>
                             )}
-                            {/* NEW indicators */}
                             {data.tiltIndicators.winStreakSizeUp > 0 && (
                                 <li><strong>{data.tiltIndicators.winStreakSizeUp} trades</strong> with size increase after wins (Overconfidence).</li>
                             )}
@@ -163,11 +237,9 @@ export function PsychologyDashboard() {
 
             {/* Key Insight Card */}
             {bestEmotion && (
-                <div className="bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/20 rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer group">
-                    <h3 className="text-sm uppercase tracking-wider text-primary font-bold mb-2 group-hover:text-primary/80 transition-colors">
-                        Key Insight
-                    </h3>
-                    <p className="text-lg text-gray-700 dark:text-white">
+                <div className="bg-gradient-to-r from-primary/10 to-transparent border border-primary/20 rounded-xl px-4 py-3 flex items-center gap-3">
+                    <span className="text-[10px] uppercase tracking-widest text-primary font-black shrink-0">Key Insight</span>
+                    <p className="text-sm text-gray-700 dark:text-gray-200">
                         You trade best when feeling <span className="font-bold text-primary">{bestEmotion.emotion}</span> with a{" "}
                         <span className="font-bold text-green-500">{bestEmotion.winRate.toFixed(0)}% win rate</span>.
                     </p>
@@ -180,6 +252,11 @@ export function PsychologyDashboard() {
                     title="Performance by Emotion (Before Trade)"
                 />
                 <ConfidenceCorrelation data={data.confidenceCorrelation} />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <EmotionTrendChart data={data.emotionTrend} />
+                <TradingMoodHeatmap data={data.moodHeatmap} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
