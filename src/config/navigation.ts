@@ -127,6 +127,7 @@ export const dashboardMenuItems = [
         name: "Copy Trading",
         href: "/dashboard/copy-trading",
         icon: Copy,
+        featureFlag: "feature_copy_trading",
     },
     {
         name: "Funded Challenge",
@@ -198,7 +199,7 @@ export const dashboardMenuGroups = [
             { name: "Leaderboard", href: "/dashboard/leaderboard", icon: Trophy },
             { name: "EA & Indicators", href: "/dashboard/trading-systems", icon: Bot },
             { name: "Community", href: "/dashboard/community", icon: MessageCircle },
-            { name: "Copy Trading", href: "/dashboard/copy-trading", icon: Copy },
+            { name: "Copy Trading", href: "/dashboard/copy-trading", icon: Copy, featureFlag: "feature_copy_trading" },
             { name: "Funded Challenge", href: "/dashboard/funded-challenge", icon: Shield, featureFlag: "feature_funded_challenge" },
         ],
     },
