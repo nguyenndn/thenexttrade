@@ -3,6 +3,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { CopyTradingAdminClient } from "@/components/admin/copy-trading/CopyTradingAdminClient";
+import { CopyTradingFeatureToggle } from "@/components/admin/copy-trading/CopyTradingFeatureToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -67,6 +68,9 @@ export default async function AdminCopyTradingPage({ searchParams }: PageProps) 
                     <Download size={14} /> Export CSV
                 </Button>
             </AdminPageHeader>
+
+            {/* Feature Visibility Toggle */}
+            <CopyTradingFeatureToggle />
 
             <CopyTradingAdminClient
                 initialRegistrations={registrations as any}
