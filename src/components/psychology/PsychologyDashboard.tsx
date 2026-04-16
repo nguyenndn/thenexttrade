@@ -147,7 +147,7 @@ export function PsychologyDashboard() {
             </PageHeader>
 
             {/* Summary Stats Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {[
                     {
                         label: "Emotions Logged",
@@ -192,14 +192,14 @@ export function PsychologyDashboard() {
                 ].map((stat) => {
                     const Icon = stat.icon;
                     return (
-                        <div key={stat.label} className={`bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-200 border-t-4 ${stat.border}`}>
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className={`p-3 rounded-xl ${stat.bg}`}>
-                                    <Icon size={20} className={stat.color} />
+                        <div key={stat.label} className={`bg-white dark:bg-[#1E2028] p-3 sm:p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-200 border-t-4 ${stat.border}`}>
+                            <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                                <div className={`p-2 sm:p-3 rounded-xl ${stat.bg}`}>
+                                    <Icon size={18} className={`${stat.color} sm:w-5 sm:h-5`} />
                                 </div>
                                 <h3 className="text-gray-600 text-xs font-bold uppercase tracking-wider">{stat.label}</h3>
                             </div>
-                            <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
+                            <p className={`text-xl sm:text-2xl font-black ${stat.color}`}>{stat.value}</p>
                             <p className="text-xs text-gray-500 font-medium mt-1">{stat.sub}</p>
                         </div>
                     );

@@ -34,7 +34,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden h-[400px] flex flex-col border-t-4 border-t-indigo-500">
+        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden h-auto xl:h-[400px] flex flex-col border-t-4 border-t-indigo-500">
             {/* Header */}
             <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">

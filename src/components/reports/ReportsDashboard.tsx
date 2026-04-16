@@ -247,7 +247,7 @@ export function ReportsDashboard() {
         <div className="space-y-4 animate-in fade-in duration-500">
 
             {/* Report Type Selection */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                 {REPORT_TYPES.map((report) => {
                     const isSelected = selectedType === report.id;
 
@@ -257,24 +257,24 @@ export function ReportsDashboard() {
                             key={report.id}
                             onClick={() => handleSelectType(report.id)}
                             className={`
-                                relative text-left p-5 h-auto rounded-xl border-2 transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal
+                                relative text-left p-3 sm:p-5 h-auto rounded-xl border-2 transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal
                                 ${isSelected
                                     ? "border-primary bg-primary/5 shadow-md shadow-primary/10 hover:bg-primary/5"
                                     : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-md transition-shadow"
                                 }
                             `}
                         >
-                            <div className="flex items-start justify-between mb-4 w-full">
+                            <div className="flex items-start justify-between mb-2 sm:mb-4 w-full">
                                 <div
                                     className={`
-                                        p-3 rounded-xl transition-all duration-300 shadow-sm
+                                        p-2 sm:p-3 rounded-xl transition-all duration-300 shadow-sm
                                         ${isSelected
                                             ? "bg-primary text-white shadow-primary/20"
                                             : "bg-gray-50 dark:bg-white/5 text-gray-600 group-hover:bg-primary/10 group-hover:text-primary"
                                         }
                                     `}
                                 >
-                                    <report.icon size={20} strokeWidth={2.5} />
+                                    <report.icon size={16} strokeWidth={2.5} className="sm:w-5 sm:h-5" />
                                 </div>
                                 <span
                                     className={`
@@ -290,10 +290,10 @@ export function ReportsDashboard() {
                                     {report.format}
                                 </span>
                             </div>
-                            <h3 className="font-black text-base text-gray-700 dark:text-white mb-1.5 tracking-tight">
+                            <h3 className="font-black text-sm sm:text-base text-gray-700 dark:text-white mb-1 sm:mb-1.5 tracking-tight">
                                 {report.name}
                             </h3>
-                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 leading-relaxed text-left w-full">
+                            <p className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 leading-relaxed text-left w-full">
                                 {report.description}
                             </p>
                         </Button>

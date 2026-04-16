@@ -65,14 +65,14 @@ function StatCard({ label, value, icon: Icon, color, delta, previous, isPercent 
     label: string; value: string; icon: any; color: string; delta?: number; previous?: number | null; isPercent?: boolean;
 }) {
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-4 shadow-sm">
+        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
                 <div className={`p-1.5 rounded-lg ${color}`}>
                     <Icon size={14} />
                 </div>
                 <span className="text-xs font-medium text-gray-500">{label}</span>
             </div>
-            <p className="text-xl font-black text-gray-800 dark:text-white">{value}</p>
+            <p className="text-lg sm:text-xl font-black text-gray-800 dark:text-white">{value}</p>
             {previous !== undefined && (
                 <div className="mt-1">
                     <DeltaBadge current={delta ?? 0} previous={previous} isPercent={isPercent} />
@@ -91,7 +91,7 @@ function BreakdownTable({ data, title }: { data: any[] | null; title: string }) 
             <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-3">{title}</h3>
             <div className="space-y-2">
                 {data.map((item, i) => (
-                        <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/5 last:border-0">
+                        <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/5 last:border-0">
                             <div className="flex items-center gap-2 min-w-0">
                                 <span className="text-xs font-mono bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded shrink-0">{i + 1}</span>
                                 <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{item.name}</span>
@@ -209,7 +209,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
 
     if (reports.length === 0) {
         return (
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-12 text-center shadow-sm">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-8 sm:p-12 text-center shadow-sm">
                 <div className="p-4 bg-gray-100 dark:bg-white/5 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                     <Calendar size={28} className="text-gray-400" />
                 </div>
@@ -232,7 +232,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
     return (
         <div className="space-y-4">
             {/* Period Navigator */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 px-5 py-3 shadow-sm flex items-center justify-between">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 px-3 sm:px-5 py-3 shadow-sm flex items-center justify-between">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -245,7 +245,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                 </Button>
 
                 <div className="text-center">
-                    <h2 className="text-lg font-black text-gray-800 dark:text-white">{report.periodLabel}</h2>
+                    <h2 className="text-base sm:text-lg font-black text-gray-800 dark:text-white">{report.periodLabel}</h2>
                     <p className="text-xs text-gray-500">
                         {new Date(report.periodStart).toLocaleDateString()} — {new Date(report.periodEnd).toLocaleDateString()}
                     </p>
@@ -298,19 +298,19 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
 
             {/* Secondary Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-4 shadow-sm">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
                     <p className="text-xs text-gray-500 mb-1">Avg Win</p>
                     <p className="text-sm font-bold text-emerald-500">+${report.avgWin.toFixed(2)}</p>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-4 shadow-sm">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
                     <p className="text-xs text-gray-500 mb-1">Avg Loss</p>
                     <p className="text-sm font-bold text-red-500">-${report.avgLoss.toFixed(2)}</p>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-4 shadow-sm">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
                     <p className="text-xs text-gray-500 mb-1">Largest Win</p>
                     <p className="text-sm font-bold text-emerald-500">+${report.largestWin.toFixed(2)}</p>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-4 shadow-sm">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
                     <p className="text-xs text-gray-500 mb-1">Largest Loss</p>
                     <p className="text-sm font-bold text-red-500">${report.largestLoss.toFixed(2)}</p>
                 </div>

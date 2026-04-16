@@ -20,16 +20,16 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
     const scoreColor = tradeScore !== null ? getScoreColor(tradeScore) : "transparent";
 
     return (
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-white to-gray-50 dark:from-[#0B0E14] dark:to-[#131720] border border-gray-200 dark:border-white/10 p-6 shadow-lg">
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-white to-gray-50 dark:from-[#0B0E14] dark:to-[#131720] border border-gray-200 dark:border-white/10 p-4 sm:p-6 shadow-lg">
             {/* Glow effects */}
             <div className="absolute top-0 left-1/4 w-40 h-40 bg-primary/10 dark:bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
             <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-cyan-500/10 dark:bg-cyan-500/15 rounded-full blur-[60px] pointer-events-none" />
 
-            <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {/* Balance */}
                 <div className="text-center">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">Total Balance</p>
-                    <p className="text-2xl lg:text-3xl font-black tracking-tight bg-gradient-to-r from-emerald-500 to-teal-400 bg-clip-text text-transparent">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight bg-gradient-to-r from-emerald-500 to-teal-400 bg-clip-text text-transparent">
                         {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalBalance)}
                     </p>
                     <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">Live + Funded</p>
@@ -43,7 +43,7 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
                             ? <TrendingUp size={20} className="text-primary" />
                             : <TrendingDown size={20} className="text-red-500" />
                         }
-                        <p className={`text-2xl lg:text-3xl font-black tracking-tight ${
+                        <p className={`text-xl sm:text-2xl lg:text-3xl font-black tracking-tight ${
                             periodPnL >= 0 ? 'text-primary' : 'text-red-500'
                         }`}>
                             {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', signDisplay: 'always' }).format(periodPnL)}

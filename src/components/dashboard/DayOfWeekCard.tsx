@@ -38,7 +38,7 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
     const hasTrades = allDays.some(d => d.tradeCount > 0);
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-violet-500 h-[400px] flex flex-col overflow-hidden">
+        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-violet-500 h-auto xl:h-[400px] flex flex-col overflow-hidden">
             {/* Header */}
             <div className="px-5 pt-5 pb-3 shrink-0">
                 <div className="flex items-center justify-between">
