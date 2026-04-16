@@ -98,14 +98,14 @@ export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWi
               <stop offset="100%" stopColor="#D1D5DB" stopOpacity={0.2} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" opacity={0.15} />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(156,163,175,0.15)" />
           <ReferenceLine y={50} stroke="hsl(var(--primary))" strokeDasharray="6 4" strokeOpacity={0.3} label={{ value: "50%", position: "right", fontSize: 9, fill: "hsl(var(--primary))", fontWeight: 600 }} />
           <XAxis
             dataKey="date"
             tickFormatter={(value) => format(new Date(value), "MMM dd")}
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 10, fill: "var(--text-secondary)" }}
+            tick={{ fontSize: 10, fill: "#9CA3AF" }}
             interval={tickInterval}
             minTickGap={20}
           />
@@ -117,7 +117,7 @@ export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWi
             ticks={[0, 25, 50, 75, 100]}
             tickFormatter={(v) => `${v}%`}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--hover-bg)', opacity: 0.06 }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(156,163,175,0.06)' }} />
           <Bar dataKey="winRate" radius={[4, 4, 0, 0]} maxBarSize={28}>
             {data.map((entry, index) => {
               const selected = isSelected(entry.date);
