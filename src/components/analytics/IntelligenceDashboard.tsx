@@ -151,7 +151,7 @@ function PeriodComparison({
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
                 {cards.map((card) => (
                     <div
                         key={card.label}
@@ -369,12 +369,12 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 
     return (
         <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
                 {/* Responsive grid: 1 col → 2 col → 3 col */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
 
                     {/* ═══ COL 1: Score Gauge ═══ */}
-                    <div className="flex flex-col items-center justify-center md:border-r md:border-gray-100 md:dark:border-white/5 md:pr-6 lg:pr-8">
+                    <div className="flex flex-col items-center justify-center md:border-r md:border-gray-100 md:dark:border-white/5 md:pr-6 lg:pr-8 pb-4 md:pb-0 border-b md:border-b-0 border-gray-100 dark:border-white/5">
                         <div className="flex items-center gap-2 mb-4 self-start">
                             <div className="p-1.5 rounded-lg bg-cyan-500/10">
                                 <Brain size={16} className="text-cyan-500" />
@@ -382,7 +382,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                             <h2 className="text-sm font-bold text-gray-700 dark:text-white">Trade Score</h2>
                         </div>
 
-                        <div className="relative w-36 h-36 shrink-0">
+                        <div className="relative w-28 h-28 sm:w-36 sm:h-36 shrink-0">
                             <svg className="w-full h-full -rotate-90" viewBox="0 0 180 180">
                                 <circle cx="90" cy="90" r={radius} fill="none" strokeWidth={strokeWidth} className="stroke-gray-100 dark:stroke-white/5" />
                                 <circle
@@ -394,7 +394,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                                 />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className={`text-4xl font-black ${c.text}`}>{tradeScore.score}</span>
+                                <span className={`text-3xl sm:text-4xl font-black ${c.text}`}>{tradeScore.score}</span>
                                 <span className="text-xs font-bold text-gray-500">/ 100</span>
                             </div>
                         </div>
@@ -409,8 +409,8 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                         <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Score Breakdown</h3>
                         <div className="flex-1 space-y-3">
                             {scoreFactors.filter(f => f.value >= 0).map((factor) => (
-                                <div key={factor.name} className="flex items-center gap-3">
-                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-500 w-28 shrink-0">{factor.name}</span>
+                                <div key={factor.name} className="flex items-center gap-2 sm:gap-3">
+                                    <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-500 w-20 sm:w-28 shrink-0">{factor.name}</span>
                                     <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                                         <div
                                             className={`h-full rounded-full transition-all duration-700 ${impactBg[factor.impact]}`}
@@ -633,7 +633,7 @@ function InsightCard({ insight }: { insight: Insight }) {
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{insight.metric}</span>
                             {insight.filterUrl && (
-                                <Link href={insight.filterUrl} className="text-xs font-bold text-primary hover:underline flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Link href={insight.filterUrl} className="text-xs font-bold text-primary hover:underline flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                     View Trades <ChevronRight size={12} />
                                 </Link>
                             )}
@@ -651,7 +651,7 @@ function InsightCard({ insight }: { insight: Insight }) {
 function EmptyState({ totalTrades }: { totalTrades: number }) {
     const progress = Math.min(100, (totalTrades / 30) * 100);
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 md:p-12 border border-gray-200 dark:border-white/10 shadow-sm text-center">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 sm:p-8 md:p-12 border border-gray-200 dark:border-white/10 shadow-sm text-center">
             <div className="inline-flex items-center justify-center p-4 rounded-xl bg-cyan-500/10 text-cyan-500 mb-6 ring-4 ring-cyan-500/5">
                 <Brain size={32} />
             </div>
@@ -668,6 +668,12 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
                     <div className="h-full bg-gradient-to-r from-primary to-cyan-500 rounded-full" style={{ width: `${progress}%` }} />
                 </div>
             </div>
+            <Link
+                href="/dashboard/journal"
+                className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:opacity-90 transition-opacity"
+            >
+                Log a Trade <ChevronRight size={16} />
+            </Link>
         </div>
     );
 }

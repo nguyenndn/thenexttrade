@@ -25,7 +25,7 @@ export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
     const totalTrades = data.reduce((sum, s) => sum + s.trades, 0);
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-indigo-500 h-[400px] flex flex-col overflow-hidden">
+        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-indigo-500 h-auto xl:h-[400px] flex flex-col overflow-hidden">
             {/* Header */}
             <div className="px-5 pt-5 pb-3">
                 <div className="flex items-center gap-3 mb-1">

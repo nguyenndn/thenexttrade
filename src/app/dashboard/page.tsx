@@ -8,7 +8,7 @@ import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
 import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution, getSessionPerformance, getDayOfWeekPerformance, getIntradayPerformance } from "@/lib/analytics-queries";
 import { getIntelligenceData } from "@/lib/smart-analytics";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { TradingAlertBanner } from "@/components/dashboard/TradingAlertBanner";
 
@@ -130,6 +130,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         sessionPerformance,
         dayOfWeekPerformance,
         intelligenceData,
+        dailyWinRateLast7,
     ] = await Promise.all([
         // User Info (name + streak only)
         prisma.user.findUnique({
@@ -170,6 +171,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         getDayOfWeekPerformance(user.id, accountId, startDate, endDate, accountTimezone),
         // Intelligence data (filtered by same date range as dashboard) — used for Trade Score + Insight Banner
         getIntelligenceData(user.id, accountId, startDate, endDate, accountTimezone).catch(() => null),
+        // Daily Win Rate: ALWAYS last 7 days (independent of date filter)
+        getDailyPerformance(user.id, accountId, subDays(new Date(), 6), new Date(), accountTimezone),
     ]);
 
     // Destructure stats from cached result
@@ -287,30 +290,19 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         });
     }
 
-    // Daily Win Rate for Chart — fill ALL dates in range (not just days with trades)
-    const winRateMap = new Map(dailyPerformance.map(day => [day.date, day]));
-    const allDailyWinRates: { date: string; winRate: number; trades: number; wins: number }[] = [];
-    if (startDate && endDate) {
-        const cursor = new Date(startDate);
-        const end = new Date(endDate);
-        while (cursor <= end) {
-            const dateStr = format(cursor, 'yyyy-MM-dd');
-            const existing = winRateMap.get(dateStr);
-            allDailyWinRates.push({
-                date: dateStr,
-                winRate: existing?.winRate || 0,
-                trades: existing?.tradeCount || 0,
-                wins: existing?.winCount || 0,
-            });
-            cursor.setDate(cursor.getDate() + 1);
-        }
+    // Daily Win Rate: use last 7 days data (independent of date filter)
+    const winRateMap7 = new Map(dailyWinRateLast7.map(day => [day.date, day]));
+    const dailyWinRates: { date: string; winRate: number; trades: number; wins: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+        const dateStr = format(subDays(new Date(), i), 'yyyy-MM-dd');
+        const existing = winRateMap7.get(dateStr);
+        dailyWinRates.push({
+            date: dateStr,
+            winRate: existing?.winRate || 0,
+            trades: existing?.tradeCount || 0,
+            wins: existing?.winCount || 0,
+        });
     }
-    const dailyWinRates = allDailyWinRates.length > 0 ? allDailyWinRates : dailyPerformance.map(day => ({
-        date: day.date,
-        winRate: day.winRate,
-        trades: day.tradeCount || 0,
-        wins: day.winCount || 0
-    }));
 
     // Symbol Performance for Pie Chart (Top 5 by Gross Profit)
     // symbolStats returns { symbol, grossProfit, pnl, trades }
@@ -356,6 +348,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
                 currentAccountId={accountId}
                 monthlyAnalytics={monthly.map(m => ({ date: m.date, value: m.profit }))}
                 dailyWinRates={dailyWinRates}
+                selectedDates={{ from: fromParam, to: toParam }}
                 bestTrades={topTrades.best}
                 worstTrades={topTrades.worst}
                 symbolAnalytics={symbolAnalytics}

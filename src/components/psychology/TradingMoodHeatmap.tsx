@@ -57,9 +57,9 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
     const hasTrades = data.some(row => row.slots.some(s => s.trades > 0));
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm border-t-4 border-t-pink-500 h-[460px] flex flex-col overflow-hidden">
-            <div className="px-5 pt-5 pb-3 shrink-0">
-                <div className="flex items-center justify-between">
+        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm border-t-4 border-t-pink-500 h-auto sm:h-[460px] flex flex-col overflow-hidden">
+            <div className="px-3 sm:px-5 pt-4 sm:pt-5 pb-3 shrink-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-pink-500/10 rounded-lg text-pink-500">
                             <Grid3x3 size={20} />
@@ -70,7 +70,7 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
                         </div>
                     </div>
                     {/* Legend */}
-                    <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400">
+                    <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 ml-0 sm:ml-auto">
                         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-emerald-200 dark:bg-emerald-500/30" /> Positive</span>
                         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-gray-200 dark:bg-white/10" /> Neutral</span>
                         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-red-200 dark:bg-red-500/30" /> Negative</span>
@@ -78,7 +78,7 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
                 </div>
             </div>
 
-            <div className="flex-1 px-5 pb-5 min-h-0 flex flex-col">
+            <div className="flex-1 px-3 sm:px-5 pb-4 sm:pb-5 min-h-0 flex flex-col">
                 {!hasTrades ? (
                     <div className="flex-1 flex items-center justify-center">
                         <ChartEmptyState title="No mood data yet" description="Log emotions when entering trades to see patterns." />
@@ -86,15 +86,15 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
                 ) : (
                     <div className="flex-1 flex flex-col gap-2">
                         {/* Header row */}
-                        <div className="grid grid-cols-[48px_1fr_1fr_1fr_1fr] gap-2">
+                        <div className="grid grid-cols-[36px_1fr_1fr_1fr_1fr] sm:grid-cols-[48px_1fr_1fr_1fr_1fr] gap-1 sm:gap-2">
                             <div />
                             {SESSION_META.map(session => (
                                 <div key={session.name} className="text-center">
-                                    <div className="flex items-center justify-center gap-1.5 mb-0.5">
-                                        <span className={`w-2 h-2 rounded-full ${session.dot}`} />
-                                        <span className="text-xs font-black text-gray-700 dark:text-gray-200 uppercase tracking-wide">{session.name}</span>
+                                    <div className="flex items-center justify-center gap-1 sm:gap-1.5 mb-0.5">
+                                        <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${session.dot}`} />
+                                        <span className="text-[10px] sm:text-xs font-black text-gray-700 dark:text-gray-200 uppercase tracking-wide">{session.name}</span>
                                     </div>
-                                    <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400">
+                                    <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 dark:text-gray-400 hidden sm:block">
                                         {session.time}
                                     </p>
                                 </div>
@@ -103,7 +103,7 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
 
                         {/* Data rows */}
                         {data.map(row => (
-                            <div key={row.day} className="grid grid-cols-[48px_1fr_1fr_1fr_1fr] gap-2 flex-1">
+                            <div key={row.day} className="grid grid-cols-[36px_1fr_1fr_1fr_1fr] sm:grid-cols-[48px_1fr_1fr_1fr_1fr] gap-1 sm:gap-2 flex-1">
                                 <div className="flex items-center">
                                     <span className="text-xs font-bold text-gray-600 dark:text-gray-300">{row.day}</span>
                                 </div>
@@ -117,7 +117,7 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
                                             <span className="text-gray-300 dark:text-gray-700 text-xs">—</span>
                                         ) : (
                                             <>
-                                                <span className="text-lg leading-none">{EMOTION_EMOJI[slot.dominantEmotion] || "•"}</span>
+                                                <span className="text-base sm:text-lg leading-none">{EMOTION_EMOJI[slot.dominantEmotion] || "•"}</span>
                                                 <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300">{slot.winRate.toFixed(0)}%</span>
                                                 <span className="text-[9px] text-gray-400">{slot.trades}t</span>
                                             </>

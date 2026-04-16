@@ -241,25 +241,25 @@ export default async function CommunityPage() {
                 </div>
             </div>
 
-            {/* ═══════ 3. SOCIAL PROOF ═══════ */}
+            {/* ═══════ 3. COMMUNITY ACHIEVEMENTS ═══════ */}
             <div>
                 <div className="flex items-center gap-2 mb-4">
                     <MessageCircle size={18} className="text-emerald-500" />
-                    <h2 className="text-lg font-black text-gray-800 dark:text-white">Community Results</h2>
+                    <h2 className="text-lg font-black text-gray-800 dark:text-white">Community Achievements</h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {[
-                        { title: "Member Profits", desc: "Real trading results shared by community members." },
-                        { title: "Signal Accuracy", desc: "Daily signals with verified entry, TP, and SL." },
-                        { title: "Community Reactions", desc: "Feedback from 11.9K+ traders in the channel." },
-                    ].map((slot, i) => (
-                        <div key={i} className="bg-white dark:bg-[#1A1D27] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl p-6 flex flex-col items-center justify-center text-center min-h-[200px] group hover:border-[#2AABEE]/30 transition-colors">
-                            <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-3 group-hover:bg-[#2AABEE]/10 transition-colors">
-                                <MessageCircle size={20} className="text-gray-400 group-hover:text-[#2AABEE] transition-colors" />
+                        { title: "Average Member Win Rate", value: "72%+", desc: "Across all active members following our analysis and signals.", icon: TrendingUp, color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-500/10" },
+                        { title: "Daily Signals Shared", value: "3–7", desc: "Premium trading setups with clear entry, take profit, and stop loss.", icon: BarChart3, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-500/10" },
+                        { title: "Total Active Days", value: "2,500+", desc: "Continuous daily analysis since 2019. No breaks, no exceptions.", icon: Star, color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-500/10" },
+                    ].map((stat) => (
+                        <div key={stat.title} className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/[0.06] p-5 text-center group hover:shadow-md transition-all">
+                            <div className={`w-12 h-12 rounded-lg ${stat.bg} flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform`}>
+                                <stat.icon size={22} className={stat.color} />
                             </div>
-                            <h4 className="text-sm font-bold text-gray-700 dark:text-white mb-1">{slot.title}</h4>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{slot.desc}</p>
-                            <span className="mt-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Screenshots coming soon</span>
+                            <p className={`text-2xl font-black ${stat.color} mb-1`}>{stat.value}</p>
+                            <h4 className="text-sm font-bold text-gray-700 dark:text-white mb-1">{stat.title}</h4>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{stat.desc}</p>
                         </div>
                     ))}
                 </div>

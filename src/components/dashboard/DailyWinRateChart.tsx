@@ -1,7 +1,7 @@
 "use client";
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from "recharts";
-import { format } from "date-fns";
+import { format, parseISO, isWithinInterval } from "date-fns";
 
 interface DailyWinRateChartProps {
   data: {
@@ -11,9 +11,10 @@ interface DailyWinRateChartProps {
     wins: number;
   }[];
   height?: number | string;
+  selectedDates?: { from?: string; to?: string };
 }
 
-export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps) {
+export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWinRateChartProps) {
   if (!data || data.length === 0) {
     return (
       <div className={`w-full flex items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300`} style={{ height }}>
@@ -22,15 +23,30 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
     );
   }
 
+  // Determine if a date falls within the selected range
+  const isSelected = (dateStr: string) => {
+    if (!selectedDates?.from || !selectedDates?.to) return true; // No filter = all selected
+    try {
+      const date = parseISO(dateStr);
+      const from = parseISO(selectedDates.from);
+      const to = parseISO(selectedDates.to);
+      return isWithinInterval(date, { start: from, end: to });
+    } catch {
+      return true;
+    }
+  };
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const winRate = Number(payload[0].value);
       const entry = payload[0].payload;
       const hasData = entry.trades > 0;
+      const selected = isSelected(label);
       return (
         <div className="bg-white dark:bg-[#1E2028] p-3 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl backdrop-blur-sm">
           <p className="text-xs font-bold text-gray-700 dark:text-gray-100 mb-1.5">
             {format(new Date(label), "MMM dd, yyyy")}
+            {selected && <span className="ml-1.5 text-[9px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">Selected</span>}
           </p>
           {hasData ? (
             <>
@@ -65,9 +81,17 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
               <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
               <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
             </linearGradient>
+            <linearGradient id="winGradientDim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.15} />
+            </linearGradient>
             <linearGradient id="lossGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#F59E0B" stopOpacity={1} />
               <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.6} />
+            </linearGradient>
+            <linearGradient id="lossGradientDim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#F59E0B" stopOpacity={0.35} />
+              <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.15} />
             </linearGradient>
             <linearGradient id="zeroGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#D1D5DB" stopOpacity={0.5} />
@@ -95,18 +119,22 @@ export function DailyWinRateChart({ data, height = 300 }: DailyWinRateChartProps
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--hover-bg)', opacity: 0.06 }} />
           <Bar dataKey="winRate" radius={[4, 4, 0, 0]} maxBarSize={28}>
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={
-                  entry.trades === 0
-                    ? 'url(#zeroGradient)'
-                    : entry.winRate >= 50
-                      ? 'url(#winGradient)'
-                      : 'url(#lossGradient)'
-                }
-              />
-            ))}
+            {data.map((entry, index) => {
+              const selected = isSelected(entry.date);
+              const hasAnySelected = selectedDates?.from && selectedDates?.to;
+              return (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={
+                    entry.trades === 0
+                      ? 'url(#zeroGradient)'
+                      : entry.winRate >= 50
+                        ? (hasAnySelected && !selected ? 'url(#winGradientDim)' : 'url(#winGradient)')
+                        : (hasAnySelected && !selected ? 'url(#lossGradientDim)' : 'url(#lossGradient)')
+                  }
+                />
+              );
+            })}
           </Bar>
         </BarChart>
       </ResponsiveContainer>

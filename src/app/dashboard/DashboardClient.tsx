@@ -45,6 +45,7 @@ interface DashboardClientProps {
     currentAccountId?: string;
     monthlyAnalytics: { date: string; value: number }[];
     dailyWinRates: { date: string; winRate: number; trades: number; wins: number }[];
+    selectedDates?: { from?: string; to?: string };
     bestTrades: any[];
     worstTrades: any[];
     symbolAnalytics: any[];
@@ -65,6 +66,7 @@ export default function DashboardClient({
     currentAccountId,
     monthlyAnalytics,
     dailyWinRates,
+    selectedDates,
     bestTrades,
     worstTrades,
     symbolAnalytics,
@@ -261,11 +263,11 @@ export default function DashboardClient({
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-gray-700 dark:text-white text-sm">Daily Win Rate</h3>
-                                    <p className="text-xs text-gray-600">Win % by Day</p>
+                                    <p className="text-xs text-gray-600">Last 7 Days • Selected period highlighted</p>
                                 </div>
                             </div>
                         </div>
-                        <DailyWinRateChart data={dailyWinRates} height={250} />
+                        <DailyWinRateChart data={dailyWinRates} height={250} selectedDates={selectedDates} />
                     </div>
                 </div>
 

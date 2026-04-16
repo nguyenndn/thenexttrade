@@ -22,7 +22,7 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-cyan-500 overflow-hidden h-[400px] flex flex-col">
+    <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-cyan-500 overflow-hidden h-auto xl:h-[400px] flex flex-col">
       {/* Header */}
       <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5">
