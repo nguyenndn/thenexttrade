@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Key, Lock, Shield, Monitor } from 'lucide-react';
+import { Key, Lock, Shield, Monitor, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { updatePassword, getTwoFactorStatus } from '@/app/dashboard/settings/account/actions';
 import { TwoFactorSetup } from "./TwoFactorSetup";
@@ -23,15 +23,38 @@ export function SecuritySettings() {
     return (
         <div className="w-full space-y-5">
 
+            {/* ── Security Header Card ── */}
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
+                <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                            <Shield size={24} className="text-blue-500" />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-gray-700 dark:text-white">Security</h2>
+                            <p className="text-gray-500 text-sm mt-0.5">Manage your account security settings.</p>
+                        </div>
+                    </div>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold ${
+                        is2FAEnabled
+                            ? "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400"
+                            : "bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                    }`}>
+                        <ShieldCheck size={14} />
+                        {is2FAEnabled ? "Secured" : "2FA Off"}
+                    </span>
+                </div>
+            </div>
+
             {/* ── Change Password Card ── */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/8 flex items-center gap-2.5">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center">
                         <Key size={14} className="text-blue-500" />
                     </div>
                     <div>
-                        <h2 className="text-sm font-semibold text-gray-700 dark:text-white">Change Password</h2>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">Update your password to keep your account secure.</p>
+                        <h2 className="text-sm font-bold text-gray-700 dark:text-white">Change Password</h2>
+                        <p className="text-xs text-gray-500 mt-0.5">Update your password to keep your account secure.</p>
                     </div>
                 </div>
 
@@ -45,8 +68,9 @@ export function SecuritySettings() {
                                 toast.success(res.message);
                                 (document.querySelector('form') as HTMLFormElement)?.reset();
                             }
-                        } catch (e: any) {
-                            toast.error(e instanceof Error ? e.message : (e?.message || "Something went wrong"));
+                        } catch (e: unknown) {
+                            const message = e instanceof Error ? e.message : "Something went wrong";
+                            toast.error(message);
                         } finally {
                             setIsLoading(false);
                         }
@@ -61,19 +85,21 @@ export function SecuritySettings() {
                                     {field.label}
                                 </label>
                                 <div className="relative">
-                                    <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                                    <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                                     <input
                                         name={field.name}
                                         type="password"
                                         required
                                         minLength={field.name !== "currentPassword" ? 6 : undefined}
-                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/8 rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                                         placeholder="••••••••"
                                     />
                                 </div>
                             </div>
                         ))}
-                        <div className="pt-1">
+
+                        {/* Submit inside card footer */}
+                        <div className="pt-2 -mx-6 -mb-5 px-6 py-4 border-t border-gray-100 dark:border-white/10 flex justify-end">
                             <Button type="submit" isLoading={isLoading} variant="primary">
                                 Update Password
                             </Button>
@@ -83,14 +109,14 @@ export function SecuritySettings() {
             </div>
 
             {/* ── Two-Factor Authentication Card ── */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/8 flex items-center gap-2.5">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center">
                         <Shield size={14} className="text-orange-500" />
                     </div>
                     <div>
-                        <h2 className="text-sm font-semibold text-gray-700 dark:text-white">Two-Factor Authentication (2FA)</h2>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">Add an extra layer of security to your account.</p>
+                        <h2 className="text-sm font-bold text-gray-700 dark:text-white">Two-Factor Authentication (2FA)</h2>
+                        <p className="text-xs text-gray-500 mt-0.5">Add an extra layer of security to your account.</p>
                     </div>
                 </div>
                 <div className="px-6 py-5">
@@ -99,14 +125,14 @@ export function SecuritySettings() {
             </div>
 
             {/* ── Active Sessions Card ── */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/8 flex items-center gap-2.5">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                         <Monitor size={14} className="text-primary" />
                     </div>
                     <div>
-                        <h2 className="text-sm font-semibold text-gray-700 dark:text-white">Active Sessions</h2>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">Manage your logged-in devices and sessions.</p>
+                        <h2 className="text-sm font-bold text-gray-700 dark:text-white">Active Sessions</h2>
+                        <p className="text-xs text-gray-500 mt-0.5">Manage your logged-in devices and sessions.</p>
                     </div>
                 </div>
                 <div className="px-6 py-5">

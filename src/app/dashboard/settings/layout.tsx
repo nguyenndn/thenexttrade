@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Flame, Settings, Bell, Users, Lock, MessageSquare, Globe } from "lucide-react";
+import { Flame, Settings, Users, Lock, MessageSquare, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { type LucideIcon } from "lucide-react";
@@ -20,7 +20,6 @@ const baseNavItems: NavItem[] = [
     { title: "Public Profile", href: "/dashboard/settings/profile", icon: Globe },
     { title: "Security", href: "/dashboard/settings/security", icon: Lock },
     { title: "Login Streak", href: "/dashboard/settings/streak", icon: Flame },
-    { title: "Notifications", href: "/dashboard/settings/notifications", icon: Bell },
     { title: "Referrals", href: "/dashboard/settings/referrals", icon: Users },
 ];
 
@@ -46,7 +45,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
             {/* ── Page Header — consistent with other dashboard pages ── */}
             <PageHeader
                 title="Settings"
-                description="Manage your account, preferences, and notifications."
+                description="Manage your account, profile, and security settings."
             />
 
             {/* ── Horizontal Tab Nav ── */}
