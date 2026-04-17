@@ -16,6 +16,7 @@ import { calculateProfitLoss } from "@/lib/calculators";
 import { formatAccountLabel, transformImageUrl } from "@/lib/utils";
 import { celebrateXP } from "@/lib/celebrate";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { fetchTradingAccounts } from "@/lib/cached-config";
 
 interface JournalFormProps {
     initialData?: any;
@@ -88,13 +89,12 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
     const fetchAccounts = async () => {
         try {
-            const res = await fetch("/api/trading-accounts");
-            const data = await res.json();
-            setAccounts(data.accounts || []);
+            const accs = await fetchTradingAccounts();
+            setAccounts(accs);
 
             // Set default account if creating new and none selected
             if (!isEditMode && !formData.accountId) {
-                const defaultAccount = data.accounts?.find((a: any) => a.isDefault);
+                const defaultAccount = accs.find((a: any) => a.isDefault);
                 if (defaultAccount) {
                     setFormData(prev => ({ ...prev, accountId: defaultAccount.id }));
                 }

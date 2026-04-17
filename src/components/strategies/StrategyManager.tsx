@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { Plus, Search, ArrowUpDown, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -43,6 +43,7 @@ export interface StrategyPerformance {
 
 interface StrategyManagerProps {
     initialStrategies: Strategy[];
+    initialPerformance?: StrategyPerformance[];
     meta: {
         total: number;
         page: number;
@@ -51,7 +52,7 @@ interface StrategyManagerProps {
     };
 }
 
-export function StrategyManager({ initialStrategies, meta }: StrategyManagerProps) {
+export function StrategyManager({ initialStrategies, meta, initialPerformance = [] }: StrategyManagerProps) {
     const router = useRouter();
     const page = meta.page;
     const limit = meta.limit;
@@ -60,8 +61,8 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
     // For now, rely on Server Action revalidation + router.refresh() if needed.
     const strategies = initialStrategies;
 
-    const [performance, setPerformance] = useState<StrategyPerformance[]>([]);
-    const [isLoadingPerformance, setIsLoadingPerformance] = useState(true);
+    const [performance, setPerformance] = useState<StrategyPerformance[]>(initialPerformance);
+    const [isLoadingPerformance, setIsLoadingPerformance] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [editingStrategy, setEditingStrategy] = useState<Strategy | null>(null);
 
@@ -80,6 +81,7 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
     ];
     const currentSortLabel = sortOptions.find(o => o.value === sortBy)?.label ?? "Name";
 
+    // Only used for refresh after save/delete — NOT on initial load
     const fetchPerformance = async () => {
         try {
             setIsLoadingPerformance(true);
@@ -93,10 +95,6 @@ export function StrategyManager({ initialStrategies, meta }: StrategyManagerProp
             setIsLoadingPerformance(false);
         }
     };
-
-    useEffect(() => {
-        fetchPerformance();
-    }, []);
 
     // Merge real strategies with "ghost" strategies found in performance
     const allStrategies = [...strategies];

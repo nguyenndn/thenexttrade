@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import { fetchTradingAccounts } from "@/lib/cached-config";
 import { Check, ChevronsUpDown, Plus, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -72,26 +73,19 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
     const [selectedAccount, setSelectedAccount] = useState<TradingAccount | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Fetch accounts - Run Once
+    // Fetch accounts - Run Once (singleton cache)
     useEffect(() => {
-        const fetchAccounts = async () => {
-            try {
-                const res = await fetch("/api/trading-accounts");
-                if (res.ok) {
-                    const data = await res.json();
-                    // API returns { accounts: [...], meta: {...} }
-                    const accs = Array.isArray(data) ? data : (data.accounts || []);
-                    setAccounts(accs);
-                }
-            } catch (error: any) {
+        fetchTradingAccounts()
+            .then(accs => {
+                setAccounts(accs);
+            })
+            .catch(error => {
                 console.error("Failed to load accounts", error);
                 toast.error(error instanceof Error ? error.message : (error?.message || "Could not load trading accounts"));
-            } finally {
+            })
+            .finally(() => {
                 setIsLoading(false);
-            }
-        };
-
-        fetchAccounts();
+            });
     }, []);
 
     // Stable accountId string from URL (avoids searchParams object ref instability)

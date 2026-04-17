@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { signout } from '@/app/auth/actions';
+import { useFeatureFlags } from '@/lib/dashboard-context';
 import { Button } from "@/components/ui/Button";
 
 export interface SidebarItem {
@@ -108,40 +109,13 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     const isCollapsed = collapsed ?? false;
     // const [collapsed, setCollapsed] = useState(false); // Removed local state
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-    const [disabledFlags, setDisabledFlags] = useState<Set<string>>(new Set());
-    const [flagsLoaded, setFlagsLoaded] = useState(false);
-
-    // Check if any items use feature flags
-    const hasFlaggedItems = useMemo(() => items.some((i: any) => i.featureFlag), [items]);
-
-    // Fetch feature flags to hide disabled items
-    useEffect(() => {
-        const flagKeys = items
-            .filter((i: any) => i.featureFlag)
-            .map((i: any) => i.featureFlag);
-        if (flagKeys.length === 0) {
-            setFlagsLoaded(true);
-            return;
-        }
-
-        fetch(`/api/feature-flags?keys=${flagKeys.join(",")}`)
-            .then(res => res.json())
-            .then(data => {
-                const disabled = new Set<string>();
-                for (const [key, enabled] of Object.entries(data.flags || {})) {
-                    if (!enabled) disabled.add(key);
-                }
-                setDisabledFlags(disabled);
-            })
-            .catch(() => {})
-            .finally(() => setFlagsLoaded(true));
-    }, []);
+    const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
 
     // Filter out items with disabled feature flags (hide flagged items until loaded)
     const visibleItems = useMemo(() =>
         items.filter((item: any) => {
             if (!item.featureFlag) return true;
-            if (!flagsLoaded) return false; // hide until flags loaded
+            if (!flagsLoaded) return false;
             return !disabledFlags.has(item.featureFlag);
         }),
         [items, disabledFlags, flagsLoaded]

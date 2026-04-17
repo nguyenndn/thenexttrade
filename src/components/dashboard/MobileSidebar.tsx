@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import { useFeatureFlags } from "@/lib/dashboard-context";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -36,32 +37,9 @@ interface MobileSidebarProps {
 
 export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
     const pathname = usePathname();
-    const [disabledFlags, setDisabledFlags] = useState<Set<string>>(new Set());
-    const [flagsLoaded, setFlagsLoaded] = useState(false);
+    const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
 
     const rawItems = items ?? dashboardMenuItems;
-
-    useEffect(() => {
-        const flagKeys = rawItems
-            .filter((i: any) => i.featureFlag)
-            .map((i: any) => i.featureFlag);
-        if (flagKeys.length === 0) {
-            setFlagsLoaded(true);
-            return;
-        }
-
-        fetch(`/api/feature-flags?keys=${flagKeys.join(",")}`)
-            .then(res => res.json())
-            .then(data => {
-                const disabled = new Set<string>();
-                for (const [key, enabled] of Object.entries(data.flags || {})) {
-                    if (!enabled) disabled.add(key);
-                }
-                setDisabledFlags(disabled);
-            })
-            .catch(() => {})
-            .finally(() => setFlagsLoaded(true));
-    }, []);
 
     const navItems = useMemo(() =>
         rawItems.filter((item: any) => {

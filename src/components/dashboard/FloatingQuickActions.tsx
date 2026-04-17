@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { FeedbackPanel } from "./FeedbackPanel";
+import { useSystemConfig } from "@/lib/dashboard-context";
 
 const AnimatedFeedbackIcon = ({ isOpen }: { isOpen: boolean }) => {
     return (
@@ -46,15 +47,11 @@ const AnimatedFeedbackIcon = ({ isOpen }: { isOpen: boolean }) => {
 export function FloatingQuickActions() {
     const [isOpen, setIsOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
-    const [feedbackEnabled, setFeedbackEnabled] = useState(true);
+    const { feedbackEnabled } = useSystemConfig();
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setIsMounted(true);
-        fetch("/api/system/config")
-            .then((res) => res.json())
-            .then((data) => setFeedbackEnabled(data.feedbackEnabled ?? true))
-            .catch(() => setFeedbackEnabled(true));
     }, []);
 
     useEffect(() => {
