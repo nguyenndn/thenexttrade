@@ -33,7 +33,7 @@ export function VipRequestStatus({
               <h3 className="text-sm font-bold text-amber-800 dark:text-amber-300">
                 Request Under Review
               </h3>
-              <p className="text-[11px] text-amber-600 dark:text-amber-400 truncate">
+              <p className="text-xs text-amber-600 dark:text-amber-400 truncate">
                 {request.broker} · {request.accountNumber} · Submitted{" "}
                 {new Date(request.createdAt).toLocaleDateString("en-US", {
                   month: "short",
@@ -71,7 +71,7 @@ export function VipRequestStatus({
               <h3 className="text-sm font-bold text-emerald-800 dark:text-emerald-300">
                 VIP Access Approved!
               </h3>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 truncate">
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 truncate">
                 Action required to receive your invite.
               </p>
             </div>
@@ -87,7 +87,7 @@ export function VipRequestStatus({
           </a>
         </div>
 
-        <div className="text-xs text-emerald-700 dark:text-emerald-300/80 p-3 bg-emerald-100/50 dark:bg-emerald-500/10 rounded-lg space-y-1.5">
+        <div className="text-sm text-emerald-700 dark:text-emerald-300/80 p-3 bg-emerald-100/50 dark:bg-emerald-500/10 rounded-lg space-y-1.5">
           <p className="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">To get the private invite link:</p>
           <p className="flex items-start gap-2">
             <span className="font-medium">1.</span> 
@@ -118,7 +118,7 @@ export function VipRequestStatus({
             <h3 className="text-sm font-bold text-red-800 dark:text-red-300">
               Request Rejected
             </h3>
-            <p className="text-[11px] text-red-600 dark:text-red-400 truncate">
+            <p className="text-xs text-red-600 dark:text-red-400 truncate">
               {request.rejectReason || "No reason provided"}
             </p>
           </div>

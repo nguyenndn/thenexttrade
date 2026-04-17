@@ -233,7 +233,7 @@ export default async function CommunityPage() {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-sm text-gray-800 dark:text-white mb-1">{f.title}</h3>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{f.description}</p>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{f.description}</p>
                                 </div>
                             </div>
                         </div>
@@ -259,7 +259,7 @@ export default async function CommunityPage() {
                             </div>
                             <p className={`text-2xl font-black ${stat.color} mb-1`}>{stat.value}</p>
                             <h4 className="text-sm font-bold text-gray-700 dark:text-white mb-1">{stat.title}</h4>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{stat.desc}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{stat.desc}</p>
                         </div>
                     ))}
                 </div>
@@ -271,12 +271,12 @@ export default async function CommunityPage() {
                     <div className="flex items-center gap-2 mb-4">
                         <Crown size={18} className="text-primary" />
                         <h2 className="text-lg font-black text-gray-800 dark:text-white">VIP Group</h2>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">— <span className="text-emerald-600 dark:text-emerald-400 font-bold">completely free</span> with partner broker</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">— <span className="text-emerald-600 dark:text-emerald-400 font-bold">completely free</span> with partner broker</span>
                     </div>
 
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 mb-4">
                         <Shield size={12} className="text-emerald-600 dark:text-emerald-400" />
-                        <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400">No subscription • No hidden fees • Free forever</span>
+                        <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">No subscription • No hidden fees • Free forever</span>
                     </div>
 
                     {/* Benefits grid */}
@@ -286,7 +286,7 @@ export default async function CommunityPage() {
                                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                                     <b.icon size={14} className="text-primary" />
                                 </div>
-                                <span className="text-xs text-gray-700 dark:text-gray-300 leading-snug">{b.text}</span>
+                                <span className="text-sm text-gray-700 dark:text-gray-300 leading-snug">{b.text}</span>
                             </div>
                         ))}
                     </div>
@@ -328,7 +328,7 @@ export default async function CommunityPage() {
                                 </div>
                                 <h3 className="font-bold text-sm text-gray-800 dark:text-white group-hover:text-primary transition-colors">{p.title}</h3>
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed flex-1">{p.description}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed flex-1">{p.description}</p>
                             <span className="inline-flex items-center gap-1 text-xs font-bold text-primary mt-2">
                                 Explore <ChevronRight size={14} />
                             </span>
@@ -341,7 +341,7 @@ export default async function CommunityPage() {
             <div>
                 <div className="text-center mb-6">
                     <h2 className="text-lg font-black text-gray-800 dark:text-white mb-1">Frequently Asked Questions</h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Quick answers to common questions</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Quick answers to common questions</p>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>

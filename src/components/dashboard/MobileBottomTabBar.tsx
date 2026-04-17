@@ -6,35 +6,12 @@ import { usePathname } from "next/navigation";
 import { X, Bug, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dashboardMenuGroups } from "@/config/navigation";
+import { useFeatureFlags } from "@/lib/dashboard-context";
 
 export function MobileBottomTabBar() {
     const pathname = usePathname();
     const [openGroup, setOpenGroup] = useState<string | null>(null);
-    const [disabledFlags, setDisabledFlags] = useState<Set<string>>(new Set());
-    const [flagsLoaded, setFlagsLoaded] = useState(false);
-
-    // Fetch feature flags to hide disabled items
-    useEffect(() => {
-        const allFlags: string[] = [];
-        for (const group of dashboardMenuGroups) {
-            for (const item of group.items) {
-                if ((item as any).featureFlag) allFlags.push((item as any).featureFlag);
-            }
-        }
-        if (allFlags.length === 0) { setFlagsLoaded(true); return; }
-
-        fetch(`/api/feature-flags?keys=${allFlags.join(",")}`)
-            .then(res => res.json())
-            .then(data => {
-                const disabled = new Set<string>();
-                for (const [key, enabled] of Object.entries(data.flags || {})) {
-                    if (!enabled) disabled.add(key);
-                }
-                setDisabledFlags(disabled);
-            })
-            .catch(() => {})
-            .finally(() => setFlagsLoaded(true));
-    }, []);
+    const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
 
     // Filter groups: remove items with disabled feature flags
     const filteredGroups = useMemo(() => {

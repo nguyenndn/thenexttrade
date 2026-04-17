@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Megaphone, X } from 'lucide-react';
+import { fetchSystemConfig } from '@/lib/cached-config';
 
 const BANNER_HEIGHT = 40;
 
@@ -20,15 +21,13 @@ export function SystemAnnouncementBanner() {
     useEffect(() => {
         if (isHiddenRoute) return;
 
-        fetch('/api/system/config')
-            .then((res) => res.json())
+        fetchSystemConfig()
             .then((data) => {
                 if (data.systemAnnouncement) {
                     setAnnouncement(data.systemAnnouncement);
                     setVisible(true);
                 }
-            })
-            .catch(() => {});
+            });
     }, [isHiddenRoute]);
 
     // Set CSS variable so header knows to shift down

@@ -13,7 +13,7 @@ import { format } from "date-fns";
 
 interface BalanceGrowthChartProps {
     data: {
-        date: string; // ISO date string or formatted date
+        date: string;
         balance: number;
     }[];
 }
@@ -40,7 +40,6 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
     let xTicks: number[] | undefined;
 
     if (isShortDuration) {
-        // Force domain to start at 00:00 of first day and end at 23:59 of last day
         const startOfDay = new Date(firstDate);
         startOfDay.setHours(0, 0, 0, 0);
         domainMin = startOfDay.getTime();
@@ -49,16 +48,14 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
         endOfDay.setHours(23, 59, 59, 999);
         domainMax = endOfDay.getTime();
 
-        // Generate hourly ticks (every 4 hours)
         xTicks = [];
         let current = domainMin;
         while (current <= domainMax) {
             xTicks.push(current);
-            current += 4 * 60 * 60 * 1000; // 4 hours
+            current += 4 * 60 * 60 * 1000;
         }
     }
 
-    // Format data for chart
     const chartData = data.map(item => {
         const date = new Date(item.date);
         return {

@@ -37,6 +37,7 @@ import {
 } from "recharts";
 import type { IntelligenceData, Insight, InsightSeverity, ScoreHistoryPoint } from "@/lib/smart-analytics";
 import { format, parseISO } from "date-fns";
+import { BehavioralRadarChart } from "./BehavioralRadarChart";
 
 // ============================================================================
 // ICON MAP
@@ -775,10 +776,13 @@ export function IntelligenceDashboard({
             {/* Unified Score & Risk Panel — full width, 3 columns */}
             <ScoreAndRiskPanel data={data} />
 
-            {/* Score History Chart */}
-            {scoreHistory && scoreHistory.length >= 3 && (
-                <ScoreHistoryChart data={scoreHistory} />
-            )}
+            {/* Behavioral Radar + Score History — side by side */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <BehavioralRadarChart data={data} />
+                {scoreHistory && scoreHistory.length >= 3 && (
+                    <ScoreHistoryChart data={scoreHistory} />
+                )}
+            </div>
         </div>
     );
 }
