@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { format, parseISO, startOfYear, endOfYear } from "date-fns";
-
+import { utcTime } from "@/lib/utils";
 export async function GET(request: NextRequest) {
     try {
         const user = await getAuthUser();
@@ -95,7 +95,7 @@ function generateTradesCSV(trades: any[]): string {
     ];
 
     const rows = trades.map((t: any) => [
-        format(new Date(t.entryDate), "yyyy-MM-dd HH:mm"),
+        utcTime(new Date(t.entryDate), "yyyy-MM-dd HH:mm"),
         t.symbol,
         t.type,
         t.entryPrice?.toString() || "",
@@ -137,7 +137,7 @@ function generateTaxCSV(trades: any[]): string {
         const costBasis = (t.entryPrice || 0) * (t.lotSize || 0);
 
         return [
-            format(new Date(t.entryDate), "yyyy-MM-dd"),
+            utcTime(new Date(t.entryDate), "yyyy-MM-dd"),
             `${t.type} ${t.symbol}`,
             proceeds.toFixed(2),
             costBasis.toFixed(2),

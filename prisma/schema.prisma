@@ -109,6 +109,10 @@ model User {
   // VIP Requests
   vipRequests        VipRequest[]
 
+  // TNT Connect (Python App Sync)
+  syncApiKey         String?   @unique @map("sync_api_key") @db.VarChar(64)
+  syncApiKeyCreatedAt DateTime? @map("sync_api_key_created_at") @db.Timestamptz
+
   @@index([createdAt])
   @@index([email])
   
@@ -512,6 +516,11 @@ model TradingAccount {
   importHistory   ImportHistory[]
   notifications   AccountNotification[]
   commands        EaCommand[]
+
+  // TNT Connect (Python App Sync)
+  syncSource        String    @default("EA") @map("sync_source") @db.VarChar(20) // EA, APP, BOTH
+  appLastHeartbeat  DateTime? @map("app_last_heartbeat") @db.Timestamptz
+  resyncRequest     String?   @map("resync_request") @db.VarChar(20) // null, TODAY, 3D, 1W, 1M
   
   createdAt   DateTime @default(now()) @db.Timestamptz
   updatedAt   DateTime @updatedAt @db.Timestamptz

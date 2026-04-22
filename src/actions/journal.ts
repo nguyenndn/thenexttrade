@@ -90,7 +90,7 @@ export async function getJournalEntries(
             where,
             orderBy,
             include: {
-                account: { select: { name: true, color: true, accountType: true } },
+                account: { select: { name: true, color: true, accountType: true, timezone: true } },
                 // strategy is a string, no relation
             },
             skip,

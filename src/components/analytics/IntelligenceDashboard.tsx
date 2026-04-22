@@ -561,10 +561,10 @@ function AIRecommendation({ data }: { data: IntelligenceData }) {
     return (
         <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
             <div className={`h-0.5 ${score >= 75 ? "bg-emerald-500" : score >= 60 ? "bg-blue-500" : score >= 40 ? "bg-amber-500" : "bg-red-500"}`} />
-            <div className="px-4 py-3">
-                <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-lg ${scoreAssessment.bg} shrink-0 mt-0.5`}>
-                        <PriorityIcon size={16} className={scoreAssessment.color} />
+            <div className="px-4 py-2.5">
+                <div className="flex items-start gap-2.5">
+                    <div className={`p-1.5 rounded-lg ${scoreAssessment.bg} shrink-0 mt-0.5`}>
+                        <PriorityIcon size={14} className={scoreAssessment.color} />
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
@@ -573,12 +573,11 @@ function AIRecommendation({ data }: { data: IntelligenceData }) {
                                 {score} · {scoreAssessment.label}
                             </span>
                         </div>
-                        <h3 className="text-sm font-bold text-gray-800 dark:text-white leading-snug">{headline}</h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">{narrative}</p>
-                        <div className="flex items-center gap-1.5 mt-2 text-xs">
-                            <Target size={12} className="text-primary shrink-0" />
-                            <span className="font-bold text-primary">Action:</span>
-                            <span className="text-gray-600 dark:text-gray-300">{priorityAction}</span>
+                        <h3 className="text-[13px] font-bold text-gray-800 dark:text-white leading-snug">{headline}</h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed line-clamp-2">{narrative}</p>
+                        <div className="flex items-start gap-1.5 mt-1.5 text-xs">
+                            <Target size={11} className="text-primary shrink-0 mt-0.5" />
+                            <span className="text-gray-600 dark:text-gray-300"><span className="font-bold text-primary">Action:</span> {priorityAction}</span>
                         </div>
                     </div>
                 </div>
@@ -620,22 +619,22 @@ function InsightCard({ insight }: { insight: Insight }) {
     return (
         <div className={`bg-white dark:bg-[#1E2028] rounded-xl border ${s.border} shadow-sm hover:shadow-md transition-all group`}>
             <div className={`h-0.5 ${s.barColor} rounded-t-xl`} />
-            <div className="p-5">
-                <div className="flex items-start gap-4">
-                    <div className={`p-2.5 rounded-xl ${s.iconBg} shrink-0`}>
-                        <Icon size={20} className={s.iconColor} />
+            <div className="px-4 py-3">
+                <div className="flex items-start gap-3">
+                    <div className={`p-2 rounded-lg ${s.iconBg} shrink-0 mt-0.5`}>
+                        <Icon size={16} className={s.iconColor} />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-bold text-gray-700 dark:text-white text-sm">{insight.title}</h3>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${s.badge}`}>{severityLabel[insight.severity]}</span>
+                        <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-gray-700 dark:text-white text-[13px]">{insight.title}</h3>
+                            <span className={`px-1.5 py-px rounded-full text-[9px] font-bold uppercase ${s.badge}`}>{severityLabel[insight.severity]}</span>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 leading-relaxed">{insight.description}</p>
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{insight.metric}</span>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed line-clamp-2">{insight.description}</p>
+                        <div className="flex items-center justify-between mt-1.5">
+                            <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{insight.metric}</span>
                             {insight.filterUrl && (
-                                <Link href={insight.filterUrl} className="text-xs font-bold text-primary hover:underline flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                    View Trades <ChevronRight size={12} />
+                                <Link href={insight.filterUrl} className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                                    View Trades <ChevronRight size={11} />
                                 </Link>
                             )}
                         </div>
