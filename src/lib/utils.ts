@@ -109,3 +109,33 @@ export function transformImageUrl(url: string): string {
     
     return url;
 }
+
+/**
+ * Format date in UTC timezone (broker server time).
+ * MT5 deal.time encodes broker time as fake-UTC, so getUTCHours() = broker hours.
+ * This avoids local timezone offset corrupting displayed trade times.
+ */
+export function utcTime(
+    date: Date | string,
+    fmt: "HH:mm" | "dd MMM HH:mm" | "dd MMM yyyy" | "MMM dd" | "MMM dd, HH:mm" | "yyyy-MM-dd HH:mm" | "yyyy-MM-dd" = "HH:mm"
+): string {
+    const d = new Date(date);
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const yyyy = d.getUTCFullYear();
+    const MM = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(d.getUTCDate()).padStart(2, "0");
+    const mon = months[d.getUTCMonth()];
+    const hh = String(d.getUTCHours()).padStart(2, "0");
+    const mm = String(d.getUTCMinutes()).padStart(2, "0");
+
+    switch (fmt) {
+        case "HH:mm": return `${hh}:${mm}`;
+        case "dd MMM HH:mm": return `${dd} ${mon} ${hh}:${mm}`;
+        case "dd MMM yyyy": return `${dd} ${mon} ${yyyy}`;
+        case "MMM dd": return `${mon} ${dd}`;
+        case "MMM dd, HH:mm": return `${mon} ${dd}, ${hh}:${mm}`;
+        case "yyyy-MM-dd HH:mm": return `${yyyy}-${MM}-${dd} ${hh}:${mm}`;
+        case "yyyy-MM-dd": return `${yyyy}-${MM}-${dd}`;
+        default: return `${hh}:${mm}`;
+    }
+}

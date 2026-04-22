@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, Clock } from "lucide-react";
-import { format } from "date-fns";
+import { utcTime } from "@/lib/utils";
 import Link from "next/link";
 
 interface Trade {
@@ -30,7 +30,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
 
     const formatDate = (date: Date | string | null) => {
         if (!date) return "—";
-        return format(new Date(date), "MMM dd, HH:mm");
+        return utcTime(date, "MMM dd, HH:mm");
     };
 
     return (

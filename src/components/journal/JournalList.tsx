@@ -6,8 +6,8 @@ import { FileText, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Edit2, ArrowUpDown, Activity } from "lucide-react";
 import { toast } from "sonner";
-import { format } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
+import { utcTime } from "@/lib/utils";
 import JournalStats from "@/components/journal/JournalStats";
 import { Modal } from "@/components/ui/Modal";
 import { StrategyCell } from "@/components/journal/cells/StrategyCell";
@@ -408,11 +408,11 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                                             `}
                                                         >
                                                             <div className={`w-full ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'flex justify-end pr-2' : ''}`}>
-                                                                {col.id === "date" && format(new Date(entry.entryDate), "dd MMM yyyy")}
+                                                                {col.id === "date" && utcTime(entry.entryDate, "dd MMM yyyy")}
                                                                 {col.id === "symbol" && <span className="font-bold text-gray-700 dark:text-white">{entry.symbol}</span>}
                                                                 {col.id === "type" && <TradeTypeBadge type={entry.type} />}
-                                                                {col.id === "openTime" && format(new Date(entry.entryDate), "HH:mm")}
-                                                                {col.id === "closeTime" && (entry.exitDate ? format(new Date(entry.exitDate), "HH:mm") : "-")}
+                                                                {col.id === "openTime" && utcTime(entry.entryDate)}
+                                                                {col.id === "closeTime" && (entry.exitDate ? utcTime(entry.exitDate) : "-")}
                                                                 {col.id === "volume" && <span className="font-mono text-gray-600">{(entry as any).lotSize || "0.00"}</span>}
                                                                 {col.id === "pnl" && <PnLDisplay value={entry.pnl} />}
                                                                 {col.id === "tp" && <span className="font-mono text-primary font-medium">{(entry as any).takeProfit || "-"}</span>}
@@ -508,7 +508,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                             <div>
                                                 <p className="text-xs text-gray-500 mb-0.5">Open Time</p>
                                                 <p className="font-medium text-gray-700 dark:text-gray-300">
-                                                    {format(new Date(entry.entryDate), "dd MMM HH:mm")}
+                                                    {utcTime(entry.entryDate, "dd MMM HH:mm")}
                                                 </p>
                                             </div>
                                             <div>
@@ -522,7 +522,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                                             <div>
                                                 <p className="text-xs text-gray-500 mb-0.5">Close Time</p>
                                                 <p className="font-medium text-gray-700 dark:text-gray-300">
-                                                    {entry.exitDate ? format(new Date(entry.exitDate), "HH:mm") : "-"}
+                                                    {entry.exitDate ? utcTime(entry.exitDate) : "-"}
                                                 </p>
                                             </div>
                                         </div>

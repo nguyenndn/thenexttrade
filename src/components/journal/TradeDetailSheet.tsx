@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useState } from "react"
-import { format } from "date-fns"
+import { utcTime } from "@/lib/utils"
 import { ShareTradeModal } from "./ShareTradeModal"
 import { Share2, ArrowLeft, ArrowRight, TrendingUp, TrendingDown, Clock, Info, DollarSign, Tag, Brain, BarChart3, MessageSquare, AlertTriangle, X, Medal, Target, ShieldAlert } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -222,13 +222,13 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
                                                     <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200 dark:border-white/10">
                                                         <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">Open</span>
                                                         <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                                            {format(new Date(entry.entryDate), "MMM dd, HH:mm")}
+                                                            {utcTime(entry.entryDate, "MMM dd, HH:mm")}
                                                         </span>
                                                     </div>
                                                     <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200 dark:border-white/10">
                                                         <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">Close</span>
                                                         <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                                            {entry.exitDate ? format(new Date(entry.exitDate), "MMM dd, HH:mm") : "---"}
+                                                            {entry.exitDate ? utcTime(entry.exitDate, "MMM dd, HH:mm") : "---"}
                                                         </span>
                                                     </div>
                                                 </div>

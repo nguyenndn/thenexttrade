@@ -64,15 +64,22 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
     const isActiveStyle = isBranchActive;
 
     return (
-        <div className="mb-1">
+        <div className="mb-1 relative">
+            {/* Active indicator bar — flush against sidebar left edge */}
+            {isActiveStyle && (
+                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-primary" />
+            )}
             <div
                 className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 mx-3 rounded-xl cursor-pointer transition-all duration-300 group relative select-none",
+                    "flex items-center gap-3 px-3 py-2.5 mx-3 rounded-xl cursor-pointer transition-all duration-300 group relative select-none overflow-hidden",
                     collapsed ? "justify-center px-0 mx-2" : "",
                     isActiveStyle
-                        ? "bg-primary/10 text-primary font-semibold shadow-sm"
+                        ? "text-primary font-semibold shadow-sm"
                         : "text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
                 )}
+                style={isActiveStyle ? {
+                    background: 'linear-gradient(to right, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.02))',
+                } : undefined}
                 onClick={handleMainClick}
             >
                 <Link

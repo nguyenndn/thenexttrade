@@ -1,7 +1,7 @@
 "use client";
 
 import { TrendingUp, TrendingDown } from "lucide-react";
-import { format } from "date-fns";
+import { utcTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 interface Trade {
@@ -20,7 +20,7 @@ interface TopTradesListProps {
 export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
   const formatDate = (date: Date | null) => {
     if (!date) return "";
-    return format(new Date(date), "MMM dd");
+    return utcTime(date, "MMM dd");
   };
 
   const formatCurrency = (value: number | null) => {

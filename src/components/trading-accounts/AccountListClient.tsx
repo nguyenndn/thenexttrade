@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Plus, RefreshCw, Wallet, Download } from "lucide-react";
+import { Plus, RefreshCw, Wallet, Download, Monitor } from "lucide-react";
 import { AccountCard } from "./AccountCard";
 import { AddAccountModal } from "./AddAccountModal";
 import { AccountSettingsModal } from "./AccountSettingsModal";
@@ -75,6 +75,14 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                             <Download size={16} />
                             EA Sync
                         </a>
+                        <a
+                            href="/downloads/TheNextTradeConnect.exe"
+                            download
+                            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border border-indigo-200 dark:border-indigo-500/30 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors flex-1 sm:flex-none"
+                        >
+                            <Monitor size={16} />
+                            TNT Connect
+                        </a>
                         <Button
                             variant="outline"
                             onClick={() => {
@@ -137,7 +145,6 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                                         router.refresh();
                                     });
                                 }}
-                                onRegenerateKey={(id) => setActiveModal({ type: "REGEN", accountId: id })}
                                 onDelete={(id) => setActiveModal({ type: "DELETE", accountId: id })}
                                 onSettings={(acc) => setActiveModal({ type: "SETTINGS", account: acc })}
                             />

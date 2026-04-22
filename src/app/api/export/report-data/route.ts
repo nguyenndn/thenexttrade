@@ -10,6 +10,7 @@ import {
     isSameDay,
     endOfDay,
 } from "date-fns";
+import { utcTime } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
     try {
@@ -116,7 +117,7 @@ export async function GET(request: NextRequest) {
 
         // Recent trades (last 10)
         const recentTrades = trades.slice(0, 10).map((t) => ({
-            date: format(new Date(t.entryDate), "MMM dd"),
+            date: utcTime(new Date(t.entryDate), "MMM dd"),
             symbol: t.symbol,
             type: t.type,
             pnl: t.pnl || 0,

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Plus, Wallet, Loader2, ExternalLink, ArrowLeft, AlertTriangle, XCircle, CheckCircle, Lightbulb } from "lucide-react";
+import { Plus, Wallet, Loader2, ExternalLink, ArrowLeft, AlertTriangle, XCircle, CheckCircle, Lightbulb, Mail, Copy, MessageSquare } from "lucide-react";
 import {
     Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/Dialog";
@@ -31,6 +31,94 @@ interface AddAccountModalProps {
 }
 
 type ModalView = "form" | "register" | "verify_ib" | "instructions" | "verify_balance" | "insufficient_balance" | "success";
+
+// ============================================================================
+// BROKER-SPECIFIC IB TRANSFER INSTRUCTIONS
+// ============================================================================
+interface BrokerInstruction {
+    method: "support" | "email";
+    title: string;
+    steps: string[];
+    // For email method
+    emailTo?: string;
+    emailCc?: string;
+    emailSubject?: string;
+    emailBody?: string;
+    note?: string;
+}
+
+const BROKER_IB_INSTRUCTIONS: Record<string, BrokerInstruction> = {
+    EXNESS: {
+        method: "support",
+        title: "Contact Exness Support",
+        steps: [
+            "Go to your Exness Dashboard",
+            "Contact Exness Support",
+            "Ask to change your IB with this info:",
+            "Wait for the confirmation email from Exness",
+        ],
+    },
+    VANTAGE: {
+        method: "email",
+        title: "Send Email to Vantage Markets",
+        emailTo: "support@vantagemarkets.com",
+        emailCc: "izzat.my@vantagemarkets.com",
+        emailSubject: "Account Reassign - Client Email",
+        emailBody: "Hi, Kindly assist to reassign my account under IB Number (111451 or 142655) as I want to trade with him.\n\nThanks.",
+        note: "Use IB 111451 if you trade GBP/EUR, or 142655 if you trade USD",
+        steps: [
+            "Send an email from your registered email",
+            "Wait for the confirmation email from VantageMarkets",
+        ],
+    },
+    VTMARKETS: {
+        method: "email",
+        title: "Send Email to VT Markets",
+        emailTo: "info@vtmarkets.com",
+        emailSubject: "Account Reassign - Client Email",
+        emailBody: "Hi, Kindly assist to reassign my account under IB Number (830422) as I want to trade with him.\n\nThanks.",
+        steps: [
+            "Send an email from your registered email",
+            "Wait for the confirmation email from VTMarkets",
+        ],
+    },
+    ULTIMAMARKETS: {
+        method: "email",
+        title: "Send Email to Ultima Markets",
+        emailTo: "info@ultimamarkets.com",
+        emailCc: "yeleen.chen@ultimamarkets.com",
+        emailSubject: "Please Help me transfer my Account to affiliate: 7234903",
+        emailBody: "Hi, info, Could you please help me transfer my account under affiliate 7234903?\n\nThanks very much!",
+        steps: [
+            "Send an email from your registered email",
+            "Wait for the confirmation email from Ultima Markets",
+        ],
+    },
+};
+
+function CopyableField({ label, value }: { label: string; value: string }) {
+    const handleCopy = () => {
+        navigator.clipboard.writeText(value);
+        toast.success(`${label} copied!`);
+    };
+
+    return (
+        <div className="flex items-center justify-between p-2.5 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/10">
+            <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{label}</p>
+                <p className="text-sm font-bold text-gray-700 dark:text-white truncate">{value}</p>
+            </div>
+            <button
+                type="button"
+                onClick={handleCopy}
+                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors shrink-0 ml-2"
+                aria-label={`Copy ${label}`}
+            >
+                <Copy size={14} />
+            </button>
+        </div>
+    );
+}
 
 export function AddAccountModal({ brokers }: AddAccountModalProps) {
     const [open, setOpen] = useState(false);
@@ -109,97 +197,198 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                     <span className="text-sm">Add Account</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white dark:bg-[#1A1D27] rounded-xl border-0 dark:border dark:border-white/10 max-w-md p-0 overflow-hidden shadow-2xl dark:shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+            <DialogContent className="bg-white dark:bg-[#1A1D27] rounded-xl border-0 dark:border dark:border-white/10 max-w-lg p-0 overflow-hidden shadow-2xl dark:shadow-[0_0_40px_rgba(0,0,0,0.5)]">
 
-                {/* ===== VIEW 0.5: INSTRUCTIONS ===== */}
-                {view === "instructions" && pendingData && (
-                    <div className="p-8">
-                        <DialogHeader className="mb-6 flex flex-row items-center justify-between space-y-0 pb-0">
-                            <DialogTitle className="text-xl font-black text-gray-700 dark:text-white tracking-tight mx-auto uppercase">
-                                IB Transfer Instructions
-                            </DialogTitle>
-                        </DialogHeader>
+                {/* ===== VIEW 0.5: INSTRUCTIONS (Broker-Specific) ===== */}
+                {view === "instructions" && pendingData && (() => {
+                    const brokerSlug = pendingData.broker;
+                    const instruction = BROKER_IB_INSTRUCTIONS[brokerSlug];
+                    const brokerName = selectedBrokerData?.name || brokerSlug;
+                    const ibCode = selectedBrokerData?.ibCode || "";
+                    const affiliateUrl = selectedBrokerData?.affiliateUrl || "";
 
-                        {/* Warning Icon Container */}
-                        <div className="flex justify-center mb-6">
-                            <div className="w-16 h-16 rounded-full border-2 border-amber-100 dark:border-amber-500/20 flex items-center justify-center bg-amber-50/50 dark:bg-amber-500/5">
-                                <AlertTriangle size={24} className="text-amber-500" strokeWidth={2} />
-                            </div>
-                        </div>
+                    // Build mailto link for email-type brokers
+                    const mailtoLink = instruction?.method === "email" && instruction.emailTo
+                        ? `mailto:${instruction.emailTo}${instruction.emailCc ? `?cc=${instruction.emailCc}&` : "?"}subject=${encodeURIComponent(instruction.emailSubject || "")}&body=${encodeURIComponent(instruction.emailBody || "")}`
+                        : "";
 
-                        <h3 className="text-center text-xl font-black text-gray-700 dark:text-white mb-6">
-                            How to Transfer to Our IB
-                        </h3>
+                    return (
+                        <div className="p-6 sm:p-8">
+                            <DialogHeader className="mb-5 flex flex-row items-center justify-between space-y-0 pb-0">
+                                <DialogTitle className="text-lg font-black text-gray-700 dark:text-white tracking-tight mx-auto uppercase">
+                                    IB Transfer — {brokerName}
+                                </DialogTitle>
+                            </DialogHeader>
 
-                        {/* Instruction List Box */}
-                        <div className="bg-gray-50 dark:bg-[#151925] rounded-xl p-5 mb-6 shadow-inner max-h-[300px] overflow-y-auto">
-                            <p className="font-bold text-gray-700 dark:text-white mb-4">
-                                {selectedBrokerData?.name || pendingData.broker} IB Transfer Instructions:
-                            </p>
-                            
-                            <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-500 font-medium">
-                                <li>1. Log in to your {selectedBrokerData?.name || pendingData.broker} client portal</li>
-                                <li>2. Go to "My Account" or "Profile" section</li>
-                                <li>3. Find "IB/Partner" or "Referral" section</li>
-                                <li>4. Request to transfer to a new IB</li>
-                                <li>
-                                    5. Enter IB code: <span className="text-amber-500 font-bold">{selectedBrokerData?.ibCode || "Check Partner Link"}</span>
-                                </li>
-                                <li>6. Submit and wait for approval (usually 1-3 business days)</li>
-                            </ul>
-
-                            <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 text-xs text-amber-700 dark:text-amber-400 flex gap-2">
-                                <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
-                                <p>
-                                    If you cannot find this option, contact {selectedBrokerData?.name || pendingData.broker} support and request to transfer to IB code <span className="font-bold">{selectedBrokerData?.ibCode || "our partner link"}</span>
-                                </p>
+                            {/* Method Badge */}
+                            <div className="flex justify-center mb-5">
+                                <div className={cn(
+                                    "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold",
+                                    instruction?.method === "email"
+                                        ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                                        : "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                                )}>
+                                    {instruction?.method === "email" ? <Mail size={16} /> : <MessageSquare size={16} />}
+                                    {instruction?.title || "Contact Support"}
+                                </div>
                             </div>
 
-                            <div className="mt-4 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-400 flex gap-2 font-medium">
-                                <CheckCircle size={14} className="flex-shrink-0 mt-0.5" />
-                                <p>
-                                    After your IB transfer is complete, come back here and submit your MT5 account.
-                                </p>
+                            {/* Instruction Content Box */}
+                            <div className="bg-gray-50 dark:bg-[#151925] rounded-xl p-5 mb-5 space-y-4">
+
+                                {/* ── EXNESS: Contact Support Flow ── */}
+                                {brokerSlug === "EXNESS" && (
+                                    <>
+                                        <ol className="space-y-3 text-sm text-gray-600 dark:text-gray-400 font-medium">
+                                            <li className="flex gap-2.5">
+                                                <span className="w-6 h-6 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center text-xs font-black shrink-0">1</span>
+                                                <span>Go to your <span className="font-bold text-gray-700 dark:text-white">Exness Dashboard</span></span>
+                                            </li>
+                                            <li className="flex gap-2.5">
+                                                <span className="w-6 h-6 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center text-xs font-black shrink-0">2</span>
+                                                <span>Contact <span className="font-bold text-gray-700 dark:text-white">Exness Support</span></span>
+                                            </li>
+                                            <li className="flex gap-2.5">
+                                                <span className="w-6 h-6 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center text-xs font-black shrink-0">3</span>
+                                                <span>Ask to change your IB with the info below</span>
+                                            </li>
+                                        </ol>
+
+                                        {/* IB Info for Exness */}
+                                        <div className="space-y-2 pt-2">
+                                            <CopyableField label="Partner IB Link" value={affiliateUrl} />
+                                            <CopyableField label="Partner IB Code" value={ibCode} />
+                                        </div>
+
+                                        <div className="flex gap-2.5 pt-1">
+                                            <span className="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xs font-black shrink-0">4</span>
+                                            <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">Wait for the confirmation email from <span className="font-bold text-gray-700 dark:text-white">Exness</span></span>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* ── EMAIL-BASED BROKERS: Vantage / VTMarkets / Ultima ── */}
+                                {instruction?.method === "email" && (
+                                    <>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                                            Send an email from your <span className="font-bold text-gray-700 dark:text-white">registered email</span> with the following details:
+                                        </p>
+
+                                        {/* Email Template Card */}
+                                        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
+                                            {/* Email Header Fields */}
+                                            <div className="border-b border-gray-100 dark:border-white/5 p-3 space-y-2">
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <span className="text-gray-400 dark:text-gray-500 font-bold w-10 shrink-0">To:</span>
+                                                    <span className="font-bold text-blue-600 dark:text-blue-400">{instruction.emailTo}</span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => { navigator.clipboard.writeText(instruction.emailTo || ""); toast.success("Email copied!"); }}
+                                                        className="p-1 rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
+                                                        aria-label="Copy email"
+                                                    >
+                                                        <Copy size={12} />
+                                                    </button>
+                                                </div>
+                                                {instruction.emailCc && (
+                                                    <div className="flex items-center gap-2 text-sm">
+                                                        <span className="text-gray-400 dark:text-gray-500 font-bold w-10 shrink-0">CC:</span>
+                                                        <span className="font-medium text-gray-600 dark:text-gray-300">{instruction.emailCc}</span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => { navigator.clipboard.writeText(instruction.emailCc || ""); toast.success("CC email copied!"); }}
+                                                            className="p-1 rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
+                                                            aria-label="Copy CC email"
+                                                        >
+                                                            <Copy size={12} />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Subject */}
+                                            <div className="border-b border-gray-100 dark:border-white/5 p-3">
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <span className="text-gray-400 dark:text-gray-500 font-bold w-16 shrink-0">Subject:</span>
+                                                    <span className="font-medium text-gray-700 dark:text-white">{instruction.emailSubject}</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Body */}
+                                            <div className="p-3">
+                                                <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line leading-relaxed">
+                                                    {instruction.emailBody}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Note (e.g. Vantage IB number variants) */}
+                                        {instruction.note && (
+                                            <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 text-xs text-blue-700 dark:text-blue-400 flex gap-2 font-medium">
+                                                <Lightbulb size={14} className="flex-shrink-0 mt-0.5" />
+                                                <p>{instruction.note}</p>
+                                            </div>
+                                        )}
+
+                                        {/* Open Email Client Button */}
+                                        {mailtoLink && (
+                                            <a
+                                                href={mailtoLink}
+                                                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold transition-colors shadow-md hover:shadow-lg"
+                                            >
+                                                <Mail size={16} />
+                                                Open Email Client
+                                            </a>
+                                        )}
+
+                                        {/* Final Step */}
+                                        <div className="flex gap-2.5">
+                                            <CheckCircle size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+                                            <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">Wait for the confirmation email from <span className="font-bold text-gray-700 dark:text-white">{brokerName}</span></span>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* Success Note */}
+                                <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-400 flex gap-2 font-medium">
+                                    <CheckCircle size={14} className="flex-shrink-0 mt-0.5" />
+                                    <p>After your IB transfer is complete, come back here and submit your MT5 account.</p>
+                                </div>
+
+                                {/* Important Note */}
+                                <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 text-xs text-amber-700 dark:text-amber-400 flex gap-2 font-medium">
+                                    <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
+                                    <p><span className="font-black">Note:</span> You must open a NEW trading account after changing IB.</p>
+                                </div>
+                            </div>
+
+                            {/* Footer Buttons */}
+                            <div className="flex gap-4 pt-2">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setView("verify_ib")}
+                                    className="flex-1"
+                                >
+                                    <ArrowLeft size={20} />
+                                    <span>Back</span>
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="primary"
+                                    onClick={() => setOpen(false)}
+                                    className="flex-1 whitespace-nowrap"
+                                >
+                                    <span>I&apos;ll transfer first</span>
+                                </Button>
                             </div>
                         </div>
-
-                        {/* Footer Buttons */}
-                        <div className="flex gap-4 pt-2">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setView("verify_ib")}
-                                className="flex-1"
-                            >
-                                <ArrowLeft size={20} />
-                                <span>Back</span>
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="primary"
-                                onClick={() => setOpen(false)}
-                                className="flex-1 whitespace-nowrap"
-                            >
-                                <span>I'll transfer first</span>
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                    );
+                })()}
 
                 {/* ===== VIEW 0: VERIFY IB (CONFIRMATION) ===== */}
                 {view === "verify_ib" && pendingData && (
-                    <div className="p-8 relative">
-                        {/* Close button at top right */}
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            type="button"
-                            onClick={() => setView("form")}
-                            className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                        >
-                            <XCircle size={18} />
-                        </Button>
-
+                    <div className="p-8">
                         <DialogHeader className="mb-8 mt-2 flex flex-row items-center justify-center space-y-0 pb-0">
                             <DialogTitle className="text-xl font-black text-gray-700 dark:text-white uppercase tracking-tight text-center">
                                 STEP 1: IB VERIFICATION
@@ -335,12 +524,12 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 Minimum Required Balance:
                             </p>
                             <p className="text-5xl font-black text-[#00C888] tracking-tight">
-                                $500
+                                $200
                             </p>
                         </div>
 
                         <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-8 max-w-[280px] mx-auto leading-relaxed">
-                            A minimum balance of $500 is required to use the EA effectively.
+                            A minimum balance of $200 is required to use the EA effectively.
                         </p>
 
                         <div className="flex gap-4">
@@ -352,7 +541,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 className="flex-1 whitespace-nowrap px-2"
                             >
                                 <XCircle size={18} />
-                                <span>Why do I need $500?</span>
+                                <span>Why do I need $200?</span>
                             </Button>
                             <Button
                                 type="button"
@@ -406,7 +595,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         </h3>
 
                         <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-8 px-4 leading-relaxed max-w-[300px] mx-auto">
-                            Please fund your account with at least $500 before submitting your MT5 account for EA access.
+                            Please fund your account with at least $200 before submitting your MT5 account for EA access.
                         </p>
 
                         {/* Info Tip Box */}
@@ -516,6 +705,10 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1 mt-1 whitespace-nowrap">
                                     <span>⚠️</span>
                                     <span>Account must be under our IB code for approval</span>
+                                </p>
+                                <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1 mt-0.5">
+                                    <span>💡</span>
+                                    <span>Recommend <span className="font-bold">Cent account</span> for best results</span>
                                 </p>
                             </div>
 

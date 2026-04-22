@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Flame, Settings, Users, Lock, MessageSquare, Globe } from "lucide-react";
+import { Flame, Settings, Users, Lock, MessageSquare, Globe, Unplug } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { type LucideIcon } from "lucide-react";
@@ -19,6 +19,7 @@ const baseNavItems: NavItem[] = [
     { title: "Account", href: "/dashboard/settings", icon: Settings, exact: true },
     { title: "Public Profile", href: "/dashboard/settings/profile", icon: Globe },
     { title: "Security", href: "/dashboard/settings/security", icon: Lock },
+    { title: "TNT Connect", href: "/dashboard/settings/tnt-connect", icon: Unplug },
     { title: "Login Streak", href: "/dashboard/settings/streak", icon: Flame },
     { title: "Referrals", href: "/dashboard/settings/referrals", icon: Users },
 ];
