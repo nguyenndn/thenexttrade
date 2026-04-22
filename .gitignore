@@ -57,3 +57,10 @@ next-env.d.ts
 # Partner integration docs (contains API keys)
 README-Ninja-Integration.md
 feature_copytrading/
+
+# TNT Connect (Python desktop app) — build artifacts
+apps/tnt-connect/__pycache__/
+apps/tnt-connect/build/
+apps/tnt-connect/dist/
+apps/tnt-connect/*.pyc
+public/downloads/TheNextTradeConnect.exe
