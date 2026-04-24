@@ -17,6 +17,7 @@ import {
 import Markdown from 'react-markdown';
 import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/track";
 import { Button } from "@/components/ui/Button";
 
 interface Props {
@@ -69,6 +70,7 @@ export default function LessonView({
 
             if (res.ok) {
                 setIsCompleted(true);
+                trackEvent('complete_lesson', { lessonTitle: lesson.title, module: lesson.module.title });
                 toast.success("Great! You've completed this lesson.");
                 setTimeout(moveToNext, 1500);
             }

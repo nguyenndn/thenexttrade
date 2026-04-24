@@ -42,8 +42,8 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,        # Keep console for debugging; set False for production
+    console=False,       # No console window in production
     icon=None,
     version=None,
-    windowed=False,
+    windowed=True,
 )

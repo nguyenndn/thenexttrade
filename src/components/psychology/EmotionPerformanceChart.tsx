@@ -34,7 +34,7 @@ export function EmotionPerformanceChart({ data, title }: EmotionPerformanceChart
             </h3>
 
             <div className="h-80 w-full">
-                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
                     <BarChart
                         data={sortedData}
                         layout="vertical"

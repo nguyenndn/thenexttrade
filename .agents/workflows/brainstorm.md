@@ -18,9 +18,15 @@ Activates BRAINSTORM mode for structured idea exploration. Inspired by YC Office
 
 ## Phase 1: Context Gathering
 
+> **🧠 Karpathy Gate (from `@skills/karpathy-principles`):**
+> Before ANY exploration, explicitly state your assumptions about the request.
+> If multiple interpretations exist, present them — don't pick silently.
+> If a simpler framing exists, push back. Surface tradeoffs early.
+
 1. Read relevant files (ARCHITECTURE.md, related source code)
 2. Understand the user's request — what are they trying to achieve?
-3. Ask the key framing question via Socratic Gate:
+3. **State assumptions explicitly** — what do you believe the user wants? What are you unsure about?
+4. Ask the key framing question via Socratic Gate:
 
 > Before we dig in — what's this about?
 >

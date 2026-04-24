@@ -9,6 +9,7 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
+import { ChartContainer } from "@/components/ui/ChartContainer";
 import { format } from "date-fns";
 
 interface BalanceGrowthChartProps {
@@ -67,7 +68,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
     });
 
     return (
-        <div className="h-[250px] sm:h-[calc(100%-48px)] min-h-[220px] w-full pb-6 [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
+        <ChartContainer height={250} minHeight={220} className="sm:h-[calc(100%-48px)] w-full pb-6">
             <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <AreaChart
                     data={chartData}
@@ -126,6 +127,6 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                     />
                 </AreaChart>
             </ResponsiveContainer>
-        </div>
+        </ChartContainer>
     );
 }

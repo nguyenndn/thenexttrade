@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { submitVipRequest } from "@/actions/vip-request";
+import { trackEvent } from "@/lib/track";
 import {
   BROKER_INFO,
   SUPPORTED_BROKERS,
@@ -77,6 +78,7 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
       if (result.error) {
         setError(result.error);
       } else {
+        trackEvent('signup_complete', { broker: selectedBroker || '' });
         setSuccess(true);
       }
     });
@@ -205,6 +207,7 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
             <button
               onClick={() => {
                 setAccountStatus("new");
+                trackEvent('click_open_account', { broker: selectedBroker || '' });
                 window.open(brokerInfo.affiliateUrl, "_blank");
               }}
               className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${

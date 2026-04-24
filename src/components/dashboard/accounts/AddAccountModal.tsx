@@ -14,6 +14,7 @@ import { submitAccountRequest } from "@/app/dashboard/trading-systems/actions";
 import { SubmitAccountInput } from "@/types/ea-license";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/track";
 import confetti from "canvas-confetti";
 
 interface EABrokerData {
@@ -156,6 +157,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
             const result = await submitAccountRequest(pendingData);
             if (result.success) {
                 setView("success");
+                trackEvent('submit_account', { broker: pendingData.broker, accountNumber: pendingData.accountNumber });
                 
                 // Trigger confetti
                 confetti({
@@ -801,6 +803,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                             href={broker.affiliateUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
+                                            onClick={() => trackEvent('click_open_account', { broker: broker.slug })}
                                             className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white text-[11px] font-bold tracking-wide uppercase transition-all duration-200 flex-shrink-0 shadow-[0_2px_8px_rgba(245,158,11,0.3)] hover:shadow-[0_4px_12px_rgba(245,158,11,0.4)] hover:scale-105"
                                         >
                                             <ExternalLink size={14} />

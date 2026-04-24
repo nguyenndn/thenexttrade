@@ -134,6 +134,12 @@ async function CategoriesWidget() {
 
 import partnersData from '@/config/partners.json';
 
+const BADGE_STYLES: Record<string, string> = {
+    gold: "bg-gradient-to-r from-amber-500 to-yellow-500 text-white",
+    green: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
+    blue: "bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/20",
+};
+
 function TopBrokersWidget() {
     const brokers = partnersData.brokers.items.filter((b: any) => b.active !== false).slice(0, 3);
 
@@ -157,64 +163,92 @@ function TopBrokersWidget() {
 
                 {/* Broker List */}
                 <div className="space-y-4">
-                    {brokers.map((broker: any, i: number) => (
-                        <div key={broker.name} className="group">
-                            {/* Broker Header Row */}
-                            <div className="flex items-start justify-between mb-2.5 gap-2">
-                                <div className="flex items-center gap-3 min-w-0">
-                                    <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-white flex items-center justify-center overflow-hidden p-[5px] shrink-0 border border-gray-200 dark:border-white/10 shadow-sm">
-                                        {broker.logo ? (
-                                            <Image src={broker.logo} alt={broker.name} width={32} height={32} className="w-full h-full object-contain" />
-                                        ) : (
-                                            <span className="text-xs font-bold text-gray-500">{broker.initials}</span>
-                                        )}
-                                    </div>
-                                    <div className="min-w-0">
-                                        <h4 className="text-sm font-bold text-gray-700 dark:text-white leading-tight mb-0.5 truncate group-hover:text-primary transition-colors">{broker.name}</h4>
-                                        {broker.badge && (
-                                            <span className="inline-block px-1.5 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider whitespace-nowrap bg-green-100 dark:bg-[#00C888]/10 text-green-600 dark:text-[#00C888]">
-                                                {broker.badge}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                                {broker.rating && (
-                                    <div className="flex items-center gap-1 text-amber-500 text-[13px] font-bold shrink-0 pt-0.5">
-                                        <Star size={12} className="fill-current" />
-                                        <span>{broker.rating.toFixed(1)}</span>
+                    {brokers.map((broker: any, i: number) => {
+                        const hasUrl = broker.url && broker.url !== "#";
+                        return (
+                            <div key={broker.name} className="group">
+                                {/* Badge */}
+                                {broker.badge && (
+                                    <div className={`text-center py-1 mb-2.5 rounded-lg text-[9px] font-bold uppercase tracking-wider ${BADGE_STYLES[broker.badgeType || "green"]}`}>
+                                        {broker.badge}
                                     </div>
                                 )}
-                            </div>
 
-                            {/* Info Tags */}
-                            <div className="flex flex-wrap gap-1.5 mb-2">
-                                {broker.minDeposit && (
-                                    <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5 whitespace-nowrap">
-                                        <span className="text-gray-700 dark:text-white font-black">{broker.minDeposit}</span> Min Deposit
-                                    </div>
-                                )}
-                                {broker.maxLeverage && (
-                                    <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5 whitespace-nowrap">
-                                        <span className="text-gray-700 dark:text-white font-black">{broker.maxLeverage}</span> Leverage
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Features Checkmarks */}
-                            {broker.features && broker.features.length > 0 && (
-                                <div className="flex flex-wrap gap-1.5">
-                                    {broker.features.slice(0, 2).map((feat: string, j: number) => (
-                                        <div key={j} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-50 dark:bg-[#00C888]/10 text-[10px] font-bold text-green-600 dark:text-[#00C888] leading-none">
-                                            <Check size={10} strokeWidth={3} className="opacity-80 shrink-0" />
-                                            <span>{feat}</span>
+                                {/* Broker Header Row */}
+                                <div className="flex items-start justify-between mb-2.5 gap-2">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-white flex items-center justify-center overflow-hidden p-[5px] shrink-0 border border-gray-200 dark:border-white/10 shadow-sm">
+                                            {broker.logo ? (
+                                                <Image src={broker.logo} alt={broker.name} width={32} height={32} className="w-full h-full object-contain" />
+                                            ) : (
+                                                <span className="text-xs font-bold text-gray-500">{broker.initials}</span>
+                                            )}
                                         </div>
-                                    ))}
+                                        <div className="min-w-0">
+                                            <h4 className="text-sm font-bold text-gray-700 dark:text-white leading-tight truncate group-hover:text-primary transition-colors">{broker.name}</h4>
+                                        </div>
+                                    </div>
+                                    {broker.rating && (
+                                        <div className="flex items-center gap-1 text-amber-500 text-[13px] font-bold shrink-0 pt-0.5">
+                                            <Star size={12} className="fill-current" />
+                                            <span>{broker.rating.toFixed(1)}</span>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                            
-                            {i < brokers.length - 1 && <div className="h-px w-full bg-gray-100 dark:bg-white/5 mt-4"></div>}
-                        </div>
-                    ))}
+
+                                {/* Specs Bar — matches /brokers page */}
+                                {(broker.minDeposit || broker.maxLeverage || broker.regulation) && (
+                                    <div className="grid grid-cols-3 gap-px bg-gray-100 dark:bg-white/5 rounded-lg overflow-hidden border border-gray-100 dark:border-white/5 mb-2.5">
+                                        {broker.minDeposit && (
+                                            <div className="bg-white dark:bg-[#1E2028] py-2 text-center">
+                                                <div className="text-[8px] text-gray-400 uppercase tracking-wider font-medium">Deposit</div>
+                                                <div className="text-[11px] font-bold text-gray-700 dark:text-white mt-0.5">{broker.minDeposit}</div>
+                                            </div>
+                                        )}
+                                        {broker.maxLeverage && (
+                                            <div className="bg-white dark:bg-[#1E2028] py-2 text-center">
+                                                <div className="text-[8px] text-gray-400 uppercase tracking-wider font-medium">Leverage</div>
+                                                <div className="text-[11px] font-bold text-gray-700 dark:text-white mt-0.5">{broker.maxLeverage}</div>
+                                            </div>
+                                        )}
+                                        {broker.regulation && (
+                                            <div className="bg-white dark:bg-[#1E2028] py-2 text-center">
+                                                <div className="text-[8px] text-gray-400 uppercase tracking-wider font-medium">Regulation</div>
+                                                <div className="text-[11px] font-bold text-gray-700 dark:text-white mt-0.5 truncate px-1">{broker.regulation}</div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Features Checkmarks */}
+                                {broker.features && broker.features.length > 0 && (
+                                    <div className="flex flex-wrap gap-1.5 mb-3">
+                                        {broker.features.slice(0, 2).map((feat: string, j: number) => (
+                                            <div key={j} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-50 dark:bg-[#00C888]/10 text-[10px] font-bold text-green-600 dark:text-[#00C888] leading-none">
+                                                <Check size={10} strokeWidth={3} className="opacity-80 shrink-0" />
+                                                <span>{feat}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* CTA Button */}
+                                {hasUrl && (
+                                    <a
+                                        href={broker.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-[11px] hover:opacity-90 transition-all shadow-sm shadow-primary/20 hover:shadow-primary/30"
+                                    >
+                                        Open Account
+                                        <ArrowRight size={11} />
+                                    </a>
+                                )}
+                                
+                                {i < brokers.length - 1 && <div className="h-px w-full bg-gray-100 dark:bg-white/5 mt-4"></div>}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>

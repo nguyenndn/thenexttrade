@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from "recharts";
+import { ChartContainer } from "@/components/ui/ChartContainer";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
@@ -109,7 +110,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
                 ))}
             </div>
 
-            <div className="flex-1 min-h-[250px] [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
+            <ChartContainer height="100%" minHeight={250} className="flex-1">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <BarChart
                         data={chartData}
@@ -150,7 +151,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
                         </Bar>
                     </BarChart>
                 </ResponsiveContainer>
-            </div>
+            </ChartContainer>
         </div>
     );
 }
