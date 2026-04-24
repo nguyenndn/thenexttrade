@@ -382,7 +382,7 @@ function AccountPerformanceView({ reg, pvsrData }: { reg: Registration; pvsrData
 
                 <div className="h-[340px] w-full overflow-x-auto overflow-y-hidden [&_svg]:outline-none [&_.recharts-wrapper]:outline-none scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800 pb-2">
                     <div className="min-w-[600px] h-full">
-                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
                             <AreaChart data={equityData} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
                                 <defs>
                                     <linearGradient id={`ctGrad-${reg.id}`} x1="0" y1="0" x2="0" y2="1">

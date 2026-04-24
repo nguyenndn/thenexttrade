@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Lock, Download, Shield, Info, BarChart2, Bot, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/track";
 import { EAProduct } from "@prisma/client";
 import { InstallationWizard } from "./InstallationWizard";
 
@@ -46,6 +47,9 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(blobUrl);
+
+            // Track download event
+            trackEvent('click_download_ea', { productName: product.name, productType: product.type });
 
             // Refresh page data to update AccountSetupWidget status
             router.refresh();

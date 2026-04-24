@@ -421,7 +421,7 @@ export function CopyTradingPerformance() {
 
                 <div className="h-[280px] w-full overflow-x-auto overflow-y-hidden [&_svg]:outline-none [&_.recharts-wrapper]:outline-none pb-2">
                     <div className="min-w-[500px] h-full">
-                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
                             <AreaChart data={data.equityData} margin={{ top: 5, right: 10, left: 10, bottom: 20 }}>
                                 <defs>
                                     <linearGradient id="ctGradient" x1="0" y1="0" x2="0" y2="1">

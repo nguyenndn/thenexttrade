@@ -1,6 +1,7 @@
 "use client";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { ChartContainer } from "@/components/ui/ChartContainer";
 import { useTheme } from "@/components/providers/ThemeProvider";
 
 interface WinLossDistributionProps {
@@ -31,7 +32,7 @@ export function WinLossDistribution({ wins, losses, breakEvens, winRate }: WinLo
     <div className="flex flex-col h-full bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-emerald-500 p-5">
       <h3 className="font-bold text-gray-700 dark:text-white text-sm mb-6">Win/Loss Distribution</h3>
       
-      <div className="flex-1 relative min-h-[180px] [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none">
+      <ChartContainer height="100%" minHeight={180} className="flex-1 relative">
         <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <PieChart>
             <Pie
@@ -63,7 +64,7 @@ export function WinLossDistribution({ wins, losses, breakEvens, winRate }: WinLo
             WIN RATE
           </p>
         </div>
-      </div>
+      </ChartContainer>
 
       {/* Legend below the chart */}
       <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-gray-200 dark:border-white/10">

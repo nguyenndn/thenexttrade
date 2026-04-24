@@ -1,6 +1,7 @@
 "use client";
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from "recharts";
+import { ChartContainer } from "@/components/ui/ChartContainer";
 import { format, parseISO, isWithinInterval } from "date-fns";
 
 interface DailyWinRateChartProps {
@@ -73,7 +74,7 @@ export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWi
   const tickInterval = data.length > 60 ? 6 : data.length > 30 ? 3 : data.length > 14 ? 1 : 0;
 
   return (
-    <div className="w-full [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none" style={{ height }}>
+    <ChartContainer height={height} minHeight={250}>
       <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <BarChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
           <defs>
@@ -138,6 +139,6 @@ export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWi
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </ChartContainer>
   );
 }

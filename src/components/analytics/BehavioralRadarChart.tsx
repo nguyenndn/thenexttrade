@@ -135,7 +135,7 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
 
             {/* Radar Chart */}
             <div className="h-[280px] sm:h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
                     <RadarChart data={radarData} outerRadius="72%">
                         <PolarGrid
                             stroke="rgba(156,163,175,0.15)"

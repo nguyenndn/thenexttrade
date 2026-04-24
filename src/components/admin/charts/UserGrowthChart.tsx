@@ -47,7 +47,7 @@ export function UserGrowthChart({ data = [] }: UserGrowthChartProps) {
             </div>
 
             <div className="flex-1 min-h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
                     <AreaChart
                         data={formattedData}
                         margin={{ top: 10, right: 10, left: -20, bottom: 0 }}

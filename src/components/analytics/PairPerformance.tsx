@@ -46,7 +46,7 @@ export function PairPerformance({ data }: PairPerformanceProps) {
                 <ChartEmptyState />
             ) : (
                 <div className="h-[250px]">
-                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
                         <BarChart
                             data={chartData}
                             layout="vertical"

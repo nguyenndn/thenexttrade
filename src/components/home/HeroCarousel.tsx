@@ -98,6 +98,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                                     src={article.thumbnail}
                                     alt={article.title}
                                     fill
+                                    sizes="100vw"
                                     className={`object-cover transition-transform duration-[8000ms] ease-out ${
                                         isActive ? "scale-100" : "scale-110"
                                     }`}

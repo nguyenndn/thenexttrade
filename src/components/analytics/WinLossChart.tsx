@@ -28,7 +28,7 @@ export function WinLossChart({ data }: WinLossProps) {
 
     return (
         <div className="w-full h-[300px]">
-            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
                 <PieChart>
                     <Pie
                         data={chartData}

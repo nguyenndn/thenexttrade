@@ -1,6 +1,7 @@
 "use client";
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { ChartContainer } from "@/components/ui/ChartContainer";
 
 interface ProfitDistributionChartProps {
     data: {
@@ -37,7 +38,7 @@ export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, 
     const totalProfit = validData.reduce((sum, d) => sum + d.value, 0);
 
     return (
-        <div className="w-full [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none focus:outline-none" style={{ height }}>
+        <ChartContainer height={height} minHeight={200}>
             <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <PieChart key={JSON.stringify(validData)}>
                     <defs>
@@ -96,6 +97,6 @@ export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, 
                     </text>
                 </PieChart>
             </ResponsiveContainer>
-        </div>
+        </ChartContainer>
     );
 }

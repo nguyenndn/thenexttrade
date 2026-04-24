@@ -175,17 +175,17 @@ export function AccountCard({
             <div className="relative z-10 flex items-center gap-2 flex-wrap px-3 py-2.5 mx-2 mb-2 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/[0.06]">
                 {/* Connection Status */}
                 {account.isConnected ? (
-                    <div className="flex items-center gap-1.5 px-2 py-[3px] rounded-md bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/80 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/80 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 shadow-sm">
                         <span className="relative flex h-1.5 w-1.5">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                         </span>
-                        <span className="text-[9px] font-black uppercase tracking-widest">Active</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Online</span>
                     </div>
                 ) : (
-                    <div className="flex items-center gap-1.5 px-2 py-[3px] rounded-md bg-red-50 dark:bg-red-500/10 border border-red-200/80 dark:border-red-500/20 text-red-500 dark:text-red-400">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200/80 dark:border-red-500/20 text-red-500 dark:text-red-400 shadow-sm">
                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
-                        <span className="text-[9px] font-black uppercase tracking-widest">Offline</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Offline</span>
                     </div>
                 )}
 

@@ -140,6 +140,7 @@ export const dashboardMenuItems = [
 export const adminMenuItems = [
     // --- (No label — first item) ---
     { name: "Overview", href: "/admin", icon: LayoutDashboard },
+    { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
 
     // --- CONTENT ---
     { name: "Articles", href: "/admin/articles", icon: FileText },

@@ -109,6 +109,9 @@ model User {
   // VIP Requests
   vipRequests        VipRequest[]
 
+  // Analytics
+  analyticsEvents    AnalyticsEvent[]
+
   // TNT Connect (Python App Sync)
   syncApiKey         String?   @unique @map("sync_api_key") @db.VarChar(64)
   syncApiKeyCreatedAt DateTime? @map("sync_api_key_created_at") @db.Timestamptz
@@ -1442,4 +1445,46 @@ model VipRequest {
   @@index([status])
   @@index([createdAt])
   @@map("vip_requests")
+}
+
+// ============================================================================
+// ANALYTICS
+// ============================================================================
+
+model PageView {
+  id        String   @id @default(cuid())
+  pathname  String
+  referrer  String?
+  country   String?  @db.VarChar(2)   // ISO 3166-1 alpha-2 ("US", "VN", "GB")
+  city      String?
+  region    String?
+  device    String?  @db.VarChar(10)  // "desktop" | "mobile" | "tablet"
+  browser   String?  @db.VarChar(30)
+  os        String?  @db.VarChar(30)
+  sessionId String   @db.VarChar(64)
+  createdAt DateTime @default(now()) @db.Timestamptz
+
+  @@index([createdAt])
+  @@index([pathname])
+  @@index([country])
+  @@index([sessionId])
+  @@map("page_views")
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  name      String   @db.VarChar(100) // "click_open_account", "download_ea"
+  data      Json?    // { brokerId: "exness", brokerName: "Exness" }
+  pathname  String?
+  country   String?  @db.VarChar(2)
+  sessionId String   @db.VarChar(64)
+  userId    String?  @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([name])
+  @@index([userId])
+  @@map("analytics_events")
 }

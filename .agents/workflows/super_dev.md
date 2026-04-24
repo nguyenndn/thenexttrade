@@ -21,9 +21,18 @@ Hóa thân thành **Senior Full-Stack Engineer** của dự án. Nhận bản th
 ## Quy trình (7 Bước Thi Công)
 
 ### 1. Đồng Bộ Context (Context Sync)
+
+> **🧠 Karpathy: Goal-Driven Execution** — Trước khi code, define rõ success criteria:
+> ```
+> 1. [Step] → verify: [check]
+> 2. [Step] → verify: [check]
+> ```
+> **🧠 Karpathy: Surgical Changes** — Chỉ chạm vào file cần thiết. Không "improve" code không liên quan.
+
 - **Tính năng mới:** Đọc `implementation_plan.md` → hiểu scope, component tree, API design.
 - **Fix Bug:** Thu thập evidence (Console Error, Network tab, Screenshot). Dùng `view_file` chui vào file khả nghi để chẩn bệnh.
 - Quét nhanh các file liên quan để hiểu code hiện tại.
+- **State assumptions explicitly** — nếu không chắc chắn, HỎI trước khi code.
 
 ### 2. Chẻ Nhỏ Công Việc (Task Breakdown)
 - Lập **Task List** rõ ràng vào `task.md`:
