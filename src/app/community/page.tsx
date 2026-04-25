@@ -178,7 +178,7 @@ const VIP_FAQ = [
 
 export default async function CommunityPage() {
     const user = await getAuthUser();
-    const vipUrl = user ? "/dashboard/community" : "/auth/signup";
+    const vipUrl = user ? "/dashboard" : "/auth/signup";
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-700 dark:text-white overflow-hidden relative">
@@ -291,44 +291,10 @@ export default async function CommunityPage() {
                     </div>
                 </section>
 
-                {/* ═══════ 3. SOCIAL PROOF ═══════ */}
-                <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-5xl mx-auto">
-                    <ScrollReveal>
-                        <div className="text-center mb-12 space-y-4">
-                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-gray-800 dark:text-white">
-                                Real Results from Real Traders
-                            </h2>
-                            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
-                                No fake numbers — just real trading screenshots and feedback from our community.
-                            </p>
-                        </div>
-                    </ScrollReveal>
 
-                    <div className="grid sm:grid-cols-3 gap-6">
-                        {[
-                            { title: "Member Profits", description: "Real trading results shared by community members." },
-                            { title: "Signal Accuracy", description: "Daily signals with verified entry, TP, and SL." },
-                            { title: "Community Reactions", description: "Feedback from 12K+ traders in the channel." },
-                        ].map((slot, i) => (
-                            <ScrollReveal key={i} delay={0.15 * i} direction="up">
-                                <div className="bg-white dark:bg-[#151925] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-8 flex flex-col items-center justify-center text-center min-h-[260px] group hover:border-primary/30 dark:hover:border-primary/30 transition-all">
-                                    <div className="w-14 h-14 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors">
-                                        <MessageCircle size={24} className="text-gray-400 group-hover:text-primary transition-colors" />
-                                    </div>
-                                    <h4 className="text-sm font-bold text-gray-700 dark:text-white mb-1.5">{slot.title}</h4>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4">{slot.description}</p>
-                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Coming Soon</span>
-                                </div>
-                            </ScrollReveal>
-                        ))}
-                    </div>
-                    <p className="text-center text-xs text-gray-400 mt-6 italic">
-                        * Results shown are from individual members. Trading involves risk. Past performance does not guarantee future results.
-                    </p>
-                </section>
 
                 {/* ═══════ 4. VIP UPGRADE ═══════ */}
-                <section id="vip-section" className="px-4 sm:px-6 mb-16 md:mb-24 max-w-5xl mx-auto scroll-mt-16 md:scroll-mt-24">
+                <section id="vip-section" className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto scroll-mt-16 md:scroll-mt-24">
                     <ScrollReveal>
                         <div className="rounded-2xl sm:rounded-3xl border border-primary/20 p-4 sm:p-6 md:p-8 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #ffffff 0%, #f0fdf4 30%, #ecfdf5 50%, #f0f9ff 80%, #eff6ff 100%)" }}>
                             {/* Glow */}
@@ -374,7 +340,7 @@ export default async function CommunityPage() {
 
 
                 {/* ═══════ 6. PLATFORM LINKS ═══════ */}
-                <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-5xl mx-auto">
+                <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-12 space-y-4">
                             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-gray-800 dark:text-white">
@@ -408,7 +374,7 @@ export default async function CommunityPage() {
                 </section>
 
                 {/* ═══════ 7. FAQ ═══════ */}
-                <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-5xl mx-auto">
+                <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-12">
                             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-700 dark:text-white mb-3 tracking-tight">
