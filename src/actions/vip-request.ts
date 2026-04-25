@@ -60,7 +60,7 @@ export async function submitVipRequest(formData: FormData) {
     },
   });
 
-  revalidatePath("/dashboard/community");
+  revalidatePath("/dashboard");
   return { success: true };
 }
 
@@ -186,12 +186,12 @@ export async function approveVipRequest(requestId: string) {
       title: "VIP Access Approved!",
       message: "Your VIP request has been approved. Welcome to the VIP group!",
       priority: NotificationPriority.HIGH,
-      link: "/dashboard/community",
+      link: "/dashboard/trading-systems?tab=VIP",
     },
   });
 
   revalidatePath("/admin/community");
-  revalidatePath("/dashboard/community");
+  revalidatePath("/dashboard");
   return { success: true };
 }
 
@@ -224,12 +224,12 @@ export async function rejectVipRequest(requestId: string, reason: string) {
       title: "VIP Request Rejected",
       message: `Your VIP request was rejected. Reason: ${reason.trim()}`,
       priority: NotificationPriority.NORMAL,
-      link: "/dashboard/community",
+      link: "/dashboard/trading-systems?tab=VIP",
     },
   });
 
   revalidatePath("/admin/community");
-  revalidatePath("/dashboard/community");
+  revalidatePath("/dashboard");
   return { success: true };
 }
 
@@ -247,7 +247,6 @@ export async function deleteVipRequest(requestId: string) {
   });
 
   if (!existingRequest) return { error: "Not found" };
-  if (existingRequest.status !== "REJECTED") return { error: "Only rejected requests can be deleted" };
 
   await prisma.vipRequest.delete({
     where: { id: requestId },

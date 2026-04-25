@@ -113,7 +113,7 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
   return (
     <div className="space-y-6">
       {/* Step Indicator */}
-      <div className="flex items-center justify-center gap-1.5 text-xs font-medium">
+      <div className="flex items-center justify-center gap-2 text-sm font-medium">
         {(["broker", "account_status", "details", "review"] as Step[]).map((s, i) => {
           const labels = ["Broker", "Account", "Details", "Review"];
           const stepIndex = ["broker", "account_status", "details", "review"].indexOf(step);
@@ -122,7 +122,7 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
           return (
             <div key={s} className="flex items-center gap-1.5">
               <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
                   isCurrent
                     ? "bg-primary text-white"
                     : isCompleted
@@ -133,7 +133,7 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
                 {isCompleted ? <Check size={12} /> : i + 1}
               </div>
               <span
-                className={`hidden sm:inline text-[11px] ${
+                className={`hidden sm:inline text-xs ${
                   isCurrent
                     ? "text-gray-800 dark:text-white"
                     : "text-gray-400 dark:text-gray-500"
@@ -142,7 +142,7 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
                 {labels[i]}
               </span>
               {i < 3 && (
-                <div className="w-6 h-[2px] bg-gray-200 dark:bg-white/10" />
+                <div className="w-8 h-[2px] bg-gray-200 dark:bg-white/10" />
               )}
             </div>
           );
@@ -162,25 +162,25 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
           <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
             Select the broker you registered with
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {SUPPORTED_BROKERS.map((broker) => {
               const info = BROKER_INFO[broker];
               return (
                 <button
                   key={broker}
                   onClick={() => handleSelectBroker(broker)}
-                  className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary/30 bg-white dark:bg-[#151925] hover:shadow-lg transition-all text-center"
+                  className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary/30 bg-white dark:bg-[#151925] hover:shadow-lg transition-all text-center"
                 >
                   <img
                     src={info.logo}
                     alt={info.name}
-                    className="w-16 h-16 rounded-xl object-contain"
+                    className="w-20 h-20 rounded-xl object-contain"
                   />
                   <div>
-                    <p className="font-bold text-gray-800 dark:text-white text-sm">
+                    <p className="font-bold text-gray-800 dark:text-white text-base">
                       {info.name}
                     </p>
-                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                       Min. ${info.minDeposit} USD
                     </p>
                   </div>

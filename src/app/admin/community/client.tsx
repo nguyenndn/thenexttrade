@@ -360,11 +360,14 @@ export function AdminVipRequestsClient({
                                 </DropdownMenuItem>
                               </>
                             )}
-                            {req.status === "REJECTED" && (
-                              <DropdownMenuItem onClick={() => setDeleteModalId(req.id)} disabled={isPending} className="text-red-500 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none">
-                                <Trash2 size={14} className="mr-2" /> Delete
+                            {req.status === "APPROVED" && (
+                              <DropdownMenuItem onClick={() => setRejectModalId(req.id)} disabled={isPending} className="text-amber-600 focus:text-amber-700 focus:bg-amber-50 dark:focus:bg-amber-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none">
+                                <XCircle size={14} className="mr-2" /> Revoke
                               </DropdownMenuItem>
                             )}
+                            <DropdownMenuItem onClick={() => setDeleteModalId(req.id)} disabled={isPending} className="text-red-500 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none">
+                              <Trash2 size={14} className="mr-2" /> Delete
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
@@ -483,6 +486,30 @@ export function AdminVipRequestsClient({
                     </Button>
                   </div>
                 )}
+                {selectedRequest.status === "APPROVED" && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => {
+                        setRejectModalId(selectedRequest.id);
+                        setSelectedRequest(null);
+                      }}
+                      variant="outline"
+                      className="text-xs px-3 py-1.5 rounded-lg font-bold text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/20"
+                    >
+                      <XCircle size={12} /> Revoke
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setDeleteModalId(selectedRequest.id);
+                        setSelectedRequest(null);
+                      }}
+                      variant="outline"
+                      className="text-xs px-3 py-1.5 rounded-lg font-bold text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/20"
+                    >
+                      <Trash2 size={12} /> Delete
+                    </Button>
+                  </div>
+                )}
               </div>
 
               {/* Quick Telegram Link */}
@@ -560,7 +587,7 @@ export function AdminVipRequestsClient({
       <ConfirmDialog
         isOpen={!!deleteModalId}
         title="Delete VIP Request"
-        description="Are you sure you want to delete this rejected request? This action cannot be undone."
+        description="Are you sure you want to delete this VIP request? This action cannot be undone."
         confirmText="Delete"
         cancelText="Cancel"
         isLoading={isPending}

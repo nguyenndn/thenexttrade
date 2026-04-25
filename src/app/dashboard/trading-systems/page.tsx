@@ -4,10 +4,11 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { AccountStatus } from "@prisma/client";
 import { TradingSystemsClient } from "@/components/dashboard/trading-systems/TradingSystemsClient";
+import { getMyVipRequest, getVipLink } from "@/actions/vip-request";
 
 export const metadata: Metadata = {
-    title: "EA & Indicators | TheNextTrade",
-    description: "Download professional trading indicators and EAs",
+    title: "Trading System | TheNextTrade",
+    description: "Download professional trading EAs, indicators, and join VIP",
 };
 
 export default async function TradingSystemsPage() {
@@ -18,7 +19,7 @@ export default async function TradingSystemsPage() {
     }
 
     // OPTIMIZED: Fetch all data in parallel
-    const [licenses, products, downloadCount, eaBrokers] = await Promise.all([
+    const [licenses, products, downloadCount, eaBrokers, vipRequest, vipLink] = await Promise.all([
         prisma.eALicense.findMany({
             where: { userId: user.id },
             orderBy: { createdAt: "desc" },
@@ -34,6 +35,8 @@ export default async function TradingSystemsPage() {
             where: { isActive: true },
             orderBy: { order: "asc" },
         }),
+        getMyVipRequest(),
+        getVipLink(),
     ]);
 
     // Check for Approved License
@@ -49,6 +52,10 @@ export default async function TradingSystemsPage() {
                 hasApprovedLicense={hasApprovedLicense}
                 hasDownloaded={downloadCount > 0}
                 eaBrokers={eaBrokers}
+                vipRequest={vipRequest}
+                vipLink={vipLink}
+                userEmail={user.email || ""}
+                userName={user.name || undefined}
             />
         </div>
     );
