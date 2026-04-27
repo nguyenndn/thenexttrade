@@ -1488,3 +1488,36 @@ model AnalyticsEvent {
   @@index([userId])
   @@map("analytics_events")
 }
+
+// ============================================================================
+// SECURITY LOGS
+// ============================================================================
+
+model SecurityLog {
+  id        String   @id @default(cuid())
+  type      String   @db.VarChar(30) // RATE_LIMIT | BOT_BLOCKED | LOGIN_FAILED | TURNSTILE_FAILED | AUTH_FAILED | CRON_FAILED | IP_BLOCKED | IP_UNBLOCKED
+  ip        String   @db.VarChar(45) // IPv4 or IPv6
+  userAgent String?
+  path      String?  @db.VarChar(500)
+  detail    String?  // Extra info: email, reason, blocked UA pattern, etc.
+  userId    String?  @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz
+
+  @@index([type])
+  @@index([ip])
+  @@index([createdAt])
+  @@map("security_logs")
+}
+
+model BlockedIP {
+  id        String    @id @default(cuid())
+  ip        String    @unique @db.VarChar(45)
+  reason    String?
+  blockedBy String?   @db.Uuid // Admin user ID
+  expiresAt DateTime? @db.Timestamptz // null = permanent
+  createdAt DateTime  @default(now()) @db.Timestamptz
+
+  @@index([ip])
+  @@index([expiresAt])
+  @@map("blocked_ips")
+}

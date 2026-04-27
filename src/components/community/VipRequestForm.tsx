@@ -20,6 +20,7 @@ import {
   UserPlus,
   RefreshCw,
 } from "lucide-react";
+import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 
 interface VipRequestFormProps {
   userEmail: string;
@@ -44,6 +45,7 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
   const [country, setCountry] = useState("");
   const [copied, setCopied] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const brokerInfo = selectedBroker ? BROKER_INFO[selectedBroker] : null;
 
@@ -72,6 +74,7 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
     formData.set("telegramId", telegramId);
     if (fullName) formData.set("fullName", fullName);
     if (country) formData.set("country", country);
+    formData.set('cf-turnstile-response', turnstileToken);
 
     startTransition(async () => {
       const result = await submitVipRequest(formData);
@@ -532,6 +535,8 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
               <Check size={14} /> Submit Request
             </button>
           </div>
+
+          <TurnstileWidget onVerify={setTurnstileToken} className="flex justify-center mt-4" />
 
           {/* Confirmation Modal */}
           {showConfirm && (

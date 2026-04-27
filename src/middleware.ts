@@ -23,6 +23,31 @@ interface RateLimitEntry {
 
 const rateLimitMap = new Map<string, RateLimitEntry>();
 
+// =============================================================================
+// BLOCKED IP LIST (In-memory, synced from DB periodically)
+// =============================================================================
+
+const blockedIPSet = new Set<string>();
+let blockedIPLastSync = 0;
+const BLOCKED_IP_SYNC_INTERVAL = 60_000; // Sync every 60s
+
+async function syncBlockedIPs(baseUrl: string): Promise<void> {
+    const now = Date.now();
+    if (now - blockedIPLastSync < BLOCKED_IP_SYNC_INTERVAL) return;
+    blockedIPLastSync = now;
+
+    try {
+        const res = await fetch(`${baseUrl}/api/internal/security-log?action=blocked-ips`, {
+            headers: { 'x-internal-security': '1' },
+        });
+        if (res.ok) {
+            const data = await res.json();
+            blockedIPSet.clear();
+            (data.ips || []).forEach((ip: string) => blockedIPSet.add(ip));
+        }
+    } catch { /* silent */ }
+}
+
 // Cleanup stale entries every 5 minutes
 if (typeof setInterval !== 'undefined') {
     setInterval(() => {
@@ -123,11 +148,12 @@ function addSecurityHeaders(response: NextResponse, isDev: boolean): void {
     // CSP — Content Security Policy
     const csp = [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com",
+        "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com",
         "font-src 'self' data: https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co",
+        "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com",
+        "frame-src https://challenges.cloudflare.com",
         "worker-src 'self' blob:",
         "object-src 'none'",
         "base-uri 'self'",
@@ -156,6 +182,27 @@ function validateCronSecret(request: NextRequest): boolean {
 }
 
 // =============================================================================
+// SECURITY LOG HELPER (fire-and-forget via internal API)
+// =============================================================================
+
+function logSecurityToAPI(baseUrl: string, data: {
+    type: string;
+    ip: string;
+    userAgent?: string | null;
+    path?: string | null;
+    detail?: string | null;
+}): void {
+    fetch(`${baseUrl}/api/internal/security-log`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-internal-security': '1',
+        },
+        body: JSON.stringify(data),
+    }).catch(() => { /* silent */ });
+}
+
+// =============================================================================
 // MIDDLEWARE ENTRY POINT
 // =============================================================================
 
@@ -165,14 +212,37 @@ export async function middleware(request: NextRequest) {
     const userAgent = request.headers.get('user-agent');
     const isDev = process.env.NODE_ENV !== 'production';
 
+    // 0. Sync blocked IPs (non-blocking)
+    const baseUrl = request.nextUrl.origin;
+    syncBlockedIPs(baseUrl).catch(() => {});
+
+    // 0.5 Check blocked IP
+    if (blockedIPSet.has(ip)) {
+        return new NextResponse('Forbidden', { status: 403 });
+    }
+
     // 1. Bot Detection (production only)
     if (!isDev && isMaliciousBot(userAgent)) {
+        logSecurityToAPI(baseUrl, {
+            type: 'BOT_BLOCKED',
+            ip,
+            userAgent,
+            path: pathname,
+            detail: `Blocked UA: ${userAgent}`,
+        });
         return new NextResponse('Forbidden', { status: 403 });
     }
 
     // 2. CRON Route Protection
     if (isCronRoute(pathname)) {
         if (!validateCronSecret(request)) {
+            logSecurityToAPI(baseUrl, {
+                type: 'CRON_FAILED',
+                ip,
+                userAgent,
+                path: pathname,
+                detail: 'Invalid CRON_SECRET',
+            });
             return NextResponse.json(
                 { error: 'Unauthorized — invalid CRON_SECRET' },
                 { status: 401 }
@@ -193,6 +263,13 @@ export async function middleware(request: NextRequest) {
         const result = checkRateLimit(ip, category);
 
         if (!result.allowed) {
+            logSecurityToAPI(baseUrl, {
+                type: 'RATE_LIMIT',
+                ip,
+                userAgent,
+                path: pathname,
+                detail: `Category: ${category}, limit: ${RATE_LIMITS[category].max}/min`,
+            });
             const response = new NextResponse(
                 JSON.stringify({ error: 'Too Many Requests', retryAfter: result.retryAfter }),
                 { status: 429, headers: { 'Content-Type': 'application/json' } }

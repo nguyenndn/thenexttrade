@@ -11,7 +11,7 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, description, children, className, mobileFullWidthButton }: PageHeaderProps) {
     return (
-        <div className={cn("flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6", className)}>
+        <div id="onborda-page-header" className={cn("flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6", className)}>
             {/* Left: Gradient accent bar + text */}
             <div className="flex items-center gap-4">
                 {/* Gradient Bar */}

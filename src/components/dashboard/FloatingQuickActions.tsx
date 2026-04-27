@@ -87,7 +87,7 @@ export function FloatingQuickActions() {
                 )}
             </AnimatePresence>
 
-            <div className="fixed bottom-6 right-6 z-[9999] hidden lg:block">
+            <div id="onborda-quickactions" className="fixed bottom-6 right-6 z-[9999] hidden lg:block">
                 <Button
                     variant="primary"
                     aria-label="Feedback & Support"

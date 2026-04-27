@@ -103,7 +103,7 @@ export default async function AnalyticsPage({
             >
                 <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
             </PageHeader>
-            <div className="mb-4">
+            <div id="onborda-analytics-tabs" className="mb-4">
                 <TabBar tabs={analyticsTabs} equalWidth />
             </div>
             <Suspense key={JSON.stringify(resolvedParams)} fallback={<AnalyticsLoadingSkeleton />}>

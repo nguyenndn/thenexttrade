@@ -68,6 +68,7 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                 >
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
                         <a
+                            id="onborda-ea-download"
                             href="/downloads/TheNextTrade_TradeSync.ex5"
                             download
                             className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors flex-1 sm:flex-none"
@@ -97,6 +98,7 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                             Refresh
                         </Button>
                         <Button
+                            id="onborda-add-account"
                             variant="primary"
                             onClick={() => setActiveModal({ type: "ADD" })}
                             className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
@@ -135,7 +137,7 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                     />
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
+                <div id="onborda-account-grid" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
                     {initialAccounts.map((account) => (
                         <div key={account.id} className="min-w-0 h-full">
                             <AccountCard
