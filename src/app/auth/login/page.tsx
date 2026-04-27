@@ -7,6 +7,7 @@ import { useState } from "react";
 import { login, signInWithMagicLink } from "@/app/auth/actions";
 import { Mail, Lock, Eye, EyeOff, Sparkles, CheckCircle } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 
 
 export default function LoginPage() {
@@ -15,6 +16,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [mode, setMode] = useState<"password" | "magic">("password");
   const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,6 +24,7 @@ export default function LoginPage() {
     setError(null);
 
     const formData = new FormData(e.currentTarget);
+    formData.set('cf-turnstile-response', turnstileToken);
     const result = await login(formData);
 
     if (result?.error) {
@@ -38,6 +41,7 @@ export default function LoginPage() {
     setError(null);
 
     const formData = new FormData(e.currentTarget);
+    formData.set('cf-turnstile-response', turnstileToken);
     const result = await signInWithMagicLink(formData);
 
     if (result?.error) {
@@ -142,6 +146,8 @@ export default function LoginPage() {
             </Link>
           </div>
 
+          <TurnstileWidget onVerify={setTurnstileToken} className="flex justify-center" />
+
           <Button
             type="submit"
             variant="primary"
@@ -171,6 +177,8 @@ export default function LoginPage() {
             startIcon={<Mail size={20} className="text-gray-500" />}
             className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
           />
+
+          <TurnstileWidget onVerify={setTurnstileToken} className="flex justify-center" />
 
           <Button
             type="submit"

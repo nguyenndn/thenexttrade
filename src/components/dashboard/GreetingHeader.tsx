@@ -47,7 +47,7 @@ export function GreetingHeader({ userName, currentAccountId }: GreetingHeaderPro
     }, []);
 
     return (
-        <div className="flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-6">
+        <div id="onborda-greeting" className="flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-6">
             <div className={`transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
                 <div className="flex items-center gap-2 mb-1.5">
                     {greeting.icon}

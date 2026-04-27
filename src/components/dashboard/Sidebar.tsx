@@ -182,7 +182,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     }, [pathname, visibleItems]);
 
     return (
-        <aside className={cn(
+        <aside id="onborda-sidebar" className={cn(
             "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30",
             isCollapsed ? "w-20" : "w-[280px]",
             className

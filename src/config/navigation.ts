@@ -27,6 +27,7 @@ import {
     MoreHorizontal,
     Copy,
     Shield,
+    ShieldAlert,
     MessageCircle,
     Crown,
 } from "lucide-react";
@@ -158,6 +159,7 @@ export const adminMenuItems = [
     // --- SYSTEM ---
     { name: "EA Management", href: "/admin/ea", icon: Bot },
     { name: "Users", href: "/admin/users", icon: Users },
+    { name: "Security", href: "/admin/security", icon: ShieldAlert },
     { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];

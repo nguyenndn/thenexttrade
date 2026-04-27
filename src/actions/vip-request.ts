@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
 import { vipRequestSchema } from "@/lib/validations/vip-request";
+import { verifyTurnstile } from "@/lib/turnstile";
 import type { VipRequestStatus } from "@prisma/client";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 
@@ -14,6 +15,13 @@ import { NotificationType, NotificationPriority } from "@prisma/client";
 export async function submitVipRequest(formData: FormData) {
   const user = await getAuthUser();
   if (!user) return { error: "Unauthorized" };
+
+  // Verify Turnstile
+  const turnstileToken = formData.get('cf-turnstile-response') as string;
+  const turnstileResult = await verifyTurnstile(turnstileToken);
+  if (!turnstileResult.success) {
+    return { error: turnstileResult.error || 'Verification failed' };
+  }
 
   // Check for existing pending request
   const existingRequest = await prisma.vipRequest.findFirst({

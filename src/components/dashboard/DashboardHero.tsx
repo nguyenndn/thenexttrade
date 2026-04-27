@@ -20,7 +20,7 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
     const scoreColor = tradeScore !== null ? getScoreColor(tradeScore) : "transparent";
 
     return (
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-white to-gray-50 dark:from-[#0B0E14] dark:to-[#131720] border border-gray-200 dark:border-white/10 p-4 sm:p-6 shadow-lg">
+        <div id="onborda-hero" className="relative overflow-hidden rounded-xl bg-gradient-to-r from-white to-gray-50 dark:from-[#0B0E14] dark:to-[#131720] border border-gray-200 dark:border-white/10 p-4 sm:p-6 shadow-lg">
             {/* Glow effects */}
             <div className="absolute top-0 left-1/4 w-40 h-40 bg-primary/10 dark:bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
             <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-cyan-500/10 dark:bg-cyan-500/15 rounded-full blur-[60px] pointer-events-none" />

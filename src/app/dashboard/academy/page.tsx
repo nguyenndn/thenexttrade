@@ -150,7 +150,7 @@ export default async function UserAcademyDashboard() {
 
                     {/* Focus Banner (Next Lesson) */}
                     {nextLesson ? (
-                        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-white via-emerald-50 to-teal-50 dark:from-[#1E2028] dark:to-[#151925] border border-emerald-200/60 dark:border-white/10 p-6 shadow-sm">
+                        <div id="onborda-academy-resume" className="relative overflow-hidden rounded-xl bg-gradient-to-br from-white via-emerald-50 to-teal-50 dark:from-[#1E2028] dark:to-[#151925] border border-emerald-200/60 dark:border-white/10 p-6 shadow-sm">
                             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                                 <div>
                                     <div className="flex items-center gap-2 mb-2">
@@ -183,14 +183,14 @@ export default async function UserAcademyDashboard() {
 
 
                     {/* Academy Tree (Synced with /academy) */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                    <div id="onborda-academy-tree" className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                         <AcademyTree levels={levels as any} basePath="/dashboard/academy" isGuest={false} completedLessonIds={completedLessonIds} devMode />
                     </div>
 
                 </div>
 
                 {/* Sidebar Stats */}
-                <div className="space-y-4">
+                <div id="onborda-academy-sidebar" className="space-y-4">
                     {/* Daily Streak */}
                     <div className="bg-gradient-to-br from-primary to-teal-600 p-6 rounded-xl text-white shadow-lg shadow-primary/20 relative overflow-hidden">
                         <div className="relative z-10">

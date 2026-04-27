@@ -307,12 +307,12 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                 title="Journal"
                 description="Track your trades and analyze your performance."
             />
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+            <div id="onborda-journal-filters" className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
                 <TabBar tabs={journalTabs} equalWidth />
                 <DashboardFilter currentAccountId={accountId || undefined} equalWidth className="order-first lg:order-none" />
             </div>
 
-            {stats && <JournalStats stats={stats} />}
+            {stats && <div id="onborda-journal-stats"><JournalStats stats={stats} /></div>}
 
 
             <JournalTableFilters
@@ -332,7 +332,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
             />
 
                     {/* Table Container - Mobile Responsive Scroll */}
-                    <div className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 overflow-x-auto custom-scrollbar">
+                    <div id="onborda-journal-list" className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 overflow-x-auto custom-scrollbar">
                         {/* Desktop View */}
                         <div className="hidden md:block overflow-x-auto w-full">
                             <table className="w-auto min-w-full text-left text-sm whitespace-nowrap">

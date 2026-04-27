@@ -126,7 +126,7 @@ export default function DashboardClient({
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
 
                 {/* --- ROW 1: Period Growth (8) + Quick Stats & Distribution Sidebar (4) --- */}
-                <div className="xl:col-span-8 min-w-0">
+                <div id="onborda-chart" className="xl:col-span-8 min-w-0">
                     <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-primary h-auto xl:h-[420px] overflow-hidden">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
@@ -148,7 +148,7 @@ export default function DashboardClient({
                         <BalanceGrowthChart data={chartData} />
                     </div>
                 </div>
-                <div className="xl:col-span-4 min-w-0">
+                <div id="onborda-quickstats" className="xl:col-span-4 min-w-0">
                     <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-teal-500 h-auto xl:h-[420px] flex flex-col divide-y divide-gray-100 dark:divide-white/5 overflow-hidden">
                         {/* Header */}
                         <div className="px-5 pt-5 pb-3">

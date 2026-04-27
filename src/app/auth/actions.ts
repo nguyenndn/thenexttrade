@@ -6,12 +6,28 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { recordSession } from '@/lib/session'
+import { verifyTurnstile } from '@/lib/turnstile'
+import { logSecurityEvent, SECURITY_EVENT_TYPES } from '@/lib/security-logger'
 
 import { authSchema } from '@/lib/validations/auth'
 import { headers } from 'next/headers'
 
+async function getClientIP(): Promise<string> {
+    const h = await headers()
+    return h.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '127.0.0.1'
+}
+
 export async function login(formData: FormData) {
     const supabase = await createClient()
+
+    // 0. Verify Turnstile
+    const turnstileToken = formData.get('cf-turnstile-response') as string
+    const turnstileResult = await verifyTurnstile(turnstileToken)
+    if (!turnstileResult.success) {
+        const ip = await getClientIP()
+        logSecurityEvent({ type: SECURITY_EVENT_TYPES.TURNSTILE_FAILED, ip, path: '/auth/login', detail: `Email: ${formData.get('email')}` }).catch(() => {})
+        return { error: turnstileResult.error || 'Verification failed' }
+    }
 
     // 1. Validate Input
     const data = {
@@ -28,6 +44,8 @@ export async function login(formData: FormData) {
     const { error } = await supabase.auth.signInWithPassword(data)
 
     if (error) {
+        const ip = await getClientIP()
+        logSecurityEvent({ type: SECURITY_EVENT_TYPES.LOGIN_FAILED, ip, path: '/auth/login', detail: `Email: ${data.email}. Error: ${error.message}` }).catch(() => {})
         return { error: error.message }
     }
 
@@ -112,6 +130,13 @@ export async function signInWithMagicLink(formData: FormData) {
     const email = formData.get('email') as string
     const origin = (await headers()).get('origin')
 
+    // Verify Turnstile
+    const turnstileToken = formData.get('cf-turnstile-response') as string
+    const turnstileResult = await verifyTurnstile(turnstileToken)
+    if (!turnstileResult.success) {
+        return { error: turnstileResult.error || 'Verification failed' }
+    }
+
     if (!email) {
         return { error: 'Email is required' }
     }
@@ -132,6 +157,13 @@ export async function signInWithMagicLink(formData: FormData) {
 
 export async function signup(formData: FormData) {
     const supabase = await createClient()
+
+    // Verify Turnstile
+    const turnstileToken = formData.get('cf-turnstile-response') as string
+    const turnstileResult = await verifyTurnstile(turnstileToken)
+    if (!turnstileResult.success) {
+        return { error: turnstileResult.error || 'Verification failed' }
+    }
 
     const fullName = formData.get('fullName') as string
     const country = formData.get('country') as string

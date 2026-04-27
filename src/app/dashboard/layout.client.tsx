@@ -8,6 +8,7 @@ import { useState } from "react";
 import { AuthUser } from "@/lib/auth-types";
 import { FloatingQuickActions } from "@/components/dashboard/FloatingQuickActions";
 import { DashboardProvider } from "@/lib/dashboard-context";
+import { PageWelcomeGuide } from "@/components/onboarding/PageWelcomeGuide";
 
 interface DashboardLayoutClientProps {
     children: React.ReactNode;
@@ -57,8 +58,10 @@ export function DashboardLayoutClient({
 
                 {/* Mobile Bottom Tab Bar */}
                 <MobileBottomTabBar />
+
+                {/* Page Welcome Guide — shows once per page */}
+                <PageWelcomeGuide />
             </div>
         </DashboardProvider>
     );
 }
-

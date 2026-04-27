@@ -92,6 +92,7 @@ export function Header({
                     {/* Theme Toggle — visible on all sizes, next to avatar */}
                     <ThemeToggleSwitch />
 
+
                     {/* Notification Bell — visible on all sizes, next to avatar */}
                     {bell ? bell : <NotificationBell />}
 

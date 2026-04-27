@@ -270,7 +270,7 @@ export function StrategyManager({ initialStrategies, meta, initialPerformance = 
 
             {/* Strategy Cards */}
             {filteredStrategies.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                <div id="onborda-strategy-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
                     {filteredStrategies.map((strategy) => {
                         const perf = performance.find(p => p.strategy === strategy.name);
                         const isGhost = strategy.id.startsWith("temp-");

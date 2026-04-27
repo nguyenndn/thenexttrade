@@ -9,6 +9,7 @@ import { useState } from "react";
 import { signup } from "@/app/auth/actions";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 
 export default function SignupPage() {
     const router = useRouter();
@@ -17,6 +18,7 @@ export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const [country, setCountry] = useState("");
+    const [turnstileToken, setTurnstileToken] = useState("");
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -35,6 +37,7 @@ export default function SignupPage() {
 
         // Pass country manually if needed or ensure it's in formData
         formData.append("country", country);
+        formData.set('cf-turnstile-response', turnstileToken);
 
         const result = await signup(formData);
 
@@ -152,6 +155,8 @@ export default function SignupPage() {
                         </label>
                     </div>
                 </div>
+
+                <TurnstileWidget onVerify={setTurnstileToken} className="flex justify-center" />
 
                 <div className="space-y-4">
                     <Button
