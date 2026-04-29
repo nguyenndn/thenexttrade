@@ -11,7 +11,7 @@ export function GeoPanel({ countries }: Props) {
     const total = countries.reduce((s, c) => s + c.views, 0);
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-6">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6">
             <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-indigo-500" />

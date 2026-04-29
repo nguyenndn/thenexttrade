@@ -20,7 +20,7 @@ export function EventsPanel({ events, recentEvents }: Props) {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Event Breakdown */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-6">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6">
                 <div className="flex items-center gap-2 mb-5">
                     <Zap className="w-4 h-4 text-amber-500" />
                     <h2 className="text-base font-semibold text-gray-900 dark:text-white">Custom Events</h2>
@@ -50,7 +50,7 @@ export function EventsPanel({ events, recentEvents }: Props) {
             </div>
 
             {/* Live Event Feed */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-6">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6">
                 <div className="flex items-center gap-2 mb-5">
                     <Clock className="w-4 h-4 text-cyan-500" />
                     <h2 className="text-base font-semibold text-gray-900 dark:text-white">Live Feed</h2>

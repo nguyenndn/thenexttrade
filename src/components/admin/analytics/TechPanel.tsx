@@ -19,7 +19,7 @@ export function TechPanel({ devices, browsers }: Props) {
     const totalDevices = devices.reduce((s, d) => s + d.count, 0) || 1;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-6">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6">
             <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-5">Technology</h2>
 
             {/* Devices */}
