@@ -22,7 +22,7 @@ export function FunnelPanel({ funnel }: Props) {
     const hasData = funnel && funnel.visitors > 0;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-6">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6">
             <div className="flex items-center gap-2 mb-6">
                 <Filter className="w-4 h-4 text-indigo-500" />
                 <h2 className="text-base font-semibold text-gray-900 dark:text-white">Conversion Funnel</h2>

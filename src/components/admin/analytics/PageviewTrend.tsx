@@ -8,7 +8,7 @@ interface Props {
 
 export function PageviewTrend({ data }: Props) {
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-6">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2 className="text-base font-semibold text-gray-900 dark:text-white">Pageviews</h2>

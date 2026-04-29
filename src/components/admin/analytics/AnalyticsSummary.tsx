@@ -26,7 +26,7 @@ export function AnalyticsSummary({ summary, realTime }: Props) {
                 const Icon = card.icon;
                 return (
                     <div key={card.label}
-                        className="group relative overflow-hidden bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-5 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300">
+                        className="group relative overflow-hidden bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
                         {/* Gradient accent line */}
                         <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${card.gradient}`} />
 
