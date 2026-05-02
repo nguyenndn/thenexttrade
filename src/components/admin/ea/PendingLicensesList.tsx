@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ApproveLicenseModal } from "@/components/admin/ea/ApproveLicenseModal";
 import { RejectLicenseModal } from "@/components/admin/ea/RejectLicenseModal";
-import { Check, X, Search, ExternalLink } from "lucide-react";
+import { Check, X, ExternalLink } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface PendingLicensesListProps {

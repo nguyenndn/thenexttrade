@@ -2,10 +2,10 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "lucide-react"; // Import issue fix: Link is from next/link usually, but lucide has Link icon
+
 // Fix: We need next/link for navigation links
 import NextLink from "next/link";
-import { Plus, Folder, BookOpen, Video, ChevronDown, ChevronRight, GripVertical } from "lucide-react";
+import { Folder, BookOpen, Video } from "lucide-react";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { SortableItem } from "@/components/ui/SortableItem";

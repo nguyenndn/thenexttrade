@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Check, Search, X, Loader2, ChevronRight, CheckCircle2, Circle } from "lucide-react";
+import { Check, Search, Loader2, ChevronRight, CheckCircle2, Circle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 import { toast } from "sonner";

@@ -8,10 +8,10 @@ interface Props {
 
 export function PageviewTrend({ data }: Props) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6">
-            <div className="flex items-center justify-between mb-6">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
+            <div className="flex items-center justify-between mb-4">
                 <div>
-                    <h2 className="text-base font-semibold text-gray-900 dark:text-white">Pageviews</h2>
+                    <h2 className="text-sm font-bold text-gray-900 dark:text-white">Pageviews</h2>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                         {data.length > 0 && `${new Date(data[0].date).toLocaleDateString('en', { month: 'short', day: 'numeric' })} — ${new Date(data[data.length - 1].date).toLocaleDateString('en', { month: 'short', day: 'numeric' })}`}
                     </p>

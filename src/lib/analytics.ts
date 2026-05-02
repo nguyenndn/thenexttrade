@@ -70,7 +70,9 @@ export function isTrackablePath(pathname: string): boolean {
     if (pathname === '/favicon.ico') return false;
     if (pathname === '/robots.txt') return false;
     if (pathname === '/sitemap.xml') return false;
-    if (/\.(svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf)$/i.test(pathname)) return false;
+    if (pathname === '/manifest.json') return false;
+    if (pathname === '/sw.js') return false;
+    if (/\.(svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|json)$/i.test(pathname)) return false;
 
     return true;
 }

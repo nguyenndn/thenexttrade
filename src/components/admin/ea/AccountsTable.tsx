@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from "react";
 import { format } from "date-fns";
-import { Edit, Trash2, Check, X, Search, Filter, ChevronDown } from "lucide-react";
+import { Trash2, Check, X, Search, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { EALicenseWithUser } from "@/types/ea-license";
 import { StatusBadge } from "@/components/ui/StatusBadge";

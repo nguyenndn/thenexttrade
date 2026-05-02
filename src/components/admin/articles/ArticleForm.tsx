@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Save, Trash2, Clock, FileText, CheckCircle, AlertCircle, CheckSquare, Square, ChevronDown, Image as ImageIcon, X as XIcon, BookOpen, ListTree } from "lucide-react";
-import Link from "next/link";
+
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { MediaLibraryModal } from "@/components/admin/media/MediaLibraryModal";
@@ -169,7 +169,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                 body: JSON.stringify(formData),
             });
             setSaveStatus('saved');
-        } catch (error) {
+        } catch {
             setSaveStatus('unsaved');
         }
     };
@@ -260,7 +260,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                 return;
             }
 
-            const data = await res.json();
+            const _data = await res.json();
             
             // On successful submit, clear the local storage draft
             clearDraft();

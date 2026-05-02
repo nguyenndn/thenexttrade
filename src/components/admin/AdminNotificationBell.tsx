@@ -64,7 +64,7 @@ export function AdminNotificationBell() {
                         }
                     }
                 }
-            } catch (e) {
+            } catch {
                 console.error("Failed to fetch admin notifications");
             }
         };

@@ -1462,12 +1462,19 @@ model PageView {
   browser   String?  @db.VarChar(30)
   os        String?  @db.VarChar(30)
   sessionId String   @db.VarChar(64)
+
+  // UTM Campaign Tracking
+  utmSource   String?  @db.VarChar(100)  // google, facebook, newsletter
+  utmMedium   String?  @db.VarChar(100)  // cpc, email, social
+  utmCampaign String?  @db.VarChar(200)  // summer_sale, launch_2026
+
   createdAt DateTime @default(now()) @db.Timestamptz
 
   @@index([createdAt])
   @@index([pathname])
   @@index([country])
   @@index([sessionId])
+  @@index([utmCampaign])
   @@map("page_views")
 }
 

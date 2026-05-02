@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, Plus, Save } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -74,7 +74,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ items: reorderData }),
-                }).catch(err => toast.error("Failed to save order"));
+                }).catch(_err => toast.error("Failed to save order"));
 
                 return newItems;
             });

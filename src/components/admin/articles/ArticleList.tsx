@@ -7,7 +7,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { toast } from "sonner";
 import {
-    Edit2, Trash2, Eye, ArrowUpRight, FileText,
+    Edit2, Trash2, Eye, FileText,
     Search, CheckSquare, Square, Loader2,
     ChevronLeft, ChevronRight, CheckCircle, XCircle,
     ChevronDown
@@ -46,7 +46,7 @@ interface ArticleListProps {
 }
 
 // Memoized Article Row Component
-const ArticleRow = memo(function ArticleRow({ 
+const _ArticleRow = memo(function ArticleRow({ 
     article, 
     isSelected, 
     onToggle 

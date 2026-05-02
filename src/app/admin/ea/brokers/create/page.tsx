@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createEABroker } from "../actions";
-import { Briefcase, ArrowLeft, Loader2 } from "lucide-react";
+import { Briefcase, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { FileUpload } from "@/components/ui/FileUpload";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle, AlertCircle, Search, Smartphone, Monitor, Facebook, Twitter, Wand2, Eye, FileText, AlignLeft } from "lucide-react";
+import { Search, Smartphone, Monitor, Facebook, Twitter, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 interface SeoProps {

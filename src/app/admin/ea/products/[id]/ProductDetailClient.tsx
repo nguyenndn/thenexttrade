@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+
 import { Download, Users, Zap, Activity } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { EditProductView } from "@/components/admin/ea/EditProductView";

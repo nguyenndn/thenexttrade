@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { PremiumInput } from "@/components/ui/PremiumInput";
-import { BookOpen, Hash } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { useState } from "react";
 
 const schema = z.object({

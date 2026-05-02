@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { updateLevel } from "@/app/admin/academy/actions";
 import { toast } from "sonner";
-import { BookOpen, FileText, X } from "lucide-react";
+import { BookOpen, FileText } from "lucide-react";
 
 interface EditLevelModalProps {
     isOpen: boolean;

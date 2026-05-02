@@ -6,8 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Loader2, Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { enUS } from "date-fns/locale";
+
 
 import {
     Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle
@@ -17,7 +16,7 @@ import { PremiumInput } from "@/components/ui/PremiumInput";
 import { approveAccountSchema } from "@/lib/validations/ea-license";
 import { approveAccount } from "@/app/admin/ea/accounts/actions";
 import { ApproveAccountInput, EALicenseWithUser } from "@/types/ea-license";
-import { cn } from "@/lib/utils";
+
 
 // Start of DatePicker or similar. 
 // Standard input type="date" is easiest for now unless shadcn Calendar is integrated.
@@ -36,7 +35,7 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
         register,
         handleSubmit,
         reset,
-        formState: { errors },
+        formState: { errors: _errors },
     } = useForm<ApproveAccountInput>({
         resolver: zodResolver(approveAccountSchema),
     });

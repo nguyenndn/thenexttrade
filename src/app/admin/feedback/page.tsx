@@ -97,7 +97,7 @@ export default function AdminFeedbackPage() {
     const totalCount = feedbacks.length;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 pb-10">
             <AdminPageHeader
                 title="Feedback & Support"
                 description="Review bug reports and feature requests from users."

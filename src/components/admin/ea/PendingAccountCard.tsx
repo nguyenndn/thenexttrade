@@ -7,7 +7,7 @@ import { EALicenseWithUser } from "@/types/ea-license";
 import { BrokerLogo } from "@/components/ui/BrokerLogo";
 import { Button } from "@/components/ui/Button";
 import { BROKERS } from "@/config/brokers";
-import { cn } from "@/lib/utils";
+
 import Link from "next/link";
 
 interface PendingAccountCardProps {

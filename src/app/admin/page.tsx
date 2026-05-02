@@ -150,18 +150,22 @@ export default async function AdminDashboard() {
                 tradingVolume={stats.tradingVolume}
             />
 
-            {/* Zone 2: Charts */}
+
+            {/* Zone 2: Quick Actions (horizontal) */}
+            <AnimatedSection delay={0.5}>
+                <QuickActionsWidget />
+            </AnimatedSection>
+
+            {/* Zone 3: Charts */}
             <AnimatedSection delay={0.6}>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     <div className="lg:col-span-2">
                         <UserGrowthChart data={stats.userGrowthChart} />
                     </div>
-                    <div className="flex flex-col gap-4">
-                        <QuickActionsWidget />
-                        <ContentDistributionChart data={stats.contentDistribution} />
-                    </div>
+                    <ContentDistributionChart data={stats.contentDistribution} />
                 </div>
             </AnimatedSection>
+
 
             {/* Zone 3: Activity Widgets */}
             <AnimatedSection delay={0.8}>
@@ -186,7 +190,7 @@ export default async function AdminDashboard() {
 
 function WidgetSkeleton() {
     return (
-        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full min-h-[350px] flex items-center justify-center animate-pulse">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full min-h-[350px] flex items-center justify-center animate-pulse">
             <div className="w-full space-y-4">
                 <div className="h-6 bg-gray-200 dark:bg-white/5 rounded w-1/3 mx-auto mb-8" />
                 {[1, 2, 3, 4, 5].map(i => (

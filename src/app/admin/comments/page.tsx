@@ -37,7 +37,7 @@ interface Comment {
 }
 
 export default function AdminCommentsPage() {
-    const { data, error, isLoading, mutate } = useSWR("/api/admin/comments", fetcher, {
+    const { data, error: _error, isLoading, mutate } = useSWR("/api/admin/comments", fetcher, {
         onError: (err) => {
             toast.error(err.message || "Error fetching comments");
         }

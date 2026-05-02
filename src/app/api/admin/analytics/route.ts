@@ -18,6 +18,11 @@ export async function GET(request: NextRequest) {
     const since = new Date();
     since.setDate(since.getDate() - days);
 
+    // Previous period for comparison (e.g. 7d current → 14d..7d previous)
+    const prevEnd = new Date(since);
+    const prevStart = new Date(since);
+    prevStart.setDate(prevStart.getDate() - days);
+
     const fiveMinAgo = new Date();
     fiveMinAgo.setMinutes(fiveMinAgo.getMinutes() - 5);
 
@@ -25,6 +30,8 @@ export async function GET(request: NextRequest) {
         const [
             pageviews,
             uniqueVisitors,
+            prevPageviews,
+            prevUniqueVisitors,
             realTimeCount,
             topCountries,
             topPages,
@@ -42,6 +49,17 @@ export async function GET(request: NextRequest) {
             prisma.pageView.groupBy({
                 by: ['sessionId'],
                 where: { createdAt: { gte: since } },
+            }).then(r => r.length),
+
+            // Previous period pageviews (for comparison)
+            prisma.pageView.count({
+                where: { createdAt: { gte: prevStart, lt: prevEnd } },
+            }),
+
+            // Previous period unique visitors
+            prisma.pageView.groupBy({
+                by: ['sessionId'],
+                where: { createdAt: { gte: prevStart, lt: prevEnd } },
             }).then(r => r.length),
 
             // Real-time (last 5 min)
@@ -121,6 +139,14 @@ export async function GET(request: NextRequest) {
             trend.push({ date: dateStr, views: trendMap.get(dateStr) || 0 });
         }
 
+        // Calculate trend percentages
+        const viewsTrend = prevPageviews > 0
+            ? Math.round(((pageviews - prevPageviews) / prevPageviews) * 100)
+            : pageviews > 0 ? 100 : 0;
+        const visitorsTrend = prevUniqueVisitors > 0
+            ? Math.round(((uniqueVisitors - prevUniqueVisitors) / prevUniqueVisitors) * 100)
+            : uniqueVisitors > 0 ? 100 : 0;
+
         return NextResponse.json({
             period,
             summary: {
@@ -130,6 +156,8 @@ export async function GET(request: NextRequest) {
                 avgPagesPerVisitor: uniqueVisitors > 0
                     ? Math.round((pageviews / uniqueVisitors) * 10) / 10
                     : 0,
+                viewsTrend,
+                visitorsTrend,
             },
             trend,
             topCountries: topCountries.map(c => ({

@@ -29,8 +29,8 @@ import {
     List, ListOrdered, CheckSquare,
     Link as LinkIcon, Image as ImageIcon, Youtube as YoutubeIcon, Table as TableIcon,
     Code, Quote, Undo, Redo,
-    Columns, Trash2, Zap,
-    Maximize, Minimize, Keyboard, Upload, Loader2
+    Zap,
+    Maximize, Minimize, Keyboard, Loader2
 } from 'lucide-react';
 
 import { MediaLibraryModal } from "@/components/admin/media/MediaLibraryModal";

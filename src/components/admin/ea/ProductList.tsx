@@ -3,14 +3,14 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Bot, Download, Edit, Power, Trash2, Search, Filter, ArrowUpDown, ChevronUp, ChevronDown, Check } from "lucide-react";
+import { Bot, Download, Edit, Trash2, Search, ArrowUpDown, ChevronUp, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { deleteEAProduct } from "@/app/admin/ea/actions";
 import { EAProduct } from "@/types/ea-license";
-import { EAType, PlatformType } from "@prisma/client";
-import { PremiumInput } from "@/components/ui/PremiumInput";
-import { Card } from "@/components/ui/Card";
+import { EAType } from "@prisma/client";
+
+
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import {
     DropdownMenu,

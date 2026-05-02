@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Download } from 'lucide-react';
 import { AnalyticsSummary } from '@/components/admin/analytics/AnalyticsSummary';
 import { PageviewTrend } from '@/components/admin/analytics/PageviewTrend';
 import { GeoPanel } from '@/components/admin/analytics/GeoPanel';
@@ -11,11 +11,15 @@ import { ReferrerPanel } from '@/components/admin/analytics/ReferrerPanel';
 import { FunnelPanel } from '@/components/admin/analytics/FunnelPanel';
 import { EventsPanel } from '@/components/admin/analytics/EventsPanel';
 import { RecentVisitorsPanel } from '@/components/admin/analytics/RecentVisitorsPanel';
+import { ContentAnalyticsPanel } from '@/components/admin/analytics/ContentAnalyticsPanel';
+import { CampaignPanel } from '@/components/admin/analytics/CampaignPanel';
 import { Button } from '@/components/ui/Button';
+import { exportCSV } from '@/lib/export-csv';
 import type { AnalyticsData, EventsData } from '@/components/admin/analytics/types';
 
 const TABS = [
     { id: 'overview', label: 'Overview' },
+    { id: 'content', label: 'Content' },
     { id: 'audience', label: 'Audience' },
     { id: 'events', label: 'Events' },
 ] as const;
@@ -28,28 +32,71 @@ const PERIODS = [
     { value: '90d', label: '90 Days' },
 ] as const;
 
+interface ContentData {
+    content: Array<{
+        pathname: string;
+        slug: string;
+        title: string;
+        author: string;
+        category: string;
+        views: number;
+        publishedAt: string | null;
+    }>;
+    authors: Array<{ name: string; views: number }>;
+    categories: Array<{ name: string; views: number }>;
+    totalArticleViews: number;
+}
+
 export default function AnalyticsDashboard() {
     const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('7d');
     const [tab, setTab] = useState<TabId>('overview');
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [eventsData, setEventsData] = useState<EventsData | null>(null);
+    const [contentData, setContentData] = useState<ContentData | null>(null);
+    const [campaignData, setCampaignData] = useState<{ campaigns: Array<{ campaign: string; source: string; medium: string; views: number; uniqueVisitors: number }>; totalCampaignViews: number } | null>(null);
     const [loading, setLoading] = useState(true);
+    const [contentLoading, setContentLoading] = useState(false);
     const [realTime, setRealTime] = useState(0);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const [aRes, eRes] = await Promise.all([
+            const [aRes, eRes, cRes] = await Promise.all([
                 fetch(`/api/admin/analytics?period=${period}`),
                 fetch(`/api/admin/analytics/events?period=${period}`),
+                fetch(`/api/admin/analytics/campaigns?period=${period}`),
             ]);
             if (aRes.ok) { const d = await aRes.json(); setData(d); setRealTime(d.summary.realTimeVisitors); }
             if (eRes.ok) { setEventsData(await eRes.json()); }
+            if (cRes.ok) { setCampaignData(await cRes.json()); }
         } catch { /* silent */ }
         finally { setLoading(false); }
     }, [period]);
 
+    const fetchContentData = useCallback(async () => {
+        setContentLoading(true);
+        try {
+            const res = await fetch(`/api/admin/analytics/content?period=${period}`);
+            if (res.ok) { setContentData(await res.json()); }
+        } catch { /* silent */ }
+        finally { setContentLoading(false); }
+    }, [period]);
+
     useEffect(() => { fetchData(); }, [fetchData]);
+
+    // Fetch content data when tab switches to content
+    useEffect(() => {
+        if (tab === 'content' && !contentData) {
+            fetchContentData();
+        }
+    }, [tab, contentData, fetchContentData]);
+
+    // Refetch content when period changes
+    useEffect(() => {
+        if (tab === 'content') {
+            fetchContentData();
+        }
+    }, [period]);
 
     // Real-time polling every 30s
     useEffect(() => {
@@ -62,12 +109,22 @@ export default function AnalyticsDashboard() {
         return () => clearInterval(iv);
     }, []);
 
+    // Export handlers
+    const handleExportPageviews = () => {
+        if (!data?.trend) return;
+        exportCSV(data.trend.map(d => ({ date: d.date, views: d.views })), `pageviews_${period}`);
+    };
+
+    const handleExportTopPages = () => {
+        if (!data?.topPages) return;
+        exportCSV(data.topPages, `top_pages_${period}`);
+    };
+
     return (
         <div className="space-y-4 pb-10">
-            {/* Admin Page Header — synced with AdminPageHeader pattern */}
+            {/* Admin Page Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                 <div className="flex items-center gap-4">
-                    {/* Gradient Bar */}
                     <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-teal-500 shrink-0" />
                     <div>
                         <div className="flex items-center gap-3">
@@ -84,7 +141,7 @@ export default function AnalyticsDashboard() {
                             </span>
                         </div>
                         <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">
-                            Real-time traffic & engagement insights.
+                            Real-time traffic &amp; engagement insights.
                         </p>
                     </div>
                 </div>
@@ -115,7 +172,7 @@ export default function AnalyticsDashboard() {
                 </div>
             </div>
 
-            {/* Tab Navigation — underline style matching admin pattern */}
+            {/* Tab Navigation */}
             <div className="flex gap-1 border-b border-gray-200 dark:border-white/10">
                 {TABS.map(t => (
                     <button key={t.id} onClick={() => setTab(t.id)}
@@ -136,11 +193,50 @@ export default function AnalyticsDashboard() {
             {tab === 'overview' && data && (
                 <>
                     <AnalyticsSummary summary={data.summary} realTime={realTime} />
-                    <PageviewTrend data={data.trend} />
+                    <div className="relative">
+                        <PageviewTrend data={data.trend} />
+                        <button
+                            onClick={handleExportPageviews}
+                            className="absolute top-5 right-5 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            title="Export CSV"
+                            aria-label="Export pageviews as CSV"
+                        >
+                            <Download size={14} />
+                        </button>
+                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <TopPagesPanel pages={data.topPages} />
+                        <div className="relative">
+                            <TopPagesPanel pages={data.topPages} />
+                            <button
+                                onClick={handleExportTopPages}
+                                className="absolute top-5 right-5 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                title="Export CSV"
+                                aria-label="Export top pages as CSV"
+                            >
+                                <Download size={14} />
+                            </button>
+                        </div>
                         <ReferrerPanel referrers={data.topReferrers} />
                     </div>
+                    <CampaignPanel
+                        campaigns={campaignData?.campaigns || []}
+                        totalViews={campaignData?.totalCampaignViews || 0}
+                    />
+                </>
+            )}
+
+            {/* Content Tab */}
+            {tab === 'content' && (
+                <>
+                    {data && <AnalyticsSummary summary={data.summary} realTime={realTime} />}
+                    <h2 className="text-sm font-bold text-gray-700 dark:text-white">Content Performance</h2>
+                    <ContentAnalyticsPanel
+                        content={contentData?.content || []}
+                        authors={contentData?.authors || []}
+                        categories={contentData?.categories || []}
+                        totalArticleViews={contentData?.totalArticleViews || 0}
+                        loading={contentLoading}
+                    />
                 </>
             )}
 

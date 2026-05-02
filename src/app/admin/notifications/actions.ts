@@ -116,7 +116,7 @@ export async function deleteBroadcast(broadcastId: string) {
 
         revalidatePath("/admin/notifications");
         return { success: true };
-    } catch (error) {
+    } catch {
         return { success: false, error: "Failed to delete" };
     }
 }

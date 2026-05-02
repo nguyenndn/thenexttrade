@@ -35,7 +35,7 @@ export function StatCard({ title, value, change, icon: Icon, trend, color = "blu
     };
 
     return (
-        <div className={`bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group border-t-4 ${borderTopStyles[color] || borderTopStyles.blue}`}>
+        <div className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow group border-t-4 ${borderTopStyles[color] || borderTopStyles.blue}`}>
             <div className="flex justify-between items-start">
                 <div>
                     <p className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">{title}</p>

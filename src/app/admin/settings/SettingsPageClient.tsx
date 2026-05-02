@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { User, Bell, Lock, Globe, Save, Loader2, Camera, Upload, Pencil, X, MessageSquare, Shield, Palette, Send, Megaphone } from "lucide-react";
+import { User, Bell, Lock, Globe, Save, Camera, Shield, Palette, Send, Megaphone } from "lucide-react";
 import { toast } from "sonner";
 import { updateProfile, updateSystemConfig } from "./actions";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";

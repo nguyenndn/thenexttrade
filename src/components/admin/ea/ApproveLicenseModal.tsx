@@ -20,7 +20,7 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [expiryDate, setExpiryDate] = useState("");
-    const [note, setNote] = useState("");
+    const [note, _setNote] = useState("");
     const [isLifetime, setIsLifetime] = useState(true);
 
     if (!license) return null;

@@ -3,7 +3,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { SearchBar } from "@/components/search/SearchBar";
+
 import { Loader2, FileText, User as UserIcon, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";

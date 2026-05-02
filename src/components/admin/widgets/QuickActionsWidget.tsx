@@ -12,7 +12,7 @@ export function QuickActionsWidget() {
             icon: PenTool,
             href: "/admin/articles/create",
             textColor: "text-blue-500",
-            bgColor: "bg-blue-50 dark:bg-blue-500/10"
+            bgColor: "bg-blue-50 dark:bg-blue-500/10",
         },
         {
             title: "Manage Users",
@@ -20,7 +20,7 @@ export function QuickActionsWidget() {
             icon: Users,
             href: "/admin/users",
             textColor: "text-cyan-500",
-            bgColor: "bg-cyan-50 dark:bg-cyan-500/10"
+            bgColor: "bg-cyan-50 dark:bg-cyan-500/10",
         },
         {
             title: "Manage Quizzes",
@@ -28,7 +28,7 @@ export function QuickActionsWidget() {
             icon: Layers,
             href: "/admin/quizzes",
             textColor: "text-amber-500",
-            bgColor: "bg-amber-50 dark:bg-amber-500/10"
+            bgColor: "bg-amber-50 dark:bg-amber-500/10",
         },
         {
             title: "Settings",
@@ -36,30 +36,27 @@ export function QuickActionsWidget() {
             icon: Settings,
             href: "/admin/settings",
             textColor: "text-emerald-500",
-            bgColor: "bg-emerald-50 dark:bg-emerald-500/10"
-        }
+            bgColor: "bg-emerald-50 dark:bg-emerald-500/10",
+        },
     ];
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
-            <h3 className="text-lg font-bold mb-4 text-gray-700 dark:text-white">Quick Actions</h3>
-            <div className="grid grid-cols-1 gap-4">
-                {actions.map((action, idx) => (
-                    <Link
-                        key={idx}
-                        href={action.href}
-                        className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border border-transparent hover:border-gray-200 dark:hover:border-white/10 group"
-                    >
-                        <div className={`p-3 rounded-xl ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform`}>
-                            <action.icon size={20} aria-hidden="true" />
-                        </div>
-                        <div>
-                            <div className="font-bold text-gray-700 dark:text-white text-sm">{action.title}</div>
-                            <div className="text-xs text-gray-600">{action.description}</div>
-                        </div>
-                    </Link>
-                ))}
-            </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {actions.map((action, idx) => (
+                <Link
+                    key={idx}
+                    href={action.href}
+                    className="flex flex-col items-center gap-2.5 p-5 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group text-center"
+                >
+                    <div className={`p-3 rounded-xl ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform`}>
+                        <action.icon size={20} aria-hidden="true" />
+                    </div>
+                    <div>
+                        <div className="font-bold text-gray-700 dark:text-white text-sm">{action.title}</div>
+                        <div className="text-xs text-gray-400 mt-0.5">{action.description}</div>
+                    </div>
+                </Link>
+            ))}
         </div>
     );
 }

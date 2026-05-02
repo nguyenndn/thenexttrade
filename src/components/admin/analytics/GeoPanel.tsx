@@ -1,32 +1,65 @@
 'use client';
 
-import { Globe } from 'lucide-react';
+import { useState } from 'react';
+import { Globe, Map, List } from 'lucide-react';
 import { COUNTRY_NAMES, COUNTRY_FLAGS } from './types';
+import dynamic from 'next/dynamic';
+
+// Lazy load WorldMap to avoid SSR issues with d3
+const WorldMap = dynamic(
+    () => import('./WorldMap').then(mod => ({ default: mod.WorldMap })),
+    { ssr: false, loading: () => <div className="w-full h-[260px] bg-gray-100 dark:bg-white/5 rounded-lg animate-pulse" /> }
+);
 
 interface Props {
     countries: Array<{ country: string; views: number }>;
 }
 
 export function GeoPanel({ countries }: Props) {
+    const [view, setView] = useState<'map' | 'table'>('map');
     const total = countries.reduce((s, c) => s + c.views, 0);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6">
-            <div className="flex items-center justify-between mb-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
+            <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-indigo-500" />
-                    <h2 className="text-base font-semibold text-gray-900 dark:text-white">Countries</h2>
+                    <h2 className="text-sm font-bold text-gray-900 dark:text-white">Geographic Distribution</h2>
                 </div>
-                <span className="text-xs text-gray-400">{countries.length} countries</span>
+                <div className="flex items-center gap-1">
+                    <span className="text-xs text-gray-400 mr-2">{countries.length} countries</span>
+                    <button
+                        onClick={() => setView('map')}
+                        className={`p-1.5 rounded-lg transition-colors ${view === 'map' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500' : 'text-gray-400 hover:text-gray-600'}`}
+                        aria-label="Map view"
+                    >
+                        <Map size={14} />
+                    </button>
+                    <button
+                        onClick={() => setView('table')}
+                        className={`p-1.5 rounded-lg transition-colors ${view === 'table' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500' : 'text-gray-400 hover:text-gray-600'}`}
+                        aria-label="Table view"
+                    >
+                        <List size={14} />
+                    </button>
+                </div>
             </div>
 
-            <div className="space-y-2.5 max-h-[400px] overflow-y-auto pr-1">
+            {/* Map View */}
+            {view === 'map' && countries.length > 0 && (
+                <div className="mb-4 rounded-lg overflow-hidden border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-[#12141a]">
+                    <WorldMap countries={countries} />
+                </div>
+            )}
+
+            {/* Country Table (always shown, scrollable) */}
+            <div className={`space-y-0.5 overflow-y-auto pr-1 ${view === 'map' ? 'max-h-[200px]' : 'max-h-[400px]'}`}>
                 {countries.map((c, i) => {
                     const pct = total > 0 ? Math.round((c.views / total) * 100) : 0;
                     return (
                         <div key={c.country} className="group flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/3 transition-colors">
-                            <span className="text-sm w-6 text-center shrink-0">{i + 1}</span>
-                            <span className="text-lg shrink-0">{COUNTRY_FLAGS[c.country] || '🌍'}</span>
+                            <span className="text-xs w-5 text-center shrink-0 text-gray-400 font-mono">{i + 1}</span>
+                            <span className="text-base shrink-0">{COUNTRY_FLAGS[c.country] || '🌍'}</span>
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between mb-1">
                                     <span className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">

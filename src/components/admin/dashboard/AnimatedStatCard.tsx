@@ -141,7 +141,7 @@ export function AnimatedStatCard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className={`bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-lg transition-shadow border-t-4 ${cs.borderTop} cursor-default`}
+            className={`bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-lg transition-shadow border-t-4 ${cs.borderTop} cursor-default`}
         >
             <div className="flex justify-between items-start">
                 <div>

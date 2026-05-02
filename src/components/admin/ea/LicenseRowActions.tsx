@@ -14,7 +14,7 @@ interface LicenseRowActionsProps {
 export function LicenseRowActions({ license, adminId }: LicenseRowActionsProps) {
     const [isApproveOpen, setIsApproveOpen] = useState(false);
     const [isRejectOpen, setIsRejectOpen] = useState(false);
-    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
 
     const getIBLink = (broker: string) => {
         if (broker === "EXNESS") return "https://my.exness.com/partner/";

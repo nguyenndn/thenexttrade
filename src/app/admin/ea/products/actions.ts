@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { prisma } from "@/lib/prisma";
-import { createEAProductSchema, updateEAProductSchema, uploadVersionSchema } from "@/lib/validations/ea-license";
+import { createEAProductSchema, updateEAProductSchema } from "@/lib/validations/ea-license";
 import { ErrorCode } from "@/lib/errors/ea-license";
 import { CreateEAProductInput, UpdateEAProductInput } from "@/types/ea-license";
 
@@ -184,7 +184,7 @@ export async function uploadEAFile(
         const name = folder ? `${folder}/${file.name}` : `thumbnail_${file.name}`;
         const path = `${productId}/${name}`;
 
-        const { data: uploadData, error: uploadError } = await supabaseAdmin
+        const { error: uploadError } = await supabaseAdmin
             .storage
             .from("ea-products")
             .upload(path, file, {

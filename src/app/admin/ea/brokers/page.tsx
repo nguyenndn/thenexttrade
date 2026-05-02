@@ -45,7 +45,6 @@ export default async function EABrokersPage() {
                                 <td className="p-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-lg bg-white p-1 border border-gray-100 dark:border-white/10 flex items-center justify-center">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img src={broker.logo} alt={broker.name} className="max-w-full max-h-full object-contain" />
                                         </div>
                                         <div>

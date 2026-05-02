@@ -5,6 +5,8 @@ export interface AnalyticsData {
         uniqueVisitors: number;
         realTimeVisitors: number;
         avgPagesPerVisitor: number;
+        viewsTrend: number;
+        visitorsTrend: number;
     };
     trend: Array<{ date: string; views: number }>;
     topCountries: Array<{ country: string; views: number }>;

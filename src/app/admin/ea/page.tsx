@@ -208,8 +208,8 @@ export default async function EADashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Pending Requests */}
                 <AnimatedSection delay={0.7}>
-                    <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
-                        <div className="flex items-center justify-between mb-5">
+                    <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-5 border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
+                        <div className="flex items-center justify-between mb-4">
                             <h2 className="text-sm font-bold text-gray-700 dark:text-white uppercase tracking-wider flex items-center gap-2">
                                 <Clock className="text-amber-500" size={18} />
                                 Pending Requests
@@ -260,8 +260,8 @@ export default async function EADashboardPage() {
 
                 {/* Active Licenses by Broker */}
                 <AnimatedSection delay={0.8}>
-                    <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm h-full">
-                        <h2 className="text-sm font-bold text-gray-700 dark:text-white uppercase tracking-wider flex items-center gap-2 mb-5">
+                    <div className="bg-white dark:bg-[#0B0E14] rounded-xl p-5 border border-gray-200 dark:border-white/10 shadow-sm h-full">
+                        <h2 className="text-sm font-bold text-gray-700 dark:text-white uppercase tracking-wider flex items-center gap-2 mb-4">
                             <Briefcase className="text-primary" size={18} />
                             Active by Broker
                         </h2>

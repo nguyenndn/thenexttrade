@@ -218,16 +218,18 @@ export default function AdminQuotesPage() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-5 text-center">
-                                            <button
+                                            <Button
+                                                variant="ghost"
                                                 onClick={() => handleToggleActive(quote)}
-                                                className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold transition-all ${
+                                                className={`inline-flex items-center px-2.5 py-1 h-auto rounded-full text-xs font-bold transition-all ${
                                                     quote.isActive
-                                                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                                        : 'bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-600'
+                                                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-500/20'
+                                                        : 'bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-600 hover:bg-gray-200 dark:hover:bg-white/10'
                                                 }`}
+                                                aria-label={`Toggle quote ${quote.isActive ? 'inactive' : 'active'}`}
                                             >
                                                 {quote.isActive ? 'Active' : 'Inactive'}
-                                            </button>
+                                            </Button>
                                         </td>
                                         <td className="px-6 py-5 text-right">
                                             <div className="flex justify-end">

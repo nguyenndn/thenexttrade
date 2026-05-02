@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Plus, BookOpen, Layers, MoreVertical, Edit, Trash } from "lucide-react";
+import { Plus, Layers, MoreVertical, Edit, Trash } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { CreateLevelModal } from "./CreateLevelModal";
 import { EditLevelModal } from "./EditLevelModal";
@@ -58,7 +58,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                 toast.error(`Delete failed: ${res.error}`, { id: toastId });
                 setIsConfirmOpen(false);
             }
-        } catch (error) {
+        } catch {
             toast.error("An error occurred", { id: toastId });
             setIsConfirmOpen(false);
         } finally {

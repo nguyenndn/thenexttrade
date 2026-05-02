@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Save, Plus, Trash2, CheckCircle, ArrowLeft, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Save, Plus, Trash2, CheckCircle, Loader2 } from "lucide-react";
+
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { SortableItem } from "@/components/ui/SortableItem";

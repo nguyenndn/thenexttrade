@@ -1,33 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import { Pencil, RotateCcw, Bell, X, Send, Loader2 } from "lucide-react";
+import { Pencil, Bell, X, Send, Loader2, KeyRound } from "lucide-react";
 import { resetUserPassword, sendUserNotification } from "./actions";
-import Link from "next/link";
+import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ChangeRoleModal } from "@/components/admin/users/ChangeRoleModal";
+import { toast } from "sonner";
 
 interface QuickActionsProps {
     userId: string;
     userEmail: string;
+    userName: string;
+    currentRole: string;
 }
 
-export function QuickActions({ userId, userEmail }: QuickActionsProps) {
+export function QuickActions({ userId, userEmail, userName, currentRole }: QuickActionsProps) {
     const [showNotifyModal, setShowNotifyModal] = useState(false);
+    const [showResetConfirm, setShowResetConfirm] = useState(false);
+    const [showRoleModal, setShowRoleModal] = useState(false);
     const [notifyTitle, setNotifyTitle] = useState("");
     const [notifyMessage, setNotifyMessage] = useState("");
     const [loading, setLoading] = useState<string | null>(null);
-    const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
     const handleResetPassword = async () => {
-        if (!confirm(`Send password reset email to ${userEmail}?`)) return;
         setLoading("reset");
-        setFeedback(null);
         const result = await resetUserPassword(userId);
         setLoading(null);
-        setFeedback(result.success
-            ? { type: "success", message: "Password reset email sent!" }
-            : { type: "error", message: result.error || "Failed to send" }
-        );
-        setTimeout(() => setFeedback(null), 3000);
+        setShowResetConfirm(false);
+        if (result.success) {
+            toast.success("Password reset email sent!");
+        } else {
+            toast.error(result.error || "Failed to send reset email");
+        }
     };
 
     const handleSendNotification = async () => {
@@ -36,98 +41,125 @@ export function QuickActions({ userId, userEmail }: QuickActionsProps) {
         const result = await sendUserNotification(userId, notifyTitle, notifyMessage);
         setLoading(null);
         if (result.success) {
-            setFeedback({ type: "success", message: "Notification sent!" });
+            toast.success("Notification sent!");
             setNotifyTitle("");
             setNotifyMessage("");
             setShowNotifyModal(false);
         } else {
-            setFeedback({ type: "error", message: result.error || "Failed to send" });
+            toast.error(result.error || "Failed to send notification");
         }
-        setTimeout(() => setFeedback(null), 3000);
     };
 
     return (
         <>
             <div className="p-4 border-t border-gray-100 dark:border-white/5 space-y-2">
-                {feedback && (
-                    <div className={`text-xs font-bold text-center py-1.5 rounded-lg ${feedback.type === "success"
-                        ? "bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400"
-                        : "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
-                        }`}>
-                        {feedback.message}
-                    </div>
-                )}
                 <div className="flex gap-2">
-                    <Link
-                        href={`/admin/users/${userId}/edit`}
-                        className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-gray-600 dark:text-gray-500 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors"
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowRoleModal(true)}
+                        className="flex-1 h-9 text-xs font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl"
                     >
-                        <Pencil size={13} /> Edit
-                    </Link>
-                    <button
-                        onClick={handleResetPassword}
-                        disabled={loading === "reset"}
-                        className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-gray-600 dark:text-gray-500 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50"
+                        <Pencil size={13} className="mr-1.5" /> Edit Role
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowResetConfirm(true)}
+                        className="flex-1 h-9 text-xs font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl"
                     >
-                        {loading === "reset" ? <Loader2 size={13} className="animate-spin" /> : <RotateCcw size={13} />} Reset PW
-                    </button>
-                    <button
+                        <KeyRound size={13} className="mr-1.5" /> Reset PW
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setShowNotifyModal(true)}
-                        className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-gray-600 dark:text-gray-500 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors"
+                        className="flex-1 h-9 text-xs font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl"
                     >
-                        <Bell size={13} /> Notify
-                    </button>
+                        <Bell size={13} className="mr-1.5" /> Notify
+                    </Button>
                 </div>
             </div>
+
+            {/* Reset Password Confirm Dialog */}
+            <ConfirmDialog
+                isOpen={showResetConfirm}
+                title="Reset Password"
+                description={`Send a password reset email to ${userEmail}? The user will receive a link to create a new password.`}
+                confirmText="Send Reset Email"
+                cancelText="Cancel"
+                isLoading={loading === "reset"}
+                onConfirm={handleResetPassword}
+                onCancel={() => setShowResetConfirm(false)}
+                variant="info"
+            />
+
+            {/* Change Role Modal */}
+            <ChangeRoleModal
+                isOpen={showRoleModal}
+                onClose={() => setShowRoleModal(false)}
+                userId={userId}
+                userName={userName}
+                currentRole={currentRole}
+            />
 
             {/* Notify Modal */}
             {showNotifyModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowNotifyModal(false)}>
-                    <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl w-full max-w-md mx-4 border border-gray-200 dark:border-white/10 shadow-2xl" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md mx-4 border border-gray-200 dark:border-white/10 shadow-2xl" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
                             <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <Bell size={18} className="text-primary" /> Send Notification
                             </h3>
-                            <button onClick={() => setShowNotifyModal(false)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setShowNotifyModal(false)}
+                                className="h-8 w-8 rounded-xl"
+                                aria-label="Close notification modal"
+                            >
                                 <X size={18} className="text-gray-500" />
-                            </button>
+                            </Button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Title</label>
+                                <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">Title</label>
                                 <input
                                     type="text"
                                     value={notifyTitle}
                                     onChange={e => setNotifyTitle(e.target.value)}
                                     placeholder="Notification title..."
-                                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-sm text-gray-700 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Message</label>
+                                <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">Message</label>
                                 <textarea
                                     value={notifyMessage}
                                     onChange={e => setNotifyMessage(e.target.value)}
                                     placeholder="Write your message..."
                                     rows={3}
-                                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-sm text-gray-700 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors resize-none"
                                 />
                             </div>
                         </div>
                         <div className="p-6 pt-0 flex gap-3">
-                            <button
+                            <Button
+                                variant="outline"
                                 onClick={() => setShowNotifyModal(false)}
-                                className="flex-1 px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-gray-500 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors"
+                                className="flex-1 rounded-xl"
                             >
                                 Cancel
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                variant="primary"
                                 onClick={handleSendNotification}
                                 disabled={!notifyTitle.trim() || !notifyMessage.trim() || loading === "notify"}
-                                className="flex-1 px-4 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 rounded-xl"
                             >
-                                {loading === "notify" ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Send
-                            </button>
+                                {loading === "notify" ? <Loader2 size={14} className="animate-spin mr-2" /> : <Send size={14} className="mr-2" />}
+                                Send
+                            </Button>
                         </div>
                     </div>
                 </div>

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     try {
         const body = await request.json();
-        const { pathname, referrer, country, city, region, device, browser, os, sessionId } = body;
+        const { pathname, referrer, country, city, region, device, browser, os, sessionId, utmSource, utmMedium, utmCampaign } = body;
 
         if (!pathname || !sessionId) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
                 browser: browser || null,
                 os: os || null,
                 sessionId,
+                utmSource: utmSource || null,
+                utmMedium: utmMedium || null,
+                utmCampaign: utmCampaign || null,
             },
         });
 

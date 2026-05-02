@@ -26,6 +26,7 @@ export async function GET() {
                 country: true,
                 device: true,
                 browser: true,
+                utmSource: true,
                 createdAt: true,
             },
         });

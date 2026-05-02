@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    Plus, BookOpen, FileText, Layers, ChevronDown, ChevronRight,
-    Edit, Trash2, MoreVertical, ArrowLeft, Clock, GripVertical, ListChecks
+    Plus, FileText, Layers, ChevronDown, ChevronRight,
+    Edit, Trash2, MoreVertical, Clock, GripVertical, ListChecks
 } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { CreateModuleModal } from "./CreateModuleModal";

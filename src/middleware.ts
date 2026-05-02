@@ -303,6 +303,11 @@ export async function middleware(request: NextRequest) {
         const ua = parseUserAgent(userAgent);
         const sessionId = generateSessionId(ip, userAgent ?? '');
 
+        // Extract UTM parameters for campaign tracking
+        const utmSource = request.nextUrl.searchParams.get('utm_source') || null;
+        const utmMedium = request.nextUrl.searchParams.get('utm_medium') || null;
+        const utmCampaign = request.nextUrl.searchParams.get('utm_campaign') || null;
+
         // Fire and forget — don't await, don't block response
         const collectUrl = new URL('/api/analytics/collect', request.url);
         fetch(collectUrl.toString(), {
@@ -321,6 +326,9 @@ export async function middleware(request: NextRequest) {
                 browser: ua.browser,
                 os: ua.os,
                 sessionId,
+                utmSource,
+                utmMedium,
+                utmCampaign,
             }),
         }).catch(() => { /* silently fail — analytics should never break the app */ });
     }

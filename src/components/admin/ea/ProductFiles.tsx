@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Upload, Loader2, Pen } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 import { EAProduct } from "@/types/ea-license";
 import { Button } from "@/components/ui/Button";
 import { uploadEAFile } from "@/app/admin/ea/products/actions";

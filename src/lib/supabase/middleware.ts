@@ -40,13 +40,18 @@ export async function updateSession(request: NextRequest) {
 
     const path = request.nextUrl.pathname;
 
-    // 1. Protected Routes (Dashboard, Admin)
-    if (!user && (path.startsWith('/dashboard') || path.startsWith('/admin'))) {
+    // 1. Protected Routes (Dashboard, Admin — except admin login page)
+    if (!user && (path.startsWith('/dashboard') || (path.startsWith('/admin') && !path.startsWith('/admin/login')))) {
         const loginUrl = new URL('/auth/login', request.url)
         return NextResponse.redirect(loginUrl)
     }
 
-    // 2. Auth Routes (Login/Register) - If logged in, redirect to Academy (User Hub)
+    // 2. Admin Login — already authenticated users go to admin dashboard
+    if (user && path.startsWith('/admin/login')) {
+        return NextResponse.redirect(new URL('/admin', request.url))
+    }
+
+    // 3. Auth Routes (Login/Register) - If logged in, redirect to Academy (User Hub)
     if (user && (path.startsWith('/auth/login') || path.startsWith('/auth/signup'))) {
         return NextResponse.redirect(new URL('/academy', request.url))
     }

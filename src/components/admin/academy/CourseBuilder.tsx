@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, ArrowLeft, ChevronRight } from "lucide-react";
+import { Plus, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import {
     DndContext,
@@ -80,7 +80,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ items: reorderData }),
-                }).catch(err => toast.error("Failed to save order"));
+                }).catch(_err => toast.error("Failed to save order"));
 
                 return newItems;
             });
@@ -118,7 +118,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ items: reorderData }),
-        }).catch(err => toast.error("Failed to save lesson order"));
+        }).catch(_err => toast.error("Failed to save lesson order"));
     };
 
     // --- Delete Handlers ---

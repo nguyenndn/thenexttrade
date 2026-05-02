@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Modal } from "@/components/ui/Modal";
-import { Input } from "@/components/ui/Input";
+
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -53,7 +53,7 @@ export function CreateLessonModal({ isOpen, onClose, moduleId, onSuccess }: Crea
     });
 
     // Auto-generate slug from title
-    const title = watch("title");
+    const _title = watch("title");
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setValue("title", val);

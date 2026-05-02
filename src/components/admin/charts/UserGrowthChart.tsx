@@ -2,8 +2,8 @@
 "use client";
 
 import { useMemo } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Card } from '@/components/ui/Card';
+import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { TrendingUp, Users } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface DataPoint {
@@ -16,7 +16,6 @@ interface UserGrowthChartProps {
 }
 
 export function UserGrowthChart({ data = [] }: UserGrowthChartProps) {
-    // Format dates for display
     const formattedData = useMemo(() => {
         if (!data) return [];
         return data.map(item => ({
@@ -25,75 +24,82 @@ export function UserGrowthChart({ data = [] }: UserGrowthChartProps) {
         }));
     }, [data]);
 
+    const totalNew = useMemo(() => data.reduce((sum, d) => sum + d.count, 0), [data]);
+
     if (!data || data.length === 0) {
         return (
-            <Card className="p-6 h-full flex flex-col bg-white dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 rounded-xl">
-                <div className="mb-6">
-                    <h3 className="text-lg font-bold text-gray-700 dark:text-white">User Growth</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">No data available</p>
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
+                <div className="flex items-center gap-2 mb-3">
+                    <Users size={16} className="text-gray-400" />
+                    <h3 className="text-sm font-bold text-gray-700 dark:text-white">User Growth</h3>
                 </div>
-                <div className="flex-1 flex items-center justify-center text-gray-500">
+                <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
                     No signups in the last 30 days
                 </div>
-            </Card>
+            </div>
         );
     }
 
     return (
-        <Card className="p-6 h-full flex flex-col bg-white dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow rounded-xl">
-            <div className="mb-6">
-                <h3 className="text-lg font-bold text-gray-700 dark:text-white">User Growth</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">New registrations over the last 30 days</p>
+        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                    <Users size={16} className="text-gray-400" />
+                    <h3 className="text-sm font-bold text-gray-700 dark:text-white">User Growth</h3>
+                    <span className="text-xs text-gray-400">30d</span>
+                </div>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/10">
+                    <TrendingUp size={12} className="text-primary" />
+                    <span className="text-sm font-bold text-primary">{totalNew}</span>
+                    <span className="text-xs text-primary/60">new</span>
+                </div>
             </div>
 
-            <div className="flex-1 min-h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
+            {/* Chart */}
+            <div className="flex-1 min-h-0" style={{ height: 140 }}>
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <AreaChart
                         data={formattedData}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                        margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
                     >
                         <defs>
                             <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                <stop offset="5%" stopColor="var(--color-primary, #3b82f6)" stopOpacity={0.2} />
+                                <stop offset="95%" stopColor="var(--color-primary, #3b82f6)" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
                         <XAxis
                             dataKey="displayDate"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#9ca3af', fontSize: 12 }}
-                            dy={10}
-                        />
-                        <YAxis
-                            axisLine={false}
-                            tickLine={false}
-                            tick={{ fill: '#9ca3af', fontSize: 12 }}
-                            allowDecimals={false}
+                            tick={{ fill: '#9ca3af', fontSize: 10 }}
+                            dy={4}
+                            interval="preserveStartEnd"
                         />
                         <Tooltip
                             contentStyle={{
                                 backgroundColor: '#1f2937',
                                 border: 'none',
                                 borderRadius: '8px',
-                                color: '#fff'
+                                color: '#fff',
+                                fontSize: '11px',
+                                padding: '4px 8px',
                             }}
                             itemStyle={{ color: '#fff' }}
-                            labelStyle={{ color: '#9ca3af' }}
+                            labelStyle={{ color: '#9ca3af', fontSize: '10px' }}
                         />
                         <Area
                             type="monotone"
                             dataKey="count"
-                            stroke="#3b82f6"
-                            strokeWidth={3}
+                            stroke="var(--color-primary, #3b82f6)"
+                            strokeWidth={2}
                             fillOpacity={1}
                             fill="url(#colorCount)"
                         />
                     </AreaChart>
                 </ResponsiveContainer>
             </div>
-        </Card>
+        </div>
     );
 }
-

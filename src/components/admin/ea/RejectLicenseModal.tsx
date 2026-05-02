@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
-import { PremiumInput } from "@/components/ui/PremiumInput";
+
 import { toast } from "sonner";
 import { rejectLicense } from "@/app/admin/ea/actions";
 import { useRouter } from "next/navigation";

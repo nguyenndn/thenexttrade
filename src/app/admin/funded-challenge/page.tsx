@@ -8,7 +8,7 @@ import {
     Power,
     Loader2,
     Construction,
-    ExternalLink,
+
 } from "lucide-react";
 import { toast } from "sonner";
 

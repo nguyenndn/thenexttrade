@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, Save, BookOpen, Clock, Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
+
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import { ModuleSelector } from "@/components/admin/academy/ModuleSelector";

@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { X, Upload, Image as ImageIcon, Search, Trash2, Check, ExternalLink, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, Upload, Image as ImageIcon, Search, Check, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
@@ -27,7 +27,7 @@ interface MediaLibraryModalProps {
     allowMultiple?: boolean; // Future proofing
 }
 
-export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple = false }: MediaLibraryModalProps) {
+export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple: _allowMultiple = false }: MediaLibraryModalProps) {
     const [activeTab, setActiveTab] = useState<'upload' | 'library'>('upload');
     const [mediaList, setMediaList] = useState<Media[]>([]);
     const [selectedMedia, setSelectedMedia] = useState<Media | null>(null);

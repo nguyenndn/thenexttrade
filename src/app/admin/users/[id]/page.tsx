@@ -4,7 +4,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import {
     Mail, Clock, ShieldCheck, Award, GraduationCap, LineChart, FileText,
-    Download, Key, Monitor, Globe, Trophy, StickyNote
+    Download, Key, Monitor, Globe, Trophy
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/Button";
@@ -239,7 +239,7 @@ export default async function UserDetailPage({
                         </div>
 
                         {/* Quick Actions */}
-                        <QuickActions userId={user.id} userEmail={user.email || ""} />
+                        <QuickActions userId={user.id} userEmail={user.email || ""} userName={user.name || "User"} currentRole={user.profile?.role || "USER"} />
                     </div>
 
                     {/* Trading Accounts */}

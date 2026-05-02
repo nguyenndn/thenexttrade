@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
 import {
     Sparkles, Loader2, Link2, RefreshCw, Check, X, Eye, ClipboardPaste,
-    Search, Globe, MessageCircle, Twitter, Plus, Trash2, Shield, FileText,
+    Search, Globe, MessageCircle, Twitter, Shield, FileText,
     SearchCode, ExternalLink, Youtube,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";

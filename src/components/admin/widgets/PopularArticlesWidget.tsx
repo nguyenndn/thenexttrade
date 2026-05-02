@@ -27,7 +27,7 @@ export function PopularArticlesWidget({ articles }: { articles: Article[] }) {
     const maxViews = Math.max(...articles.map(a => a.views), 1);
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-emerald-500" aria-hidden="true" />
                 Trending News
