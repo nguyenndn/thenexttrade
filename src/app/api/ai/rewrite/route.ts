@@ -44,13 +44,14 @@ interface ExtractedImage {
     placeholder: string;
 }
 
-function extractImages(markdown: string): { text: string; images: ExtractedImage[] } {
+function extractImages(content: string): { text: string; images: ExtractedImage[] } {
     const images: ExtractedImage[] = [];
-    const imgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
-    let match;
     let index = 0;
 
-    while ((match = imgRegex.exec(markdown)) !== null) {
+    // 1. Extract markdown images: ![alt](url)
+    const mdRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+    let match;
+    while ((match = mdRegex.exec(content)) !== null) {
         const imgUrl = match[2].trim();
         if (imgUrl.startsWith('data:') || imgUrl.includes('1x1') || imgUrl.includes('pixel')) continue;
         index++;
@@ -61,7 +62,23 @@ function extractImages(markdown: string): { text: string; images: ExtractedImage
         });
     }
 
-    return { text: markdown, images };
+    // 2. Extract HTML images: <img src="..." alt="..." />
+    const htmlRegex = /<img\s+[^>]*src=["']([^"']+)["'][^>]*>/gi;
+    while ((match = htmlRegex.exec(content)) !== null) {
+        const imgUrl = match[1].trim();
+        if (imgUrl.startsWith('data:') || imgUrl.includes('1x1') || imgUrl.includes('pixel')) continue;
+        // Skip if we already have this URL from markdown extraction
+        if (images.some(img => img.url === imgUrl)) continue;
+        index++;
+        const altMatch = match[0].match(/alt=["']([^"']*?)["']/i);
+        images.push({
+            alt: altMatch?.[1] || `Image ${index}`,
+            url: imgUrl,
+            placeholder: `[IMAGE_${index}]`,
+        });
+    }
+
+    return { text: content, images };
 }
 
 // ============================================================================
@@ -300,6 +317,7 @@ function buildPrompt({
     toneInstructions,
     sourceContent,
     images,
+    focusKeyword,
 }: {
     mode: "summary" | "rewrite";
     systemPrompt: string;
@@ -307,6 +325,7 @@ function buildPrompt({
     toneInstructions: string;
     sourceContent: string;
     images: ExtractedImage[];
+    focusKeyword?: string;
 }): string {
     if (mode === "summary") {
         return `You are a content analyst. Read the following article(s) and create:
@@ -335,19 +354,24 @@ IMPORTANT: Output MUST be valid JSON only. No markdown code blocks. No extra tex
         ? `\n\n## Available Images (use these placeholders in your HTML where relevant):\n${images.map(img => `- ${img.placeholder}: "${img.alt}"`).join('\n')}\n\nPlace image placeholders between paragraphs where they best illustrate the content.`
         : '';
 
+    const seoInstructions = focusKeyword
+        ? `\n\n## SEO KEYPHRASE REQUIREMENT (MANDATORY):\nFocus Keyphrase: "${focusKeyword}"\n- The TITLE must contain the exact keyphrase "${focusKeyword}"\n- The metaDescription must contain the exact keyphrase "${focusKeyword}"\n- Use the keyphrase naturally in the first paragraph of content\n- Do NOT keyword-stuff — use it 2-3 times in the full content`
+        : '';
+
     return `${systemPrompt}
 
 ## WRITER PERSONA:
 ${persona}
 
 ${toneInstructions ? `## SELECTED TONE:\n${toneInstructions}` : ""}
+${seoInstructions}
 
 ## SOURCE CONTENT TO REWRITE:
 ${sourceContent}
 ${imageInstructions}
 
 Remember: Output MUST be valid JSON only. No markdown code blocks. No extra text.
-Format: {"title": "...", "content": "<h2>...</h2><p>...</p>..."}`;
+Format: {"title": "...", "content": "<h2>...</h2><p>...</p>...", "metaDescription": "..."}`;
 }
 
 // ============================================================================
@@ -371,6 +395,7 @@ export async function POST(req: NextRequest) {
             mode = "rewrite",
             tone = "",        // new: tone selection
             snippets,         // new: snippet fallbacks from search results
+            focusKeyword,     // SEO: focus keyphrase for articles
         } = body;
 
         // Resolve URL list (support both legacy single URL and new multi-URL)
@@ -423,6 +448,7 @@ export async function POST(req: NextRequest) {
             toneInstructions,
             sourceContent,
             images: allImages,
+            focusKeyword: focusKeyword || undefined,
         });
 
         // 4. Call Gemini with JSON mode

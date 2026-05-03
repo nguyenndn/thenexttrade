@@ -47,6 +47,8 @@ export default async function ArticleEditPage({
         isFeatured: article.isFeatured || false,
         focusKeyword: article.focusKeyword || "",
         updatedAt: article.updatedAt?.toISOString() || "",
+        tone: article.tone || "",
+        sourceUrls: article.sourceUrls || [],
     };
 
     return (

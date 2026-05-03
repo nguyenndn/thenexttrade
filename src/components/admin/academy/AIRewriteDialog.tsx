@@ -31,6 +31,7 @@ interface AIRewriteDialogProps {
         metaDescription?: string;
     }) => void;
     lessonTitle?: string;
+    focusKeyword?: string;
 }
 
 export interface AIRewriteDialogRef {
@@ -64,7 +65,7 @@ const SOURCE_ICONS: Record<string, React.ReactNode> = {
 // ============================================================================
 
 export const AIRewriteDialog = forwardRef<AIRewriteDialogRef, AIRewriteDialogProps>(
-function AIRewriteDialogInner({ onApply, lessonTitle }, ref) {
+function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
     const [isOpen, setIsOpen] = useState(false);
 
     useImperativeHandle(ref, () => ({
@@ -244,6 +245,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle }, ref) {
                     mode,
                     tone,
                     snippets: snippetsMap,
+                    focusKeyword: focusKeyword || undefined,
                 }),
             });
 

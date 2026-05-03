@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Save, Trash2, Clock, FileText, CheckCircle, AlertCircle, CheckSquare, Square, ChevronDown, Image as ImageIcon, X as XIcon, BookOpen, ListTree } from "lucide-react";
+import { Loader2, Save, Trash2, Clock, FileText, CheckCircle, AlertCircle, CheckSquare, Square, ChevronDown, Image as ImageIcon, X as XIcon, BookOpen, ListTree, Sparkles, Lock, Unlock, RefreshCw } from "lucide-react";
 
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { MediaLibraryModal } from "@/components/admin/media/MediaLibraryModal";
+import { AIRewriteDialog, AIRewriteDialogRef } from "@/components/admin/academy/AIRewriteDialog";
+import { ContentSourceCard } from "@/components/admin/academy/ContentSourceCard";
 import { TagInput } from "./TagInput";
 import { RichTextEditor } from "./RichTextEditor";
 import { SeoAnalysisPanel } from "./SeoAnalysisPanel";
@@ -36,6 +38,8 @@ interface ArticleFormProps {
         schemaType?: string;
         estimatedTime?: number | null;
         updatedAt?: string; // Added for draft comparison
+        tone?: string;
+        sourceUrls?: string[];
     };
     categories: { id: string; name: string }[];
     isEditMode?: boolean;
@@ -68,12 +72,16 @@ function FormSelect({ label, value, options, onChange, placeholder }: { label: s
 
 export function ArticleForm({ initialData, categories, isEditMode = false }: ArticleFormProps) {
     const router = useRouter();
+    const rewriteRef = useRef<AIRewriteDialogRef>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [authors, setAuthors] = useState<{ id: string, name: string }[]>([]);
     const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
     const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isSuggestingTags, setIsSuggestingTags] = useState(false);
+    const [autoExcerpt, setAutoExcerpt] = useState(!initialData?.excerpt);
+    const [autoKeyphrase, setAutoKeyphrase] = useState(!initialData?.focusKeyword);
 
     const [formData, setFormData] = useState({
         title: initialData?.title || "",
@@ -92,6 +100,8 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
         isFeatured: initialData?.isFeatured || false,
         schemaType: initialData?.schemaType || "ARTICLE",
         estimatedTime: initialData?.estimatedTime ?? null,
+        tone: initialData?.tone || "",
+        sourceUrls: initialData?.sourceUrls || [] as string[],
     });
 
     // Integrated Local Storage Auto-Save hook
@@ -210,6 +220,18 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
         if (score >= 20) return { label: 'Difficult', color: 'text-orange-500', score: Math.round(score) };
         return { label: 'Very Hard', color: 'text-red-500', score: Math.round(score) };
     }, [formData.content]);
+
+    // Auto-excerpt: update excerpt when content changes (if auto mode is ON)
+    useEffect(() => {
+        if (!autoExcerpt) return;
+        const text = formData.content?.replace(/<[^>]*>?/gm, '').trim() || '';
+        if (!text) return;
+        const excerpt = text.substring(0, 200) + (text.length > 200 ? '...' : '');
+        setFormData(prev => {
+            if (prev.excerpt === excerpt) return prev; // avoid infinite loop
+            return { ...prev, excerpt };
+        });
+    }, [formData.content, autoExcerpt]);
 
     // Unsaved changes warning
     useEffect(() => {
@@ -333,6 +355,39 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                     </Button>
                 )}
 
+                <AIRewriteDialog
+                    ref={rewriteRef}
+                    lessonTitle={formData.title}
+                    focusKeyword={formData.focusKeyword}
+                    onApply={({ title, content, tone, sourceUrls, metaDescription }) => {
+                        setFormData(prev => {
+                            const expectedOldSlug = prev.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+                            const shouldUpdateSlug = !prev.slug || prev.slug === expectedOldSlug;
+                            const newSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+                            return {
+                                ...prev,
+                                title,
+                                content,
+                                slug: shouldUpdateSlug ? newSlug : prev.slug,
+                                ...(tone && { tone }),
+                                ...(sourceUrls?.length && { sourceUrls }),
+                                ...(metaDescription && { metaDescription }),
+                            };
+                        });
+                    }}
+                />
+
+                {formData.content && formData.content.replace(/<[^>]*>?/gm, '').trim().length > 50 && (
+                    <Button
+                        variant="outline"
+                        onClick={() => rewriteRef.current?.openWithContent(formData.content)}
+                        className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20"
+                    >
+                        <RefreshCw size={14} />
+                        Rewrite Current
+                    </Button>
+                )}
+
                 <Button
                     variant="outline"
                     onClick={(e) => handleSubmit(e as unknown as React.FormEvent)}
@@ -426,6 +481,8 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         metaDescription={formData.metaDescription}
                         content={formData.content}
                         thumbnail={formData.thumbnail}
+                        autoKeyphrase={autoKeyphrase}
+                        onAutoKeyphraseChange={setAutoKeyphrase}
                         onAiGenerate={(field) => {
                             if (field === 'title') {
                                 setFormData(prev => ({ ...prev, metaTitle: prev.title.substring(0, 60) }));
@@ -672,7 +729,39 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         />
 
                         <div>
-                            <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">Tags</label>
+                            <div className="flex items-center justify-between mb-1">
+                                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider">Tags</label>
+                                <button
+                                    type="button"
+                                    disabled={isSuggestingTags || (!formData.title && !formData.content)}
+                                    onClick={async () => {
+                                        setIsSuggestingTags(true);
+                                        try {
+                                            const res = await fetch('/api/ai/suggest-tags', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({ title: formData.title, content: formData.content }),
+                                            });
+                                            const data = await res.json();
+                                            if (!res.ok) throw new Error(data.error);
+                                            setFormData(prev => ({ ...prev, tags: data.tagIds }));
+                                            const msg = data.newTagsCreated > 0
+                                                ? `${data.tags.length} tags suggested (${data.newTagsCreated} new created)`
+                                                : `${data.tags.length} tags suggested`;
+                                            toast.success(msg);
+                                        } catch (err: any) {
+                                            toast.error(err.message || 'Failed to suggest tags');
+                                        } finally {
+                                            setIsSuggestingTags(false);
+                                        }
+                                    }}
+                                    className="flex items-center gap-1 text-[10px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    title="AI will analyze your content and suggest relevant tags"
+                                >
+                                    {isSuggestingTags ? <Loader2 size={11} className="animate-spin" /> : <Sparkles size={11} />}
+                                    {isSuggestingTags ? 'Analyzing...' : 'AI Suggest'}
+                                </button>
+                            </div>
                             <TagInput
                                 value={formData.tags}
                                 onChange={(tags) => setFormData({ ...formData, tags })}
@@ -682,16 +771,48 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
 
                     {/* Excerpt */}
                     <div className="space-y-4">
-                        <div className="border-b border-gray-100 dark:border-white/10 pb-2">
+                        <div className="border-b border-gray-100 dark:border-white/10 pb-2 flex items-center justify-between">
                             <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">Excerpt</h3>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setAutoExcerpt(prev => {
+                                        const next = !prev;
+                                        if (next) {
+                                            // Generate excerpt from content immediately
+                                            const text = formData.content?.replace(/<[^>]*>?/gm, '').trim() || '';
+                                            const excerpt = text.substring(0, 200) + (text.length > 200 ? '...' : '');
+                                            setFormData(f => ({ ...f, excerpt }));
+                                        }
+                                        return next;
+                                    });
+                                }}
+                                className={`flex items-center gap-1 text-[10px] font-medium transition-colors ${
+                                    autoExcerpt
+                                        ? 'text-emerald-600 dark:text-emerald-400 hover:text-emerald-700'
+                                        : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                }`}
+                                title={autoExcerpt ? 'Auto-excerpt ON — click to edit manually' : 'Auto-excerpt OFF — click to generate from content'}
+                            >
+                                {autoExcerpt ? <Lock size={11} /> : <Unlock size={11} />}
+                                {autoExcerpt ? 'Auto' : 'Manual'}
+                            </button>
                         </div>
                         <textarea
-                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder-gray-400"
+                            className={`w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder-gray-400 ${
+                                autoExcerpt
+                                    ? 'bg-emerald-50/50 dark:bg-emerald-500/5 text-gray-500 dark:text-gray-400'
+                                    : 'bg-gray-50 dark:bg-black/20'
+                            }`}
                             rows={4}
                             placeholder="Short summary of the article..."
                             value={formData.excerpt}
-                            onChange={e => setFormData({ ...formData, excerpt: e.target.value })}
+                            readOnly={autoExcerpt}
+                            onChange={e => { if (!autoExcerpt) setFormData({ ...formData, excerpt: e.target.value }); }}
                         />
+                        {autoExcerpt && (
+                            <p className="text-[10px] text-emerald-600 dark:text-emerald-400 italic">Auto-generated from first 200 characters of content</p>
+                        )}
                     </div>
 
                     {/* Table of Contents */}
@@ -727,6 +848,26 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         </div>
                     )}
 
+                    {/* Word Count & Reading Time */}
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-gray-600">
+                                <BookOpen size={14} />
+                                <span className="text-xs font-medium">{wordCount.toLocaleString()} words</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-600">
+                                <Clock size={14} />
+                                <span className="text-xs font-medium">{readingTime} min read</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* AI Content Source Info */}
+                    <ContentSourceCard
+                        tone={formData.tone}
+                        sourceUrls={formData.sourceUrls}
+                        onRewrite={() => rewriteRef.current?.openWithContent("")}
+                    />
 
                 </div>
             </div>

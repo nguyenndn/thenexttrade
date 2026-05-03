@@ -142,7 +142,10 @@ export async function POST(request: Request) {
             schemaType: schemaType || "ARTICLE",
             estimatedTime: estimatedTime ? parseInt(estimatedTime) : null,
             publishedAt: publishedAt ? new Date(publishedAt) : null,
-            authorId: user.id
+            authorId: user.id,
+            // AI Content Pipeline metadata
+            tone: body.tone || null,
+            sourceUrls: Array.isArray(body.sourceUrls) ? body.sourceUrls : [],
         };
 
         // For Drafts, allow missing category/content if we make schema optional? 

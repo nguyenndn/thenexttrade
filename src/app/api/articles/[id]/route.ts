@@ -81,6 +81,10 @@ export async function PUT(
         if (body.schemaType !== undefined) data.schemaType = body.schemaType;
         if (body.estimatedTime !== undefined) data.estimatedTime = body.estimatedTime ? parseInt(body.estimatedTime) : null;
 
+        // AI Content Pipeline metadata
+        if (body.tone !== undefined) data.tone = body.tone || null;
+        if (body.sourceUrls !== undefined) data.sourceUrls = Array.isArray(body.sourceUrls) ? body.sourceUrls : [];
+
         if (tags && Array.isArray(tags)) {
             data.tags = {
                 deleteMany: {}, // Clear existing

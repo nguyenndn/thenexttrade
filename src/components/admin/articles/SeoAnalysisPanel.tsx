@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, Smartphone, Monitor, Facebook, Twitter, Wand2 } from "lucide-react";
+import { Search, Smartphone, Monitor, Facebook, Twitter, Wand2, Sparkles, Lock, Unlock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 interface SeoProps {
@@ -13,15 +13,49 @@ interface SeoProps {
     content: string; // HTML content
     thumbnail?: string;
     onAiGenerate?: (field: 'title' | 'description') => void;
+    autoKeyphrase?: boolean;
+    onAutoKeyphraseChange?: (auto: boolean) => void;
 }
 
-export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, metaDescription, content, thumbnail, onAiGenerate }: SeoProps) {
+function extractKeyphrase(title: string): string {
+    if (!title) return "";
+    const stopWords = new Set([
+        "the", "a", "an", "and", "or", "but", "is", "are", "was", "were", "be",
+        "been", "being", "have", "has", "had", "do", "does", "did", "will", "would",
+        "could", "should", "may", "might", "shall", "can", "to", "of", "in", "for",
+        "on", "with", "at", "by", "from", "as", "into", "through", "during", "before",
+        "after", "above", "below", "between", "out", "off", "over", "under", "again",
+        "further", "then", "once", "here", "there", "when", "where", "why", "how",
+        "all", "each", "every", "both", "few", "more", "most", "other", "some", "such",
+        "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "just",
+        "because", "about", "up", "down", "it", "its", "this", "that", "these", "those",
+        "what", "which", "who", "whom", "i", "you", "he", "she", "we", "they", "me",
+        "him", "her", "us", "them", "my", "your", "his", "our", "their", "your",
+        "nobody", "explained", "properly", "actually", "really", "simply", "basically",
+    ]);
+    const words = title.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .split(/\s+/)
+        .filter(w => w.length > 1 && !stopWords.has(w));
+    return words.slice(0, 3).join(" ");
+}
+
+export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, metaDescription, content, thumbnail, onAiGenerate, autoKeyphrase = false, onAutoKeyphraseChange }: SeoProps) {
     const [previewMode, setPreviewMode] = useState<'mobile' | 'desktop'>('mobile');
     const [activeTab, setActiveTab] = useState<'seo' | 'readability' | 'social'>('seo');
     const [socialPlatform, setSocialPlatform] = useState<'facebook' | 'twitter'>('facebook');
 
     const [seoAnalysis, setSeoAnalysis] = useState<{ label: string; status: 'good' | 'bad' | 'warning' }[]>([]);
     const [readabilityAnalysis, setReadabilityAnalysis] = useState<{ label: string; status: 'good' | 'bad' | 'warning' }[]>([]);
+
+    // Auto-keyphrase: extract from title when auto mode is ON
+    useEffect(() => {
+        if (!autoKeyphrase) return;
+        const keyphrase = extractKeyphrase(title);
+        if (keyphrase && keyphrase !== focusKeyword) {
+            setFocusKeyword(keyphrase);
+        }
+    }, [title, autoKeyphrase]);
 
     // --- SEO Analysis Logic ---
     useEffect(() => {
@@ -164,14 +198,44 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
             {activeTab === 'seo' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">Focus Keyphrase</label>
+                        <div className="flex items-center justify-between mb-1">
+                            <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider">Focus Keyphrase</label>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const next = !autoKeyphrase;
+                                    onAutoKeyphraseChange?.(next);
+                                    if (next) {
+                                        const keyphrase = extractKeyphrase(title);
+                                        if (keyphrase) setFocusKeyword(keyphrase);
+                                    }
+                                }}
+                                className={`flex items-center gap-1 text-[10px] font-medium transition-colors ${
+                                    autoKeyphrase
+                                        ? 'text-emerald-600 dark:text-emerald-400 hover:text-emerald-700'
+                                        : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                }`}
+                                title={autoKeyphrase ? 'Auto-keyphrase ON — click to edit manually' : 'Auto-keyphrase OFF — click to extract from title'}
+                            >
+                                {autoKeyphrase ? <Lock size={11} /> : <Unlock size={11} />}
+                                {autoKeyphrase ? 'Auto' : 'Manual'}
+                            </button>
+                        </div>
                         <input
                             type="text"
                             value={focusKeyword}
-                            onChange={e => setFocusKeyword(e.target.value)}
+                            readOnly={autoKeyphrase}
+                            onChange={e => { if (!autoKeyphrase) setFocusKeyword(e.target.value); }}
                             placeholder="forex trading"
-                            className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
+                            className={`w-full p-2 rounded-lg border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary ${
+                                autoKeyphrase
+                                    ? 'bg-emerald-50/50 dark:bg-emerald-500/5 text-gray-500 dark:text-gray-400'
+                                    : 'bg-gray-50 dark:bg-white/5'
+                            }`}
                         />
+                        {autoKeyphrase && (
+                            <p className="text-[10px] text-emerald-600 dark:text-emerald-400 italic mt-1">Auto-extracted from title</p>
+                        )}
                     </div>
                     {/* Google Preview */}
                     <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-200 dark:border-white/10">
