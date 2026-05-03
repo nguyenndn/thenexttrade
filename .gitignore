@@ -47,6 +47,7 @@ performance-averaged.json
 next-env.d.ts
 
 # prisma
+prisma/generate-articles.js
 
 # Content files
 /content/
