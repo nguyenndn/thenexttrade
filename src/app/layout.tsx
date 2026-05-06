@@ -14,14 +14,14 @@ const sourceSans = Source_Sans_3({
   display: 'swap',
   preload: true,
   adjustFontFallback: true,
-  weight: ["300", "400", "500", "600"]
+  weight: ["400", "600"]
 });
 const lexend = Lexend({
   subsets: ["latin"],
   variable: "--font-lexend",
   display: 'swap',
   preload: true,
-  weight: ["400", "500", "600", "700", "800", "900"]
+  weight: ["500", "600", "700", "800"]
 });
 
 export const metadata: Metadata = {
@@ -92,6 +92,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://sdugjioikugfomjitfwg.supabase.co" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <script dangerouslySetInnerHTML={{ __html: `history.scrollRestoration = "manual"` }} />
@@ -109,7 +112,7 @@ export default function RootLayout({
         `}} />
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
+            (window.requestIdleCallback || function(cb){setTimeout(cb,1)})(function() {
               navigator.serviceWorker.register('/sw.js');
             });
           }

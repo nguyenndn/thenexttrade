@@ -38,10 +38,10 @@ interface Article {
 
 interface ArticleListProps {
     initialArticles: Article[];
-
     pagination: {
         currentPage: number;
         totalPages: number;
+        totalCount: number;
     };
 }
 
@@ -483,28 +483,60 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                 </div>
 
                 {/* Footer / Pagination */}
-                <div className="p-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
-                    <div className="text-xs text-gray-600">
-                        Page {pagination.currentPage} of {pagination.totalPages}
+                <div className="px-6 py-4 border-t border-gray-100 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50/50 dark:bg-white/[0.02]">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                        Showing <span className="font-semibold text-gray-800 dark:text-white">{((pagination.currentPage - 1) * 20) + 1}</span>–<span className="font-semibold text-gray-800 dark:text-white">{Math.min(pagination.currentPage * 20, pagination.totalCount)}</span> of <span className="font-semibold text-primary">{pagination.totalCount.toLocaleString()}</span> articles
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-1">
                         <Button
                             variant="outline"
                             size="icon"
                             onClick={() => handlePageChange(pagination.currentPage - 1)}
                             disabled={pagination.currentPage <= 1}
-                            className="p-2 h-auto w-auto bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2 h-8 w-8 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <ChevronLeft size={16} />
+                            <ChevronLeft size={14} />
                         </Button>
+                        {(() => {
+                            const pages: (number | '...')[] = [];
+                            const { currentPage, totalPages } = pagination;
+                            if (totalPages <= 7) {
+                                for (let i = 1; i <= totalPages; i++) pages.push(i);
+                            } else {
+                                pages.push(1);
+                                if (currentPage > 3) pages.push('...');
+                                for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) pages.push(i);
+                                if (currentPage < totalPages - 2) pages.push('...');
+                                pages.push(totalPages);
+                            }
+                            return pages.map((p, idx) =>
+                                p === '...' ? (
+                                    <span key={`dots-${idx}`} className="px-1 text-gray-400 text-xs">…</span>
+                                ) : (
+                                    <Button
+                                        key={p}
+                                        variant={p === currentPage ? 'primary' : 'outline'}
+                                        size="icon"
+                                        onClick={() => handlePageChange(p as number)}
+                                        className={`h-8 w-8 text-xs font-semibold rounded-lg ${
+                                            p === currentPage
+                                                ? 'shadow-sm'
+                                                : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300'
+                                        }`}
+                                    >
+                                        {p}
+                                    </Button>
+                                )
+                            );
+                        })()}
                         <Button
                             variant="outline"
                             size="icon"
                             onClick={() => handlePageChange(pagination.currentPage + 1)}
                             disabled={pagination.currentPage >= pagination.totalPages}
-                            className="p-2 h-auto w-auto bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2 h-8 w-8 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <ChevronRight size={16} />
+                            <ChevronRight size={14} />
                         </Button>
                     </div>
                 </div>

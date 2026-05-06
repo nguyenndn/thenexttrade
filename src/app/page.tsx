@@ -23,11 +23,11 @@ import { HomeFeedSkeleton } from "@/components/ui/LoadingSkeleton";
 import dynamic from "next/dynamic";
 
 // A2: Dynamic imports for below-fold sections — reduces initial JS bundle via code-splitting
-const DynamicFirefly = dynamic(() => import("@/components/ui/DynamicFirefly").then(m => ({ default: m.DynamicFirefly })));
+const DynamicFirefly = dynamic(() => import("@/components/ui/DynamicFirefly").then(m => ({ default: m.DynamicFirefly })), { ssr: false });
 const ReviewsSection = dynamic(() => import("@/components/home/ReviewsSection").then(m => ({ default: m.ReviewsSection })), { loading: () => <div className="h-96" /> });
 const HomeFAQSection = dynamic(() => import("@/components/home/HomeFAQSection").then(m => ({ default: m.HomeFAQSection })), { loading: () => <div className="h-96" /> });
 const QuoteDisplay = dynamic(() => import("@/components/shared/QuoteDisplay"), { loading: () => <div className="h-48" /> });
-const MarketTickerSection = dynamic(() => import("@/components/home/MarketTickerSection").then(m => ({ default: m.MarketTickerSection })));
+const MarketTickerSection = dynamic(() => import("@/components/home/MarketTickerSection").then(m => ({ default: m.MarketTickerSection })), { ssr: false, loading: () => <div className="h-24" /> });
 const ToolsPreviewSection = dynamic(() => import("@/components/home/ToolsPreviewSection").then(m => ({ default: m.ToolsPreviewSection })), { loading: () => <div className="h-96" /> });
 const LearningPathTimeline = dynamic(() => import("@/components/home/LearningPathTimeline").then(m => ({ default: m.LearningPathTimeline })), { loading: () => <div className="h-96" /> });
 const TrustedPartners = dynamic(() => import("@/components/home/TrustedPartners").then(m => ({ default: m.TrustedPartners })), { loading: () => <div className="h-96" /> });
@@ -71,7 +71,7 @@ async function HomeFeed() {
         }
       },
       orderBy: { createdAt: 'desc' },
-      take: 3
+      take: 4
     }), 300),
 
     // 2. Fetch Latest Articles
@@ -98,7 +98,7 @@ async function HomeFeed() {
         }
       },
       orderBy: { createdAt: 'desc' },
-      take: 3
+      take: 4
     }), 300),
 
     // 3. Fetch Popular Guides
@@ -133,7 +133,7 @@ async function HomeFeed() {
         }
       },
       orderBy: { votes: { _count: 'desc' } },
-      take: 3
+      take: 6
     }), 600), // Cache popular longer
 
     // 4. Market Data (SSR)

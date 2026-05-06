@@ -24,13 +24,18 @@ export function TagInput({ value, onChange }: TagInputProps) {
     const [isCreating, setIsCreating] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Fetch full tag objects for the selected IDs on mount
+    // Fetch full tag objects for the selected IDs when value changes
     useEffect(() => {
-        if (!value || value.length === 0) return;
+        if (!value || value.length === 0) {
+            setSelectedTags([]);
+            return;
+        }
         // Avoid refetching if selectedTags already match
-        if (selectedTags.length === value.length && selectedTags.every(t => value.includes(t.id))) return;
+        const currentIds = selectedTags.map(t => t.id).sort().join(',');
+        const newIds = [...value].sort().join(',');
+        if (currentIds === newIds) return;
 
-        const fetchExistingTags = async () => {
+        const fetchTags = async () => {
             try {
                 const res = await fetch(`/api/tags?ids=${value.join(',')}`);
                 if (res.ok) {
@@ -38,11 +43,11 @@ export function TagInput({ value, onChange }: TagInputProps) {
                     setSelectedTags(data);
                 }
             } catch (error) {
-                console.error('Failed to fetch existing tags:', error);
+                console.error('Failed to fetch tags:', error);
             }
         };
-        fetchExistingTags();
-    }, []); // Only on mount
+        fetchTags();
+    }, [value]); // Re-run when value changes
 
     const searchTags = async (query: string) => {
         if (!query) {

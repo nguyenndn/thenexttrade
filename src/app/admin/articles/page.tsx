@@ -192,7 +192,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
             {/* List with Filters & Bulk Actions */}
             <ArticleList
                 initialArticles={articles as any}
-                pagination={{ currentPage: page, totalPages }}
+                pagination={{ currentPage: page, totalPages, totalCount: totalArticlesCount }}
             />
         </div>
     );

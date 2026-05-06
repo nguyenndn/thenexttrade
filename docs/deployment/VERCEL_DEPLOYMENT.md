@@ -21,7 +21,7 @@ Tài liệu này hướng dẫn chi tiết cách triển khai dự án **TheNext
 | `DIRECT_URL` | DB connection (Direct - port **5432**) | Supabase > Database > Connection String |
 | `NEXT_PUBLIC_APP_URL` | URL app sau deploy | `https://thenexttrade.vercel.app` |
 | `REDIS_URL` | Redis connection string | Upstash/Railway dashboard |
-| `GEMINI_API_KEY` | Google Gemini AI key | Google AI Studio |
+| `DEEPSEEK_API_KEY` | DeepSeek AI key | platform.deepseek.com |
 | `FIRECRAWL_API_KEY` | FireCrawl web scraping key | firecrawl.dev |
 | `SERPER_API_KEY` | Serper.dev search key | serper.dev (2,500 free) |
 

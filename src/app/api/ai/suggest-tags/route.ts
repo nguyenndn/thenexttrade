@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
 export async function POST(req: NextRequest) {
     const supabase = await createClient();
@@ -13,8 +12,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!GEMINI_API_KEY) {
-        return NextResponse.json({ error: "GEMINI_API_KEY is not configured" }, { status: 500 });
+    if (!DEEPSEEK_API_KEY) {
+        return NextResponse.json({ error: "DEEPSEEK_API_KEY is not configured" }, { status: 500 });
     }
 
     try {
@@ -36,14 +35,6 @@ export async function POST(req: NextRequest) {
         const plainContent = (content || "")
             .replace(/<[^>]*>?/gm, "")
             .substring(0, 3000);
-
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash",
-            generationConfig: {
-                responseMimeType: "application/json",
-            },
-        });
 
         const prompt = `You are a content categorization expert for a forex/trading education website called TheNextTrade.
 
@@ -72,8 +63,26 @@ Content: ${plainContent || "(no content yet)"}
 
 IMPORTANT: existingTagIds must contain actual IDs from the existing tags list. Output ONLY valid JSON.`;
 
-        const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
+        const res = await fetch("https://api.deepseek.com/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
+            },
+            body: JSON.stringify({
+                model: "deepseek-chat",
+                messages: [{ role: "user", content: prompt }],
+                response_format: { type: "json_object" },
+            }),
+        });
+
+        if (!res.ok) {
+            const errBody = await res.text();
+            throw new Error(`DeepSeek API failed (${res.status}): ${errBody}`);
+        }
+
+        const data = await res.json();
+        const responseText = data.choices?.[0]?.message?.content || "";
 
         let parsed: { existingTagIds: string[]; newTagNames: string[] };
         try {

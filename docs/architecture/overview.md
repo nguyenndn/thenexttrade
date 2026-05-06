@@ -39,7 +39,7 @@ graph TD
         NextJS -->|Auth| SupabaseAuth[Supabase Auth]
         NextJS -->|Storage| SupabaseStorage[Supabase Storage]
         API -->|Scraping| FireCrawl[FireCrawl API]
-        API -->|AI Rewrite| Gemini[Gemini 2.5 Flash]
+        API -->|AI Rewrite| DeepSeek[DeepSeek Chat]
         API -->|Search| Serper[Serper.dev]
     end
 ```
@@ -52,7 +52,7 @@ graph TD
 - **Psychology:** Emotion tracking, tilt indicators, confidence correlation.
 - **Strategies:** Strategy management and performance comparison.
 - **Admin Panel:** User management, content CMS, academy editor with AI rewrite.
-- **AI Content Pipeline:** Multi-source scraping (FireCrawl), search (Serper.dev), rewrite (Gemini) with 8 tone options and 5-layer copyright protection.
+- **AI Content Pipeline:** Multi-source scraping (FireCrawl), search (Serper.dev), rewrite (DeepSeek) with 8 tone options and 5-layer copyright protection.
 
 ## 5. Design Principles
 - **Mobile First:** All interfaces are responsive.

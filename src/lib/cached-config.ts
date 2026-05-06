@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Cached API fetches — module-level singleton promises
  * Ensures each API is called only ONCE per page load,

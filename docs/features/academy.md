@@ -47,7 +47,7 @@ Level (1-12)
 1. **Admin** pastes source URL in Lesson editor
 2. **Search API** (`/api/ai/search`) finds supplementary sources via Serper.dev
 3. **Admin** selects tone + optional supplementary URLs
-4. **Rewrite API** (`/api/ai/rewrite`) scrapes all sources → Gemini rewrites with:
+4. **Rewrite API** (`/api/ai/rewrite`) scrapes all sources → DeepSeek rewrites with:
    - 5-layer copyright protection
    - Selected tone personality
    - Auto-generated title + meta description

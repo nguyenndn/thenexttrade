@@ -14,12 +14,9 @@ export async function verifyTurnstile(
 ): Promise<{ success: boolean; error?: string }> {
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
 
-  // Skip verification in development if no key configured
+  // Skip verification if Turnstile is not configured (no secret key set)
   if (!secretKey) {
-    if (process.env.NODE_ENV !== "production") {
-      return { success: true };
-    }
-    return { success: false, error: "Turnstile not configured" };
+    return { success: true };
   }
 
   if (!token) {

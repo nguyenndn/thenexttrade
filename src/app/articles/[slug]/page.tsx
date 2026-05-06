@@ -224,20 +224,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
             <PublicHeader user={authUser} />
 
-            {/* ===== BREADCRUMB BAR ===== */}
-            <div className="pt-[84px] max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-11 bg-gradient-to-r from-primary to-cyan-400 rounded-xl px-5 shadow-sm">
-                    <nav className="flex items-center gap-1.5 text-[13px] font-medium min-w-0">
-                        <Home size={13} className="shrink-0 text-white/70" />
-                        <Link href="/" className="text-white/80 hover:text-white transition-colors shrink-0">Home</Link>
-                        <ChevronRight size={12} className="text-white/40 shrink-0" />
-                        <Link href="/articles" className="text-white/80 hover:text-white transition-colors shrink-0">Knowledge</Link>
-                        <ChevronRight size={12} className="text-white/40 shrink-0" />
-                        <span className="text-white font-bold truncate max-w-[180px] sm:max-w-[400px]">{article.title}</span>
-                    </nav>
-                    <BreadcrumbShareButtons title={article.title} slug={article.slug} />
-                </div>
-            </div>
+            <div className="pt-[84px]" />
 
             {/* ===== HERO IMAGE ===== */}
             {article.thumbnail && (
@@ -272,64 +259,89 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
                 {/* ===== ARTICLE HEADER ===== */}
                 <div className="mb-10">
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-700 dark:text-white leading-[1.15] tracking-tight mb-6">
+                    {/* Breadcrumb */}
+                    <div className="flex justify-center mb-5">
+                        <nav className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/15 dark:border-primary/15 text-[13px] font-medium">
+                            <Home size={13} className="shrink-0 text-primary" />
+                            <Link href="/" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors shrink-0">Home</Link>
+                            <ChevronRight size={12} className="text-gray-300 dark:text-gray-600 shrink-0" />
+                            <Link href="/articles" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors shrink-0">Knowledge</Link>
+                            <ChevronRight size={12} className="text-gray-300 dark:text-gray-600 shrink-0" />
+                            <span className="text-primary font-bold truncate max-w-[200px] sm:max-w-[400px]">{article.title}</span>
+                        </nav>
+                    </div>
+                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-700 dark:text-white leading-[1.2] tracking-tight mb-6 text-center">
                         {article.title}
                     </h1>
 
                     {/* Meta info row */}
-                    <div className="flex flex-wrap items-center gap-5 text-base font-medium text-gray-700 dark:text-gray-300">
-                        {/* Author */}
-                        <div className="flex items-center gap-2.5">
-                            <div className="relative w-9 h-9 rounded-full overflow-hidden bg-gray-200 dark:bg-white/10 ring-2 ring-white dark:ring-[#1E2028] shadow-sm">
-                                {article.author.image ? (
-                                    <Image
-                                        src={article.author.image}
-                                        alt={article.author.name || "Author"}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-sm font-bold text-gray-600 dark:text-gray-300">
-                                        {article.author.name?.charAt(0) || '?'}
+                    <div className="flex justify-center">
+                        <div className="inline-flex flex-wrap items-center justify-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-white/[0.04] border border-primary/30 dark:border-primary/20 shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] text-sm font-medium text-gray-500 dark:text-gray-400">
+                            {/* Author */}
+                            <div className="flex items-center gap-2">
+                                <div className="relative w-7 h-7 rounded-full overflow-hidden bg-gray-200 dark:bg-white/10 ring-2 ring-white dark:ring-gray-800 shadow-sm">
+                                    {article.author.image ? (
+                                        <Image
+                                            src={article.author.image}
+                                            alt={article.author.name || "Author"}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-300">
+                                            {article.author.name?.charAt(0) || '?'}
+                                        </div>
+                                    )}
+                                </div>
+                                <span className="font-semibold text-gray-700 dark:text-gray-200">{article.author.name || "TheNextTrade Team"}</span>
+                            </div>
+
+                            <span className="text-gray-300 dark:text-gray-600">·</span>
+
+                            {/* Date */}
+                            <div className="flex items-center gap-1.5">
+                                <Calendar size={14} strokeWidth={2.5} className="text-primary" />
+                                <span>{formattedDate}</span>
+                            </div>
+
+                            <span className="text-gray-300 dark:text-gray-600">·</span>
+
+                            {/* Views */}
+                            <div className="flex items-center gap-1.5">
+                                <Flame size={14} strokeWidth={2.5} className="text-primary" />
+                                <span>{article.views.toLocaleString()}</span>
+                            </div>
+
+                            <span className="text-gray-300 dark:text-gray-600">·</span>
+
+                            {/* Read time */}
+                            <div className="flex items-center gap-1.5">
+                                <Clock size={14} strokeWidth={2.5} className="text-primary" />
+                                <span>{Math.ceil(article.content.length / 1000)} min read</span>
+                            </div>
+
+                            {/* Comments */}
+                            {commentCount > 0 && (
+                                <>
+                                    <span className="text-gray-300 dark:text-gray-600">·</span>
+                                    <a href="#comments" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                                        <MessageSquare size={14} strokeWidth={2.5} className="text-primary" />
+                                        <span>{commentCount}</span>
+                                    </a>
+                                </>
+                            )}
+
+                            {/* Helpful votes */}
+                            {voteCount > 0 && (
+                                <>
+                                    <span className="text-gray-300 dark:text-gray-600">·</span>
+                                    <div className="flex items-center gap-1.5 text-primary">
+                                        <ThumbsUp size={14} strokeWidth={2.5} className="fill-primary/50" />
+                                        <span>{voteCount} {voteCount === 1 ? 'trader' : 'traders'} found helpful</span>
                                     </div>
-                                )}
-                            </div>
-                            <span className="font-bold text-gray-800 dark:text-gray-200">{article.author.name || "TheNextTrade Team"}</span>
+                                </>
+                            )}
                         </div>
-
-                        {/* Date */}
-                        <div className="flex items-center gap-1.5">
-                            <Calendar size={16} strokeWidth={2.5} className="text-primary" />
-                            <span>{formattedDate}</span>
-                        </div>
-
-                        {/* Views */}
-                        <div className="flex items-center gap-1.5">
-                            <Flame size={16} strokeWidth={2.5} className="text-primary" />
-                            <span>{article.views.toLocaleString()}</span>
-                        </div>
-
-                        {/* Read time */}
-                        <div className="flex items-center gap-1.5">
-                            <Clock size={16} strokeWidth={2.5} className="text-primary" />
-                            <span>{Math.ceil(article.content.length / 1000)} min read</span>
-                        </div>
-
-                        {/* Comments */}
-                        {commentCount > 0 && (
-                            <a href="#comments" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                                <MessageSquare size={16} strokeWidth={2.5} className="text-primary" />
-                                <span>{commentCount}</span>
-                            </a>
-                        )}
-
-                        {/* Helpful votes */}
-                        {voteCount > 0 && (
-                            <div className="flex items-center gap-1.5 text-primary font-medium">
-                                <ThumbsUp size={16} strokeWidth={2.5} className="fill-primary/50" />
-                                <span>This article helped <strong>{voteCount}</strong> {voteCount === 1 ? 'trader' : 'traders'}</span>
-                            </div>
-                        )}
                     </div>
                 </div>
 
@@ -350,8 +362,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                             <div
                                 className="prose dark:prose-invert prose-lg max-w-none 
                                 prose-headings:font-black prose-headings:tracking-tight prose-headings:text-gray-700 dark:prose-headings:text-white 
-                                prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-gray-100 dark:prose-h2:border-white/5
-                                prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+                                prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-gray-100 dark:prose-h2:border-white/5
+                                prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
                                 prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
                                 prose-a:text-primary dark:prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold
                                 prose-img:rounded-xl prose-img:shadow-md 
@@ -363,6 +375,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono"
                                 dangerouslySetInnerHTML={{ __html: processedContent }}
                             />
+                        </div>
+
+                        {/* AI Image Disclaimer */}
+                        <div className="mt-6 flex items-start gap-2.5 px-4 py-3 rounded-lg bg-amber-50 dark:bg-amber-500/[0.06] border border-amber-200 dark:border-amber-500/15">
+                            <span className="text-amber-600 dark:text-amber-400/80 text-sm leading-relaxed italic">
+                                Illustrations created with AI to support learning — not based on real market data.
+                            </span>
                         </div>
 
                         {/* Tags */}

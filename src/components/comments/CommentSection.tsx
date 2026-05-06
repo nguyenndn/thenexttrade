@@ -87,7 +87,7 @@ export function CommentSection({ articleId, currentUser, initialComments = [] }:
             </div>
 
             {/* Main Comment Form */}
-            <div id="comment-form-box" className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/5 scroll-mt-32 shadow-sm">
+            <div id="comment-form-box" className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl scroll-mt-32">
                 {currentUser ? (
                     <CommentForm
                         articleId={articleId}

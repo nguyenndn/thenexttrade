@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { YoutubeTranscript } from "youtube-transcript";
 import { readFile } from "fs/promises";
 import path from "path";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 
 // ============================================================================
@@ -379,9 +378,9 @@ Format: {"title": "...", "content": "<h2>...</h2><p>...</p>...", "metaDescriptio
 // ============================================================================
 
 export async function POST(req: NextRequest) {
-    if (!GEMINI_API_KEY) {
+    if (!DEEPSEEK_API_KEY) {
         return NextResponse.json(
-            { error: "GEMINI_API_KEY is not configured" },
+            { error: "DEEPSEEK_API_KEY is not configured" },
             { status: 500 }
         );
     }
@@ -451,17 +450,27 @@ export async function POST(req: NextRequest) {
             focusKeyword: focusKeyword || undefined,
         });
 
-        // 4. Call Gemini with JSON mode
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({
-            model: "gemini-3-flash-preview",
-            generationConfig: {
-                responseMimeType: "application/json",
+        // 4. Call DeepSeek with JSON mode
+        const aiRes = await fetch("https://api.deepseek.com/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
             },
+            body: JSON.stringify({
+                model: "deepseek-chat",
+                messages: [{ role: "user", content: prompt }],
+                response_format: { type: "json_object" },
+            }),
         });
 
-        const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
+        if (!aiRes.ok) {
+            const errBody = await aiRes.text();
+            throw new Error(`DeepSeek API failed (${aiRes.status}): ${errBody}`);
+        }
+
+        const aiData = await aiRes.json();
+        const responseText = aiData.choices?.[0]?.message?.content || "";
 
         // 5. Parse JSON response (with robust fallbacks)
         let parsed: { title: string; content: string; metaDescription?: string };

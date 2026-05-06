@@ -848,20 +848,6 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
                         </div>
                     )}
 
-                    {/* Word Count & Reading Time */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-gray-600">
-                                <BookOpen size={14} />
-                                <span className="text-xs font-medium">{wordCount.toLocaleString()} words</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-600">
-                                <Clock size={14} />
-                                <span className="text-xs font-medium">{readingTime} min read</span>
-                            </div>
-                        </div>
-                    </div>
-
                     {/* AI Content Source Info */}
                     <ContentSourceCard
                         tone={formData.tone}

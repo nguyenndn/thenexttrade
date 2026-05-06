@@ -67,7 +67,7 @@ REDIS_URL="redis://localhost:6379"
 NODE_ENV="development"
 
 # AI Content Pipeline
-GEMINI_API_KEY="xxx"
+DEEPSEEK_API_KEY="xxx"
 FIRECRAWL_API_KEY="xxx"
 SERPER_API_KEY="xxx"
 ```

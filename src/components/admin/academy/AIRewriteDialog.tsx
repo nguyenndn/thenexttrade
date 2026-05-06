@@ -753,7 +753,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
                         {/* Footer */}
                         <div className="flex items-center justify-between p-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] shrink-0">
                             <p className="text-[11px] text-gray-500">
-                                Gemini + FireCrawl + Serper · {TONES.find(t => t.id === tone)?.icon} {TONES.find(t => t.id === tone)?.label}
+                                DeepSeek + FireCrawl + Serper · {TONES.find(t => t.id === tone)?.icon} {TONES.find(t => t.id === tone)?.label}
                             </p>
                             <div className="flex gap-2">
                                 {result && !isLoading && (

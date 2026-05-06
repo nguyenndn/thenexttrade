@@ -73,7 +73,7 @@ Khu vực quản trị hệ thống dành riêng cho Role Admin.
 
 ### AI Content Pipeline
 - `POST /api/ai/search` - Serper.dev search (Google/Reddit/X)
-- `POST /api/ai/rewrite` - Multi-source AI rewrite (FireCrawl + Gemini)
+- `POST /api/ai/rewrite` - Multi-source AI rewrite (FireCrawl + DeepSeek)
 
 ### Cron
 - `/api/cron/send-scheduled-broadcasts` - Every 5 min

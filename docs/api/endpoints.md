@@ -39,7 +39,7 @@ The project uses Next.js API Routes (Serverless Functions) to interact with the 
     - Response: `{ results: [{ title, url, snippet }] }`
 - `POST /api/ai/rewrite` - Multi-source AI content rewrite.
     - Body: `{ url: "...", tone: "conversational", supplementaryUrls?: [...] }`
-    - Provider: FireCrawl (scrape) + Gemini 2.5 Flash (rewrite)
+    - Provider: FireCrawl (scrape) + DeepSeek Chat (rewrite)
     - Response: `{ title, content, metaDescription, tone, sourceUrls }`
 
 ## Error Handling

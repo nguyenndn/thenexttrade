@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 
 export function SiteFooter() {
     return (
-        <footer id="site-footer" className="relative bg-slate-50 dark:bg-[#0d1117] text-gray-700 dark:text-white border-t border-gray-200 dark:border-transparent overflow-hidden transition-colors duration-300">
+        <footer id="site-footer" role="contentinfo" className="relative bg-slate-50 dark:bg-[#0d1117] text-gray-700 dark:text-white border-t border-gray-200 dark:border-transparent overflow-hidden transition-colors duration-300">
             {/* Background Effects */}
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
             <div className="absolute -top-[200px] -left-[200px] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
