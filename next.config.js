@@ -27,6 +27,14 @@ const nextConfig = {
       static: 180,
     },
   },
+  // Exclude large static assets from serverless function bundles (Vercel 300MB limit)
+  outputFileTracingExcludes: {
+    '*': [
+      './public/images/featured/**',
+      './public/images/articles/**',
+      './public/uploads/**',
+    ],
+  },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
