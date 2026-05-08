@@ -12,33 +12,44 @@
 export interface SystemConfig {
     feedbackEnabled: boolean;
     maintenanceMode: boolean;
-    requireEmailVerification: boolean;
     systemAnnouncement: string;
 }
 
 const DEFAULT_CONFIG: SystemConfig = {
     feedbackEnabled: true,
     maintenanceMode: false,
-    requireEmailVerification: false,
     systemAnnouncement: "",
 };
 
 let configPromise: Promise<SystemConfig> | null = null;
+let configFetchedAt = 0;
+const CONFIG_TTL = 60_000; // Re-fetch config every 60 seconds
 
 export function fetchSystemConfig(): Promise<SystemConfig> {
+    const now = Date.now();
+    // Invalidate cache after TTL
+    if (configPromise && now - configFetchedAt > CONFIG_TTL) {
+        configPromise = null;
+    }
     if (configPromise) return configPromise;
 
+    configFetchedAt = now;
     configPromise = fetch("/api/system/config")
         .then(res => res.json())
         .then(data => ({
             feedbackEnabled: data.feedbackEnabled ?? true,
             maintenanceMode: data.maintenanceMode ?? false,
-            requireEmailVerification: data.requireEmailVerification ?? false,
             systemAnnouncement: data.systemAnnouncement || "",
         }))
         .catch(() => DEFAULT_CONFIG);
 
     return configPromise;
+}
+
+/** Invalidate system config cache (e.g. after admin changes settings) */
+export function invalidateSystemConfigCache() {
+    configPromise = null;
+    configFetchedAt = 0;
 }
 
 // ============================================================================

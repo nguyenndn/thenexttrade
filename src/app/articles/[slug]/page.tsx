@@ -229,7 +229,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {/* ===== HERO IMAGE ===== */}
             {article.thumbnail && (
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-                    <div className="relative w-full aspect-[21/9] rounded-xl overflow-hidden shadow-lg bg-gray-200 dark:bg-gray-800">
+                    <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-lg bg-gray-900">
                         <Image
                             src={article.thumbnail}
                             alt={article.title}
@@ -390,7 +390,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                 {article.tags.map(({ tag }) => (
                                     <Link
                                         key={tag.id}
-                                        href={`/articles/tags/${tag.slug}`}
+                                        href={`/knowledge?tag=${tag.slug}`}
                                         className="px-4 py-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-full text-sm font-bold text-gray-600 dark:text-gray-500 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"
                                     >
                                         #{tag.name}

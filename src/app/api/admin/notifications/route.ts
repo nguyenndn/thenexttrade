@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const limit = parseInt(searchParams.get("limit") || "5");
 
-        const [pendingLicenses, recentRequests, pendingCopyTrading, recentCopyTrading] = await Promise.all([
+        const [pendingLicenses, recentRequests, pendingCopyTrading, recentCopyTrading, dbNotifications] = await Promise.all([
             prisma.eALicense.count({ where: { status: AccountStatus.PENDING } }),
             prisma.eALicense.findMany({
                 where: { status: AccountStatus.PENDING },
@@ -41,6 +41,12 @@ export async function GET(request: NextRequest) {
                 orderBy: { createdAt: "desc" },
                 take: limit,
                 include: { user: { select: { email: true, name: true } } },
+            }),
+            // Fetch real notifications from Notification table for this admin
+            prisma.notification.findMany({
+                where: { userId: user.id, isRead: false },
+                orderBy: { createdAt: "desc" },
+                take: limit,
             }),
         ]);
 
@@ -64,15 +70,28 @@ export async function GET(request: NextRequest) {
             createdAt: reg.createdAt.toISOString(),
         }));
 
-        const allNotifications = [...notifications, ...copyTradingNotifications]
+        // Map real DB notifications
+        const realNotifications = dbNotifications.map(n => ({
+            id: n.id,
+            type: n.type,
+            title: n.title,
+            message: n.message,
+            link: n.link || "/admin",
+            isRead: n.isRead,
+            createdAt: n.createdAt.toISOString(),
+        }));
+
+        const allNotifications = [...notifications, ...copyTradingNotifications, ...realNotifications]
             .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .slice(0, limit);
+
+        const unreadCount = pendingLicenses + pendingCopyTrading + dbNotifications.length;
 
         return NextResponse.json(createSuccessResponse({
             notifications: allNotifications,
             pendingLicenses,
             pendingCopyTrading,
-            unreadCount: pendingCopyTrading,
+            unreadCount,
         }));
     } catch (error) {
         console.error("GET Admin Notifications Error:", error);

@@ -76,7 +76,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
     if (!articles.length) return null;
 
     return (
-        <div className="relative group rounded-2xl overflow-hidden shadow-2xl h-full min-h-[400px]">
+        <div className="relative group rounded-2xl overflow-hidden shadow-2xl h-full min-h-[420px] md:min-h-[500px] lg:aspect-[16/9]">
             {/* Slides */}
             {articles.map((article, idx) => {
                 const isActive = idx === current;
@@ -99,7 +99,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                                     alt={article.title}
                                     fill
                                     sizes="100vw"
-                                    className={`object-cover transition-transform duration-[8000ms] ease-out ${
+                                    className={`object-cover object-center transition-transform duration-[8000ms] ease-out ${
                                         isActive ? "scale-100" : "scale-110"
                                     }`}
                                     style={{ opacity: 0.55 }}

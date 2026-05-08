@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
     try {
         const record = await prisma.systemSetting.findUnique({
@@ -12,14 +14,12 @@ export async function GET() {
         return NextResponse.json({
             feedbackEnabled: config.feedbackEnabled ?? true,
             maintenanceMode: config.maintenanceMode ?? false,
-            requireEmailVerification: config.requireEmailVerification ?? false,
             systemAnnouncement: (config.systemAnnouncement as string) || "",
         });
     } catch {
         return NextResponse.json({
             feedbackEnabled: true,
             maintenanceMode: false,
-            requireEmailVerification: false,
             systemAnnouncement: "",
         });
     }

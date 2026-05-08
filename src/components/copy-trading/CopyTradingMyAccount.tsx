@@ -178,6 +178,32 @@ function AccountPerformanceView({ reg, pvsrData }: { reg: Registration; pvsrData
     const calendarRef = useRef<HTMLDivElement>(null);
     const [isCapturing, setIsCapturing] = useState(false);
 
+    const handleScreenshot = React.useCallback(async () => {
+        if (!calendarRef.current) return;
+        try {
+            setIsCapturing(true);
+            const dataUrl = await htmlToImage.toPng(calendarRef.current, {
+                quality: 1,
+                pixelRatio: 3,
+                backgroundColor: isDark ? '#1E2028' : '#ffffff',
+                style: { margin: '0' },
+            });
+            const link = document.createElement('a');
+            const currentMonthName = new Date(calYear, calMonth).toLocaleString("en-US", { month: "long", year: "numeric" });
+            link.download = `Trading-Calendar-${currentMonthName.replace(' ', '-')}.png`;
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast.success('Screenshot saved successfully!');
+        } catch (error: any) {
+            console.error('Screenshot error:', error);
+            toast.error(error instanceof Error ? error.message : (error?.message || 'Failed to capture screenshot'));
+        } finally {
+            setIsCapturing(false);
+        }
+    }, [calYear, calMonth, isDark]);
+
     if (!pvsrData?.performance) {
         return (
             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
@@ -224,31 +250,6 @@ function AccountPerformanceView({ reg, pvsrData }: { reg: Registration; pvsrData
         if (calMonth === 11) { setCalYear(calYear + 1); setCalMonth(0); }
         else setCalMonth(calMonth + 1);
     };
-
-    const handleScreenshot = React.useCallback(async () => {
-        if (!calendarRef.current) return;
-        try {
-            setIsCapturing(true);
-            const dataUrl = await htmlToImage.toPng(calendarRef.current, {
-                quality: 1,
-                pixelRatio: 3,
-                backgroundColor: isDark ? '#1E2028' : '#ffffff',
-                style: { margin: '0' },
-            });
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = `Trading-Calendar-${monthName.replace(' ', '-')}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            toast.success('Screenshot saved successfully!');
-        } catch (error: any) {
-            console.error('Screenshot error:', error);
-            toast.error(error instanceof Error ? error.message : (error?.message || 'Failed to capture screenshot'));
-        } finally {
-            setIsCapturing(false);
-        }
-    }, [monthName, isDark]);
 
     // Map growthChartArray for recharts
     const equityData = perf.growthChartArray.map(p => ({

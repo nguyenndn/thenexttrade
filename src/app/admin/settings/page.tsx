@@ -23,9 +23,7 @@ export default async function AdminSettingsPage() {
 
     const systemConfig = {
         maintenanceMode: savedConfig.maintenanceMode ?? false,
-        userRegistration: savedConfig.userRegistration ?? true,
         feedbackEnabled: savedConfig.feedbackEnabled ?? true,
-        requireEmailVerification: savedConfig.requireEmailVerification ?? false,
         siteTitle: savedConfig.siteTitle || "TheNextTrade",
         siteDescription: savedConfig.siteDescription || "",
         supportEmail: savedConfig.supportEmail || "",
@@ -34,7 +32,6 @@ export default async function AdminSettingsPage() {
         socialYoutube: savedConfig.socialYoutube || "",
         socialInstagram: savedConfig.socialInstagram || "",
         welcomeEmail: savedConfig.welcomeEmail ?? true,
-        adminAlertOnFeedback: savedConfig.adminAlertOnFeedback ?? true,
         newArticleAlert: savedConfig.newArticleAlert ?? true,
         systemAnnouncement: savedConfig.systemAnnouncement || "",
     };

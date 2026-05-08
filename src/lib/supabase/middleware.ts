@@ -66,10 +66,14 @@ export async function updateSession(request: NextRequest) {
 
     if (needsMaintenanceCheck) {
         try {
+            // Use internal API route (Prisma-backed, bypasses RLS)
+            // Safe: /api paths are excluded from needsMaintenanceCheck so no deadlock
             const configUrl = new URL('/api/system/config', request.url);
-            const configRes = await fetch(configUrl, {
+            const configRes = await fetch(configUrl.toString(), {
+                cache: 'no-store',
                 headers: { 'x-internal': '1' },
             });
+
             if (configRes.ok) {
                 const config = await configRes.json();
                 const isMaintenanceOn = config.maintenanceMode === true;
@@ -84,15 +88,6 @@ export async function updateSession(request: NextRequest) {
                 } else if (!isMaintenanceOn && path === '/maintenance') {
                     // Maintenance OFF → redirect away from /maintenance
                     return NextResponse.redirect(new URL('/', request.url));
-                }
-
-                // 4. Email Verification Check
-                if (config.requireEmailVerification && user) {
-                    const emailConfirmed = user.email_confirmed_at || user.confirmed_at;
-                    const isVerifyPage = path === '/auth/verify-email';
-                    if (!emailConfirmed && !isVerifyPage) {
-                        return NextResponse.redirect(new URL('/auth/verify-email', request.url));
-                    }
                 }
             }
         } catch {

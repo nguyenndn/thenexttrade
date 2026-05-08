@@ -313,7 +313,7 @@ async function HomeFeed() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {popularArticles.map((article, idx) => (
               <Link key={article.id} href={`/articles/${article.slug}`} className="group relative bg-white dark:bg-[#1E2028] rounded-xl p-2 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-white/10 flex flex-col">
-                <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
+                <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-gray-900">
                   {article.thumbnail ? (
                     <Image
                       src={article.thumbnail}

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
+import { NotificationType, NotificationPriority } from "@prisma/client";
 
 export async function POST(req: Request) {
     const user = await getAuthUser();
@@ -32,6 +33,30 @@ export async function POST(req: Request) {
                 userId: user.id,
             },
         });
+
+        // Notify all admins about new feedback
+        const admins = await prisma.profile.findMany({
+            where: { role: "ADMIN" },
+            select: { userId: true },
+        });
+
+        if (admins.length > 0) {
+            const label = type === "BUG" ? "🐛 Bug Report" : "💡 Feature Request";
+            const preview = message.trim().length > 80
+                ? message.trim().slice(0, 80) + "…"
+                : message.trim();
+
+            await prisma.notification.createMany({
+                data: admins.map((admin) => ({
+                    userId: admin.userId,
+                    type: NotificationType.FEEDBACK_RECEIVED,
+                    title: `New Feedback: ${label}`,
+                    message: preview,
+                    priority: NotificationPriority.NORMAL,
+                    link: "/admin/feedback",
+                })),
+            });
+        }
 
         return NextResponse.json({ success: true, id: feedback.id });
     } catch (error) {

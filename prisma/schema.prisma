@@ -1038,6 +1038,9 @@ enum NotificationType {
   PROMOTION             // Promotional message
   FEATURE_UPDATE        // New feature announcement
   
+  // Feedback
+  FEEDBACK_RECEIVED     // User submitted feedback/bug report (admin)
+  
   // Trading Reports
   WEEKLY_REPORT         // Weekly report ready
   MONTHLY_REPORT        // Monthly report ready

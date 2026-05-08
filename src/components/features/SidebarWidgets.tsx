@@ -92,7 +92,7 @@ async function TagCloudWidget() {
                 {tags.map((tag, i) => (
                     <Link
                         key={tag.id}
-                        href={`/articles/tag/${tag.slug}`}
+                        href={`/knowledge?tag=${tag.slug}`}
                         className={`text-xs font-bold px-3 py-1.5 rounded-full text-white transition-opacity hover:opacity-80 block
                             ${i % 3 === 0 ? 'bg-[#FF2E5B] shadow-[#FF2E5B]/20' :
                                 i % 3 === 1 ? 'bg-primary shadow-primary/20' :
@@ -117,7 +117,7 @@ async function CategoriesWidget() {
             <ul className="space-y-2">
                 {categories.map(cat => (
                     <li key={cat.id}>
-                        <Link href={`/articles/category/${cat.slug}`} className="flex justify-between items-center group">
+                        <Link href={`/knowledge?category=${cat.slug}`} className="flex justify-between items-center group">
                             <span className="text-sm font-medium text-gray-600 dark:text-gray-500 group-hover:text-primary transition-colors">
                                 {cat.name}
                             </span>

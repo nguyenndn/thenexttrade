@@ -17,6 +17,13 @@ import { formatAccountLabel, transformImageUrl } from "@/lib/utils";
 import { celebrateXP } from "@/lib/celebrate";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { fetchTradingAccounts } from "@/lib/cached-config";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface JournalFormProps {
     initialData?: any;
@@ -296,20 +303,23 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
                         {/* Account Selection */}
                         <div className="col-span-1 md:col-span-2 space-y-2">
                             <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Trading Account</label>
-                            <select
-                                name="accountId"
+                            <Select
                                 value={formData.accountId}
-                                onChange={handleChange}
+                                onValueChange={(value) => setFormData(prev => ({ ...prev, accountId: value }))}
                                 disabled={isSynced || isEditMode}
-                                className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-medium transition-all ${isSynced || isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
-                                <option value="">Select Account (Optional)</option>
-                                {accounts.map((acc: any) => (
-                                    <option key={acc.id} value={acc.id}>
-                                        {formatAccountLabel(acc)}
-                                    </option>
-                                ))}
-                            </select>
+                                <SelectTrigger className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-medium transition-all ${isSynced || isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}>
+                                    <SelectValue placeholder="Select Account (Optional)" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none">Select Account (Optional)</SelectItem>
+                                    {accounts.map((acc: any) => (
+                                        <SelectItem key={acc.id} value={acc.id}>
+                                            {formatAccountLabel(acc)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         <div className="space-y-2">
@@ -359,16 +369,19 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
 
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Status</label>
-                            <select
-                                name="status"
+                            <Select
                                 value={formData.status}
-                                onChange={handleChange}
+                                onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
                                 disabled={isSynced}
-                                className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
-                                <option value="OPEN">OPEN - Running</option>
-                                <option value="CLOSED">CLOSED - Completed</option>
-                            </select>
+                                <SelectTrigger className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all ${isSynced ? 'opacity-60 cursor-not-allowed' : ''}`}>
+                                    <SelectValue placeholder="Select Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="OPEN">OPEN - Running</SelectItem>
+                                    <SelectItem value="CLOSED">CLOSED - Completed</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                 </div>

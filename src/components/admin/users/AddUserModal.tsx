@@ -1,11 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { UserPlus, Loader2, Mail, Lock, User } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/app/admin/users/actions";
@@ -38,6 +45,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
         register,
         handleSubmit,
         reset,
+        control,
         formState: { errors },
     } = useForm<AddUserForm>({
         resolver: zodResolver(addUserSchema),
@@ -195,18 +203,22 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                             Role
                         </label>
-                        <select
-                            {...register("role")}
-                            className="w-full h-11 px-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
-                        >
-                            <option value="USER">User — Standard member</option>
-                            <option value="EDITOR">
-                                Editor — Articles &amp; Academy
-                            </option>
-                            <option value="ADMIN">
-                                Admin — Full access
-                            </option>
-                        </select>
+                        <Controller
+                            control={control}
+                            name="role"
+                            render={({ field }) => (
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger className="w-full h-11 px-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white focus:outline-none focus:border-primary/50 transition-colors">
+                                        <SelectValue placeholder="Select a role" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="USER">User — Standard member</SelectItem>
+                                        <SelectItem value="EDITOR">Editor — Articles &amp; Academy</SelectItem>
+                                        <SelectItem value="ADMIN">Admin — Full access</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
                     </div>
 
                     {/* Actions */}

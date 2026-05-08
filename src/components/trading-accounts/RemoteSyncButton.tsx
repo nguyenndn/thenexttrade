@@ -11,6 +11,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/Dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { RefreshCw, Loader2, CheckCircle2, XCircle, Clock } from "lucide-react";
 import { toast } from "sonner";
 
@@ -183,19 +190,20 @@ export function RemoteSyncButton({
                     <div className="space-y-4 py-4">
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Sync Period</label>
-                            <select
-                                className="flex h-10 w-full rounded-md border border-input bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-700 dark:text-gray-100 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                value={syncPeriod}
-                                onChange={(e) => setSyncPeriod(e.target.value)}
-                            >
-                                <option value="1">Today</option>
-                                <option value="3">Last 3 Days</option>
-                                <option value="7">Last Week</option>
-                                <option value="30">Last Month</option>
-                                <option value="90">Last 3 Months</option>
-                                <option value="180">Last 6 Months</option>
-                                <option value="all">Entire History</option>
-                            </select>
+                            <Select value={syncPeriod} onValueChange={setSyncPeriod}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select period" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="1">Today</SelectItem>
+                                    <SelectItem value="3">Last 3 Days</SelectItem>
+                                    <SelectItem value="7">Last Week</SelectItem>
+                                    <SelectItem value="30">Last Month</SelectItem>
+                                    <SelectItem value="90">Last 3 Months</SelectItem>
+                                    <SelectItem value="180">Last 6 Months</SelectItem>
+                                    <SelectItem value="all">Entire History</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         <Button onClick={handleSync} className="w-full">

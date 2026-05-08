@@ -175,6 +175,35 @@ export function CopyTradingPerformance() {
     const data = mockAccounts.find((a) => a.id === selectedId) || mockAccounts[0];
     const hasMultiple = mockAccounts.length > 1;
 
+    const [calYear, setCalYear] = useState(2026);
+    const [calMonth, setCalMonth] = useState(3); // April = 3 (0-indexed)
+    const monthName = new Date(calYear, calMonth).toLocaleString("en-US", { month: "long", year: "numeric" });
+
+    const handleScreenshot = useCallback(async () => {
+        if (!calendarRef.current) return;
+        try {
+            setIsCapturing(true);
+            const dataUrl = await htmlToImage.toPng(calendarRef.current, {
+                quality: 1,
+                pixelRatio: 3,
+                backgroundColor: document.documentElement.classList.contains('dark') ? '#1A1D27' : '#ffffff',
+                style: { margin: '0' },
+            });
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `Trading-Calendar-${monthName.replace(' ', '-')}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast.success('Screenshot saved successfully!');
+        } catch (error: any) {
+            console.error('Screenshot error:', error);
+            toast.error(error instanceof Error ? error.message : (error?.message || 'Failed to capture screenshot'));
+        } finally {
+            setIsCapturing(false);
+        }
+    }, [monthName]);
+
     // Close dropdown on outside click
     useEffect(() => {
         const handler = (e: MouseEvent) => {
@@ -195,9 +224,6 @@ export function CopyTradingPerformance() {
         );
     }
 
-    const [calYear, setCalYear] = useState(2026);
-    const [calMonth, setCalMonth] = useState(3); // April = 3 (0-indexed)
-    const monthName = new Date(calYear, calMonth).toLocaleString("en-US", { month: "long", year: "numeric" });
     const calendarDays = getCalendarDays(calYear, calMonth);
 
     // Calendar weekly totals
@@ -229,31 +255,6 @@ export function CopyTradingPerformance() {
         if (calMonth === 11) { setCalYear(calYear + 1); setCalMonth(0); }
         else setCalMonth(calMonth + 1);
     };
-
-    const handleScreenshot = useCallback(async () => {
-        if (!calendarRef.current) return;
-        try {
-            setIsCapturing(true);
-            const dataUrl = await htmlToImage.toPng(calendarRef.current, {
-                quality: 1,
-                pixelRatio: 3,
-                backgroundColor: document.documentElement.classList.contains('dark') ? '#1A1D27' : '#ffffff',
-                style: { margin: '0' },
-            });
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = `Trading-Calendar-${monthName.replace(' ', '-')}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            toast.success('Screenshot saved successfully!');
-        } catch (error: any) {
-            console.error('Screenshot error:', error);
-            toast.error(error instanceof Error ? error.message : (error?.message || 'Failed to capture screenshot'));
-        } finally {
-            setIsCapturing(false);
-        }
-    }, [monthName]);
 
     return (
         <div className="space-y-4">

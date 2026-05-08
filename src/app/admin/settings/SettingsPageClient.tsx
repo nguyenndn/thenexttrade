@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { User, Bell, Lock, Globe, Save, Camera, Shield, Palette, Send, Megaphone } from "lucide-react";
+import { User, Bell, Lock, Globe, Save, Camera, Palette, Send, Megaphone } from "lucide-react";
 import { toast } from "sonner";
 import { updateProfile, updateSystemConfig } from "./actions";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -17,9 +17,7 @@ interface SettingsPageClientProps {
     };
     initialConfig: {
         maintenanceMode: boolean;
-        userRegistration: boolean;
         feedbackEnabled: boolean;
-        requireEmailVerification: boolean;
         siteTitle: string;
         siteDescription: string;
         supportEmail: string;
@@ -28,7 +26,6 @@ interface SettingsPageClientProps {
         socialYoutube: string;
         socialInstagram: string;
         welcomeEmail: boolean;
-        adminAlertOnFeedback: boolean;
         newArticleAlert: boolean;
         systemAnnouncement: string;
     };
@@ -301,19 +298,14 @@ function SystemSettings({ initialConfig }: { initialConfig: SettingsPageClientPr
                 {/* ── Feature Toggles ── */}
                 <SectionCard icon={Globe} title="Feature Toggles">
                     <ToggleRow label="Maintenance Mode" desc="Disable access for non-admin users." checked={config.maintenanceMode} onChange={() => handleToggle("maintenanceMode")} />
-                    <ToggleRow label="User Registration" desc="Allow new users to sign up." checked={config.userRegistration} onChange={() => handleToggle("userRegistration")} />
                     <ToggleRow label="Feedback & Support" desc="Allow users to submit bug reports and feature requests." checked={config.feedbackEnabled} onChange={() => handleToggle("feedbackEnabled")} />
                 </SectionCard>
 
-                {/* ── Security & Notifications (stacked in right column) ── */}
+                {/* ── Notifications (stacked in right column) ── */}
                 <div className="flex flex-col gap-5">
-                    <SectionCard icon={Shield} title="Security & Access">
-                        <ToggleRow label="Require Email Verification" desc="Users must verify email before accessing the platform." checked={config.requireEmailVerification} onChange={() => handleToggle("requireEmailVerification")} />
-                    </SectionCard>
 
                     <SectionCard icon={Send} title="Notifications">
                         <ToggleRow label="Welcome Email" desc="Send a welcome email when new users register." checked={config.welcomeEmail} onChange={() => handleToggle("welcomeEmail")} />
-                        <ToggleRow label="Admin Alert on Feedback" desc="Show in-app notification when users submit new feedback." checked={config.adminAlertOnFeedback} onChange={() => handleToggle("adminAlertOnFeedback")} />
                         <ToggleRow label="New Article Alert" desc="Notify users when a new article is published." checked={config.newArticleAlert} onChange={() => handleToggle("newArticleAlert")} />
                     </SectionCard>
                 </div>

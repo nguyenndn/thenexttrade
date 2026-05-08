@@ -83,3 +83,25 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json(createErrorResponse(ErrorCode.INTERNAL_ERROR), { status: 500 });
     }
 }
+
+// DELETE /api/user/notifications (Delete all notifications)
+export async function DELETE() {
+    try {
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            return NextResponse.json(createErrorResponse(ErrorCode.UNAUTHORIZED), { status: 401 });
+        }
+
+        const { count } = await prisma.notification.deleteMany({
+            where: { userId: user.id },
+        });
+
+        return NextResponse.json(createSuccessResponse({ deleted: count }));
+
+    } catch (error) {
+        console.error("DELETE Notifications Error:", error);
+        return NextResponse.json(createErrorResponse(ErrorCode.INTERNAL_ERROR), { status: 500 });
+    }
+}
