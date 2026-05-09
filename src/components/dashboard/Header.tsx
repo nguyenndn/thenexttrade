@@ -62,11 +62,21 @@ export function Header({
                 <div className="flex items-center gap-4">
                     {/* Desktop Toggle + Logo (Toggle FIRST) */}
                     <div className="flex items-center gap-3">
+                        {/* Desktop Toggle */}
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setCollapsed?.(!collapsed)}
                             className="hidden lg:flex p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                        >
+                            <Menu size={20} />
+                        </Button>
+                        {/* Mobile Toggle */}
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={onMobileMenuClick}
+                            className="flex lg:hidden p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
                             <Menu size={20} />
                         </Button>
@@ -103,7 +113,7 @@ export function Header({
             </header>
 
             {/* Command Palette Modal (Ctrl+K) */}
-            <CommandPalette />
+            <CommandPalette searchRoute={searchRoute} />
         </>
     );
 }

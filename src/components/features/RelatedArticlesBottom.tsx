@@ -1,6 +1,5 @@
-
 import Link from 'next/link';
-import Image from 'next/image';
+import { SafeImage } from '@/components/ui/SafeImage';
 import { Calendar } from 'lucide-react';
 import { prisma } from '@/lib/prisma'; // Assumes server component usage
 
@@ -80,11 +79,12 @@ export default async function RelatedArticlesBottom({ categoryId, currentArticle
                     >
                         <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-200 dark:bg-gray-800">
                             {article.thumbnail ? (
-                                <Image
+                                <SafeImage
                                     src={article.thumbnail}
                                     alt={article.title}
                                     fill
                                     className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                    sizes="(max-width: 768px) 100vw, 33vw"
                                 />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No Img</div>

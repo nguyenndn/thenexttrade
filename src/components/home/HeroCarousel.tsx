@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -94,7 +94,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                         {/* Background Image */}
                         <div className="absolute inset-0 bg-gray-900">
                             {article.thumbnail ? (
-                                <Image
+                                <SafeImage
                                     src={article.thumbnail}
                                     alt={article.title}
                                     fill

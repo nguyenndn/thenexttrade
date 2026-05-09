@@ -12,15 +12,15 @@ import {
     CommandItem,
     CommandSeparator,
 } from "@/components/ui/command";
-import { dashboardMenuItems } from "@/config/navigation";
+import { dashboardMenuItems, adminMenuItems } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
 // Flatten navigation items for search
-function flattenNavItems() {
+function flattenNavItems(menuList: any[]) {
     const items: { name: string; href: string; category: string; icon?: any }[] = [];
     const seen = new Set<string>();
-    for (const group of dashboardMenuItems) {
+    for (const group of menuList) {
         if (group.href && group.href !== "#" && !seen.has(group.href)) {
             seen.add(group.href);
             items.push({ name: group.name, href: group.href, category: "Pages", icon: group.icon });
@@ -37,17 +37,20 @@ function flattenNavItems() {
     return items;
 }
 
-const allPages = flattenNavItems();
+const dashboardPages = flattenNavItems(dashboardMenuItems);
+const adminPages = flattenNavItems(adminMenuItems);
 
 export function CommandPalette({ searchRoute = "/dashboard/search", showPages = true }: { searchRoute?: string; showPages?: boolean }) {
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const router = useRouter();
 
+    const allPages = searchRoute.startsWith("/admin") ? adminPages : dashboardPages;
+
     // Ctrl+K shortcut
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
                 e.preventDefault();
                 setOpen((prev) => !prev);
             }

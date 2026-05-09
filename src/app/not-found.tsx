@@ -1,7 +1,11 @@
-'use client';
-
 import Link from 'next/link';
-import { Home, Search, ArrowLeft } from 'lucide-react';
+import { Home, Search } from 'lucide-react';
+import { BackButton } from '@/components/ui/BackButton';
+
+export const metadata = { 
+  title: 'Page Not Found',
+  robots: { index: false, follow: false }
+};
 
 export default function NotFound() {
   return (
@@ -22,7 +26,7 @@ export default function NotFound() {
 
         {/* Title */}
         <h1 className="text-3xl font-black text-gray-700 dark:text-white mb-4">
-          Page Not Found
+          Page Not Found.
         </h1>
 
         {/* Description */}
@@ -40,13 +44,7 @@ export default function NotFound() {
             <Home size={16} />
             Go Home
           </Link>
-          <button
-            onClick={() => window.history.back()}
-            className="flex items-center gap-2 px-6 py-2.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 font-bold rounded-full transition-colors"
-          >
-            <ArrowLeft size={16} />
-            Go Back
-          </button>
+          <BackButton />
         </div>
 
         {/* Contact */}

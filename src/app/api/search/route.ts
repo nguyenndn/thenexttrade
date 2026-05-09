@@ -21,8 +21,29 @@ export async function GET(request: Request) {
 
         // --- Admin Scope Logic ---
         if (scope === "admin") {
-            // Check permissions here if needed using Supabase, though this is an internal API usually protected by Middleware or Client checks.
-            // For extra security, verify user role here.
+            // Check auth - only allow ADMIN and EDITOR to search admin scope
+            const { createServerClient } = await import("@supabase/ssr");
+            const { cookies } = await import("next/headers");
+            const cookieStore = await cookies();
+            const supabase = createServerClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+                { cookies: { getAll: () => cookieStore.getAll() } }
+            );
+            const { data: { user } } = await supabase.auth.getUser();
+
+            if (!user) {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+
+            const profile = await prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { role: true }
+            });
+
+            if (!profile || (profile.role !== "ADMIN" && profile.role !== "EDITOR")) {
+                return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+            }
 
             if (type === "all" || type === "article") {
                 const articles = await prisma.article.findMany({

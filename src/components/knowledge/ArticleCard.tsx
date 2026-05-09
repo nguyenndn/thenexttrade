@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { Clock, BookOpen, Flame, MessageCircle, ThumbsUp } from "lucide-react";
 
 export interface ArticleCardProps {
@@ -27,7 +28,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
             {/* Thumbnail */}
             <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
                 {article.thumbnail ? (
-                    <Image
+                    <SafeImage
                         src={article.thumbnail}
                         alt={article.title}
                         fill

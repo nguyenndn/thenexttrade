@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState, useMemo, type ReactNode
 import { dashboardMenuItems, dashboardMenuGroups } from "@/config/navigation";
 import { fetchSystemConfig, fetchFeatureFlags } from "@/lib/cached-config";
 
+// Cache busted on 2026-05-08 to fix fetchFeatureFlags error
+
 // ============================================================================
 // TYPES
 // ============================================================================

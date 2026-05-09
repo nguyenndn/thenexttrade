@@ -1,7 +1,7 @@
 
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { Calendar } from "lucide-react";
 
 export default async function RelatedArticles({
@@ -39,7 +39,7 @@ export default async function RelatedArticles({
                     >
                         <div className="relative w-16 h-16 flex-shrink-0 bg-gray-200 dark:bg-gray-800">
                             {article.thumbnail ? (
-                                <Image
+                                <SafeImage
                                     src={article.thumbnail}
                                     alt={article.title}
                                     fill

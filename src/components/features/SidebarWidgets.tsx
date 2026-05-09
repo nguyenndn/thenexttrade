@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
+import { SafeImage } from '@/components/ui/SafeImage';
 import { TrendingUp, Landmark, ArrowRight, Star, Check } from 'lucide-react';
 
 // CACHED DATA FETCHERS
@@ -57,7 +58,7 @@ async function RecentPostsWidget() {
                         <Link key={article.id} href={`/articles/${article.slug}`} className="flex gap-3 group items-center p-2 -mx-2 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                             <div className="relative w-14 h-14 overflow-hidden rounded-full border-2 border-gray-100 dark:border-white/10 group-hover:border-primary transition-all shrink-0 shadow-sm">
                                 {article.thumbnail ? (
-                                    <Image src={article.thumbnail} alt={article.title} fill className="object-cover" />
+                                    <SafeImage src={article.thumbnail} alt={article.title} fill className="object-cover" />
                                 ) : (
                                     <div className="w-full h-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-[10px] text-gray-500">N/A</div>
                                 )}

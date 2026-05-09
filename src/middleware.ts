@@ -251,31 +251,34 @@ export async function middleware(request: NextRequest) {
     }
 
     // 3. Rate Limiting
+    let rateLimitResult: { allowed: boolean; remaining: number; retryAfter?: number } | null = null;
+    let rateLimitCategory: RateLimitKey | null = null;
+
     if (pathname.startsWith('/api/')) {
-        let category: RateLimitKey = 'api';
+        rateLimitCategory = 'api';
 
         if (pathname.startsWith('/api/auth/')) {
-            category = 'auth';
+            rateLimitCategory = 'auth';
         } else if (pathname.startsWith('/api/search')) {
-            category = 'search';
+            rateLimitCategory = 'search';
         }
 
-        const result = checkRateLimit(ip, category);
+        rateLimitResult = checkRateLimit(ip, rateLimitCategory);
 
-        if (!result.allowed) {
+        if (!rateLimitResult.allowed) {
             logSecurityToAPI(baseUrl, {
                 type: 'RATE_LIMIT',
                 ip,
                 userAgent,
                 path: pathname,
-                detail: `Category: ${category}, limit: ${RATE_LIMITS[category].max}/min`,
+                detail: `Category: ${rateLimitCategory}, limit: ${RATE_LIMITS[rateLimitCategory].max}/min`,
             });
             const response = new NextResponse(
-                JSON.stringify({ error: 'Too Many Requests', retryAfter: result.retryAfter }),
+                JSON.stringify({ error: 'Too Many Requests', retryAfter: rateLimitResult.retryAfter }),
                 { status: 429, headers: { 'Content-Type': 'application/json' } }
             );
-            if (result.retryAfter) {
-                response.headers.set('Retry-After', String(result.retryAfter));
+            if (rateLimitResult.retryAfter) {
+                response.headers.set('Retry-After', String(rateLimitResult.retryAfter));
             }
             return response;
         }
@@ -288,13 +291,9 @@ export async function middleware(request: NextRequest) {
     addSecurityHeaders(response, isDev);
 
     // 6. Rate limit headers for API routes
-    if (pathname.startsWith('/api/')) {
-        const category: RateLimitKey = pathname.startsWith('/api/auth/') ? 'auth'
-            : pathname.startsWith('/api/search') ? 'search'
-            : 'api';
-        const result = checkRateLimit(ip, category);
-        response.headers.set('X-RateLimit-Limit', String(RATE_LIMITS[category].max));
-        response.headers.set('X-RateLimit-Remaining', String(Math.max(0, result.remaining)));
+    if (rateLimitResult && rateLimitCategory) {
+        response.headers.set('X-RateLimit-Limit', String(RATE_LIMITS[rateLimitCategory].max));
+        response.headers.set('X-RateLimit-Remaining', String(Math.max(0, rateLimitResult.remaining)));
     }
 
     // 7. Analytics — track pageviews (non-blocking, fire-and-forget)
@@ -346,6 +345,6 @@ export const config = {
          * - Static assets (svg, png, jpg, etc.)
          * - robots.txt, sitemap.xml, feed.xml
          */
-        '/((?!_next/static|_next/image|favicon.ico|images/|uploads/|robots\\.txt|sitemap\\.xml|feed\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)',
+        '/((?!_next/static|_next/image|articles/|favicon.ico|images/|uploads/|robots\\.txt|sitemap\\.xml|feed\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)',
     ],
 };

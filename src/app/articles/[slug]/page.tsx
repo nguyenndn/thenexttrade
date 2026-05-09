@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 import { MessageSquare, Calendar, Clock, Home, ChevronRight, ThumbsUp, Flame } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
@@ -80,6 +81,7 @@ const getCachedArticle = unstable_cache(
 );
 
 // SSG: Pre-render the top 50 most recent articles at build time
+/*
 export async function generateStaticParams() {
     const articles = await prisma.article.findMany({
         take: 50,
@@ -91,14 +93,16 @@ export async function generateStaticParams() {
         slug: article.slug,
     }));
 }
+*/
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
     const article = await getCachedArticle(slug);
 
     if (!article) {
-        return {
+        return { 
             title: 'Article Not Found | The Next Trade',
+            robots: { index: false, follow: false }
         };
     }
 
@@ -126,6 +130,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
@@ -151,7 +157,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         })
     ]);
 
-    if (!article) return notFound();
+    if (!article) {
+        notFound();
+    }
 
     let currentUser = null;
     if (authUser) {
@@ -230,7 +238,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {article.thumbnail && (
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
                     <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-lg bg-gray-900">
-                        <Image
+                        <SafeImage
                             src={article.thumbnail}
                             alt={article.title}
                             fill

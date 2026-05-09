@@ -71,10 +71,10 @@ export async function GET(request: NextRequest) {
 
       // Trend (events per day)
       prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
-        SELECT DATE(created_at AT TIME ZONE 'UTC') as date, COUNT(*)::bigint as count
+        SELECT DATE("createdAt" AT TIME ZONE 'UTC') as date, COUNT(*)::bigint as count
         FROM security_logs
-        WHERE created_at >= ${since}
-        GROUP BY DATE(created_at AT TIME ZONE 'UTC')
+        WHERE "createdAt" >= ${since}
+        GROUP BY DATE("createdAt" AT TIME ZONE 'UTC')
         ORDER BY date ASC
       `,
     ]);
