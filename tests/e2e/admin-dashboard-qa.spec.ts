@@ -21,6 +21,7 @@ type RouteCheck = {
 
 const adminEmail = process.env.ADMIN_QA_EMAIL;
 const adminPassword = process.env.ADMIN_QA_PASSWORD;
+const viewportName = process.env.ADMIN_QA_VIEWPORT === "mobile" ? "mobile" : "desktop";
 const prisma = new PrismaClient();
 
 const outputDir = path.join(process.cwd(), "test-results", "admin-dashboard-qa");
@@ -160,7 +161,7 @@ async function gotoAndCheckRoute(page: Page, route: RouteCheck, issues: QaIssue[
             });
         }
 
-        if (/Page Not Found|404/i.test(bodyText) && route.kind !== "dynamic") {
+        if ((/Page Not Found/i.test(bodyText) || /(^|[^\d,])404([^\d]|$)/i.test(bodyText)) && route.kind !== "dynamic") {
             issues.push({
                 severity: "Medium",
                 area: "Admin route",
@@ -325,38 +326,22 @@ function redactSensitive(value: string) {
 }
 
 function writeReport(routeResults: Array<RouteCheck & { status: number; heading: string }>, safeChecks: string[], issues: QaIssue[], apiFailures: string[], consoleErrors: string[]) {
-    const rows = routeResults
-        .map((r) => `| ${r.kind} | ${r.label} | \`${redactSensitive(r.path)}\` | ${r.status || "n/a"} | ${redactSensitive(r.heading || "-")} |`)
-        .join("\n");
+    void routeResults;
+    void safeChecks;
+    void apiFailures;
+    void consoleErrors;
 
     const body = [
-        "# Admin Dashboard QA Pass - 2026-05-08",
+        "# Admin Dashboard QA Bugs - 2026-05-08",
         "",
         "Pham vi: login admin, menu/sidebar, route con, dynamic edit/detail routes, safe buttons, modal open/close, filter/tab/search controls, desktop/mobile smoke.",
+        `Viewport: ${viewportName}.`,
         "",
         "Luu y: khong submit cac thao tac nguy hiem nhu delete, approve, reject, save, send, create du lieu that.",
         "",
-        "## Route Coverage",
-        "",
-        "| Type | Label | Path | HTTP | Heading |",
-        "| --- | --- | --- | --- | --- |",
-        rows,
-        "",
-        "## Safe Interaction Coverage",
-        "",
-        safeChecks.length ? safeChecks.map((c) => `- ${c}`).join("\n") : "- Khong ghi nhan duoc interaction check nao.",
-        "",
         "## Issues Found",
         "",
-        issues.length ? issues.map(formatIssue).join("\n\n") : "Khong phat hien issue moi trong vong QA nay.",
-        "",
-        "## API/Network Failures",
-        "",
-        apiFailures.length ? apiFailures.map((f) => `- ${redactSensitive(f)}`).join("\n") : "- Khong ghi nhan API/network failure >= 400 trong browser automation.",
-        "",
-        "## Console Errors",
-        "",
-        consoleErrors.length ? consoleErrors.slice(0, 50).map((e) => `- ${redactSensitive(e.replace(/\s+/g, " ").slice(0, 300))}`).join("\n") : "- Khong ghi nhan console error nghiem trong.",
+        issues.length ? issues.map(formatIssue).join("\n\n") : "Khong phat hien bug trong vong QA nay.",
         "",
     ].join("\n");
 
@@ -365,7 +350,7 @@ function writeReport(routeResults: Array<RouteCheck & { status: number; heading:
 }
 
 test.describe("Admin dashboard QA pass", () => {
-    test.setTimeout(10 * 60 * 1000);
+    test.setTimeout(12 * 60 * 1000);
     test.skip(!adminEmail || !adminPassword, "Set ADMIN_QA_EMAIL and ADMIN_QA_PASSWORD to run admin QA.");
 
     test.afterAll(async () => {
@@ -373,6 +358,7 @@ test.describe("Admin dashboard QA pass", () => {
     });
 
     test("admin routes and safe interactions", async ({ page }) => {
+        await page.setViewportSize(viewportName === "mobile" ? { width: 390, height: 844 } : { width: 1440, height: 900 });
         fs.mkdirSync(outputDir, { recursive: true });
 
         const issues: QaIssue[] = [];
@@ -409,7 +395,9 @@ test.describe("Admin dashboard QA pass", () => {
             await page.waitForTimeout(300);
         }
 
-        const safeChecks = await probeSafeInteractions(page, issues);
+        const safeChecks = viewportName === "mobile"
+            ? ["Mobile route/screen smoke only. Mobile action buttons are covered by admin-dashboard-deep-qa.spec.ts."]
+            : await probeSafeInteractions(page, issues);
 
         await page.setViewportSize({ width: 390, height: 844 });
         await page.goto("/admin", { waitUntil: "domcontentloaded" });
@@ -432,5 +420,6 @@ test.describe("Admin dashboard QA pass", () => {
 
         writeReport(routeResults, safeChecks, issues, Array.from(new Set(apiFailures)), Array.from(new Set(consoleErrors)));
         expect(routeResults.length).toBeGreaterThan(0);
+        expect(issues).toEqual([]);
     });
 });

@@ -1,7 +1,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/api-auth";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -18,15 +18,19 @@ export async function GET(request: Request) {
             return NextResponse.json(tags);
         }
 
-        // Otherwise, search by name
+        // The admin taxonomy list calls /api/tags without a query and needs the
+        // full collection; typeahead/search callers still get a compact result.
         const tags = await prisma.tag.findMany({
-            where: {
-                name: {
-                    contains: query,
-                    mode: "insensitive",
-                },
-            },
-            take: 10,
+            where: query
+                ? {
+                    name: {
+                        contains: query,
+                        mode: "insensitive",
+                    },
+                }
+                : undefined,
+            orderBy: { name: "asc" },
+            ...(query ? { take: 10 } : {}),
         });
 
         return NextResponse.json(tags);
@@ -36,12 +40,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
     try {
         const { name } = await request.json();

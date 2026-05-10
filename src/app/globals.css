@@ -391,6 +391,21 @@ textarea,
   outline: none !important;
 }
 
+/* Keep rich article tables readable on small screens without widening the page. */
+.article-content table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.article-content th,
+.article-content td {
+  white-space: nowrap;
+}
+
 /* ===== Academy Lesson Footer (Action Step + Next Lesson) ===== */
 .lesson-footer-compact .lesson-footer {
   margin-top: 1.5rem;

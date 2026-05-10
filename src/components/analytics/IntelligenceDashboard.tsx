@@ -38,6 +38,7 @@ import {
 import type { IntelligenceData, Insight, InsightSeverity, ScoreHistoryPoint } from "@/lib/smart-analytics";
 import { format, parseISO } from "date-fns";
 import { BehavioralRadarChart } from "./BehavioralRadarChart";
+import { DeepSeekCoachCard } from "./DeepSeekCoachCard";
 
 // ============================================================================
 // ICON MAP
@@ -108,35 +109,35 @@ function PeriodComparison({
             value: String(current.tradeScore.score),
             prev: String(previous.tradeScore.score),
             delta: <DeltaBadge value={scoreDelta} />,
-            accent: "border-l-indigo-500",
+            accent: "border-t-indigo-500",
         },
         {
             label: "Win Rate",
             value: `${current.quickStats.winRate.toFixed(1)}%`,
             prev: `${previous.quickStats.winRate.toFixed(1)}%`,
             delta: <DeltaBadge value={winRateDelta} suffix="%" />,
-            accent: "border-l-blue-500",
+            accent: "border-t-blue-500",
         },
         {
             label: "Risk:Reward",
             value: current.quickStats.avgRR.toFixed(2),
             prev: previous.quickStats.avgRR.toFixed(2),
             delta: <DeltaBadge value={Math.round(rrDelta * 100) / 100} />,
-            accent: "border-l-cyan-500",
+            accent: "border-t-cyan-500",
         },
         {
             label: "Issues",
             value: String(current.issues.length),
             prev: String(previous.issues.length),
             delta: <DeltaBadge value={issuesDelta} invert />,
-            accent: "border-l-red-500",
+            accent: "border-t-red-500",
         },
         {
             label: "Strengths",
             value: String(current.strengths.length),
             prev: String(previous.strengths.length),
             delta: <DeltaBadge value={strengthsDelta} />,
-            accent: "border-l-emerald-500",
+            accent: "border-t-emerald-500",
         },
     ];
 
@@ -156,7 +157,7 @@ function PeriodComparison({
                 {cards.map((card) => (
                     <div
                         key={card.label}
-                        className={`text-center p-4 rounded-xl bg-gray-50 dark:bg-white/[0.03] border-l-[3px] ${card.accent} ${
+                        className={`text-center p-4 rounded-xl bg-gray-50 dark:bg-white/[0.03] border-t-[3px] ${card.accent} ${
                             card.label === "Strengths" ? "col-span-2 sm:col-span-1" : ""
                         }`}
                     >
@@ -717,7 +718,7 @@ export function IntelligenceDashboard({
     return (
         <div className="space-y-4">
             {/* Header */}
-            <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mb-6">
                 <div className="flex items-center gap-1.5">
                     <Crosshair size={14} className="text-primary" />
                     <span>
@@ -730,6 +731,13 @@ export function IntelligenceDashboard({
                         )}
                     </span>
                 </div>
+            </div>
+
+            {/* DeepSeek AI Coach */}
+            <div className="mb-6">
+                <DeepSeekCoachCard
+                    accountId={previousData ? undefined : undefined} // Not explicitly required, but we can pass date/timezone if needed later
+                />
             </div>
 
             {/* AI Recommendation — top priority, full width */}

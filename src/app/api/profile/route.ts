@@ -49,7 +49,6 @@ import { sanitizeInput } from "@/lib/sanitize";
 export async function PUT(request: Request) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-
     if (!user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -86,6 +85,7 @@ export async function PUT(request: Request) {
         return NextResponse.json({ message: "Profile updated successfully" });
 
     } catch (error: any) {
+        console.error("Profile update error:", error);
         if (error instanceof z.ZodError) {
             return NextResponse.json({ error: error.issues }, { status: 400 });
         }

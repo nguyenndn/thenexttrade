@@ -78,6 +78,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
     };
 
     const confirmDelete = () => {
+        setOpen(false);
         setIsConfirmOpen(true);
     };
 

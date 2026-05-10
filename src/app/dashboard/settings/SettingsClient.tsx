@@ -35,9 +35,17 @@ export default function SettingsClient() {
             const res = await fetch('/api/profile', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    name: formData.name,
+                    bio: formData.bio,
+                    image: formData.image
+                })
             });
-            if (!res.ok) throw new Error();
+            if (!res.ok) {
+                const text = await res.text();
+                console.error("Settings save error:", text);
+                throw new Error(text);
+            }
             setMessage({ type: 'success', text: 'Profile updated successfully!' });
             router.refresh();
         } catch { setMessage({ type: 'error', text: 'Something went wrong. Please try again.' }); }

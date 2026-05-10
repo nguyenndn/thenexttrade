@@ -54,7 +54,6 @@ export function AddAccountModal({
                 setCreatedAccount(result.account);
                 setStep("setup-instructions");
                 toast.success("Account created successfully!");
-                onSuccess(result.account);
             }
         } catch (error: any) {
             toast.error(error.message || "Failed to create account");

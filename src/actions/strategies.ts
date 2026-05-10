@@ -84,10 +84,12 @@ export async function updateStrategy(id: string, data: z.infer<typeof strategySc
     if (!validation.success) return { error: "Invalid data" };
 
     try {
-        await prisma.strategy.update({
+        const result = await prisma.strategy.updateMany({
             where: { id, userId: user.id },
             data: validation.data
         });
+
+        if (result.count === 0) return { error: "Strategy not found or unauthorized" };
 
         revalidatePath("/dashboard/strategies");
         return { success: true };
@@ -101,10 +103,11 @@ export async function deleteStrategy(id: string) {
     if (!user) return { error: "Unauthorized" };
 
     try {
-        // Handle "ghost" strategies logic if needed, but for now standard delete
-        await prisma.strategy.delete({
+        const result = await prisma.strategy.deleteMany({
             where: { id, userId: user.id }
         });
+
+        if (result.count === 0) return { error: "Strategy not found or unauthorized" };
 
         revalidatePath("/dashboard/strategies");
         return { success: true };

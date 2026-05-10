@@ -1,7 +1,7 @@
 
-import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-auth";
 import { z } from "zod";
 
 const categorySchema = z.object({
@@ -29,12 +29,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) { // TODO: Check for Admin Role
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
     try {
         const body = await request.json();

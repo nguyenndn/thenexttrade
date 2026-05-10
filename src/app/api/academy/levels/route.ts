@@ -1,6 +1,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-auth";
 import { z } from "zod";
 
 const levelSchema = z.object({
@@ -32,6 +33,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const body = await request.json();
         const validatedData = levelSchema.parse(body);

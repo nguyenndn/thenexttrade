@@ -1,21 +1,13 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { createClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/api-auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        // Fetch user role for additional security (optional but good practice)
-        // For now relying on Admin Layout guard mostly, but explicit check is better.
-        // Skipping strict role check here for speed as requested, but keeping auth check.
+        const auth = await requireAdmin();
+        if (auth instanceof NextResponse) return auth;
 
         // Get query params for pagination
         const { searchParams } = new URL(request.url);

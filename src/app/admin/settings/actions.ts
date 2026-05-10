@@ -64,11 +64,20 @@ export async function updateProfile(formData: FormData) {
 }
 
 export async function updateSystemConfig(config: any) {
-    // Check Admin Role (Assuming middleware handles basic auth, but double check role here recommended)
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) return { error: "Unauthorized" };
+
+    // DB-backed ADMIN role check
+    const profile = await prisma.profile.findUnique({
+        where: { userId: user.id },
+        select: { role: true },
+    });
+    const role = profile?.role || 'USER';
+    if (role !== 'ADMIN' && role !== 'EDITOR') {
+        return { error: "Forbidden — admin access required" };
+    }
 
     try {
         await prisma.systemSetting.upsert({

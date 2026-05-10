@@ -85,33 +85,53 @@ export function TradingSystemsClient({
                 <Tabs defaultValue={defaultTab} className="w-full">
                     <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
                     <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-gray-200 dark:border-white/10 w-auto inline-flex h-auto shrink-0">
-                        <TabsTrigger value="ACCOUNTS" className={tabTriggerClass}>
+                        <TabsTrigger 
+                            value="ACCOUNTS" 
+                            className="px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeTextClassName="!text-white"
+                        >
                             <Wallet size={16} />
                             My Accounts
                         </TabsTrigger>
-                        <TabsTrigger value="MT5_EA" className={tabTriggerClass}>
+                        <TabsTrigger 
+                            value="MT5_EA" 
+                            className="px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeTextClassName="!text-white"
+                        >
                             <CustomBotIcon size={16} />
                             Expert Advisor
                             {eaCount > 0 && (
-                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-primary/10 text-primary">
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
                                     {eaCount}
                                 </span>
                             )}
                         </TabsTrigger>
-                        <TabsTrigger value="MT5_INDICATOR" className={tabTriggerClass}>
+                        <TabsTrigger 
+                            value="MT5_INDICATOR" 
+                            className="px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeTextClassName="!text-white"
+                        >
                             <BarChart2 size={16} />
                             Indicators
                             {indicatorCount > 0 && (
-                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-primary/10 text-primary">
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
                                     {indicatorCount}
                                 </span>
                             )}
                         </TabsTrigger>
-                        <TabsTrigger value="VIP" className={tabTriggerClass}>
+                        <TabsTrigger 
+                            value="VIP" 
+                            className="px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeTextClassName="!text-white"
+                        >
                             <Crown size={16} />
                             VIP
                             {vipBadge && (
-                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-primary/10 text-primary">
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
                                     {vipBadge}
                                 </span>
                             )}

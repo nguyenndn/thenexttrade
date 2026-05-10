@@ -1,14 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-auth";
 
-export async function GET(request: Request) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+export async function GET() {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
     try {
         const shortcuts = await prisma.contentShortcut.findMany({
@@ -26,12 +22,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
     try {
         const body = await request.json();
@@ -46,7 +38,7 @@ export async function POST(request: Request) {
                 name,
                 description,
                 content,
-                authorId: user.id
+                authorId: auth.user.id
             }
         });
 

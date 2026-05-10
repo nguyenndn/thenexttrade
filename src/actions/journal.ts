@@ -64,7 +64,10 @@ export async function getJournalEntries(
 
     const dateFilter = buildDateRangeFilter(dateFrom, dateTo, timezone);
     if (dateFilter) {
-        where.exitDate = dateFilter;
+        where.OR = [
+            { exitDate: dateFilter },
+            { entryDate: dateFilter }
+        ];
     }
 
     if (hasImages) {
@@ -359,7 +362,10 @@ export async function exportJournalEntries(filters: {
 
     const dateFilter = buildDateRangeFilter(dateFrom, dateTo);
     if (dateFilter) {
-        where.exitDate = dateFilter;
+        where.OR = [
+            { exitDate: dateFilter },
+            { entryDate: dateFilter }
+        ];
     }
 
     if (tag) {

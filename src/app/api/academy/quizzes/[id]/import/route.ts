@@ -1,6 +1,7 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/api-auth";
 import { z } from "zod";
 
 const importSchema = z.object({
@@ -11,6 +12,9 @@ export async function POST(
     req: Request,
     { params }: { params: Promise<{ id: string }> } // Target Quiz ID
 ) {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const { id } = await params;
         const body = await req.json();
@@ -39,9 +43,6 @@ export async function POST(
         let nextOrder = (targetQuiz._count?.questions || 0) + 1;
 
         // 3. Transactionally create copies
-        // Note: Prisma doesn't support "createMany" with nested "create" (for options) well in one go.
-        // We will map create promises and run transaction.
-
         const createPromises = sourceQuestions.map(sourceQ => {
             const newOrder = nextOrder++;
             return prisma.question.create({

@@ -1,15 +1,11 @@
-import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-auth";
 
 export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
     try {
         await prisma.contentShortcut.delete({
@@ -24,12 +20,8 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
 
 export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
     try {
         const body = await request.json();

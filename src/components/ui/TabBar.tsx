@@ -60,11 +60,11 @@ export function TabBar({ tabs, className, equalWidth }: TabBarProps) {
                         key={tab.href}
                         href={tab.href}
                         className={cn(
-                            "rounded-lg px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap shrink-0",
+                            "rounded-lg px-3 sm:px-4 py-2 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap shrink-0",
                             equalWidth && "flex-1 text-center lg:flex-none",
                             isActive
-                                ? "bg-white dark:bg-[#262A36] text-gray-700 dark:text-white shadow-sm border-gray-200 dark:border-white/10"
-                                : "text-gray-600 dark:text-gray-300 border-transparent"
+                                ? "bg-gradient-to-r from-primary to-teal-500 text-white shadow-md border-transparent"
+                                : "text-gray-600 dark:text-gray-300 border-transparent hover:text-gray-900 dark:hover:text-white"
                         )}
                     >
                         {Icon && <Icon size={14} className="sm:w-4 sm:h-4" />}

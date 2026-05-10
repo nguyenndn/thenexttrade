@@ -1,7 +1,7 @@
 
-import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-auth";
 import { z } from "zod";
 
 const updateArticleSchema = z.object({
@@ -45,12 +45,8 @@ export async function PUT(
     props: { params: Promise<{ id: string }> }
 ) {
     const params = await props.params;
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
     try {
         const body = await request.json();
@@ -67,8 +63,7 @@ export async function PUT(
         if (categoryId) data.categoryId = categoryId;
         if (isFeatured !== undefined) data.isFeatured = isFeatured;
 
-        // Handle author change (assuming current user is admin)
-        // In real app, check user role before allowing this.
+        // Handle author change
         if (body.authorId) {
             data.authorId = body.authorId;
         }
@@ -114,12 +109,8 @@ export async function DELETE(
     props: { params: Promise<{ id: string }> }
 ) {
     const params = await props.params;
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
     try {
         await prisma.article.delete({
@@ -131,4 +122,3 @@ export async function DELETE(
         return NextResponse.json({ error: "Failed to delete article" }, { status: 500 });
     }
 }
-

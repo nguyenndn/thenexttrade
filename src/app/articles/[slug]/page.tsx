@@ -368,7 +368,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         {/* Content Card */}
                         <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-sm border border-gray-200 dark:border-white/10 p-6 sm:p-8 lg:p-10">
                             <div
-                                className="prose dark:prose-invert prose-lg max-w-none 
+                                className="article-content prose dark:prose-invert prose-lg max-w-none 
                                 prose-headings:font-black prose-headings:tracking-tight prose-headings:text-gray-700 dark:prose-headings:text-white 
                                 prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-gray-100 dark:prose-h2:border-white/5
                                 prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3

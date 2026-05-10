@@ -1,6 +1,7 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/api-auth";
 import { z } from "zod";
 
 const moduleSchema = z.object({
@@ -11,6 +12,9 @@ const moduleSchema = z.object({
 });
 
 export async function POST(req: Request) {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const body = await req.json();
         const validation = moduleSchema.safeParse(body);

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +9,9 @@ export const dynamic = "force-dynamic";
  * Returns all feature flags from SystemSetting
  */
 export async function GET() {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     const settings = await prisma.systemSetting.findMany({
         where: { key: { startsWith: "feature_" } },
     });
@@ -25,6 +29,9 @@ export async function GET() {
  * Toggle a feature flag { key: "feature_x", enabled: true/false }
  */
 export async function POST(request: Request) {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     const { key, enabled } = await request.json();
 
     if (!key?.startsWith("feature_")) {

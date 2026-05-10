@@ -1,6 +1,7 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/api-auth";
 import { z } from "zod";
 
 const levelUpdateSchema = z.object({
@@ -47,6 +48,9 @@ export async function PUT(
     req: Request,
     props: { params: Promise<{ id: string }> }
 ) {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const { id } = await props.params;
         const body = await req.json();
@@ -76,6 +80,9 @@ export async function DELETE(
     req: Request,
     props: { params: Promise<{ id: string }> }
 ) {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const { id } = await props.params;
         await prisma.level.delete({

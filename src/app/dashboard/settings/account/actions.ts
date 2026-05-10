@@ -203,8 +203,21 @@ export async function getTwoFactorStatus() {
 
 export async function startTwoFactorSetup() {
     const supabase = await createClient();
+    const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors();
+    if (factorsError) return { error: factorsError.message };
+
+    const factors = factorsData?.all || [];
+    const verifiedTotp = factors.find(f => f.factor_type === 'totp' && f.status === 'verified');
+    if (verifiedTotp) return { error: "2FA is already enabled" };
+
+    const staleTotpFactors = factors.filter(f => f.factor_type === 'totp' && f.status !== 'verified');
+    for (const factor of staleTotpFactors) {
+        await supabase.auth.mfa.unenroll({ factorId: factor.id });
+    }
+
     const { data, error } = await supabase.auth.mfa.enroll({
-        factorType: 'totp'
+        factorType: 'totp',
+        friendlyName: 'TheNextTrade'
     });
 
     if (error) return { error: error.message };
