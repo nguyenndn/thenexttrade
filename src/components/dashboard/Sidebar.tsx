@@ -14,6 +14,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { signout } from '@/app/auth/actions';
 import { useFeatureFlags } from '@/lib/dashboard-context';
 import { Button } from "@/components/ui/Button";
+import { VipStatusWidget } from "@/components/dashboard/VipStatusWidget";
 
 export interface SidebarItem {
     name: string;
@@ -181,6 +182,27 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
         }
     }, [pathname, visibleItems]);
 
+    // Detect if we're in Admin sidebar by checking first item href
+    const isAdmin = visibleItems[0]?.href === "/admin";
+
+    const sectionNames: Record<string, string> = isAdmin
+        ? {
+            // Admin groups
+            "Articles": "CONTENT",
+            "Academy": "EDUCATION",
+            "IB Overview": "IB & VIP",
+            "Copy Trading": "INVESTING",
+            "EA Management": "SYSTEM",
+        }
+        : {
+            // User Dashboard groups
+            "Dashboard": "OPERATIONS",
+            "Trading Journal": "EXECUTION",
+            "Analytics Hub": "REVIEW",
+            "Academy": "RESOURCES",
+            "Copy Trading": "INVESTING",
+        };
+
     return (
         <aside id="onborda-sidebar" className={cn(
             "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30",
@@ -191,26 +213,6 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
             <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
 
                 {visibleItems.map((item: any, index: number) => {
-                    // Detect if we're in Admin sidebar by checking first item href
-                    const isAdmin = visibleItems[0]?.href === "/admin";
-
-                    const sectionNames: Record<string, string> = isAdmin
-                        ? {
-                            // Admin groups
-                            "Articles": "CONTENT",
-                            "Academy": "EDUCATION",
-                            "Copy Trading": "INVESTING",
-                            "EA Management": "SYSTEM",
-                        }
-                        : {
-                            // User Dashboard groups
-                            "Dashboard": "OPERATIONS",
-                            "Trading Journal": "EXECUTION",
-                            "Analytics Hub": "REVIEW",
-                            "Academy": "RESOURCES",
-                            "Copy Trading": "INVESTING",
-                        };
-
                     const sectionLabel = sectionNames[item.name];
 
                     return (
@@ -242,6 +244,13 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                     );
                 })}
             </div>
+
+            {/* VIP Pro Status Widget — only show in user dashboard, not admin */}
+            {!isCollapsed && !isAdmin && (
+                <div className="px-4 pb-2">
+                    <VipStatusWidget />
+                </div>
+            )}
 
             {/* Bottom Actions */}
             <div className="p-4 border-t border-gray-200 dark:border-white/10 m-4 mt-auto">

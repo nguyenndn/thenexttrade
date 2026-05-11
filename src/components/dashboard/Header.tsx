@@ -104,7 +104,9 @@ export function Header({
 
 
                     {/* Notification Bell — visible on all sizes, next to avatar */}
-                    {bell ? bell : <NotificationBell />}
+                    <div key="notification-bell">
+                        {bell ? bell : <NotificationBell />}
+                    </div>
 
                     <div className="h-6 w-[1px] bg-gray-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
 

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { NotificationBell } from "@/components/layout/NotificationBell";
+import { VipStatusWidget } from "@/components/dashboard/VipStatusWidget";
 import { cn } from "@/lib/utils";
 import { dashboardMenuItems, adminMenuItems } from "@/config/navigation";
 import { signout } from "@/app/auth/actions";
@@ -140,6 +141,13 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                     });
                     })()}
                 </div>
+
+                {/* ── VIP Status (user sidebar only) ── */}
+                {!isAdmin && (
+                    <div className="px-3 py-2 border-t border-gray-100 dark:border-white/10">
+                        <VipStatusWidget />
+                    </div>
+                )}
 
                 {/* ── Bottom: Logout ── */}
                 <div className="px-3 py-3 border-t border-gray-100 dark:border-white/10">

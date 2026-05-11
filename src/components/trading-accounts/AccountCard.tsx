@@ -6,7 +6,9 @@ import {
     Trash2,
     ExternalLink,
     Trophy,
-    FileText,
+    Crown,
+    Zap,
+    Star,
 } from "lucide-react";
 import Link from "next/link";
 import { RemoteSyncButton } from "./RemoteSyncButton";
@@ -24,6 +26,9 @@ interface AccountCardProps {
     onUpdate: () => void;
     onDelete: (id: string) => void;
     onSettings: (account: any) => void;
+    onUnlockPro?: (account: any) => void;
+    isMain?: boolean;
+    onSetMain?: (accountId: string) => void;
 }
 
 // Returns account type label, or null if not yet synced
@@ -39,11 +44,22 @@ const getAccountType = (type: string | null | undefined, server?: string | null)
     return t;
 };
 
+const PRO_STATUS_CONFIG: Record<string, { label: string; className: string }> = {
+    ACTIVE: { label: "Pro", className: "bg-emerald-50 text-emerald-600 border-emerald-200/80 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20" },
+    GRACE: { label: "Grace", className: "bg-purple-50 text-purple-600 border-purple-200/80 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20" },
+    EXPIRED: { label: "Expired", className: "bg-amber-50 text-amber-600 border-amber-200/80 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20" },
+    REVOKED: { label: "Revoked", className: "bg-red-50 text-red-500 border-red-200/80 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20" },
+    NONE: { label: "Free", className: "bg-gray-50 text-gray-500 border-gray-200/80 dark:bg-white/5 dark:text-gray-400 dark:border-white/10" },
+};
+
 export function AccountCard({
     account,
     onUpdate,
     onDelete,
-    onSettings
+    onSettings,
+    onUnlockPro,
+    isMain = false,
+    onSetMain,
 }: AccountCardProps) {
     // Only trust accountType if account has actually synced at least once
     const hasSynced = !!account.lastSync;
@@ -92,6 +108,12 @@ export function AccountCard({
                             <Trophy size={10} className="text-yellow-500" />
                         </span>
                     )}
+                    {isMain && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-[9px] font-black uppercase tracking-[0.1em] bg-primary/10 text-primary border border-primary/20" title="Main Account">
+                            <Star size={8} className="fill-current" />
+                            Main
+                        </span>
+                    )}
 
                     {/* Spacer */}
                     <div className="flex-1" />
@@ -113,6 +135,16 @@ export function AccountCard({
                                 <Settings size={15} className="text-gray-500" />
                                 <span>Account Settings</span>
                             </DropdownMenuItem>
+                            {onSetMain && (
+                                <DropdownMenuItem
+                                    onClick={() => onSetMain(account.id)}
+                                    disabled={isMain}
+                                    className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <Star size={15} className={isMain ? "text-primary fill-current" : "text-gray-500"} />
+                                    <span>{isMain ? "Main Account" : "Set as Main"}</span>
+                                </DropdownMenuItem>
+                            )}
                             <div className="h-px bg-gray-100 dark:bg-white/5 my-1" />
                             {isReal && (
                                 <DropdownMenuItem
@@ -172,10 +204,10 @@ export function AccountCard({
             </div>
 
             {/* Footer Status Bar */}
-            <div className="relative z-10 flex items-center gap-2 flex-wrap px-3 py-2.5 mx-2 mb-2 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/[0.06]">
+            <div className="relative z-10 flex items-center gap-1.5 flex-wrap px-3 py-2.5 mx-2 mb-2 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/[0.06]">
                 {/* Connection Status */}
                 {account.isConnected ? (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/80 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 shadow-sm">
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/80 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 shadow-sm">
                         <span className="relative flex h-1.5 w-1.5">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
@@ -183,9 +215,39 @@ export function AccountCard({
                         <span className="text-[10px] font-bold uppercase tracking-wider">Online</span>
                     </div>
                 ) : (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200/80 dark:border-red-500/20 text-red-500 dark:text-red-400 shadow-sm">
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200/80 dark:border-red-500/20 text-red-500 dark:text-red-400 shadow-sm">
                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
                         <span className="text-[10px] font-bold uppercase tracking-wider">Offline</span>
+                    </div>
+                )}
+
+                {/* Pro Status Chip */}
+                {(() => {
+                    const proStatus = account.proStatus || "NONE";
+                    const vipStatus = account.vipStatus;
+                    // Show "Pending" if VIP request is pending and no Pro yet
+                    if (vipStatus === "PENDING" && proStatus === "NONE") {
+                        return (
+                            <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200/80 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm">
+                                <Crown size={10} />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">Pending</span>
+                            </div>
+                        );
+                    }
+                    const config = PRO_STATUS_CONFIG[proStatus] || PRO_STATUS_CONFIG.NONE;
+                    return (
+                        <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border shadow-sm ${config.className}`}>
+                            <Crown size={10} />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">{config.label}</span>
+                        </div>
+                    );
+                })()}
+
+                {/* EA Access Chip */}
+                {account.eaAccess === "INCLUDED" && (
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/80 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 shadow-sm">
+                        <Zap size={10} />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">EA</span>
                     </div>
                 )}
 
@@ -194,6 +256,20 @@ export function AccountCard({
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-1.5">
+                    {/* Unlock Pro — show for Free accounts without pending VIP */}
+                    {(!account.proStatus || account.proStatus === "NONE") && account.vipStatus !== "PENDING" && onUnlockPro && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => onUnlockPro(account)}
+                            className="flex items-center gap-1 px-2.5 py-1.5 h-auto rounded-lg bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-[10px] transition-all hover:opacity-90 hover:text-white shadow-sm shadow-primary/20"
+                            title="Unlock Pro"
+                            aria-label="Unlock Pro access"
+                        >
+                            <Crown size={11} />
+                            <span>Unlock Pro</span>
+                        </Button>
+                    )}
+
                     <Link
                         href={`/dashboard?accountId=${account.id}`}
                         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200/80 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-bold text-[10px] transition-all group/link shadow-sm"

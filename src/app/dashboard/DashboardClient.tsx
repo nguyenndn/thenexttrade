@@ -8,6 +8,7 @@ import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
 import { GreetingHeader } from "@/components/dashboard/GreetingHeader";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { InsightBanner } from "@/components/dashboard/InsightBanner";
+import { MobileProStatusBanner } from "@/components/dashboard/MobileProStatusBanner";
 
 // Lazy load chart components — only loaded when user scrolls to them
 const ChartSkeleton = () => <div className="h-[280px] bg-gray-100 dark:bg-white/5 animate-pulse rounded-xl" />;
@@ -108,6 +109,9 @@ export default function DashboardClient({
 
             {/* Header Section */}
             <GreetingHeader userName={userName} currentAccountId={currentAccountId} />
+
+            {/* Mobile Pro Status Banner — visible on mobile without opening the drawer */}
+            <MobileProStatusBanner />
 
             {/* AI Insight Banner */}
             {insight && <InsightBanner insight={insight} score={intelligenceScore} />}

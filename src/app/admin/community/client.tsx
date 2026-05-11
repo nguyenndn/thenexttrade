@@ -107,6 +107,9 @@ export function AdminVipRequestsClient({
           )
         );
         setSelectedRequest(null);
+        toast.success("VIP request approved & Pro access granted");
+      } else {
+        toast.error(result.error || "Failed to approve request. Check server logs.");
       }
     });
   }

@@ -44,15 +44,22 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                 equity: true,
                 accountType: true,
                 useForLeaderboard: true,
-                // Don't expose full API key
                 apiKey: false,
                 currency: true,
                 isDefault: true,
-                // Trading Rules (Soft Nudge)
                 maxDailyLoss: true,
                 maxDailyTrades: true,
                 maxRiskPercent: true,
                 cooldownAfterLosses: true,
+                // Pro/VIP status joins
+                proEntitlement: {
+                    select: { status: true, source: true, expiresAt: true },
+                },
+                vipRequests: {
+                    select: { status: true },
+                    orderBy: { createdAt: "desc" as const },
+                    take: 1,
+                },
             },
             skip,
             take: limit,
@@ -60,18 +67,36 @@ export async function getTradingAccounts(page = 1, limit = 12) {
         prisma.tradingAccount.count({ where: { userId: user.id } })
     ]);
 
-    // Calculate connection status based on heartbeat
-    const accountsWithStatus = accounts.map((acc) => ({
-        ...acc,
-        platform: acc.platform || "MetaTrader 4",
-        // Convert dates to strings for serialization
-        lastHeartbeat: acc.lastHeartbeat ? acc.lastHeartbeat.toISOString() : null,
-        lastSync: acc.lastSync ? acc.lastSync.toISOString() : null,
-        createdAt: acc.createdAt.toISOString(),
-        isConnected: acc.lastHeartbeat
-            ? Date.now() - new Date(acc.lastHeartbeat).getTime() < 10 * 60 * 1000 // 10 min
-            : false,
-    }));
+    // Enrich with connection + Pro/EA/VIP status
+    const accountsWithStatus = accounts.map((acc) => {
+        const proEntitlement = acc.proEntitlement;
+        const proStatus = proEntitlement?.status || "NONE";
+        const proSource = proEntitlement?.source || null;
+        const proExpiresAt = proEntitlement?.expiresAt?.toISOString() || null;
+        const vipStatus = acc.vipRequests?.[0]?.status || null;
+        const isPro = proStatus === "ACTIVE" || proStatus === "GRACE";
+        const eaAccess: "INCLUDED" | "NOT_INCLUDED" = isPro ? "INCLUDED" : "NOT_INCLUDED";
+
+        return {
+            ...acc,
+            platform: acc.platform || "MetaTrader 4",
+            lastHeartbeat: acc.lastHeartbeat ? acc.lastHeartbeat.toISOString() : null,
+            lastSync: acc.lastSync ? acc.lastSync.toISOString() : null,
+            createdAt: acc.createdAt.toISOString(),
+            isConnected: acc.lastHeartbeat
+                ? Date.now() - new Date(acc.lastHeartbeat).getTime() < 10 * 60 * 1000
+                : false,
+            // Pro/VIP/EA enrichment
+            proStatus,
+            proSource,
+            proExpiresAt,
+            vipStatus,
+            eaAccess,
+            // Remove raw relations from serialized output
+            proEntitlement: undefined,
+            vipRequests: undefined,
+        };
+    });
 
     return {
         accounts: accountsWithStatus,

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import { submitVipRequest } from "@/actions/vip-request";
+import { trackBrokerClick } from "@/actions/ib-lead";
 import { trackEvent } from "@/lib/track";
 import {
   BROKER_INFO,
@@ -47,6 +48,12 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
 
+  // Stable sessionId for IB lead tracking
+  const sessionIdRef = useRef<string>("");
+  useEffect(() => {
+    sessionIdRef.current = crypto.randomUUID();
+  }, []);
+
   const brokerInfo = selectedBroker ? BROKER_INFO[selectedBroker] : null;
 
   function handleSelectBroker(broker: SupportedBroker) {
@@ -82,6 +89,10 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
         setError(result.error);
       } else {
         trackEvent('signup_complete', { broker: selectedBroker || '' });
+        // PRO-QA-004: Link IbLead to this VIP request on submit
+        import("@/actions/ib-lead").then((mod) =>
+          mod.linkIbLeadToVipRequest(selectedBroker || "")
+        ).catch(() => {});
         setSuccess(true);
       }
     });
@@ -210,7 +221,13 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
             <button
               onClick={() => {
                 setAccountStatus("new");
-                trackEvent('click_open_account', { broker: selectedBroker || '' });
+                // PRO-QA-001/002: Track as IbLead + AnalyticsEvent
+                trackBrokerClick({
+                  broker: selectedBroker || "",
+                  affiliateUrl: brokerInfo.affiliateUrl,
+                  source: "DASHBOARD",
+                  sessionId: sessionIdRef.current,
+                });
                 window.open(brokerInfo.affiliateUrl, "_blank");
               }}
               className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${

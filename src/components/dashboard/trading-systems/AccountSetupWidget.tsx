@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, UserCheck, BarChart2, Key, Download, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface SetupStep {
@@ -22,7 +23,7 @@ export function AccountSetupWidget({ hasAccount, hasApprovedLicense, hasDownload
 
     const steps: SetupStep[] = [
         { label: "Profile Created", icon: UserCheck, completed: true },
-        { label: "MT5 Account Submitted", icon: BarChart2, completed: hasAccount },
+        { label: "Account Hub Connected", icon: BarChart2, completed: hasAccount },
         { label: "License Key Active", icon: Key, completed: hasApprovedLicense },
         { label: "EA Downloaded", icon: Download, completed: hasDownloaded },
     ];

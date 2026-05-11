@@ -44,8 +44,21 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     if (!searchParams?.accountId) {
         let targetId: string | undefined;
 
-        // Validate cookie account ID actually exists for this user
-        if (lastAccountId) {
+        // Priority 1: User's chosen main account from Profile
+        const profileMain = await prisma.profile.findUnique({
+            where: { userId: user.id },
+            select: { mainTradingAccountId: true },
+        });
+        if (profileMain?.mainTradingAccountId) {
+            const mainExists = await prisma.tradingAccount.findFirst({
+                where: { id: profileMain.mainTradingAccountId, userId: user.id },
+                select: { id: true },
+            });
+            if (mainExists) targetId = profileMain.mainTradingAccountId;
+        }
+
+        // Priority 2: Validate cookie account ID
+        if (!targetId && lastAccountId) {
             const cookieAccountExists = await prisma.tradingAccount.findFirst({
                 where: { id: lastAccountId, userId: user.id },
                 select: { id: true }
@@ -55,7 +68,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
             }
         }
 
-        // Fallback: Get the most recent account from DB
+        // Priority 3: Fallback — most recent account
         if (!targetId) {
             const defaultAccount = await prisma.tradingAccount.findFirst({
                 where: { userId: user.id },
@@ -66,7 +79,6 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         }
 
         if (targetId) {
-            // Reconstruct params to preserve filters like date range
             const newParams = new URLSearchParams();
             if (searchParams) {
                 Object.entries(searchParams).forEach(([key, value]) => {

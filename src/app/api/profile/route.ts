@@ -9,6 +9,8 @@ export const dynamic = "force-dynamic";
 const updateProfileSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     bio: z.string().optional(),
+    telegramId: z.string().optional(),
+    country: z.string().optional(),
     image: z.string().optional(), // In MVP this might be a URL or handled separately
 }).strict();
 
@@ -35,6 +37,8 @@ export async function GET() {
             email: dbUser.email,
             image: dbUser.image,
             bio: dbUser.profile?.bio || "",
+            telegramId: dbUser.profile?.telegramId || "",
+            country: dbUser.profile?.country || "",
             role: dbUser.profile?.role || "USER",
             streak: dbUser.streak || 0
         });
@@ -75,10 +79,16 @@ export async function PUT(request: Request) {
         // Update or Create Profile
         await prisma.profile.upsert({
             where: { userId: user.id },
-            update: { bio: validatedData.bio },
+            update: { 
+                bio: validatedData.bio,
+                telegramId: validatedData.telegramId,
+                country: validatedData.country
+            },
             create: {
                 userId: user.id,
-                bio: validatedData.bio
+                bio: validatedData.bio,
+                telegramId: validatedData.telegramId,
+                country: validatedData.country
             }
         });
 

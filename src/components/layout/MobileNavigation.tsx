@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { menuItems } from "@/config/navigation";
@@ -16,10 +16,23 @@ interface MobileNavigationProps {
     user?: AuthUser | null;
 }
 
+/** Read last_account_id cookie and return a pre-built dashboard URL to skip the redirect hop. */
+function useDashboardUrl(): string {
+    return useMemo(() => {
+        if (typeof document === "undefined") return "/dashboard";
+        const match = document.cookie.match(/(?:^|;\s*)last_account_id=([^;]+)/);
+        const accountId = match?.[1];
+        if (!accountId) return "/dashboard";
+        const today = new Date().toISOString().slice(0, 10);
+        return `/dashboard?accountId=${accountId}&from=${today}&to=${today}`;
+    }, []);
+}
+
 export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const dashboardUrl = useDashboardUrl();
 
     const handleMobileDropdownToggle = (menu: string, event: React.MouseEvent) => {
         event.stopPropagation();
@@ -76,7 +89,7 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
                                 </div>
                             </div>
 
-                            <Link href="/dashboard" onClick={onClose}
+                            <Link href={dashboardUrl} onClick={onClose}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-gray-700 hover:bg-gray-50'}`}>
                                 <LayoutDashboard size={16} className="text-primary" />
                                 Dashboard

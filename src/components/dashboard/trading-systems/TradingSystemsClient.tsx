@@ -1,22 +1,21 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Wallet, BarChart2, Crown } from "lucide-react";
-import { AccountsList } from "@/components/dashboard/accounts/AccountsList";
+import { BarChart2, Crown } from "lucide-react";
 import { SystemsList } from "@/components/dashboard/trading-systems/SystemsList";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { AccountSetupWidget } from "./AccountSetupWidget";
 import { CustomBotIcon } from "./SharedUI";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { VipSectionClient } from "@/components/community/VipSectionClient";
+import { VipTabSummary } from "./VipTabSummary";
 import type { VipRequest } from "@prisma/client";
 
 interface TradingSystemsClientProps {
     licenses: any[];
     products: any[];
     hasApprovedLicense: boolean;
+    hasAccount?: boolean;
     hasDownloaded: boolean;
-    eaBrokers: any[];
     vipRequest?: VipRequest | null;
     vipLink?: string | null;
     userEmail?: string;
@@ -27,15 +26,15 @@ export function TradingSystemsClient({
     licenses,
     products,
     hasApprovedLicense,
+    hasAccount,
     hasDownloaded,
-    eaBrokers,
     vipRequest = null,
     vipLink = null,
     userEmail = "",
     userName,
 }: TradingSystemsClientProps) {
     const searchParams = useSearchParams();
-    const defaultTab = searchParams.get("tab") || "ACCOUNTS";
+    const defaultTab = searchParams.get("tab") || "MT5_EA";
     // Product counts for tab badges
     const eaCount = products.filter(p =>
         (p.platform === "MT5" || p.platform === "BOTH") &&
@@ -71,12 +70,12 @@ export function TradingSystemsClient({
             {/* Header */}
             <PageHeader
                 title="Trading System"
-                description="Manage accounts, EA, indicators & VIP access."
+                description="Manage EA, indicators & VIP access."
             />
 
                 {/* Account Setup Progress */}
                 <AccountSetupWidget
-                    hasAccount={licenses.length > 0}
+                    hasAccount={hasAccount ?? licenses.length > 0}
                     hasApprovedLicense={hasApprovedLicense}
                     hasDownloaded={hasDownloaded}
                 />
@@ -85,15 +84,6 @@ export function TradingSystemsClient({
                 <Tabs defaultValue={defaultTab} className="w-full">
                     <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
                     <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-gray-200 dark:border-white/10 w-auto inline-flex h-auto shrink-0">
-                        <TabsTrigger 
-                            value="ACCOUNTS" 
-                            className="px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
-                            activeTextClassName="!text-white"
-                        >
-                            <Wallet size={16} />
-                            My Accounts
-                        </TabsTrigger>
                         <TabsTrigger 
                             value="MT5_EA" 
                             className="px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border-transparent hover:border-gray-200 dark:hover:border-white/10"
@@ -141,10 +131,6 @@ export function TradingSystemsClient({
 
                     {/* Content Area */}
                     <div className="min-h-[500px] mt-6">
-                        <TabsContent value="ACCOUNTS" className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0">
-                            <AccountsList licenses={licenses} eaBrokers={eaBrokers} />
-                        </TabsContent>
-
                         <TabsContent value="MT5_EA" className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0">
                             <SystemsList
                                 products={eaProducts}
@@ -161,12 +147,7 @@ export function TradingSystemsClient({
 
                         <TabsContent value="VIP" className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0">
                             <div className="w-full bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-gray-200 dark:border-white/10">
-                                <VipSectionClient
-                                    request={vipRequest}
-                                    vipLink={vipLink}
-                                    userEmail={userEmail}
-                                    userName={userName}
-                                />
+                                <VipTabSummary vipRequest={vipRequest} />
                             </div>
                         </TabsContent>
                     </div>

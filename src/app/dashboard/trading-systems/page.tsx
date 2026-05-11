@@ -19,7 +19,7 @@ export default async function TradingSystemsPage() {
     }
 
     // OPTIMIZED: Fetch all data in parallel
-    const [licenses, products, downloadCount, eaBrokers, vipRequest, vipLink] = await Promise.all([
+    const [licenses, products, downloadCount, vipRequest, vipLink, tradingAccountCount] = await Promise.all([
         prisma.eALicense.findMany({
             where: { userId: user.id },
             orderBy: { createdAt: "desc" },
@@ -31,12 +31,9 @@ export default async function TradingSystemsPage() {
         prisma.eADownload.count({
             where: { userId: user.id },
         }),
-        prisma.eABroker.findMany({
-            where: { isActive: true },
-            orderBy: { order: "asc" },
-        }),
         getMyVipRequest(),
         getVipLink(),
+        prisma.tradingAccount.count({ where: { userId: user.id } }),
     ]);
 
     // Check for Approved License
@@ -50,8 +47,8 @@ export default async function TradingSystemsPage() {
                 licenses={licenses}
                 products={products}
                 hasApprovedLicense={hasApprovedLicense}
+                hasAccount={tradingAccountCount > 0}
                 hasDownloaded={downloadCount > 0}
-                eaBrokers={eaBrokers}
                 vipRequest={vipRequest}
                 vipLink={vipLink}
                 userEmail={user.email || ""}

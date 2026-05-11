@@ -7,6 +7,8 @@ import { prisma } from "@/lib/prisma";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { getIntelligenceData, getScoreHistory } from "@/lib/smart-analytics";
 import { IntelligenceDashboard } from "@/components/analytics/IntelligenceDashboard";
+import { EdgeLeakDetector } from "@/components/pro/EdgeLeakDetector";
+import { RuleViolationTracker } from "@/components/pro/RuleViolationTracker";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -153,15 +155,31 @@ async function IntelligenceDataLoader({
     ]);
 
     return (
-        <IntelligenceDashboard
-            data={data}
-            previousData={previousData}
-            scoreHistory={scoreHistory}
-            dateFrom={dateFrom}
-            dateTo={dateTo}
-            prevDateFrom={prevStartDate?.toISOString().split("T")[0]}
-            prevDateTo={prevEndDate?.toISOString().split("T")[0]}
-        />
+        <>
+            <IntelligenceDashboard
+                data={data}
+                previousData={previousData}
+                scoreHistory={scoreHistory}
+                dateFrom={dateFrom}
+                dateTo={dateTo}
+                prevDateFrom={prevStartDate?.toISOString().split("T")[0]}
+                prevDateTo={prevEndDate?.toISOString().split("T")[0]}
+            />
+
+            {/* Pro-gated: Edge Leak Detector */}
+            <div className="mt-6 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
+                <EdgeLeakDetector
+                    issues={data.hasEnoughData ? data.issues : []}
+                    strengths={data.hasEnoughData ? data.strengths : []}
+                    accountId={accountId}
+                />
+            </div>
+
+            {/* Pro-gated: Rule Violation Tracker */}
+            <div className="mt-4 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
+                <RuleViolationTracker accountId={accountId} />
+            </div>
+        </>
     );
 }
 

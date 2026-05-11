@@ -1,18 +1,18 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { User, Save, Loader2, AlertCircle, CheckCircle, Camera } from 'lucide-react';
+import { User, Save, Loader2, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 export default function SettingsClient() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
-    const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-    const [formData, setFormData] = useState({ name: '', email: '', bio: '', image: '' });
+    const [formData, setFormData] = useState({ name: '', email: '', bio: '', telegramId: '', country: '', image: '' });
 
     useEffect(() => { fetchProfile(); }, []);
 
@@ -21,7 +21,7 @@ export default function SettingsClient() {
             const res = await fetch('/api/profile');
             if (res.ok) {
                 const data = await res.json();
-                setFormData({ name: data.name || '', email: data.email || '', bio: data.bio || '', image: data.image || '' });
+                setFormData({ name: data.name || '', email: data.email || '', bio: data.bio || '', telegramId: data.telegramId || '', country: data.country || '', image: data.image || '' });
             }
         } catch { /* Failed to fetch */ }
         finally { setIsLoading(false); }
@@ -30,7 +30,6 @@ export default function SettingsClient() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSaving(true);
-        setMessage(null);
         try {
             const res = await fetch('/api/profile', {
                 method: 'PUT',
@@ -38,6 +37,8 @@ export default function SettingsClient() {
                 body: JSON.stringify({
                     name: formData.name,
                     bio: formData.bio,
+                    telegramId: formData.telegramId,
+                    country: formData.country,
                     image: formData.image
                 })
             });
@@ -46,9 +47,9 @@ export default function SettingsClient() {
                 console.error("Settings save error:", text);
                 throw new Error(text);
             }
-            setMessage({ type: 'success', text: 'Profile updated successfully!' });
+            toast.success('Profile updated successfully!');
             router.refresh();
-        } catch { setMessage({ type: 'error', text: 'Something went wrong. Please try again.' }); }
+        } catch { toast.error('Something went wrong. Please try again.'); }
         finally { setIsSaving(false); }
     };
 
@@ -58,19 +59,6 @@ export default function SettingsClient() {
 
     return (
         <form onSubmit={handleSubmit} className="w-full space-y-5">
-
-            {/* Status Message */}
-            {message && (
-                <div className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium",
-                    message.type === 'success'
-                        ? "bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400"
-                        : "bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400"
-                )}>
-                    {message.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
-                    {message.text}
-                </div>
-            )}
 
             {/* ── Unified Profile Card ── */}
             <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
@@ -137,6 +125,26 @@ export default function SettingsClient() {
                             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                             className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                             placeholder="Your full name"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide mb-1.5">Telegram ID</label>
+                        <input
+                            type="text"
+                            value={formData.telegramId}
+                            onChange={(e) => setFormData(prev => ({ ...prev, telegramId: e.target.value }))}
+                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                            placeholder="@username or Chat ID"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide mb-1.5">Country</label>
+                        <input
+                            type="text"
+                            value={formData.country}
+                            onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                            placeholder="e.g. Vietnam"
                         />
                     </div>
                     <div>

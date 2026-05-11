@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { Plus, RefreshCw, Wallet, Download, Monitor } from "lucide-react";
 import { AccountCard } from "./AccountCard";
 import { AddAccountModal } from "./AddAccountModal";
@@ -12,6 +12,8 @@ import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
+import { setMainAccount } from "@/actions/main-account";
+import { toast } from "sonner";
 
 interface TradingAccount {
     id: string;
@@ -42,29 +44,70 @@ interface Meta {
 interface AccountListClientProps {
     initialAccounts: TradingAccount[];
     meta?: Meta;
+    userEmail?: string;
+    userName?: string;
+    userTelegramId?: string;
+    userCountry?: string;
+    mainAccountId?: string | null;
 }
 
-export function AccountListClient({ initialAccounts, meta }: AccountListClientProps) {
+export function AccountListClient({ initialAccounts, meta, userEmail, userName, userTelegramId, userCountry, mainAccountId: initialMainId }: AccountListClientProps) {
     const router = useRouter();
-    // const [accounts, setAccounts] = useState<TradingAccount[]>(initialAccounts); // We can just use initialAccounts if we use router.refresh()
-    // However, for immediate UI feedback we might want state. But router.refresh() with server actions is the "Vercel way".
-    // Let's us initialAccounts directly.
+    const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
+    const [mainAccountId, setMainAccountId] = useState<string | null>(initialMainId ?? null);
+    
     type ModalState =
         | { type: "NONE" }
-        | { type: "ADD" }
+        | { type: "ADD"; initialMode?: "chooser" | "free" | "pro" | "upgrade-pro"; sourceAccount?: TradingAccount }
         | { type: "SETTINGS"; account: TradingAccount }
         | { type: "REGEN"; accountId: string }
         | { type: "DELETE"; accountId: string };
 
     const [activeModal, setActiveModal] = useState<ModalState>({ type: "NONE" });
 
+    // Handle incoming query params (e.g. ?action=add&intent=unlock-pro or just ?intent=unlock-pro)
+    useEffect(() => {
+        const action = searchParams.get("action");
+        const intent = searchParams.get("intent");
+        const isProIntent = intent === "unlock-pro";
+        const isAddAction = action === "add";
+
+        if ((isAddAction || isProIntent) && activeModal.type === "NONE") {
+            const sourceAccountId = searchParams.get("sourceAccountId");
+            let initialMode: "chooser" | "pro" | "upgrade-pro" = isProIntent ? "pro" : "chooser";
+            let sourceAccount: TradingAccount | undefined;
+            
+            if (sourceAccountId) {
+                sourceAccount = initialAccounts.find(a => a.id === sourceAccountId);
+                if (sourceAccount) {
+                    initialMode = "upgrade-pro";
+                }
+            } else if (isProIntent && initialAccounts.length > 0) {
+                sourceAccount = initialAccounts.find(a => a.id === mainAccountId) || initialAccounts[0];
+                if (sourceAccount) {
+                    initialMode = "upgrade-pro";
+                }
+            }
+
+            setActiveModal({ type: "ADD", initialMode, sourceAccount });
+            
+            // Clear the query params after handling them
+            const newParams = new URLSearchParams(searchParams.toString());
+            newParams.delete("action");
+            newParams.delete("intent");
+            newParams.delete("sourceAccountId");
+            const newUrl = newParams.toString() ? `?${newParams.toString()}` : window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
+        }
+    }, [searchParams, activeModal.type]);
+
     return (
         <div className="space-y-4">
                 {/* Page Header */}
                 <PageHeader
-                    title="Trading Accounts"
-                    description="Manage your connected MT5 trading accounts"
+                    title="Account Hub"
+                    description="Connect Free MT5 accounts or open a Partner Pro account to unlock EA access, VIP tools & auto-sync."
                 >
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
                         <a
@@ -123,16 +166,25 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                 <div className="py-20">
                     <EmptyState
                         icon={Wallet}
-                        title="No Trading Accounts"
-                        description="Connect your MetaTrader account to automatically sync your trading history and analyze your performance."
+                        title="No Accounts Yet"
+                        description="Connect a Free MT5 account to track performance, or open a Partner Pro account to unlock EA access, VIP tools, and automated sync."
                         action={
-                            <Button
-                                variant="primary"
-                                onClick={() => setActiveModal({ type: "ADD" })}
-                                className="shadow-lg min-w-[140px]"
-                            >
-                                Add Account
-                            </Button>
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setActiveModal({ type: "ADD", initialMode: "free" })}
+                                    className="min-w-[140px]"
+                                >
+                                    Free Account
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    onClick={() => setActiveModal({ type: "ADD", initialMode: "pro" })}
+                                    className="shadow-lg min-w-[160px] bg-gradient-to-r from-amber-500 to-amber-600 border-none hover:from-amber-600 hover:to-amber-700"
+                                >
+                                    Unlock Partner Pro
+                                </Button>
+                            </div>
                         }
                     />
                 </div>
@@ -142,6 +194,19 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                         <div key={account.id} className="min-w-0 h-full">
                             <AccountCard
                                 account={account}
+                                isMain={account.id === mainAccountId}
+                                onSetMain={async (id) => {
+                                    setMainAccountId(id); // optimistic
+                                    const result = await setMainAccount(id);
+                                    if (result.error) {
+                                        setMainAccountId(mainAccountId); // rollback
+                                        toast.error(result.error);
+                                    } else {
+                                        toast.success("Main account updated");
+                                        // Update cookie so next nav link uses new main account
+                                        document.cookie = `last_account_id=${id};path=/;max-age=31536000;samesite=lax`;
+                                    }
+                                }}
                                 onUpdate={() => {
                                     startTransition(() => {
                                         router.refresh();
@@ -149,6 +214,9 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                                 }}
                                 onDelete={(id) => setActiveModal({ type: "DELETE", accountId: id })}
                                 onSettings={(acc) => setActiveModal({ type: "SETTINGS", account: acc })}
+                                onUnlockPro={(acc) =>
+                                    setActiveModal({ type: "ADD", initialMode: "upgrade-pro", sourceAccount: acc })
+                                }
                             />
                         </div>
                     ))}
@@ -194,6 +262,12 @@ export function AccountListClient({ initialAccounts, meta }: AccountListClientPr
                     setActiveModal({ type: "NONE" });
                     router.refresh();
                 }}
+                initialMode={activeModal.type === "ADD" ? activeModal.initialMode : undefined}
+                sourceAccount={activeModal.type === "ADD" ? activeModal.sourceAccount : undefined}
+                userEmail={userEmail}
+                userName={userName}
+                userTelegramId={userTelegramId}
+                userCountry={userCountry}
             />
 
             {/* Regenerate Key Modal */}

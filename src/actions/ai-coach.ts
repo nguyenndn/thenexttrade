@@ -3,6 +3,7 @@
 import { getAuthUser } from "@/lib/auth-cache";
 import { getIntelligenceData } from "@/lib/smart-analytics";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
+import { getUserProAccess } from "@/lib/pro-access";
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
@@ -14,6 +15,12 @@ export async function generateDeepSeekInsights(
 ) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
+
+    // Pro access check
+    const pro = await getUserProAccess(user.id);
+    if (!pro.isPro) {
+        return { error: "AI Coach is a Pro feature. Unlock Pro for free by verifying as a VIP trader." };
+    }
 
     if (!DEEPSEEK_API_KEY) {
         return { error: "DEEPSEEK_API_KEY is not configured" };

@@ -255,6 +255,13 @@ export async function middleware(request: NextRequest) {
     let rateLimitCategory: RateLimitKey | null = null;
 
     if (pathname.startsWith('/api/')) {
+        // Skip rate limiting for internal/high-frequency routes (PRO-QA-001, PRO-QA-011)
+        const skipRateLimit =
+            pathname === '/api/pro-status' ||
+            pathname.startsWith('/api/cron/') ||
+            pathname.startsWith('/api/internal/');
+
+        if (!skipRateLimit) {
         rateLimitCategory = 'api';
 
         if (pathname.startsWith('/api/auth/')) {
@@ -282,6 +289,7 @@ export async function middleware(request: NextRequest) {
             }
             return response;
         }
+        } // end skipRateLimit
     }
 
     // 4. Session Management (Supabase) + Route Protection

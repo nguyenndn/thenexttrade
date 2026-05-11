@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -23,6 +23,18 @@ import { NotificationBell } from "@/components/layout/NotificationBell";
 import { CommandPaletteTrigger } from "@/components/search/CommandPalette";
 import { getTierProgress } from "@/lib/tier-utils";
 
+/** Read last_account_id cookie and return a pre-built dashboard URL to skip the redirect hop. */
+function useDashboardUrl(): string {
+    return useMemo(() => {
+        if (typeof document === "undefined") return "/dashboard";
+        const match = document.cookie.match(/(?:^|;\s*)last_account_id=([^;]+)/);
+        const accountId = match?.[1];
+        if (!accountId) return "/dashboard";
+        const today = new Date().toISOString().slice(0, 10); // yyyy-MM-dd
+        return `/dashboard?accountId=${accountId}&from=${today}&to=${today}`;
+    }, []);
+}
+
 interface UserMenuProps {
     user: AuthUser | null;
     profile?: any;
@@ -33,6 +45,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
+    const dashboardUrl = useDashboardUrl();
 
     const userData = {
         name: user?.name || "Trader",
@@ -166,7 +179,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                     {/* Menu Items */}
                     <div className="p-2 space-y-1">
                         {variant !== 'dashboard' ? (
-                            <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                            <Link href={dashboardUrl} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
                                 <LayoutDashboard size={18} className="text-gray-500 group-hover:text-primary transition-colors" />
                                 <div>
                                     <span className="block text-gray-700 dark:text-white">Dashboard</span>

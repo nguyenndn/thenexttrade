@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl *)",
+      "Bash(.node_modules.bindotenv.cmd *)",
+      "PowerShell(*)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(Get-ChildItem \"C:\\\\ServBay\\\\bin\\\\\" -Filter \"*postgres*\" | Select-Object Name)",
+      "Bash(./node_modules/.bin/dotenv.cmd -e .env -- powershell -NoProfile -Command '$env:TURNSTILE_SECRET_KEY=\"\"; $env:NEXT_PUBLIC_TURNSTILE_SITE_KEY=\"\"; npx playwright test tests/e2e/main-account-profile-qa.spec.ts --project=chromium --reporter=list')"
+    ],
+    "defaultMode": "acceptEdits"
+  }
+}

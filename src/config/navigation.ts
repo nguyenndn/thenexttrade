@@ -30,6 +30,8 @@ import {
     ShieldAlert,
     MessageCircle,
     Crown,
+    TrendingUp,
+    UserCheck,
 } from "lucide-react";
 
 export const menuItems = [
@@ -149,8 +151,10 @@ export const adminMenuItems = [
     // --- EDUCATION ---
     { name: "Academy", href: "/admin/academy", icon: GraduationCap },
 
-    // --- VIP ---
-    { name: "VIP Requests", href: "/admin/community", icon: Crown },
+    // --- IB & VIP ---
+    { name: "IB Overview",     href: "/admin/ib",           icon: TrendingUp },
+    { name: "VIP Pipeline",    href: "/admin/ib/pipeline",  icon: Crown },
+    { name: "Trader Monitor",  href: "/admin/ib/traders",   icon: UserCheck },
 
     // --- INVESTING ---
     { name: "Copy Trading", href: "/admin/copy-trading", icon: Copy },
