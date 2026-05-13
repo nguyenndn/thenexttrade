@@ -16,7 +16,6 @@ import { calculateProfitLoss } from "@/lib/calculators";
 import { formatAccountLabel, transformImageUrl } from "@/lib/utils";
 import { celebrateXP } from "@/lib/celebrate";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { fetchTradingAccounts } from "@/lib/cached-config";
 import {
     Select,
     SelectContent,
@@ -30,6 +29,14 @@ interface JournalFormProps {
     isEditMode?: boolean;
     onSuccess?: () => void;
     onCancel?: () => void;
+}
+
+async function fetchTradingAccounts() {
+    const res = await fetch("/api/trading-accounts");
+    if (!res.ok) throw new Error("Failed to fetch accounts");
+
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.accounts || []);
 }
 
 export default function JournalForm({ initialData, isEditMode = false, onSuccess, onCancel }: JournalFormProps) {

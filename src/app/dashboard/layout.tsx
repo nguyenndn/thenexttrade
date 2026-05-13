@@ -1,5 +1,6 @@
 import { getAuthUser } from "@/lib/auth-cache";
 import { getUserProAccess } from "@/lib/pro-access";
+import { prisma } from "@/lib/prisma";
 import { DashboardLayoutClient } from "./layout.client";
 
 export const dynamic = "force-dynamic";
@@ -11,12 +12,19 @@ export default async function DashboardLayout({
 }) {
   const user = await getAuthUser();
   const initialProStatus = user
-    ? await getUserProAccess(user.id).then((r) => ({
+    ? await Promise.all([
+        getUserProAccess(user.id),
+        prisma.profile.findUnique({
+          where: { userId: user.id },
+          select: { mainTradingAccountId: true },
+        }),
+      ]).then(([r, profile]) => ({
         isPro: r.isPro,
         status: r.status,
         source: r.source,
         expiresAt: r.expiresAt?.toISOString() ?? null,
         activeAccountCount: r.activeAccountCount,
+        mainAccountId: profile?.mainTradingAccountId ?? null,
         accounts: r.accounts.map((a) => ({
           tradingAccountId: a.tradingAccountId,
           accountName: a.accountName,

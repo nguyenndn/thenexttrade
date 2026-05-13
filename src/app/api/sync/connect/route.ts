@@ -15,7 +15,7 @@ const limiter = rateLimit({
  */
 export async function POST(request: NextRequest) {
     try {
-        const syncApiKey = request.headers.get("X-Sync-Key");
+        const syncApiKey = request.headers.get("X-Sync-Key") || request.headers.get("X-API-Key");
         if (!syncApiKey) {
             return NextResponse.json({ error: "Missing sync API key" }, { status: 401 });
         }

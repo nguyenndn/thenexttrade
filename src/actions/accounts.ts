@@ -3,12 +3,14 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { generateApiKey } from "@/lib/utils/api-key";
+import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const accountSchema = z.object({
     name: z.string().min(1).max(50),
     broker: z.string().optional(),
+    accountNumber: z.string().max(20).optional(),
     balance: z.number().min(0),
     currency: z.string().length(3),
     platform: z.string().optional(),
@@ -116,7 +118,7 @@ export async function createTradingAccount(data: z.infer<typeof accountSchema>) 
     const validation = accountSchema.safeParse(data);
     if (!validation.success) return { error: "Invalid data" };
 
-    const { name, broker, balance, currency, platform, isDefault, color } = validation.data;
+    const { name, broker, accountNumber, balance, currency, platform, isDefault, color } = validation.data;
 
     try {
         // Handle Default Account Logic
@@ -127,18 +129,41 @@ export async function createTradingAccount(data: z.infer<typeof accountSchema>) 
             });
         }
 
-        const apiKey = generateApiKey();
+        // Auto-generate user-level syncApiKey if not yet created
+        const existingUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { syncApiKey: true },
+        });
+
+        let syncApiKey = existingUser?.syncApiKey ?? null;
+
+        if (!syncApiKey) {
+            const randomPart = crypto.randomBytes(24).toString("hex");
+            syncApiKey = `tnt_${randomPart}`;
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    syncApiKey,
+                    syncApiKeyCreatedAt: new Date(),
+                },
+            });
+        }
+
+        // Legacy: still generate per-account key for backward compatibility
+        // but it is no longer shown in the UI setup flow
+        const legacyApiKey = generateApiKey();
 
         const account = await prisma.tradingAccount.create({
             data: {
                 userId: user.id,
                 name,
                 broker,
+                accountNumber: accountNumber || null,
                 balance,
                 currency,
                 platform: platform || "MT4",
                 isDefault: isDefault || false,
-                apiKey,
+                apiKey: legacyApiKey,
                 color: color || "hsl(var(--primary))",
             },
         });
@@ -150,7 +175,7 @@ export async function createTradingAccount(data: z.infer<typeof accountSchema>) 
                 id: account.id,
                 name: account.name,
                 platform: account.platform,
-                apiKey: account.apiKey,
+                apiKey: syncApiKey, // Return user-level sync key for setup instructions
             }
         };
     } catch (error) {

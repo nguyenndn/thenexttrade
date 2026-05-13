@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { parseEATrade } from "@/lib/ea/utils";
 import { rateLimit } from "@/lib/rate-limit";
+import { resolveSyncAuth } from "@/lib/sync-auth";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500, // Max 500 unique API keys per interval
@@ -10,65 +11,61 @@ const limiter = rateLimit({
 
 export async function POST(request: NextRequest) {
     try {
-        // Get API key from header
-        const apiKey = request.headers.get("X-API-Key");
-        if (!apiKey) {
-            return NextResponse.json({ error: "Missing API key" }, { status: 401 });
-        }
-
-        // ========================================
-        // RATE LIMITING (Spec 11.5)
-        // ========================================
+        // Rate limit by raw key
+        const rawKey = request.headers.get("X-Sync-Key") || request.headers.get("X-API-Key") || "";
         try {
-            await limiter.check(30, apiKey); // 30 requests per minute per API key
+            await limiter.check(30, rawKey); // 30 requests per minute per key
         } catch {
-            return NextResponse.json(
-                { error: "Rate limit exceeded" },
-                { status: 429 }
-            );
-        }
-
-        // Validate API key and get account
-        const account = await prisma.tradingAccount.findUnique({
-            where: { apiKey },
-            select: {
-                id: true,
-                userId: true,
-                platform: true,
-                autoSync: true,
-                accountNumber: true,
-            },
-        });
-
-        if (!account) {
-            return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
-        }
-
-        if (!account.autoSync) {
-            return NextResponse.json({ error: "Sync disabled" }, { status: 403 });
+            return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
         }
 
         // Parse request body
         const body = await request.json();
         const { trades, eaVersion, clientTime, accountNumber } = body;
 
-        // ========================================
-        // STRICT ACCOUNT NUMBER VALIDATION
-        // ========================================
         if (!accountNumber) {
             return NextResponse.json({ error: "Missing accountNumber from EA payload" }, { status: 400 });
         }
 
-        if (account.accountNumber) {
+        // Unified auth
+        const auth = await resolveSyncAuth({
+            request,
+            accountNumber: String(accountNumber),
+            requireAccount: false,
+        });
+
+        if (!auth.success) {
+            return NextResponse.json({ error: auth.error }, { status: auth.status });
+        }
+
+        const { account: resolvedAccount, authMode, user } = auth.data;
+
+        // Resolve account for user-level key
+        let account = resolvedAccount;
+        if (!account && authMode === "USER_SYNC_KEY") {
+            const existing = await prisma.tradingAccount.findFirst({
+                where: { userId: user.id, accountNumber: String(accountNumber) },
+                select: { id: true, userId: true, accountNumber: true, platform: true, autoSync: true, syncOpenTrades: true },
+            });
+            if (existing) account = existing;
+        }
+
+        if (!account) {
+            return NextResponse.json({ error: "Account not found for this account number" }, { status: 404 });
+        }
+
+        // Legacy account number mismatch check
+        if (authMode === "LEGACY_ACCOUNT_KEY" && account.accountNumber) {
             if (account.accountNumber !== String(accountNumber)) {
-                return NextResponse.json(
-                    {
-                        error: "Account mismatch",
-                        message: `API key is for account #${account.accountNumber}, not #${accountNumber}`,
-                    },
-                    { status: 403 }
-                );
+                return NextResponse.json({
+                    error: "Account mismatch",
+                    message: `API key is for account #${account.accountNumber}, not #${accountNumber}`,
+                }, { status: 403 });
             }
+        }
+
+        if (!account.autoSync) {
+            return NextResponse.json({ error: "Sync disabled" }, { status: 403 });
         }
 
         if (!Array.isArray(trades)) {

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { parseEATrade } from "@/lib/ea/utils";
 import { rateLimit } from "@/lib/rate-limit";
+import { resolveSyncAuth } from "@/lib/sync-auth";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -12,45 +13,54 @@ const limiter = rateLimit({
 // EA calls this to sync historical trades
 export async function POST(request: NextRequest) {
     try {
-        const apiKey = request.headers.get("X-API-Key");
-        if (!apiKey) {
-            return NextResponse.json({ error: "Missing API key" }, { status: 401 });
-        }
-
+        const rawKey = request.headers.get("X-Sync-Key") || request.headers.get("X-API-Key") || "";
         try {
-            await limiter.check(10, apiKey); // Lower limit for history sync (heavy payload)
+            await limiter.check(10, rawKey); // Lower limit for history sync (heavy payload)
         } catch {
             return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
         }
 
-        const account = await prisma.tradingAccount.findUnique({
-            where: { apiKey },
-        });
-
-        if (!account) {
-            return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
-        }
-
         const body = await request.json();
         const { trades, syncType, dateRange, accountNumber } = body;
-        // syncType: "LAST_30_DAYS" | "LAST_60_DAYS" | "LAST_90_DAYS" | "ALL"
 
-        // ========================================
-        // STRICT ACCOUNT NUMBER VALIDATION
-        // ========================================
         if (!accountNumber) {
             return NextResponse.json({ error: "Missing accountNumber from EA payload" }, { status: 400 });
         }
 
-        if (account.accountNumber) {
+        // Unified auth
+        const auth = await resolveSyncAuth({
+            request,
+            accountNumber: String(accountNumber),
+            requireAccount: false,
+        });
+
+        if (!auth.success) {
+            return NextResponse.json({ error: auth.error }, { status: auth.status });
+        }
+
+        const { account: resolvedAccount, authMode, user } = auth.data;
+
+        // Resolve account for user-level key
+        let account = resolvedAccount;
+        if (!account && authMode === "USER_SYNC_KEY") {
+            const existing = await prisma.tradingAccount.findFirst({
+                where: { userId: user.id, accountNumber: String(accountNumber) },
+                select: { id: true, userId: true, accountNumber: true, platform: true, autoSync: true, syncOpenTrades: true },
+            });
+            if (existing) account = existing;
+        }
+
+        if (!account) {
+            return NextResponse.json({ error: "Account not found for this account number" }, { status: 404 });
+        }
+
+        // Legacy account number mismatch check
+        if (authMode === "LEGACY_ACCOUNT_KEY" && account.accountNumber) {
             if (account.accountNumber !== String(accountNumber)) {
-                return NextResponse.json(
-                    {
-                        error: "Account mismatch",
-                        message: `API key is for account #${account.accountNumber}, not #${accountNumber}`,
-                    },
-                    { status: 403 }
-                );
+                return NextResponse.json({
+                    error: "Account mismatch",
+                    message: `API key is for account #${account.accountNumber}, not #${accountNumber}`,
+                }, { status: 403 });
             }
         }
 

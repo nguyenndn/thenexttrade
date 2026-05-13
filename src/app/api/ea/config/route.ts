@@ -1,29 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { resolveSyncAuth } from "@/lib/sync-auth";
 
 export async function GET(request: NextRequest) {
     try {
-        const apiKey = request.headers.get("X-API-Key");
-        if (!apiKey) {
-            return NextResponse.json({ error: "Missing API key" }, { status: 401 });
-        }
+        const accountNumber = request.nextUrl.searchParams.get("accountNumber") || request.headers.get("X-Account-Number");
 
-        const account = await prisma.tradingAccount.findUnique({
-            where: { apiKey },
-            select: {
-                id: true,
-                autoSync: true,
-                syncOpenTrades: true,
-            },
+        const auth = await resolveSyncAuth({
+            request,
+            accountNumber,
+            requireAccount: true,
         });
 
-        if (!account) {
-            return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
+        if (!auth.success) {
+            return NextResponse.json({ error: auth.error }, { status: auth.status });
         }
 
+        const { account } = auth.data;
+
         return NextResponse.json({
-            autoSync: account.autoSync,
-            syncOpenTrades: account.syncOpenTrades,
+            autoSync: account!.autoSync,
+            syncOpenTrades: account!.syncOpenTrades,
             heartbeatInterval: 300, // 5 minutes
             syncInterval: 60, // 1 minute after trade close
         });

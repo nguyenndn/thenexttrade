@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { X, Save, Copy, Check, Eye, EyeOff, RefreshCw, Trash2, AlertTriangle, Shield } from "lucide-react";
+import { X, Check, RefreshCw, Trash2, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
-import { updateTradingAccount, revealApiKey, regenerateAccountKey } from "@/actions/accounts";
+import { updateTradingAccount } from "@/actions/accounts";
 import { updateTradingRules } from "@/actions/trading-rules";
 
 interface AccountSettingsModalProps {
@@ -14,7 +14,6 @@ interface AccountSettingsModalProps {
     account: any;
     onUpdate: () => void;
     onDelete: () => void;
-    onRegenerateKey: () => void;
 }
 
 const COLORS = [
@@ -46,16 +45,12 @@ export function AccountSettingsModal({
     account,
     onUpdate,
     onDelete,
-    onRegenerateKey,
 }: AccountSettingsModalProps) {
     const [name, setName] = useState(account.name);
     const [color, setColor] = useState(account.color || "hsl(var(--primary))");
-    const [autoSync, setAutoSync] = useState(account.autoSync);
 
     const [isSaving, setIsSaving] = useState(false);
-    const [showApiKey, setShowApiKey] = useState(false);
-    const [apiKey, setApiKey] = useState<string | null>(null);
-    const [isLoadingKey, setIsLoadingKey] = useState(false);
+
 
     // Trading Rules state
     const [maxDailyLoss, setMaxDailyLoss] = useState<string>(account.maxDailyLoss?.toString() || "");
@@ -99,32 +94,8 @@ export function AccountSettingsModal({
         }
     }
 
-    async function fetchApiKey() {
-        if (showApiKey) {
-            setShowApiKey(false);
-            return;
-        }
 
-        setIsLoadingKey(true);
-        try {
-            const result = await revealApiKey(account.id);
-            if (result.error) throw new Error(result.error);
-            // Explicitly assert success case property access
-            if ('apiKey' in result) {
-                setApiKey(result.apiKey ?? null);
-                setShowApiKey(true);
-            }
-        } catch (error: any) {
-            toast.error(error instanceof Error ? error.message : (error?.message || "Could not retrieve API key"));
-        } finally {
-            setIsLoadingKey(false);
-        }
-    }
 
-    function copyToClipboard(text: string) {
-        navigator.clipboard.writeText(text);
-        toast.success("Copied to clipboard");
-    }
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6" onClick={onClose}>
@@ -233,84 +204,28 @@ export function AccountSettingsModal({
                         </div>
                     </div>
 
-                    {/* API Key Section */}
+                    {/* Sync Key Info */}
                     <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                            <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                                API Configuration
-                            </h3>
-                            <span className="text-[9px] font-black bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 px-2.5 py-1 rounded-md tracking-wider uppercase">Sensitive</span>
-                        </div>
+                        <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                            API Configuration
+                        </h3>
 
-                        <div className="p-4 bg-gray-50/80 dark:bg-white/[0.02] rounded-xl border border-gray-200 dark:border-white/10 shadow-inner">
-                            <div className="flex items-center justify-between mb-2">
-                                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider">API Key</label>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={onRegenerateKey}
-                                    className="text-[11px] font-bold text-orange-500 hover:text-orange-600 border-orange-200 hover:bg-orange-50 dark:border-orange-500/20 dark:hover:bg-orange-500/10 uppercase tracking-wider h-8 px-3"
-                                >
-                                    <RefreshCw size={12} strokeWidth={2.5} className="mr-1.5" /> Regenerate
-                                </Button>
-                            </div>
-
-                            <div className="flex items-center gap-2.5 mb-2">
-                                <div className="flex-1 h-12 bg-white dark:bg-black/40 rounded-xl border border-gray-200 dark:border-white/10 flex items-center px-4 font-mono text-sm text-gray-800 dark:text-gray-200 overflow-hidden relative shadow-sm">
-                                    {showApiKey && apiKey ? (
-                                        <span className="tracking-widest">{apiKey}</span>
-                                    ) : (
-                                        <div className="flex items-center gap-1 opacity-40">
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="mx-1.5">-</span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="mx-1.5">-</span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="mx-1.5">-</span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                            <span className="w-2 h-2 rounded-full bg-current"></span>
-                                        </div>
-                                    )}
+                        <div className="p-4 bg-gray-50/80 dark:bg-white/[0.02] rounded-xl border border-gray-200 dark:border-white/10">
+                            <div className="flex items-start gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                                    <Shield size={14} className="text-emerald-500" />
                                 </div>
-
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={fetchApiKey}
-                                    disabled={isLoadingKey}
-                                    aria-label="Toggle API Key visibility"
-                                    className="w-12 h-12 rounded-xl text-gray-600 hover:text-gray-800 dark:text-gray-500 dark:hover:text-white shrink-0"
-                                >
-                                    {isLoadingKey ? <RefreshCw size={18} className="animate-spin" /> : showApiKey ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </Button>
-
-                                {showApiKey && apiKey && (
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        onClick={() => copyToClipboard(apiKey)}
-                                        aria-label="Copy API Key"
-                                        className="w-12 h-12 rounded-xl text-primary border-primary/20 hover:bg-primary/10 shrink-0"
-                                    >
-                                        <Copy size={18} />
-                                    </Button>
-                                )}
+                                <div>
+                                    <p className="text-sm font-bold text-gray-700 dark:text-white">Unified Sync API Key</p>
+                                    <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mt-0.5">
+                                        One API key works for all your accounts. Manage your Sync API Key in{" "}
+                                        <a href="/dashboard/settings/tnt-connect" className="text-primary hover:underline font-semibold">
+                                            Settings
+                                        </a>.
+                                    </p>
+                                </div>
                             </div>
-                            <p className="text-[11px] font-medium text-gray-600 dark:text-gray-300 leading-relaxed">
-                                Use this key in your EA settings. Keep it secret and do not share it with anyone.
-                            </p>
                         </div>
                     </div>
                 </div>

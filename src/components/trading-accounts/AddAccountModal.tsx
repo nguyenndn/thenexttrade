@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, useEffect, useRef } from "react";
-import { X, Copy, Download, Check, Loader2, Wallet, UserPlus, ArrowRight, ArrowLeft, RefreshCw, AlertCircle, ExternalLink, Mail } from "lucide-react";
+import { X, Copy, Check, Loader2, Wallet, UserPlus, ArrowRight, ArrowLeft, RefreshCw, AlertCircle, ExternalLink, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
@@ -77,6 +77,7 @@ export function AddAccountModal({
             setColor("hsl(var(--primary))");
             setCreatedAccount(null);
             setCopied(false);
+            setFreeAccountNumber("");
 
             setSelectedBroker(null);
             setAccountStatus(null);
@@ -94,6 +95,7 @@ export function AddAccountModal({
     // --- Free Account State ---
     const platform = "MT5";
     const [name, setName] = useState("");
+    const [freeAccountNumber, setFreeAccountNumber] = useState("");
     const [color, setColor] = useState("hsl(var(--primary))");
     const [createdAccount, setCreatedAccount] = useState<any>(null);
     const [copied, setCopied] = useState(false);
@@ -138,6 +140,7 @@ export function AddAccountModal({
                 const result = await createTradingAccount({
                     platform,
                     name,
+                    accountNumber: freeAccountNumber || undefined,
                     color,
                     balance: 0,
                     currency: "USD",
@@ -417,6 +420,14 @@ export function AddAccountModal({
                                 onChange={(e) => setName(e.target.value)}
                             />
 
+                            <PremiumInput
+                                label="MT5 Account Number"
+                                placeholder="e.g. 2001140658"
+                                value={freeAccountNumber}
+                                onChange={(e) => setFreeAccountNumber(e.target.value.replace(/\D/g, ''))}
+                                helperText="Find this in MT5 → Navigator → Accounts. Required for TNT Connect sync."
+                            />
+
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
                                     Label Color
@@ -470,7 +481,7 @@ export function AddAccountModal({
                             {/* API Key */}
                             <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10">
                                 <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
-                                    Your API Key (Shown Once)
+                                    Your Sync API Key
                                 </p>
                                 <div className="flex items-center gap-2">
                                     <code className="flex-1 p-3 bg-white dark:bg-[#1E2028] rounded-lg text-sm font-mono text-primary break-all border border-gray-200 dark:border-white/10">
@@ -486,6 +497,7 @@ export function AddAccountModal({
                                         {copied ? <Check size={18} /> : <Copy size={18} />}
                                     </Button>
                                 </div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">This key works for both TNT Connect and EA Sync. Save it now — you can find it later in Settings → TNT Connect.</p>
                             </div>
 
                             {/* Instructions */}
@@ -513,13 +525,6 @@ export function AddAccountModal({
                                 </ol>
                             </div>
 
-                            {/* Download Button */}
-                            <a
-                                href={`/downloads/TNT_TradeSync_${platform}.ex${platform === "MT5" ? "5" : "4"}`}
-                                className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-white rounded-xl font-medium hover:bg-[#00B377] transition-colors shadow-lg shadow-primary/20"
-                            >
-                                <Download size={18} /> Download EA for {platform}
-                            </a>
 
                             <Button
                                 variant="outline"
@@ -763,7 +768,7 @@ export function AddAccountModal({
                             <div className="text-left mt-6">
                                 <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10">
                                     <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
-                                        Your API Key (Required for EA Sync)
+                                        Your Sync API Key
                                     </p>
                                     <div className="flex items-center gap-2">
                                         <code className="flex-1 p-3 bg-white dark:bg-[#1E2028] rounded-lg text-sm font-mono text-primary break-all border border-gray-200 dark:border-white/10">
@@ -778,6 +783,7 @@ export function AddAccountModal({
                                             {copied ? <Check size={18} /> : <Copy size={18} />}
                                         </Button>
                                     </div>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">This key works for both TNT Connect and EA Sync. Save it now — you can find it later in Settings → TNT Connect.</p>
                                 </div>
                             </div>
                         )}

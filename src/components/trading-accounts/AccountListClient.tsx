@@ -13,6 +13,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { setMainAccount } from "@/actions/main-account";
+import { useProAccess } from "@/components/pro/ProProvider";
 import { toast } from "sonner";
 
 interface TradingAccount {
@@ -55,6 +56,7 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
+    const proAccess = useProAccess();
     const [mainAccountId, setMainAccountId] = useState<string | null>(initialMainId ?? null);
     
     type ModalState =
@@ -205,6 +207,8 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
                                         toast.success("Main account updated");
                                         // Update cookie so next nav link uses new main account
                                         document.cookie = `last_account_id=${id};path=/;max-age=31536000;samesite=lax`;
+                                        // Immediately refresh sidebar Pro badge
+                                        proAccess.refetch();
                                     }
                                 }}
                                 onUpdate={() => {
@@ -247,9 +251,6 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
                     onUpdate={() => router.refresh()}
                     onDelete={() => {
                         setActiveModal({ type: "DELETE", accountId: activeModal.account.id });
-                    }}
-                    onRegenerateKey={() => {
-                        setActiveModal({ type: "REGEN", accountId: activeModal.account.id });
                     }}
                 />
             )}

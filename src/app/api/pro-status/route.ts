@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserProAccess, getAccountProAccess } from "@/lib/pro-access";
 import { requireAuth } from "@/lib/api-auth";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,13 @@ export async function GET(request: NextRequest) {
   }
 
   // User aggregate + accounts list
-  const result = await getUserProAccess(auth.user.id);
+  const [result, profile] = await Promise.all([
+    getUserProAccess(auth.user.id),
+    prisma.profile.findUnique({
+      where: { userId: auth.user.id },
+      select: { mainTradingAccountId: true },
+    }),
+  ]);
 
   return NextResponse.json({
     isPro: result.isPro,
@@ -30,6 +37,7 @@ export async function GET(request: NextRequest) {
     source: result.source,
     expiresAt: result.expiresAt?.toISOString() || null,
     activeAccountCount: result.activeAccountCount,
+    mainAccountId: profile?.mainTradingAccountId || null,
     accounts: result.accounts.map((a) => ({
       tradingAccountId: a.tradingAccountId,
       accountName: a.accountName,

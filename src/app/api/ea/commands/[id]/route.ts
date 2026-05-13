@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
+import { resolveSyncAuth } from "@/lib/sync-auth";
 import { z } from "zod";
 
 const UpdateCommandSchema = z.object({
@@ -21,19 +22,19 @@ export async function PATCH(
 ) {
     const params = await props.params;
     try {
-        const apiKey = request.headers.get("X-API-Key");
-        if (!apiKey) {
-            return NextResponse.json({ error: "API key required" }, { status: 401 });
-        }
+        const accountNumber = request.headers.get("X-Account-Number");
 
-        // Find trading account by API key
-        const account = await prisma.tradingAccount.findUnique({
-            where: { apiKey },
+        const auth = await resolveSyncAuth({
+            request,
+            accountNumber,
+            requireAccount: true,
         });
 
-        if (!account) {
-            return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
+        if (!auth.success) {
+            return NextResponse.json({ error: auth.error }, { status: auth.status });
         }
+
+        const account = auth.data.account!;
 
         const body = await request.json();
         const validated = UpdateCommandSchema.safeParse(body);

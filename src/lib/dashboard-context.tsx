@@ -2,9 +2,6 @@
 
 import { createContext, useContext, useEffect, useState, useMemo, type ReactNode } from "react";
 import { dashboardMenuItems, dashboardMenuGroups } from "@/config/navigation";
-import { fetchSystemConfig, fetchFeatureFlags } from "@/lib/cached-config";
-
-// Cache busted on 2026-05-08 to fix fetchFeatureFlags error
 
 // ============================================================================
 // TYPES
@@ -23,6 +20,44 @@ interface SystemConfigState {
 interface DashboardContextValue {
     featureFlags: FeatureFlagsState;
     systemConfig: SystemConfigState;
+}
+
+const DEFAULT_SYSTEM_CONFIG = {
+    feedbackEnabled: true,
+    systemAnnouncement: "",
+};
+
+async function loadFeatureFlags(flagKeys: string[]): Promise<Set<string>> {
+    if (flagKeys.length === 0) return new Set();
+
+    try {
+        const res = await fetch(`/api/feature-flags?keys=${encodeURIComponent(flagKeys.join(","))}`);
+        if (!res.ok) return new Set();
+
+        const data = await res.json();
+        const disabled = new Set<string>();
+        for (const [key, enabled] of Object.entries(data.flags || {})) {
+            if (!enabled) disabled.add(key);
+        }
+        return disabled;
+    } catch {
+        return new Set();
+    }
+}
+
+async function loadSystemConfig() {
+    try {
+        const res = await fetch("/api/system/config");
+        if (!res.ok) return DEFAULT_SYSTEM_CONFIG;
+
+        const data = await res.json();
+        return {
+            feedbackEnabled: data.feedbackEnabled ?? true,
+            systemAnnouncement: data.systemAnnouncement || "",
+        };
+    } catch {
+        return DEFAULT_SYSTEM_CONFIG;
+    }
 }
 
 // ============================================================================
@@ -63,7 +98,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
             return;
         }
 
-        fetchFeatureFlags(flagKeys)
+        loadFeatureFlags(flagKeys)
             .then(disabled => {
                 setFeatureFlags({ disabledFlags: disabled, loaded: true });
             });
@@ -71,7 +106,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
 
     // Fetch system config ONCE (shared singleton with other components)
     useEffect(() => {
-        fetchSystemConfig()
+        loadSystemConfig()
             .then(data => {
                 setSystemConfig({
                     feedbackEnabled: data.feedbackEnabled,

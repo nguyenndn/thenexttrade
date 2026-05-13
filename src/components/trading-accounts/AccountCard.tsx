@@ -135,7 +135,7 @@ export function AccountCard({
                                 <Settings size={15} className="text-gray-500" />
                                 <span>Account Settings</span>
                             </DropdownMenuItem>
-                            {onSetMain && (
+                            {onSetMain && hasSynced && (
                                 <DropdownMenuItem
                                     onClick={() => onSetMain(account.id)}
                                     disabled={isMain}

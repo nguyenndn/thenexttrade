@@ -7,10 +7,11 @@ export interface PremiumInputProps
     error?: string;
     label?: string;
     icon?: LucideIcon;
+    helperText?: string;
 }
 
 const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
-    ({ className, type, error, label, id, icon: Icon, ...props }, ref) => {
+    ({ className, type, error, label, id, icon: Icon, helperText, ...props }, ref) => {
         return (
             <div className="w-full space-y-2">
                 {label && (
@@ -54,6 +55,11 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
                         className="text-red-500 text-xs font-bold animate-in slide-in-from-top-1"
                     >
                         {error}
+                    </p>
+                )}
+                {!error && helperText && (
+                    <p className="text-[11px] text-gray-400 dark:text-gray-500">
+                        {helperText}
                     </p>
                 )}
             </div>

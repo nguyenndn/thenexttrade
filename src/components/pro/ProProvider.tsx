@@ -21,6 +21,7 @@ interface ProState {
   loading: boolean;
   activeAccountCount: number;
   accounts: AccountProStatus[];
+  mainAccountId: string | null;
 }
 
 interface ProContextValue extends ProState {
@@ -35,6 +36,7 @@ export interface InitialProStatus {
   expiresAt: string | null;
   activeAccountCount: number;
   accounts: AccountProStatus[];
+  mainAccountId: string | null;
 }
 
 const ProContext = createContext<ProContextValue>({
@@ -45,6 +47,7 @@ const ProContext = createContext<ProContextValue>({
   loading: true,
   activeAccountCount: 0,
   accounts: [],
+  mainAccountId: null,
   refetch: () => {},
   getAccountStatus: () => null,
 });
@@ -71,6 +74,7 @@ export function ProProvider({ children, initialProStatus }: ProProviderProps) {
     loading: !initialProStatus,
     activeAccountCount: initialProStatus?.activeAccountCount ?? 0,
     accounts: initialProStatus?.accounts ?? [],
+    mainAccountId: initialProStatus?.mainAccountId ?? null,
   });
 
   const pathname = usePathname();
@@ -94,6 +98,7 @@ export function ProProvider({ children, initialProStatus }: ProProviderProps) {
             loading: false,
             activeAccountCount: data.activeAccountCount || 0,
             accounts: data.accounts || [],
+            mainAccountId: data.mainAccountId || null,
           });
         })
         .catch(() => {

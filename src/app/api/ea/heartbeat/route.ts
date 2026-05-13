@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { detectBroker } from "@/lib/ea/broker-detection";
+import { resolveSyncAuth } from "@/lib/sync-auth";
 
 /**
  * Maps a GMT hour offset from the EA to the most appropriate IANA timezone.
@@ -21,11 +22,6 @@ function mapGmtOffsetToTimezone(offsetHours: number): string {
 
 export async function POST(request: NextRequest) {
     try {
-        const apiKey = request.headers.get("X-API-Key");
-        if (!apiKey) {
-            return NextResponse.json({ error: "Missing API key" }, { status: 401 });
-        }
-
         const body = await request.json();
         const {
             eaVersion,
@@ -40,24 +36,51 @@ export async function POST(request: NextRequest) {
             gmtOffset,   // GMT offset in seconds (TimeCurrent - TimeGMT)
         } = body;
 
-        const account = await prisma.tradingAccount.findUnique({
-            where: { apiKey },
+        // Unified auth — supports both user sync key and legacy account key
+        const auth = await resolveSyncAuth({
+            request,
+            accountNumber: accountNumber ? String(accountNumber) : null,
+            requireAccount: false, // we handle account resolution/creation below
         });
 
-        if (!account) {
-            return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
+        if (!auth.success) {
+            return NextResponse.json({ error: auth.error }, { status: auth.status });
         }
 
+        const { user, account: resolvedAccount, authMode } = auth.data;
+
         // ========================================
-        // STRICT ACCOUNT NUMBER VALIDATION
+        // RESOLVE ACCOUNT
         // ========================================
         if (!accountNumber) {
             return NextResponse.json({ error: "Missing accountNumber from EA payload" }, { status: 400 });
         }
 
-        // Strict Lock: If accountNumber is already set, it MUST match.
-        // If not set (first connect), we allow it and save it below.
-        if (account.accountNumber) {
+        let account = resolvedAccount;
+
+        // For user-level key: if account not found by accountNumber, try to find or auto-create
+        if (!account && authMode === "USER_SYNC_KEY") {
+            // Try to find by userId + accountNumber
+            const existing = await prisma.tradingAccount.findFirst({
+                where: { userId: user.id, accountNumber: String(accountNumber) },
+                select: { id: true, userId: true, accountNumber: true, platform: true, autoSync: true, syncOpenTrades: true },
+            });
+
+            if (existing) {
+                account = existing;
+            }
+            // If still not found, the heartbeat will be rejected
+        }
+
+        if (!account) {
+            return NextResponse.json({
+                error: "Account not found",
+                message: `No trading account with number #${accountNumber} found for this user.`,
+            }, { status: 404 });
+        }
+
+        // Legacy mode: strict account number validation (lock-in)
+        if (authMode === "LEGACY_ACCOUNT_KEY" && account.accountNumber) {
             if (account.accountNumber !== String(accountNumber)) {
                 return NextResponse.json(
                     {

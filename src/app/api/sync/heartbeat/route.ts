@@ -9,7 +9,7 @@ import { detectBroker } from "@/lib/ea/broker-detection";
  */
 export async function POST(request: NextRequest) {
     try {
-        const syncApiKey = request.headers.get("X-Sync-Key");
+        const syncApiKey = request.headers.get("X-Sync-Key") || request.headers.get("X-API-Key");
         if (!syncApiKey) {
             return NextResponse.json({ error: "Missing sync API key" }, { status: 401 });
         }
@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
 
             const updateData: Record<string, any> = {
                 appLastHeartbeat: new Date(),
+                lastHeartbeat: new Date(),
                 status: acct.connected ? "CONNECTED" : "DISCONNECTED",
             };
 

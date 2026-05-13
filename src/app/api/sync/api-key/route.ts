@@ -32,7 +32,7 @@ export async function GET() {
             key: user.syncApiKey
                 ? `tnt_${user.syncApiKey.slice(4, 8)}...${user.syncApiKey.slice(-4)}`
                 : null,
-            fullKey: user.syncApiKey, // Frontend shows full key only once after generation
+            fullKey: user.syncApiKey,
             createdAt: user.syncApiKeyCreatedAt,
         });
     } catch (error) {

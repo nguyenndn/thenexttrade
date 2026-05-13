@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { generateApiKey } from "@/lib/utils/api-key";
+import crypto from "crypto";
 
 // GET - List user's trading accounts
 export async function GET(request: NextRequest) {
@@ -93,19 +94,38 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Generate unique API key
-        const apiKey = generateApiKey();
+        // Auto-create or reuse user-level syncApiKey (unified key model)
+        const existingUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { syncApiKey: true },
+        });
+
+        let syncApiKey = existingUser?.syncApiKey ?? null;
+
+        if (!syncApiKey) {
+            const randomPart = crypto.randomBytes(24).toString("hex");
+            syncApiKey = `tnt_${randomPart}`;
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    syncApiKey,
+                    syncApiKeyCreatedAt: new Date(),
+                },
+            });
+        }
+
+        // Legacy per-account key for backward compatibility (hidden from UI)
+        const legacyApiKey = generateApiKey();
 
         const account = await prisma.tradingAccount.create({
             data: {
                 userId: user.id,
                 name: name || `${platform} Account`,
-                // Default color if not provided
                 color: color || "hsl(var(--primary))",
                 platform,
                 broker,
                 accountNumber,
-                apiKey,
+                apiKey: legacyApiKey,
             },
         });
 
@@ -115,7 +135,7 @@ export async function POST(request: NextRequest) {
                 id: account.id,
                 name: account.name,
                 platform: account.platform,
-                apiKey: account.apiKey, // Only show once on creation
+                apiKey: syncApiKey, // Return user-level sync key for setup
             },
         });
     } catch (error) {

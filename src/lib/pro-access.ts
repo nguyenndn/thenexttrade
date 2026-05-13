@@ -107,27 +107,22 @@ export async function getAccountProAccess(
 export async function getUserProAccess(
   userId: string
 ): Promise<UserProAccessResult> {
-  const entitlements = await prisma.proEntitlement.findMany({
-    where: { userId },
-    include: {
-      tradingAccount: {
-        select: { id: true, name: true, broker: true },
+  const [entitlements, allTradingAccounts] = await Promise.all([
+    prisma.proEntitlement.findMany({
+      where: { userId },
+      include: {
+        tradingAccount: {
+          select: { id: true, name: true, broker: true },
+        },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  // No entitlements at all
-  if (entitlements.length === 0) {
-    return {
-      isPro: false,
-      status: "NONE",
-      source: null,
-      expiresAt: null,
-      activeAccountCount: 0,
-      accounts: [],
-    };
-  }
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.tradingAccount.findMany({
+      where: { userId },
+      select: { id: true, name: true, broker: true },
+      orderBy: { createdAt: "asc" },
+    }),
+  ]);
 
   // Auto-expire any grace entitlements
   const now = new Date();
@@ -147,18 +142,37 @@ export async function getUserProAccess(
     }
   }
 
-  // Build account statuses
-  const accounts: AccountProStatus[] = entitlements
-    .filter((e) => e.tradingAccountId)
-    .map((e) => ({
-      tradingAccountId: e.tradingAccountId!,
-      accountName: e.tradingAccount?.name || "Unknown",
-      broker: e.tradingAccount?.broker || e.broker || null,
-      status: e.status,
-      isPro: e.status === "ACTIVE" || e.status === "GRACE",
-      source: e.source,
-      expiresAt: e.expiresAt,
-    }));
+  // Build account statuses from entitlements
+  const entitlementMap = new Map<string, AccountProStatus>();
+
+  for (const e of entitlements) {
+    if (e.tradingAccountId) {
+      entitlementMap.set(e.tradingAccountId, {
+        tradingAccountId: e.tradingAccountId,
+        accountName: e.tradingAccount?.name || "Unknown",
+        broker: e.tradingAccount?.broker || e.broker || null,
+        status: e.status,
+        isPro: e.status === "ACTIVE" || e.status === "GRACE",
+        source: e.source,
+        expiresAt: e.expiresAt,
+      });
+    }
+  }
+
+  // Include ALL trading accounts — those without entitlements get NONE status
+  const accounts: AccountProStatus[] = allTradingAccounts.map((ta) => {
+    const existing = entitlementMap.get(ta.id);
+    if (existing) return existing;
+    return {
+      tradingAccountId: ta.id,
+      accountName: ta.name,
+      broker: ta.broker,
+      status: "NONE" as const,
+      isPro: false,
+      source: null,
+      expiresAt: null,
+    };
+  });
 
   // Also handle legacy unlinked entitlements (tradingAccountId = null)
   const unlinked = entitlements.filter((e) => !e.tradingAccountId);
@@ -179,18 +193,19 @@ export async function getUserProAccess(
 
   // Determine aggregate status
   let aggregateStatus: ProStatus;
-  const statuses = new Set(accounts.map((a) => a.status));
+  const proStatuses = accounts.filter((a) => a.status !== "NONE");
 
-  if (accounts.length === 1) {
-    aggregateStatus = accounts[0].status;
+  if (proStatuses.length === 0) {
+    aggregateStatus = "NONE";
+  } else if (proStatuses.length === 1) {
+    aggregateStatus = proStatuses[0].status;
   } else if (hasAnyPro) {
-    // At least one active — show ACTIVE as aggregate
     aggregateStatus = "ACTIVE";
-  } else if (statuses.has("GRACE")) {
+  } else if (proStatuses.some((a) => a.status === "GRACE")) {
     aggregateStatus = "GRACE";
-  } else if (statuses.has("EXPIRED")) {
+  } else if (proStatuses.some((a) => a.status === "EXPIRED")) {
     aggregateStatus = "EXPIRED";
-  } else if (statuses.has("REVOKED")) {
+  } else if (proStatuses.some((a) => a.status === "REVOKED")) {
     aggregateStatus = "REVOKED";
   } else {
     aggregateStatus = "NONE";
@@ -205,8 +220,8 @@ export async function getUserProAccess(
   return {
     isPro: hasAnyPro,
     status: aggregateStatus,
-    source: bestEntitlement.source,
-    expiresAt: bestEntitlement.expiresAt,
+    source: bestEntitlement?.source ?? null,
+    expiresAt: bestEntitlement?.expiresAt ?? null,
     activeAccountCount: activeAccounts.length,
     accounts,
   };

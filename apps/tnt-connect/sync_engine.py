@@ -175,8 +175,20 @@ class SyncEngine:
             if self.mt5_account in web_numbers:
                 self._log(f"MT5 account #{self.mt5_account} matched!")
             else:
-                self._log(f"MT5 account #{self.mt5_account} NOT registered on web")
-                self._notify("warning", f"Account #{self.mt5_account} not on web")
+                # Auto-refresh web accounts — user may have added accountNumber on web
+                self._log(f"MT5 account #{self.mt5_account} not found, refreshing account list...")
+                refresh_data = self.api.connect()
+                if refresh_data:
+                    self.web_accounts = refresh_data.get("accounts", [])
+                    web_numbers = [str(a.get("accountNumber", "")) for a in self.web_accounts]
+                    if self.mt5_account in web_numbers:
+                        self._log(f"MT5 account #{self.mt5_account} matched after refresh!")
+                    else:
+                        self._log(f"MT5 account #{self.mt5_account} NOT registered on web")
+                        self._notify("warning", f"Account #{self.mt5_account} not on web")
+                else:
+                    self._log(f"MT5 account #{self.mt5_account} NOT registered on web")
+                    self._notify("warning", f"Account #{self.mt5_account} not on web")
 
         # Notify GUI with accounts
         if self.on_accounts_loaded:
@@ -203,6 +215,13 @@ class SyncEngine:
                     if new_acct != self.mt5_account:
                         self.mt5_account = new_acct
                         self._log(f"MT5 account changed to #{new_acct}")
+                        # If new account not in web list, refresh from API
+                        web_numbers = [str(a.get("accountNumber", "")) for a in self.web_accounts]
+                        if new_acct not in web_numbers:
+                            self._log(f"#{new_acct} not found, refreshing accounts...")
+                            refresh_data = self.api.connect()
+                            if refresh_data:
+                                self.web_accounts = refresh_data.get("accounts", [])
                         if self.on_accounts_loaded:
                             self.on_accounts_loaded(self.web_accounts, self.mt5_account)
 

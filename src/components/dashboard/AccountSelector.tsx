@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { fetchTradingAccounts } from "@/lib/cached-config";
 import { Check, ChevronsUpDown, Plus, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -59,6 +58,14 @@ type TradingAccount = {
     platform?: string;
     accountType?: string;
 };
+
+async function fetchTradingAccounts(): Promise<TradingAccount[]> {
+    const res = await fetch("/api/trading-accounts");
+    if (!res.ok) throw new Error("Failed to fetch accounts");
+
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.accounts || []);
+}
 
 interface AccountSelectorProps {
     currentAccountId?: string;

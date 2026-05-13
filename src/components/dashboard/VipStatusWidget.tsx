@@ -122,7 +122,11 @@ export function VipStatusWidget() {
     );
   }
 
-  const status = proAccess.status || "NONE";
+  // Derive status from Main account, fallback to aggregate
+  const mainAccount = proAccess.mainAccountId
+    ? proAccess.accounts.find((a) => a.tradingAccountId === proAccess.mainAccountId)
+    : null;
+  const status = mainAccount ? mainAccount.status : (proAccess.status || "NONE");
   const cfg = statusConfig[status] || statusConfig.NONE;
   const StatusIcon = cfg.icon;
   const hasPendingRequest = !loadingVip && vipRequest?.status === "PENDING";
@@ -139,47 +143,61 @@ export function VipStatusWidget() {
 
     return (
       <>
-        <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1a1d27] p-4 transition-all">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-orange-500/5 dark:from-amber-500/8 dark:to-orange-500/4" />
+        <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] transition-all duration-500">
+          {/* Gradient Border */}
+          <div className="absolute inset-0 rounded-2xl p-px">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400/30 via-orange-400/15 to-amber-400/30 dark:from-amber-400/20 dark:via-orange-500/10 dark:to-amber-400/20 opacity-60" />
+          </div>
 
-          <div className="relative flex items-start gap-3">
-            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/20 to-orange-400/15 dark:from-amber-400/15 dark:to-orange-400/10 ring-1 ring-amber-300/30 dark:ring-amber-500/20">
-              <Crown className="h-4 w-4 text-amber-500 dark:text-amber-400" />
-            </div>
+          {/* Ambient Glow */}
+          <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-500/8 dark:bg-amber-500/15 rounded-full blur-[35px] pointer-events-none" />
 
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-gray-800 dark:text-white">Free Plan</span>
-                <span className="rounded-full bg-gray-100 dark:bg-white/8 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  Current
-                </span>
+          {/* Inner Card */}
+          <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
+            {/* Top accent line */}
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
+
+            <div className="px-4 py-4 space-y-3">
+              {/* Header Row */}
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/15 to-orange-400/10 dark:from-amber-400/20 dark:to-orange-400/10 ring-1 ring-amber-300/30 dark:ring-amber-500/20">
+                  <Crown className="h-5 w-5 text-amber-500 dark:text-amber-400" />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-black tracking-tight text-gray-900 dark:text-white">Free Plan</span>
+                    <span className="rounded-md bg-gray-100 dark:bg-white/8 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500 ring-1 ring-gray-200/60 dark:ring-white/10">
+                      Current
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">Upgrade to unlock Pro features</p>
+                </div>
               </div>
 
               {hasPendingRequest ? (
-                <div className="mt-2 flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-3 py-2">
-                  <span className="mt-0.5 text-amber-500">⏳</span>
+                <div className="flex items-center gap-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-3 py-2.5">
+                  <Timer className="h-4 w-4 text-amber-500 shrink-0" />
                   <div>
-                    <p className="text-[11px] font-semibold text-amber-700 dark:text-amber-400">VIP Request Submitted</p>
+                    <p className="text-[11px] font-bold text-amber-700 dark:text-amber-400">VIP Request Submitted</p>
                     <p className="text-[10px] text-amber-600/70 dark:text-amber-400/60">
-                      Submitted {new Date(vipRequest!.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · Awaiting review
+                      {new Date(vipRequest!.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · Awaiting review
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="mt-2 flex flex-col gap-2">
-                  {/* View Benefits button */}
+                <div className="space-y-2">
                   <button
                     onClick={() => setShowBenefits(true)}
-                    className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
                   >
                     View Pro benefits
                     <ChevronRight className="h-3 w-3" />
                   </button>
 
-                  {/* CTA */}
                   <Link
                     href={ctaHref}
-                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:shadow-amber-500/30 hover:-translate-y-px active:translate-y-0"
+                    className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"
                   >
                     Unlock Pro Free
                     <ArrowRight className="h-3 w-3" />
@@ -199,45 +217,54 @@ export function VipStatusWidget() {
   if (status === "ACTIVE") {
     return (
       <>
-        <div className="relative overflow-hidden rounded-2xl border border-emerald-200/70 dark:border-emerald-500/20 bg-white dark:bg-[#1a1d27] p-4 transition-all">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-500/6 via-transparent to-teal-500/5 dark:from-emerald-500/10 dark:to-teal-500/5" />
+        <div
+          className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] cursor-pointer group transition-all duration-500 hover:shadow-xl hover:shadow-emerald-500/8 dark:hover:shadow-emerald-500/15"
+          onClick={() => setShowBenefits(true)}
+        >
+          {/* Animated Gradient Border */}
+          <div className="absolute inset-0 rounded-2xl p-px">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-400/40 via-teal-400/20 to-cyan-400/40 dark:from-emerald-400/30 dark:via-teal-500/15 dark:to-cyan-400/30 opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
 
-          <div className="relative flex items-start gap-3">
-            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400/20 to-teal-400/15 dark:from-emerald-400/20 dark:to-teal-400/10 ring-1 ring-emerald-300/40 dark:ring-emerald-500/25">
-              <Crown className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-            </div>
+          {/* Ambient Glow */}
+          <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-full blur-[40px] pointer-events-none group-hover:scale-125 transition-transform duration-700" />
+          <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-teal-500/8 dark:bg-teal-400/15 rounded-full blur-[35px] pointer-events-none" />
 
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">Pro Active</span>
-                <span className="rounded-full bg-emerald-100 dark:bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-                  Pro
+          {/* Inner Card */}
+          <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
+            {/* Top accent line */}
+            <div className="h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
+
+            <div className="flex items-center gap-3.5 px-4 py-4">
+              {/* Icon */}
+              <div className="relative shrink-0">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/15 to-teal-500/10 dark:from-emerald-400/20 dark:to-teal-400/10 ring-1 ring-emerald-300/40 dark:ring-emerald-500/25 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:shadow-emerald-500/15">
+                  <Crown className="h-5 w-5 text-emerald-600 dark:text-emerald-400 transition-transform duration-300 group-hover:scale-110" />
+                </div>
+                {/* Active pulse dot */}
+                <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 ring-2 ring-white dark:ring-[#141721]" />
                 </span>
               </div>
 
-              {/* View Benefits button */}
-              <button
-                onClick={() => setShowBenefits(true)}
-                className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
-              >
-                View your benefits
-                <ChevronRight className="h-3 w-3" />
-              </button>
-
-              {/* Per-account chips */}
-              {accounts.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {accounts.map((acc) => (
-                    <span
-                      key={acc.tradingAccountId || acc.accountName}
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${accountStatusBadge[acc.status] || accountStatusBadge.NONE}`}
-                      title={acc.accountName}
-                    >
-                      {acc.broker || "Account"} · {statusConfig[acc.status]?.label || "Free"}
-                    </span>
-                  ))}
+              {/* Text Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-black tracking-tight text-gray-900 dark:text-white">
+                    Pro Active
+                  </span>
+                  <span className="rounded-md bg-emerald-500/10 dark:bg-emerald-500/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20 dark:ring-emerald-500/25">
+                    PRO
+                  </span>
                 </div>
-              )}
+
+                {/* CTA */}
+                <div className="flex items-center gap-1 mt-1 text-[11px] font-semibold text-emerald-600/70 dark:text-emerald-400/60 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
+                  View your benefits
+                  <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -248,63 +275,77 @@ export function VipStatusWidget() {
   }
 
   // ─── GRACE / EXPIRED / REVOKED ───────────────────────────────────────────────
-  return (
-    <div className={`relative overflow-hidden rounded-2xl border ${cfg.cardBorder} ${cfg.cardBg} p-4 transition-all`}>
-      <div className="flex items-start gap-3">
-        <div className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${cfg.iconBg}`}>
-          <StatusIcon className={`h-4 w-4 ${cfg.iconColor}`} />
-        </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className={`text-sm font-bold ${cfg.labelColor}`}>{cfg.label}</span>
-            {proAccess.isPro && (
-              <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${cfg.badgeClass}`}>
-                Pro
-              </span>
-            )}
+  // Map status to gradient colors for the border effect
+  const borderGradient: Record<string, string> = {
+    GRACE: "from-violet-400/30 via-purple-400/15 to-violet-400/30 dark:from-violet-400/20 dark:via-purple-500/10 dark:to-violet-400/20",
+    EXPIRED: "from-amber-400/30 via-orange-400/15 to-amber-400/30 dark:from-amber-400/20 dark:via-orange-500/10 dark:to-amber-400/20",
+    REVOKED: "from-red-400/30 via-rose-400/15 to-red-400/30 dark:from-red-400/20 dark:via-rose-500/10 dark:to-red-400/20",
+  };
+
+  const accentLine: Record<string, string> = {
+    GRACE: "via-violet-400/50",
+    EXPIRED: "via-amber-400/50",
+    REVOKED: "via-red-400/50",
+  };
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] transition-all duration-500">
+      {/* Gradient Border */}
+      <div className="absolute inset-0 rounded-2xl p-px">
+        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${borderGradient[status] || borderGradient.EXPIRED} opacity-60`} />
+      </div>
+
+      {/* Inner Card */}
+      <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
+        {/* Top accent line */}
+        <div className={`h-px bg-gradient-to-r from-transparent ${accentLine[status] || accentLine.EXPIRED} to-transparent`} />
+
+        <div className="px-4 py-4 space-y-3">
+          {/* Header Row */}
+          <div className="flex items-center gap-3">
+            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${cfg.iconBg} ring-1 ring-black/5 dark:ring-white/10`}>
+              <StatusIcon className={`h-5 w-5 ${cfg.iconColor}`} />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className={`text-sm font-black tracking-tight ${cfg.labelColor}`}>{cfg.label}</span>
+                {proAccess.isPro && (
+                  <span className={`rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] ring-1 ring-current/15 ${cfg.badgeClass}`}>
+                    Pro
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">{cfg.description}</p>
+            </div>
           </div>
-          <p className="mt-0.5 text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">{cfg.description}</p>
 
           {/* Grace expiry */}
           {status === "GRACE" && proAccess.expiresAt && (
-            <p className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-violet-600 dark:text-violet-400">
-              <Timer className="h-3 w-3" />
-              Expires {new Date(proAccess.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-            </p>
-          )}
-
-          {/* Per-account chips */}
-          {accounts.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {accounts.map((acc) => (
-                <span
-                  key={acc.tradingAccountId || acc.accountName}
-                  className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${accountStatusBadge[acc.status] || accountStatusBadge.NONE}`}
-                  title={acc.accountName}
-                >
-                  {acc.broker || "Account"} · {statusConfig[acc.status]?.label || "Free"}
-                </span>
-              ))}
+            <div className="flex items-center gap-2 rounded-xl bg-violet-50 dark:bg-violet-500/10 border border-violet-200/60 dark:border-violet-500/20 px-3 py-2">
+              <Timer className="h-3.5 w-3.5 text-violet-500 shrink-0" />
+              <p className="text-[11px] font-semibold text-violet-600 dark:text-violet-400">
+                Expires {new Date(proAccess.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+              </p>
             </div>
           )}
 
-          {/* Expired/Revoked CTA */}
+          {/* CTAs */}
           {!proAccess.isPro && (status === "EXPIRED" || status === "REVOKED") && (
             <Link
               href="/dashboard/accounts?action=add&intent=unlock-pro"
-              className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1.5 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:-translate-y-px"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"
             >
               Re-apply for Pro
               <ArrowRight className="h-3 w-3" />
             </Link>
           )}
 
-          {/* Grace CTA */}
           {status === "GRACE" && (
             <Link
               href="/dashboard/accounts?action=add&intent=unlock-pro"
-              className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 px-3 py-1.5 text-[11px] font-bold text-white shadow-sm shadow-violet-500/20 transition-all hover:from-violet-600 hover:to-purple-600 hover:-translate-y-px"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 px-4 py-2.5 text-[11px] font-bold text-white shadow-sm shadow-violet-500/20 transition-all duration-300 hover:from-violet-600 hover:to-purple-600 hover:shadow-md hover:shadow-violet-500/25 hover:-translate-y-px active:translate-y-0"
             >
               Complete Verification
               <ArrowRight className="h-3 w-3" />
