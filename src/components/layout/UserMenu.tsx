@@ -22,6 +22,7 @@ import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { CommandPaletteTrigger } from "@/components/search/CommandPalette";
 import { getTierProgress } from "@/lib/tier-utils";
+import { EdgeInfoModal } from "@/components/gamification/EdgeInfoModal";
 
 /** Read last_account_id cookie and return a pre-built dashboard URL to skip the redirect hop. */
 function useDashboardUrl(): string {
@@ -43,6 +44,7 @@ interface UserMenuProps {
 
 export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isEdgeModalOpen, setIsEdgeModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     const dashboardUrl = useDashboardUrl();
@@ -129,8 +131,14 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                             Hello, <span className="text-primary">{userData.name}</span>
                         </h4>
 
-                        {/* XP & Tier */}
-                        <div className="mt-3 flex items-center gap-2">
+                        {/* Edge & Tier */}
+                        <button 
+                            className="mt-3 flex items-center gap-2 hover:opacity-80 transition-opacity w-full text-left" 
+                            onClick={() => {
+                                setIsOpen(false);
+                                setIsEdgeModalOpen(true);
+                            }}
+                        >
                             <span
                                 className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border"
                                 style={{
@@ -142,9 +150,9 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                                 {tierProgress.current.label}
                             </span>
                             <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
-                                {userXp.toLocaleString()} XP
+                                {userXp.toLocaleString()} Edge
                             </span>
-                        </div>
+                        </button>
 
                         {/* Progress bar */}
                         {tierProgress.next && (
@@ -159,7 +167,7 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                                     />
                                 </div>
                                 <p className="text-[10px] text-gray-500 mt-1">
-                                    {tierProgress.xpToNext.toLocaleString()} XP to {tierProgress.next.label}
+                                    {tierProgress.xpToNext.toLocaleString()} Edge to {tierProgress.next.label}
                                 </p>
                             </div>
                         )}
@@ -216,6 +224,8 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
                     </div>
                 </div>
             )}
+
+            <EdgeInfoModal isOpen={isEdgeModalOpen} onClose={() => setIsEdgeModalOpen(false)} />
         </div>
     );
 }

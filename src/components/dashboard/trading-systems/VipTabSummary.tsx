@@ -13,7 +13,7 @@ const PRO_BENEFITS = [
     "Access to all Expert Advisor (EA) downloads",
     "Advanced Intelligence features & trade analysis",
     "VIP Telegram community access",
-    "Priority support & automated trade sync",
+    "Priority support & VIP trading resources",
     "Account-scoped entitlements — control per broker account",
 ];
 
@@ -59,7 +59,7 @@ export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
                     <div>
                         <p className="font-bold text-amber-700 dark:text-amber-400">Verification Under Review</p>
                         <p className="text-sm text-amber-600/80 dark:text-amber-400/70">
-                            Submitted on {new Date(vipRequest.createdAt).toLocaleDateString("en-US")}. We'll notify you once reviewed.
+                            Your Partner Pro request is under review. We will update your account once eligibility is verified.
                         </p>
                     </div>
                 </div>
@@ -77,7 +77,7 @@ export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
                 <div>
                     <h3 className="text-xl font-bold text-gray-800 dark:text-white">Unlock Partner Pro — Free</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Open a trading account under our IB to get free Pro access with full EA, VIP tools, and auto-sync.
+                        Open a trading account under our IB to apply for free Pro access with EA downloads, VIP tools, and advanced trading intelligence. Partner Pro access depends on supported broker and account eligibility.
                     </p>
                 </div>
             </div>

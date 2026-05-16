@@ -16,7 +16,7 @@ const VALID_TYPES: LeaderboardType[] = ["xp", "streak", "academy", "trading", "m
 export const metadata = {
   title: "Leaderboard | TheNextTrade",
   description:
-    "See where you stand in the community. Track your XP, streak, and trading performance.",
+    "See where you stand in the community. Track your Edge, streak, and trading performance.",
 };
 
 interface PageProps {
@@ -50,7 +50,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
         avatar: user.user_metadata?.avatar_url || null,
         tier: getTier(leaderboard.myRank.tierProgress.current.minXp),
         value: leaderboard.myRank.value,
-        label: fetchType === "xp" ? "XP" : fetchType === "streak" ? "days" : fetchType === "academy" ? "lessons" : "%",
+        label: fetchType === "xp" ? "Edge" : fetchType === "streak" ? "days" : fetchType === "academy" ? "lessons" : "%",
         level: 0,
         lessonsCompleted: 0,
         studyTimeMinutes: 0,

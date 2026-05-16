@@ -12,10 +12,16 @@ import {
     Trash2,
     CalendarDays,
     CalendarRange,
+    AlertTriangle,
+    Trophy,
+    PenLine,
 } from "lucide-react";
 import { ReportPreview } from "./ReportPreview";
 import { ReportView } from "./ReportView";
+import { GenerateReportButton } from "./GenerateReportButton";
 import { Button } from "@/components/ui/Button";
+import Link from "next/link";
+import type { GenerateReportResult } from "./report-generate-types";
 
 interface ReportType {
     id: string;
@@ -88,7 +94,14 @@ const parseCSVLine = (line: string) => {
 
 export function ReportsDashboard() {
     const now = new Date();
-    const [selectedType, setSelectedType] = useState<string>("weekly-review");
+
+    // Read ?type= from URL to auto-select tab (e.g. from mission CTA)
+    const searchParamsHook = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const typeParam = searchParamsHook?.get("type");
+    const validTypes = REPORT_TYPES.map((t) => t.id);
+    const initialType = typeParam && validTypes.includes(typeParam) ? typeParam : "weekly-review";
+
+    const [selectedType, setSelectedType] = useState<string>(initialType);
     const [dateRange, setDateRange] = useState({
         start: startOfMonth(subMonths(now, 1)),
         end: endOfMonth(subMonths(now, 1)),
@@ -100,6 +113,7 @@ export function ReportsDashboard() {
     const [reviewTotal, setReviewTotal] = useState(0);
     const [reviewLoading, setReviewLoading] = useState(false);
     const [reviewLoaded, setReviewLoaded] = useState<string | null>(null);
+    const [lastGenerateResult, setLastGenerateResult] = useState<GenerateReportResult | null>(null);
 
     const isReviewType = selectedType === "weekly-review" || selectedType === "monthly-review";
     const isExportType = selectedType === "monthly" || selectedType === "trades" || selectedType === "tax";
@@ -303,7 +317,66 @@ export function ReportsDashboard() {
 
             {/* Review Reports Inline (Weekly/Monthly) */}
             {isReviewType && (
-                <div className="animate-in fade-in duration-500">
+                <div className="animate-in fade-in duration-500 space-y-4">
+                    {/* Generate Report Button */}
+                    <div className="flex items-center justify-between bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-4 shadow-sm">
+                        <div>
+                            <p className="text-sm font-bold text-gray-700 dark:text-white">
+                                {selectedType === "weekly-review" ? "Generate Latest Weekly Review" : "Generate Latest Monthly Review"}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                                Create a new review based on your latest trading data.
+                            </p>
+                        </div>
+                        <GenerateReportButton
+                            type={selectedType === "weekly-review" ? "WEEKLY" : "MONTHLY"}
+                            onResult={(result) => {
+                                setLastGenerateResult(result);
+                                if (result.success && !result.alreadyExists) {
+                                    handleSelectType(selectedType); // Refresh reports
+                                    setReviewLoaded(null); // Force reload
+                                }
+                            }}
+                        />
+                    </div>
+
+                    {/* No-data inline notice */}
+                    {lastGenerateResult?.code === "NO_TRADES_THIS_WEEK" && selectedType === "weekly-review" && (
+                        <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-500/20 rounded-xl p-4">
+                            <AlertTriangle size={18} className="text-amber-500 mt-0.5 shrink-0" />
+                            <div className="flex-1">
+                                <p className="text-sm font-bold text-gray-800 dark:text-white">Not enough trade data yet</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+                                    Add at least one trade for this week, then generate your weekly review to find your strongest setup and biggest leak.
+                                </p>
+                                <Link href="/dashboard/journal?action=log-trade">
+                                    <Button variant="primary" className="mt-2 text-xs px-4 py-1.5 h-auto">
+                                        <PenLine size={13} className="mr-1" /> Log Trade
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Mission reward panel */}
+                    {lastGenerateResult?.missionReward?.claimable && (
+                        <div className="flex items-center gap-3 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-4">
+                            <div className="p-2 bg-primary/10 rounded-lg">
+                                <Trophy size={18} className="text-primary" />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-bold text-gray-800 dark:text-white">Mission Complete!</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                    Your weekly review completed a mission. Claim {lastGenerateResult.missionReward.totalEdge} Edge when you're ready.
+                                </p>
+                            </div>
+                            <Link href="/dashboard/missions">
+                                <Button variant="primary" className="text-xs px-4 py-2 h-auto">
+                                    Claim Edge
+                                </Button>
+                            </Link>
+                        </div>
+                    )}
                     {reviewLoading ? (
                         <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-12 text-center shadow-sm">
                             <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />

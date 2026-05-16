@@ -126,17 +126,23 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: "Total Registrations", value: stats.totalRegistrations.toString(), icon: Users, color: "text-blue-500" },
-                    { label: "Pending Approval", value: pendingCount.toString(), icon: Clock, color: "text-amber-500" },
-                    { label: "Approved Accounts", value: stats.approvedCount.toString(), icon: Wifi, color: "text-primary" },
-                    { label: "Total Capital", value: `$${stats.totalCapital.toLocaleString()}`, icon: DollarSign, color: "text-emerald-500" },
+                    { label: "Total Registrations", value: stats.totalRegistrations.toString(), icon: Users, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-100 dark:bg-blue-500/15" },
+                    { label: "Pending Approval", value: pendingCount.toString(), icon: Clock, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-100 dark:bg-amber-500/15" },
+                    { label: "Approved Accounts", value: stats.approvedCount.toString(), icon: Wifi, color: "text-primary", bg: "bg-primary/10" },
+                    { label: "Total Capital", value: `$${stats.totalCapital.toLocaleString()}`, icon: DollarSign, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-100 dark:bg-emerald-500/15" },
                 ].map((stat) => (
-                    <div key={stat.label} className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-5">
-                        <div className="flex items-center gap-2 mb-2">
-                            <stat.icon size={14} className={stat.color} />
-                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{stat.label}</span>
+                    <div key={stat.label} className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                        <div className="flex items-center gap-3">
+                            <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color}`}>
+                                <stat.icon size={16} aria-hidden="true" />
+                            </div>
+                            <div>
+                                <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums leading-none">
+                                    {stat.value}
+                                </p>
+                                <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-wider">{stat.label}</p>
+                            </div>
                         </div>
-                        <p className="text-2xl font-black text-gray-700 dark:text-white">{stat.value}</p>
                     </div>
                 ))}
             </div>

@@ -84,7 +84,7 @@ export function MobileProStatusBanner() {
           href="/dashboard/accounts?action=add&intent=unlock-pro"
           className="shrink-0 flex items-center gap-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:underline"
         >
-          Unlock Pro Free <ArrowRight className="h-3 w-3" />
+          Check Pro Eligibility <ArrowRight className="h-3 w-3" />
         </Link>
       </div>
     );

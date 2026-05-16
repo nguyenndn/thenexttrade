@@ -7,10 +7,12 @@ interface EmptyStateProps {
     title?: string;
     description: string;
     action?: ReactNode; // Optional button to create/add item
+    secondaryAction?: ReactNode;
+    hint?: string;
     className?: string; // Additional classes for customizing height/padding
 }
 
-export function EmptyState({ icon: Icon, title, description, action, className }: EmptyStateProps) {
+export function EmptyState({ icon: Icon, title, description, action, secondaryAction, hint, className }: EmptyStateProps) {
     return (
         <div className={cn("flex flex-col items-center justify-center p-8 md:p-12 text-center", className)}>
             <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-xl flex items-center justify-center mb-4">
@@ -24,9 +26,11 @@ export function EmptyState({ icon: Icon, title, description, action, className }
             <p className="text-sm text-gray-600 dark:text-gray-300 font-medium max-w-sm">
                 {description}
             </p>
-            {action && (
-                <div className="mt-6">
+            {hint && <p className="mt-2 text-xs text-gray-500">{hint}</p>}
+            {(action || secondaryAction) && (
+                <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
                     {action}
+                    {secondaryAction}
                 </div>
             )}
         </div>

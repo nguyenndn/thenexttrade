@@ -19,7 +19,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
           Your Position
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-300">
-          Start earning XP to appear on the leaderboard!
+          Start earning Edge to appear on the leaderboard!
         </p>
       </div>
     );
@@ -45,7 +45,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
         </div>
       </div>
 
-      {/* Tier Progress */}
+      {/* Edge Progress */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <UserTierBadge
@@ -75,7 +75,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
 
         {tierProgress.next && (
           <p className="text-xs text-gray-500 mt-1.5 tabular-nums">
-            {tierProgress.xpToNext.toLocaleString()} XP to{" "}
+            {tierProgress.xpToNext.toLocaleString()} Edge to{" "}
             {tierProgress.next.label}
           </p>
         )}
@@ -109,7 +109,7 @@ export function MyRankCard({ myRank, rivals }: MyRankCardProps) {
       <div className="flex items-center gap-3 pt-2 border-t border-gray-200 dark:border-white/10">
         <TrendingUp size={14} className="text-gray-500" />
         <span className="text-xs text-gray-600 dark:text-gray-300">
-          Total: {value.toLocaleString()} XP
+          Total: {value.toLocaleString()} Edge
         </span>
       </div>
     </div>

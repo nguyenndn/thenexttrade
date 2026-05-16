@@ -73,7 +73,7 @@ export function LessonLockedView({ lessonTitle, levelTitle, levelOrder, moduleTi
                         <div className="space-y-3">
                             {[
                                 "Full access to all 11 levels of the Academy",
-                                "XP rewards and achievement badges",
+                                "Edge rewards and achievement badges",
                                 "Progress tracking across all lessons",
                                 "18 professional trading tools",
                                 "Trading journal and analytics",

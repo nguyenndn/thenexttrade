@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, Bug, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { dashboardMenuGroups } from "@/config/navigation";
+import { dashboardMenuGroups, adminMenuGroups } from "@/config/navigation";
 import { useFeatureFlags } from "@/lib/dashboard-context";
 
 export function MobileBottomTabBar() {
@@ -13,9 +13,13 @@ export function MobileBottomTabBar() {
     const [openGroup, setOpenGroup] = useState<string | null>(null);
     const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
 
+    // Determine which groups to use based on the path
+    const isAdmin = pathname?.startsWith("/admin");
+    const rawGroups = isAdmin ? adminMenuGroups : dashboardMenuGroups;
+
     // Filter groups: remove items with disabled feature flags
     const filteredGroups = useMemo(() => {
-        return dashboardMenuGroups.map(group => ({
+        return rawGroups.map(group => ({
             ...group,
             items: group.items.filter(item => {
                 const flag = (item as any).featureFlag;
@@ -24,7 +28,7 @@ export function MobileBottomTabBar() {
                 return !disabledFlags.has(flag);
             }),
         }));
-    }, [disabledFlags, flagsLoaded]);
+    }, [rawGroups, disabledFlags, flagsLoaded]);
 
     // Close sheet on route change
     useEffect(() => {
@@ -138,8 +142,8 @@ export function MobileBottomTabBar() {
                                 );
                             })}
 
-                            {/* Feedback actions — only in More sheet */}
-                            {activeSheet.label === "More" && (
+                            {/* Feedback actions — only in More sheet for Users */}
+                            {activeSheet.label === "More" && !isAdmin && (
                                 <>
                                     <div className="mx-4 my-2 h-px bg-gray-100 dark:bg-white/10" />
                                     <button

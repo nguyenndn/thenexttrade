@@ -243,6 +243,17 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
         setIsModalOpen(true);
     };
 
+    // Auto-open trade log modal from ?action=log-trade
+    useEffect(() => {
+        if (searchParams.get("action") === "log-trade") {
+            handleCreate();
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete("action");
+            router.replace(params.toString() ? `?${params.toString()}` : "/dashboard/journal", { scroll: false });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const handleEdit = (entry: JournalEntry) => {
         setEditingEntry(entry);
         setIsModalOpen(true);

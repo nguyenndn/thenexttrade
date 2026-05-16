@@ -138,7 +138,7 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
                             <h3 className="font-bold text-lg">Track Your Progress</h3>
                         </div>
                         <p className="text-gray-600 dark:text-gray-500 mb-4 max-w-md mx-auto">
-                            Sign up for free to track your learning, earn XP, and unlock achievements.
+                            Sign up for free to track your learning, earn Edge, and unlock achievements.
                         </p>
                         <Link
                             href="/auth/signup"

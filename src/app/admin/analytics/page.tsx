@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, Download } from 'lucide-react';
+import { RefreshCw, Download, BarChart3, FileText, Users, MousePointerClick } from 'lucide-react';
 import { AnalyticsSummary } from '@/components/admin/analytics/AnalyticsSummary';
 import { PageviewTrend } from '@/components/admin/analytics/PageviewTrend';
 import { GeoPanel } from '@/components/admin/analytics/GeoPanel';
@@ -16,12 +16,13 @@ import { CampaignPanel } from '@/components/admin/analytics/CampaignPanel';
 import { Button } from '@/components/ui/Button';
 import { exportCSV } from '@/lib/export-csv';
 import type { AnalyticsData, EventsData } from '@/components/admin/analytics/types';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 
 const TABS = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'content', label: 'Content' },
-    { id: 'audience', label: 'Audience' },
-    { id: 'events', label: 'Events' },
+    { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'content', label: 'Content', icon: FileText },
+    { id: 'audience', label: 'Audience', icon: Users },
+    { id: 'events', label: 'Events', icon: MousePointerClick },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -121,6 +122,7 @@ export default function AnalyticsDashboard() {
     };
 
     return (
+        <Tabs value={tab} onValueChange={(v) => setTab(v as TabId)} tabsId="admin-analytics">
         <div className="space-y-4 pb-10">
             {/* Admin Page Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -173,17 +175,21 @@ export default function AnalyticsDashboard() {
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex gap-1 border-b border-gray-200 dark:border-white/10">
-                {TABS.map(t => (
-                    <button key={t.id} onClick={() => setTab(t.id)}
-                        className={`px-5 py-2.5 text-sm font-bold border-b-2 transition-all ${
-                            tab === t.id
-                                ? 'border-primary text-primary'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 hover:border-gray-300'
-                        }`}>
-                        {t.label}
-                    </button>
-                ))}
+            <div className="overflow-x-auto scrollbar-hide flex">
+                <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
+                    {TABS.map(t => (
+                        <TabsTrigger
+                            key={t.id}
+                            value={t.id}
+                            className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeTextClassName="!text-white"
+                        >
+                            <t.icon size={15} />
+                            <span>{t.label}</span>
+                        </TabsTrigger>
+                    ))}
+                </TabsList>
             </div>
 
             {/* Loading skeleton */}
@@ -260,6 +266,7 @@ export default function AnalyticsDashboard() {
                 </>
             )}
         </div>
+        </Tabs>
     );
 }
 
@@ -268,9 +275,14 @@ function LoadingSkeleton() {
         <div className="space-y-4">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[1,2,3,4].map(i => (
-                    <div key={i} className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6 animate-pulse">
-                        <div className="h-3 bg-gray-200 dark:bg-white/5 rounded w-1/2 mb-4" />
-                        <div className="h-8 bg-gray-200 dark:bg-white/5 rounded w-2/3" />
+                    <div key={i} className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 animate-pulse">
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 shrink-0 rounded-xl bg-gray-200 dark:bg-white/5" />
+                            <div className="flex-1">
+                                <div className="h-4 bg-gray-200 dark:bg-white/5 rounded w-1/2 mb-2" />
+                                <div className="h-2 bg-gray-200 dark:bg-white/5 rounded w-1/3" />
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>

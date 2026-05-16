@@ -115,16 +115,16 @@ const platformLinks = [
         description: "Learn trading from scratch with structured courses — from basics to advanced strategies.",
         icon: GraduationCap,
         href: "/dashboard/academy",
-        color: "text-amber-600 dark:text-amber-400",
-        bg: "bg-gradient-to-br from-amber-100 to-orange-50 dark:from-amber-500/15 dark:to-orange-500/5",
+        color: "text-primary",
+        bg: "bg-gradient-to-br from-primary/10 to-emerald-50 dark:from-primary/15 dark:to-emerald-500/5",
     },
     {
         title: "Copy Trading",
         description: "Auto-copy professional strategies to your MT5 account with ultra-low latency.",
         icon: Copy,
         href: "/dashboard/copy-trading",
-        color: "text-emerald-600 dark:text-emerald-400",
-        bg: "bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-emerald-500/15 dark:to-teal-500/5",
+        color: "text-primary",
+        bg: "bg-gradient-to-br from-primary/10 to-emerald-50 dark:from-primary/15 dark:to-emerald-500/5",
     },
     {
         title: "Leaderboard",
@@ -202,8 +202,8 @@ export default async function CommunityPage() {
 
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-gray-800 dark:text-white leading-tight lg:whitespace-nowrap">
                                 Trade Gold with{" "}
-                                <span className="text-primary">
-                                    11,900+ Traders
+                                <span className="text-gold">
+                                    12,000+ Traders
                                 </span>
                             </h1>
 
@@ -222,8 +222,8 @@ export default async function CommunityPage() {
                                 ].map((stat) => (
                                     <div key={stat.label} className="flex items-center gap-2 sm:gap-2.5">
                                         <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center shadow-sm">
-                                            <stat.icon size={16} className="text-primary sm:hidden" />
-                                            <stat.icon size={18} className="text-primary hidden sm:block" />
+                                            <stat.icon size={16} className="text-gold sm:hidden" />
+                                            <stat.icon size={18} className="text-gold hidden sm:block" />
                                         </div>
                                         <div className="text-left">
                                             <div className="text-base sm:text-lg font-black text-gray-800 dark:text-white leading-none">{stat.value}</div>
@@ -242,7 +242,7 @@ export default async function CommunityPage() {
                                     <Send size={16} /> Join Telegram
                                 </a>
                                 <a href={vipUrl}
-                                    className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-primary/20 bg-primary transition-all hover:opacity-90 hover:-translate-y-0.5 text-white"
+                                    className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-amber-500/20 bg-gradient-to-r from-amber-500 to-orange-500 transition-all hover:from-amber-600 hover:to-orange-600 hover:-translate-y-0.5 text-white"
                                 >
                                     <Crown size={16} /> Get VIP Free <ArrowRight size={14} />
                                 </a>
@@ -296,35 +296,35 @@ export default async function CommunityPage() {
                 {/* ═══════ 4. VIP UPGRADE ═══════ */}
                 <section id="vip-section" className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto scroll-mt-16 md:scroll-mt-24">
                     <ScrollReveal>
-                        <div className="rounded-2xl sm:rounded-3xl border border-primary/20 p-4 sm:p-6 md:p-8 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #ffffff 0%, #f0fdf4 30%, #ecfdf5 50%, #f0f9ff 80%, #eff6ff 100%)" }}>
+                        <div className="rounded-2xl sm:rounded-3xl border border-gold/20 p-4 sm:p-6 md:p-8 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #ffffff 0%, #fffbeb 30%, #fef3c7 50%, #fff7ed 80%, #fff1e6 100%)" }}>
                             {/* Glow */}
-                            <div className="absolute top-0 right-0 w-72 h-72 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
-                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#2AABEE]/8 rounded-full blur-[80px] pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-400/8 rounded-full blur-[80px] pointer-events-none" />
 
                             <div className="relative z-10">
                                 <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                                        <Crown size={24} className="text-primary" />
+                                    <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center">
+                                        <Crown size={24} className="text-gold" />
                                     </div>
                                     <div>
                                         <h2 className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-white">VIP Group</h2>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            Premium trading access — <span className="text-emerald-600 dark:text-emerald-400 font-bold">completely free</span> with our partner broker
+                                            Premium trading access — <span className="text-amber-600 dark:text-amber-400 font-bold">completely free</span> with our partner broker
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 mb-5">
-                                    <Shield size={14} className="text-emerald-600 dark:text-emerald-400" />
-                                    <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">No subscription • No hidden fees • Free forever</span>
+                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 mb-5">
+                                    <Shield size={14} className="text-amber-600 dark:text-amber-400" />
+                                    <span className="text-xs font-bold text-amber-700 dark:text-amber-400">No subscription • No hidden fees • Free forever</span>
                                 </div>
 
                                 {/* Benefits grid */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                                     {vipBenefits.map((b) => (
-                                        <div key={b.text} className="flex items-center gap-3 bg-white dark:bg-[#0F1117]/80 rounded-xl border border-primary/10 dark:border-white/[0.06] p-3.5">
-                                            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                                                <b.icon size={16} className="text-primary" />
+                                        <div key={b.text} className="flex items-center gap-3 bg-white dark:bg-[#0F1117]/80 rounded-xl border border-gold/10 dark:border-white/[0.06] p-3.5">
+                                            <div className="w-9 h-9 rounded-lg bg-gold/10 flex items-center justify-center shrink-0">
+                                                <b.icon size={16} className="text-gold" />
                                             </div>
                                             <span className="text-sm text-gray-700 dark:text-gray-300 leading-snug">{b.text}</span>
                                         </div>
@@ -413,16 +413,16 @@ export default async function CommunityPage() {
                 {/* ═══════ 8. BOTTOM CTA ═══════ */}
                 <section className="px-4 sm:px-6 mb-10 max-w-4xl mx-auto">
                     <ScrollReveal>
-                        <div className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center shadow-lg relative overflow-hidden border border-gray-200" style={{ background: "linear-gradient(135deg, #ffffff 0%, #f0fdf4 30%, #ecfdf5 50%, #f0f9ff 80%, #eff6ff 100%)" }}>
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[500px] rounded-full pointer-events-none" style={{ background: "rgba(16,185,129,0.08)", filter: "blur(100px)" }} />
-                            <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none" style={{ background: "rgba(42,171,238,0.08)", filter: "blur(60px)" }} />
+                        <div className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center shadow-lg relative overflow-hidden border border-gold/20" style={{ background: "linear-gradient(135deg, #ffffff 0%, #fffbeb 30%, #fef3c7 50%, #fff7ed 80%, #fff1e6 100%)" }}>
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[500px] rounded-full pointer-events-none" style={{ background: "rgba(245,158,11,0.08)", filter: "blur(100px)" }} />
+                            <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none" style={{ background: "rgba(249,115,22,0.08)", filter: "blur(60px)" }} />
 
                             <div className="relative z-10 space-y-8">
                                 <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-gray-800">
                                     Ready to Join the Community?
                                 </h2>
                                 <p className="text-sm sm:text-base md:text-xl text-gray-600 max-w-2xl mx-auto">
-                                    11,900+ traders are already learning and growing together. It&apos;s free, it&apos;s real,
+                                    12,000+ traders are already learning and growing together. It&apos;s free, it&apos;s real,
                                     and we&apos;d love to have you.
                                 </p>
                                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 px-2 sm:px-0">
@@ -433,7 +433,7 @@ export default async function CommunityPage() {
                                         <Send size={16} /> Join Telegram
                                     </a>
                                     <a href={vipUrl}
-                                        className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-primary/20 bg-primary transition-all hover:opacity-90 hover:-translate-y-0.5 text-white"
+                                        className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-amber-500/20 bg-gradient-to-r from-amber-500 to-orange-500 transition-all hover:from-amber-600 hover:to-orange-600 hover:-translate-y-0.5 text-white"
                                     >
                                         <Crown size={16} /> Get VIP Free <ArrowRight size={14} />
                                     </a>

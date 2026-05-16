@@ -23,7 +23,7 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
   if (!entry) return null;
 
   const stats = [
-    { icon: Star, label: "XP", value: entry.value.toLocaleString(), color: "text-yellow-500" },
+    { icon: Star, label: "Edge", value: entry.value.toLocaleString(), color: "text-yellow-500" },
     { icon: Trophy, label: "Rank", value: `#${entry.rank}`, color: "text-primary" },
     { icon: TrendingUp, label: "Level", value: entry.level.toString(), color: "text-cyan-500" },
     { icon: Clock, label: "Study Time", value: formatStudyTime(entry.studyTimeMinutes), color: "text-blue-500" },

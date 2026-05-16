@@ -47,29 +47,23 @@ export function AnalyticsSummary({ summary, realTime }: Props) {
                 const Icon = card.icon;
                 return (
                     <div key={card.label}
-                        className="group relative overflow-hidden bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
-                        {/* Gradient accent line */}
-                        <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${card.gradient}`} />
-
-                        <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                {card.label}
-                            </span>
-                            <div className={`p-1.5 rounded-lg bg-gradient-to-br ${card.gradient} opacity-80`}>
-                                <Icon className={`w-3.5 h-3.5 text-white ${card.pulse ? 'animate-pulse' : ''}`} />
+                        className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                        <div className="flex items-center gap-3">
+                            <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-br ${card.gradient}`}>
+                                <Icon size={16} aria-hidden="true" className={`text-white ${card.pulse ? 'animate-pulse' : ''}`} />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums leading-none">
+                                        {card.decimal ? card.value.toFixed(1) : card.value.toLocaleString()}
+                                    </p>
+                                    {'trend' in card && card.trend !== undefined && (
+                                        <TrendBadge value={card.trend} />
+                                    )}
+                                </div>
+                                <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-wider">{card.label}</p>
                             </div>
                         </div>
-                        <div className="flex items-end gap-2">
-                            <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                {card.decimal ? card.value.toFixed(1) : card.value.toLocaleString()}
-                            </p>
-                            {'trend' in card && card.trend !== undefined && (
-                                <TrendBadge value={card.trend} />
-                            )}
-                        </div>
-                        {'trend' in card && card.trend !== undefined && (
-                            <p className="text-[10px] text-gray-400 mt-1">vs previous period</p>
-                        )}
                     </div>
                 );
             })}

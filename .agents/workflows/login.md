@@ -9,7 +9,7 @@ description: Login to the app via browser for testing. Auto-login before any bro
 ## Credentials
 
 - **Email:** keezimin@gmail.com
-- **Password:** loveyou25
+- **Password:** Password123!
 
 ## Steps
 

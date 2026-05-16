@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
+import { recordEdgeEventOnce } from "@/lib/edge-awards";
 
 export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
@@ -71,6 +72,17 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
                 passed
             }
         });
+
+        if (passed) {
+            await recordEdgeEventOnce({
+                userId,
+                eventType: "QUIZ_PASS",
+                sourceType: "Quiz",
+                sourceId: quiz.id,
+                xpAwarded: 0,
+                metadata: { score },
+            });
+        }
 
         // ── AUTO-GRANT CERTIFICATE ──
         // When user passes, check if ALL quizzes in the level are now passed

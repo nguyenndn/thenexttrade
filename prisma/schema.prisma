@@ -8,185 +8,101 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ============================================================================
-// AUTHENTICATION (NextAuth.js Standard Schema)
-// ============================================================================
-
-// ============================================================================
-// AUTHENTICATION (Supabase Auth Integration)
-// ============================================================================
-
-// Note: We use Supabase Auth (managed in 'auth.users' table).
-// This 'User' table is a public mirror/extension of 'auth.users'.
-// We will use Database Triggers to keep them in sync.
-
 model User {
-  id            String    @id @db.Uuid // Must match auth.users.id (UUID)
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @db.Timestamptz
-  image         String?
-
-  // Custom Relations
-  profile Profile?
-
-  // Content Relations
-  articles  Article[]
-  shortcuts ContentShortcut[]
-
-  // Tools Relations
-  journalEntries JournalEntry[]
-  strategies     Strategy[]
-
-  comments        Comment[] // Added
-  media           Media[] // Added
-  tradingAccounts TradingAccount[] // Added
-
-  // Academy Relations
-  progress     UserProgress[]
-  quizAttempts UserQuizAttempt[]
-
-  settings Json? // Added for user preferences (UI, filters, etc.)
-
-  // Streak System
-  streak         Int       @default(0)
-  lastCheckIn    DateTime? @db.Timestamptz
-  checkInHistory Json?
-
-  // Security
-  sessions UserSession[]
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
-
-  importHistory ImportHistory[] // Added to satisfy relation
-
-  // Gamification
-  xp                Int         @default(0)
-  level             Int         @default(1)
-  badges            UserBadge[]
-  showOnLeaderboard Boolean     @default(true)
-
-  // Social
-  followers          UserFollow[] @relation("Following")
-  following          UserFollow[] @relation("Followers")
-  challengesSent     Challenge[]  @relation("Challenger")
-  challengesReceived Challenge[]  @relation("Challengee")
-
-  // EA License Management (Sprint 6/V2)
-  EALicenses  EALicense[]
-  eaDownloads EADownload[]
-
-  // Copy Trading
+  id                       String                    @id @db.Uuid
+  name                     String?
+  email                    String?                   @unique
+  emailVerified            DateTime?                 @db.Timestamptz(6)
+  image                    String?
+  createdAt                DateTime                  @default(now()) @db.Timestamptz(6)
+  updatedAt                DateTime                  @updatedAt @db.Timestamptz(6)
+  checkInHistory           Json?
+  lastCheckIn              DateTime?                 @db.Timestamptz(6)
+  level                    Int                       @default(1)
+  settings                 Json?
+  streak                   Int                       @default(0)
+  xp                       Int                       @default(0)
+  showOnLeaderboard        Boolean                   @default(true)
+  syncApiKey               String?                   @unique @map("sync_api_key") @db.VarChar(64)
+  syncApiKeyCreatedAt      DateTime?                 @map("sync_api_key_created_at") @db.Timestamptz(6)
+  broadcastsCreated        AdminBroadcast[]          @relation("BroadcastCreator")
+  articles                 Article[]
+  articleVotes             ArticleVote[]
+  auditLogs                AuditLog[]                @relation("AdminAuditLogs")
+  certificates             Certificate[]
+  challengesReceived       Challenge[]               @relation("Challengee")
+  challengesSent           Challenge[]               @relation("Challenger")
+  comments                 Comment[]
+  eaDownloads              EADownload[]
+  EALicenses               EALicense[]
+  feedbacks                Feedback[]
+  journalEntries           JournalEntry[]
+  media                    Media[]
+  notifications            Notification[]
+  profile                  Profile?
+  badges                   UserBadge[]
+  following                UserFollow[]              @relation("Followers")
+  followers                UserFollow[]              @relation("Following")
+  progress                 UserProgress[]
+  quizAttempts             UserQuizAttempt[]
+  sessions                 UserSession[]
+  accountNotifications     AccountNotification[]
+  analyticsEvents          AnalyticsEvent[]
+  shortcuts                ContentShortcut[]
   copyTradingRegistrations CopyTradingRegistration[]
-
-  // ============================================
-  // NOTIFICATION SYSTEM RELATIONS
-  // ============================================
-  notifications        Notification[]
-  accountNotifications AccountNotification[] // Added for Spec 1.1
-  eaCommands           EaCommand[] // Added for Spec 14
-  broadcastsCreated    AdminBroadcast[]      @relation("BroadcastCreator")
-
-  // ============================================
-  // AUDIT LOG RELATIONS
-  // ============================================
-  auditLogs AuditLog[] @relation("AdminAuditLogs")
-
-  // Feedback & Support
-  feedbacks Feedback[]
-
-  // Upvotes
-  articleVotes ArticleVote[]
-
-  // Trading Reports
-  tradingReports TradingReport[]
-
-  // Academy Certificates
-  certificates Certificate[]
-
-  // VIP Requests
-  vipRequests VipRequest[]
-
-  // IB & Pro Access
-  proEntitlements     ProEntitlement[]
-  ibLeads             IbLead[]
-  ibActivitySnapshots IbActivitySnapshot[]
-
-  // Analytics
-  analyticsEvents AnalyticsEvent[]
-
-  // TNT Connect (Python App Sync)
-  syncApiKey          String?   @unique @map("sync_api_key") @db.VarChar(64)
-  syncApiKeyCreatedAt DateTime? @map("sync_api_key_created_at") @db.Timestamptz
+  eaCommands               EaCommand[]
+  edgeEvents               EdgeEvent[]
+  ibActivitySnapshots      IbActivitySnapshot[]
+  ibLeads                  IbLead[]
+  importHistory            ImportHistory[]
+  proEntitlements          ProEntitlement[]
+  strategies               Strategy[]
+  tradingAccounts          TradingAccount[]
+  tradingReports           TradingReport[]
+  missionProgress          UserMissionProgress[]
+  vipRequests              VipRequest[]
 
   @@index([createdAt])
   @@index([email])
-  // Leaderboard Indexes
   @@index([xp(sort: Desc)])
   @@index([streak(sort: Desc)])
 }
 
-// Removed NextAuth tables (Account, Session, VerificationToken) as they are not needed with Supabase SSR.
-
-// ============================================================================
-// USER PROFILE & ROLES
-// ============================================================================
-
-enum UserRole {
-  USER
-  EDITOR
-  ADMIN
-}
-
 model Profile {
-  id     String @id @default(cuid())
-  userId String @unique @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  username String?  @unique
-  bio      String?  @db.Text
-  role     UserRole @default(USER)
-
-  // Public Profile Settings
-  isPublicProfile  Boolean @default(false) @map("is_public_profile")
-  showTradeScore   Boolean @default(false) @map("show_trade_score")
-  showBadges       Boolean @default(true) @map("show_badges")
-  showPairStats    Boolean @default(true) @map("show_pair_stats")
-  showSessionStats Boolean @default(true) @map("show_session_stats")
-  profileHeadline  String? @map("profile_headline") @db.VarChar(160)
-
-  // Main Account — used for dashboard default redirect and widget status
+  id                   String          @id @default(cuid())
+  userId               String          @unique @db.Uuid
+  username             String?         @unique
+  bio                  String?
+  role                 UserRole        @default(USER)
+  createdAt            DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime        @updatedAt @db.Timestamptz(6)
+  isPublicProfile      Boolean         @default(false) @map("is_public_profile")
+  profileHeadline      String?         @map("profile_headline") @db.VarChar(160)
+  showBadges           Boolean         @default(true) @map("show_badges")
+  showPairStats        Boolean         @default(true) @map("show_pair_stats")
+  showSessionStats     Boolean         @default(true) @map("show_session_stats")
+  showTradeScore       Boolean         @default(false) @map("show_trade_score")
   mainTradingAccountId String?         @map("main_trading_account_id")
-  mainTradingAccount   TradingAccount? @relation("ProfileMainAccount", fields: [mainTradingAccountId], references: [id], onDelete: SetNull)
-
-  // Social / Contact
-  telegramId       String? @map("telegram_id") @db.VarChar(50)
-  country          String? @db.VarChar(100)
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  telegramId           String?         @map("telegram_id") @db.VarChar(50)
+  country              String?         @db.VarChar(100)
+  mainTradingAccount   TradingAccount? @relation("ProfileMainAccount", fields: [mainTradingAccountId], references: [id])
+  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([role])
   @@index([username])
 }
 
-// ============================================================================
-// ACADEMY (LMS)
-// ============================================================================
-
 model Level {
   id           String        @id @default(cuid())
   title        String
   description  String?
-  order        Int           @unique // 1, 2, 3
-  accessLevel  String        @default("PUBLIC") // "PUBLIC" | "MEMBER"
-  modules      Module[]
+  order        Int           @unique
+  createdAt    DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime      @updatedAt @db.Timestamptz(6)
+  accessLevel  String        @default("PUBLIC")
   certificates Certificate[]
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  modules      Module[]
 }
 
 model Module {
@@ -194,147 +110,114 @@ model Module {
   title       String
   description String?
   levelId     String
-  level       Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
   order       Int
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
   lessons     Lesson[]
+  level       Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
   quiz        Quiz?
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
 
   @@index([levelId])
 }
 
 model Lesson {
-  id              String   @id @default(cuid())
+  id              String         @id @default(cuid())
   title           String
-  slug            String   @unique
-  content         String   @db.Text // Markdown or HTML
-  rawContent      String?  @db.Text // Raw scraped content (backup for re-rewrite)
-  tone            String?  @db.VarChar(30) // Tone used: conversational, mentor, etc.
-  sourceUrls      String[] @default([]) // Source URLs used for AI rewrite
-  metaDescription String?  @db.VarChar(160) // SEO meta description
+  slug            String         @unique
+  content         String
   videoUrl        String?
-  duration        Int? // Minutes
-  status          String   @default("draft") // draft | published
+  duration        Int?
   moduleId        String
-  module          Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   order           Int
-
-  progress UserProgress[]
-  comments Comment[] // Added
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  createdAt       DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime       @updatedAt @db.Timestamptz(6)
+  status          String         @default("draft")
+  metaDescription String?        @db.VarChar(160)
+  rawContent      String?
+  sourceUrls      String[]       @default([])
+  tone            String?        @db.VarChar(30)
+  comments        Comment[]
+  module          Module         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress        UserProgress[]
 
   @@index([moduleId, order])
 }
 
 model UserProgress {
-  id       String @id @default(cuid())
-  userId   String @db.Uuid
-  lessonId String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-
+  id          String    @id @default(cuid())
+  userId      String    @db.Uuid
+  lessonId    String
   isCompleted Boolean   @default(false)
-  completedAt DateTime? @db.Timestamptz
+  completedAt DateTime? @db.Timestamptz(6)
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lessonId])
   @@index([userId, isCompleted])
   @@index([lessonId])
 }
 
-// ============================================================================
-// CMS (NEWS & ARTICLES)
-// ============================================================================
-
-enum ArticleStatus {
-  DRAFT
-  PENDING
-  PUBLISHED
-  ARCHIVED
-}
-
-enum ArticleSchemaType {
-  ARTICLE
-  HOWTO
-}
-
 model Article {
-  id        String        @id @default(cuid())
-  title     String
-  slug      String        @unique
-  excerpt   String?       @db.Text
-  content   String        @db.Text
-  thumbnail String?
-  status    ArticleStatus @default(DRAFT)
-
-  authorId String @db.Uuid
-  author   User   @relation(fields: [authorId], references: [id])
-
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
-
-  tags     ArticleTag[]
-  comments Comment[] // Added
-  votes    ArticleVote[]
-
-  views       Int       @default(0)
-  isFeatured  Boolean   @default(false)
-  publishedAt DateTime? @db.Timestamptz
-
-  metaTitle       String?
-  metaDescription String?
+  id              String            @id @default(cuid())
+  title           String
+  slug            String            @unique
+  excerpt         String?
+  content         String
+  thumbnail       String?
+  status          ArticleStatus     @default(DRAFT)
+  authorId        String            @db.Uuid
+  categoryId      String
+  views           Int               @default(0)
+  isFeatured      Boolean           @default(false)
+  publishedAt     DateTime?         @db.Timestamptz(6)
+  createdAt       DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime          @updatedAt @db.Timestamptz(6)
   focusKeyword    String?
-  schemaType      ArticleSchemaType @default(ARTICLE)
+  metaDescription String?
+  metaTitle       String?
   estimatedTime   Int?
-
-  // AI Content Pipeline metadata
-  tone       String?
-  sourceUrls String[] @default([])
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  schemaType      ArticleSchemaType @default(ARTICLE)
+  sourceUrls      String[]          @default([])
+  tone            String?
+  author          User              @relation(fields: [authorId], references: [id])
+  category        Category          @relation(fields: [categoryId], references: [id])
+  tags            ArticleTag[]
+  votes           ArticleVote[]
+  comments        Comment[]
 
   @@index([status])
   @@index([authorId])
   @@index([categoryId])
   @@index([views])
   @@index([createdAt])
-  // Performance Indexes (New - Enhanced)
-  @@index([status, createdAt], name: "article_status_created_idx")
-  @@index([isFeatured, status, createdAt]) // Perfect for Homepage Featured
-  @@index([status, views]) // Perfect for Homepage Popular
+  @@index([status, createdAt], map: "article_status_created_idx")
+  @@index([isFeatured, status, createdAt])
+  @@index([status, views])
 }
 
 model ArticleVote {
   id        String   @id @default(cuid())
   userId    String   @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   articleId String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
   article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @db.Timestamptz
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, articleId])
   @@index([articleId])
 }
 
 model Category {
-  id          String  @id @default(cuid())
+  id          String     @id @default(cuid())
   name        String
-  slug        String  @unique
+  slug        String     @unique
   description String?
-
-  articles Article[]
-
-  parentId String?
-  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children Category[] @relation("CategoryHierarchy")
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  parentId    String?
+  createdAt   DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime   @updatedAt @db.Timestamptz(6)
+  articles    Article[]
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
 }
 
 model Tag {
@@ -354,122 +237,83 @@ model ArticleTag {
 }
 
 model ContentShortcut {
-  id          String  @id @default(cuid())
-  name        String  @db.VarChar(100)
-  description String? @db.Text
-  content     String  @db.Text
-  authorId    String  @db.Uuid
-  author      User    @relation(fields: [authorId], references: [id])
-
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(100)
+  description String?
+  content     String
+  authorId    String   @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  author      User     @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
   @@map("content_shortcuts")
 }
 
-// ============================================================================
-// TRADING TOOLS
-// ============================================================================
-
-enum TradeType {
-  BUY
-  SELL
-}
-
-enum TradeStatus {
-  OPEN
-  CLOSED
-}
-
 model JournalEntry {
-  id     String @id @default(cuid())
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String          @id @default(cuid())
+  userId           String          @db.Uuid
+  symbol           String
+  type             TradeType
+  entryPrice       Float
+  exitPrice        Float?
+  stopLoss         Float?
+  takeProfit       Float?
+  lotSize          Float
+  pnl              Float?
+  status           TradeStatus     @default(OPEN)
+  entryDate        DateTime        @db.Timestamptz(6)
+  exitDate         DateTime?       @db.Timestamptz(6)
+  notes            String?
+  images           String[]
+  createdAt        DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime        @updatedAt @db.Timestamptz(6)
+  accountId        String?
+  entryReason      String?
+  exitReason       String?
+  result           TradeResult?
+  strategy         String?         @db.VarChar(100)
+  confidenceLevel  Int?
+  emotionAfter     String?         @db.VarChar(50)
+  emotionBefore    String?         @db.VarChar(50)
+  followedPlan     Boolean?
+  notesPsychology  String?
+  mistakes         Json?
+  tradingSession   String?         @map("trading_session") @db.VarChar(20)
+  commission       Float?          @default(0)
+  externalHash     String?         @map("external_hash") @db.VarChar(64)
+  externalTicket   String?         @map("external_ticket") @db.VarChar(100)
+  importId         String?         @map("import_id") @db.Uuid
+  swap             Float?          @default(0)
+  syncSource       String          @default("MANUAL") @map("sync_source") @db.VarChar(20)
+  syncedAt         DateTime?       @map("synced_at")
+  shareDescription String?         @map("share_description")
+  shareMode        String?         @default("full") @map("share_mode")
+  tags             String[]        @default([])
+  account          TradingAccount? @relation(fields: [accountId], references: [id])
+  import           ImportHistory?  @relation(fields: [importId], references: [id])
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  symbol      String // EURUSD, XAUUSD
-  type        TradeType // BUY, SELL
-  entryPrice  Float
-  exitPrice   Float?
-  stopLoss    Float?
-  takeProfit  Float?
-  lotSize     Float
-  pnl         Float? // Profit/Loss amount
-  commission  Float?       @default(0)
-  swap        Float?       @default(0)
-  status      TradeStatus  @default(OPEN)
-  result      TradeResult? // WIN, LOSS, BREAK_EVEN
-  entryReason String?      @db.Text
-  exitReason  String?      @db.Text
-
-  entryDate DateTime  @db.Timestamptz
-  exitDate  DateTime? @db.Timestamptz
-  notes     String?   @db.Text
-  images    String[] // URLs stored as array
-
-  // Psychology Tracking (Phase 44)
-  emotionBefore   String?  @db.VarChar(50)
-  emotionAfter    String?  @db.VarChar(50)
-  confidenceLevel Int? // 1-5
-  followedPlan    Boolean?
-  notesPsychology String?  @db.Text
-
-  // Mistake Tracking  // Analysis Fields
-  mistakes       Json?    @db.JsonB // Array of mistake IDs
-  tags           String[] @default([])
-  tradingSession String?  @map("trading_session") @db.VarChar(20) // Sydney, Tokyo, London, New Yorkcodes
-
-  // Sharing Settings
-  shareDescription String? @map("share_description") @db.Text
-  shareMode        String? @default("full") @map("share_mode") // basic, full
-
-  // Strategy Tracking (Phase 46)
-  strategy String? @db.VarChar(100) // Keep as string for loose coupling, or relation?
-  // We'll keep the string for now as per plan, but also add a helper relation if we want to enforce it later.
-  // Actually, the plan says "JournalEntry already has a strategy string field". 
-  // But we want to add the Strategy model and User relation.
-
-  accountId String?
-  account   TradingAccount? @relation(fields: [accountId], references: [id])
-
-  // Import Tracking (Merged with EA Sync)
-  importId       String? @map("import_id") @db.Uuid
-  externalTicket String? @map("external_ticket") @db.VarChar(100)
-  externalHash   String? @map("external_hash") @db.VarChar(64)
-
-  import ImportHistory? @relation(fields: [importId], references: [id], onDelete: SetNull)
-
-  // EA Sync Fields (Merged above)
-  syncSource String    @default("MANUAL") @map("sync_source") @db.VarChar(20) // MANUAL, EA_SYNC
-  syncedAt   DateTime? @map("synced_at")
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
-
-  // Ensure unique external ticket per account to prevent duplicates
   @@unique([accountId, externalTicket])
   @@unique([userId, accountId, externalTicket])
   @@index([userId, status])
   @@index([entryDate])
   @@index([strategy])
-  // Performance Indexes (Launch Optimization)
-  @@index([userId, exitDate]) // Filter by Date Range (All Accounts)
-  @@index([userId, accountId, exitDate]) // Filter by Date Range (Specific Account)
-  @@index([userId, symbol]) // Symbol Performance Analysis
+  @@index([userId, exitDate])
+  @@index([userId, accountId, exitDate])
+  @@index([userId, symbol])
 }
 
-// Strategy Tracking (Phase 46)
 model Strategy {
   id          String   @id @default(uuid()) @db.Uuid
   userId      String   @map("user_id") @db.Uuid
   name        String   @db.VarChar(100)
-  description String?  @db.Text
-  rules       String?  @db.Text
+  description String?
+  rules       String?
   color       String   @default("#6366F1") @db.VarChar(7)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, name])
   @@index([userId])
@@ -477,244 +321,175 @@ model Strategy {
 }
 
 model TradingAccount {
-  id     String @id @default(cuid())
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  name              String
-  color             String  @default("#00C888") @db.VarChar(20) // Custom UI color
-  broker            String?
-  server            String? @db.VarChar(100)
-  accountNumber     String? @map("account_number") @db.VarChar(50)
-  balance           Float   @default(0)
-  currency          String  @default("USD")
-  platform          String? @default("MetaTrader 4") // MT4, MT5, cTrader
-  isDefault         Boolean @default(false)
-  useForLeaderboard Boolean @default(false) @map("use_for_leaderboard") // Only one per user, real accounts only
-
-  journalEntries JournalEntry[]
-
-  // EA API Authentication
-  apiKey          String?  @unique @map("api_key") @db.VarChar(64)
-  apiKeyCreatedAt DateTime @default(now()) @map("api_key_created_at")
-
-  // EA Connection Status
-  status        String    @default("PENDING") @db.VarChar(20) // PENDING, CONNECTED, DISCONNECTED
-  lastHeartbeat DateTime? @map("last_heartbeat")
-  lastSync      DateTime? @map("last_sync")
-  eaVersion     String?   @map("ea_version") @db.VarChar(20)
-
-  // Stats & Settings
-  totalTrades    Int     @default(0) @map("total_trades")
-  autoSync       Boolean @default(true) @map("auto_sync")
-  syncOpenTrades Boolean @default(false) @map("sync_open_trades")
-  timezone       String  @default("Etc/UTC") @map("timezone") @db.VarChar(50) // IANA timezone e.g. "Europe/Athens", "Etc/UTC"
-
-  // Spec 1.1 & Enhanced Features
-  equity      Float?   @default(0)
-  leverage    String?  @db.VarChar(10)
-  accountType String   @default("PERSONAL") @map("account_type") @db.VarChar(30)
-  tags        String[] @default([])
-
-  notifyDisconnect         Boolean @default(true) @map("notify_disconnect")
-  disconnectThresholdHours Int     @default(24) @map("disconnect_threshold_hours")
-
-  apiKeyExpiresAt DateTime? @map("api_key_expires_at")
-  ipWhitelist     String[]  @default([]) @map("ip_whitelist")
-
-  // Trading Rules (Soft Nudge Protection)
-  maxDailyLoss        Float? @map("max_daily_loss") // Max loss per day in account currency
-  maxDailyTrades      Int?   @map("max_daily_trades") // Max number of trades per day
-  maxRiskPercent      Float? @map("max_risk_percent") // Max risk % per trade
-  cooldownAfterLosses Int?   @map("cooldown_after_losses") // Consecutive losses before cooldown alert
-
-  syncHistory   SyncHistory[]
-  importHistory ImportHistory[]
-  notifications AccountNotification[]
-  commands      EaCommand[]
-
-  // IB & Pro Access Relations
-  proEntitlement ProEntitlement?
-  vipRequests    VipRequest[]    @relation("VipRequestAccount")
-  ibLeads        IbLead[]        @relation("IbLeadAccount")
-
-  // Profile back-relation (users who set this as main account)
-  mainForProfiles Profile[] @relation("ProfileMainAccount")
-
-  // TNT Connect (Python App Sync)
-  syncSource       String    @default("EA") @map("sync_source") @db.VarChar(20) // EA, APP, BOTH
-  appLastHeartbeat DateTime? @map("app_last_heartbeat") @db.Timestamptz
-  resyncRequest    String?   @map("resync_request") @db.VarChar(20) // null, TODAY, 3D, 1W, 1M
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  id                       String                @id @default(cuid())
+  userId                   String                @db.Uuid
+  name                     String
+  color                    String                @default("#00C888") @db.VarChar(20)
+  broker                   String?
+  server                   String?               @db.VarChar(100)
+  accountNumber            String?               @map("account_number") @db.VarChar(50)
+  balance                  Float                 @default(0)
+  currency                 String                @default("USD")
+  platform                 String?               @default("MetaTrader 4")
+  isDefault                Boolean               @default(false)
+  apiKey                   String?               @unique @map("api_key") @db.VarChar(64)
+  apiKeyCreatedAt          DateTime              @default(now()) @map("api_key_created_at")
+  status                   String                @default("PENDING") @db.VarChar(20)
+  lastHeartbeat            DateTime?             @map("last_heartbeat")
+  lastSync                 DateTime?             @map("last_sync")
+  eaVersion                String?               @map("ea_version") @db.VarChar(20)
+  totalTrades              Int                   @default(0) @map("total_trades")
+  autoSync                 Boolean               @default(true) @map("auto_sync")
+  syncOpenTrades           Boolean               @default(false) @map("sync_open_trades")
+  equity                   Float?                @default(0)
+  leverage                 String?               @db.VarChar(10)
+  accountType              String                @default("PERSONAL") @map("account_type") @db.VarChar(30)
+  tags                     String[]              @default([])
+  notifyDisconnect         Boolean               @default(true) @map("notify_disconnect")
+  disconnectThresholdHours Int                   @default(24) @map("disconnect_threshold_hours")
+  apiKeyExpiresAt          DateTime?             @map("api_key_expires_at")
+  ipWhitelist              String[]              @default([]) @map("ip_whitelist")
+  createdAt                DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt                DateTime              @updatedAt @db.Timestamptz(6)
+  timezone                 String                @default("Etc/UTC") @map("timezone") @db.VarChar(50)
+  useForLeaderboard        Boolean               @default(false) @map("use_for_leaderboard")
+  cooldownAfterLosses      Int?                  @map("cooldown_after_losses")
+  maxDailyLoss             Float?                @map("max_daily_loss")
+  maxDailyTrades           Int?                  @map("max_daily_trades")
+  maxRiskPercent           Float?                @map("max_risk_percent")
+  appLastHeartbeat         DateTime?             @map("app_last_heartbeat") @db.Timestamptz(6)
+  resyncRequest            String?               @map("resync_request") @db.VarChar(20)
+  syncSource               String                @default("EA") @map("sync_source") @db.VarChar(20)
+  journalEntries           JournalEntry[]
+  mainForProfiles          Profile[]             @relation("ProfileMainAccount")
+  notifications            AccountNotification[]
+  commands                 EaCommand[]
+  ibLeads                  IbLead[]              @relation("IbLeadAccount")
+  importHistory            ImportHistory[]
+  proEntitlement           ProEntitlement?
+  syncHistory              SyncHistory[]
+  user                     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vipRequests              VipRequest[]          @relation("VipRequestAccount")
 
   @@index([userId])
   @@map("trading_accounts")
 }
 
 model AccountNotification {
-  id               String @id @default(uuid())
-  tradingAccountId String @map("trading_account_id") // Remove @db.Uuid to match TradingAccount ID type (cuid/string)
-  userId           String @map("user_id") @db.Uuid
-
-  type    String  @db.VarChar(30)
-  title   String  @db.VarChar(200)
-  message String? @db.Text
-
-  isRead    Boolean @default(false) @map("is_read")
-  sentEmail Boolean @default(false) @map("sent_email")
-
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  tradingAccount TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String         @id @default(uuid())
+  tradingAccountId String         @map("trading_account_id")
+  userId           String         @map("user_id") @db.Uuid
+  type             String         @db.VarChar(30)
+  title            String         @db.VarChar(200)
+  message          String?
+  isRead           Boolean        @default(false) @map("is_read")
+  sentEmail        Boolean        @default(false) @map("sent_email")
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  tradingAccount   TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isRead])
   @@map("account_notifications")
 }
 
 model EaCommand {
-  id               String @id @default(uuid())
-  tradingAccountId String @map("trading_account_id")
-  userId           String @map("user_id") @db.Uuid
-
-  type   String
-  params Json   @default("{}")
-
-  status String @default("PENDING")
-
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  startedAt   DateTime? @map("started_at") @db.Timestamptz
-  completedAt DateTime? @map("completed_at") @db.Timestamptz
-  expiresAt   DateTime? @map("expires_at") @db.Timestamptz
-
-  result       Json?
-  errorMessage String? @map("error_message")
-
-  source    String  @default("WEB")
-  ipAddress String? @map("ip_address")
-
-  tradingAccount TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String         @id @default(uuid())
+  tradingAccountId String         @map("trading_account_id")
+  userId           String         @map("user_id") @db.Uuid
+  type             String
+  params           Json           @default("{}")
+  status           String         @default("PENDING")
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  startedAt        DateTime?      @map("started_at") @db.Timestamptz(6)
+  completedAt      DateTime?      @map("completed_at") @db.Timestamptz(6)
+  expiresAt        DateTime?      @map("expires_at") @db.Timestamptz(6)
+  result           Json?
+  errorMessage     String?        @map("error_message")
+  source           String         @default("WEB")
+  ipAddress        String?        @map("ip_address")
+  tradingAccount   TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([tradingAccountId, status, createdAt])
   @@index([userId, createdAt(sort: Desc)])
   @@map("ea_commands")
 }
 
-enum TradeResult {
-  WIN
-  LOSS
-  BREAK_EVEN
-}
-
-// ============================================
-// DATA IMPORT
-// ============================================
-
 model ImportHistory {
-  id        String  @id @default(uuid()) @db.Uuid
-  userId    String  @map("user_id") @db.Uuid
-  accountId String? @map("account_id")
-
-  source   String  @db.VarChar(50) // MT4, MT5, CSV
-  filename String? @db.VarChar(255)
-  fileSize Int?    @map("file_size")
-
-  totalRows     Int @default(0) @map("total_rows")
-  importedCount Int @default(0) @map("imported_count")
-  skippedCount  Int @default(0) @map("skipped_count")
-  errorCount    Int @default(0) @map("error_count")
-
-  status       String  @default("PENDING") @db.VarChar(20)
-  errorMessage String? @map("error_message")
-
-  startedAt   DateTime  @default(now()) @map("started_at") @db.Timestamptz
-  completedAt DateTime? @map("completed_at") @db.Timestamptz
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
-
-  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account TradingAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
-  trades  JournalEntry[]
+  id            String          @id @default(uuid()) @db.Uuid
+  userId        String          @map("user_id") @db.Uuid
+  accountId     String?         @map("account_id")
+  source        String          @db.VarChar(50)
+  filename      String?         @db.VarChar(255)
+  fileSize      Int?            @map("file_size")
+  totalRows     Int             @default(0) @map("total_rows")
+  importedCount Int             @default(0) @map("imported_count")
+  skippedCount  Int             @default(0) @map("skipped_count")
+  errorCount    Int             @default(0) @map("error_count")
+  status        String          @default("PENDING") @db.VarChar(20)
+  errorMessage  String?         @map("error_message")
+  startedAt     DateTime        @default(now()) @map("started_at") @db.Timestamptz(6)
+  completedAt   DateTime?       @map("completed_at") @db.Timestamptz(6)
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  trades        JournalEntry[]
+  account       TradingAccount? @relation(fields: [accountId], references: [id])
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("import_history")
 }
 
-// ============================================
-// EA SYNC HISTORY
-// ============================================
-
 model SyncHistory {
-  id               String @id @default(uuid()) @db.Uuid
-  tradingAccountId String @map("trading_account_id")
-
-  tradesReceived Int @default(0) @map("trades_received")
-  tradesImported Int @default(0) @map("trades_imported")
-  tradesSkipped  Int @default(0) @map("trades_skipped")
-
-  eaVersion  String?   @map("ea_version") @db.VarChar(20)
-  clientTime DateTime? @map("client_time")
-
-  createdAt DateTime @default(now()) @map("created_at")
-
-  tradingAccount TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+  id               String         @id @default(uuid()) @db.Uuid
+  tradingAccountId String         @map("trading_account_id")
+  tradesReceived   Int            @default(0) @map("trades_received")
+  tradesImported   Int            @default(0) @map("trades_imported")
+  tradesSkipped    Int            @default(0) @map("trades_skipped")
+  eaVersion        String?        @map("ea_version") @db.VarChar(20)
+  clientTime       DateTime?      @map("client_time")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  tradingAccount   TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
 
   @@index([tradingAccountId])
   @@map("sync_history")
 }
 
-enum ImpactLevel {
-  HIGH
-  MEDIUM
-  LOW
-}
-
 model EconomicEvent {
-  id       String      @id @default(cuid())
-  title    String
-  currency String // USD, EUR
-  impact   ImpactLevel // HIGH, MEDIUM, LOW
-  date     DateTime    @db.Timestamptz
-  forecast String?
-  previous String?
-  actual   String?
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  id        String      @id @default(cuid())
+  title     String
+  currency  String
+  impact    ImpactLevel
+  date      DateTime    @db.Timestamptz(6)
+  forecast  String?
+  previous  String?
+  actual    String?
+  createdAt DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime    @updatedAt @db.Timestamptz(6)
 
   @@unique([title, currency, date])
 }
 
-// ============================================================================
-// QUIZ ENGINE
-// ============================================================================
-
 model Quiz {
-  id          String  @id @default(cuid())
+  id          String            @id @default(cuid())
   title       String
   description String?
-  moduleId    String? @unique // Optional: Link to a module (End of module quiz)
-  module      Module? @relation(fields: [moduleId], references: [id])
-
-  questions Question[]
-  attempts  UserQuizAttempt[]
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  moduleId    String?           @unique
+  createdAt   DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime          @updatedAt @db.Timestamptz(6)
+  questions   Question[]
+  module      Module?           @relation(fields: [moduleId], references: [id])
+  attempts    UserQuizAttempt[]
 }
 
 model Question {
-  id      String   @id @default(cuid())
-  quizId  String
-  quiz    Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  text    String
-  order   Int
-  options Option[]
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  id        String   @id @default(cuid())
+  quizId    String
+  text      String
+  order     Int
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  options   Option[]
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
   @@index([quizId])
 }
@@ -722,69 +497,51 @@ model Question {
 model Option {
   id         String   @id @default(cuid())
   questionId String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   text       String
   isCorrect  Boolean  @default(false)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([questionId])
 }
 
 model UserQuizAttempt {
-  id     String @id @default(cuid())
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  quizId String
-  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
-
-  score       Int // Percentage or raw score
+  id          String   @id @default(cuid())
+  userId      String   @db.Uuid
+  quizId      String
+  score       Int
   passed      Boolean  @default(false)
-  completedAt DateTime @default(now()) @db.Timestamptz
+  completedAt DateTime @default(now()) @db.Timestamptz(6)
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Certificate {
-  id      String @id @default(cuid())
-  userId  String @db.Uuid
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  levelId String
-  level   Level  @relation(fields: [levelId], references: [id], onDelete: Cascade)
-
-  score    Int // Average quiz score across all modules in this level
-  earnedAt DateTime @default(now()) @db.Timestamptz
+  id       String   @id @default(cuid())
+  userId   String   @db.Uuid
+  levelId  String
+  score    Int
+  earnedAt DateTime @default(now()) @db.Timestamptz(6)
+  level    Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, levelId])
   @@index([userId])
 }
 
-enum PlanStatus {
-  ACTIVE
-  COMPLETED
-  ARCHIVED
-}
-
-// ============================================================================
-// SOCIAL & INTERACTION
-// ============================================================================
-
 model Comment {
-  id      String @id @default(cuid())
-  content String @db.Text
-
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Polymorphic-like associations (Optional relations)
+  id        String    @id @default(cuid())
+  content   String
+  userId    String    @db.Uuid
   articleId String?
-  article   Article? @relation(fields: [articleId], references: [id])
-
-  lessonId String?
-  lesson   Lesson? @relation(fields: [lessonId], references: [id])
-
-  parentId String?
-  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  replies  Comment[] @relation("CommentReplies")
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  lessonId  String?
+  parentId  String?
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
+  article   Article?  @relation(fields: [articleId], references: [id])
+  lesson    Lesson?   @relation(fields: [lessonId], references: [id])
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([articleId])
   @@index([userId])
@@ -793,162 +550,107 @@ model Comment {
   @@index([parentId])
 }
 
-// ============================================================================
-// SYSTEM HEALTH
-// ============================================================================
-
 model ErrorLog {
-  id       String  @id @default(cuid())
-  message  String  @db.Text
-  stack    String? @db.Text
-  context  String? // JSON string of context (url, user, etc)
-  severity String  @default("ERROR") // ERROR, WARN, INFO
-
-  createdAt DateTime @default(now()) @db.Timestamptz
+  id        String   @id @default(cuid())
+  message   String
+  stack     String?
+  context   String?
+  severity  String   @default("ERROR")
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
 }
 
-// ============================================================================
-// MEDIA LIBRARY
-// ============================================================================
-
 model Media {
-  id           String  @id @default(cuid())
+  id           String   @id @default(cuid())
   filename     String
   url          String
-  type         String // mimetype: image/jpeg, image/png, etc.
-  size         Int // bytes
+  type         String
+  size         Int
   width        Int?
   height       Int?
   alt          String?
   caption      String?
-  thumbnailUrl String? // Path to 300px thumbnail
-
-  userId String? @db.Uuid
-  user   User?   @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  thumbnailUrl String?
+  userId       String?  @db.Uuid
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(6)
+  user         User?    @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
 
-// ============================================================================
-// SYSTEM SETTINGS
-// ============================================================================
-
 model SystemSetting {
-  id    String @id @default(cuid())
-  key   String @unique // e.g., 'site_config', 'maintenance_mode'
-  value Json // Flexible JSON storage
-
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 }
 
-// ============================================================================
-// GAMIFICATION
-// ============================================================================
-
 model Badge {
-  id          String   @id @default(cuid())
-  code        String   @unique // e.g. "FIRST_TRADE", "LESSON_MASTER"
+  id          String      @id @default(cuid())
+  code        String      @unique
   name        String
   description String
-  icon        String // Lucide icon name
-  category    String   @default("milestone") // milestone, season, achievement
-  xpReward    Int      @default(0)
-  createdAt   DateTime @default(now()) @db.Timestamptz
-
-  users UserBadge[]
+  icon        String
+  xpReward    Int         @default(0)
+  createdAt   DateTime    @default(now()) @db.Timestamptz(6)
+  category    String      @default("milestone")
+  users       UserBadge[]
 }
 
 model UserBadge {
   id       String   @id @default(cuid())
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String   @db.Uuid
-  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
   badgeId  String
-  earnedAt DateTime @default(now()) @db.Timestamptz
+  earnedAt DateTime @default(now()) @db.Timestamptz(6)
+  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, badgeId])
   @@index([userId])
 }
 
-// ============================================================================
-// BROKER MANAGEMENT (ADDED IN SPRINT 3)
-// ============================================================================
-
-// ============================================================================
-// EA LICENSE MANAGEMENT (NEW - V2.0)
-// ============================================================================
-
-enum AccountStatus {
-  PENDING // Waiting for admin review
-  APPROVED // Can use EA
-  REJECTED // Denied
-  EXPIRED // Past expiry date
-  SUSPENDED // Temporarily disabled
-}
-
-// EA Broker Management (for Trading Systems)
 model EABroker {
-  id           String  @id @default(uuid())
-  name         String // "Exness"
-  slug         String  @unique // "EXNESS" (stored in EALicense.broker)
-  logo         String // URL
-  affiliateUrl String? // IB referral link
-  ibCode       String? // Dynamic IB Number/Code
-  color        String  @default("#00C888") // Brand color
-  isActive     Boolean @default(true)
-  order        Int     @default(0)
-
-  // IB Partner Configuration
-  commissionPerLot         Float?  @map("commission_per_lot")
-  commissionCurrency       String? @default("USD") @map("commission_currency") @db.VarChar(10)
-  isVipEligible            Boolean @default(true) @map("is_vip_eligible")
-  requiresScreenshot       Boolean @default(false) @map("requires_screenshot")
-  requiresCountry          Boolean @default(false) @map("requires_country")
-  verificationInstructions String? @map("verification_instructions") @db.Text
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  id                       String   @id @default(uuid())
+  name                     String
+  slug                     String   @unique
+  logo                     String
+  affiliateUrl             String?
+  color                    String   @default("#00C888")
+  isActive                 Boolean  @default(true)
+  order                    Int      @default(0)
+  createdAt                DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt                DateTime @updatedAt @db.Timestamptz(6)
+  ibCode                   String?
+  commissionCurrency       String?  @default("USD") @map("commission_currency") @db.VarChar(10)
+  commissionPerLot         Float?   @map("commission_per_lot")
+  isVipEligible            Boolean  @default(true) @map("is_vip_eligible")
+  requiresCountry          Boolean  @default(false) @map("requires_country")
+  requiresScreenshot       Boolean  @default(false) @map("requires_screenshot")
+  verificationInstructions String?  @map("verification_instructions")
 
   @@index([isActive])
   @@map("ea_brokers")
 }
 
-// EA License Request & Status
 model EALicense {
-  id String @id @default(uuid())
-
-  // Owner
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Account Info
-  broker        String
+  id            String        @id @default(uuid())
+  userId        String        @db.Uuid
   accountNumber String
-
-  // Status
-  status AccountStatus @default(PENDING)
-
-  // Dates
-  startDate  DateTime? @db.Timestamptz // When approved
-  expiryDate DateTime? @db.Timestamptz // Null = lifetime
-
-  // Admin Actions
-  note         String?   @db.Text // Admin notes
-  approvedBy   String? // Admin user ID
-  approvedAt   DateTime? @db.Timestamptz
-  rejectedBy   String?
-  rejectedAt   DateTime? @db.Timestamptz
-  rejectReason String?   @db.Text
-
-  // Exness API verification (optional)
-  isVerified Boolean   @default(false)
-  verifiedAt DateTime? @db.Timestamptz
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  status        AccountStatus @default(PENDING)
+  startDate     DateTime?     @db.Timestamptz(6)
+  expiryDate    DateTime?     @db.Timestamptz(6)
+  note          String?
+  approvedBy    String?
+  approvedAt    DateTime?     @db.Timestamptz(6)
+  rejectedBy    String?
+  rejectedAt    DateTime?     @db.Timestamptz(6)
+  rejectReason  String?
+  isVerified    Boolean       @default(false)
+  verifiedAt    DateTime?     @db.Timestamptz(6)
+  createdAt     DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime      @updatedAt @db.Timestamptz(6)
+  broker        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([broker, accountNumber])
   @@index([userId])
@@ -957,152 +659,61 @@ model EALicense {
   @@index([createdAt])
 }
 
-// ============================================================================
-// EA PRODUCT MANAGEMENT
-// ============================================================================
-
-enum EAType {
-  AUTO_TRADE // Fully automated trading
-  MANUAL_ASSIST // Manual trading helper
-  INDICATOR // Custom indicator
-}
-
-enum PlatformType {
-  MT4
-  MT5
-  BOTH
-}
-
 model EAProduct {
-  id String @id @default(uuid())
-
-  // Basic Info
-  name        String // "GSN Auto Trader"
-  slug        String  @unique
-  description String? @db.Text
-
-  // Type
-  type     EAType
-  platform PlatformType @default(BOTH)
-
-  // Files (Supabase Storage URLs)
-  fileMT4   String?
-  fileMT5   String?
-  thumbnail String?
-
-  // Version
-  version   String  @default("1.0.0")
-  changelog String? @db.Text
-
-  // Settings
-  isActive Boolean @default(true)
-  isFree   Boolean @default(false)
-
-  // Stats
-  totalDownloads Int @default(0)
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
-
-  // Relations
-  downloads EADownload[]
+  id             String       @id @default(uuid())
+  name           String
+  slug           String       @unique
+  description    String?
+  type           EAType
+  platform       PlatformType @default(BOTH)
+  fileMT4        String?
+  fileMT5        String?
+  thumbnail      String?
+  version        String       @default("1.0.0")
+  changelog      String?
+  isActive       Boolean      @default(true)
+  totalDownloads Int          @default(0)
+  createdAt      DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime     @updatedAt @db.Timestamptz(6)
+  isFree         Boolean      @default(false)
+  downloads      EADownload[]
 
   @@index([isActive])
   @@index([type])
 }
 
-// Download History
 model EADownload {
-  id String @id @default(uuid())
-
+  id        String       @id @default(uuid())
   productId String
-  product   EAProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  platform PlatformType // Which file downloaded
-  version  String
-
+  userId    String       @db.Uuid
+  platform  PlatformType
+  version   String
   ipAddress String?
   userAgent String?
-
-  createdAt DateTime @default(now()) @db.Timestamptz
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+  product   EAProduct    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([productId])
   @@index([userId])
   @@index([createdAt])
 }
 
-// ============================================
-// NOTIFICATION SYSTEM
-// ============================================
-
-enum NotificationType {
-  // System Notifications (Auto-generated)
-  LICENSE_APPROVED // EA license approved
-  LICENSE_REJECTED // EA license rejected
-  LICENSE_EXPIRED // EA license expired
-  NEW_EA_VERSION // New EA version available
-
-  // Copy Trading
-  COPY_TRADING_REGISTERED // New copy trading registration (admin)
-  COPY_TRADING_APPROVED // Copy trading approved (user)
-  COPY_TRADING_REJECTED // Copy trading rejected (user)
-
-  // VIP Community
-  VIP_APPROVED // VIP request approved (user)
-  VIP_REJECTED // VIP request rejected (user)
-
-  // Admin Broadcast
-  ANNOUNCEMENT // General announcement
-  MAINTENANCE // Scheduled maintenance
-  PROMOTION // Promotional message
-  FEATURE_UPDATE // New feature announcement
-
-  // Feedback
-  FEEDBACK_RECEIVED // User submitted feedback/bug report (admin)
-
-  // Trading Reports
-  WEEKLY_REPORT // Weekly report ready
-  MONTHLY_REPORT // Monthly report ready
-  NO_TRADES_NUDGE // No trades this period nudge
-}
-
-enum NotificationPriority {
-  LOW
-  NORMAL
-  HIGH
-  URGENT
-}
-
-// Individual Notification (per user)
 model Notification {
-  id String @id @default(uuid())
-
-  // Recipient
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Content
-  type    NotificationType
-  title   String
-  message String           @db.Text
-  link    String? // URL to navigate
-
-  // Display
-  icon     String? // Icon name or emoji
-  priority NotificationPriority @default(NORMAL)
-
-  // Status
-  isRead Boolean   @default(false)
-  readAt DateTime? @db.Timestamptz
-
-  // For broadcast notifications
-  broadcastId String? // Link to AdminBroadcast
-  broadcast   AdminBroadcast? @relation(fields: [broadcastId], references: [id])
-
-  createdAt DateTime @default(now()) @db.Timestamptz
+  id          String               @id @default(uuid())
+  userId      String               @db.Uuid
+  type        NotificationType
+  title       String
+  message     String
+  link        String?
+  icon        String?
+  priority    NotificationPriority @default(NORMAL)
+  isRead      Boolean              @default(false)
+  readAt      DateTime?            @db.Timestamptz(6)
+  broadcastId String?
+  createdAt   DateTime             @default(now()) @db.Timestamptz(6)
+  broadcast   AdminBroadcast?      @relation(fields: [broadcastId], references: [id])
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([isRead])
@@ -1110,66 +721,40 @@ model Notification {
   @@index([broadcastId])
 }
 
-// Admin Broadcast Template
 model AdminBroadcast {
-  id String @id @default(uuid())
-
-  // Content
-  type     NotificationType
-  title    String
-  message  String               @db.Text
-  link     String?
-  icon     String?
-  priority NotificationPriority @default(NORMAL)
-
-  // Targeting
-  targetAll     Boolean  @default(true) // All users
-  targetRoles   String[] @default([]) // Specific roles: ["USER", "ADMIN"]
-  targetUserIds String[] @default([]) // Specific user IDs
-
-  // Schedule
-  scheduledAt DateTime? @db.Timestamptz // Null = send immediately
-  sentAt      DateTime? @db.Timestamptz // When actually sent
-
-  // Stats
-  totalRecipients Int @default(0)
-  readCount       Int @default(0)
-
-  // Audit
-  createdBy String @db.Uuid
-  creator   User   @relation("BroadcastCreator", fields: [createdBy], references: [id])
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
-
-  // Relations
-  notifications Notification[]
+  id              String               @id @default(uuid())
+  type            NotificationType
+  title           String
+  message         String
+  link            String?
+  icon            String?
+  priority        NotificationPriority @default(NORMAL)
+  targetAll       Boolean              @default(true)
+  targetRoles     String[]             @default([])
+  targetUserIds   String[]             @default([])
+  scheduledAt     DateTime?            @db.Timestamptz(6)
+  sentAt          DateTime?            @db.Timestamptz(6)
+  totalRecipients Int                  @default(0)
+  readCount       Int                  @default(0)
+  createdBy       String               @db.Uuid
+  createdAt       DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime             @updatedAt @db.Timestamptz(6)
+  creator         User                 @relation("BroadcastCreator", fields: [createdBy], references: [id])
+  notifications   Notification[]
 
   @@index([createdAt])
   @@index([sentAt])
 }
 
-// ============================================
-// AUDIT LOG SYSTEM
-// ============================================
-
 model AuditLog {
-  id String @id @default(uuid())
-
-  // Who
-  adminId String @db.Uuid
-  admin   User   @relation("AdminAuditLogs", fields: [adminId], references: [id])
-
-  // What
-  action     String // "LICENSE_APPROVED", "LICENSE_REJECTED", "PRODUCT_CREATED", etc.
-  targetType String // "EALicense", "EAProduct"
-  targetId   String? // ID of affected record
-
-  // Details
-  details Json? // Additional context (old values, new values, etc.)
-
-  // When
-  createdAt DateTime @default(now()) @db.Timestamptz
+  id         String   @id @default(uuid())
+  adminId    String   @db.Uuid
+  action     String
+  targetType String
+  targetId   String?
+  details    Json?
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  admin      User     @relation("AdminAuditLogs", fields: [adminId], references: [id])
 
   @@index([adminId])
   @@index([action])
@@ -1177,69 +762,50 @@ model AuditLog {
   @@index([createdAt])
 }
 
-// ============================================
-// SECURITY & SESSIONS
-// ============================================
-
 model UserSession {
-  id     String @id @default(cuid())
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  device    String?
-  ip        String?
-  userAgent String?
-
-  lastActive DateTime @default(now()) @db.Timestamptz
-
-  createdAt DateTime @default(now()) @db.Timestamptz
+  id         String   @id @default(cuid())
+  userId     String   @db.Uuid
+  device     String?
+  ip         String?
+  userAgent  String?
+  lastActive DateTime @default(now()) @db.Timestamptz(6)
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, userAgent, ip], name: "unique_session")
   @@index([userId])
 }
 
-// ============================================================================
-// FEEDBACK & SUPPORT
-// ============================================================================
-
 model Feedback {
   id        String   @id @default(cuid())
-  type      String // "BUG" | "FEATURE"
-  message   String   @db.Text
-  status    String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
   userId    String   @db.Uuid
+  type      String
+  message   String
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
 
   @@index([userId])
   @@index([status])
   @@index([type])
 }
 
-// ============================================================================
-// TOOL ANALYTICS
-// ============================================================================
-
 model ToolView {
-  slug      String   @id // tool slug e.g. "position-size-calculator"
   viewCount Int      @default(0)
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  slug      String   @id
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 
   @@index([viewCount(sort: Desc)])
 }
-
-// ============================================================================
-// SOCIAL & LEADERBOARD
-// ============================================================================
 
 model UserFollow {
   id          String   @id @default(cuid())
   followerId  String   @db.Uuid
   followingId String   @db.Uuid
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
   follower    User     @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
   following   User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now()) @db.Timestamptz
 
   @@unique([followerId, followingId])
   @@index([followerId])
@@ -1250,14 +816,14 @@ model Challenge {
   id           String   @id @default(cuid())
   challengerId String   @db.Uuid
   challengeeId String   @db.Uuid
-  challenger   User     @relation("Challenger", fields: [challengerId], references: [id], onDelete: Cascade)
-  challengee   User     @relation("Challengee", fields: [challengeeId], references: [id], onDelete: Cascade)
-  type         String   @default("xp") // xp, streak, trades
-  startDate    DateTime @db.Timestamptz
-  endDate      DateTime @db.Timestamptz
-  status       String   @default("PENDING") // PENDING, ACTIVE, COMPLETED, DECLINED
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  endDate      DateTime @db.Timestamptz(6)
+  startDate    DateTime @db.Timestamptz(6)
+  type         String   @default("xp")
   winnerId     String?  @db.Uuid
-  createdAt    DateTime @default(now()) @db.Timestamptz
+  challengee   User     @relation("Challengee", fields: [challengeeId], references: [id], onDelete: Cascade)
+  challenger   User     @relation("Challenger", fields: [challengerId], references: [id], onDelete: Cascade)
 
   @@index([challengerId])
   @@index([challengeeId])
@@ -1268,70 +834,42 @@ model Quote {
   id        String   @id @default(cuid())
   text      String
   author    String   @default("")
-  type      String   @default("DASHBOARD") // DASHBOARD or HOMEPAGE
+  type      String   @default("DASHBOARD")
   isActive  Boolean  @default(true)
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 
   @@index([type])
   @@index([isActive])
 }
 
-// ============================================================================
-// COPY TRADING
-// ============================================================================
-
-enum CopyTradingStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  DISCONNECTED
-}
-
 model CopyTradingRegistration {
-  id String @id @default(uuid())
-
-  // Owner
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Personal Info (snapshot at registration time)
-  fullName       String
-  email          String
-  telegramHandle String?
-  tradingCapital Float   @default(0)
-
-  // Broker & MT5
-  brokerName       String // "Exness", "VTMarkets", "Any Broker"
-  customBrokerName String? @map("custom_broker_name")
-  mt5Server        String? @map("mt5_server")
-  customServer     String? @map("custom_server")
-  mt5AccountNumber String  @map("mt5_account_number")
-  masterPassword   String? @map("master_password") // TODO: encrypt before storing
-
-  // Extra
-  message String? @db.Text
-
-  // Status
-  status CopyTradingStatus @default(PENDING)
-
-  // Admin Actions
-  reviewedBy   String?   @map("reviewed_by") @db.Uuid
-  reviewedAt   DateTime? @map("reviewed_at") @db.Timestamptz
-  rejectReason String?   @map("reject_reason") @db.Text
-  adminNote    String?   @map("admin_note") @db.Text
-
-  // Disconnect tracking
-  disconnectedAt   DateTime? @map("disconnected_at") @db.Timestamptz
-  disconnectReason String?   @map("disconnect_reason") @db.Text
-
-  // Partner Integration
-  partnerCode String?  @map("partner_code")
-  partner     Partner? @relation(fields: [partnerCode], references: [partnerCode])
-  phone       String?  @db.VarChar(20)
-
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id               String            @id @default(uuid())
+  userId           String            @db.Uuid
+  fullName         String
+  email            String
+  telegramHandle   String?
+  tradingCapital   Float             @default(0)
+  brokerName       String
+  customBrokerName String?           @map("custom_broker_name")
+  mt5Server        String?           @map("mt5_server")
+  customServer     String?           @map("custom_server")
+  mt5AccountNumber String            @map("mt5_account_number")
+  masterPassword   String?           @map("master_password")
+  message          String?
+  status           CopyTradingStatus @default(PENDING)
+  reviewedBy       String?           @map("reviewed_by") @db.Uuid
+  reviewedAt       DateTime?         @map("reviewed_at") @db.Timestamptz(6)
+  rejectReason     String?           @map("reject_reason")
+  adminNote        String?           @map("admin_note")
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  partnerCode      String?           @map("partner_code")
+  phone            String?           @db.VarChar(20)
+  disconnectReason String?           @map("disconnect_reason")
+  disconnectedAt   DateTime?         @map("disconnected_at") @db.Timestamptz(6)
+  partner          Partner?          @relation(fields: [partnerCode], references: [partnerCode])
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([mt5AccountNumber, brokerName])
   @@index([userId])
@@ -1340,88 +878,58 @@ model CopyTradingRegistration {
   @@map("copy_trading_registrations")
 }
 
-// ============================================================================
-// PARTNER INTEGRATION (PVSR API)
-// ============================================================================
-
 model Partner {
-  id             Int      @id @default(autoincrement())
-  partnerCode    String   @unique @map("partner_code")
-  partnerName    String   @map("partner_name")
-  apiKeyHash     String   @map("api_key_hash")
-  webhookUrl     String?  @map("webhook_url")
-  allowedIps     String?  @map("allowed_ips")
-  allowedDomains String?  @map("allowed_domains")
-  status         String   @default("ACTIVE")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-
-  registrations CopyTradingRegistration[]
+  id             Int                       @id @default(autoincrement())
+  partnerCode    String                    @unique @map("partner_code")
+  partnerName    String                    @map("partner_name")
+  apiKeyHash     String                    @map("api_key_hash")
+  webhookUrl     String?                   @map("webhook_url")
+  allowedIps     String?                   @map("allowed_ips")
+  allowedDomains String?                   @map("allowed_domains")
+  status         String                    @default("ACTIVE")
+  createdAt      DateTime                  @default(now()) @map("created_at")
+  updatedAt      DateTime                  @updatedAt @map("updated_at")
+  registrations  CopyTradingRegistration[]
 
   @@map("partners")
 }
 
-// ============================================================================
-// TRADING REPORTS
-// ============================================================================
-
-enum ReportType {
-  WEEKLY
-  MONTHLY
-}
-
 model TradingReport {
-  id     String @id @default(cuid())
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  type        ReportType // WEEKLY, MONTHLY
-  periodStart DateTime   @db.Timestamptz
-  periodEnd   DateTime   @db.Timestamptz
-  periodLabel String // "Week 14, 2026" or "April 2026"
-
-  // Core Stats (pre-computed)
-  totalTrades  Int   @default(0)
-  winCount     Int   @default(0)
-  lossCount    Int   @default(0)
-  winRate      Float @default(0)
-  netPnL       Float @default(0)
-  grossProfit  Float @default(0)
-  grossLoss    Float @default(0)
-  profitFactor Float @default(0)
-  avgWin       Float @default(0)
-  avgLoss      Float @default(0)
-  largestWin   Float @default(0)
-  largestLoss  Float @default(0)
-
-  // Comparison vs Previous Period
-  prevPnL     Float?
-  prevWinRate Float?
-  prevTrades  Int?
-
-  // Breakdowns (JSON for flexibility)
-  bySymbol   Json? @db.JsonB // [{symbol, trades, pnl, winRate}]
-  byStrategy Json? @db.JsonB // [{name, trades, pnl, winRate}]
-  bySession  Json? @db.JsonB // [{session, trades, pnl}]
-  byDay      Json? @db.JsonB // [{date, trades, pnl}]
-
-  // Psychology Stats
+  id             String     @id @default(cuid())
+  userId         String     @db.Uuid
+  type           ReportType
+  periodStart    DateTime   @db.Timestamptz(6)
+  periodEnd      DateTime   @db.Timestamptz(6)
+  periodLabel    String
+  totalTrades    Int        @default(0)
+  winCount       Int        @default(0)
+  lossCount      Int        @default(0)
+  winRate        Float      @default(0)
+  netPnL         Float      @default(0)
+  grossProfit    Float      @default(0)
+  grossLoss      Float      @default(0)
+  profitFactor   Float      @default(0)
+  avgWin         Float      @default(0)
+  avgLoss        Float      @default(0)
+  largestWin     Float      @default(0)
+  largestLoss    Float      @default(0)
+  prevPnL        Float?
+  prevWinRate    Float?
+  prevTrades     Int?
+  bySymbol       Json?
+  byStrategy     Json?
+  bySession      Json?
+  byDay          Json?
   avgConfidence  Float?
-  planCompliance Float? // % followed plan
-  topEmotions    Json?  @db.JsonB // [{emotion, count}]
-
-  // Mistake Recap
-  topMistakes Json? @db.JsonB // [{mistakeId, name, count}]
-
-  // Top/Bottom Trades
-  bestTrades  Json? @db.JsonB // [{symbol, pnl, date}]
-  worstTrades Json? @db.JsonB // [{symbol, pnl, date}]
-
-  // Email Status
-  emailSent   Boolean   @default(false)
-  emailSentAt DateTime? @db.Timestamptz
-
-  createdAt DateTime @default(now()) @db.Timestamptz
+  planCompliance Float?
+  topEmotions    Json?
+  topMistakes    Json?
+  bestTrades     Json?
+  worstTrades    Json?
+  emailSent      Boolean    @default(false)
+  emailSentAt    DateTime?  @db.Timestamptz(6)
+  createdAt      DateTime   @default(now()) @db.Timestamptz(6)
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, type, periodStart])
   @@index([userId, type])
@@ -1429,50 +937,27 @@ model TradingReport {
   @@map("trading_reports")
 }
 
-// ============================================================================
-// VIP REQUEST SYSTEM
-// ============================================================================
-
-enum VipRequestStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
 model VipRequest {
-  id String @id @default(uuid())
-
-  // Owner
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Linked Trading Account (account-scoped Pro)
+  id               String           @id @default(uuid())
+  userId           String           @db.Uuid
+  broker           String           @db.VarChar(50)
+  accountNumber    String           @db.VarChar(50)
+  balance          String           @db.VarChar(50)
+  fullName         String?          @db.VarChar(100)
+  email            String
+  country          String?          @db.VarChar(100)
+  telegramId       String           @db.VarChar(100)
+  screenshotUrl    String?
+  status           VipRequestStatus @default(PENDING)
+  adminNote        String?
+  reviewedBy       String?
+  reviewedAt       DateTime?        @db.Timestamptz(6)
+  rejectReason     String?
+  createdAt        DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime         @updatedAt @db.Timestamptz(6)
   tradingAccountId String?
-  tradingAccount   TradingAccount? @relation("VipRequestAccount", fields: [tradingAccountId], references: [id], onDelete: SetNull)
-
-  // Broker Info
-  broker        String @db.VarChar(50) // "EXNESS", "VANTAGE", "VTMARKETS"
-  accountNumber String @db.VarChar(50)
-  balance       String @db.VarChar(50) // String for flexible formatting
-
-  // User Info
-  fullName      String? @db.VarChar(100)
-  email         String
-  country       String? @db.VarChar(100) // Required for Exness
-  telegramId    String  @db.VarChar(100)
-  screenshotUrl String? // Supabase storage URL (required for Exness)
-
-  // Status
-  status VipRequestStatus @default(PENDING)
-
-  // Admin Actions
-  adminNote    String?   @db.Text
-  reviewedBy   String?
-  reviewedAt   DateTime? @db.Timestamptz
-  rejectReason String?   @db.Text
-
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  tradingAccount   TradingAccount?  @relation("VipRequestAccount", fields: [tradingAccountId], references: [id])
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([status])
@@ -1481,28 +966,21 @@ model VipRequest {
   @@map("vip_requests")
 }
 
-// ============================================================================
-// ANALYTICS
-// ============================================================================
-
 model PageView {
-  id        String  @id @default(cuid())
-  pathname  String
-  referrer  String?
-  country   String? @db.VarChar(2) // ISO 3166-1 alpha-2 ("US", "VN", "GB")
-  city      String?
-  region    String?
-  device    String? @db.VarChar(10) // "desktop" | "mobile" | "tablet"
-  browser   String? @db.VarChar(30)
-  os        String? @db.VarChar(30)
-  sessionId String  @db.VarChar(64)
-
-  // UTM Campaign Tracking
-  utmSource   String? @db.VarChar(100) // google, facebook, newsletter
-  utmMedium   String? @db.VarChar(100) // cpc, email, social
-  utmCampaign String? @db.VarChar(200) // summer_sale, launch_2026
-
-  createdAt DateTime @default(now()) @db.Timestamptz
+  id          String   @id @default(cuid())
+  pathname    String
+  referrer    String?
+  country     String?  @db.VarChar(2)
+  city        String?
+  region      String?
+  device      String?  @db.VarChar(10)
+  browser     String?  @db.VarChar(30)
+  os          String?  @db.VarChar(30)
+  sessionId   String   @db.VarChar(64)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  utmCampaign String?  @db.VarChar(200)
+  utmMedium   String?  @db.VarChar(100)
+  utmSource   String?  @db.VarChar(100)
 
   @@index([createdAt])
   @@index([pathname])
@@ -1514,15 +992,14 @@ model PageView {
 
 model AnalyticsEvent {
   id        String   @id @default(cuid())
-  name      String   @db.VarChar(100) // "click_open_account", "download_ea"
-  data      Json? // { brokerId: "exness", brokerName: "Exness" }
+  name      String   @db.VarChar(100)
+  data      Json?
   pathname  String?
   country   String?  @db.VarChar(2)
   sessionId String   @db.VarChar(64)
   userId    String?  @db.Uuid
-  createdAt DateTime @default(now()) @db.Timestamptz
-
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  user      User?    @relation(fields: [userId], references: [id])
 
   @@index([createdAt])
   @@index([name])
@@ -1530,19 +1007,15 @@ model AnalyticsEvent {
   @@map("analytics_events")
 }
 
-// ============================================================================
-// SECURITY LOGS
-// ============================================================================
-
 model SecurityLog {
   id        String   @id @default(cuid())
-  type      String   @db.VarChar(30) // RATE_LIMIT | BOT_BLOCKED | LOGIN_FAILED | TURNSTILE_FAILED | AUTH_FAILED | CRON_FAILED | IP_BLOCKED | IP_UNBLOCKED
-  ip        String   @db.VarChar(45) // IPv4 or IPv6
+  type      String   @db.VarChar(30)
+  ip        String   @db.VarChar(45)
   userAgent String?
   path      String?  @db.VarChar(500)
-  detail    String? // Extra info: email, reason, blocked UA pattern, etc.
+  detail    String?
   userId    String?  @db.Uuid
-  createdAt DateTime @default(now()) @db.Timestamptz
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
 
   @@index([type])
   @@index([ip])
@@ -1554,18 +1027,242 @@ model BlockedIP {
   id        String    @id @default(cuid())
   ip        String    @unique @db.VarChar(45)
   reason    String?
-  blockedBy String?   @db.Uuid // Admin user ID
-  expiresAt DateTime? @db.Timestamptz // null = permanent
-  createdAt DateTime  @default(now()) @db.Timestamptz
+  blockedBy String?   @db.Uuid
+  expiresAt DateTime? @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
 
   @@index([ip])
   @@index([expiresAt])
   @@map("blocked_ips")
 }
 
-// ============================================================================
-// IB-POWERED PRO ACCESS SYSTEM
-// ============================================================================
+model ProEntitlement {
+  id                  String          @id @default(uuid())
+  userId              String          @db.Uuid
+  status              ProStatus       @default(NONE)
+  source              ProSource?
+  vipRequestId        String?
+  broker              String?         @db.VarChar(50)
+  accountNumberMasked String?         @db.VarChar(50)
+  startsAt            DateTime?       @db.Timestamptz(6)
+  expiresAt           DateTime?       @db.Timestamptz(6)
+  lastReviewedAt      DateTime?       @db.Timestamptz(6)
+  reviewedBy          String?         @db.Uuid
+  adminNote           String?
+  createdAt           DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime        @updatedAt @db.Timestamptz(6)
+  tradingAccountId    String?         @unique
+  accountNumber       String?         @db.VarChar(50)
+  tradingAccount      TradingAccount? @relation(fields: [tradingAccountId], references: [id])
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tradingAccountId])
+  @@index([userId, status])
+  @@index([tradingAccountId, status])
+  @@index([status])
+  @@map("pro_entitlements")
+}
+
+model IbLead {
+  id               String          @id @default(uuid())
+  userId           String?         @db.Uuid
+  sessionId        String          @db.VarChar(64)
+  broker           String          @db.VarChar(50)
+  affiliateUrl     String?
+  source           IbLeadSource
+  utmSource        String?         @db.VarChar(100)
+  utmMedium        String?         @db.VarChar(100)
+  utmCampaign      String?         @db.VarChar(200)
+  clickedAt        DateTime        @default(now()) @db.Timestamptz(6)
+  convertedAt      DateTime?       @db.Timestamptz(6)
+  vipRequestId     String?
+  tradingAccountId String?
+  tradingAccount   TradingAccount? @relation("IbLeadAccount", fields: [tradingAccountId], references: [id])
+  user             User?           @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([broker])
+  @@index([clickedAt])
+  @@index([tradingAccountId])
+  @@map("ib_leads")
+}
+
+model IbActivitySnapshot {
+  id                  String         @id @default(uuid())
+  userId              String         @db.Uuid
+  tradingAccountId    String?
+  broker              String?        @db.VarChar(50)
+  accountNumberMasked String?        @db.VarChar(50)
+  periodStart         DateTime       @db.Timestamptz(6)
+  periodEnd           DateTime       @db.Timestamptz(6)
+  tradeCount          Int            @default(0)
+  closedLotVolume     Float          @default(0)
+  netPnl              Float          @default(0)
+  lastTradeAt         DateTime?      @db.Timestamptz(6)
+  lastHeartbeatAt     DateTime?      @db.Timestamptz(6)
+  estimatedIbRevenue  Float          @default(0)
+  activityStatus      ActivityStatus @default(SIGNED_UP)
+  createdAt           DateTime       @default(now()) @db.Timestamptz(6)
+  user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, periodStart, periodEnd])
+  @@index([userId])
+  @@index([activityStatus])
+  @@index([periodEnd])
+  @@map("ib_activity_snapshots")
+}
+
+model EdgeEvent {
+  id         String   @id @default(cuid())
+  userId     String   @db.Uuid
+  eventType  String   @db.VarChar(50)
+  sourceType String?  @db.VarChar(80)
+  sourceId   String?  @db.VarChar(120)
+  xpAwarded  Int      @default(0)
+  metadata   Json?
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventType, sourceType, sourceId], name: "edge_event_dedup")
+  @@index([userId, eventType])
+  @@index([userId, createdAt])
+  @@map("edge_events")
+}
+
+model UserMissionProgress {
+  id          String    @id @default(cuid())
+  userId      String    @db.Uuid
+  missionId   String    @db.VarChar(50)
+  periodKey   String    @default("lifetime") @db.VarChar(20)
+  progress    Int       @default(0)
+  target      Int       @default(1)
+  claimed     Boolean   @default(false)
+  claimedAt   DateTime? @db.Timestamptz(6)
+  completedAt DateTime? @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, missionId, periodKey])
+  @@index([userId, claimed])
+  @@index([userId, missionId, periodKey])
+  @@map("user_mission_progress")
+}
+
+enum UserRole {
+  USER
+  EDITOR
+  ADMIN
+}
+
+enum ArticleStatus {
+  DRAFT
+  PENDING
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ArticleSchemaType {
+  ARTICLE
+  HOWTO
+  FAQ
+  COURSE
+  TOOL
+  REVIEW
+}
+
+enum TradeType {
+  BUY
+  SELL
+}
+
+enum TradeStatus {
+  OPEN
+  CLOSED
+}
+
+enum TradeResult {
+  WIN
+  LOSS
+  BREAK_EVEN
+}
+
+enum ImpactLevel {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum PlanStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum AccountStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+  SUSPENDED
+}
+
+enum EAType {
+  AUTO_TRADE
+  MANUAL_ASSIST
+  INDICATOR
+}
+
+enum PlatformType {
+  MT4
+  MT5
+  BOTH
+}
+
+enum NotificationType {
+  LICENSE_APPROVED
+  LICENSE_REJECTED
+  LICENSE_EXPIRED
+  NEW_EA_VERSION
+  ANNOUNCEMENT
+  MAINTENANCE
+  PROMOTION
+  FEATURE_UPDATE
+  COPY_TRADING_REGISTERED
+  COPY_TRADING_APPROVED
+  COPY_TRADING_REJECTED
+  WEEKLY_REPORT
+  MONTHLY_REPORT
+  NO_TRADES_NUDGE
+  VIP_APPROVED
+  VIP_REJECTED
+  FEEDBACK_RECEIVED
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum CopyTradingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  DISCONNECTED
+}
+
+enum ReportType {
+  WEEKLY
+  MONTHLY
+}
+
+enum VipRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
 
 enum ProStatus {
   NONE
@@ -1600,85 +1297,4 @@ enum ActivityStatus {
   HIGH_VALUE_ACTIVE
   AT_RISK
   DORMANT
-}
-
-model ProEntitlement {
-  id     String @id @default(uuid())
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Account-scoped Pro (one entitlement per trading account)
-  tradingAccountId String?         @unique
-  tradingAccount   TradingAccount? @relation(fields: [tradingAccountId], references: [id], onDelete: SetNull)
-
-  status              ProStatus  @default(NONE)
-  source              ProSource?
-  vipRequestId        String?
-  broker              String?    @db.VarChar(50)
-  accountNumber       String?    @db.VarChar(50)
-  accountNumberMasked String?    @db.VarChar(50)
-  startsAt            DateTime?  @db.Timestamptz
-  expiresAt           DateTime?  @db.Timestamptz
-  lastReviewedAt      DateTime?  @db.Timestamptz
-  reviewedBy          String?    @db.Uuid
-  adminNote           String?    @db.Text
-  createdAt           DateTime   @default(now()) @db.Timestamptz
-  updatedAt           DateTime   @updatedAt @db.Timestamptz
-
-  @@unique([userId, tradingAccountId])
-  @@index([userId, status])
-  @@index([tradingAccountId, status])
-  @@index([status])
-  @@map("pro_entitlements")
-}
-
-model IbLead {
-  id           String       @id @default(uuid())
-  userId       String?      @db.Uuid
-  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
-  sessionId    String       @db.VarChar(64)
-  broker       String       @db.VarChar(50)
-  affiliateUrl String?
-  source       IbLeadSource
-  utmSource    String?      @db.VarChar(100)
-  utmMedium    String?      @db.VarChar(100)
-  utmCampaign  String?      @db.VarChar(200)
-  clickedAt    DateTime     @default(now()) @db.Timestamptz
-  convertedAt  DateTime?    @db.Timestamptz
-  vipRequestId String?
-
-  // Account-scoped attribution
-  tradingAccountId String?
-  tradingAccount   TradingAccount? @relation("IbLeadAccount", fields: [tradingAccountId], references: [id], onDelete: SetNull)
-
-  @@index([userId])
-  @@index([broker])
-  @@index([clickedAt])
-  @@index([tradingAccountId])
-  @@map("ib_leads")
-}
-
-model IbActivitySnapshot {
-  id                  String         @id @default(uuid())
-  userId              String         @db.Uuid
-  user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tradingAccountId    String?
-  broker              String?        @db.VarChar(50)
-  accountNumberMasked String?        @db.VarChar(50)
-  periodStart         DateTime       @db.Timestamptz
-  periodEnd           DateTime       @db.Timestamptz
-  tradeCount          Int            @default(0)
-  closedLotVolume     Float          @default(0)
-  netPnl              Float          @default(0)
-  lastTradeAt         DateTime?      @db.Timestamptz
-  lastHeartbeatAt     DateTime?      @db.Timestamptz
-  estimatedIbRevenue  Float          @default(0)
-  activityStatus      ActivityStatus @default(SIGNED_UP)
-  createdAt           DateTime       @default(now()) @db.Timestamptz
-
-  @@unique([userId, periodStart, periodEnd])
-  @@index([userId])
-  @@index([activityStatus])
-  @@index([periodEnd])
-  @@map("ib_activity_snapshots")
 }

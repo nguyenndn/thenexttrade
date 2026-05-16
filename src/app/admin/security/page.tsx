@@ -7,6 +7,7 @@ import {
     DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 
 // Types
 interface SecuritySummary {
@@ -121,6 +122,7 @@ export default function SecurityDashboard() {
     const currentFilterLabel = EVENT_TYPES.find(t => t.value === typeFilter)?.label || 'All Types';
 
     return (
+        <Tabs value={tab} onValueChange={(v) => setTab(v as 'events' | 'blocked')} tabsId="admin-security">
         <div className="space-y-4 pb-10">
             {/* Admin Page Header — matching AdminPageHeader */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -150,17 +152,23 @@ export default function SecurityDashboard() {
             {summary && (
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     {[
-                        { label: 'Total Events', value: summary.totalEvents, icon: Globe, color: 'text-indigo-500' },
-                        { label: 'Rate Limits', value: summary.rateLimitHits, icon: Zap, color: 'text-amber-500' },
-                        { label: 'Bots Blocked', value: summary.botBlocked, icon: Bot, color: 'text-red-500' },
-                        { label: 'Login Failed', value: summary.loginFailed, icon: KeyRound, color: 'text-orange-500' },
+                        { label: 'Total Events', value: summary.totalEvents, icon: Globe, color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-100 dark:bg-indigo-500/15' },
+                        { label: 'Rate Limits', value: summary.rateLimitHits, icon: Zap, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-500/15' },
+                        { label: 'Bots Blocked', value: summary.botBlocked, icon: Bot, color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-500/15' },
+                        { label: 'Login Failed', value: summary.loginFailed, icon: KeyRound, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-100 dark:bg-orange-500/15' },
                     ].map(card => (
-                        <div key={card.label} className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
-                            <div className="flex items-center justify-between mb-3">
-                                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">{card.label}</p>
-                                <card.icon size={18} className={card.color} />
+                        <div key={card.label} className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                            <div className="flex items-center gap-3">
+                                <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${card.bg} ${card.color}`}>
+                                    <card.icon size={16} aria-hidden="true" />
+                                </div>
+                                <div>
+                                    <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums leading-none">
+                                        {card.value.toLocaleString()}
+                                    </p>
+                                    <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-wider">{card.label}</p>
+                                </div>
                             </div>
-                            <p className="text-2xl font-bold text-gray-700 dark:text-white">{card.value.toLocaleString()}</p>
                         </div>
                     ))}
                 </div>
@@ -184,17 +192,24 @@ export default function SecurityDashboard() {
                 </div>
             )}
 
-            {/* Tabs — underline style */}
-            <div className="flex gap-1 border-b border-gray-200 dark:border-white/10">
-                {[
-                    { id: 'events' as const, label: 'All Events' },
-                    { id: 'blocked' as const, label: `Blocked IPs (${blockedIPs.length})` },
-                ].map(t => (
-                    <button key={t.id} onClick={() => setTab(t.id)}
-                        className={`px-5 py-2.5 text-sm font-bold border-b-2 transition-all ${
-                            tab === t.id ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 hover:border-gray-300'
-                        }`}>{t.label}</button>
-                ))}
+            {/* Tab Navigation */}
+            <div className="overflow-x-auto scrollbar-hide flex">
+                <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
+                    {[
+                        { id: 'events' as const, label: 'All Events' },
+                        { id: 'blocked' as const, label: `Blocked IPs (${blockedIPs.length})` },
+                    ].map(t => (
+                        <TabsTrigger
+                            key={t.id}
+                            value={t.id}
+                            className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeTextClassName="!text-white"
+                        >
+                            {t.label}
+                        </TabsTrigger>
+                    ))}
+                </TabsList>
             </div>
 
             {/* Events Tab */}
@@ -383,5 +398,6 @@ export default function SecurityDashboard() {
                 </div>
             )}
         </div>
+        </Tabs>
     );
 }

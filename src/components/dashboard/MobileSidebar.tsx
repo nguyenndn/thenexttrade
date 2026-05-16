@@ -25,6 +25,7 @@ const userSectionNames: Record<string, string> = {
 };
 
 const adminSectionNames: Record<string, string> = {
+    "Release Health": "MONITORING",
     "Articles": "CONTENT",
     "Academy": "EDUCATION",
     "EA Management": "SYSTEM",

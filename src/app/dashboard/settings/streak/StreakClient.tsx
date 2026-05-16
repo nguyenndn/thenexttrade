@@ -54,8 +54,8 @@ export default function StreakClient() {
                 // Sync Header
                 window.dispatchEvent(new Event("streak-updated"));
 
-                // Parse XP from message (e.g. "+30 XP Bonus!")
-                const xpMatch = data.message?.match(/(\d+)\s*XP/);
+                // Parse XP from message (e.g. "+30 Edge Bonus!")
+                const xpMatch = data.message?.match(/(\d+)\s*Edge/);
                 const xpAmount = xpMatch ? parseInt(xpMatch[1]) : 10;
 
                 // Celebration with confetti (shared effect)
@@ -93,7 +93,7 @@ export default function StreakClient() {
     // Milestones from JSON config
     const MILESTONES = gamificationConfig.streakMilestones.map(m => ({
         days: m.days,
-        reward: [m.xp ? `${m.xp} XP` : null, m.badge ? `'${m.badge}' Badge` : null]
+        reward: [m.xp ? `${m.xp} Edge` : null, m.badge ? `'${m.badge}' Badge` : null]
             .filter(Boolean).join(" + ") || "Special Reward",
     }));
 

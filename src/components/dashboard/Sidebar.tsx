@@ -188,6 +188,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     const sectionNames: Record<string, string> = isAdmin
         ? {
             // Admin groups
+            "Release Health": "MONITORING",
             "Articles": "CONTENT",
             "Academy": "EDUCATION",
             "IB Overview": "IB & VIP",

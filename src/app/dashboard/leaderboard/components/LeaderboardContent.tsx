@@ -8,7 +8,7 @@ import { UserProfileCard } from "./UserProfileCard";
 import type { LeaderboardEntry, LeaderboardType } from "../actions";
 
 const TAB_TITLES: Record<string, string> = {
-  xp: "XP Rankings",
+  xp: "Edge Ranking",
   streak: "Streak Leaderboard",
   academy: "Academy Leaderboard",
   trading: "Trading Leaderboard",

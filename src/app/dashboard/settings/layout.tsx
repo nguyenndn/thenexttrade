@@ -49,9 +49,9 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                 description="Manage your account, profile, and security settings."
             />
 
-            {/* ── Horizontal Tab Nav ── */}
-            <div className="border-b border-gray-200 dark:border-white/10">
-                <nav className="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
+            {/* ── Horizontal Tab Nav (Pill Style) ── */}
+            <div className="overflow-x-auto scrollbar-hide flex">
+                <div className="flex items-center gap-1 bg-gray-50 dark:bg-white/5 p-1.5 rounded-xl border border-gray-200 dark:border-white/10 w-fit shrink-0">
                     {navItems.map((item) => {
                         const isActive = item.exact
                             ? pathname === item.href
@@ -62,18 +62,18 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors",
+                                    "relative px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-2 border",
                                     isActive
-                                        ? "border-primary text-primary"
-                                        : "border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20"
+                                        ? "bg-gradient-to-r from-primary to-teal-500 text-white shadow-md border-transparent"
+                                        : "text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 border-transparent hover:border-gray-200 dark:hover:border-white/10"
                                 )}
                             >
-                                <Icon size={16} />
-                                {item.title}
+                                <Icon size={15} />
+                                <span>{item.title}</span>
                             </Link>
                         );
                     })}
-                </nav>
+                </div>
             </div>
 
             {/* ── Content ── */}

@@ -177,7 +177,7 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
           <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
             You now have{" "}
             <span className="font-bold text-gray-700 dark:text-white">
-              {myRank.value.toLocaleString()} XP
+              {myRank.value.toLocaleString()} Edge
             </span>
           </p>
 

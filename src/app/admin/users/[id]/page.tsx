@@ -224,7 +224,7 @@ export default async function UserDetailPage({
                                 <div className="flex items-center gap-2.5 text-sm">
                                     <Award size={15} className="text-gray-500 shrink-0" />
                                     <span className="font-medium text-gray-700 dark:text-white text-xs">
-                                        Lv.{user.level} · {user.xp} XP
+                                        Lv.{user.level} · {user.xp} Edge
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2.5 text-sm">

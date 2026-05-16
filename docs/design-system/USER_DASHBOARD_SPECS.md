@@ -120,3 +120,31 @@ Classes: `bg-white dark:bg-[#1E2028] border-gray-100 dark:border-white/10 shadow
 - Profit day: `bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary`
 - Loss day: `bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400`
 - No trades: `bg-gray-50 dark:bg-white/5 text-gray-500`
+
+## 7. Tabs Component
+
+Standard styling for page-level or section-level Tabs using `@/components/ui/Tabs`.
+
+### Structure & Layout
+```tsx
+<div className="overflow-x-auto scrollbar-hide flex">
+  <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
+    <TabsTrigger 
+      value="tab1"
+      className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+      activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+      activeTextClassName="!text-white"
+    >
+      Tab 1
+    </TabsTrigger>
+  </TabsList>
+</div>
+```
+
+### Specifications
+- **Container**: `overflow-x-auto scrollbar-hide flex` (Cho phép scroll ngang mượt mà trên mobile/tablet).
+- **TabsList**: `bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0` (Nền xám/tối nhẹ, viền mảnh, bo tròn).
+- **TabsTrigger (Base)**: `px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10` (Spacing rộng rãi, có hover state).
+- **TabsTrigger (Active State)**: Bắt buộc truyền 2 props sau để hiển thị gradient nổi bật:
+  - `activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"`
+  - `activeTextClassName="!text-white"`

@@ -78,7 +78,7 @@ function getTabStats(entry: LeaderboardEntry, type: LeaderboardType) {
       ];
     case "streak":
       return [
-        { icon: Star, text: `${entry.value} XP` },
+        { icon: Star, text: `${entry.value} Edge` },
         { icon: Flame, text: `${entry.value} days streak` },
       ];
     case "academy":
@@ -103,7 +103,7 @@ function getTabStats(entry: LeaderboardEntry, type: LeaderboardType) {
 function getMainValue(entry: LeaderboardEntry, type: LeaderboardType) {
   switch (type) {
     case "xp":
-      return `${entry.value.toLocaleString()} XP`;
+      return `${entry.value.toLocaleString()} Edge`;
     case "streak":
       return `${entry.value} days`;
     case "academy":

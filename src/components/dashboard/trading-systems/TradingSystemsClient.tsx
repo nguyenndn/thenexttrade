@@ -83,15 +83,15 @@ export function TradingSystemsClient({
                 {/* Unified Tabs */}
                 <Tabs defaultValue={defaultTab} className="w-full">
                     <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
-                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-gray-200 dark:border-white/10 w-auto inline-flex h-auto shrink-0">
+                    <TabsList className="bg-gray-50 dark:bg-white/5 p-1.5 gap-1 rounded-xl border border-gray-200 dark:border-white/10 w-auto inline-flex h-auto shrink-0">
                         <TabsTrigger 
                             value="MT5_EA" 
-                            className="px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                            className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                             activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
                             activeTextClassName="!text-white"
                         >
-                            <CustomBotIcon size={16} />
-                            Expert Advisor
+                            <CustomBotIcon size={15} />
+                            <span>Expert Advisor</span>
                             {eaCount > 0 && (
                                 <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
                                     {eaCount}
@@ -100,12 +100,12 @@ export function TradingSystemsClient({
                         </TabsTrigger>
                         <TabsTrigger 
                             value="MT5_INDICATOR" 
-                            className="px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                            className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                             activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
                             activeTextClassName="!text-white"
                         >
-                            <BarChart2 size={16} />
-                            Indicators
+                            <BarChart2 size={15} />
+                            <span>Indicators</span>
                             {indicatorCount > 0 && (
                                 <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
                                     {indicatorCount}
@@ -114,12 +114,12 @@ export function TradingSystemsClient({
                         </TabsTrigger>
                         <TabsTrigger 
                             value="VIP" 
-                            className="px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                            className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                             activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
                             activeTextClassName="!text-white"
                         >
-                            <Crown size={16} />
-                            VIP
+                            <Crown size={15} />
+                            <span>VIP</span>
                             {vipBadge && (
                                 <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
                                     {vipBadge}

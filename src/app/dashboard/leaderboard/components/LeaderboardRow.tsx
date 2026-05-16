@@ -135,7 +135,7 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
           <td className="py-3.5 px-3 hidden sm:table-cell">
             <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 tabular-nums">
               <Star size={12} className="text-yellow-500" />
-              {entry.value.toLocaleString()} XP
+              {entry.value.toLocaleString()} Edge
             </div>
           </td>
         </>
@@ -158,7 +158,7 @@ export function LeaderboardRow({ entry, isCurrentUser, onClick, type }: Leaderbo
           <td className="py-3.5 px-3 hidden md:table-cell">
             <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 tabular-nums">
               <Star size={12} className="text-yellow-500" />
-              {entry.value.toLocaleString()} XP
+              {entry.value.toLocaleString()} Edge
             </div>
           </td>
         </>

@@ -17,20 +17,20 @@ function getHeaders(type: LeaderboardType) {
     case "xp":
       return [
         { label: "Level", className: "hidden md:table-cell" },
-        { label: "XP Earned", className: "hidden sm:table-cell" },
+        { label: "Edge Earned", className: "hidden sm:table-cell" },
         { label: "Study Time", className: "hidden lg:table-cell" },
         { label: "Lessons", className: "hidden lg:table-cell" },
       ];
     case "streak":
       return [
         { label: "Streak", className: "" },
-        { label: "XP", className: "hidden sm:table-cell" },
+        { label: "Edge", className: "hidden sm:table-cell" },
       ];
     case "academy":
       return [
         { label: "Lessons", className: "" },
         { label: "Study Time", className: "hidden sm:table-cell" },
-        { label: "XP", className: "hidden md:table-cell" },
+        { label: "Edge", className: "hidden md:table-cell" },
       ];
     case "trading":
       return [

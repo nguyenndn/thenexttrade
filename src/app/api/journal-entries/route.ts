@@ -60,6 +60,15 @@ export async function POST(request: Request) {
             await addXP(user.id, XP_AWARDS.JOURNAL_ENTRY);
             xpEarned = XP_AWARDS.JOURNAL_ENTRY;
 
+            const { recordEdgeEvent } = await import("@/lib/edge-awards");
+            await recordEdgeEvent({
+                userId: user.id,
+                eventType: "JOURNAL_ENTRY",
+                sourceType: "JournalEntry",
+                sourceId: entry.id,
+                xpAwarded: xpEarned,
+            });
+
             const tradeCount = await prisma.journalEntry.count({ where: { userId: user.id } });
             if (tradeCount === 1) {
                 await checkAndGrantBadge(user.id, "TRADER");

@@ -3,9 +3,10 @@
 import { useState } from "react";
 import {
     TrendingUp, TrendingDown, BarChart3, Target, Brain,
-    AlertTriangle, Trophy, ChevronLeft, ChevronRight, Calendar, ArrowUpRight, ArrowDownRight, Minus
+    AlertTriangle, Trophy, ChevronLeft, ChevronRight, Calendar, ArrowUpRight, ArrowDownRight, Minus, Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { buildWeeklyInsights } from "@/lib/services/report-insights.service";
 
 interface ReportData {
     id: string;
@@ -204,6 +205,67 @@ function TradesList({ trades, title, color }: { trades: any[] | null; title: str
     );
 }
 
+function WeeklyFocus({ report }: { report: ReportData }) {
+    const input = {
+        totalTrades: report.totalTrades,
+        winRate: report.winRate,
+        netPnL: report.netPnL,
+        profitFactor: report.profitFactor,
+        avgWin: report.avgWin,
+        avgLoss: report.avgLoss,
+        planCompliance: report.planCompliance,
+        avgConfidence: report.avgConfidence,
+        bySymbol: report.bySymbol || [],
+        bySession: report.bySession || [],
+        topMistakes: report.topMistakes || [],
+        prevWinRate: report.prevWinRate,
+        prevPnL: report.prevPnL,
+        prevTrades: report.prevTrades,
+    };
+
+    const insights = buildWeeklyInsights(input);
+    if (insights.length === 0) return null;
+
+    const InsightIconMap = {
+        "trophy": Trophy,
+        "alert-triangle": AlertTriangle,
+        "target": Target,
+        "trending-up": TrendingUp,
+        "trending-down": TrendingDown,
+        "brain": Brain
+    };
+
+    return (
+        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
+            <div className="flex items-center gap-2 mb-4">
+                <div className="p-1.5 rounded-lg bg-gold/10 text-gold">
+                    <Sparkles size={16} />
+                </div>
+                <h3 className="text-base font-bold text-gray-800 dark:text-white">Weekly Focus</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {insights.map((insight, i) => {
+                    const Icon = InsightIconMap[insight.icon] || Target;
+                    const colorClasses = 
+                        insight.type === "STRENGTH" ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20" :
+                        insight.type === "WARNING" ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100 dark:border-red-500/20" :
+                        "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-500/20";
+                    
+                    return (
+                        <div key={i} className={`p-4 rounded-xl border ${colorClasses}`}>
+                            <div className="flex items-center gap-2 mb-2 font-bold">
+                                <Icon size={16} />
+                                <h4>{insight.title}</h4>
+                            </div>
+                            <p className="text-sm opacity-90 leading-relaxed">{insight.body}</p>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
 export function ReportView({ reports, total, type }: ReportViewProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -213,11 +275,13 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                 <div className="p-4 bg-gray-100 dark:bg-white/5 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                     <Calendar size={28} className="text-gray-400" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">No Reports Yet</h3>
+                <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">
+                    {type === "weekly" ? "No weekly reviews yet" : "No monthly reviews yet"}
+                </h3>
                 <p className="text-sm text-gray-500 max-w-sm mx-auto">
                     {type === "weekly"
-                        ? "Your first weekly report will be generated on Sunday. Keep trading and logging your entries!"
-                        : "Your first monthly report will be generated on the 1st of next month. Stay consistent!"}
+                        ? "Log trades during the week, then generate a review to find one strength, one leak, and one next focus."
+                        : "Generate a monthly review after you have trading data for the month."}
                 </p>
             </div>
         );
@@ -262,6 +326,9 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     <ChevronRight size={18} />
                 </Button>
             </div>
+
+            {/* Weekly Focus Insights */}
+            <WeeklyFocus report={report} />
 
             {/* Core Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

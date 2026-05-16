@@ -6,6 +6,7 @@ import { generateApiKey } from "@/lib/utils/api-key";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { getAccountsProEligibility } from "@/lib/pro-eligibility";
 
 const accountSchema = z.object({
     name: z.string().min(1).max(50),
@@ -69,7 +70,10 @@ export async function getTradingAccounts(page = 1, limit = 12) {
         prisma.tradingAccount.count({ where: { userId: user.id } })
     ]);
 
-    // Enrich with connection + Pro/EA/VIP status
+    // Fetch eligibility for all accounts
+    const eligibilityMap = await getAccountsProEligibility(user.id);
+
+    // Enrich with connection + Pro/EA/VIP status + eligibility
     const accountsWithStatus = accounts.map((acc) => {
         const proEntitlement = acc.proEntitlement;
         const proStatus = proEntitlement?.status || "NONE";
@@ -78,6 +82,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
         const vipStatus = acc.vipRequests?.[0]?.status || null;
         const isPro = proStatus === "ACTIVE" || proStatus === "GRACE";
         const eaAccess: "INCLUDED" | "NOT_INCLUDED" = isPro ? "INCLUDED" : "NOT_INCLUDED";
+        const eligibility = eligibilityMap[acc.id] || null;
 
         return {
             ...acc,
@@ -94,6 +99,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
             proExpiresAt,
             vipStatus,
             eaAccess,
+            eligibility,
             // Remove raw relations from serialized output
             proEntitlement: undefined,
             vipRequests: undefined,

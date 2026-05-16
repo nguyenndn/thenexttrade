@@ -6,6 +6,7 @@ import { AdminSidebar } from "./AdminSidebar"; // Assuming this is just the wrap
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { MobileSidebar } from "./MobileSidebar";
+import { MobileBottomTabBar } from "./MobileBottomTabBar";
 import { adminMenuItems } from "@/config/navigation";
 
 import { AuthUser } from "@/lib/auth-types";
@@ -36,7 +37,7 @@ export function DashboardShell({ children, user, bell }: { children: React.React
                 />
 
                 {/* Main Content Area */}
-                <main className="flex-1 overflow-y-auto overflow-x-hidden pt-0 p-4 w-full custom-scrollbar">
+                <main className="flex-1 overflow-y-auto overflow-x-hidden pt-0 p-4 pb-20 lg:pb-4 w-full custom-scrollbar">
                     <div className="w-full max-w-full">
                         {children}
                     </div>
@@ -49,6 +50,9 @@ export function DashboardShell({ children, user, bell }: { children: React.React
                 onClose={() => setIsMobileMenuOpen(false)}
                 items={adminMenuItems}
             />
+
+            {/* Mobile Bottom Tab Bar */}
+            <MobileBottomTabBar />
         </div>
     );
 }

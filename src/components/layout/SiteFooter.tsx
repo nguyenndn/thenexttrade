@@ -126,6 +126,7 @@ export function SiteFooter() {
                                 <ul className="space-y-3 px-2 pb-4">
                                     <li><Link href="/brokers" className="text-sm text-gray-600 hover:text-primary transition-colors">Trusted Brokers</Link></li>
                                     <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
+                                    <li><Link href="/edge" className="text-sm text-gray-600 hover:text-primary transition-colors">About Edge Gamification</Link></li>
                                     <li><Link href="/about" className="text-sm text-gray-600 hover:text-primary transition-colors">About Us</Link></li>
                                     <li><Link href="/contact" className="text-sm text-gray-600 hover:text-primary transition-colors">Contact Us</Link></li>
                                 </ul>
@@ -136,6 +137,7 @@ export function SiteFooter() {
                                 <ul className="space-y-3">
                                     <li><Link href="/brokers" className="text-sm text-gray-600 hover:text-primary transition-colors">Trusted Brokers</Link></li>
                                     <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
+                                    <li><Link href="/edge" className="text-sm text-gray-600 hover:text-primary transition-colors">About Edge Gamification</Link></li>
                                     <li><Link href="/about" className="text-sm text-gray-600 hover:text-primary transition-colors">About Us</Link></li>
                                     <li><Link href="/contact" className="text-sm text-gray-600 hover:text-primary transition-colors">Contact Us</Link></li>
                                 </ul>

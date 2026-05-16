@@ -7,7 +7,7 @@ import { updateProfile, updateSystemConfig } from "./actions";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
 interface SettingsPageClientProps {
     user: {
@@ -48,29 +48,26 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
                 description="Manage account and system preferences."
             />
 
+            <Tabs value={activeTab} onValueChange={setActiveTab} tabsId="admin-settings">
             {/* ── Horizontal Tab Nav ── */}
-            <div className="mt-6 border-b border-gray-200 dark:border-white/10">
-                <nav className="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
+            <div className="mt-6 overflow-x-auto scrollbar-hide flex">
+                <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
                     {tabs.map((tab) => {
-                        const isActive = activeTab === tab.key;
                         const Icon = tab.icon;
                         return (
-                            <button
+                            <TabsTrigger
                                 key={tab.key}
-                                onClick={() => setActiveTab(tab.key)}
-                                className={cn(
-                                    "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors",
-                                    isActive
-                                        ? "border-primary text-primary"
-                                        : "border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20"
-                                )}
+                                value={tab.key}
+                                className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                activeTextClassName="!text-white"
                             >
-                                <Icon size={16} />
-                                {tab.label}
-                            </button>
+                                <Icon size={15} />
+                                <span>{tab.label}</span>
+                            </TabsTrigger>
                         );
                     })}
-                </nav>
+                </TabsList>
             </div>
 
             {/* ── Content Area ── */}
@@ -87,6 +84,7 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
                     </div>
                 )}
             </div>
+            </Tabs>
         </div>
     );
 }
@@ -313,7 +311,7 @@ function SystemSettings({ initialConfig }: { initialConfig: SettingsPageClientPr
                 {/* ── System Announcement (full width) ── */}
                 <SectionCard icon={Megaphone} title="System Announcement" className="lg:col-span-2">
                     <div>
-                        <p className="text-xs text-gray-600 mb-3">Display a banner across the entire site. Leave empty to hide.</p>
+                        <p className="text-xs text-gray-600 mb-3">Display a modal announcement to all users. Leave empty to hide.</p>
                         <textarea
                             value={config.systemAnnouncement}
                             onChange={(e) => setConfig((prev) => ({ ...prev, systemAnnouncement: e.target.value }))}

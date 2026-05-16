@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { addXP, checkAndGrantBadge, XP_AWARDS } from "@/lib/gamification";
 import { getAuthUser } from "@/lib/auth-cache";
+import { recordEdgeEventOnce } from "@/lib/edge-awards";
 
 export async function POST(
     req: Request,
@@ -17,6 +18,12 @@ export async function POST(
         }
 
         const userId = user.id;
+
+        const existing = await prisma.userProgress.findUnique({
+            where: { userId_lessonId: { userId, lessonId: id } },
+            select: { isCompleted: true },
+        });
+        const wasAlreadyCompleted = existing?.isCompleted === true;
 
         const progress = await prisma.userProgress.upsert({
             where: {
@@ -37,9 +44,20 @@ export async function POST(
             }
         });
 
-        // Add XP for completing a lesson
-        const xpAmount = XP_AWARDS.LESSON_COMPLETE;
-        const xpResult = await addXP(userId, xpAmount);
+        let xpAmount = 0;
+        let xpResult = null;
+
+        if (!wasAlreadyCompleted) {
+            xpAmount = XP_AWARDS.LESSON_COMPLETE;
+            xpResult = await addXP(userId, xpAmount);
+            await recordEdgeEventOnce({
+                userId,
+                eventType: "LESSON_COMPLETE",
+                sourceType: "Lesson",
+                sourceId: id,
+                xpAwarded: xpAmount,
+            });
+        }
 
         // Check for 'STUDIOUS' Badge (Completed 5 lessons)
         const completedCount = await prisma.userProgress.count({

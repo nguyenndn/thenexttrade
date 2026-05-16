@@ -49,7 +49,7 @@ export async function LeaderboardWidget() {
         <div className="text-center py-4">
           <Trophy size={24} className="mx-auto text-gray-300 dark:text-gray-600 mb-2" />
           <p className="text-xs text-gray-600 dark:text-gray-300">
-            Start earning XP to appear on the leaderboard!
+            Start earning Edge to appear on the leaderboard!
           </p>
           <Link
             href="/dashboard/leaderboard"
@@ -66,7 +66,7 @@ export async function LeaderboardWidget() {
               const tier = getTier(u.xp);
               const isMe = user?.id === u.id;
               const score = u.xp > 0 ? u.xp : u.streak;
-              const scoreLabel = u.xp > 0 ? "XP" : "d";
+              const scoreLabel = u.xp > 0 ? "Edge" : "d";
 
               return (
                 <div
@@ -118,7 +118,7 @@ export async function LeaderboardWidget() {
 
                   {/* Score */}
                   <span className="text-[10px] font-bold text-gray-500 tabular-nums">
-                    {score.toLocaleString()}{scoreLabel !== "XP" ? scoreLabel : ""}
+                    {score.toLocaleString()}{scoreLabel !== "Edge" ? scoreLabel : ""}
                   </span>
                 </div>
               );

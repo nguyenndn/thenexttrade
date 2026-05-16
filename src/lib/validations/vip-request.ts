@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const SUPPORTED_BROKERS = ["EXNESS", "VANTAGE", "VTMARKETS"] as const;
+export const SUPPORTED_BROKERS = ["EXNESS", "VANTAGE", "VTMARKETS", "ULTIMAMARKETS"] as const;
 export type SupportedBroker = (typeof SUPPORTED_BROKERS)[number];
 
 export const BROKER_INFO: Record<
@@ -92,6 +92,30 @@ export const BROKER_INFO: Record<
         to: "info@vtmarkets.com",
         subject: "Account Reassign - Client Email",
         body: "Hi, Kindly assist to reassign my account under IB Number (830422) as I want to trade with him. Thanks.",
+      },
+    },
+  },
+  ULTIMAMARKETS: {
+    name: "Ultima Markets",
+    logo: "/images/brokers/ultima.png",
+    affiliateUrl:
+      "https://www.ultimamarkets.trade/forex-trading/forex-trading-account/?affid=NzIzNDkwMw==",
+    ibCode: "NzIzNDkwMw==",
+    color: "#7C3AED",
+    minDeposit: 200,
+    accountType: "Standard",
+    leverage: "1:500",
+    requiresCountry: true,
+    requiresFullName: true,
+    ibTransferGuide: {
+      steps: [
+        "Send an email from your registered email with Ultima Markets",
+        "Wait for the confirmation email from Ultima Markets",
+      ],
+      emails: {
+        to: "info@ultimamarkets.com",
+        subject: "Account Reassign - Client Email",
+        body: "Hi, Kindly assist to reassign my account under IB Number (NzIzNDkwMw==) as I want to trade with him. Thanks.",
       },
     },
   },

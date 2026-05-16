@@ -22,27 +22,31 @@ export function StatsWidget({ title, value, icon: Icon, trend, color = "blue" }:
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-                <div className={cn("p-3 rounded-xl", colorStyles[color])}>
-                    <Icon className="w-6 h-6" />
+        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+            <div className="flex items-center gap-3">
+                <div className={cn("w-9 h-9 shrink-0 rounded-xl flex items-center justify-center", colorStyles[color])}>
+                    <Icon size={16} aria-hidden="true" />
                 </div>
-                {trend && (
-                    <div className={cn(
-                        "flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full",
-                        trend.isPositive 
-                            ? "text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10" 
-                            : "text-red-600 bg-red-50 dark:bg-red-500/10"
-                    )}>
-                        {trend.isPositive ? "+" : ""}{trend.value}%
-                        <span className="opacity-70 hidden sm:inline">{trend.label}</span>
+                <div>
+                    <div className="flex items-center gap-2">
+                        <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums leading-none">
+                            {value}
+                        </p>
+                        {trend && (
+                            <span 
+                                className={cn(
+                                    "text-[10px] font-bold px-1.5 py-0.5 rounded-md",
+                                    trend.isPositive 
+                                        ? "text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400" 
+                                        : "text-red-600 bg-red-50 dark:bg-red-500/10 dark:text-red-400"
+                                )}
+                            >
+                                {trend.isPositive ? "+" : ""}{trend.value}%
+                            </span>
+                        )}
                     </div>
-                )}
-            </div>
-            
-            <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">{title}</p>
-                <h3 className="text-2xl font-bold text-gray-700 dark:text-white">{value}</h3>
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-wider">{title}</p>
+                </div>
             </div>
         </div>
     );

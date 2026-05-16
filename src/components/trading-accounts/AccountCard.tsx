@@ -9,6 +9,7 @@ import {
     Crown,
     Zap,
     Star,
+    Info,
 } from "lucide-react";
 import Link from "next/link";
 import { RemoteSyncButton } from "./RemoteSyncButton";
@@ -50,6 +51,15 @@ const PRO_STATUS_CONFIG: Record<string, { label: string; className: string }> = 
     EXPIRED: { label: "Expired", className: "bg-amber-50 text-amber-600 border-amber-200/80 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20" },
     REVOKED: { label: "Revoked", className: "bg-red-50 text-red-500 border-red-200/80 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20" },
     NONE: { label: "Free", className: "bg-gray-50 text-gray-500 border-gray-200/80 dark:bg-white/5 dark:text-gray-400 dark:border-white/10" },
+};
+
+const ELIGIBILITY_CHIP: Record<string, { label: string; className: string }> = {
+    PRO_ACTIVE: { label: "Pro", className: "bg-emerald-50 text-emerald-600 border-emerald-200/80 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20" },
+    PENDING_REVIEW: { label: "Under Review", className: "bg-amber-50 text-amber-600 border-amber-200/80 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20" },
+    REJECTED: { label: "Not Approved", className: "bg-red-50 text-red-500 border-red-200/80 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20" },
+    ELIGIBLE: { label: "Eligible", className: "bg-emerald-50 text-emerald-600 border-emerald-200/80 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20" },
+    UNSUPPORTED_BROKER: { label: "Not Supported", className: "bg-gray-50 text-gray-500 border-gray-200/80 dark:bg-white/5 dark:text-gray-400 dark:border-white/10" },
+    MISSING_ACCOUNT_INFO: { label: "Missing Info", className: "bg-gray-50 text-gray-500 border-gray-200/80 dark:bg-white/5 dark:text-gray-400 dark:border-white/10" },
 };
 
 export function AccountCard({
@@ -221,11 +231,21 @@ export function AccountCard({
                     </div>
                 )}
 
-                {/* Pro Status Chip */}
+                {/* Pro/Eligibility Status Chip */}
                 {(() => {
+                    const elig = account.eligibility;
+                    if (elig) {
+                        const config = ELIGIBILITY_CHIP[elig.status] || ELIGIBILITY_CHIP.MISSING_ACCOUNT_INFO;
+                        return (
+                            <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border shadow-sm ${config.className}`} title={elig.description}>
+                                <Crown size={10} />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">{config.label}</span>
+                            </div>
+                        );
+                    }
+                    // Fallback: old logic
                     const proStatus = account.proStatus || "NONE";
                     const vipStatus = account.vipStatus;
-                    // Show "Pending" if VIP request is pending and no Pro yet
                     if (vipStatus === "PENDING" && proStatus === "NONE") {
                         return (
                             <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200/80 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm">
@@ -234,11 +254,11 @@ export function AccountCard({
                             </div>
                         );
                     }
-                    const config = PRO_STATUS_CONFIG[proStatus] || PRO_STATUS_CONFIG.NONE;
+                    const configFb = PRO_STATUS_CONFIG[proStatus] || PRO_STATUS_CONFIG.NONE;
                     return (
-                        <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border shadow-sm ${config.className}`}>
+                        <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border shadow-sm ${configFb.className}`}>
                             <Crown size={10} />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">{config.label}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider">{configFb.label}</span>
                         </div>
                     );
                 })()}
@@ -256,19 +276,51 @@ export function AccountCard({
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-1.5">
-                    {/* Unlock Pro — show for Free accounts without pending VIP */}
-                    {(!account.proStatus || account.proStatus === "NONE") && account.vipStatus !== "PENDING" && onUnlockPro && (
-                        <Button
-                            variant="ghost"
-                            onClick={() => onUnlockPro(account)}
-                            className="flex items-center gap-1 px-2.5 py-1.5 h-auto rounded-lg bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-[10px] transition-all hover:opacity-90 hover:text-white shadow-sm shadow-primary/20"
-                            title="Unlock Pro"
-                            aria-label="Unlock Pro access"
-                        >
-                            <Crown size={11} />
-                            <span>Unlock Pro</span>
-                        </Button>
-                    )}
+                    {/* CTA: driven by eligibility */}
+                    {(() => {
+                        const elig = account.eligibility;
+                        if (!elig) {
+                            // Fallback: old behavior
+                            if ((!account.proStatus || account.proStatus === "NONE") && account.vipStatus !== "PENDING" && onUnlockPro) {
+                                return (
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => onUnlockPro(account)}
+                                        className="flex items-center gap-1 px-2.5 py-1.5 h-auto rounded-lg bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-[10px] transition-all hover:opacity-90 hover:text-white shadow-sm shadow-primary/20"
+                                        title="Apply for Pro"
+                                        aria-label="Apply for Pro access"
+                                    >
+                                        <Crown size={11} />
+                                        <span>Apply for Pro</span>
+                                    </Button>
+                                );
+                            }
+                            return null;
+                        }
+                        if (elig.canRequest && onUnlockPro) {
+                            return (
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => onUnlockPro(account)}
+                                    className="flex items-center gap-1 px-2.5 py-1.5 h-auto rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-[10px] transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white shadow-sm shadow-amber-500/20"
+                                    title={elig.status === "REJECTED" ? "Re-apply for Pro" : "Apply for Pro"}
+                                    aria-label="Apply for Pro access"
+                                >
+                                    <Crown size={11} />
+                                    <span>{elig.status === "REJECTED" ? "Re-apply" : "Unlock Pro"}</span>
+                                </Button>
+                            );
+                        }
+                        if (elig.status === "UNSUPPORTED_BROKER") {
+                            return (
+                                <span className="flex items-center gap-1 px-2 py-1.5 text-[10px] font-bold text-gray-400 dark:text-gray-500" title={elig.description}>
+                                    <Info size={10} />
+                                    Not eligible
+                                </span>
+                            );
+                        }
+                        return null;
+                    })()}
 
                     <Link
                         href={`/dashboard?accountId=${account.id}`}

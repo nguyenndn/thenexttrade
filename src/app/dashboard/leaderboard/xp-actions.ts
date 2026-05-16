@@ -25,6 +25,15 @@ export async function awardLessonXP(lessonId: string) {
 
   const result = await addXP(userId, XP_AWARDS.LESSON_COMPLETE);
 
+  const { recordEdgeEvent } = await import("@/lib/edge-awards");
+  await recordEdgeEvent({
+    userId,
+    eventType: "LESSON_COMPLETE",
+    sourceType: "Lesson",
+    sourceId: lessonId,
+    xpAwarded: XP_AWARDS.LESSON_COMPLETE,
+  });
+
   // Check badge milestones
   const completedCount = await prisma.userProgress.count({
     where: { userId, isCompleted: true },
@@ -43,6 +52,16 @@ export async function awardQuizXP(quizId: string) {
   if (!userId) return null;
 
   const result = await addXP(userId, XP_AWARDS.QUIZ_PASS);
+
+  const { recordEdgeEvent } = await import("@/lib/edge-awards");
+  await recordEdgeEvent({
+    userId,
+    eventType: "QUIZ_PASS",
+    sourceType: "Quiz",
+    sourceId: quizId,
+    xpAwarded: XP_AWARDS.QUIZ_PASS,
+  });
+
   return result;
 }
 

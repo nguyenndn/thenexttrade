@@ -9,6 +9,8 @@ import { GreetingHeader } from "@/components/dashboard/GreetingHeader";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { InsightBanner } from "@/components/dashboard/InsightBanner";
 import { MobileProStatusBanner } from "@/components/dashboard/MobileProStatusBanner";
+import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
+import type { ActivationState } from "@/lib/activation/activation-types";
 
 // Lazy load chart components — only loaded when user scrolls to them
 const ChartSkeleton = () => <div className="h-[280px] bg-gray-100 dark:bg-white/5 animate-pulse rounded-xl" />;
@@ -56,6 +58,7 @@ interface DashboardClientProps {
     intelligenceScore?: number | null;
     sessionPerformance: { session: string; trades: number; pnl: number; winRate: number }[];
     dayOfWeekPerformance: { day: string; dayIndex: number; pnl: number; tradeCount: number; winRate: number }[];
+    activationState: ActivationState;
 }
 
 export default function DashboardClient({
@@ -77,6 +80,7 @@ export default function DashboardClient({
     intelligenceScore,
     sessionPerformance,
     dayOfWeekPerformance,
+    activationState,
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -112,6 +116,11 @@ export default function DashboardClient({
 
             {/* Mobile Pro Status Banner — visible on mobile without opening the drawer */}
             <MobileProStatusBanner />
+
+            {/* Activation Checklist — shown for new users */}
+            {activationState.completedCount < activationState.totalCount && (
+                <ActivationChecklist state={activationState} />
+            )}
 
             {/* AI Insight Banner */}
             {insight && <InsightBanner insight={insight} score={intelligenceScore} />}

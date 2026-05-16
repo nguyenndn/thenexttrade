@@ -1,11 +1,11 @@
 {
   "tiers": [
-    { "name": "bronze",   "label": "Bronze",   "minXp": 0,     "icon": "Shield",      "color": "#CD7F32" },
-    { "name": "silver",   "label": "Silver",   "minXp": 1000,  "icon": "Shield",      "color": "#C0C0C0" },
-    { "name": "gold",     "label": "Gold",     "minXp": 5000,  "icon": "ShieldCheck", "color": "#FFD700" },
-    { "name": "platinum", "label": "Platinum", "minXp": 15000, "icon": "Gem",         "color": "#E5E4E2" },
-    { "name": "diamond",  "label": "Diamond",  "minXp": 30000, "icon": "Diamond",     "color": "#06B6D4" },
-    { "name": "master",   "label": "Master",   "minXp": 50000, "icon": "Crown",       "color": "#FF6B35" }
+    { "name": "bronze",   "label": "Apprentice",   "minXp": 0,     "icon": "Shield",      "color": "#CD7F32" },
+    { "name": "silver",   "label": "Builder",      "minXp": 1000,  "icon": "Shield",      "color": "#C0C0C0" },
+    { "name": "gold",     "label": "Analyst",      "minXp": 5000,  "icon": "ShieldCheck", "color": "#FFD700" },
+    { "name": "platinum", "label": "Strategist",   "minXp": 15000, "icon": "Gem",         "color": "#E5E4E2" },
+    { "name": "diamond",  "label": "Risk Manager", "minXp": 30000, "icon": "Diamond",     "color": "#06B6D4" },
+    { "name": "master",   "label": "Operator",     "minXp": 50000, "icon": "Crown",       "color": "#FF6B35" }
   ],
   "xpAwards": {
     "LESSON_COMPLETE": 50,

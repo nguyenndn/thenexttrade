@@ -8,6 +8,7 @@ import DashboardClient from "./DashboardClient";
 import { cookies } from "next/headers";
 import { getCachedDashboardStats, getDailyPerformance, getSymbolPerformance, getTopTrades, getLotDistribution, getSessionPerformance, getDayOfWeekPerformance, getIntradayPerformance } from "@/lib/analytics-queries";
 import { getIntelligenceData } from "@/lib/smart-analytics";
+import { getActivationState } from "@/lib/activation/activation.server";
 import { format, subDays } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { TradingAlertBanner } from "@/components/dashboard/TradingAlertBanner";
@@ -143,6 +144,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         dayOfWeekPerformance,
         intelligenceData,
         dailyWinRateLast7,
+        activationState,
     ] = await Promise.all([
         // User Info (name + streak only)
         prisma.user.findUnique({
@@ -185,6 +187,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         getIntelligenceData(user.id, accountId, startDate, endDate, accountTimezone).catch(() => null),
         // Daily Win Rate: ALWAYS last 7 days (independent of date filter)
         getDailyPerformance(user.id, accountId, subDays(new Date(), 6), new Date(), accountTimezone),
+        // Activation checklist state
+        getActivationState(user.id),
     ]);
 
     // Destructure stats from cached result
@@ -370,6 +374,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
                 intelligenceScore={tradeScore}
                 sessionPerformance={sessionPerformance}
                 dayOfWeekPerformance={dayOfWeekPerformance}
+                activationState={activationState}
             />
         </>
     );

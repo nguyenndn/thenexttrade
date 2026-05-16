@@ -131,7 +131,7 @@ export function ProBenefitsModal({ isOpen, onClose, isPro = false }: ProBenefits
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                 {isPro
                   ? "All features included in your active plan"
-                  : "100% free — verify as a VIP trader to unlock"}
+                  : "100% free — apply as a VIP trader to unlock"}
               </p>
             </div>
           </div>

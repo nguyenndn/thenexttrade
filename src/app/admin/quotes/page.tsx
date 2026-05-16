@@ -157,16 +157,28 @@ export default function AdminQuotesPage() {
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabType)} tabsId="quotes">
-                <TabsList>
-                    <TabsTrigger value="DASHBOARD">
-                        <LayoutDashboard size={16} />
-                        Dashboard Quotes
+                <div className="overflow-x-auto scrollbar-hide flex">
+                <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
+                    <TabsTrigger
+                        value="DASHBOARD"
+                        className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                        activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                        activeTextClassName="!text-white"
+                    >
+                        <LayoutDashboard size={15} />
+                        <span>Dashboard Quotes</span>
                     </TabsTrigger>
-                    <TabsTrigger value="HOMEPAGE">
-                        <Home size={16} />
-                        Homepage Quotes
+                    <TabsTrigger
+                        value="HOMEPAGE"
+                        className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                        activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                        activeTextClassName="!text-white"
+                    >
+                        <Home size={15} />
+                        <span>Homepage Quotes</span>
                     </TabsTrigger>
                 </TabsList>
+                </div>
             </Tabs>
 
             {/* Table */}

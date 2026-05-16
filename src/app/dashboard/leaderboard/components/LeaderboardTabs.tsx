@@ -16,7 +16,7 @@ const TABS: {
 }[] = [
   {
     type: "xp",
-    label: "XP Rankings",
+    label: "Edge Ranking",
     icon: Trophy,
     activeColor: "text-yellow-600 dark:text-yellow-400",
     activeBg: "bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-500/20",

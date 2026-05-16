@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getGeoFromHeaders, generateSessionId } from '@/lib/analytics';
+import { getAuthUser } from '@/lib/auth-cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,6 +47,9 @@ export async function POST(request: NextRequest) {
 
         const geo = getGeoFromHeaders(request.headers);
 
+        // Attach userId when logged in (non-blocking, never fail)
+        const user = await getAuthUser().catch(() => null);
+
         await prisma.analyticsEvent.create({
             data: {
                 name,
@@ -53,7 +57,7 @@ export async function POST(request: NextRequest) {
                 pathname: pathname || null,
                 country: geo.country,
                 sessionId,
-                // userId will be set if we can extract from cookie in future
+                userId: user?.id ?? null,
             },
         });
 

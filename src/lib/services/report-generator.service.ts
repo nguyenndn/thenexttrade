@@ -541,3 +541,35 @@ export async function generateReportsForAllUsers(type: "WEEKLY" | "MONTHLY", cur
 
     return results;
 }
+
+// ─── User-level Wrappers ────────────────────────────────────────────────────
+
+/**
+ * Generate a weekly report for a single user.
+ * @param current - if true, generates for the current (in-progress) week
+ */
+export async function generateWeeklyReportForUser(
+    userId: string,
+    accountId?: string,
+    timezone = "Etc/UTC",
+    current = false
+) {
+    const now = new Date();
+    const period = getWeeklyPeriod(now, timezone, current);
+    return generateReport(userId, accountId, period);
+}
+
+/**
+ * Generate a monthly report for a single user.
+ * @param current - if true, generates for the current (in-progress) month
+ */
+export async function generateMonthlyReportForUser(
+    userId: string,
+    accountId?: string,
+    timezone = "Etc/UTC",
+    current = false
+) {
+    const now = new Date();
+    const period = getMonthlyPeriod(now, timezone, current);
+    return generateReport(userId, accountId, period);
+}

@@ -32,6 +32,9 @@ import {
     Crown,
     TrendingUp,
     UserCheck,
+    ClipboardCheck,
+    Target,
+    HeartPulse,
 } from "lucide-react";
 
 export const menuItems = [
@@ -120,6 +123,11 @@ export const dashboardMenuItems = [
         href: "/dashboard/trading-systems",
         icon: Bot,
     },
+    {
+        name: "Edge Missions",
+        href: "/dashboard/missions",
+        icon: Target,
+    },
 
     // --- INVESTING ---
     {
@@ -139,10 +147,15 @@ export const dashboardMenuItems = [
 export const adminMenuItems = [
     // --- (No label — first item) ---
     { name: "Overview", href: "/admin", icon: LayoutDashboard },
+
+    // --- MONITORING ---
+    { name: "Release Health", href: "/admin/release-health", icon: HeartPulse },
     { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+    { name: "Security", href: "/admin/security", icon: ShieldAlert },
 
     // --- CONTENT ---
     { name: "Articles", href: "/admin/articles", icon: FileText },
+    { name: "Article Ops", href: "/admin/articles/ops", icon: ClipboardCheck },
     { name: "Shortcuts", href: "/admin/articles/shortcuts", icon: Bookmark },
     { name: "Comments", href: "/admin/comments", icon: MessageSquare },
     { name: "Taxonomy", href: "/admin/taxonomy", icon: FolderTree },
@@ -163,7 +176,6 @@ export const adminMenuItems = [
     // --- SYSTEM ---
     { name: "EA Management", href: "/admin/ea", icon: Bot },
     { name: "Users", href: "/admin/users", icon: Users },
-    { name: "Security", href: "/admin/security", icon: ShieldAlert },
     { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
@@ -203,6 +215,54 @@ export const dashboardMenuGroups = [
             { name: "Trading System", href: "/dashboard/trading-systems", icon: Bot },
             { name: "Copy Trading", href: "/dashboard/copy-trading", icon: Copy, featureFlag: "feature_copy_trading" },
             { name: "Funded Challenge", href: "/dashboard/funded-challenge", icon: Shield, featureFlag: "feature_funded_challenge" },
+        ],
+    },
+];
+
+// Admin mobile bottom tab bar groups
+export const adminMenuGroups = [
+    {
+        label: "Monitor",
+        icon: LayoutDashboard,
+        items: [
+            { name: "Overview", href: "/admin", icon: LayoutDashboard },
+            { name: "Release Health", href: "/admin/release-health", icon: HeartPulse },
+            { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+            { name: "Security", href: "/admin/security", icon: ShieldAlert },
+        ],
+    },
+    {
+        label: "Content",
+        icon: FileText,
+        items: [
+            { name: "Articles", href: "/admin/articles", icon: FileText },
+            { name: "Article Ops", href: "/admin/articles/ops", icon: ClipboardCheck },
+            { name: "Shortcuts", href: "/admin/articles/shortcuts", icon: Bookmark },
+            { name: "Comments", href: "/admin/comments", icon: MessageSquare },
+            { name: "Taxonomy", href: "/admin/taxonomy", icon: FolderTree },
+            { name: "Quotes", href: "/admin/quotes", icon: Quote },
+        ],
+    },
+    {
+        label: "IB",
+        icon: Users,
+        items: [
+            { name: "IB Overview",     href: "/admin/ib",           icon: TrendingUp },
+            { name: "VIP Pipeline",    href: "/admin/ib/pipeline",  icon: Crown },
+            { name: "Trader Monitor",  href: "/admin/ib/traders",   icon: UserCheck },
+            { name: "Users", href: "/admin/users", icon: Users },
+        ],
+    },
+    {
+        label: "More",
+        icon: MoreHorizontal,
+        items: [
+            { name: "Academy", href: "/admin/academy", icon: GraduationCap },
+            { name: "Copy Trading", href: "/admin/copy-trading", icon: Copy },
+            { name: "Funded Challenge", href: "/admin/funded-challenge", icon: Shield },
+            { name: "EA Management", href: "/admin/ea", icon: Bot },
+            { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
+            { name: "Settings", href: "/admin/settings", icon: Settings },
         ],
     },
 ];

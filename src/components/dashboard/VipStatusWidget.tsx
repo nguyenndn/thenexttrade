@@ -75,7 +75,7 @@ const statusConfig: Record<string, StatusStyle> = {
   },
   NONE: {
     label: "Free Plan",
-    description: "Verify as a VIP trader to unlock Pro for free.",
+    description: "Apply as a VIP trader to unlock Pro for free.",
     icon: Crown,
     cardBg: "bg-white dark:bg-white/[0.03]",
     cardBorder: "border-gray-200 dark:border-white/8",
@@ -167,7 +167,7 @@ export function VipStatusWidget() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-black tracking-tight text-gray-900 dark:text-white">Free Plan</span>
-                    <span className="rounded-md bg-gray-100 dark:bg-white/8 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500 ring-1 ring-gray-200/60 dark:ring-white/10">
+                    <span className="rounded-md bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
                       Current
                     </span>
                   </div>
@@ -199,7 +199,7 @@ export function VipStatusWidget() {
                     href={ctaHref}
                     className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"
                   >
-                    Unlock Pro Free
+                    Check Pro Eligibility
                     <ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>

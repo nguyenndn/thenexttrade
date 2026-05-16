@@ -27,9 +27,30 @@ We do not use standard `gray-900`. Use these specific hex codes:
 |:---|:---|:---|:---|
 | **Primary Green** | `bg-primary` | Varies (Theme) | Call-to-Action buttons, Success states |
 | **Primary Hover** | `hover:bg-primary/90` | Varies (Theme) | Hover state for Primary Green |
+| **Gold** | `bg-gold` / `text-gold` | `#F59E0B` | Pro/Premium accents, upgrade CTAs, badges |
+| **Gold Gradient** | `from-amber-500 to-orange-500` | `#F59E0B → #F97316` | Premium CTA buttons, Pro plan highlights |
 | **Info/Accent** | `text-cyan-500` | `#06B6D4` | Icons, Highlights, Links |
 | **Blue Action** | `bg-[#2F80ED]` | `#2F80ED` | Secondary actions, Save buttons |
 | **Danger** | `text-red-500` | `#EF4444` | Errors, negative PnL |
+
+#### Gold Color Usage Guide
+The **Gold** color is reserved for **premium/upgrade** contexts:
+- **Pro Plan badges & cards**: Icon backgrounds, border accents, text highlights
+- **Upgrade CTA buttons**: Use the gradient `from-amber-500 to-orange-500` for high-impact buttons
+- **Subtle accents**: Use `bg-gold/10` or `text-gold` for icon tints, ring highlights
+- **Dark mode**: Use `dark:text-amber-400` and `dark:bg-amber-500/15` for softer contrast
+
+```tsx
+// Gold Accent Button (Pro/Upgrade CTA)
+<Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:from-amber-600 hover:to-orange-600">
+  <Crown size={16} /> Upgrade to Pro
+</Button>
+
+// Gold Badge
+<span className="bg-gold/10 text-gold ring-1 ring-gold/30 dark:bg-amber-500/15 dark:text-amber-400 dark:ring-amber-500/20 rounded-md px-2 py-0.5 text-xs font-bold">
+  PRO
+</span>
+```
 
 ---
 
@@ -606,4 +627,32 @@ export default function Loading() {
         </div>
     )
 }
+
+## 14. Tabs Component (Page & Section Level)
+
+Tiêu chuẩn thiết kế cho Tabs điều hướng sử dụng `@/components/ui/Tabs`. Bắt buộc phải áp dụng cấu trúc dưới đây để đảm bảo giao diện Premium và hỗ trợ scroll ngang trên di động.
+
+### Structure & Layout
+```tsx
+<div className="overflow-x-auto scrollbar-hide flex">
+  <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
+    <TabsTrigger 
+      value="tab1"
+      className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+      activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+      activeTextClassName="!text-white"
+    >
+      Tab 1
+    </TabsTrigger>
+  </TabsList>
+</div>
+```
+
+### CSS Specifications (Strict Rules)
+- **Container Wrapper**: BẮT BUỘC có `overflow-x-auto scrollbar-hide flex` để scroll mượt trên màn hình nhỏ.
+- **TabsList**: Sử dụng nền nhẹ và viền bo góc `bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0`.
+- **TabsTrigger (Mặc định)**: Class cho text, padding, và bo góc `px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10`.
+- **TabsTrigger (Active)**: BẮT BUỘC phải truyền thủ công 2 override props sau để có hiệu ứng gradient chuẩn:
+  - `activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"`
+  - `activeTextClassName="!text-white"`
 ```

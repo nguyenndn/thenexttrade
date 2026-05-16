@@ -192,15 +192,18 @@ export function PsychologyDashboard() {
                 ].map((stat) => {
                     const Icon = stat.icon;
                     return (
-                        <div key={stat.label} className={`bg-white dark:bg-[#1E2028] p-3 sm:p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-200 border-t-4 ${stat.border}`}>
-                            <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                                <div className={`p-2 sm:p-3 rounded-xl ${stat.bg}`}>
-                                    <Icon size={18} className={`${stat.color} sm:w-5 sm:h-5`} />
+                        <div key={stat.label} className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default">
+                            <div className="flex items-center gap-3">
+                                <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color}`}>
+                                    <Icon size={16} aria-hidden="true" />
                                 </div>
-                                <h3 className="text-gray-600 text-xs font-bold uppercase tracking-wider">{stat.label}</h3>
+                                <div>
+                                    <p className={`text-xl font-black tabular-nums leading-none ${stat.color}`}>
+                                        {stat.value}
+                                    </p>
+                                    <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-wider">{stat.label}</p>
+                                </div>
                             </div>
-                            <p className={`text-xl sm:text-2xl font-black ${stat.color}`}>{stat.value}</p>
-                            <p className="text-xs text-gray-500 font-medium mt-1">{stat.sub}</p>
                         </div>
                     );
                 })}

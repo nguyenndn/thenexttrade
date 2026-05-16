@@ -301,23 +301,23 @@ export function AddAccountModal({
                             )}
 
                             {/* Read-only account summary */}
-                            <div className="rounded-xl border border-amber-200/60 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 p-4 space-y-2">
-                                <p className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 mb-3">Account to Upgrade</p>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                    <div>
-                                        <p className="text-[10px] text-gray-500 uppercase">Broker</p>
-                                        <p className="font-bold text-gray-800 dark:text-white">{sourceAccount.broker || "—"}</p>
+                            <div className="rounded-xl border border-amber-200/60 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 p-5 space-y-4">
+                                <p className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 text-center">Account to Upgrade</p>
+                                <div className="grid grid-cols-3 divide-x divide-amber-200/60 dark:divide-amber-500/20">
+                                    <div className="text-center px-2">
+                                        <p className="text-[10px] text-gray-500 uppercase mb-1">Broker</p>
+                                        <p className="font-bold text-gray-800 dark:text-white leading-tight break-words">{sourceAccount.broker || "—"}</p>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] text-gray-500 uppercase">Account Number</p>
-                                        <p className="font-bold text-gray-800 dark:text-white">{sourceAccount.accountNumber || "—"}</p>
+                                    <div className="text-center px-2">
+                                        <p className="text-[10px] text-gray-500 uppercase mb-1">Account Number</p>
+                                        <p className="font-bold text-gray-800 dark:text-white break-words">{sourceAccount.accountNumber || "—"}</p>
                                     </div>
-                                    {sourceAccount.balance != null && (
-                                        <div>
-                                            <p className="text-[10px] text-gray-500 uppercase">Balance</p>
-                                            <p className="font-bold text-gray-800 dark:text-white">${sourceAccount.balance.toLocaleString()}</p>
-                                        </div>
-                                    )}
+                                    <div className="text-center px-2">
+                                        <p className="text-[10px] text-gray-500 uppercase mb-1">Balance</p>
+                                        <p className="font-bold text-gray-800 dark:text-white break-words">
+                                            {sourceAccount.balance != null ? `$${sourceAccount.balance.toLocaleString()}` : "—"}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -401,7 +401,7 @@ export function AddAccountModal({
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-amber-700 dark:text-amber-400 mb-1">Partner Pro Account</h3>
-                                    <p className="text-sm text-amber-600/80 dark:text-amber-400/80">Open under our IB to unlock Pro features, EA access, and VIP tools automatically.</p>
+                                    <p className="text-sm text-amber-600/80 dark:text-amber-400/80">Open under our IB to apply for Pro features, EA access, and VIP tools.</p>
                                 </div>
                             </button>
                         </div>
@@ -545,6 +545,10 @@ export function AddAccountModal({
                     <>
                         {renderHeader("Select Partner Broker", "Step 1 of 4: Choose your broker")}
                         <div className="p-6 space-y-4">
+                            <div className="p-3 mb-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs text-amber-700 dark:text-amber-400 flex gap-2">
+                                <AlertCircle size={14} className="shrink-0 mt-0.5" />
+                                <p>Partner Pro access depends on supported broker and account eligibility. If your account is not eligible, your request may be rejected after review.</p>
+                            </div>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 {SUPPORTED_BROKERS.map((broker) => {
                                     const info = BROKER_INFO[broker];
@@ -710,15 +714,17 @@ export function AddAccountModal({
                                     <AlertCircle size={16} /> {error}
                                 </div>
                             )}
-                            <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-4">
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                    <div><p className="text-[10px] text-gray-500 uppercase">Broker</p><p className="font-bold text-gray-800 dark:text-white">{brokerInfo.name}</p></div>
-                                    <div><p className="text-[10px] text-gray-500 uppercase">Account</p><p className="font-bold text-gray-800 dark:text-white">{accountNumber}</p></div>
-                                    <div><p className="text-[10px] text-gray-500 uppercase">Balance</p><p className="font-bold text-gray-800 dark:text-white">${balance}</p></div>
-                                    <div><p className="text-[10px] text-gray-500 uppercase">Telegram</p><p className="font-bold text-gray-800 dark:text-white">{telegramId}</p></div>
-                                    {brokerInfo.requiresFullName && <div><p className="text-[10px] text-gray-500 uppercase">Name</p><p className="font-bold text-gray-800 dark:text-white">{fullName}</p></div>}
-                                    {brokerInfo.requiresCountry && <div><p className="text-[10px] text-gray-500 uppercase">Country</p><p className="font-bold text-gray-800 dark:text-white">{country}</p></div>}
-                                    {screenshotUrl && <div className="col-span-2 sm:col-span-3"><p className="text-[10px] text-gray-500 uppercase">Screenshot</p><a href={screenshotUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-primary hover:underline truncate block">{screenshotUrl}</a></div>}
+                            <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-5">
+                                <div className="grid grid-cols-3 divide-x divide-gray-200 dark:divide-white/10">
+                                    <div className="text-center px-2"><p className="text-[10px] text-gray-500 uppercase mb-1">Broker</p><p className="font-bold text-gray-800 dark:text-white leading-tight break-words">{brokerInfo.name}</p></div>
+                                    <div className="text-center px-2"><p className="text-[10px] text-gray-500 uppercase mb-1">Account</p><p className="font-bold text-gray-800 dark:text-white break-words">{accountNumber}</p></div>
+                                    <div className="text-center px-2"><p className="text-[10px] text-gray-500 uppercase mb-1">Balance</p><p className="font-bold text-gray-800 dark:text-white break-words">${balance}</p></div>
+                                </div>
+                                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 grid grid-cols-2 gap-4">
+                                    <div className="text-center px-2"><p className="text-[10px] text-gray-500 uppercase mb-1">Telegram</p><p className="font-bold text-gray-800 dark:text-white break-words">{telegramId}</p></div>
+                                    {brokerInfo.requiresFullName && <div className="text-center px-2"><p className="text-[10px] text-gray-500 uppercase mb-1">Name</p><p className="font-bold text-gray-800 dark:text-white break-words">{fullName}</p></div>}
+                                    {brokerInfo.requiresCountry && <div className="text-center px-2"><p className="text-[10px] text-gray-500 uppercase mb-1">Country</p><p className="font-bold text-gray-800 dark:text-white break-words">{country}</p></div>}
+                                    {screenshotUrl && <div className="col-span-2 text-center px-2 mt-2"><p className="text-[10px] text-gray-500 uppercase mb-1">Screenshot</p><a href={screenshotUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-primary hover:underline truncate block mx-auto max-w-full">{screenshotUrl}</a></div>}
                                 </div>
                             </div>
 

@@ -87,39 +87,6 @@ function useAnimatedCounter(target: number, duration = 1500, decimals = 0) {
     return display;
 }
 
-function Sparkline({ data, color }: { data: number[]; color: string }) {
-    if (!data || data.length < 2) return null;
-
-    const width = 96;
-    const height = 32;
-    const pad = 2;
-    const max = Math.max(...data);
-    const min = Math.min(...data);
-    const range = max - min || 1;
-
-    const points = data.map((v, i) => ({
-        x: pad + (i / (data.length - 1)) * (width - pad * 2),
-        y: pad + (1 - (v - min) / range) * (height - pad * 2),
-    }));
-
-    const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
-    const areaPath = `${linePath} L ${points[points.length - 1].x} ${height} L ${points[0].x} ${height} Z`;
-
-    const gId = `spark-${color.replace("#", "")}`;
-
-    return (
-        <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible" aria-hidden="true">
-            <defs>
-                <linearGradient id={gId} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={color} stopOpacity={0.25} />
-                    <stop offset="100%" stopColor={color} stopOpacity={0} />
-                </linearGradient>
-            </defs>
-            <path d={areaPath} fill={`url(#${gId})`} />
-            <path d={linePath} fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    );
-}
 
 export function AnimatedStatCard({
     title,
@@ -140,43 +107,35 @@ export function AnimatedStatCard({
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className={`bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-lg transition-shadow border-t-4 ${cs.borderTop} cursor-default`}
+            whileHover={{ y: -2, transition: { duration: 0.2 } }}
+            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
         >
-            <div className="flex justify-between items-start">
+            <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${cs.bg} ${cs.text}`}>
+                    <Icon size={16} aria-hidden="true" />
+                </div>
                 <div>
-                    <p className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">{title}</p>
-                    <div className="flex items-baseline gap-2 mt-2">
-                        <h3 className="text-3xl font-black text-gray-700 dark:text-white tracking-tight tabular-nums">
+                    <div className="flex items-center gap-2">
+                        <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums leading-none">
                             {displayValue}
-                        </h3>
-                        {suffix && <span className="text-sm font-medium text-gray-500">{suffix}</span>}
+                            {suffix && <span className="text-sm font-medium text-gray-500 ml-0.5">{suffix}</span>}
+                        </p>
+                        {trendPercent !== null && trendPercent !== undefined && (
+                            <span
+                                className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                                    trendPercent > 0
+                                        ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
+                                        : trendPercent < 0
+                                        ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
+                                        : "bg-gray-50 text-gray-600 dark:bg-gray-500/10"
+                                }`}
+                            >
+                                {trendPercent > 0 ? "+" : ""}{trendPercent}%
+                            </span>
+                        )}
                     </div>
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-wider">{title}</p>
                 </div>
-                <div className={`p-3.5 rounded-xl ${cs.bg} ${cs.text} ${cs.ring} transition-colors`}>
-                    <Icon size={24} strokeWidth={2.5} aria-hidden="true" />
-                </div>
-            </div>
-
-            <div className="mt-4 flex items-end justify-between">
-                {sparklineData && sparklineData.length > 1 ? (
-                    <Sparkline data={sparklineData} color={cs.hex} />
-                ) : (
-                    <div className="w-24" />
-                )}
-                {trendPercent !== null && trendPercent !== undefined && (
-                    <span
-                        className={`text-sm font-bold px-2.5 py-1 rounded-lg ${
-                            trendPercent > 0
-                                ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
-                                : trendPercent < 0
-                                ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
-                                : "bg-gray-50 text-gray-600 dark:bg-gray-500/10"
-                        }`}
-                    >
-                        {trendPercent > 0 ? "+" : ""}{trendPercent}%
-                    </span>
-                )}
             </div>
         </motion.div>
     );

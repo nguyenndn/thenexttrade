@@ -156,7 +156,7 @@ export async function createJournalEntry(data: z.infer<typeof journalSchema>) {
     if (!validation.success) return { error: "Invalid data" };
 
     try {
-        await prisma.journalEntry.create({
+        const entry = await prisma.journalEntry.create({
             data: {
                 ...validation.data,
                 userId: user.id,
@@ -174,6 +174,15 @@ export async function createJournalEntry(data: z.infer<typeof journalSchema>) {
             const { checkAndGrantBadge } = await import("@/lib/gamification");
             await addXP(user.id, XP_AWARDS.JOURNAL_ENTRY);
             xpEarned = XP_AWARDS.JOURNAL_ENTRY;
+
+            const { recordEdgeEvent } = await import("@/lib/edge-awards");
+            await recordEdgeEvent({
+                userId: user.id,
+                eventType: "JOURNAL_ENTRY",
+                sourceType: "JournalEntry",
+                sourceId: entry.id,
+                xpAwarded: xpEarned,
+            });
 
             const tradeCount = await prisma.journalEntry.count({ where: { userId: user.id } });
             if (tradeCount === 1) {

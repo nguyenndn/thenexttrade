@@ -57,7 +57,7 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
           Your stats will appear here
         </h3>
         <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed max-w-md mx-auto">
-          Start earning XP by completing lessons, maintaining your streak, and trading to see your position on the leaderboard.
+          Start earning Edge by completing lessons, maintaining your streak, and trading to see your position on the leaderboard.
         </p>
       </div>
     );
@@ -127,10 +127,10 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
         {/* ═══════════════════════════════════════════════════════════ */}
         <div className="px-6 py-4 border-t border-gray-100 dark:border-white/5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Tier Progress</span>
+            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Edge Progress</span>
             {tierProgress.next && (
               <span className="text-xs text-gray-500 tabular-nums">
-                {tierProgress.xpToNext.toLocaleString()} XP to {tierProgress.next.label}
+                {tierProgress.xpToNext.toLocaleString()} Edge to {tierProgress.next.label}
               </span>
             )}
           </div>
@@ -164,7 +164,7 @@ export function MyStatsView({ myRank, userName, userAvatar }: MyStatsViewProps) 
         {/* QUICK STATS GRID */}
         {/* ═══════════════════════════════════════════════════════════ */}
         <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-gray-100 dark:border-white/5">
-          <QuickStat icon={Star} label="Total XP" value={value.toLocaleString()} color="text-yellow-500" />
+          <QuickStat icon={Star} label="Edge Score" value={value.toLocaleString()} color="text-yellow-500" />
           <QuickStat icon={Flame} label="Streak" value={`${streak}d`} color="text-orange-500" border />
           <QuickStat icon={BookOpen} label="Lessons" value={String(lessonsCompleted)} color="text-emerald-500" border />
           <QuickStat icon={TrendingUp} label="Trades" value={String(totalTrades)} color="text-sky-500" border />

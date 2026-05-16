@@ -1,5 +1,5 @@
 /**
- * XP Celebration Effects
+ * Edge Celebration Effects
  * Reusable confetti/fireworks celebration synced with Streak page style.
  * Usage: await celebrateXP({ xp: 50, message: "Lesson Complete!" })
  */
@@ -18,12 +18,12 @@ export interface CelebrationOptions {
 export async function celebrateXP(opts: CelebrationOptions) {
   const { toast } = await import("sonner");
 
-  // Show XP toast
-  const lines = [`+${opts.xp} XP`];
+  // Show Edge toast
+  const lines = [`+${opts.xp} Edge`];
   if (opts.badge) lines.push(`🏅 Badge: ${opts.badge}`);
   if (opts.leveledUp) lines.push("⬆️ Level Up!");
 
-  toast.success(opts.message || "XP Earned!", {
+  toast.success(opts.message || "Edge Earned!", {
     description: lines.join(" • "),
     duration: 4000,
   });
