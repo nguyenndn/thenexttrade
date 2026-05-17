@@ -7,10 +7,13 @@ import { Mail, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { forgotPassword } from '../actions'
 
+import { TurnstileWidget } from '@/components/ui/TurnstileWidget'
+
 export default function ForgotPasswordPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [message, setMessage] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const [turnstileToken, setTurnstileToken] = useState("")
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -19,12 +22,13 @@ export default function ForgotPasswordPage() {
         setError(null)
 
         const formData = new FormData(e.currentTarget)
+        formData.set('cf-turnstile-response', turnstileToken)
         const result = await forgotPassword(formData)
 
         if (result?.error) {
             setError(result.error)
         } else {
-            setMessage('Check your email for the password reset link.')
+            setMessage(result?.message || 'Check your email for the password reset link.')
         }
         setIsLoading(false)
     }
@@ -69,6 +73,8 @@ export default function ForgotPasswordPage() {
                             {error}
                         </div>
                     )}
+
+                    <TurnstileWidget onVerify={setTurnstileToken} className="flex justify-center" />
 
                     <Button
                         type="submit"

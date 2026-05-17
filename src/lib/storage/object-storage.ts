@@ -11,7 +11,7 @@ const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY || '';
 const ASSET_PUBLIC_BASE_URL = process.env.ASSET_PUBLIC_BASE_URL || '';
 
 export const isR2Configured = Boolean(
-    R2_ENDPOINT && R2_BUCKET && R2_ACCESS_KEY_ID && R2_SECRET_ACCESS_KEY
+    R2_ENDPOINT && R2_BUCKET && R2_ACCESS_KEY_ID && R2_SECRET_ACCESS_KEY && ASSET_PUBLIC_BASE_URL
 );
 
 let r2Client: S3Client | null = null;

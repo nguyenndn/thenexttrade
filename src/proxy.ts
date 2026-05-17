@@ -37,8 +37,13 @@ async function syncBlockedIPs(baseUrl: string): Promise<void> {
     blockedIPLastSync = now;
 
     try {
+        const headers: Record<string, string> = { 'x-internal-security': '1' };
+        if (process.env.INTERNAL_SECURITY_SECRET) {
+            headers['Authorization'] = `Bearer ${process.env.INTERNAL_SECURITY_SECRET}`;
+        }
+        
         const res = await fetch(`${baseUrl}/api/internal/security-log?action=blocked-ips`, {
-            headers: { 'x-internal-security': '1' },
+            headers,
         });
         if (res.ok) {
             const data = await res.json();
@@ -192,12 +197,17 @@ function logSecurityToAPI(baseUrl: string, data: {
     path?: string | null;
     detail?: string | null;
 }): void {
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'x-internal-security': '1',
+    };
+    if (process.env.INTERNAL_SECURITY_SECRET) {
+        headers['Authorization'] = `Bearer ${process.env.INTERNAL_SECURITY_SECRET}`;
+    }
+
     fetch(`${baseUrl}/api/internal/security-log`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-internal-security': '1',
-        },
+        headers,
         body: JSON.stringify(data),
     }).catch(() => { /* silent */ });
 }

@@ -1,7 +1,6 @@
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Wrench } from "lucide-react";
-import { getAuthUser } from "@/lib/auth-cache";
 import { ALL_TOOLS } from "@/config/tools-data";
 import { ToolsGrid } from "@/components/tools/ToolsGrid";
 
@@ -12,12 +11,12 @@ export const metadata: Metadata = {
     description: "14 professional Forex trading tools: calculators for position sizing, risk management, Fibonacci levels, pivot points, compounding, and more. All free.",
 };
 
-export default async function ToolsPage() {
-    const user = await getAuthUser();
+export const revalidate = 86400;
 
+export default function ToolsPage() {
     return (
         <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
-            <PublicHeader user={user} />
+            <PublicHeader />
 
             <main className="flex-1 pt-32 pb-20">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

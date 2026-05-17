@@ -13,18 +13,30 @@ interface User {
 
 interface CommentSectionProps {
     articleId: string;
-    currentUser: User | null;
+    currentUser?: User | null;
     initialComments?: any[];
 }
 
-export function CommentSection({ articleId, currentUser, initialComments = [] }: CommentSectionProps) {
+export function CommentSection({ articleId, currentUser: initialUser, initialComments = [] }: CommentSectionProps) {
     const [comments, setComments] = useState(initialComments);
     const [isLoading, setIsLoading] = useState(initialComments.length === 0);
+    const [currentUser, setCurrentUser] = useState<User | null>(initialUser || null);
 
-    // If initialComments provided, we don't need to load immediately, unless we want to refresh.
-    // Actually, if we pass initialComments, isLoading can be false. 
-    // But we might want to check for updates? Typically for comments, SSG/SSR data is fresh enough.
-    // Let's set isLoading to false if we have initialComments.
+    useEffect(() => {
+        if (initialUser !== undefined) return;
+        fetch("/api/profile")
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data?.id) {
+                    setCurrentUser({
+                        id: data.id,
+                        name: data.name,
+                        image: data.image
+                    });
+                }
+            })
+            .catch(() => {});
+    }, [initialUser]);
 
     const fetchComments = async () => {
         try {

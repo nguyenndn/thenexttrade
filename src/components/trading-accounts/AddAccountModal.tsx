@@ -359,7 +359,7 @@ export function AddAccountModal({
                                 <Button
                                     variant="primary"
                                     onClick={handleUpgradeSubmit}
-                                    disabled={isPending || !telegramId}
+                                    disabled={isPending || !telegramId || !turnstileToken}
                                     className="bg-amber-500 hover:bg-amber-600 border-none gap-2 h-11 px-6 font-bold"
                                 >
                                     {isPending ? (
@@ -731,7 +731,7 @@ export function AddAccountModal({
                             <TurnstileWidget onVerify={setTurnstileToken} className="flex justify-center" />
 
                             <div className="flex justify-end gap-3">
-                                <Button variant="primary" onClick={() => setShowConfirm(true)} disabled={isPending} className="bg-amber-500 hover:bg-amber-600 text-white gap-2">
+                                <Button variant="primary" onClick={() => setShowConfirm(true)} disabled={isPending || !turnstileToken} className="bg-amber-500 hover:bg-amber-600 text-white gap-2">
                                     <Check size={16} /> Submit Request
                                 </Button>
                             </div>

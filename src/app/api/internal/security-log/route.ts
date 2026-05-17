@@ -9,9 +9,26 @@ import { prisma } from "@/lib/prisma";
  * GET /api/internal/security-log?action=blocked-ips
  * Returns list of currently blocked IPs for middleware sync.
  */
+function isAuthenticated(request: NextRequest): boolean {
+  const isProd = process.env.NODE_ENV === "production";
+  const secret = process.env.INTERNAL_SECURITY_SECRET;
+  const authHeader = request.headers.get("Authorization");
+
+  if (isProd) {
+    if (!secret) {
+      console.error("[Security] INTERNAL_SECURITY_SECRET is missing in production!");
+      return false; // Fail closed
+    }
+    return authHeader === `Bearer ${secret}`;
+  } else {
+    // Dev fallback
+    const internalHeader = request.headers.get("x-internal-security");
+    return authHeader === `Bearer ${secret}` || internalHeader === "1";
+  }
+}
+
 export async function POST(request: NextRequest) {
-  const internalHeader = request.headers.get("x-internal-security");
-  if (internalHeader !== "1") {
+  if (!isAuthenticated(request)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -33,8 +50,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const internalHeader = request.headers.get("x-internal-security");
-  if (internalHeader !== "1") {
+  if (!isAuthenticated(request)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

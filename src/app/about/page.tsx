@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/Button';
 import { AboutTimeline } from '@/components/home/AboutTimeline';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
-import { getAuthUser } from '@/lib/auth-cache';
+
 
 export const metadata: Metadata = {
     title: 'About TheNextTrade — From Blown Accounts to Building the Platform I Wish I Had',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-    const user = await getAuthUser();
+
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-700 dark:text-white overflow-hidden relative">
 
@@ -26,7 +26,7 @@ export default async function AboutPage() {
             <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-primary/8 dark:bg-primary/15 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-cyan-400/8 dark:bg-cyan-500/12 rounded-full blur-[120px] pointer-events-none" />
 
-            <PublicHeader user={user} />
+            <PublicHeader />
 
             <main className="py-24 relative z-10">
                 {/* 1. Hero Section */}

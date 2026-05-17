@@ -148,6 +148,7 @@ export default function SignupPage() {
                             type="checkbox"
                             className="appearance-none h-5 w-5 rounded bg-white dark:bg-[#0B0E14] border border-gray-300 dark:border-white/20 checked:bg-primary dark:checked:bg-primary checked:border-transparent dark:checked:border-transparent checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
                             id="terms"
+                            name="termsAccepted"
                             required
                         />
                         <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-500 cursor-pointer">

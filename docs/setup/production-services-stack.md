@@ -146,11 +146,11 @@ R2 dung cho:
 ### Env de xuat
 
 ```env
-S3_ENDPOINT=
-S3_REGION=auto
-S3_BUCKET=
-S3_ACCESS_KEY_ID=
-S3_SECRET_ACCESS_KEY=
+R2_ENDPOINT=
+R2_REGION=auto
+R2_BUCKET=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
 ASSET_PUBLIC_BASE_URL=https://cdn.thenexttrade.com
 ```
 
@@ -320,10 +320,10 @@ VPS PostgreSQL = app data
 
 ### Storage
 
-- `S3_ENDPOINT`
-- `S3_BUCKET`
-- `S3_ACCESS_KEY_ID`
-- `S3_SECRET_ACCESS_KEY`
+- `R2_ENDPOINT`
+- `R2_BUCKET`
+- `R2_ACCESS_KEY_ID`
+- `R2_SECRET_ACCESS_KEY`
 - `ASSET_PUBLIC_BASE_URL`
 
 ### AI / external APIs
@@ -355,4 +355,3 @@ VPS PostgreSQL = app data
 - `docs/email-template-library.md`
 - `docs/custom-auth-email-delivery-strategy.md`
 - `release-performance-optimization-plan.md`
-

@@ -24,8 +24,8 @@ const DEFAULT_FILTERS: CalendarFilters = {
     remember: false
 };
 
-// Accept user prop for SSR Header
-export function EconomicCalendarClient({ user }: { user: any }) {
+// No user prop for SSR Header
+export function EconomicCalendarClient() {
     const { theme } = useTheme();
     const isDark = theme === "dark";
     const [events, setEvents] = useState<EconomicEvent[]>([]);
@@ -98,7 +98,7 @@ export function EconomicCalendarClient({ user }: { user: any }) {
 
     return (
         <div className={`min-h-screen flex flex-col ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
-            <PublicHeader user={user} />
+            <PublicHeader />
 
             <FilterModal
                 isOpen={isFilterModalOpen}

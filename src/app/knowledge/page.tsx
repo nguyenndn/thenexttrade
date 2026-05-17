@@ -9,7 +9,6 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFirefly";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Pagination } from "@/components/ui/Pagination";
-import { getAuthUser } from "@/lib/auth-cache";
 import { ArticleCard } from "@/components/knowledge/ArticleCard";
 import { Button } from "@/components/ui/Button";
 import { X } from "lucide-react";
@@ -81,8 +80,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
         };
     }
 
-    const [user, articles, totalCount, categories] = await Promise.all([
-        getAuthUser(),
+    const [articles, totalCount, categories] = await Promise.all([
         prisma.article.findMany({
             where: whereCondition,
             orderBy,
@@ -110,7 +108,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                 <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none"></div>
                 <FireflyBackground />
 
-                <PublicHeader user={user} />
+                <PublicHeader />
 
                 {/* Hero Section - Glass Effect */}
                 <div className="pt-32 pb-16 relative z-10">

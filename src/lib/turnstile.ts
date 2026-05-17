@@ -14,8 +14,14 @@ export async function verifyTurnstile(
 ): Promise<{ success: boolean; error?: string }> {
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
 
+  const isProd = process.env.NODE_ENV === "production";
+
   // Skip verification if Turnstile is not configured (no secret key set)
   if (!secretKey) {
+    if (isProd) {
+      console.error("[Turnstile] Missing TURNSTILE_SECRET_KEY in production.");
+      return { success: false, error: "Configuration error. Verification unavailable." };
+    }
     return { success: true };
   }
 
@@ -50,8 +56,10 @@ export async function verifyTurnstile(
       error: "Verification failed. Please try again.",
     };
   } catch {
-    // Network error — don't block user in case Cloudflare is down
     console.error("[Turnstile] Verification request failed");
+    if (isProd) {
+      return { success: false, error: "Verification service unavailable. Please try again." };
+    }
     return { success: true };
   }
 }

@@ -4,7 +4,6 @@ import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
-import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 
@@ -88,8 +87,9 @@ const PILLAR_SECTIONS = [
     },
 ];
 
+export const revalidate = 86400;
+
 export default async function RiskManagementPage() {
-    const user = await getAuthUser();
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
 
     // Fetch related articles about risk management
@@ -109,7 +109,7 @@ export default async function RiskManagementPage() {
 
     return (
         <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
-            <PublicHeader user={user} />
+            <PublicHeader />
 
             {/* SEO Schemas */}
             <BreadcrumbJsonLd items={[

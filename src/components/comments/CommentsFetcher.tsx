@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { CommentSection } from "./CommentSection";
 
-export async function CommentsFetcher({ articleId, currentUser }: { articleId: string, currentUser: any }) {
+export async function CommentsFetcher({ articleId }: { articleId: string }) {
     // Artificial delay to demonstrate streaming if needed (removed for prod)
     // await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -18,5 +18,5 @@ export async function CommentsFetcher({ articleId, currentUser }: { articleId: s
         orderBy: { createdAt: 'desc' }
     });
 
-    return <CommentSection articleId={articleId} currentUser={currentUser} initialComments={comments} />;
+    return <CommentSection articleId={articleId} initialComments={comments} />;
 }

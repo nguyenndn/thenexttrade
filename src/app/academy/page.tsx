@@ -1,10 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import { GraduationCap, PlayCircle } from "lucide-react";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { getAuthUser } from "@/lib/auth-cache";
 import { AcademyTree } from "@/components/academy/AcademyTree";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { AcademyPublicCTA } from "@/components/academy/AcademyPublicCTA";
 
 import type { Metadata } from "next";
 
@@ -21,8 +19,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AcademyPage() {
-    const user = await getAuthUser();
-    const basePath = user ? "/dashboard/academy" : "/academy";
+    const basePath = "/academy";
 
     const levels = await prisma.level.findMany({
         orderBy: { order: "asc" },
@@ -88,20 +85,12 @@ export default async function AcademyPage() {
                         Master the markets step by step. From your first trade to institutional mastery.
                     </p>
 
-                    {!user && (
-                        <Link
-                            href="/auth/login"
-                            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300"
-                        >
-                            <PlayCircle size={20} />
-                            Start Your Journey
-                        </Link>
-                    )}
+                    <AcademyPublicCTA />
                 </div>
             </section>
 
             {/* ── Tree Map ── */}
-            <AcademyTree levels={levels as any} basePath={basePath} isGuest={!user} />
+            <AcademyTree levels={levels as any} basePath={basePath} isGuest={true} />
 
             <SiteFooter />
         </div>

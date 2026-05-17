@@ -7,7 +7,7 @@ import { ToolViewTracker } from "./ToolViewTracker";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { getSimilarTools } from "@/config/tools-data";
-import { getAuthUser } from "@/lib/auth-cache";
+
 import { HelpCircle, BookOpen, CheckCircle, Lightbulb, Home, ChevronRight } from "lucide-react";
 import type { ToolData } from "@/config/tools-data";
 
@@ -17,13 +17,13 @@ interface ToolPageLayoutProps {
 }
 
 export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
-    const user = await getAuthUser();
+
     const similarTools = getSimilarTools(tool.slug, 6);
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://thenexttrade.com';
 
     return (
         <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
-            <PublicHeader user={user} />
+            <PublicHeader />
             <ToolViewTracker slug={tool.slug} />
 
             {/* Breadcrumb Schema */}

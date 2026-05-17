@@ -15,7 +15,7 @@
     "postinstall": "prisma generate",
     "build:local": "npm run env:local && next build",
     "build:prod": "npm run env:prod && next build",
-    "analyze": "cross-env ANALYZE=true next build",
+    "analyze": "cross-env ANALYZE=true next build --webpack",
     "start": "next start",
     "test": "vitest",
     "lint": "npx eslint src/",

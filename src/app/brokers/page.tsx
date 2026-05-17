@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { DynamicFirefly as FireflyBackground } from '@/components/ui/DynamicFirefly';
-import { getAuthUser } from '@/lib/auth-cache';
+
 import BrokersClient from './BrokersClient';
 
 export const metadata: Metadata = {
@@ -11,12 +11,14 @@ export const metadata: Metadata = {
     description: 'Handpicked forex brokers, prop trading firms, and VPS hosting we personally use and trust.',
 };
 
+export const revalidate = 86400;
+
 export default async function BrokersPage() {
-    const user = await getAuthUser();
+
 
     return (
         <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
-            <PublicHeader user={user} />
+            <PublicHeader />
 
             <main className="flex-1 pt-32 pb-20 relative overflow-hidden">
                 {/* Background */}

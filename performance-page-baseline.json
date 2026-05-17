@@ -1,0 +1,38 @@
+[
+  {
+    "route": "/",
+    "status": 200,
+    "durationMs": 1050,
+    "cacheHeader": "UNKNOWN"
+  },
+  {
+    "route": "/academy",
+    "status": 200,
+    "durationMs": 465,
+    "cacheHeader": "UNKNOWN"
+  },
+  {
+    "route": "/tools",
+    "status": 200,
+    "durationMs": 250,
+    "cacheHeader": "UNKNOWN"
+  },
+  {
+    "route": "/brokers",
+    "status": 200,
+    "durationMs": 431,
+    "cacheHeader": "UNKNOWN"
+  },
+  {
+    "route": "/knowledge",
+    "status": 200,
+    "durationMs": 399,
+    "cacheHeader": "UNKNOWN"
+  },
+  {
+    "route": "/auth/login",
+    "status": 200,
+    "durationMs": 1091,
+    "cacheHeader": "UNKNOWN"
+  }
+]

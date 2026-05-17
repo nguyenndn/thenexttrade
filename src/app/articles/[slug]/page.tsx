@@ -9,7 +9,6 @@ import { MessageSquare, Calendar, Clock, Home, ChevronRight, ThumbsUp, Flame } f
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { CommentsFetcher } from "@/components/comments/CommentsFetcher";
-import { getAuthUser } from "@/lib/auth-cache";
 import SocialShare from "@/components/features/SocialShare";
 import RelatedArticlesBottom from "@/components/features/RelatedArticlesBottom";
 import SidebarWidgets from "@/components/features/SidebarWidgets";
@@ -135,9 +134,8 @@ export const revalidate = 3600;
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
-    // Parallel Fetching: User, Article & Related Articles (Spec 3.4)
-    const [authUser, article, relatedArticles] = await Promise.all([
-        getAuthUser(),
+    // Parallel Fetching: Article & Related Articles (Spec 3.4)
+    const [article, relatedArticles] = await Promise.all([
         getCachedArticle(slug),
         prisma.article.findMany({
             where: {
@@ -161,19 +159,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         notFound();
     }
 
-    let currentUser = null;
-    if (authUser) {
-        currentUser = await prisma.user.findUnique({
-            where: { id: authUser.id },
-            select: { id: true, name: true, image: true }
-        });
-    }
 
-    // A1: Non-blocking view increment — fire-and-forget, don't block render
-    prisma.article.update({
-        where: { id: article.id },
-        data: { views: { increment: 1 } }
-    }).catch(() => {});
 
     const formattedDate = new Date(article.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -230,7 +216,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 );
             })()}
 
-            <PublicHeader user={authUser} />
+            <PublicHeader />
 
             <div className="pt-[84px]" />
 
@@ -441,7 +427,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                     </div>
                                 </div>
                             }>
-                                <CommentsFetcher articleId={article.id} currentUser={currentUser} />
+                                <CommentsFetcher articleId={article.id} />
                             </Suspense>
                         </div>
                     </article>

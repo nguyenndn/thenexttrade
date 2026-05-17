@@ -13,7 +13,6 @@ import { cache } from "@/lib/cache";
 // Revalidate data every 60 seconds
 export const revalidate = 60;
 
-import { getAuthUser } from "@/lib/auth-cache";
 import { getMarketData } from "@/app/actions/get-market-data";
 import { shuffleArray } from "@/lib/utils";
 
@@ -32,11 +31,10 @@ const ToolsPreviewSection = dynamic(() => import("@/components/home/ToolsPreview
 const LearningPathTimeline = dynamic(() => import("@/components/home/LearningPathTimeline").then(m => ({ default: m.LearningPathTimeline })), { loading: () => <div className="h-96" /> });
 const TrustedPartners = dynamic(() => import("@/components/home/TrustedPartners").then(m => ({ default: m.TrustedPartners })), { loading: () => <div className="h-96" /> });
 
-export default async function Home() {
-  const user = await getAuthUser();
+export default function Home() {
   return (
     <main className="min-h-screen bg-white dark:bg-slate-900 overflow-hidden">
-      <PublicHeader user={user} />
+      <PublicHeader />
       <Suspense fallback={<HomeFeedSkeleton />}>
         <HomeFeed />
       </Suspense>

@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
-import { getAuthUser } from "@/lib/auth-cache";
+import { notFound } from "next/navigation";
 import { PublicLessonView } from "@/components/academy/PublicLessonView";
 import type { Metadata } from "next";
 
@@ -66,12 +65,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PublicLessonPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    const user = await getAuthUser();
-
-    // Authenticated users always use the dashboard view
-    if (user) {
-        redirect(`/dashboard/academy/lessons/${slug}`);
-    }
 
     // Fetch lesson with full context for cross-module navigation
     const lesson = await prisma.lesson.findUnique({

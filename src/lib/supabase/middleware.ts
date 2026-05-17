@@ -46,6 +46,15 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(loginUrl)
     }
 
+    if (user && (path.startsWith('/dashboard') || (path.startsWith('/admin') && !path.startsWith('/admin/login')))) {
+        const { data: aal, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (!error && aal && aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2') {
+            const verifyUrl = new URL('/auth/verify-2fa', request.url);
+            verifyUrl.searchParams.set('next', path);
+            return NextResponse.redirect(verifyUrl);
+        }
+    }
+
     // 2. Admin Login — already authenticated users go to admin dashboard
     if (user && path.startsWith('/admin/login')) {
         return NextResponse.redirect(new URL('/admin', request.url))

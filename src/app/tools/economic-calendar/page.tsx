@@ -1,10 +1,9 @@
-import { getAuthUser } from "@/lib/auth-cache";
 import { EconomicCalendarClient } from "./EconomicCalendarClient";
 
-export default async function EconomicCalendarPage() {
-    const user = await getAuthUser();
+export const revalidate = 86400;
 
+export default function EconomicCalendarPage() {
     return (
-        <EconomicCalendarClient user={user} />
+        <EconomicCalendarClient />
     );
 }

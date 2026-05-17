@@ -9,8 +9,10 @@ import { recordSession } from '@/lib/session'
 import { verifyTurnstile } from '@/lib/turnstile'
 import { logSecurityEvent, SECURITY_EVENT_TYPES } from '@/lib/security-logger'
 
-import { authSchema } from '@/lib/validations/auth'
+import { authSchema, signupSchema } from '@/lib/validations/auth'
 import { headers } from 'next/headers'
+import { checkAuthRateLimit } from '@/lib/security/auth-rate-limit'
+import { AUTH_ERRORS } from '@/lib/security/auth-errors'
 
 async function getClientIP(): Promise<string> {
     const h = await headers()
@@ -19,19 +21,25 @@ async function getClientIP(): Promise<string> {
 
 export async function login(formData: FormData) {
     const supabase = await createClient()
+    const ip = await getClientIP()
+    const email = formData.get('email') as string
+
+    // Apply Rate Limit
+    if (await checkAuthRateLimit('login', ip, email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC }
+    }
 
     // 0. Verify Turnstile
     const turnstileToken = formData.get('cf-turnstile-response') as string
-    const turnstileResult = await verifyTurnstile(turnstileToken)
+    const turnstileResult = await verifyTurnstile(turnstileToken, ip)
     if (!turnstileResult.success) {
-        const ip = await getClientIP()
-        logSecurityEvent({ type: SECURITY_EVENT_TYPES.TURNSTILE_FAILED, ip, path: '/auth/login', detail: `Email: ${formData.get('email')}` }).catch(() => {})
+        logSecurityEvent({ type: SECURITY_EVENT_TYPES.TURNSTILE_FAILED, ip, path: '/auth/login', detail: `Email: ${email}` }).catch(() => {})
         return { error: turnstileResult.error || 'Verification failed' }
     }
 
     // 1. Validate Input
     const data = {
-        email: formData.get('email') as string,
+        email,
         password: formData.get('password') as string,
     }
 
@@ -44,31 +52,23 @@ export async function login(formData: FormData) {
     const { error } = await supabase.auth.signInWithPassword(data)
 
     if (error) {
-        const ip = await getClientIP()
         logSecurityEvent({ type: SECURITY_EVENT_TYPES.LOGIN_FAILED, ip, path: '/auth/login', detail: `Email: ${data.email}. Error: ${error.message}` }).catch(() => {})
-        return { error: error.message }
+        return { error: AUTH_ERRORS.LOGIN_GENERIC }
     }
 
     // 3. Revalidate and Redirect
-    // Check/Sync Prisma User to prevent "orphaned session" redirect loops
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
         const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
         if (!dbUser) {
-            // Check for potential ID mismatch (Seed Data vs Supabase Auth)
             const existingUserByEmail = await prisma.user.findUnique({
                 where: { email: user.email! }
             });
 
             if (existingUserByEmail) {
-                // Conflict: Email exists but ID is different.
-                // Action: Updates the local user ID to match Supabase Auth ID.
-                // This preserves seed data relationships while fixing the auth link.
-
-                await prisma.user.update({
-                    where: { email: user.email! },
-                    data: { id: user.id }
-                });
+                // Identity Takeover Protection: Do not mutate User.id automatically.
+                logSecurityEvent({ type: SECURITY_EVENT_TYPES.AUTH_FAILED, ip, path: '/auth/login', detail: `Identity conflict for email: ${user.email}` }).catch(() => {})
+                return { error: 'Account setup issue. Please contact support.' }
             } else {
                 // Self-heal: Create missing user record
                 await prisma.user.create({
@@ -100,8 +100,13 @@ export async function login(formData: FormData) {
 export async function verifyLogin2FA(code: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    const ip = await getClientIP()
 
     if (!user) return { error: "Unauthorized" }
+
+    if (await checkAuthRateLimit('verify_2fa', ip, user.email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC }
+    }
 
     const factors = user.factors || []
     const totpFactor = factors.find(f => f.factor_type === 'totp' && f.status === 'verified')
@@ -119,7 +124,7 @@ export async function verifyLogin2FA(code: string) {
         code
     })
 
-    if (error) return { error: error.message }
+    if (error) return { error: AUTH_ERRORS.OTP_VERIFY_GENERIC }
 
     revalidatePath('/', 'layout')
     redirect('/academy')
@@ -129,10 +134,15 @@ export async function signInWithMagicLink(formData: FormData) {
     const supabase = await createClient()
     const email = formData.get('email') as string
     const origin = (await headers()).get('origin')
+    const ip = await getClientIP()
+
+    if (await checkAuthRateLimit('magic_link', ip, email)) {
+        return { success: true, message: AUTH_ERRORS.RATE_LIMIT_GENERIC }
+    }
 
     // Verify Turnstile
     const turnstileToken = formData.get('cf-turnstile-response') as string
-    const turnstileResult = await verifyTurnstile(turnstileToken)
+    const turnstileResult = await verifyTurnstile(turnstileToken, ip)
     if (!turnstileResult.success) {
         return { error: turnstileResult.error || 'Verification failed' }
     }
@@ -148,32 +158,41 @@ export async function signInWithMagicLink(formData: FormData) {
         },
     })
 
-    if (error) {
-        return { error: error.message }
-    }
-
-    return { success: true, message: 'Check your email for a login link!' }
+    // Return generic success to prevent email enumeration
+    return { success: true, message: AUTH_ERRORS.MAGIC_LINK_GENERIC }
 }
 
 export async function signup(formData: FormData) {
     const supabase = await createClient()
+    const ip = await getClientIP()
+    const email = formData.get('email') as string
+
+    if (await checkAuthRateLimit('signup', ip, email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC }
+    }
 
     // Verify Turnstile
     const turnstileToken = formData.get('cf-turnstile-response') as string
-    const turnstileResult = await verifyTurnstile(turnstileToken)
+    const turnstileResult = await verifyTurnstile(turnstileToken, ip)
     if (!turnstileResult.success) {
         return { error: turnstileResult.error || 'Verification failed' }
     }
 
-    const fullName = formData.get('fullName') as string
-    const country = formData.get('country') as string
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
-
-    // Simple validation
-    if (!email || !password || password.length < 6 || !fullName) {
-        return { error: 'Invalid inputs. Password must be at least 6 chars.' }
+    const dataObj = {
+        email,
+        password: formData.get('password') as string,
+        confirm: formData.get('confirm') as string,
+        fullName: formData.get('fullName') as string,
+        country: formData.get('country') as string,
+        termsAccepted: formData.get('termsAccepted') as string,
     }
+
+    const validated = signupSchema.safeParse(dataObj)
+    if (!validated.success) {
+        return { error: validated.error.issues[0]?.message || 'Invalid inputs' }
+    }
+
+    const { fullName, country, password } = validated.data;
 
     // Attempt to split name for metadata if needed, otherwise just use full name
     const nameParts = fullName.trim().split(' ');
@@ -182,7 +201,7 @@ export async function signup(formData: FormData) {
 
     // 2. Sign Up
     const { data, error } = await supabase.auth.signUp({
-        email,
+        email: validated.data.email, // use normalized email
         password,
         options: {
             data: {
@@ -195,7 +214,8 @@ export async function signup(formData: FormData) {
     })
 
     if (error) {
-        return { error: error.message }
+        logSecurityEvent({ type: SECURITY_EVENT_TYPES.AUTH_FAILED, ip, path: '/auth/signup', detail: `Email: ${email}. Error: ${error.message}` }).catch(() => {})
+        return { error: AUTH_ERRORS.SIGNUP_GENERIC }
     }
 
     // Check if session is automatically established (Email Verification disabled)
@@ -204,7 +224,7 @@ export async function signup(formData: FormData) {
         await prisma.user.create({
             data: {
                 id: data.user.id,
-                email: email,
+                email: validated.data.email,
                 name: fullName.trim(),
             }
         }).catch(() => {});
@@ -215,7 +235,7 @@ export async function signup(formData: FormData) {
 
     // Email verification is ON -> session is null -> Requires Verification Flow
     // DO NOT insert into Prisma yet. Keep DB clean.
-    return { success: true, requiresVerification: true, email: email, message: 'OTP sent to your email.' }
+    return { success: true, requiresVerification: true, email: validated.data.email, message: 'OTP sent to your email.' }
 }
 
 export async function signout() {
@@ -230,6 +250,17 @@ export async function forgotPassword(formData: FormData) {
     const supabase = await createClient()
     const email = formData.get('email') as string
     const origin = (await headers()).get('origin')
+    const ip = await getClientIP()
+
+    if (await checkAuthRateLimit('forgot_password', ip, email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC }
+    }
+
+    const turnstileToken = formData.get('cf-turnstile-response') as string
+    const turnstileResult = await verifyTurnstile(turnstileToken, ip)
+    if (!turnstileResult.success) {
+        return { error: turnstileResult.error || 'Verification failed' }
+    }
 
     if (!email) {
         return { error: 'Email is required' }
@@ -239,11 +270,8 @@ export async function forgotPassword(formData: FormData) {
         redirectTo: `${origin}/auth/callback?next=/auth/update-password`,
     })
 
-    if (error) {
-        return { error: error.message }
-    }
-
-    return { success: true }
+    // Return generic success regardless of error to prevent email enumeration
+    return { success: true, message: AUTH_ERRORS.FORGOT_PASSWORD_GENERIC }
 }
 
 export async function updatePassword(formData: FormData) {
@@ -282,6 +310,11 @@ export async function verifyOtpAction(formData: FormData) {
     const supabase = await createClient()
     const email = formData.get('email') as string
     const otp = formData.get('otp') as string
+    const ip = await getClientIP()
+
+    if (await checkAuthRateLimit('verify_otp', ip, email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC }
+    }
 
     if (!email || !otp || otp.length !== 8) {
         return { error: 'Email and an 8-digit OTP code are required.' }
@@ -294,7 +327,7 @@ export async function verifyOtpAction(formData: FormData) {
     })
 
     if (error) {
-        return { error: error.message }
+        return { error: AUTH_ERRORS.OTP_VERIFY_GENERIC }
     }
 
     // On OTP Success: Insert user into Database (Prisma)
@@ -324,6 +357,11 @@ export async function verifyOtpAction(formData: FormData) {
 export async function resendOtpAction(formData: FormData) {
     const supabase = await createClient()
     const email = formData.get('email') as string
+    const ip = await getClientIP()
+
+    if (await checkAuthRateLimit('resend_otp', ip, email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC }
+    }
 
     if (!email) {
         return { error: 'Email is required.' }
@@ -335,7 +373,8 @@ export async function resendOtpAction(formData: FormData) {
     })
 
     if (error) {
-        return { error: error.message }
+        logSecurityEvent({ type: SECURITY_EVENT_TYPES.AUTH_FAILED, ip, path: '/auth/actions/resend', detail: `Resend failed: ${error.message}` }).catch(() => {})
+        return { error: AUTH_ERRORS.OTP_RESEND_GENERIC }
     }
 
     return { success: true, message: 'A new 8-digit code has been sent to your email.' }

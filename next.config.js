@@ -2,6 +2,24 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
+const assetBaseUrl = process.env.ASSET_PUBLIC_BASE_URL || '';
+let assetHostname = '';
+try {
+  if (assetBaseUrl) assetHostname = new URL(assetBaseUrl).hostname;
+} catch (e) {}
+
+const customRemotePatterns = [
+  { protocol: 'https', hostname: '*.supabase.co' },
+  { protocol: 'https', hostname: 'images.unsplash.com' },
+  { protocol: 'https', hostname: '*.unsplash.com' },
+  { protocol: 'https', hostname: 'flagcdn.com' },
+  { protocol: 'https', hostname: '*.googleusercontent.com' },
+  { protocol: 'https', hostname: '*.gravatar.com' },
+];
+
+if (assetHostname) {
+  customRemotePatterns.push({ protocol: 'https', hostname: assetHostname });
+}
 
 const nextConfig = {
   reactStrictMode: true,
@@ -43,14 +61,7 @@ const nextConfig = {
     minimumCacheTTL: 2592000, // 30 days
     deviceSizes: [640, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    remotePatterns: [
-      { protocol: 'https', hostname: '*.supabase.co' },
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: '*.unsplash.com' },
-      { protocol: 'https', hostname: 'flagcdn.com' },
-      { protocol: 'https', hostname: '*.googleusercontent.com' },
-      { protocol: 'https', hostname: '*.gravatar.com' },
-    ],
+    remotePatterns: customRemotePatterns,
   },
   async headers() {
     // In dev mode: send HSTS max-age=0 to clear any cached HSTS from browser
@@ -97,7 +108,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://*.r2.dev https://*.thenexttrade.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
           }
         ]
       },

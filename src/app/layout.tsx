@@ -92,8 +92,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
         <link rel="dns-prefetch" href="https://sdugjioikugfomjitfwg.supabase.co" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
