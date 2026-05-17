@@ -4,6 +4,7 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
+import { isR2Configured, uploadPublicAsset } from "@/lib/storage/object-storage";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -74,30 +75,43 @@ export async function POST(request: Request) {
         const mainFilename = `${timestamp}-${safeName}.webp`;
         const thumbFilename = `${timestamp}-${safeName}-thumb.webp`;
 
-        const uploadDir = path.join(process.cwd(), "public", "uploads");
-        await mkdir(uploadDir, { recursive: true });
-
-        const mainPath = path.join(uploadDir, mainFilename);
-        const thumbPath = path.join(uploadDir, thumbFilename);
-
         // Process images in parallel
         // 1. Main Image: Resize if too large (>2560px), convert to WebP
-        const mainTask = sharp(buffer)
+        const mainBuffer = await sharp(buffer)
             .resize({ width: 2560, withoutEnlargement: true })
             .webp({ quality: 80 })
-            .toFile(mainPath);
+            .toBuffer({ resolveWithObject: true });
 
         // 2. Thumbnail: Resize to 300px width, convert to WebP
-        const thumbTask = sharp(buffer)
+        const thumbBuffer = await sharp(buffer)
             .resize({ width: 300 })
             .webp({ quality: 60 })
-            .toFile(thumbPath);
+            .toBuffer({ resolveWithObject: true });
 
-        const [mainInfo, thumbInfo] = await Promise.all([mainTask, thumbTask]);
+        let url = `/uploads/${mainFilename}`;
+        let thumbnailUrl = `/uploads/${thumbFilename}`;
 
-        // Public URLs
-        const url = `/uploads/${mainFilename}`;
-        const thumbnailUrl = `/uploads/${thumbFilename}`;
+        if (isR2Configured) {
+            // Upload to Cloudflare R2
+            const mainR2Url = await uploadPublicAsset(mainBuffer.data, 'uploads', mainFilename, 'image/webp');
+            const thumbR2Url = await uploadPublicAsset(thumbBuffer.data, 'uploads', thumbFilename, 'image/webp');
+            
+            if (mainR2Url && thumbR2Url) {
+                url = mainR2Url;
+                thumbnailUrl = thumbR2Url;
+            } else {
+                throw new Error("Failed to upload to Object Storage");
+            }
+        } else {
+            // Fallback to local
+            const uploadDir = path.join(process.cwd(), "public", "uploads");
+            await mkdir(uploadDir, { recursive: true });
+
+            await writeFile(path.join(uploadDir, mainFilename), mainBuffer.data);
+            await writeFile(path.join(uploadDir, thumbFilename), thumbBuffer.data);
+        }
+
+        const mainInfo = mainBuffer.info;
 
         // Save to DB
         console.log("Saving to DB...", { filename: mainFilename, url, type: 'image/webp', size: mainInfo.size, userId: user.id });

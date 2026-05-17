@@ -15,6 +15,10 @@ Template library lien quan:
 
 - `docs/email-template-library.md`
 
+Production services stack lien quan:
+
+- `docs/production-services-stack.md`
+
 ## 2. Ket luan nhanh
 
 He thong da co nen tang gui mail bang SMTP/Brevo qua `src/lib/services/email.service.ts`, va Supabase dang xu ly cac email auth nhu signup OTP, magic link, reset password.

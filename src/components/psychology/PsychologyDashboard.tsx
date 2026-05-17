@@ -257,15 +257,73 @@ export function PsychologyDashboard() {
                 <ConfidenceCorrelation data={data.confidenceCorrelation} />
             </div>
 
+            {/* Insight: Emotion + Confidence */}
+            {(() => {
+                const worstEmotion = data.emotionBeforeStats.length > 1
+                    ? data.emotionBeforeStats.reduce((w, c) => c.winRate < w.winRate ? c : w)
+                    : null;
+                const bestConfidence = data.confidenceCorrelation.length > 0
+                    ? data.confidenceCorrelation.reduce((b, c) => c.winRate > b.winRate ? c : b)
+                    : null;
+                if (!worstEmotion && !bestConfidence) return null;
+                return (
+                    <div className="flex flex-wrap gap-3">
+                        {worstEmotion && bestEmotion && worstEmotion.emotion !== bestEmotion.emotion && (
+                            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200/50 dark:border-amber-500/20 text-xs text-gray-600 dark:text-gray-300">
+                                <TrendingDown size={14} className="text-amber-500 shrink-0" />
+                                <span>Avoid trading when <strong className="text-amber-600 dark:text-amber-400">{worstEmotion.emotion}</strong> — only {worstEmotion.winRate.toFixed(0)}% win rate</span>
+                            </div>
+                        )}
+                        {bestConfidence && bestConfidence.tradeCount >= 3 && (
+                            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 border border-blue-200/50 dark:border-blue-500/20 text-xs text-gray-600 dark:text-gray-300">
+                                <Target size={14} className="text-blue-500 shrink-0" />
+                                <span>Optimal confidence level: <strong className="text-blue-600 dark:text-blue-400">{bestConfidence.level}/10</strong> — {bestConfidence.winRate.toFixed(0)}% win rate</span>
+                            </div>
+                        )}
+                    </div>
+                );
+            })()}
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <EmotionTrendChart data={data.emotionTrend} />
                 <TradingMoodHeatmap data={data.moodHeatmap} />
             </div>
 
+            {/* Insight: Trend direction */}
+            {data.emotionTrend.length >= 2 && (() => {
+                const recent = data.emotionTrend[data.emotionTrend.length - 1];
+                const prev = data.emotionTrend[data.emotionTrend.length - 2];
+                const improving = recent.winRate > prev.winRate;
+                return (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5 text-xs text-gray-600 dark:text-gray-300">
+                        {improving ? <TrendingUp size={14} className="text-primary shrink-0" /> : <TrendingDown size={14} className="text-red-500 shrink-0" />}
+                        <span>
+                            Win rate {improving ? "improved" : "declined"} from {prev.winRate.toFixed(0)}% to <strong className={improving ? "text-primary" : "text-red-500"}>{recent.winRate.toFixed(0)}%</strong> this week
+                            {recent.dominantEmotion && <> — dominant mood: <strong>{recent.dominantEmotion}</strong></>}
+                        </span>
+                    </div>
+                );
+            })()}
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <PlanAdherence data={data.planAdherenceStats} />
                 <TiltIndicators data={data.tiltIndicators} />
             </div>
+
+            {/* Insight: Plan adherence impact */}
+            {data.planAdherenceStats.followed.count > 0 && data.planAdherenceStats.notFollowed.count > 0 && (() => {
+                const diff = data.planAdherenceStats.followed.winRate - data.planAdherenceStats.notFollowed.winRate;
+                if (Math.abs(diff) < 1) return null;
+                return (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-purple-50 dark:bg-purple-500/10 border border-purple-200/50 dark:border-purple-500/20 text-xs text-gray-600 dark:text-gray-300">
+                        <ClipboardCheck size={14} className="text-purple-500 shrink-0" />
+                        <span>
+                            Following your plan gives <strong className="text-purple-600 dark:text-purple-400">{diff > 0 ? "+" : ""}{diff.toFixed(0)}%</strong> higher win rate
+                            {diff > 0 ? " — discipline pays off!" : " — review your plan quality"}
+                        </span>
+                    </div>
+                );
+            })()}
         </>
     );
 }

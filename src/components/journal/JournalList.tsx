@@ -204,7 +204,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
             }
         });
         // Reset to page 1 on filter change usually, except if explicit page update
-        if (!updates.page && (updates.symbol !== undefined || updates.type !== undefined || updates.status !== undefined)) {
+        if (!updates.page && (updates.symbol !== undefined || updates.type !== undefined || updates.status !== undefined || updates.strategy !== undefined || updates.tag !== undefined)) {
             params.set("page", "1");
         }
         router.push(`?${params.toString()}`);
@@ -332,7 +332,10 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                 handleSearch={handleSearch}
                 filterType={filterType}
                 filterTag={filterTag}
+                filterResult={filterStatus}
+                filterStrategy={searchParams.get("strategy") || ""}
                 userTags={userTags}
+                strategies={[...new Set(entries.map((e: any) => e.strategy).filter(Boolean))]}
                 updateParams={updateParams}
                 isColumnMenuOpen={isColumnMenuOpen}
                 setIsColumnMenuOpen={setIsColumnMenuOpen}

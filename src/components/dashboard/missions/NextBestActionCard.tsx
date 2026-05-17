@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import type { MissionProgressItem } from "@/lib/services/edge-missions.service";
 import { claimMission } from "@/actions/edge-missions";
 import { trackEvent } from "@/lib/track";
+import { celebrateXP } from "@/lib/celebrate";
 import { toast } from "sonner";
 
 interface NextBestActionCardProps {
@@ -23,8 +24,9 @@ export function NextBestActionCard({ mission, onClaimed }: NextBestActionCardPro
     try {
       const result = await claimMission(mission.missionId);
       if (result.success) {
-        toast.success(`+${result.xpAwarded} Edge earned!`, {
-          description: "Mission Complete!",
+        await celebrateXP({
+          xp: result.xpAwarded || 0,
+          message: `Mission Complete: ${mission.def.title}`,
         });
         if (onClaimed) onClaimed();
       } else {

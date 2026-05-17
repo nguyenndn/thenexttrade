@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+ import type { Metadata, Viewport } from "next";
 import NextTopLoader from 'nextjs-toploader';
 import "./globals.css";
 
@@ -19,9 +19,9 @@ const sourceSans = Source_Sans_3({
 const lexend = Lexend({
   subsets: ["latin"],
   variable: "--font-lexend",
-  display: 'swap',
+  display: 'optional',
   preload: true,
-  weight: ["500", "600", "700", "800"]
+  weight: ["600", "700"]
 });
 
 export const metadata: Metadata = {

@@ -6,6 +6,7 @@ import { Gift, Check, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { claimMission } from "@/actions/edge-missions";
 import { trackEvent } from "@/lib/track";
+import { celebrateXP } from "@/lib/celebrate";
 import { toast } from "sonner";
 import type { MissionProgressItem } from "@/lib/services/edge-missions.service";
 
@@ -46,8 +47,9 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
       const result = await claimMission(mission.missionId);
       if (result.success) {
         setClaimed(true);
-        toast.success(`+${result.xpAwarded} Edge earned!`, {
-          description: mission.def.title,
+        await celebrateXP({
+          xp: result.xpAwarded || mission.def.xpReward,
+          message: `Mission Complete: ${mission.def.title}`,
         });
         onClaimed?.();
       } else if (result.error) {

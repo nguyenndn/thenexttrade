@@ -10,14 +10,18 @@ import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { InsightBanner } from "@/components/dashboard/InsightBanner";
 import { MobileProStatusBanner } from "@/components/dashboard/MobileProStatusBanner";
 import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
+import { WelcomeHero } from "@/components/dashboard/WelcomeHero";
 import type { ActivationState } from "@/lib/activation/activation-types";
 
-// Lazy load chart components — only loaded when user scrolls to them
+
+// Static imports for above-fold charts (always visible — no skeleton needed)
+import { BalanceGrowthChart } from "@/components/dashboard/BalanceGrowthChart";
+import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";
+
+// Lazy load below-fold chart components — only loaded when user scrolls to them
 const ChartSkeleton = () => <div className="h-[280px] bg-gray-100 dark:bg-white/5 animate-pulse rounded-xl" />;
-const BalanceGrowthChart = dynamic(() => import("@/components/dashboard/BalanceGrowthChart").then(m => m.BalanceGrowthChart), { loading: () => <ChartSkeleton /> });
 const ProfitDistributionChart = dynamic(() => import("@/components/dashboard/ProfitDistributionChart").then(m => m.ProfitDistributionChart), { loading: () => <ChartSkeleton /> });
 const LotDistributionChart = dynamic(() => import("@/components/dashboard/LotDistributionChart").then(m => m.LotDistributionChart), { loading: () => <ChartSkeleton /> });
-const DailyWinRateChart = dynamic(() => import("@/components/dashboard/DailyWinRateChart").then(m => m.DailyWinRateChart), { loading: () => <ChartSkeleton /> });
 const MonthlyAnalyticsChart = dynamic(() => import("@/components/dashboard/MonthlyAnalyticsChart").then(m => m.MonthlyAnalyticsChart), { loading: () => <ChartSkeleton /> });
 const TopTradesList = dynamic(() => import("@/components/dashboard/TopTradesList").then(m => m.TopTradesList), { loading: () => <ChartSkeleton /> });
 const SymbolPerformanceList = dynamic(() => import("@/components/dashboard/SymbolPerformanceList").then(m => m.SymbolPerformanceList), { loading: () => <ChartSkeleton /> });
@@ -59,6 +63,7 @@ interface DashboardClientProps {
     sessionPerformance: { session: string; trades: number; pnl: number; winRate: number }[];
     dayOfWeekPerformance: { day: string; dayIndex: number; pnl: number; tradeCount: number; winRate: number }[];
     activationState: ActivationState;
+    daysSinceLastReport?: number | null;
 }
 
 export default function DashboardClient({
@@ -81,6 +86,7 @@ export default function DashboardClient({
     sessionPerformance,
     dayOfWeekPerformance,
     activationState,
+    daysSinceLastReport,
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -103,8 +109,11 @@ export default function DashboardClient({
     };
 
 
+    // Detect "brand new user" — no trades at all
+    const hasNoData = dashboardData.winCount === 0 && dashboardData.lossCount === 0 && recentTrades.length === 0;
+
     return (
-        <div className="space-y-4">
+        <div className="w-full relative min-h-screen">
             <JournalEntryModal
                 open={showTradeModal}
                 onOpenChange={setShowTradeModal}
@@ -117,13 +126,36 @@ export default function DashboardClient({
             {/* Mobile Pro Status Banner — visible on mobile without opening the drawer */}
             <MobileProStatusBanner />
 
-            {/* Activation Checklist — shown for new users */}
+            {/* Welcome Hero — replaces empty charts for new users */}
+            {hasNoData ? (
+                <WelcomeHero userName={userName} activationState={activationState} />
+            ) : (
+            <>
+            {/* Activation Checklist — shown for in-progress users */}
             {activationState.completedCount < activationState.totalCount && (
                 <ActivationChecklist state={activationState} />
             )}
 
             {/* AI Insight Banner */}
             {insight && <InsightBanner insight={insight} score={intelligenceScore} />}
+
+            {/* Report Nudge Card */}
+            {(daysSinceLastReport === undefined || daysSinceLastReport === null || daysSinceLastReport >= 7) && dashboardData.totalBalance > 0 && (
+                <div className="mb-4 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-indigo-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm relative overflow-hidden">
+                    <div className="flex items-center gap-3 relative z-10">
+                        <div className="p-2.5 bg-indigo-500 text-white rounded-lg shadow-md">
+                            <PieChartIcon size={20} />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-gray-800 dark:text-white text-sm">Your weekly review is ready</h3>
+                            <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">It's been {daysSinceLastReport == null ? "a while" : `${daysSinceLastReport} days`} since your last report. Generate one to uncover new insights.</p>
+                        </div>
+                    </div>
+                    <a href="/dashboard/reports" className="relative z-10 shrink-0 bg-white dark:bg-white/10 hover:bg-gray-50 dark:hover:bg-white/20 text-gray-800 dark:text-white font-semibold text-xs px-4 py-2 rounded-lg border border-gray-200 dark:border-white/10 transition-colors text-center shadow-sm">
+                        Generate Report →
+                    </a>
+                </div>
+            )}
 
             {/* Hero Stats Bar (4 columns) */}
             <DashboardHero 
@@ -319,6 +351,8 @@ export default function DashboardClient({
                     </div>
                 </div>
             </div>
+            </>
+            )}
         </div>
     );
 }

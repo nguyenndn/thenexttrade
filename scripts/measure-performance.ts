@@ -247,6 +247,36 @@ async function measureDatabasePerformance() {
 
         return { articles, lessons };
     });
+
+    // Test 11: Dashboard Recent Trades & Stats
+    await measureQuery('Dashboard - Recent Trades', async () => {
+        return await prisma.journalEntry.findMany({
+            where: { status: 'CLOSED' },
+            orderBy: { exitDate: 'desc' },
+            take: 10,
+            include: {
+                account: { select: { name: true, color: true } }
+            }
+        });
+    });
+
+    // Test 12: Accounts List
+    await measureQuery('Accounts - List with Aggregation', async () => {
+        return await prisma.tradingAccount.findMany({
+            include: {
+                _count: { select: { journalEntries: true } }
+            },
+            take: 10
+        });
+    });
+
+    // Test 13: Reports List
+    await measureQuery('Reports - List', async () => {
+        return await prisma.tradingReport.findMany({
+            orderBy: { createdAt: 'desc' },
+            take: 5
+        });
+    });
 }
 
 async function analyzeBundleSize() {

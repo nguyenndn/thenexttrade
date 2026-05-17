@@ -206,7 +206,7 @@ function logSecurityToAPI(baseUrl: string, data: {
 // MIDDLEWARE ENTRY POINT
 // =============================================================================
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '127.0.0.1';
     const userAgent = request.headers.get('user-agent');

@@ -16,7 +16,10 @@ interface JournalTableFiltersProps {
     handleSearch: (value: string) => void;
     filterType: string;
     filterTag: string;
+    filterResult: string;
+    filterStrategy: string;
     userTags: string[];
+    strategies: string[];
     updateParams: (updates: Record<string, string | null | undefined>) => void;
     isColumnMenuOpen: boolean;
     setIsColumnMenuOpen: (open: boolean) => void;
@@ -32,7 +35,10 @@ export function JournalTableFilters({
     handleSearch,
     filterType,
     filterTag,
+    filterResult,
+    filterStrategy,
     userTags,
+    strategies,
     updateParams,
     isColumnMenuOpen,
     setIsColumnMenuOpen,
@@ -94,6 +100,45 @@ export function JournalTableFilters({
                                 {userTags.map((t) => (
                                     <DropdownMenuItem key={t} onClick={() => updateParams({ tag: t })}>
                                         {t}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
+
+                    {/* Result Filter */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="md" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
+                                Result: <span className={filterResult === "WIN" ? "text-primary" : filterResult === "LOSS" ? "text-red-500" : "text-primary"}>{filterResult === "ALL" ? "All" : filterResult === "BREAK_EVEN" ? "BE" : filterResult}</span>
+                                <ChevronDown size={14} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start">
+                            {["ALL", "WIN", "LOSS", "BREAK_EVEN"].map((s) => (
+                                <DropdownMenuItem key={s} onClick={() => updateParams({ status: s === "ALL" ? null : s })}>
+                                    {s === "ALL" ? "All Results" : s === "BREAK_EVEN" ? "Break Even" : s}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {/* Strategy Filter */}
+                    {strategies.length > 0 && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" size="md" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
+                                    Strategy: <span className="text-primary truncate max-w-[80px]">{filterStrategy || "All"}</span>
+                                    <ChevronDown size={14} />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="max-h-[250px] overflow-y-auto">
+                                <DropdownMenuItem onClick={() => updateParams({ strategy: null })}>
+                                    All Strategies
+                                </DropdownMenuItem>
+                                {strategies.map((s) => (
+                                    <DropdownMenuItem key={s} onClick={() => updateParams({ strategy: s })}>
+                                        {s}
                                     </DropdownMenuItem>
                                 ))}
                             </DropdownMenuContent>

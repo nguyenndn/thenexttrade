@@ -30,6 +30,8 @@ export default async function JournalPage({
     const symbol = typeof resolvedParams.symbol === "string" ? resolvedParams.symbol : undefined;
     const type = typeof resolvedParams.type === "string" && resolvedParams.type !== "ALL" ? resolvedParams.type : undefined;
     const tag = typeof resolvedParams.tag === "string" && resolvedParams.tag !== "ALL" ? resolvedParams.tag : undefined;
+    const strategy = typeof resolvedParams.strategy === "string" ? resolvedParams.strategy : undefined;
+    const status = typeof resolvedParams.status === "string" && resolvedParams.status !== "ALL" ? resolvedParams.status : undefined;
 
     let dateFrom = typeof resolvedParams.from === "string" ? resolvedParams.from : undefined;
     let dateTo = typeof resolvedParams.to === "string" ? resolvedParams.to : undefined;
@@ -71,7 +73,9 @@ export default async function JournalPage({
             accountId,
             symbol,
             type,
+            status,
             tag,
+            strategy,
             dateFrom,
             dateTo,
             sortBy,

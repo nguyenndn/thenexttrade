@@ -12,6 +12,24 @@ export function MobileBottomTabBar() {
     const pathname = usePathname();
     const [openGroup, setOpenGroup] = useState<string | null>(null);
     const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
+    const [claimableCount, setClaimableCount] = useState(0);
+
+    // Fetch claimable mission count for badge
+    useEffect(() => {
+        let cancelled = false;
+        const fetchCount = async () => {
+            try {
+                const res = await fetch("/api/missions/claimable-count");
+                if (res.ok && !cancelled) {
+                    const data = await res.json();
+                    setClaimableCount(data.count || 0);
+                }
+            } catch { /* silent */ }
+        };
+        fetchCount();
+        const timer = setInterval(fetchCount, 60_000);
+        return () => { cancelled = true; clearInterval(timer); };
+    }, [pathname]);
 
     // Determine which groups to use based on the path
     const isAdmin = pathname?.startsWith("/admin");
@@ -214,6 +232,10 @@ export function MobileBottomTabBar() {
                                 )}>
                                     {group.label}
                                 </span>
+                                {/* Red dot for claimable missions */}
+                                {group.label === "More" && claimableCount > 0 && (
+                                    <span className="absolute top-2 right-1/2 translate-x-4 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#151925]" />
+                                )}
                             </button>
                         );
                     })}

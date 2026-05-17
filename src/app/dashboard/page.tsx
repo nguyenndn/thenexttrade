@@ -12,7 +12,7 @@ import { getActivationState } from "@/lib/activation/activation.server";
 import { format, subDays } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { TradingAlertBanner } from "@/components/dashboard/TradingAlertBanner";
-
+import { measurePerformance } from "@/lib/performance/timing";
 
 export const dynamic = "force-dynamic";
 
@@ -41,8 +41,14 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     const cookieStore = await cookies();
     const lastAccountId = cookieStore.get("last_account_id")?.value;
 
-    // Server-Side Redirect to enforce accountId in URL (Prevent Double Load)
-    if (!searchParams?.accountId) {
+    // Resolve accountId and date params — single redirect for both
+    let accountId = typeof searchParams?.accountId === 'string' ? searchParams.accountId : undefined;
+    let fromParam = typeof searchParams?.from === 'string' ? searchParams.from : undefined;
+    let toParam = typeof searchParams?.to === 'string' ? searchParams.to : undefined;
+    let needsRedirect = false;
+
+    // Resolve accountId if missing
+    if (!accountId) {
         let targetId: string | undefined;
 
         // Priority 1: User's chosen main account from Profile
@@ -80,18 +86,35 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         }
 
         if (targetId) {
-            const newParams = new URLSearchParams();
-            if (searchParams) {
-                Object.entries(searchParams).forEach(([key, value]) => {
-                    if (typeof value === 'string') newParams.set(key, value);
-                });
-            }
-            newParams.set("accountId", targetId);
-            redirect(`/dashboard?${newParams.toString()}`);
+            accountId = targetId;
+            needsRedirect = true;
         }
     }
 
-    const accountId = searchParams?.accountId as string; // Guaranteed to be set or empty if no accounts
+    // Resolve date params if missing
+    if (!fromParam || !toParam) {
+        const todayStr = format(new Date(), 'yyyy-MM-dd');
+        fromParam = fromParam || todayStr;
+        toParam = toParam || todayStr;
+        needsRedirect = true;
+    }
+
+    // Single consolidated redirect for both accountId + date params
+    if (needsRedirect && accountId) {
+        const newParams = new URLSearchParams();
+        if (searchParams) {
+            Object.entries(searchParams).forEach(([key, value]) => {
+                if (typeof value === 'string' && key !== 'accountId' && key !== 'from' && key !== 'to') {
+                    newParams.set(key, value);
+                }
+            });
+        }
+        newParams.set("accountId", accountId);
+        newParams.set("from", fromParam!);
+        newParams.set("to", toParam!);
+        redirect(`/dashboard?${newParams.toString()}`);
+    }
+
     const accountFilter = accountId ? { userId: user.id, id: accountId } : { userId: user.id };
 
     // Fetch account timezone for date boundary alignment
@@ -102,29 +125,6 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
             select: { timezone: true }
         });
         accountTimezone = acc?.timezone || undefined;
-    }
-
-    let fromParam = typeof searchParams?.from === 'string' ? searchParams.from : undefined;
-    let toParam = typeof searchParams?.to === 'string' ? searchParams.to : undefined;
-
-    // Server-Side Redirect to enforce date range in URL (Today by default)
-    if (!fromParam || !toParam) {
-        const todayStr = format(new Date(), 'yyyy-MM-dd');
-        fromParam = fromParam || todayStr;
-        toParam = toParam || todayStr;
-
-        const newParams = new URLSearchParams();
-        if (searchParams) {
-             Object.entries(searchParams).forEach(([key, value]) => {
-                if (typeof value === 'string' && key !== 'from' && key !== 'to') newParams.set(key, value);
-             });
-        }
-        newParams.set('from', fromParam);
-        newParams.set('to', toParam);
-        // Ensure accountId is still kept intact
-        newParams.set("accountId", accountId); 
-        
-        redirect(`/dashboard?${newParams.toString()}`);
     }
 
     const startDate = parseLocalStartOfDay(fromParam, accountTimezone);
@@ -145,7 +145,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         intelligenceData,
         dailyWinRateLast7,
         activationState,
-    ] = await Promise.all([
+        latestReport,
+    ] = await measurePerformance('dashboard_data_fetch', 'db', () => Promise.all([
         // User Info (name + streak only)
         prisma.user.findUnique({
             where: { id: user.id },
@@ -189,7 +190,13 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         getDailyPerformance(user.id, accountId, subDays(new Date(), 6), new Date(), accountTimezone),
         // Activation checklist state
         getActivationState(user.id),
-    ]);
+        // Latest Report for Nudge Card
+        prisma.tradingReport.findFirst({
+            where: { userId: user.id },
+            orderBy: { createdAt: 'desc' },
+            select: { createdAt: true }
+        }),
+    ]));
 
     // Destructure stats from cached result
     const { stats, monthly } = dashboardStats;
@@ -375,6 +382,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
                 sessionPerformance={sessionPerformance}
                 dayOfWeekPerformance={dayOfWeekPerformance}
                 activationState={activationState}
+                daysSinceLastReport={latestReport ? Math.floor((new Date().getTime() - latestReport.createdAt.getTime()) / (1000 * 60 * 60 * 24)) : null}
             />
         </>
     );

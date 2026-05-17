@@ -35,6 +35,7 @@ export async function getJournalEntries(
         type?: string;
         status?: string;
         tag?: string;
+        strategy?: string;
         dateFrom?: string;
         dateTo?: string;
         sortBy?: string;
@@ -46,7 +47,7 @@ export async function getJournalEntries(
     const user = await getAuthUser();
     if (!user) return { entries: [], meta: { total: 0, page, limit, totalPages: 0 } };
 
-    const { accountId, symbol, type, status, tag, dateFrom, dateTo, sortBy, sortOrder, hasImages, timezone } = filters;
+    const { accountId, symbol, type, status, tag, strategy, dateFrom, dateTo, sortBy, sortOrder, hasImages, timezone } = filters;
     const skip = (page - 1) * limit;
 
     const where: any = { userId: user.id };
@@ -61,6 +62,8 @@ export async function getJournalEntries(
             where.status = status as TradeStatus;
         }
     }
+
+    if (strategy) where.strategy = { equals: strategy, mode: "insensitive" };
 
     const dateFilter = buildDateRangeFilter(dateFrom, dateTo, timezone);
     if (dateFilter) {

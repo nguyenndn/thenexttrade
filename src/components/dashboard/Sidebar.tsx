@@ -38,10 +38,11 @@ interface SidebarItemComponentProps {
     isExpanded: boolean;
     onToggle: () => void;
     activeHref: string | null;
+    claimableCount?: number;
 }
 
 // Extracted component to follow Rules of Hooks
-function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpanded, onToggle, activeHref }: SidebarItemComponentProps) {
+function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpanded, onToggle, activeHref, claimableCount }: SidebarItemComponentProps) {
     const Icon = item.icon;
     const hasSubItems = item.items && item.items.length > 0;
     const isGroupLink = hasSubItems && item.href !== "#"; // e.g. Dashboard
@@ -97,15 +98,30 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                 )} />
 
                 {!collapsed && (
-                    <span className="flex-1 text-sm relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis">
+                    <span className="flex-1 text-sm relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-between">
                         {item.name}
+                        {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
+                            <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                                {claimableCount}
+                            </span>
+                        )}
                     </span>
                 )}
 
                 {collapsed && (
-                    <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10">
-                        {item.name}
-                    </div>
+                    <>
+                        {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#1E2028]" />
+                        )}
+                        <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10 flex items-center gap-2">
+                            {item.name}
+                            {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
+                                <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                                    {claimableCount}
+                                </span>
+                            )}
+                        </div>
+                    </>
                 )}
             </div>
         </div>
@@ -118,6 +134,24 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     // const [collapsed, setCollapsed] = useState(false); // Removed local state
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
     const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
+    const [claimableCount, setClaimableCount] = useState(0);
+
+    // Fetch claimable mission count for badge
+    useEffect(() => {
+        let cancelled = false;
+        const fetchCount = async () => {
+            try {
+                const res = await fetch("/api/missions/claimable-count");
+                if (res.ok && !cancelled) {
+                    const data = await res.json();
+                    setClaimableCount(data.count || 0);
+                }
+            } catch { /* silent */ }
+        };
+        fetchCount();
+        const timer = setInterval(fetchCount, 60_000);
+        return () => { cancelled = true; clearInterval(timer); };
+    }, [pathname]);
 
     // Filter out items with disabled feature flags (hide flagged items until loaded)
     const visibleItems = useMemo(() =>
@@ -240,6 +274,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                                     setExpandedGroup(prev => prev === item.name ? null : item.name);
                                 }}
                                 activeHref={activeHref}
+                                claimableCount={item.name === "Missions" ? claimableCount : undefined}
                             />
                         </div>
                     );
