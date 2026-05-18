@@ -48,6 +48,7 @@ export function TurnstileWidget({
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const renderedRef = useRef(false);
+  const isDev = process.env.NODE_ENV === "development";
 
   const renderWidget = useCallback(() => {
     if (
@@ -77,8 +78,8 @@ export function TurnstileWidget({
   }, [onVerify, onExpire, onError, theme, size]);
 
   useEffect(() => {
-    // If no site key, skip (dev mode)
-    if (!SITE_KEY) {
+    // Skip in dev mode or if no site key — auto-bypass so forms still work
+    if (isDev || !SITE_KEY) {
       onVerify("dev-mode-bypass");
       return;
     }
@@ -114,10 +115,10 @@ export function TurnstileWidget({
       renderedRef.current = false;
       widgetIdRef.current = null;
     };
-  }, [renderWidget, onVerify]);
+  }, [renderWidget, onVerify, isDev]);
 
-  // Don't render anything if no site key (dev mode)
-  if (!SITE_KEY) return null;
+  // Don't render widget in dev mode or if no site key
+  if (isDev || !SITE_KEY) return null;
 
   return <div ref={containerRef} className={className} />;
 }

@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
-import { parseUserAgent, generateSessionId, isTrackablePath, getGeoFromHeaders } from '@/lib/analytics';
+import { parseUserAgent, generateSessionId, isTrackablePath, getGeoFromHeaders, shouldTrackPageviewRequest } from '@/lib/analytics';
 
 // =============================================================================
 // RATE LIMITER (In-memory, sliding window)
@@ -53,6 +53,25 @@ async function syncBlockedIPs(baseUrl: string): Promise<void> {
     } catch { /* silent */ }
 }
 
+// =============================================================================
+// PAGEVIEW DEDUPE GUARD (prevents double-tracking within 5s window)
+// =============================================================================
+const pageviewDedupeMap = new Map<string, number>();
+const PAGEVIEW_DEDUPE_TTL_MS = 5_000;
+
+function shouldDedupePageview(sessionId: string, pathname: string): boolean {
+    const now = Date.now();
+    const key = `${sessionId}:${pathname}`;
+    const lastSeen = pageviewDedupeMap.get(key);
+
+    if (lastSeen && now - lastSeen < PAGEVIEW_DEDUPE_TTL_MS) {
+        return true; // duplicate — skip tracking
+    }
+
+    pageviewDedupeMap.set(key, now);
+    return false;
+}
+
 // Cleanup stale entries every 5 minutes
 if (typeof setInterval !== 'undefined') {
     setInterval(() => {
@@ -60,6 +79,12 @@ if (typeof setInterval !== 'undefined') {
         for (const [key, entry] of rateLimitMap.entries()) {
             if (now - entry.windowStart > 120_000) {
                 rateLimitMap.delete(key);
+            }
+        }
+        // Also clean up old pageview dedupe entries
+        for (const [key, timestamp] of pageviewDedupeMap.entries()) {
+            if (now - timestamp > 60_000) {
+                pageviewDedupeMap.delete(key);
             }
         }
     }, 300_000);
@@ -314,40 +339,49 @@ export async function proxy(request: NextRequest) {
         response.headers.set('X-RateLimit-Remaining', String(Math.max(0, rateLimitResult.remaining)));
     }
 
-    // 7. Analytics — track pageviews (non-blocking, fire-and-forget)
-    if (isTrackablePath(pathname) && !isMaliciousBot(userAgent)) {
+    // 7. Analytics — track real document pageviews only (non-blocking, fire-and-forget)
+    const isRealPageview = shouldTrackPageviewRequest({
+        pathname,
+        searchParams: request.nextUrl.searchParams,
+        headers: request.headers,
+    });
+
+    if (isRealPageview && !isMaliciousBot(userAgent)) {
         const geo = getGeoFromHeaders(request.headers);
         const ua = parseUserAgent(userAgent);
         const sessionId = generateSessionId(ip, userAgent ?? '');
 
-        // Extract UTM parameters for campaign tracking
-        const utmSource = request.nextUrl.searchParams.get('utm_source') || null;
-        const utmMedium = request.nextUrl.searchParams.get('utm_medium') || null;
-        const utmCampaign = request.nextUrl.searchParams.get('utm_campaign') || null;
+        // Dedupe guard — skip if same session+path was tracked within 5s
+        if (!shouldDedupePageview(sessionId, pathname)) {
+            // Extract UTM parameters for campaign tracking
+            const utmSource = request.nextUrl.searchParams.get('utm_source') || null;
+            const utmMedium = request.nextUrl.searchParams.get('utm_medium') || null;
+            const utmCampaign = request.nextUrl.searchParams.get('utm_campaign') || null;
 
-        // Fire and forget — don't await, don't block response
-        const collectUrl = new URL('/api/analytics/collect', request.url);
-        fetch(collectUrl.toString(), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-internal-analytics': '1',
-            },
-            body: JSON.stringify({
-                pathname,
-                referrer: request.headers.get('referer') || null,
-                country: geo.country,
-                city: geo.city,
-                region: geo.region,
-                device: ua.device,
-                browser: ua.browser,
-                os: ua.os,
-                sessionId,
-                utmSource,
-                utmMedium,
-                utmCampaign,
-            }),
-        }).catch(() => { /* silently fail — analytics should never break the app */ });
+            // Fire and forget — don't await, don't block response
+            const collectUrl = new URL('/api/analytics/collect', request.url);
+            fetch(collectUrl.toString(), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-internal-analytics': '1',
+                },
+                body: JSON.stringify({
+                    pathname,
+                    referrer: request.headers.get('referer') || null,
+                    country: geo.country,
+                    city: geo.city,
+                    region: geo.region,
+                    device: ua.device,
+                    browser: ua.browser,
+                    os: ua.os,
+                    sessionId,
+                    utmSource,
+                    utmMedium,
+                    utmCampaign,
+                }),
+            }).catch(() => { /* silently fail — analytics should never break the app */ });
+        }
     }
 
     return response;

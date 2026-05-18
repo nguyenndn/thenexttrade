@@ -5,10 +5,9 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useState } from "react";
 import { login, signInWithMagicLink } from "@/app/auth/actions";
-import { Mail, Lock, Eye, EyeOff, Sparkles, CheckCircle } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Sparkles, CheckCircle, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
-
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -18,13 +17,19 @@ export default function LoginPage() {
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
 
+  const inputClassName =
+    "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:border-white/10 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
+
+  const primaryButtonClassName =
+    "w-full h-14 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-base font-black text-slate-950 shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)]";
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    formData.set('cf-turnstile-response', turnstileToken);
+    formData.set("cf-turnstile-response", turnstileToken);
     const result = await login(formData);
 
     if (result?.error) {
@@ -41,7 +46,7 @@ export default function LoginPage() {
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    formData.set('cf-turnstile-response', turnstileToken);
+    formData.set("cf-turnstile-response", turnstileToken);
     const result = await signInWithMagicLink(formData);
 
     if (result?.error) {
@@ -59,24 +64,27 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-xl transition-colors duration-300">
+    <div className="w-full max-w-[480px] mx-auto rounded-lg border border-amber-900/10 bg-white/85 p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
       <div className="flex justify-center mb-6">
         <Logo />
       </div>
       <div className="text-center mb-8">
-        <p className="text-base font-medium text-gray-600 dark:text-gray-300">Welcome back</p>
-        <h1 className="text-3xl font-bold text-gray-700 dark:text-white mt-2">Login to your account</h1>
+        <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-xs font-extrabold uppercase text-amber-700 dark:text-amber-300">
+          <ShieldCheck size={14} />
+          Secure access
+        </div>
+        <p className="text-base font-semibold text-slate-600 dark:text-slate-300">Welcome back</p>
+        <h1 className="mt-2 text-3xl font-black text-slate-950 dark:text-white">Login to your account</h1>
       </div>
 
-      {/* Mode Tabs */}
-      <div className="flex bg-gray-100 dark:bg-white/5 rounded-xl p-1 mb-6">
+      <div className="flex rounded-lg border border-amber-900/10 bg-[#F8F1E3] p-1 mb-6 dark:border-white/10 dark:bg-white/[0.06]">
         <button
           type="button"
           onClick={() => switchMode("password")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all ${
             mode === "password"
-              ? "bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white shadow-sm"
-              : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300"
+              ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-[#090805] dark:text-amber-200"
+              : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
           }`}
         >
           <Lock size={16} />
@@ -87,8 +95,8 @@ export default function LoginPage() {
           onClick={() => switchMode("magic")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all ${
             mode === "magic"
-              ? "bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white shadow-sm"
-              : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300"
+              ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-[#090805] dark:text-amber-200"
+              : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
           }`}
         >
           <Sparkles size={16} />
@@ -97,12 +105,11 @@ export default function LoginPage() {
       </div>
 
       {error && (
-        <div className="p-4 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500 text-sm text-center mb-6">
+        <div className="p-4 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm text-center mb-6">
           {error}
         </div>
       )}
 
-      {/* Password Login Form */}
       {mode === "password" && (
         <form onSubmit={handleSubmit} className="space-y-6">
           <Input
@@ -111,60 +118,61 @@ export default function LoginPage() {
             placeholder="hello@example.com"
             label="Email"
             required
-            startIcon={<Mail size={20} className="text-gray-500" />}
-            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
+            startIcon={<Mail size={20} className="text-amber-600/80 dark:text-amber-300/80" />}
+            className={inputClassName}
           />
 
-          <div>
-            <Input
-              name="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              label="Password"
-              required
-              startIcon={<Lock size={20} className="text-gray-500" />}
-              endIcon={
-                <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-500 hover:text-gray-600 dark:text-gray-600 dark:hover:text-white" aria-label={showPassword ? "Hide password" : "Show password"}>
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </Button>
-              }
-              className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
-            />
-          </div>
+          <Input
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            label="Password"
+            required
+            startIcon={<Lock size={20} className="text-amber-600/80 dark:text-amber-300/80" />}
+            endIcon={
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </Button>
+            }
+            className={inputClassName}
+          />
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                 id="remember"
-                className="appearance-none h-5 w-5 rounded bg-white dark:bg-[#0B0E14] border border-gray-300 dark:border-white/20 checked:bg-primary dark:checked:bg-primary checked:border-transparent dark:checked:border-transparent checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
+                className="appearance-none h-5 w-5 rounded border border-amber-900/20 bg-white checked:bg-amber-500 checked:border-amber-500 dark:bg-black/20 dark:border-white/20 dark:checked:bg-amber-400 dark:checked:border-amber-400 checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer"
               />
-              <label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-500 cursor-pointer select-none">Stay signed in</label>
+              <label htmlFor="remember" className="text-sm text-slate-600 dark:text-slate-400 cursor-pointer select-none">
+                Stay signed in
+              </label>
             </div>
-            <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline font-medium">
+            <Link href="/auth/forgot-password" className="text-sm text-amber-700 hover:text-amber-800 hover:underline font-semibold dark:text-amber-300 dark:hover:text-amber-200">
               Forgot your password?
             </Link>
           </div>
 
           <TurnstileWidget onVerify={setTurnstileToken} className="flex justify-center" />
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full h-14 font-bold text-base hover:opacity-90 border-none rounded-xl"
-            isLoading={loading}
-          >
+          <Button type="submit" variant="primary" className={primaryButtonClassName} isLoading={loading}>
             Login
           </Button>
         </form>
       )}
 
-      {/* Magic Link Form */}
       {mode === "magic" && !magicLinkSent && (
         <form onSubmit={handleMagicLink} className="space-y-6">
           <div className="text-center mb-2">
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              Enter your email and we'll send you a magic link to sign in instantly — no password needed.
+            <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+              Enter your email and we will send you a magic link to sign in instantly, no password needed.
             </p>
           </div>
 
@@ -174,8 +182,8 @@ export default function LoginPage() {
             placeholder="hello@example.com"
             label="Email"
             required
-            startIcon={<Mail size={20} className="text-gray-500" />}
-            className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-base py-3 placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 focus:text-gray-700 dark:focus:text-white h-12 transition-colors"
+            startIcon={<Mail size={20} className="text-amber-600/80 dark:text-amber-300/80" />}
+            className={inputClassName}
           />
 
           <TurnstileWidget onVerify={setTurnstileToken} className="flex justify-center" />
@@ -183,7 +191,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             variant="primary"
-            className="w-full h-14 font-bold text-base hover:opacity-90 border-none rounded-xl flex items-center justify-center gap-2"
+            className={`${primaryButtonClassName} flex items-center justify-center gap-2`}
             isLoading={loading}
           >
             <Sparkles size={18} />
@@ -192,30 +200,30 @@ export default function LoginPage() {
         </form>
       )}
 
-      {/* Magic Link Success */}
       {mode === "magic" && magicLinkSent && (
         <div className="text-center py-8 space-y-4">
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto border border-primary/20">
-            <CheckCircle className="text-primary" size={32} />
+          <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto border border-amber-500/25">
+            <CheckCircle className="text-amber-600 dark:text-amber-300" size={32} />
           </div>
-          <h2 className="text-xl font-bold text-gray-700 dark:text-white">Check your email</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-            We've sent a magic link to your email.<br />
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Check your email</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            We sent a magic link to your email.
+            <br />
             Click the link to sign in instantly.
           </p>
           <button
             type="button"
             onClick={() => setMagicLinkSent(false)}
-            className="text-sm text-primary hover:underline font-medium mt-4"
+            className="text-sm text-amber-700 hover:text-amber-800 hover:underline font-semibold mt-4 dark:text-amber-300 dark:hover:text-amber-200"
           >
             Try again with a different email
           </button>
         </div>
       )}
 
-      <p className="text-center text-sm text-gray-600 dark:text-gray-300 mt-8">
-        Don't have an account?{" "}
-        <Link href="/auth/signup" className="font-semibold text-primary hover:underline">
+      <p className="text-center text-sm text-slate-600 dark:text-slate-300 mt-8">
+        Do not have an account?{" "}
+        <Link href="/auth/signup" className="font-bold text-amber-700 hover:text-amber-800 hover:underline dark:text-amber-300 dark:hover:text-amber-200">
           Sign up
         </Link>
       </p>

@@ -1,6 +1,56 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// =============================================================================
+// MAINTENANCE CONFIG CACHE (module-level, per process, 30s TTL)
+// Avoids hitting /api/system/config on every single middleware invocation.
+// Maintenance mode toggles may take up to 30s to propagate — acceptable tradeoff.
+// =============================================================================
+type MaintenanceConfigCache = {
+    maintenanceMode: boolean;
+    checkedAt: number;
+};
+
+let maintenanceConfigCache: MaintenanceConfigCache | null = null;
+const MAINTENANCE_CONFIG_TTL_MS = 30_000;
+
+async function getMaintenanceConfig(request: NextRequest): Promise<MaintenanceConfigCache> {
+    const now = Date.now();
+    if (
+        maintenanceConfigCache &&
+        now - maintenanceConfigCache.checkedAt < MAINTENANCE_CONFIG_TTL_MS
+    ) {
+        return maintenanceConfigCache;
+    }
+
+    try {
+        const configUrl = new URL('/api/system/config', request.url);
+        const configRes = await fetch(configUrl.toString(), {
+            cache: 'no-store',
+            headers: { 'x-internal': '1' },
+        });
+
+        if (configRes.ok) {
+            const config = await configRes.json();
+            maintenanceConfigCache = {
+                maintenanceMode: config.maintenanceMode === true,
+                checkedAt: now,
+            };
+        } else {
+            // Fetch succeeded but non-ok — fail open, cache the "off" state briefly
+            maintenanceConfigCache = maintenanceConfigCache ?? { maintenanceMode: false, checkedAt: now };
+        }
+    } catch {
+        // Network error — fail open, don't block users
+        maintenanceConfigCache = maintenanceConfigCache ?? { maintenanceMode: false, checkedAt: now };
+    }
+
+    return maintenanceConfigCache;
+}
+
+// =============================================================================
+// SESSION + ROUTE PROTECTION
+// =============================================================================
 export async function updateSession(request: NextRequest) {
     let response = NextResponse.next({
         request: {
@@ -18,7 +68,7 @@ export async function updateSession(request: NextRequest) {
                     return request.cookies.getAll()
                 },
                 setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value, options }) =>
+                    cookiesToSet.forEach(({ name, value }) =>
                         request.cookies.set(name, value)
                     )
                     response = NextResponse.next({
@@ -65,7 +115,7 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(new URL('/academy', request.url))
     }
 
-    // 3. Maintenance Mode Check
+    // 4. Maintenance Mode Check (uses 30s TTL cache to avoid repeated /api/system/config calls)
     const needsMaintenanceCheck =
         path === '/maintenance' ||
         (!path.startsWith('/admin') &&
@@ -74,33 +124,19 @@ export async function updateSession(request: NextRequest) {
          !path.startsWith('/_next'));
 
     if (needsMaintenanceCheck) {
-        try {
-            // Use internal API route (Prisma-backed, bypasses RLS)
-            // Safe: /api paths are excluded from needsMaintenanceCheck so no deadlock
-            const configUrl = new URL('/api/system/config', request.url);
-            const configRes = await fetch(configUrl.toString(), {
-                cache: 'no-store',
-                headers: { 'x-internal': '1' },
-            });
+        const config = await getMaintenanceConfig(request);
+        const isMaintenanceOn = config.maintenanceMode;
 
-            if (configRes.ok) {
-                const config = await configRes.json();
-                const isMaintenanceOn = config.maintenanceMode === true;
-
-                if (isMaintenanceOn && path !== '/maintenance') {
-                    // Maintenance ON → redirect non-admin users to /maintenance
-                    const userRole = user?.app_metadata?.role || user?.user_metadata?.role;
-                    const isAdmin = userRole === 'ADMIN' || userRole === 'EDITOR';
-                    if (!isAdmin) {
-                        return NextResponse.redirect(new URL('/maintenance', request.url));
-                    }
-                } else if (!isMaintenanceOn && path === '/maintenance') {
-                    // Maintenance OFF → redirect away from /maintenance
-                    return NextResponse.redirect(new URL('/', request.url));
-                }
+        if (isMaintenanceOn && path !== '/maintenance') {
+            // Maintenance ON → redirect non-admin users to /maintenance
+            const userRole = user?.app_metadata?.role || user?.user_metadata?.role;
+            const isAdmin = userRole === 'ADMIN' || userRole === 'EDITOR';
+            if (!isAdmin) {
+                return NextResponse.redirect(new URL('/maintenance', request.url));
             }
-        } catch {
-            // If config fetch fails, don't block — allow access
+        } else if (!isMaintenanceOn && path === '/maintenance') {
+            // Maintenance OFF → redirect away from /maintenance
+            return NextResponse.redirect(new URL('/', request.url));
         }
     }
 

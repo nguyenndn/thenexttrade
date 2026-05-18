@@ -102,3 +102,46 @@ export function getGeoFromHeaders(headers: Headers): {
             || null,
     };
 }
+
+/**
+ * Request-level pageview filter.
+ * Returns true only for real browser document navigations.
+ * Filters out: RSC requests, prefetches, API/asset requests, non-HTML fetches.
+ */
+export function shouldTrackPageviewRequest(input: {
+    pathname: string;
+    searchParams: URLSearchParams;
+    headers: Headers;
+}): boolean {
+    const { pathname, searchParams, headers } = input;
+
+    // Broad pathname filter first
+    if (!isTrackablePath(pathname)) return false;
+
+    // Skip RSC data requests (Next.js App Router)
+    if (searchParams.has('_rsc')) return false;
+
+    const rsc = headers.get('rsc');
+    if (rsc === '1') return false;
+
+    // Skip Next.js router prefetches
+    const nextRouterPrefetch = headers.get('next-router-prefetch');
+    if (nextRouterPrefetch) return false;
+
+    // Skip browser prefetches
+    const purpose = headers.get('purpose');
+    if (purpose?.toLowerCase() === 'prefetch') return false;
+
+    const secPurpose = headers.get('sec-purpose');
+    if (secPurpose?.toLowerCase().includes('prefetch')) return false;
+
+    // Skip non-document fetches (XHR, fetch, etc.)
+    const secFetchDest = headers.get('sec-fetch-dest');
+    if (secFetchDest && secFetchDest !== 'document') return false;
+
+    // Skip non-HTML requests (text/x-component = RSC, application/json = API)
+    const accept = headers.get('accept') || '';
+    if (!accept.includes('text/html')) return false;
+
+    return true;
+}

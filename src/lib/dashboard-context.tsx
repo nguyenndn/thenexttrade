@@ -45,19 +45,54 @@ async function loadFeatureFlags(flagKeys: string[]): Promise<Set<string>> {
     }
 }
 
-async function loadSystemConfig() {
-    try {
-        const res = await fetch("/api/system/config");
-        if (!res.ok) return DEFAULT_SYSTEM_CONFIG;
+// =============================================================================
+// SYSTEM CONFIG LOADER (module-level singleton + 60s TTL cache)
+// Prevents duplicate /api/system/config fetches from StrictMode double-mounts
+// =============================================================================
+const SYSTEM_CONFIG_CACHE_TTL_MS = 60_000;
 
-        const data = await res.json();
-        return {
-            feedbackEnabled: data.feedbackEnabled ?? true,
-            systemAnnouncement: data.systemAnnouncement || "",
-        };
-    } catch {
-        return DEFAULT_SYSTEM_CONFIG;
+let systemConfigCache: {
+    value: typeof DEFAULT_SYSTEM_CONFIG;
+    expiresAt: number;
+} | null = null;
+
+let systemConfigInflight: Promise<typeof DEFAULT_SYSTEM_CONFIG> | null = null;
+
+async function loadSystemConfig(options?: { force?: boolean }): Promise<typeof DEFAULT_SYSTEM_CONFIG> {
+    const now = Date.now();
+
+    // Return cached value if still valid
+    if (!options?.force && systemConfigCache && systemConfigCache.expiresAt > now) {
+        return systemConfigCache.value;
     }
+
+    // Return inflight promise to dedupe concurrent calls
+    if (!options?.force && systemConfigInflight) {
+        return systemConfigInflight;
+    }
+
+    systemConfigInflight = fetch("/api/system/config")
+        .then(async (res) => {
+            if (!res.ok) return DEFAULT_SYSTEM_CONFIG;
+            const data = await res.json();
+            return {
+                feedbackEnabled: data.feedbackEnabled ?? true,
+                systemAnnouncement: data.systemAnnouncement || "",
+            };
+        })
+        .catch(() => DEFAULT_SYSTEM_CONFIG)
+        .then((value) => {
+            systemConfigCache = {
+                value,
+                expiresAt: Date.now() + SYSTEM_CONFIG_CACHE_TTL_MS,
+            };
+            return value;
+        })
+        .finally(() => {
+            systemConfigInflight = null;
+        });
+
+    return systemConfigInflight;
 }
 
 // ============================================================================

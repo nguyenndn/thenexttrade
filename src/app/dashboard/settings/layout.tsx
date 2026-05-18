@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Flame, Settings, Users, Lock, MessageSquare, Globe, Unplug } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { useSystemConfig } from "@/lib/dashboard-context";
 import { type LucideIcon } from "lucide-react";
 
 interface NavItem {
@@ -28,14 +28,7 @@ const feedbackNavItem: NavItem = { title: "Feedback & Support", href: "/dashboar
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const [feedbackEnabled, setFeedbackEnabled] = useState(true);
-
-    useEffect(() => {
-        fetch("/api/system/config")
-            .then((res) => res.json())
-            .then((data) => setFeedbackEnabled(data.feedbackEnabled ?? true))
-            .catch(() => setFeedbackEnabled(true));
-    }, []);
+    const { feedbackEnabled } = useSystemConfig();
 
     const navItems = feedbackEnabled
         ? [...baseNavItems, feedbackNavItem]
