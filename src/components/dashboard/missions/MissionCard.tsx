@@ -42,6 +42,11 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
       const result = await claimMission(mission.missionId);
       if (result.success) {
         setClaimed(true);
+        trackEvent("mission_claimed", {
+          mission_id: mission.missionId,
+          category: mission.def.category,
+          edge: result.xpAwarded || mission.def.xpReward,
+        });
         await celebrateXP({
           xp: result.xpAwarded || mission.def.xpReward,
           message: `Mission Complete: ${mission.def.title}`,

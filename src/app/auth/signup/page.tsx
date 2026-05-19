@@ -10,6 +10,7 @@ import { signup } from "@/app/auth/actions";
 import { Check, Eye, EyeOff, Lock, Mail, Sparkles, User } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
+import { trackEvent } from "@/lib/track";
 
 type SignupStep = 1 | 2 | 3;
 
@@ -106,6 +107,9 @@ export default function SignupPage() {
 
     const goNext = () => {
         if (!validateCurrentStep()) return;
+        if (step === 1) {
+            trackEvent("sign_up_started", { country });
+        }
         setStep((current) => Math.min(current + 1, 3) as SignupStep);
     };
 
@@ -131,14 +135,18 @@ export default function SignupPage() {
         formData.set("notify", notify ? "on" : "");
         formData.set("cf-turnstile-response", turnstileToken);
 
+        trackEvent("sign_up_submitted", { country, notify: notify ? 1 : 0 });
         const result = await signup(formData);
 
         if (result?.error) {
+            trackEvent("sign_up_failed", { country });
             setError(result.error);
         } else if (result?.requiresVerification) {
+            trackEvent("sign_up_verification_required", { country });
             router.push(`/auth/verify-email?email=${encodeURIComponent(result.email)}`);
             return;
         } else if (result?.success) {
+            trackEvent("sign_up_completed", { country });
             router.push("/dashboard");
             return;
         }

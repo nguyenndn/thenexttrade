@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 declare global {
   interface Window {
@@ -21,17 +21,18 @@ function isAnalyticsEnabled(measurementId?: string) {
 
 export function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps) {
   const pathname = usePathname();
+  const [ready, setReady] = useState(false);
   const enabled = isAnalyticsEnabled(measurementId);
 
   useEffect(() => {
-    if (!enabled || !measurementId || typeof window.gtag !== "function") return;
+    if (!enabled || !ready || !measurementId || typeof window.gtag !== "function") return;
 
     window.gtag("event", "page_view", {
       page_path: pathname,
       page_location: `${window.location.origin}${pathname}`,
       page_title: document.title,
     });
-  }, [enabled, measurementId, pathname]);
+  }, [enabled, measurementId, pathname, ready]);
 
   if (!enabled || !measurementId) return null;
 
@@ -41,7 +42,7 @@ export function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps) {
         src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
         strategy="afterInteractive"
       />
-      <Script id="ga4-init" strategy="afterInteractive">
+      <Script id="ga4-init" strategy="afterInteractive" onReady={() => setReady(true)}>
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}

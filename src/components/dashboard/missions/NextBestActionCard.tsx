@@ -24,6 +24,12 @@ export function NextBestActionCard({ mission, onClaimed }: NextBestActionCardPro
     try {
       const result = await claimMission(mission.missionId);
       if (result.success) {
+        trackEvent("mission_claimed", {
+          mission_id: mission.missionId,
+          category: mission.def.category,
+          edge: result.xpAwarded || mission.def.xpReward,
+          surface: "next_best_action",
+        });
         await celebrateXP({
           xp: result.xpAwarded || 0,
           message: `Mission Complete: ${mission.def.title}`,
