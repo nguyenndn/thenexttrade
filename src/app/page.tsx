@@ -30,6 +30,7 @@ const MarketTickerSection = dynamic(() => import("@/components/home/MarketTicker
 const ToolsPreviewSection = dynamic(() => import("@/components/home/ToolsPreviewSection").then(m => ({ default: m.ToolsPreviewSection })), { loading: () => <div className="h-96" /> });
 const LearningPathTimeline = dynamic(() => import("@/components/home/LearningPathTimeline").then(m => ({ default: m.LearningPathTimeline })), { loading: () => <div className="h-96" /> });
 const TrustedPartners = dynamic(() => import("@/components/home/TrustedPartners").then(m => ({ default: m.TrustedPartners })), { loading: () => <div className="h-96" /> });
+const WebForexTools = dynamic(() => import("@/components/home/WebForexTools").then(m => ({ default: m.WebForexTools })), { loading: () => <div className="h-48" /> });
 
 export default function Home() {
   return (
@@ -442,6 +443,11 @@ async function HomeFeed() {
       <FadeIn delay={0.1} direction="up">
       {/* Trusted Partners */}
       <TrustedPartners />
+      </FadeIn>
+
+      <FadeIn delay={0.1} direction="up">
+      {/* Web Forex Tools */}
+      <WebForexTools />
       </FadeIn>
 
       <FadeIn delay={0.1} direction="up">

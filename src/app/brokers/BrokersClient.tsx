@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { Building2, Shield, Server, Star, ChevronRight, ExternalLink, Sparkles, Bitcoin } from "lucide-react";
+import { Building2, Server, Star, ChevronRight, ExternalLink, Sparkles, Bitcoin } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { ReviewBadge } from "./ReviewModal";
 import partnersData from "@/config/partners.json";
@@ -16,7 +16,6 @@ const BADGE_STYLES: Record<string, string> = {
 
 const CATEGORIES = [
   { key: "brokers", label: "CFD Brokers", icon: Building2, data: partnersData.brokers, cta: "Open Account", depositLabel: "Min Deposit" },
-  { key: "propFirms", label: "Prop Firms", icon: Shield, data: partnersData.propFirms, cta: "Get Funded", depositLabel: "Challenge Fee" },
   { key: "cryptoExchanges", label: "Crypto", icon: Bitcoin, data: partnersData.cryptoExchanges, cta: "Start Trading", depositLabel: "Min Deposit" },
   { key: "vps", label: "VPS Hosting", icon: Server, data: partnersData.vps, cta: "Get VPS", depositLabel: "Price" },
 ];
@@ -172,7 +171,7 @@ export default function BrokersClient() {
           </span>
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-500 max-w-2xl mx-auto leading-relaxed">
-          Handpicked brokers, prop firms, and infrastructure we personally use and trust.
+          Handpicked brokers, crypto exchanges, and infrastructure we personally use and trust.
         </p>
       </div>
 

@@ -7,8 +7,8 @@ import { DynamicFirefly as FireflyBackground } from '@/components/ui/DynamicFire
 import BrokersClient from './BrokersClient';
 
 export const metadata: Metadata = {
-    title: "Trusted Partners — Brokers, Prop Firms & VPS | The Next Trade",
-    description: 'Handpicked forex brokers, prop trading firms, and VPS hosting we personally use and trust.',
+    title: "Trusted Partners — Brokers, Crypto & VPS | The Next Trade",
+    description: 'Handpicked forex brokers, crypto exchanges, and VPS hosting we personally use and trust.',
 };
 
 export const revalidate = 86400;

@@ -173,7 +173,6 @@ export const adminMenuItems = [
 
     // --- INVESTING ---
     { name: "Copy Trading", href: "/admin/copy-trading", icon: Copy },
-    { name: "Funded Challenge", href: "/admin/funded-challenge", icon: Shield },
 
     // --- SYSTEM ---
     { name: "EA Management", href: "/admin/ea", icon: Bot },
@@ -262,7 +261,6 @@ export const adminMenuGroups = [
         items: [
             { name: "Academy", href: "/admin/academy", icon: GraduationCap },
             { name: "Copy Trading", href: "/admin/copy-trading", icon: Copy },
-            { name: "Funded Challenge", href: "/admin/funded-challenge", icon: Shield },
             { name: "EA Management", href: "/admin/ea", icon: Bot },
             { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
             { name: "Settings", href: "/admin/settings", icon: Settings },
