@@ -24,7 +24,7 @@ export function GeoPanel({ countries }: Props) {
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-indigo-500" />
-                    <h2 className="text-sm font-bold text-gray-900 dark:text-white">Geographic Distribution</h2>
+                    <h2 className="text-sm font-bold text-gray-900 dark:text-white">Visitor Countries</h2>
                 </div>
                 <div className="flex items-center gap-1">
                     <span className="text-xs text-gray-400 mr-2">{countries.length} countries</span>

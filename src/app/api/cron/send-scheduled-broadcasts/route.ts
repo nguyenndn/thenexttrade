@@ -1,7 +1,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { NotificationType, NotificationPriority } from "@prisma/client";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 export const dynamic = "force-dynamic"; // Ensure not cached
 
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
                             title: broadcast.title,
                             message: broadcast.message,
                             priority: broadcast.priority,
-                            link: broadcast.link,
+                            link: broadcast.link || NOTIFICATION_ROUTES.DASHBOARD,
                             isRead: false,
                         })),
                     });

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { UserPlus, Loader2, Mail, Lock, User } from "lucide-react";
+import { UserPlus, Loader2, Mail, Lock, User, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
     Select,
@@ -16,6 +16,7 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/app/admin/users/actions";
+import { CountrySelect } from "@/components/ui/CountrySelect";
 
 const addUserSchema = z
     .object({
@@ -24,6 +25,10 @@ const addUserSchema = z
         password: z.string().min(6, "Password must be at least 6 characters"),
         confirmPassword: z.string().min(1, "Please confirm the password"),
         role: z.enum(["USER", "EDITOR", "ADMIN"]),
+        country: z.union([
+            z.string().trim().regex(/^[A-Za-z]{2}$/, "Country must be a two-letter country code"),
+            z.literal(""),
+        ]).optional(),
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: "Passwords do not match",
@@ -55,6 +60,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
             password: "",
             confirmPassword: "",
             role: "USER",
+            country: "",
         },
     });
 
@@ -199,6 +205,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                     </div>
 
                     {/* Role */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                             Role
@@ -219,6 +226,37 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                                 </Select>
                             )}
                         />
+                    </div>
+
+                    {/* Country */}
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            Country
+                        </label>
+                        <Controller
+                            control={control}
+                            name="country"
+                            render={({ field }) => (
+                                <div className="relative">
+                                    <Globe2
+                                        size={16}
+                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 pointer-events-none"
+                                    />
+                                    <CountrySelect
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        required={false}
+                                        className="h-11 pl-10 bg-gray-50 dark:bg-[#0B0E14] text-sm"
+                                    />
+                                </div>
+                            )}
+                        />
+                        {errors.country && (
+                            <p className="text-xs text-red-500 mt-1">
+                                {errors.country.message}
+                            </p>
+                        )}
+                    </div>
                     </div>
 
                     {/* Actions */}

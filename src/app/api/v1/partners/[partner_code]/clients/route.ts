@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { validatePartnerAuth } from "@/lib/partner-auth";
 import { NotificationType, NotificationPriority } from "@prisma/client";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 /**
  * POST /api/v1/partners/[partner_code]/clients
@@ -89,7 +90,7 @@ export async function POST(
                     title: `New Partner Registration (${auth.partner!.partnerName})`,
                     message: `${clientName} — ${broker} / ${mt5Account}`,
                     priority: NotificationPriority.HIGH,
-                    link: "/admin/copy-trading",
+                    link: NOTIFICATION_ROUTES.COPY_TRADING_ADMIN,
                 })),
             });
         }

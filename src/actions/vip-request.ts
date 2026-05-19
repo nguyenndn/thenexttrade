@@ -8,6 +8,7 @@ import { verifyTurnstile } from "@/lib/turnstile";
 import type { VipRequestStatus } from "@prisma/client";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { maskAccountNumber, findOrMatchTradingAccount } from "@/lib/pro-access";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 // ============================================================================
 // USER ACTIONS
@@ -285,7 +286,7 @@ export async function approveVipRequest(requestId: string) {
       title: "🎉 Pro Access Activated!",
       message: "Your VIP request has been approved. You now have full Pro access to all premium features!",
       priority: NotificationPriority.HIGH,
-      link: "/dashboard",
+      link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
     },
   });
 
@@ -324,7 +325,7 @@ export async function rejectVipRequest(requestId: string, reason: string) {
       title: "VIP Request Rejected",
       message: `Your VIP request was rejected. Reason: ${reason.trim()}`,
       priority: NotificationPriority.NORMAL,
-      link: "/dashboard/accounts?intent=unlock-pro",
+      link: NOTIFICATION_ROUTES.VIP_UNLOCK_PRO,
     },
   });
 
@@ -426,7 +427,7 @@ export async function grantGracePeriod(
       title: "⏳ Temporary Pro Access Granted",
       message: `You have been granted ${days}-day temporary Pro access. Complete your VIP verification to keep access permanently.`,
       priority: NotificationPriority.NORMAL,
-      link: "/dashboard/accounts?intent=unlock-pro",
+      link: NOTIFICATION_ROUTES.VIP_UNLOCK_PRO,
     },
   });
 
@@ -495,7 +496,7 @@ export async function revokeProAccess(
         ? `Your Pro access has been revoked. Reason: ${reason}`
         : "Your Pro access has been revoked. Contact support for details.",
       priority: NotificationPriority.HIGH,
-      link: "/dashboard/accounts?intent=unlock-pro",
+      link: NOTIFICATION_ROUTES.VIP_UNLOCK_PRO,
     },
   });
 

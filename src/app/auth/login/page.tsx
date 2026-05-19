@@ -8,6 +8,7 @@ import { login, signInWithMagicLink } from "@/app/auth/actions";
 import { Mail, Lock, Eye, EyeOff, Sparkles, CheckCircle, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
+import { trackEvent } from "@/lib/track";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export default function LoginPage() {
     "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:border-white/10 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
 
   const primaryButtonClassName =
-    "w-full h-14 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-base font-black text-slate-950 shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)]";
+    "w-full h-14 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)]";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,12 +31,15 @@ export default function LoginPage() {
 
     const formData = new FormData(e.currentTarget);
     formData.set("cf-turnstile-response", turnstileToken);
+    trackEvent("login_submitted", { method: "password" });
     const result = await login(formData);
 
     if (result?.error) {
+      trackEvent("login_failed", { method: "password" });
       setError(result.error);
       setLoading(false);
     } else if (result?.requires2FA) {
+      trackEvent("login_requires_2fa", { method: "password" });
       window.location.href = "/auth/verify-2fa";
     }
   };
@@ -47,11 +51,14 @@ export default function LoginPage() {
 
     const formData = new FormData(e.currentTarget);
     formData.set("cf-turnstile-response", turnstileToken);
+    trackEvent("login_submitted", { method: "magic_link" });
     const result = await signInWithMagicLink(formData);
 
     if (result?.error) {
+      trackEvent("login_failed", { method: "magic_link" });
       setError(result.error);
     } else if (result?.success) {
+      trackEvent("magic_link_requested");
       setMagicLinkSent(true);
     }
     setLoading(false);

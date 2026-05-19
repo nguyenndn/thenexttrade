@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { NotificationType, NotificationPriority } from "@prisma/client";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 export async function POST(request: NextRequest) {
     try {
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
                     title: "New Copy Trading Registration",
                     message: `${fullName} (${isCustomBroker ? customBrokerName : brokerName}) — $${parseFloat(tradingCapital || 0).toLocaleString()}`,
                     priority: NotificationPriority.HIGH,
-                    link: "/admin/copy-trading",
+                    link: NOTIFICATION_ROUTES.COPY_TRADING_ADMIN,
                 })),
             });
         }

@@ -82,7 +82,8 @@ async function getSessionPerformance(
         SELECT 
             "trading_session" as "session",
             COUNT(*) as "tradeCount",
-            SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount",
             SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
@@ -95,15 +96,18 @@ async function getSessionPerformance(
         ORDER BY "tradeCount" DESC
     `;
 
-    return (result as any[]).map((r) => ({
-        session: r.session,
-        tradeCount: Number(r.tradeCount),
-        winRate:
-            Number(r.tradeCount) > 0
-                ? (Number(r.winCount) / Number(r.tradeCount)) * 100
-                : 0,
-        pnl: Number(r.pnl || 0),
-    }));
+    return (result as any[]).map((r) => {
+        const wins = Number(r.winCount || 0);
+        const losses = Number(r.lossCount || 0);
+        const decisiveTrades = wins + losses;
+
+        return {
+            session: r.session,
+            tradeCount: Number(r.tradeCount),
+            winRate: decisiveTrades > 0 ? (wins / decisiveTrades) * 100 : 0,
+            pnl: Number(r.pnl || 0),
+        };
+    });
 }
 
 interface RevengeTrade {
@@ -460,22 +464,35 @@ function detectInsights(data: {
     }
 
     // Rule 8: Risk Discipline
+    // Do not flag missing SL as an issue when the selected period has no losing trades.
+    // In MT5/import flows, SL values may be unavailable even when trades were protected
+    // or closed at break-even, so warning here would create false anxiety for users.
+    const hasLosingTrades = data.stats.lossCount > 0;
     if (data.riskDiscipline >= 90) {
         strengths.push({
             id: "risk-discipline",
             severity: "strength",
             title: "Excellent Risk Management",
-            description: `${Math.round(data.riskDiscipline)}% of your trades have a stop loss set. Great risk management discipline.`,
+            description: `${Math.round(data.riskDiscipline)}% of your trades have a recorded stop loss. Great risk management discipline.`,
             metric: `${Math.round(data.riskDiscipline)}% SL usage`,
             icon: "Shield",
         });
-    } else if (data.riskDiscipline < 70) {
+    } else if (hasLosingTrades && data.riskDiscipline === 0) {
+        issues.push({
+            id: "risk-discipline",
+            severity: "warning",
+            title: "Stop Loss Data Missing",
+            description: "No stop-loss values are recorded for this period. If these trades came from MT5 sync/import, the imported data may not include SL values even if you used SL in the broker.",
+            metric: "No SL data recorded",
+            icon: "ShieldOff",
+        });
+    } else if (hasLosingTrades && data.riskDiscipline < 70) {
         issues.push({
             id: "risk-discipline",
             severity: "warning",
             title: "Stop Loss Often Missing",
-            description: `Only ${Math.round(data.riskDiscipline)}% of trades have a stop loss. Trading without SL increases your risk exposure significantly.`,
-            metric: `${Math.round(data.riskDiscipline)}% SL usage`,
+            description: `Only ${Math.round(data.riskDiscipline)}% of trades have a recorded stop loss. Missing SL data limits risk-discipline analysis.`,
+            metric: `${Math.round(data.riskDiscipline)}% SL recorded`,
             icon: "ShieldOff",
         });
     }
@@ -523,7 +540,7 @@ async function getQuickScore(
         return { score: -1, trades: stats.totalTrades, label: "N/A", color: "gray" };
     }
 
-    const avgRR = stats.avgLoss > 0 ? stats.avgWin / stats.avgLoss : 0;
+    const avgRR = stats.avgLoss > 0 ? stats.avgWin / stats.avgLoss : stats.grossProfit > 0 ? 2 : 0;
 
     const result = calculateTradeScore({
         winRate: stats.winRate,

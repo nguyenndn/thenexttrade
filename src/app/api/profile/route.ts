@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { normalizeCountryCode } from "@/lib/country-utils";
+import { sanitizeInput } from "@/lib/sanitize";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +12,10 @@ const updateProfileSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     bio: z.string().optional(),
     telegramId: z.string().optional(),
-    country: z.string().optional(),
+    country: z.union([
+        z.string().trim().regex(/^[A-Za-z]{2}$/, "Country must be a two-letter country code"),
+        z.literal(""),
+    ]).optional(),
     image: z.string().optional(), // In MVP this might be a URL or handled separately
 }).strict();
 
@@ -43,12 +48,10 @@ export async function GET() {
             streak: dbUser.streak || 0
         });
 
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
-
-import { sanitizeInput } from "@/lib/sanitize";
 
 export async function PUT(request: Request) {
     const supabase = await createClient();
@@ -66,6 +69,8 @@ export async function PUT(request: Request) {
         }
 
         const validatedData = updateProfileSchema.parse(body);
+        const hasCountry = Object.prototype.hasOwnProperty.call(validatedData, "country");
+        const normalizedCountry = normalizeCountryCode(validatedData.country);
 
         // Update User table
         await prisma.user.update({
@@ -82,13 +87,13 @@ export async function PUT(request: Request) {
             update: { 
                 bio: validatedData.bio,
                 telegramId: validatedData.telegramId,
-                country: validatedData.country
+                country: hasCountry ? normalizedCountry : undefined
             },
             create: {
                 userId: user.id,
                 bio: validatedData.bio,
                 telegramId: validatedData.telegramId,
-                country: validatedData.country
+                country: normalizedCountry
             }
         });
 

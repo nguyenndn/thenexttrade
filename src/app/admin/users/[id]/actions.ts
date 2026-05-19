@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { prisma } from "@/lib/prisma";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 async function checkAdmin() {
     const supabase = await createClient();
@@ -83,6 +84,7 @@ export async function sendUserNotification(userId: string, title: string, messag
                 message: message.trim(),
                 priority: "NORMAL",
                 icon: "bell",
+                link: NOTIFICATION_ROUTES.DASHBOARD,
             },
         });
 

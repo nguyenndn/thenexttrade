@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { generateReportsForAllUsers } from "@/lib/services/report-generator.service";
 import { sendEmail, buildReportEmailHtml, buildNudgeEmailHtml } from "@/lib/services/email.service";
 import { prisma } from "@/lib/prisma";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300; // 5 minutes max for batch processing
@@ -90,6 +91,7 @@ export async function GET(request: Request) {
                             ? "You didn't place any trades last week. Consider reviewing your strategy and staying consistent."
                             : "You didn't place any trades last month. Consistency is key to growth!",
                         priority: "LOW",
+                        link: NOTIFICATION_ROUTES.JOURNAL,
                     },
                 });
                 notificationsSent++;
@@ -123,7 +125,7 @@ export async function GET(request: Request) {
                             ? `Your weekly trading report is ready. Check your performance summary!`
                             : `Your monthly trading report is ready. Review your progress!`,
                         priority: "NORMAL",
-                        link: "/dashboard/reports",
+                        link: NOTIFICATION_ROUTES.REPORTS,
                     },
                 });
                 notificationsSent++;

@@ -69,6 +69,7 @@ export async function getKeyStats(userId: string, accountId?: string, startDate?
     const totalTrades = Number(stats.totalTrades || 0);
     const wins = Number(stats.wins || 0);
     const losses = Number(stats.losses || 0);
+    const decisiveTrades = wins + losses;
     const grossProfit = Number(stats.grossProfit || 0);
     const grossLoss = Number(stats.grossLoss || 0);
 
@@ -76,7 +77,7 @@ export async function getKeyStats(userId: string, accountId?: string, startDate?
         totalTrades,
         winCount: wins,
         lossCount: losses,
-        winRate: totalTrades > 0 ? (wins / totalTrades) * 100 : 0,
+        winRate: decisiveTrades > 0 ? (wins / decisiveTrades) * 100 : 0,
         totalPnL: Number(stats.totalPnL || 0),
         profitFactor: grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? 999 : 0,
         grossProfit,
@@ -126,7 +127,8 @@ export async function getDailyPerformance(userId: string, accountId?: string, st
             TO_CHAR("exitDate" AT TIME ZONE ${tz}, 'YYYY-MM-DD') as "date",
             SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "profit",
             COUNT(*) as "tradeCount",
-            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount"
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
         AND "status" = 'CLOSED'
@@ -139,9 +141,12 @@ export async function getDailyPerformance(userId: string, accountId?: string, st
     return (result as any[]).map(row => ({
         date: row.date,
         value: Number(row.profit || 0), // Daily PnL
-        winRate: Number(row.tradeCount) > 0 ? (Number(row.winCount) / Number(row.tradeCount)) * 100 : 0,
+        winRate: Number(row.winCount || 0) + Number(row.lossCount || 0) > 0
+            ? (Number(row.winCount || 0) / (Number(row.winCount || 0) + Number(row.lossCount || 0))) * 100
+            : 0,
         tradeCount: Number(row.tradeCount || 0),
-        winCount: Number(row.winCount || 0)
+        winCount: Number(row.winCount || 0),
+        lossCount: Number(row.lossCount || 0)
     }));
 }
 
@@ -190,7 +195,8 @@ export async function getSymbolPerformance(userId: string, accountId?: string, s
             COUNT(*) as "tradeCount",
             SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
             SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
-            SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
         AND "status" = 'CLOSED'
@@ -201,13 +207,19 @@ export async function getSymbolPerformance(userId: string, accountId?: string, s
         LIMIT 10
     `;
 
-    return (result as any[]).map(row => ({
-        symbol: row.symbol,
-        trades: Number(row.tradeCount),
-        pnl: Number(row.netProfit || 0),
-        grossProfit: Number(row.grossProfit || 0),
-        winRate: Number(row.tradeCount) > 0 ? (Number(row.winCount) / Number(row.tradeCount)) * 100 : 0
-    }));
+    return (result as any[]).map(row => {
+        const wins = Number(row.winCount || 0);
+        const losses = Number(row.lossCount || 0);
+        const decisiveTrades = wins + losses;
+
+        return {
+            symbol: row.symbol,
+            trades: Number(row.tradeCount),
+            pnl: Number(row.netProfit || 0),
+            grossProfit: Number(row.grossProfit || 0),
+            winRate: decisiveTrades > 0 ? (wins / decisiveTrades) * 100 : 0
+        };
+    });
 }
 
 /**
@@ -306,7 +318,8 @@ export async function getDayOfWeekPerformance(userId: string, accountId?: string
             EXTRACT(DOW FROM "exitDate" AT TIME ZONE ${tz}) as "dayIndex",
             COUNT(*) as "tradeCount",
             SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
-            SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
         AND "status" = 'CLOSED'
@@ -318,13 +331,19 @@ export async function getDayOfWeekPerformance(userId: string, accountId?: string
 
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-    return (result as any[]).map(row => ({
-        day: dayNames[Number(row.dayIndex)],
-        dayIndex: Number(row.dayIndex),
-        pnl: Number(row.netProfit || 0),
-        tradeCount: Number(row.tradeCount || 0),
-        winRate: Number(row.tradeCount) > 0 ? (Number(row.winCount) / Number(row.tradeCount)) * 100 : 0
-    }));
+    return (result as any[]).map(row => {
+        const wins = Number(row.winCount || 0);
+        const losses = Number(row.lossCount || 0);
+        const decisiveTrades = wins + losses;
+
+        return {
+            day: dayNames[Number(row.dayIndex)],
+            dayIndex: Number(row.dayIndex),
+            pnl: Number(row.netProfit || 0),
+            tradeCount: Number(row.tradeCount || 0),
+            winRate: decisiveTrades > 0 ? (wins / decisiveTrades) * 100 : 0
+        };
+    });
 }
 
 /**
@@ -380,7 +399,8 @@ export async function getSessionPerformance(userId: string, accountId?: string, 
             END as "session",
             COUNT(*) as "tradeCount",
             SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
-            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount"
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
+            SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount"
         FROM "JournalEntry"
         WHERE "userId" = ${userId}::uuid
         AND "status" = 'CLOSED'
@@ -392,12 +412,18 @@ export async function getSessionPerformance(userId: string, accountId?: string, 
     `;
 
     const sessionOrder = ['Sydney', 'Tokyo', 'London', 'New York'];
-    const mapped = (result as any[]).map(row => ({
-        session: row.session as string,
-        trades: Number(row.tradeCount || 0),
-        pnl: Number(row.netProfit || 0),
-        winRate: Number(row.tradeCount) > 0 ? (Number(row.winCount) / Number(row.tradeCount)) * 100 : 0,
-    }));
+    const mapped = (result as any[]).map(row => {
+        const wins = Number(row.winCount || 0);
+        const losses = Number(row.lossCount || 0);
+        const decisiveTrades = wins + losses;
+
+        return {
+            session: row.session as string,
+            trades: Number(row.tradeCount || 0),
+            pnl: Number(row.netProfit || 0),
+            winRate: decisiveTrades > 0 ? (wins / decisiveTrades) * 100 : 0,
+        };
+    });
 
     return sessionOrder
         .map(s => mapped.find(m => m.session === s) || { session: s, trades: 0, pnl: 0, winRate: 0 });

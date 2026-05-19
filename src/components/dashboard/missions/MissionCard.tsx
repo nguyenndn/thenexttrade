@@ -10,25 +10,20 @@ import { celebrateXP } from "@/lib/celebrate";
 import { toast } from "sonner";
 import type { MissionProgressItem } from "@/lib/services/edge-missions.service";
 
-// Dynamic Lucide icon by name
-const ICON_MAP: Record<string, React.ElementType> = {};
-function useDynamicIcon(name: string) {
-  // We'll use a simple mapping for the known icons
-  return null; // Fallback handled in render
-}
-
 interface MissionCardProps {
   mission: MissionProgressItem;
   onClaimed?: () => void;
 }
 
 const CATEGORY_COLORS = {
+  DAILY: "from-sky-500/10 to-cyan-500/10 border-sky-500/20",
   ONBOARDING: "from-emerald-500/10 to-teal-500/10 border-emerald-500/20",
   WEEKLY: "from-amber-500/10 to-orange-500/10 border-amber-500/20",
   MASTERY: "from-purple-500/10 to-indigo-500/10 border-purple-500/20",
 };
 
 const CATEGORY_LABELS = {
+  DAILY: "Daily",
   ONBOARDING: "Onboarding",
   WEEKLY: "Weekly",
   MASTERY: "Mastery",

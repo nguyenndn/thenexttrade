@@ -91,6 +91,7 @@ model Profile {
   @@index([userId])
   @@index([role])
   @@index([username])
+  @@index([country])
 }
 
 model Level {

@@ -8,6 +8,7 @@ import { approveAccountSchema, rejectAccountSchema } from "@/lib/validations/ea-
 import { ErrorCode } from "@/lib/errors/ea-license";
 import { ApproveAccountInput, RejectAccountInput } from "@/types/ea-license";
 import { AccountStatus, NotificationType, NotificationPriority } from "@prisma/client";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 async function checkAdmin() {
     const supabase = await createClient();
@@ -79,7 +80,7 @@ export async function approveAccount(
                 title: "License Approved",
                 message: `Account ${license.accountNumber} (${license.broker}) has been approved. You can download the EA now.`,
                 priority: NotificationPriority.HIGH,
-                link: "/dashboard/trading-systems",
+                link: NOTIFICATION_ROUTES.EA_DASHBOARD,
             },
         });
 
@@ -143,7 +144,7 @@ export async function rejectAccount(
                 title: "License Rejected",
                 message: `Request for account ${license.accountNumber} was rejected. Reason: ${data.reason}`,
                 priority: NotificationPriority.HIGH,
-                link: "/dashboard/my-accounts",
+                link: NOTIFICATION_ROUTES.EA_DASHBOARD,
             },
         });
 

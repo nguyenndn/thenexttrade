@@ -52,31 +52,34 @@ export function QuickActions({ userId, userEmail, userName, currentRole }: Quick
 
     return (
         <>
-            <div className="p-4 border-t border-gray-100 dark:border-white/5 space-y-2">
-                <div className="flex gap-2">
+            <div className="border-t border-gray-100 bg-gray-50/80 p-4 dark:border-white/5 dark:bg-white/[0.03]">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowRoleModal(true)}
-                        className="flex-1 h-9 text-xs font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl"
+                        className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-gray-200 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
                     >
-                        <Pencil size={13} className="mr-1.5" /> Edit Role
+                        <Pencil size={14} className="mr-1.5 shrink-0" />
+                        <span className="whitespace-nowrap">Edit Role</span>
                     </Button>
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowResetConfirm(true)}
-                        className="flex-1 h-9 text-xs font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl"
+                        className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-gray-200 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
                     >
-                        <KeyRound size={13} className="mr-1.5" /> Reset PW
+                        <KeyRound size={14} className="mr-1.5 shrink-0" />
+                        <span className="whitespace-nowrap">Reset Password</span>
                     </Button>
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowNotifyModal(true)}
-                        className="flex-1 h-9 text-xs font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl"
+                        className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-gray-200 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
                     >
-                        <Bell size={13} className="mr-1.5" /> Notify
+                        <Bell size={14} className="mr-1.5 shrink-0" />
+                        <span className="whitespace-nowrap">Notify</span>
                     </Button>
                 </div>
             </div>

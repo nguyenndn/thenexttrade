@@ -10,6 +10,7 @@ export interface AnalyticsData {
     };
     trend: Array<{ date: string; views: number }>;
     topCountries: Array<{ country: string; views: number }>;
+    registeredCountries: Array<{ country: string; users: number }>;
     topPages: Array<{ pathname: string; views: number }>;
     topReferrers: Array<{ referrer: string; views: number }>;
     devices: Array<{ device: string; count: number }>;

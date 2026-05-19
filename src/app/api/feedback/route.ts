@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { NotificationType, NotificationPriority } from "@prisma/client";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 export async function POST(req: Request) {
     const user = await getAuthUser();
@@ -53,7 +54,7 @@ export async function POST(req: Request) {
                     title: `New Feedback: ${label}`,
                     message: preview,
                     priority: NotificationPriority.NORMAL,
-                    link: "/admin/feedback",
+                    link: NOTIFICATION_ROUTES.FEEDBACK_ADMIN,
                 })),
             });
         }

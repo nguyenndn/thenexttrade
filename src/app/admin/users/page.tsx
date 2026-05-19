@@ -6,6 +6,8 @@ import { UserCharts } from "@/components/admin/users/UserCharts";
 import { UserList } from "@/components/admin/users/UserList";
 import { UserPageActions } from "@/components/admin/users/UserPageActions";
 import { format, subDays } from "date-fns";
+import { UserRole, type Prisma } from "@prisma/client";
+import { getCountryName, getCountrySearchValues, normalizeCountryCode } from "@/lib/country-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -102,10 +104,19 @@ async function getHeroStats() {
 async function getUserStats() {
     const sevenDaysAgo = subDays(new Date(), 7);
 
-    const [roles, recentActivity] = await Promise.all([
+    const [roles, countries, recentActivity] = await Promise.all([
         prisma.profile.groupBy({
             by: ["role"],
             _count: { role: true },
+        }),
+        prisma.profile.groupBy({
+            by: ["country"],
+            where: {
+                country: { not: null },
+            },
+            _count: { country: true },
+            orderBy: { _count: { country: "desc" } },
+            take: 8,
         }),
         prisma.userProgress.findMany({
             where: { completedAt: { gte: sevenDaysAgo, not: null } },
@@ -144,7 +155,19 @@ async function getUserStats() {
         ...roles.map((r) => ({ name: r.role, value: r._count.role })),
     ].filter((d) => d.value > 0);
 
-    return { roleData, activityData };
+    const countryData = countries
+        .map((country) => {
+            const code = normalizeCountryCode(country.country);
+            if (!code) return null;
+            return {
+                country: code,
+                name: getCountryName(code),
+                value: country._count.country,
+            };
+        })
+        .filter((country): country is { country: string; name: string; value: number } => Boolean(country));
+
+    return { roleData, activityData, countryData };
 }
 
 // =============================================================================
@@ -156,6 +179,7 @@ interface PageProps {
         page?: string;
         q?: string;
         role?: string;
+        country?: string;
     }>;
 }
 
@@ -164,11 +188,12 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
     const page = parseInt(params.page || "1");
     const query = params.q || "";
     const role = params.role || "";
+    const country = normalizeCountryCode(params.country) || "";
     const limit = 20;
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where: Record<string, unknown> = {};
+    const where: Prisma.UserWhereInput = {};
 
     if (query) {
         where.OR = [
@@ -177,8 +202,15 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
         ];
     }
 
-    if (role) {
-        where.profile = { role };
+    const profileWhere: Prisma.ProfileWhereInput = {};
+    if (role && ["USER", "EDITOR", "ADMIN"].includes(role)) {
+        profileWhere.role = role as UserRole;
+    }
+    if (country) {
+        profileWhere.country = { in: getCountrySearchValues(country) };
+    }
+    if (Object.keys(profileWhere).length > 0) {
+        where.profile = profileWhere;
     }
 
     const [heroStats, stats, users, totalCount] = await Promise.all([
@@ -195,7 +227,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
                 email: true,
                 image: true,
                 createdAt: true,
-                profile: { select: { role: true } },
+                profile: { select: { role: true, country: true } },
                 _count: {
                     select: {
                         quizAttempts: true,
@@ -229,12 +261,14 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
             <UserCharts
                 roleData={stats.roleData}
                 activityData={stats.activityData}
+                countryData={stats.countryData}
             />
 
             {/* User List with Search, Filter, Pagination */}
             <UserList
                 initialUsers={users as any}
                 pagination={{ currentPage: page, totalPages }}
+                countryOptions={stats.countryData}
             />
         </div>
     );

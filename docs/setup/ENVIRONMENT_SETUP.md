@@ -78,6 +78,15 @@ DATABASE_URL="postgresql://postgres.xxx@aws-xxx.pooler.supabase.com:5432/postgre
 NODE_ENV="production"
 ```
 
+### Google Analytics 4 (Optional)
+```env
+NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
+NEXT_PUBLIC_ANALYTICS_ENABLED="true"
+```
+
+- Set `NEXT_PUBLIC_ANALYTICS_ENABLED="false"` to disable GA4 without removing the measurement ID.
+- Do not send user email, full name, phone, Telegram, MT5 account number, or broker account number to GA4 events.
+
 ---
 
 ## ⚠️ Troubleshooting

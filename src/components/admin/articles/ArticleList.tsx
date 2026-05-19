@@ -18,6 +18,12 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/Dialog";
 import { ArticleRowActions } from "./ArticleRowActions";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
@@ -143,6 +149,9 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
     const [quickEditId, setQuickEditId] = useState<string | null>(null);
     const [quickEditData, setQuickEditData] = useState<{ title: string, slug: string, status: string } | null>(null);
     const [isSavingQuickEdit, setIsSavingQuickEdit] = useState(false);
+
+    // Image Preview State
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
 
     // Search & Filter Handlers (URL-based)
     const handleSearch = useDebouncedCallback((term: string) => {
@@ -424,9 +433,14 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                         <>
                                             <td className="px-6 py-5">
                                                 <div className="flex items-start gap-4">
-                                                    <div className="w-16 h-10 rounded-lg bg-gray-100 dark:bg-white/10 overflow-hidden relative flex-shrink-0 border border-gray-200 dark:border-white/5">
+                                                    <div 
+                                                        className="w-16 h-10 rounded-lg bg-gray-100 dark:bg-white/10 overflow-hidden relative flex-shrink-0 border border-gray-200 dark:border-white/5 cursor-pointer group/img"
+                                                        onClick={() => {
+                                                            if (article.thumbnail) setPreviewImage(article.thumbnail);
+                                                        }}
+                                                    >
                                                         {article.thumbnail ? (
-                                                            <img src={article.thumbnail} alt="" className="w-full h-full object-cover" />
+                                                            <img src={article.thumbnail} alt="" className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-300" />
                                                         ) : (
                                                             <div className="flex items-center justify-center w-full h-full text-gray-500">
                                                                 <FileText size={16} aria-hidden="true" />
@@ -434,7 +448,9 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-700 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">{article.title}</p>
+                                                        <Link href={`/admin/articles/${article.id}/edit`} className="font-bold text-gray-700 dark:text-white line-clamp-1 group-hover:text-primary transition-colors hover:underline">
+                                                            {article.title}
+                                                        </Link>
                                                         <div className="flex items-center gap-2 mt-1">
                                                             <span className="text-xs text-gray-500 font-mono">/{article.slug}</span>
                                                             <Button
@@ -554,6 +570,20 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
                 onCancel={() => setIsBulkConfirmOpen(false)}
                 variant="danger"
             />
+
+            {/* Image Preview Modal */}
+            <Dialog open={!!previewImage} onOpenChange={(open) => !open && setPreviewImage(null)}>
+                <DialogContent className="max-w-4xl p-1 bg-white dark:bg-slate-900 border-gray-200 dark:border-white/20 sm:rounded-xl shadow-2xl">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Image Preview</DialogTitle>
+                    </DialogHeader>
+                    {previewImage && (
+                        <div className="relative w-full rounded-lg overflow-hidden bg-gray-100 dark:bg-black/50 flex items-center justify-center">
+                            <img src={previewImage} alt="Preview" className="w-full max-h-[85vh] object-contain rounded-lg" />
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     );
 });

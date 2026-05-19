@@ -35,6 +35,7 @@ import {
     ClipboardCheck,
     Target,
     HeartPulse,
+    FileBarChart,
 } from "lucide-react";
 
 export const menuItems = [
@@ -150,6 +151,7 @@ export const adminMenuItems = [
 
     // --- MONITORING ---
     { name: "Release Health", href: "/admin/release-health", icon: HeartPulse },
+    { name: "Reports", href: "/admin/reports", icon: FileBarChart },
     { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
     { name: "Security", href: "/admin/security", icon: ShieldAlert },
 
@@ -227,6 +229,7 @@ export const adminMenuGroups = [
         items: [
             { name: "Overview", href: "/admin", icon: LayoutDashboard },
             { name: "Release Health", href: "/admin/release-health", icon: HeartPulse },
+            { name: "Reports", href: "/admin/reports", icon: FileBarChart },
             { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
             { name: "Security", href: "/admin/security", icon: ShieldAlert },
         ],

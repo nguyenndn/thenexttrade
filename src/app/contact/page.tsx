@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, MapPin, Mail, Clock, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
+import { Send, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { Button } from '@/components/ui/Button';
@@ -62,11 +62,8 @@ export default function ContactPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-700 dark:text-white relative overflow-hidden">
-            
-            {/* Background Glows (Premium Aesthetic) */}
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-cyan-500/5 dark:bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="min-h-screen bg-[#F7F4EC] dark:bg-[#090805] text-gray-700 dark:text-white relative overflow-hidden">
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(180,118,26,0.20)_0%,rgba(9,8,5,0.92)_42%,rgba(16,185,129,0.08)_100%)] pointer-events-none" />
 
             <PublicHeader />
             

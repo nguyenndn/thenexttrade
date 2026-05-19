@@ -3,8 +3,8 @@
 // Static mission definitions — matched by missionId in UserMissionProgress
 // ============================================================================
 
-export type MissionCategory = "ONBOARDING" | "WEEKLY" | "MASTERY";
-export type MissionCadence = "ONCE" | "WEEKLY";
+export type MissionCategory = "DAILY" | "ONBOARDING" | "WEEKLY" | "MASTERY";
+export type MissionCadence = "ONCE" | "DAILY" | "WEEKLY";
 
 export interface MissionDef {
   id: string;
@@ -57,22 +57,24 @@ export const EDGE_MISSIONS: MissionDef[] = [
     ctaHref: "/dashboard/academy",
     priority: 20,
   },
+  // -- DAILY --
   {
-    id: "FIRST_CHECKIN",
-    title: "Do Your First Check-in",
-    description: "Check in once to start building consistency.",
-    whyItMatters: "Consistency creates the data trail needed to understand your trading behavior.",
+    id: "DAILY_CHECKIN",
+    title: "Daily Check-in",
+    description: "Check in once today to keep your consistency streak alive.",
+    whyItMatters: "Daily check-ins keep your trading rhythm visible and turn discipline into a measurable habit.",
     icon: "calendar-check",
-    category: "ONBOARDING",
+    category: "DAILY",
     target: 1,
     xpReward: 20,
     eventType: "CHECKIN",
-    repeatable: false,
-    cadence: "ONCE",
+    repeatable: true,
+    cadence: "DAILY",
     ctaLabel: "Check In",
     ctaHref: "/dashboard/settings/streak",
-    priority: 30,
+    priority: 5,
   },
+  // -- ONBOARDING --
   {
     id: "FIRST_WEEKLY_REVIEW",
     title: "Generate Your First Weekly Review",

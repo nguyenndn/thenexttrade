@@ -738,8 +738,9 @@ export function AddAccountModal({
 
                             {/* Confirm Sub-Modal */}
                             {showConfirm && (
-                                <div className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm rounded-xl">
-                                    <div className="w-full max-w-sm bg-white dark:bg-[#1A1D27] rounded-2xl border border-gray-200 dark:border-white/10 p-6 shadow-2xl space-y-4">
+                                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+                                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => !isPending && setShowConfirm(false)} />
+                                    <div className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
                                         <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
                                             <AlertCircle className="text-amber-500" /> Confirm Submission
                                         </h3>
@@ -747,9 +748,9 @@ export function AddAccountModal({
                                             I confirm that this account is registered under the correct IB and all information is accurate.
                                         </p>
                                         <div className="flex justify-end gap-2 pt-2">
-                                            <Button variant="outline" onClick={() => setShowConfirm(false)}>Cancel</Button>
-                                            <Button variant="primary" onClick={handleProSubmit} disabled={isPending} className="bg-amber-500 hover:bg-amber-600 border-none">
-                                                {isPending ? <Loader2 size={16} className="animate-spin" /> : "Confirm"}
+                                            <Button variant="outline" onClick={() => setShowConfirm(false)} disabled={isPending}>Cancel</Button>
+                                            <Button variant="primary" onClick={handleProSubmit} disabled={isPending} className="bg-amber-500 hover:bg-amber-600 border-none text-white gap-2">
+                                                {isPending ? <><Loader2 size={16} className="animate-spin" /> Submitting...</> : "Confirm"}
                                             </Button>
                                         </div>
                                     </div>

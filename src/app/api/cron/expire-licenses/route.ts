@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { AccountStatus, NotificationType, NotificationPriority } from "@prisma/client";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
                     title: "License Expired",
                     message: `Your license for account ${license.accountNumber} has expired. Please renew to continue downloading EAs.`,
                     priority: NotificationPriority.HIGH,
-                    link: "/dashboard/my-accounts",
+                    link: NOTIFICATION_ROUTES.EA_DASHBOARD,
                 }
             });
 

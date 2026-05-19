@@ -5,6 +5,7 @@ import { RefreshCw, Download, BarChart3, FileText, Users, MousePointerClick } fr
 import { AnalyticsSummary } from '@/components/admin/analytics/AnalyticsSummary';
 import { PageviewTrend } from '@/components/admin/analytics/PageviewTrend';
 import { GeoPanel } from '@/components/admin/analytics/GeoPanel';
+import { RegisteredCountriesPanel } from '@/components/admin/analytics/RegisteredCountriesPanel';
 import { TopPagesPanel } from '@/components/admin/analytics/TopPagesPanel';
 import { TechPanel } from '@/components/admin/analytics/TechPanel';
 import { ReferrerPanel } from '@/components/admin/analytics/ReferrerPanel';
@@ -85,19 +86,12 @@ export default function AnalyticsDashboard() {
 
     useEffect(() => { fetchData(); }, [fetchData]);
 
-    // Fetch content data when tab switches to content
-    useEffect(() => {
-        if (tab === 'content' && !contentData) {
-            fetchContentData();
-        }
-    }, [tab, contentData, fetchContentData]);
-
-    // Refetch content when period changes
+    // Fetch content data when the content tab is active or period changes.
     useEffect(() => {
         if (tab === 'content') {
             fetchContentData();
         }
-    }, [period]);
+    }, [tab, period, fetchContentData]);
 
     // Real-time polling every 30s
     useEffect(() => {
@@ -251,7 +245,10 @@ export default function AnalyticsDashboard() {
                 <>
                     <AnalyticsSummary summary={data.summary} realTime={realTime} />
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <RegisteredCountriesPanel countries={data.registeredCountries || []} />
                         <GeoPanel countries={data.topCountries} />
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
                         <TechPanel devices={data.devices} browsers={data.browsers} />
                     </div>
                     <RecentVisitorsPanel />

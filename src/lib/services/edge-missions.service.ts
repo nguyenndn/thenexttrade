@@ -38,8 +38,17 @@ export function getCurrentWeekPeriodKey(date = new Date()) {
   return `${weekYear}-W${String(week).padStart(2, "0")}`;
 }
 
+export function getCurrentDayPeriodKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export function getMissionPeriodKey(def: MissionDef) {
-  return def.cadence === "WEEKLY" ? getCurrentWeekPeriodKey() : "lifetime";
+  if (def.cadence === "DAILY") return getCurrentDayPeriodKey();
+  if (def.cadence === "WEEKLY") return getCurrentWeekPeriodKey();
+  return "lifetime";
 }
 
 export function getCurrentWeekRange(date = new Date()) {
@@ -50,6 +59,14 @@ export function getCurrentWeekRange(date = new Date()) {
   const end = new Date(start);
   end.setUTCDate(start.getUTCDate() + 7);
   
+  return { start, end };
+}
+
+export function getCurrentDayRange(date = new Date()) {
+  const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const end = new Date(start);
+  end.setDate(start.getDate() + 1);
+
   return { start, end };
 }
 
@@ -78,7 +95,10 @@ export async function getUserMissions(
     if (!record || (!record.claimed && !record.completedAt)) {
       // Count matching events
       const where: any = { userId, eventType: def.eventType };
-      if (def.cadence === "WEEKLY") {
+      if (def.cadence === "DAILY") {
+        const { start, end } = getCurrentDayRange();
+        where.createdAt = { gte: start, lt: end };
+      } else if (def.cadence === "WEEKLY") {
         const { start, end } = getCurrentWeekRange();
         where.createdAt = { gte: start, lt: end };
       }

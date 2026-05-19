@@ -21,7 +21,7 @@ export const signupSchema = z.object({
     .regex(/[0-9]/, "Password must contain a number"),
   confirm: z.string(),
   fullName: z.string().trim().min(2).max(80),
-  country: z.string().trim().min(2).max(80).optional(),
+  country: z.string().trim().regex(/^[A-Za-z]{2}$/, "Please select a valid country").optional(),
   termsAccepted: z.literal("on", {
     message: "You must accept the terms and conditions"
   }),

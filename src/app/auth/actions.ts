@@ -4,7 +4,6 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { z } from 'zod'
 import { recordSession } from '@/lib/session'
 import { verifyTurnstile } from '@/lib/turnstile'
 import { logSecurityEvent, SECURITY_EVENT_TYPES } from '@/lib/security-logger'
@@ -13,6 +12,7 @@ import { authSchema, signupSchema } from '@/lib/validations/auth'
 import { headers } from 'next/headers'
 import { checkAuthRateLimit } from '@/lib/security/auth-rate-limit'
 import { AUTH_ERRORS } from '@/lib/security/auth-errors'
+import { normalizeCountryCode } from '@/lib/country-utils'
 
 async function getClientIP(): Promise<string> {
     const h = await headers()
@@ -151,7 +151,7 @@ export async function signInWithMagicLink(formData: FormData) {
         return { error: 'Email is required' }
     }
 
-    const { error } = await supabase.auth.signInWithOtp({
+    await supabase.auth.signInWithOtp({
         email,
         options: {
             emailRedirectTo: `${origin}/auth/callback?next=/dashboard`,
@@ -193,6 +193,7 @@ export async function signup(formData: FormData) {
     }
 
     const { fullName, country, password } = validated.data;
+    const normalizedCountry = normalizeCountryCode(country);
 
     // Attempt to split name for metadata if needed, otherwise just use full name
     const nameParts = fullName.trim().split(' ');
@@ -206,7 +207,7 @@ export async function signup(formData: FormData) {
         options: {
             data: {
                 full_name: fullName.trim(),
-                country: country,
+                country: normalizedCountry,
                 first_name: firstName,
                 last_name: lastName
             },
@@ -221,13 +222,28 @@ export async function signup(formData: FormData) {
     // Check if session is automatically established (Email Verification disabled)
     if (data?.user && data.session) {
         // Fallback: If verification is disabled, insert immediately
-        await prisma.user.create({
-            data: {
-                id: data.user.id,
-                email: validated.data.email,
-                name: fullName.trim(),
-            }
-        }).catch(() => {});
+        await prisma.$transaction([
+            prisma.user.upsert({
+                where: { id: data.user.id },
+                update: {
+                    email: validated.data.email,
+                    name: fullName.trim(),
+                },
+                create: {
+                    id: data.user.id,
+                    email: validated.data.email,
+                    name: fullName.trim(),
+                },
+            }),
+            prisma.profile.upsert({
+                where: { userId: data.user.id },
+                update: normalizedCountry ? { country: normalizedCountry } : {},
+                create: {
+                    userId: data.user.id,
+                    country: normalizedCountry,
+                },
+            }),
+        ]).catch(() => {});
         
         revalidatePath('/', 'layout')
         redirect('/onboarding')
@@ -266,7 +282,7 @@ export async function forgotPassword(formData: FormData) {
         return { error: 'Email is required' }
     }
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${origin}/auth/callback?next=/auth/update-password`,
     })
 
@@ -334,18 +350,34 @@ export async function verifyOtpAction(formData: FormData) {
     if (data.user) {
         const metadata = data.user.user_metadata;
         const fullName = metadata?.full_name || (metadata?.first_name ? metadata.first_name + ' ' + metadata.last_name : 'Trader');
+        const normalizedCountry = normalizeCountryCode(
+            typeof metadata?.country === 'string' ? metadata.country : null
+        );
         
         try {
-            await prisma.user.upsert({
-                where: { id: data.user.id },
-                update: {}, // Do nothing if exists
-                create: {
-                    id: data.user.id,
-                    email: data.user.email!,
-                    name: fullName.trim(),
-                }
-            })
-        } catch (err) {
+            await prisma.$transaction([
+                prisma.user.upsert({
+                    where: { id: data.user.id },
+                    update: {
+                        email: data.user.email!,
+                        name: fullName.trim(),
+                    },
+                    create: {
+                        id: data.user.id,
+                        email: data.user.email!,
+                        name: fullName.trim(),
+                    },
+                }),
+                prisma.profile.upsert({
+                    where: { userId: data.user.id },
+                    update: normalizedCountry ? { country: normalizedCountry } : {},
+                    create: {
+                        userId: data.user.id,
+                        country: normalizedCountry,
+                    },
+                }),
+            ])
+        } catch {
             // Silently handle insert error
         }
     }

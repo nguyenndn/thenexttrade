@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { createErrorResponse, createSuccessResponse } from "@/lib/errors/response";
 import { ErrorCode } from "@/lib/errors/ea-license";
 import { AccountStatus } from "@prisma/client";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 export async function GET(request: NextRequest) {
     try {
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest) {
             type: "NEW_LICENSE_REQUEST",
             title: "New Request",
             message: `${license.user.email} - ${license.broker} ${license.accountNumber}`,
-            link: "/admin/ea/accounts/pending",
+            link: NOTIFICATION_ROUTES.EA_PENDING_ADMIN,
             isRead: false,
             createdAt: license.createdAt.toISOString(),
         }));
@@ -65,7 +66,7 @@ export async function GET(request: NextRequest) {
             type: "NEW_COPY_TRADING_REQUEST" as const,
             title: "New Copy Trading",
             message: `${reg.user.name || reg.user.email} — ${reg.brokerName} ${reg.mt5AccountNumber}`,
-            link: "/admin/copy-trading",
+            link: NOTIFICATION_ROUTES.COPY_TRADING_ADMIN,
             isRead: false,
             createdAt: reg.createdAt.toISOString(),
         }));
@@ -76,7 +77,7 @@ export async function GET(request: NextRequest) {
             type: n.type,
             title: n.title,
             message: n.message,
-            link: n.link || "/admin",
+            link: n.link || NOTIFICATION_ROUTES.ADMIN_DASHBOARD,
             isRead: n.isRead,
             createdAt: n.createdAt.toISOString(),
         }));

@@ -16,13 +16,16 @@ export async function verifyTurnstile(
 
   const isProd = process.env.NODE_ENV === "production";
 
+  // Development bypass must happen server-side too. Some forms hide the
+  // Turnstile widget locally, so the server can receive an empty token.
+  if (!isProd) {
+    return { success: true };
+  }
+
   // Skip verification if Turnstile is not configured (no secret key set)
   if (!secretKey) {
-    if (isProd) {
-      console.error("[Turnstile] Missing TURNSTILE_SECRET_KEY in production.");
-      return { success: false, error: "Configuration error. Verification unavailable." };
-    }
-    return { success: true };
+    console.error("[Turnstile] Missing TURNSTILE_SECRET_KEY in production.");
+    return { success: false, error: "Configuration error. Verification unavailable." };
   }
 
   if (!token) {

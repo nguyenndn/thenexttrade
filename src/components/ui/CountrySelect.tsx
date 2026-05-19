@@ -16,9 +16,10 @@ interface CountrySelectProps {
     onChange?: (value: string) => void;
     className?: string;
     error?: boolean;
+    required?: boolean;
 }
 
-export function CountrySelect({ value, onChange, className, error }: CountrySelectProps) {
+export function CountrySelect({ value, onChange, className, error, required = true }: CountrySelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
     const [countries, setCountries] = useState<Country[]>([]);
@@ -82,7 +83,7 @@ export function CountrySelect({ value, onChange, className, error }: CountrySele
             </Button>
 
             {/* Hidden Input for Form Submission */}
-            <input type="hidden" name="country" value={value || ""} required />
+            <input type="hidden" name="country" value={value || ""} required={required} />
 
             {/* Dropdown Menu */}
             {isOpen && (

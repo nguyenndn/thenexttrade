@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { NotificationType, NotificationPriority } from "@prisma/client";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 interface RouteContext {
     params: Promise<{ id: string }>;
@@ -74,7 +75,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
                     ? `Your copy trading registration for ${brokerDisplay} (${registration.mt5AccountNumber}) has been approved! You will be connected shortly.`
                     : `Your copy trading registration for ${brokerDisplay} (${registration.mt5AccountNumber}) was rejected.${rejectReason ? ` Reason: ${rejectReason}` : ""}`,
                 priority: isApprove ? NotificationPriority.NORMAL : NotificationPriority.HIGH,
-                link: "/dashboard/copy-trading",
+                link: NOTIFICATION_ROUTES.COPY_TRADING,
             },
         });
 

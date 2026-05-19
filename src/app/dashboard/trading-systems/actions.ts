@@ -46,7 +46,6 @@ export async function submitAccountRequest(data: z.infer<typeof submitAccountSch
         });
 
         revalidatePath("/dashboard/trading-systems");
-        revalidatePath("/dashboard/my-accounts"); // Keep for legacy cache clearing if needed
         return { success: true };
     } catch (error) {
         console.error("Submit Account Error:", error);

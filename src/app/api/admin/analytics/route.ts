@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/api-auth';
+import { normalizeCountryCode } from '@/lib/country-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,6 +35,7 @@ export async function GET(request: NextRequest) {
             prevUniqueVisitors,
             realTimeCount,
             topCountries,
+            registeredCountriesRaw,
             topPages,
             topReferrers,
             deviceBreakdown,
@@ -73,6 +75,16 @@ export async function GET(request: NextRequest) {
                 by: ['country'],
                 where: { createdAt: { gte: since }, country: { not: null } },
                 _count: { _all: true },
+                orderBy: { _count: { country: 'desc' } },
+                take: 20,
+            }),
+
+            // Registered user countries. This is account profile data,
+            // intentionally separate from visitor pageview geo.
+            prisma.profile.groupBy({
+                by: ['country'],
+                where: { country: { not: null } },
+                _count: { country: true },
                 orderBy: { _count: { country: 'desc' } },
                 take: 20,
             }),
@@ -147,6 +159,21 @@ export async function GET(request: NextRequest) {
             ? Math.round(((uniqueVisitors - prevUniqueVisitors) / prevUniqueVisitors) * 100)
             : uniqueVisitors > 0 ? 100 : 0;
 
+        const registeredCountryMap = new Map<string, number>();
+        registeredCountriesRaw.forEach((row) => {
+            const country = normalizeCountryCode(row.country);
+            if (!country) return;
+            registeredCountryMap.set(
+                country,
+                (registeredCountryMap.get(country) || 0) + row._count.country
+            );
+        });
+
+        const registeredCountries = Array.from(registeredCountryMap.entries())
+            .map(([country, users]) => ({ country, users }))
+            .sort((a, b) => b.users - a.users)
+            .slice(0, 20);
+
         return NextResponse.json({
             period,
             summary: {
@@ -164,6 +191,7 @@ export async function GET(request: NextRequest) {
                 country: c.country,
                 views: c._count._all,
             })),
+            registeredCountries,
             topPages: topPages.map(p => ({
                 pathname: p.pathname,
                 views: p._count._all,

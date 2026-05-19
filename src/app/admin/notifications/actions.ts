@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma"; // Adjust path if using different prisma client location
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { z } from "zod";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 // --- Validation Schemas ---
 const createBroadcastSchema = z.object({
@@ -48,6 +49,7 @@ export async function createBroadcast(data: CreateBroadcastInput) {
         }
 
         const { title, message, type, priority, link, targetUserIds, sendAt } = data;
+        const notificationLink = link?.trim() || NOTIFICATION_ROUTES.DASHBOARD;
 
         // 1. Create Broadcast Record (admin_broadcasts)
         const broadcast = await prisma.adminBroadcast.create({
@@ -56,7 +58,7 @@ export async function createBroadcast(data: CreateBroadcastInput) {
                 message,
                 type,
                 priority,
-                link,
+                link: notificationLink,
                 createdBy: user.id,
                 scheduledAt: sendAt,
                 // isSent removed as it is not in schema. Logic relies on sentAt being not null.
@@ -88,7 +90,7 @@ export async function createBroadcast(data: CreateBroadcastInput) {
                         title,
                         message,
                         priority,
-                        link,
+                        link: notificationLink,
                         isRead: false,
                     }))
                 });

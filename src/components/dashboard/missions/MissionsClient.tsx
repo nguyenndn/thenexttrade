@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Target, Trophy, Zap, BookOpen } from "lucide-react";
+import { CalendarCheck, Target, Trophy, Zap, BookOpen } from "lucide-react";
 import { MissionCard } from "./MissionCard";
 import { NextBestActionCard } from "./NextBestActionCard";
 import { getMyMissions } from "@/actions/edge-missions";
@@ -15,6 +15,7 @@ interface MissionsClientProps {
 
 const CATEGORY_TABS = [
   { key: "ALL", label: "All Missions", icon: Target },
+  { key: "DAILY", label: "Daily", icon: CalendarCheck },
   { key: "ONBOARDING", label: "Onboarding", icon: Zap },
   { key: "WEEKLY", label: "Weekly", icon: Trophy },
   { key: "MASTERY", label: "Mastery", icon: BookOpen },

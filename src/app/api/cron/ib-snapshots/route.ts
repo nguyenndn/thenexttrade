@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireCronSecret } from "@/lib/api-auth";
 import { generateActivitySnapshots } from "@/lib/services/ib-snapshot.service";
 import { prisma } from "@/lib/prisma";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -55,7 +56,7 @@ export async function GET(request: Request) {
                 ? "It's been over a month since your last trade. Jump back in and keep improving!"
                 : "You haven't placed any trades recently. Consistency is key to growth. Consider reviewing your strategy.",
               priority: "LOW",
-              link: "/dashboard/journal",
+              link: NOTIFICATION_ROUTES.JOURNAL,
             },
           });
           notificationsSent++;

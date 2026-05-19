@@ -6,6 +6,7 @@ import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
 import { z } from "zod";
+import { normalizeCountryCode } from "@/lib/country-utils";
 
 // =============================================================================
 // AUTH HELPERS (reused pattern from [id]/actions.ts)
@@ -45,6 +46,10 @@ const createUserSchema = z.object({
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string(),
     role: z.enum(["USER", "EDITOR", "ADMIN"]),
+    country: z.union([
+        z.string().trim().regex(/^[A-Za-z]{2}$/, "Country must be a two-letter country code"),
+        z.literal(""),
+    ]).optional(),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
@@ -60,6 +65,7 @@ export async function createUser(data: {
     password: string;
     confirmPassword: string;
     role: string;
+    country?: string;
 }) {
     try {
         const { isAuthorized, user: admin } = await checkAdmin();
@@ -74,6 +80,7 @@ export async function createUser(data: {
         }
 
         const { name, email, password, role } = validated.data;
+        const country = normalizeCountryCode(validated.data.country);
 
         // Check if email already exists
         const existing = await prisma.user.findUnique({ where: { email } });
@@ -88,7 +95,7 @@ export async function createUser(data: {
                 email,
                 password,
                 email_confirm: true,
-                user_metadata: { full_name: name },
+                user_metadata: { full_name: name, country },
             });
 
         if (authError || !authData.user) {
@@ -112,6 +119,7 @@ export async function createUser(data: {
             data: {
                 userId: authData.user.id,
                 role: role as UserRole,
+                country,
             },
         });
 
@@ -122,7 +130,7 @@ export async function createUser(data: {
                 action: "USER_CREATED",
                 targetType: "User",
                 targetId: authData.user.id,
-                details: { email, role, name },
+                details: { email, role, name, country },
             },
         });
 

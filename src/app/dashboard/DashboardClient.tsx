@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@/components/providers/ThemeProvider";
-import { TrendingUp, Trophy, PieChart as PieChartIcon, Layers, CalendarRange, Gauge } from "lucide-react";
+import { TrendingUp, Trophy, PieChart as PieChartIcon, Layers, CalendarRange, Gauge, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
@@ -12,6 +12,12 @@ import { MobileProStatusBanner } from "@/components/dashboard/MobileProStatusBan
 import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
 import { WelcomeHero } from "@/components/dashboard/WelcomeHero";
 import type { ActivationState } from "@/lib/activation/activation-types";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 
 // Static imports for above-fold charts (always visible — no skeleton needed)
@@ -28,6 +34,31 @@ const SymbolPerformanceList = dynamic(() => import("@/components/dashboard/Symbo
 const RecentTradesMini = dynamic(() => import("@/components/dashboard/RecentTradesMini").then(m => m.RecentTradesMini), { loading: () => <ChartSkeleton /> });
 const TradingSessionsCard = dynamic(() => import("@/components/dashboard/TradingSessionsCard").then(m => m.TradingSessionsCard), { loading: () => <ChartSkeleton /> });
 const DayOfWeekCard = dynamic(() => import("@/components/dashboard/DayOfWeekCard").then(m => m.DayOfWeekCard), { loading: () => <ChartSkeleton /> });
+
+function HelpTooltip({ content }: { content: string }) {
+    return (
+        <TooltipProvider delayDuration={150}>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <button
+                        type="button"
+                        className="inline-flex h-4 w-4 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                        aria-label="Explain this metric"
+                    >
+                        <HelpCircle size={13} />
+                    </button>
+                </TooltipTrigger>
+                <TooltipContent
+                    side="top"
+                    align="center"
+                    className="max-w-[260px] bg-gray-950 px-3 py-2 text-xs leading-relaxed text-white shadow-xl dark:bg-white dark:text-gray-950"
+                >
+                    {content}
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    );
+}
 
 interface DashboardClientProps {
     userName?: string;
@@ -123,6 +154,7 @@ export default function DashboardClient({
             {/* Header Section */}
             <GreetingHeader userName={userName} currentAccountId={currentAccountId} />
 
+            <div className="mt-4 space-y-4 lg:mt-5 lg:space-y-5">
             {/* Mobile Pro Status Banner — visible on mobile without opening the drawer */}
             <MobileProStatusBanner />
 
@@ -141,7 +173,7 @@ export default function DashboardClient({
 
             {/* Report Nudge Card */}
             {(daysSinceLastReport === undefined || daysSinceLastReport === null || daysSinceLastReport >= 7) && dashboardData.totalBalance > 0 && (
-                <div className="mb-4 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-indigo-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm relative overflow-hidden">
+                <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-indigo-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm relative overflow-hidden">
                     <div className="flex items-center gap-3 relative z-10">
                         <div className="p-2.5 bg-indigo-500 text-white rounded-lg shadow-md">
                             <PieChartIcon size={20} />
@@ -202,7 +234,10 @@ export default function DashboardClient({
                                     <Gauge size={20} />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-gray-700 dark:text-white text-sm">Quick Stats</h3>
+                                    <div className="flex items-center gap-1.5">
+                                        <h3 className="font-bold text-gray-700 dark:text-white text-sm">Quick Stats</h3>
+                                        <HelpTooltip content="A compact view of your trade efficiency for the selected account and date range." />
+                                    </div>
                                     <p className="text-xs text-gray-500">Key Metrics & Distribution</p>
                                 </div>
                             </div>
@@ -212,16 +247,27 @@ export default function DashboardClient({
                         <div className="px-5 py-4">
                             <div className="flex divide-x divide-gray-200 dark:divide-white/10">
                                 <div className="text-center flex-1 px-2">
-                                    <p className="text-2xl font-black text-blue-500">{dashboardData.profitFactor.toFixed(2)}</p>
-                                    <p className="text-[11px] text-gray-500 font-semibold mt-0.5">Profit Factor</p>
+                                    <p className="text-2xl font-black text-blue-500">
+                                        {dashboardData.profitFactor >= 999 ? "∞" : dashboardData.profitFactor.toFixed(2)}
+                                    </p>
+                                    <div className="mt-0.5 flex items-center justify-center gap-1">
+                                        <p className="text-[11px] text-gray-500 font-semibold">Profit Factor</p>
+                                        <HelpTooltip content="Gross profit divided by gross loss. If there is profit and no loss, this displays as infinity because there is no loss base to divide by." />
+                                    </div>
                                 </div>
                                 <div className="text-center flex-1 px-2">
                                     <p className="text-2xl font-black text-primary">${dashboardData.avgWin.toFixed(0)}</p>
-                                    <p className="text-[11px] text-gray-500 font-semibold mt-0.5">Avg Win</p>
+                                    <div className="mt-0.5 flex items-center justify-center gap-1">
+                                        <p className="text-[11px] text-gray-500 font-semibold">Avg Win</p>
+                                        <HelpTooltip content="Average net profit per winning trade. Net profit includes P&L, commission, and swap." />
+                                    </div>
                                 </div>
                                 <div className="text-center flex-1 px-2">
                                     <p className="text-2xl font-black text-red-500">${dashboardData.avgLoss.toFixed(0)}</p>
-                                    <p className="text-[11px] text-gray-500 font-semibold mt-0.5">Avg Loss</p>
+                                    <div className="mt-0.5 flex items-center justify-center gap-1">
+                                        <p className="text-[11px] text-gray-500 font-semibold">Avg Loss</p>
+                                        <HelpTooltip content="Average net loss per losing trade. Break-even trades are not counted as losses." />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -231,6 +277,7 @@ export default function DashboardClient({
                                 <div className="flex items-center gap-2">
                                     <PieChartIcon size={14} className="text-blue-500" />
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Profit by Symbol</h4>
+                                    <HelpTooltip content="Net profit grouped by symbol for the selected account and date range." />
                                 </div>
                                 <span className={`text-xs font-black ${symbolPerformance.reduce((s, d) => s + d.value, 0) >= 0 ? 'text-primary' : 'text-red-500'}`}>
                                     ${Math.abs(symbolPerformance.reduce((s, d) => s + d.value, 0)).toFixed(0)}
@@ -266,6 +313,7 @@ export default function DashboardClient({
                                 <div className="flex items-center gap-2">
                                     <Layers size={14} className="text-orange-500" />
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Lot by Symbol</h4>
+                                    <HelpTooltip content="Total lot size grouped by symbol. This helps show where your exposure is concentrated." />
                                 </div>
                                 <span className="text-xs font-black text-gray-700 dark:text-gray-200">
                                     {lotDistribution.reduce((s, d) => s + d.value, 0).toFixed(2)} lots
@@ -353,6 +401,7 @@ export default function DashboardClient({
             </div>
             </>
             )}
+            </div>
         </div>
     );
 }

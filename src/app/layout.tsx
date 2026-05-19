@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Lexend, Source_Sans_3 } from "next/font/google";
 import { Toaster } from "sonner";
 import { SystemAnnouncementBanner } from "@/components/layout/SystemAnnouncementBanner";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -89,11 +90,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
 
         <link rel="dns-prefetch" href="https://sdugjioikugfomjitfwg.supabase.co" />
+        {gaMeasurementId && (
+          <>
+            <link rel="preconnect" href="https://www.googletagmanager.com" />
+            <link rel="preconnect" href="https://www.google-analytics.com" />
+          </>
+        )}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <script dangerouslySetInnerHTML={{ __html: `history.scrollRestoration = "manual"` }} />
@@ -159,6 +168,7 @@ export default function RootLayout({
           {children}
           <Toaster richColors position="top-right" closeButton />
         </ThemeProvider>
+        <GoogleAnalytics measurementId={gaMeasurementId} />
       </body>
     </html>
   );

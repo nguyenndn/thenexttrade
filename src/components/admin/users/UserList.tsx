@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ import {
     Mail,
     ShieldCheck,
     Trash2,
+    Globe2,
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -29,6 +30,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { UserRowActions } from "./UserRowActions";
 import { bulkDeleteUsers } from "@/app/admin/users/actions";
 import Link from "next/link";
+import { countries } from "@/lib/data/countries";
+import { getCountryName, normalizeCountryCode } from "@/lib/country-utils";
 
 // =============================================================================
 // TYPES
@@ -40,7 +43,7 @@ interface UserItem {
     email: string | null;
     image: string | null;
     createdAt: Date;
-    profile: { role: string } | null;
+    profile: { role: string; country: string | null } | null;
     _count: {
         quizAttempts: number;
         progress: number;
@@ -53,6 +56,7 @@ interface UserListProps {
         currentPage: number;
         totalPages: number;
     };
+    countryOptions: Array<{ country: string; name?: string; value: number }>;
 }
 
 // =============================================================================
@@ -89,11 +93,37 @@ const ROLE_OPTIONS = [
     { label: "User", value: "USER" },
 ];
 
+function CountryDisplay({ country }: { country?: string | null }) {
+    const code = normalizeCountryCode(country);
+
+    if (!code) {
+        return (
+            <div className="flex items-center gap-2 text-gray-400">
+                <Globe2 size={15} />
+                <span className="text-sm font-medium">Unknown</span>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex min-w-0 items-center gap-2">
+            <img
+                src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
+                alt={getCountryName(code)}
+                className="h-4 w-6 shrink-0 rounded-sm object-cover shadow-sm"
+            />
+            <span className="truncate text-sm font-bold text-gray-700 dark:text-white">
+                {getCountryName(code)}
+            </span>
+        </div>
+    );
+}
+
 // =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
-export function UserList({ initialUsers, pagination }: UserListProps) {
+export function UserList({ initialUsers, pagination, countryOptions }: UserListProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -105,7 +135,23 @@ export function UserList({ initialUsers, pagination }: UserListProps) {
     // Current filter values from URL
     const currentQuery = searchParams.get("q") || "";
     const currentRole = searchParams.get("role") || "";
+    const currentCountry = normalizeCountryCode(searchParams.get("country")) || "";
     const currentPage = pagination.currentPage;
+
+    const countryFilterOptions = useMemo(() => {
+        const options = new Map<string, string>();
+        countryOptions.forEach((country) => {
+            const code = normalizeCountryCode(country.country);
+            if (code) options.set(code, country.name || getCountryName(code));
+        });
+
+        if (currentCountry && !options.has(currentCountry)) {
+            const country = countries.find((item) => item.code === currentCountry);
+            options.set(currentCountry, country?.name || getCountryName(currentCountry));
+        }
+
+        return Array.from(options.entries()).map(([value, label]) => ({ value, label }));
+    }, [countryOptions, currentCountry]);
 
     // ─── URL Update Helper ─────────────────────────────────────────
     const updateURL = useCallback(
@@ -227,6 +273,56 @@ export function UserList({ initialUsers, pagination }: UserListProps) {
                         </DropdownMenuContent>
                     </DropdownMenu>
 
+                    {/* Country Filter */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className="rounded-xl text-sm font-medium h-10 px-4"
+                            >
+                                <Globe2 size={14} className="mr-2" />
+                                {currentCountry ? getCountryName(currentCountry) : "All Countries"}
+                                <ChevronDown size={14} className="ml-2" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            align="start"
+                            className="w-52 rounded-xl"
+                        >
+                            <DropdownMenuItem
+                                onClick={() => updateURL({ country: "", page: "" })}
+                                className={`font-medium cursor-pointer rounded-lg mx-1 my-0.5 ${
+                                    !currentCountry ? "bg-primary/10 text-primary" : ""
+                                }`}
+                            >
+                                All Countries
+                            </DropdownMenuItem>
+                            {countryFilterOptions.map((opt) => (
+                                <DropdownMenuItem
+                                    key={opt.value}
+                                    onClick={() =>
+                                        updateURL({
+                                            country: opt.value,
+                                            page: "",
+                                        })
+                                    }
+                                    className={`font-medium cursor-pointer rounded-lg mx-1 my-0.5 ${
+                                        currentCountry === opt.value
+                                            ? "bg-primary/10 text-primary"
+                                            : ""
+                                    }`}
+                                >
+                                    <img
+                                        src={`https://flagcdn.com/w40/${opt.value.toLowerCase()}.png`}
+                                        alt={opt.label}
+                                        className="mr-2 h-4 w-6 shrink-0 rounded-sm object-cover shadow-sm"
+                                    />
+                                    {opt.label}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
                     {/* Bulk Actions */}
                     {selectedIds.size > 0 && (
                         <Button
@@ -266,6 +362,7 @@ export function UserList({ initialUsers, pagination }: UserListProps) {
                             </th>
                             <th className="px-4 py-4">User</th>
                             <th className="px-4 py-4">Role</th>
+                            <th className="px-4 py-4">Country</th>
                             <th className="px-4 py-4">Joined</th>
                             <th className="px-4 py-4">Activity</th>
                             <th className="px-4 py-4 text-right">Actions</th>
@@ -344,6 +441,11 @@ export function UserList({ initialUsers, pagination }: UserListProps) {
                                         <RoleBadge role={role} />
                                     </td>
 
+                                    {/* Country */}
+                                    <td className="px-4 py-4 min-w-[170px]">
+                                        <CountryDisplay country={user.profile?.country} />
+                                    </td>
+
                                     {/* Joined */}
                                     <td className="px-4 py-4">
                                         <div className="flex flex-col">
@@ -413,7 +515,7 @@ export function UserList({ initialUsers, pagination }: UserListProps) {
                         {initialUsers.length === 0 && (
                             <tr>
                                 <td
-                                    colSpan={6}
+                                    colSpan={7}
                                     className="px-6 py-16 text-center"
                                 >
                                     <Users
