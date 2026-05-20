@@ -57,7 +57,7 @@ window.addEventListener('onDisconnected', () => {
         <div class="empty-state">
             <div class="empty-icon">📡</div>
             <p class="empty-title">Connect to see your accounts</p>
-            <p class="empty-desc">Enter your API key and click Connect</p>
+            <p class="empty-desc">Paste your Sync API Key from TheNextTrade &gt; Settings &gt; TNT Connect</p>
         </div>`;
     document.getElementById('accountsTitle').textContent = 'TRADING ACCOUNTS';
     updateConnectBtn('idle');
@@ -267,7 +267,7 @@ function renderAccounts(accounts, mt5Account, pausedAccounts) {
             <div class="empty-state">
                 <div class="empty-icon">📋</div>
                 <p class="empty-title">No accounts found</p>
-                <p class="empty-desc">Add trading accounts on TheNextTrade web first</p>
+                <p class="empty-desc">Add your MT5 account number in Account Hub, then reconnect TNT Connect.</p>
             </div>`;
         return;
     }

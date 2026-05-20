@@ -7,9 +7,9 @@ import {
     ExternalLink,
     Trophy,
     Crown,
-    Zap,
     Star,
-    Info,
+    Cable,
+    Monitor,
 } from "lucide-react";
 import Link from "next/link";
 import { RemoteSyncButton } from "./RemoteSyncButton";
@@ -21,6 +21,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
+
+// Compute the sync method label for each account.
+// Uses syncSource as the primary source of truth (set by the API on each sync).
+// lastHeartbeat is shared by both EA and TNT Connect, so it's not reliable for differentiation.
+function getSyncMethodLabel(account: any): { label: string; variant: "tnt" | "ea" | "paused" | "none" } {
+    if (account.autoSync === false) return { label: "Sync paused", variant: "paused" };
+
+    const source = account.syncSource; // "APP" | "EA_SYNC" | "EA_HISTORY" | null
+
+    // Primary: use the explicit sync source field
+    if (source === "APP") return { label: "Synced via TNT Connect", variant: "tnt" };
+    if (source === "EA_SYNC" || source === "EA_HISTORY") return { label: "Synced via EA Sync", variant: "ea" };
+
+    // Fallback: infer from presence of EA version or app heartbeat
+    if (account.eaVersion) return { label: "Synced via EA Sync", variant: "ea" };
+    if (account.appLastHeartbeat) return { label: "Synced via TNT Connect", variant: "tnt" };
+
+    // No sync data at all
+    if (!account.lastHeartbeat && !account.appLastHeartbeat) return { label: "Not connected", variant: "none" };
+
+    return { label: "Connected", variant: "tnt" };
+}
 
 interface AccountCardProps {
     account: any;
@@ -76,6 +98,7 @@ export function AccountCard({
     const accountType = hasSynced ? getAccountType(account.accountType, account.server) : null;
     const isReal = accountType === "REAL";
     const accentColor = account.color || "hsl(var(--primary))";
+    const syncMethod = getSyncMethodLabel(account);
 
     return (
         <div className="group relative flex flex-col rounded-2xl transition-all duration-500 hover:shadow-lg bg-white dark:bg-[#151925] border border-gray-200/80 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/15">
@@ -102,24 +125,24 @@ export function AccountCard({
                 <div className="flex items-center gap-1.5 mb-3 flex-wrap">
                     {accountType && (
                         <span className={`text-[9px] font-black px-2 py-[3px] rounded-md uppercase tracking-[0.1em] border whitespace-nowrap ${isReal
-                            ? "bg-emerald-50 text-emerald-600 border-emerald-200/80 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
-                            : "bg-blue-50 text-blue-600 border-blue-200/80 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20"
+                            ? "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30"
+                            : "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/30"
                             }`}>
                             {accountType}
                         </span>
                     )}
                     {account.accountNumber && (
-                        <span className="text-[9px] font-mono font-bold text-gray-500 dark:text-gray-400 tracking-wider whitespace-nowrap bg-gray-50 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 px-2 py-[3px] rounded-md">
+                        <span className="text-[9px] font-mono font-bold text-gray-600 dark:text-gray-300 tracking-wider whitespace-nowrap bg-gray-100 dark:bg-white/8 border border-gray-300 dark:border-white/15 px-2 py-[3px] rounded-md">
                             #{account.accountNumber}
                         </span>
                     )}
                     {account.useForLeaderboard && (
-                        <span className="w-5 h-5 rounded-md inline-flex items-center justify-center bg-yellow-50 border border-yellow-200 dark:bg-yellow-500/10 dark:border-yellow-500/20" title="Leaderboard Account">
-                            <Trophy size={10} className="text-yellow-500" />
+                        <span className="w-5 h-5 rounded-md inline-flex items-center justify-center bg-yellow-100 border border-yellow-300 dark:bg-yellow-500/15 dark:border-yellow-500/30" title="Leaderboard Account">
+                            <Trophy size={10} className="text-yellow-600 dark:text-yellow-500" />
                         </span>
                     )}
                     {isMain && (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-[9px] font-black uppercase tracking-[0.1em] bg-primary/10 text-primary border border-primary/20" title="Main Account">
+                        <span className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-[9px] font-black uppercase tracking-[0.1em] bg-primary/15 text-primary border border-primary/30" title="Main Account">
                             <Star size={8} className="fill-current" />
                             Main
                         </span>
@@ -214,129 +237,114 @@ export function AccountCard({
             </div>
 
             {/* Footer Status Bar */}
-            <div className="relative z-10 flex items-center gap-1.5 flex-wrap px-3 py-2.5 mx-2 mb-2 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/[0.06]">
-                {/* Connection Status */}
-                {account.isConnected ? (
-                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/80 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 shadow-sm">
-                        <span className="relative flex h-1.5 w-1.5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                        </span>
-                        <span className="text-[10px] font-bold uppercase tracking-wider">Online</span>
-                    </div>
-                ) : (
-                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200/80 dark:border-red-500/20 text-red-500 dark:text-red-400 shadow-sm">
-                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
-                        <span className="text-[10px] font-bold uppercase tracking-wider">Offline</span>
-                    </div>
-                )}
-
-                {/* Pro/Eligibility Status Chip */}
-                {(() => {
-                    const elig = account.eligibility;
-                    if (elig) {
-                        const config = ELIGIBILITY_CHIP[elig.status] || ELIGIBILITY_CHIP.MISSING_ACCOUNT_INFO;
-                        return (
-                            <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border shadow-sm ${config.className}`} title={elig.description}>
-                                <Crown size={10} />
-                                <span className="text-[10px] font-bold uppercase tracking-wider">{config.label}</span>
-                            </div>
-                        );
-                    }
-                    // Fallback: old logic
-                    const proStatus = account.proStatus || "NONE";
-                    const vipStatus = account.vipStatus;
-                    if (vipStatus === "PENDING" && proStatus === "NONE") {
-                        return (
-                            <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200/80 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm">
-                                <Crown size={10} />
-                                <span className="text-[10px] font-bold uppercase tracking-wider">Pending</span>
-                            </div>
-                        );
-                    }
-                    const configFb = PRO_STATUS_CONFIG[proStatus] || PRO_STATUS_CONFIG.NONE;
-                    return (
-                        <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border shadow-sm ${configFb.className}`}>
-                            <Crown size={10} />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">{configFb.label}</span>
+            <div className="relative z-10 mx-2 mb-2 rounded-xl border border-gray-200/70 bg-gray-50/80 p-3 dark:border-white/[0.06] dark:bg-white/[0.03]">
+                <div className="space-y-2.5">
+                    <div className="flex">
+                        {/* Sync Method Badge */}
+                        <div className={`inline-flex h-8 min-w-0 flex-1 items-center gap-1.5 rounded-lg border px-2.5 shadow-sm ${
+                            syncMethod.variant === "tnt"
+                                ? "bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200/80 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400"
+                                : syncMethod.variant === "ea"
+                                ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200/80 dark:border-amber-500/20 text-amber-600 dark:text-amber-400"
+                                : syncMethod.variant === "paused"
+                                ? "bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200/80 dark:border-yellow-500/20 text-yellow-600 dark:text-yellow-400"
+                                : "bg-white dark:bg-white/5 border-gray-200/80 dark:border-white/10 text-gray-500 dark:text-gray-400"
+                        }`}>
+                            {syncMethod.variant === "tnt" ? <Monitor size={11} className="shrink-0" /> : <Cable size={11} className="shrink-0" />}
+                            <span className="truncate text-[10px] font-black uppercase tracking-wider">{syncMethod.label}</span>
                         </div>
-                    );
-                })()}
-
-                {/* EA Access Chip */}
-                {account.eaAccess === "INCLUDED" && (
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/80 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 shadow-sm">
-                        <Zap size={10} />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">EA</span>
                     </div>
-                )}
 
-                {/* Spacer */}
-                <div className="flex-1" />
+                    {/* Row 2: Status chips + Action buttons */}
+                    <div className="flex flex-wrap items-center gap-1.5">
+                        {/* Status Chips (read-only) */}
+                        {(() => {
+                            const elig = account.eligibility;
+                            if (elig) {
+                                const config = ELIGIBILITY_CHIP[elig.status] || ELIGIBILITY_CHIP.MISSING_ACCOUNT_INFO;
+                                return (
+                                    <div className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 ${config.className}`} title={elig.description}>
+                                        <Crown size={10} className="shrink-0" />
+                                        <span className="text-[10px] font-black uppercase tracking-wider">{config.label}</span>
+                                    </div>
+                                );
+                            }
+                            // Fallback: old logic
+                            const proStatus = account.proStatus || "NONE";
+                            const vipStatus = account.vipStatus;
+                            if (vipStatus === "PENDING" && proStatus === "NONE") {
+                                return (
+                                    <div className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-amber-200/80 bg-amber-50 px-2.5 text-amber-600 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400">
+                                        <Crown size={10} className="shrink-0" />
+                                        <span className="text-[10px] font-black uppercase tracking-wider">Pending</span>
+                                    </div>
+                                );
+                            }
+                            const configFb = PRO_STATUS_CONFIG[proStatus] || PRO_STATUS_CONFIG.NONE;
+                            return (
+                                <div className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 ${configFb.className}`}>
+                                    <Crown size={10} className="shrink-0" />
+                                    <span className="text-[10px] font-black uppercase tracking-wider">{configFb.label}</span>
+                                </div>
+                            );
+                        })()}
 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-1.5">
-                    {/* CTA: driven by eligibility */}
-                    {(() => {
-                        const elig = account.eligibility;
-                        if (!elig) {
-                            // Fallback: old behavior
-                            if ((!account.proStatus || account.proStatus === "NONE") && account.vipStatus !== "PENDING" && onUnlockPro) {
+                        {/* Spacer */}
+                        <div className="flex-1" />
+
+                        {/* Action Buttons — unified style */}
+                        {(() => {
+                            const elig = account.eligibility;
+                            if (!elig) {
+                                if ((!account.proStatus || account.proStatus === "NONE") && account.vipStatus !== "PENDING" && onUnlockPro) {
+                                    return (
+                                        <Button
+                                            variant="ghost"
+                                            onClick={() => onUnlockPro(account)}
+                                            className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white"
+                                            title="Apply for Pro"
+                                            aria-label="Apply for Pro access"
+                                        >
+                                            <Crown size={11} />
+                                            <span>Unlock Pro</span>
+                                        </Button>
+                                    );
+                                }
+                                return null;
+                            }
+                            if (elig.canRequest && onUnlockPro) {
                                 return (
                                     <Button
                                         variant="ghost"
                                         onClick={() => onUnlockPro(account)}
-                                        className="flex items-center gap-1 px-2.5 py-1.5 h-auto rounded-lg bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-[10px] transition-all hover:opacity-90 hover:text-white shadow-sm shadow-primary/20"
-                                        title="Apply for Pro"
+                                        className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white"
+                                        title={elig.status === "REJECTED" ? "Re-apply for Pro" : "Apply for Pro"}
                                         aria-label="Apply for Pro access"
                                     >
                                         <Crown size={11} />
-                                        <span>Apply for Pro</span>
+                                        <span>{elig.status === "REJECTED" ? "Re-apply" : "Unlock Pro"}</span>
                                     </Button>
                                 );
                             }
                             return null;
-                        }
-                        if (elig.canRequest && onUnlockPro) {
-                            return (
-                                <Button
-                                    variant="ghost"
-                                    onClick={() => onUnlockPro(account)}
-                                    className="flex items-center gap-1 px-2.5 py-1.5 h-auto rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-[10px] transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white shadow-sm shadow-amber-500/20"
-                                    title={elig.status === "REJECTED" ? "Re-apply for Pro" : "Apply for Pro"}
-                                    aria-label="Apply for Pro access"
-                                >
-                                    <Crown size={11} />
-                                    <span>{elig.status === "REJECTED" ? "Re-apply" : "Unlock Pro"}</span>
-                                </Button>
-                            );
-                        }
-                        if (elig.status === "UNSUPPORTED_BROKER") {
-                            return (
-                                <span className="flex items-center gap-1 px-2 py-1.5 text-[10px] font-bold text-gray-400 dark:text-gray-500" title={elig.description}>
-                                    <Info size={10} />
-                                    Not eligible
-                                </span>
-                            );
-                        }
-                        return null;
-                    })()}
+                        })()}
 
-                    <Link
-                        href={`/dashboard?accountId=${account.id}`}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200/80 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-bold text-[10px] transition-all group/link shadow-sm"
-                        title="View Dashboard"
-                    >
-                        <ExternalLink size={11} className="text-gray-400 group-hover/link:text-primary transition-colors" />
-                        <span>Dashboard</span>
-                    </Link>
+                        <Link
+                            href={`/dashboard?accountId=${account.id}`}
+                            className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3.5 text-[11px] font-black text-gray-950 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-950 dark:border-white/10 dark:bg-white/5 dark:text-gray-100 dark:hover:bg-white/10 dark:hover:text-white group/link"
+                            title="View Dashboard"
+                        >
+                            <ExternalLink size={11} className="text-gray-500 group-hover/link:text-primary transition-colors" />
+                            <span>Dashboard</span>
+                        </Link>
 
-                    <RemoteSyncButton
-                        tradingAccountId={account.id}
-                        accountName={account.name}
-                        isConnected={account.isConnected}
-                        variant="premium"
-                    />
+                        <RemoteSyncButton
+                            tradingAccountId={account.id}
+                            accountName={account.name}
+                            isConnected={account.isConnected}
+                            variant="premium"
+                        />
+                    </div>
                 </div>
             </div>
         </div>

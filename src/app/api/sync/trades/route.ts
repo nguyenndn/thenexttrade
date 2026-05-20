@@ -222,7 +222,7 @@ export async function POST(request: NextRequest) {
                                     takeProfit: trade.tp || null,
                                     status,
                                     result,
-                                    syncSource: "EA_SYNC", // Reuse existing sync source value
+                                    syncSource: "APP",
                                     syncedAt: new Date(),
                                     entryReason: "Synced from TNT Connect",
                                     notes: trade.comment || null,

@@ -1,18 +1,16 @@
 //+------------------------------------------------------------------+
-//|                                                GSN_TradeSync.mq5 |
-//|                                     Copyright 2026, GSN Platform |
-//|                                       https://gsn-crm.vercel.app |
+//|                                  TheNextTrade_TradeSync.mq5       |
+//|                                   Copyright 2026, TheNextTrade   |
+//|                                       https://thenexttrade.com   |
 //+------------------------------------------------------------------+
-#property copyright "Copyright 2026, GSN Platform"
-#property link "https://gsn-crm.vercel.app"
-#property version "1.05"
-#property description "Auto sync closed trades to GSN Trading Journal"
+#property copyright "Copyright 2026, TheNextTrade"
+#property link "https://thenexttrade.com"
+#property version "1.06"
+#property description "Auto sync closed MT5 trades to TheNextTrade Trading Journal"
 
 //--- Input parameters
-input string InpApiKey =
-    "7f354055-b66a637f-2cdb0a8d-79a21638-df7d11c9-2e2f6269"; // API Key from GSN
-                                                             // Dashboard
-input string InpApiUrl = "http://127.0.0.1:3000";            // Server URL
+input string InpApiKey = "";                                  // Sync API Key
+input string InpApiUrl = "https://thenexttrade.com";          // Server URL
 input int InpHeartbeatInterval = 300; // Heartbeat interval (seconds)
 input int InpSyncDelay = 5;           // Delay after trade close (seconds)
 input bool InpShowPanel = true;       // Show Status Panel
@@ -102,9 +100,10 @@ int g_RateLimitSeconds = 60;    // Default cooldown (seconds)
 int OnInit() {
   //--- Validate API key
   if (InpApiKey == "") {
-    Alert("GSN Trade Sync: Please enter your API Key!");
-    Print("Error: API Key is required. Get it from GSN Dashboard > Trading "
-          "Accounts");
+    Alert("TheNextTrade Trade Sync: Please paste your Sync API Key.\n"
+          "Find it at Dashboard > Settings > TNT Connect.");
+    Print("Error: Sync API Key is required. Get it from TheNextTrade Dashboard "
+          "> Settings > TNT Connect");
     return (INIT_FAILED);
   }
 
@@ -124,7 +123,7 @@ int OnInit() {
 
   //--- Show initialization info
   Print("==============================================");
-  Print("GSN Trade Sync EA v1.05 initialized");
+  Print("TheNextTrade Trade Sync EA v1.06 initialized");
   Print("Account: ", g_AccountNumber);
   Print("Broker: ", AccountInfoString(ACCOUNT_COMPANY));
   Print("Server: ", AccountInfoString(ACCOUNT_SERVER));
@@ -145,7 +144,7 @@ void OnDeinit(const int reason) {
   EventKillTimer();
   DeletePanel();
   DeletePeriodPopup();
-  Print("GSN Trade Sync EA stopped. Reason: ", reason);
+  Print("TheNextTrade Trade Sync EA stopped. Reason: ", reason);
 }
 
 //+------------------------------------------------------------------+
@@ -173,9 +172,10 @@ void OnTimer() {
 //| Check Remote Commands (Spec 14)                                  |
 //+------------------------------------------------------------------+
 void CheckRemoteCommands() {
-  string url = g_BaseUrl + "/api/ea/commands/pending";
+  string url = g_BaseUrl + "/api/ea/commands/pending?accountNumber=" + g_AccountNumber;
   string headers =
-      "X-API-Key: " + InpApiKey + "\r\nContent-Type: application/json";
+      "X-API-Key: " + InpApiKey + "\r\nX-Account-Number: " + g_AccountNumber +
+      "\r\nContent-Type: application/json";
   char postData[];
   char result[];
   string resultHeaders;
@@ -258,7 +258,8 @@ void ReportCommandResult(string cmdId, bool success, string message,
                          int count) {
   string url = g_BaseUrl + "/api/ea/commands/" + cmdId;
   string headers =
-      "X-API-Key: " + InpApiKey + "\r\nContent-Type: application/json";
+      "X-API-Key: " + InpApiKey + "\r\nX-Account-Number: " + g_AccountNumber +
+      "\r\nContent-Type: application/json";
 
   string status = success ? "COMPLETED" : "FAILED";
   string json = "{\"status\":\"" + status +
@@ -368,11 +369,11 @@ void CreatePanel() {
   ObjectSetInteger(0, PANEL_HEADER_LINE, OBJPROP_BGCOLOR, CLR_ACCENT);
 
   //--- Header Title with icon
-  CreateLabel(PANEL_HEADER, x + padding, y + 15, "GSN TRADE SYNC",
+  CreateLabel(PANEL_HEADER, x + padding, y + 15, "THENEXTTRADE SYNC",
               CLR_HEADER_TEXT, 11, true);
 
   //--- Version badge (right aligned)
-  CreateLabel(PANEL_LOGO, x + panelWidth - 48, y + 17, "v1.05", CLR_LABEL, 9,
+  CreateLabel(PANEL_LOGO, x + panelWidth - 48, y + 17, "v1.06", CLR_LABEL, 9,
               false);
 
   //--- Content area starts after header
@@ -813,12 +814,12 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam,
       if (g_IsConnected)
         MessageBox("Connection successful!\n\nAccount: #" + g_AccountNumber +
                        "\nServer: " + AccountInfoString(ACCOUNT_SERVER),
-                   "GSN Trade Sync", MB_ICONINFORMATION);
+                   "TheNextTrade Sync", MB_ICONINFORMATION);
       else
         MessageBox("Connection failed!\n\n" + g_LastError +
-                       "\n\nMake sure URL is added to:\nTools > Options > "
-                       "Expert Advisors > Allow WebRequest",
-                   "GSN Trade Sync", MB_ICONERROR);
+                       "\n\nMT5 > Tools > Options > Expert Advisors > "
+                       "Allow WebRequest for:\nhttps://thenexttrade.com",
+                   "TheNextTrade Sync", MB_ICONERROR);
     }
 
     //--- Sync Trades Button - Open Period Popup
@@ -885,7 +886,7 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam,
 
       int result = MessageBox("This will sync ALL trades in history.\nThis may "
                               "take a while.\n\nContinue?",
-                              "GSN Trade Sync", MB_YESNO | MB_ICONQUESTION);
+                              "TheNextTrade Sync", MB_YESNO | MB_ICONQUESTION);
 
       if (result == IDYES) {
         Print("Syncing entire history...");
@@ -897,9 +898,9 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam,
         if (syncedCount >= 0)
           MessageBox("Sync complete!\n\nTotal trades synced: " +
                          IntegerToString(syncedCount),
-                     "GSN Trade Sync", MB_ICONINFORMATION);
+                     "TheNextTrade Sync", MB_ICONINFORMATION);
         else
-          MessageBox("Sync failed!\n\n" + g_LastError, "GSN Trade Sync",
+          MessageBox("Sync failed!\n\n" + g_LastError, "TheNextTrade Sync",
                      MB_ICONERROR);
       }
     }
@@ -920,12 +921,12 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam,
       if (fromDate == 0 || toDate == 0) {
         MessageBox("Invalid date format!\n\nUse format: YYYY.MM.DD\nExample: "
                    "2025.01.15",
-                   "GSN Trade Sync", MB_ICONERROR);
+                   "TheNextTrade Sync", MB_ICONERROR);
         return;
       }
 
       if (fromDate > toDate) {
-        MessageBox("From date must be before To date!", "GSN Trade Sync",
+        MessageBox("From date must be before To date!", "TheNextTrade Sync",
                    MB_ICONERROR);
         return;
       }
@@ -941,9 +942,9 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam,
       if (syncedCount >= 0)
         MessageBox("Sync complete!\n\nPeriod: " + fromStr + " to " + toStr +
                        "\nTrades synced: " + IntegerToString(syncedCount),
-                   "GSN Trade Sync", MB_ICONINFORMATION);
+                   "TheNextTrade Sync", MB_ICONINFORMATION);
       else
-        MessageBox("Sync failed!\n\n" + g_LastError, "GSN Trade Sync",
+        MessageBox("Sync failed!\n\n" + g_LastError, "TheNextTrade Sync",
                    MB_ICONERROR);
     }
   }
@@ -959,7 +960,7 @@ void SyncPeriodAndNotify(int days, string periodName) {
     MessageBox("Please wait " + IntegerToString(remaining) +
                    " seconds before syncing again.\n\nRate limit protection is "
                    "active.",
-               "GSN Trade Sync", MB_ICONWARNING);
+               "TheNextTrade Sync", MB_ICONWARNING);
     return;
   }
 
@@ -983,9 +984,9 @@ void SyncPeriodAndNotify(int days, string periodName) {
   if (syncedCount >= 0)
     MessageBox("Sync complete!\n\nPeriod: " + periodName +
                    "\nTrades synced: " + IntegerToString(syncedCount),
-               "GSN Trade Sync", MB_ICONINFORMATION);
+               "TheNextTrade Sync", MB_ICONINFORMATION);
   else
-    MessageBox("Sync failed!\n\n" + g_LastError, "GSN Trade Sync",
+    MessageBox("Sync failed!\n\n" + g_LastError, "TheNextTrade Sync",
                MB_ICONERROR);
 }
 

@@ -236,12 +236,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         />
                         {/* Subtle gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                        {/* Category badge */}
-                        <div className="absolute top-5 left-6">
-                            <span className="bg-primary text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg shadow-primary/20">
-                                {article.category.name}
-                            </span>
-                        </div>
                     </div>
                     {/* Decorative gradient line */}
                     <div className="h-1 mt-0 rounded-b-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
@@ -374,7 +368,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         {/* AI Image Disclaimer */}
                         <div className="mt-6 flex items-start gap-2.5 px-4 py-3 rounded-lg bg-amber-50 dark:bg-amber-500/[0.06] border border-amber-200 dark:border-amber-500/15">
                             <span className="text-amber-600 dark:text-amber-400/80 text-sm leading-relaxed italic">
-                                Illustrations created with AI to support learning — not based on real market data.
+                                Disclaimer: Educational illustrations are AI-generated and do not represent real market data.
                             </span>
                         </div>
 

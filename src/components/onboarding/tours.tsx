@@ -128,14 +128,14 @@ export const accountsTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>📥</>,
-            title: "Download EA Sync",
+            icon: <>⚡</>,
+            title: "Set up Trade Sync",
             content: (
                 <p>
-                    Download <strong>EA Sync</strong> (.ex5) and install it in your MT5 to auto-send trades to TheNextTrade in real-time.
+                    Click <strong>Set up Trade Sync</strong> to choose your sync method: <strong>TNT Connect</strong> (recommended) or <strong>EA Sync</strong> (advanced).
                 </p>
             ),
-            selector: "#onborda-ea-download",
+            selector: "#onborda-trade-sync-setup",
             side: "bottom",
             showControls: true,
             pointerPadding: 8,

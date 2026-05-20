@@ -4,15 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { SendHorizontal, Loader2 } from "lucide-react";
+import { SendHorizontal, Loader2, User, Mail, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
-// import { useAuth } from "@/hooks/useAuth";
-// Actually checking useAuth might be complex if not readily available.
-// I'll stick to simple prop based 'user' or just check if submit fails.
-// Better: Check if user passes in 'user' prop or handle unauth state.
-// Since this is a client component, I might need a way to know if user is logged in.
-// For now, I'll assume the parent passes `user` or handles auth check, OR just show login prompt if API 401s.
 
 const schema = z.object({
     content: z.string()
@@ -31,6 +26,7 @@ interface CommentFormProps {
     placeholder?: string;
     autoFocus?: boolean;
     userName?: string | null;
+    userImage?: string | null;
 }
 
 export function CommentForm({
@@ -40,7 +36,8 @@ export function CommentForm({
     onCancel,
     placeholder = "Add to the discussion...",
     autoFocus = false,
-    userName = null
+    userName = null,
+    userImage = null
 }: CommentFormProps) {
     const [isLoading, setIsLoading] = useState(false);
 
@@ -48,10 +45,16 @@ export function CommentForm({
         register,
         handleSubmit,
         reset,
+        watch,
         formState: { errors },
     } = useForm<FormData>({
         resolver: zodResolver(schema),
+        defaultValues: {
+            content: ""
+        }
     });
+
+    const contentVal = watch("content") || "";
 
     const onSubmit = async (data: FormData) => {
         setIsLoading(true);
@@ -89,42 +92,92 @@ export function CommentForm({
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <textarea
-                {...register("content")}
-                className="w-full min-h-[140px] p-5 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all resize-none outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-500 text-[15px]"
-                placeholder={parentId ? placeholder : "Share your thoughts..."}
-                autoFocus={autoFocus}
-                disabled={isLoading}
-            />
+            {/* Premium User Information Bar */}
+            {userName && (
+                <div className="flex items-center justify-between pb-3 mb-2 border-b border-gray-100 dark:border-white/5">
+                    <div className="flex items-center gap-3">
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-primary/20 dark:ring-primary/30 p-0.5 bg-gray-100 dark:bg-white/5 flex-shrink-0">
+                            {userImage ? (
+                                <Image
+                                    src={userImage}
+                                    alt={userName}
+                                    fill
+                                    className="object-cover rounded-full"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-primary font-bold text-xs bg-primary/10 rounded-full">
+                                    {userName.charAt(0).toUpperCase()}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                            <span className="text-xs text-gray-400 dark:text-gray-500">Posting as</span>
+                            <span className="text-xs font-bold text-gray-800 dark:text-gray-200">{userName}</span>
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 text-[9px] uppercase font-extrabold tracking-wider border border-emerald-500/20">
+                                <ShieldCheck size={10} className="stroke-[2.5]" />
+                                Authorized
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            )}
 
-            {!parentId && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        defaultValue={userName || ""}
-                        readOnly={!!userName}
-                        className="w-full px-5 py-3 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-500 text-[15px]"
-                    />
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        className="w-full px-5 py-3 rounded-2xl bg-gray-100 dark:bg-white/5 border-0 focus:ring-2 focus:ring-primary/30 transition-all outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-500 text-[15px]"
-                    />
+            <div className="relative group">
+                <textarea
+                    {...register("content")}
+                    className="w-full min-h-[120px] p-5 rounded-2xl bg-white dark:bg-[#12141c] border border-gray-100 dark:border-white/5 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all resize-none outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-500 text-[14px] leading-relaxed shadow-inner"
+                    placeholder={parentId ? placeholder : "Share your thoughts, analyze trends, or join the discussion..."}
+                    autoFocus={autoFocus}
+                    disabled={isLoading}
+                />
+                
+                {/* Character count floating tag */}
+                <div className="absolute bottom-4 right-4 text-[10px] font-mono text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-[#161822] px-2 py-1 rounded-md border border-gray-100 dark:border-white/5">
+                    {contentVal.length} / 2000
+                </div>
+            </div>
+
+            {/* Render guest Name & Email inputs ONLY if they are not logged in and parentId is absent */}
+            {!userName && !parentId && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 dark:text-gray-500 pointer-events-none">
+                            <User size={16} />
+                        </span>
+                        <input
+                            type="text"
+                            placeholder="Your Name"
+                            disabled
+                            className="w-full pl-11 pr-5 py-3 rounded-2xl bg-gray-50 dark:bg-[#12141c]/50 border border-gray-100 dark:border-white/5 outline-none text-gray-400 dark:text-gray-500 placeholder:text-gray-500 text-[14px] cursor-not-allowed"
+                            value="Authenticated Session Required"
+                        />
+                    </div>
+                    <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 dark:text-gray-500 pointer-events-none">
+                            <Mail size={16} />
+                        </span>
+                        <input
+                            type="email"
+                            placeholder="Your Email Address"
+                            disabled
+                            className="w-full pl-11 pr-5 py-3 rounded-2xl bg-gray-50 dark:bg-[#12141c]/50 border border-gray-100 dark:border-white/5 outline-none text-gray-400 dark:text-gray-500 placeholder:text-gray-500 text-[14px] cursor-not-allowed"
+                            value="Registered Accounts Only"
+                        />
+                    </div>
                 </div>
             )}
 
             {errors.content && (
-                <p className="text-red-500 text-xs">{errors.content.message}</p>
+                <p className="text-red-500 text-xs font-semibold px-2">{errors.content.message}</p>
             )}
 
-            <div className="flex items-center justify-end gap-3">
+            <div className="flex items-center justify-end gap-3 pt-2">
                 {onCancel && (
                     <Button
                         type="button"
                         variant="ghost"
                         onClick={onCancel}
-                        className="text-sm text-gray-500 hover:text-gray-600 dark:hover:text-gray-200"
+                        className="text-xs font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 px-4 py-2 h-auto hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-all duration-200"
                     >
                         Cancel
                     </Button>
@@ -132,13 +185,16 @@ export function CommentForm({
 
                 <Button
                     type="submit"
-                    disabled={isLoading}
-                    className="rounded-full px-7 py-2.5 bg-primary hover:bg-[#00B078] text-white font-bold text-sm shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center gap-2"
+                    disabled={isLoading || contentVal.trim().length < 2}
+                    className="rounded-full px-6 py-2.5 bg-primary hover:bg-[#00B078] disabled:bg-gray-100 disabled:dark:bg-white/5 disabled:text-gray-400 disabled:dark:text-gray-600 disabled:shadow-none text-white font-bold text-xs shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
                 >
                     {isLoading ? (
-                        <Loader2 className="animate-spin" size={16} />
+                        <Loader2 className="animate-spin" size={14} />
                     ) : (
-                        <>Send</>
+                        <>
+                            <span>{parentId ? "Reply" : "Post Comment"}</span>
+                            <SendHorizontal size={13} className="stroke-[2.5]" />
+                        </>
                     )}
                 </Button>
             </div>

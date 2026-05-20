@@ -83,7 +83,7 @@ const SECTIONS: CategoryConfig[] = [
 
 export function TrustedPartners() {
   return (
-    <section className="py-16 relative overflow-hidden border-t-2 border-amber-300 dark:border-amber-500/40 bg-gradient-to-br from-emerald-50/80 via-teal-50/50 to-cyan-50/60 dark:from-[#0B1A15] dark:via-[#0F1117] dark:to-[#0B1520]">
+    <section className="py-16 relative overflow-hidden border-y-2 border-amber-300 dark:border-amber-500/40 bg-gradient-to-br from-emerald-50/80 via-teal-50/50 to-cyan-50/60 dark:from-[#0B1A15] dark:via-[#0F1117] dark:to-[#0B1520]">
       {/* Background pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,200,136,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,200,136,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(0,200,136,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,200,136,0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
 

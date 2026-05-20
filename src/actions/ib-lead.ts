@@ -98,7 +98,16 @@ export async function linkIbLeadToVipRequest(broker: string) {
 // ADMIN QUERIES
 // ============================================================================
 
-export async function getIbLeadStats() {
+export type IbStatsRange = "7d" | "30d" | "all";
+
+function getRangeStart(range: IbStatsRange) {
+  const now = new Date();
+  if (range === "7d") return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  if (range === "30d") return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  return null;
+}
+
+export async function getIbLeadStats(range: IbStatsRange = "30d") {
   const user = await getAuthUser();
   if (!user) return null;
 
@@ -110,6 +119,8 @@ export async function getIbLeadStats() {
   const now = new Date();
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const rangeStart = getRangeStart(range);
+  const rangeWhere = rangeStart ? { clickedAt: { gte: rangeStart } } : {};
 
   const [
     totalLeads,
@@ -119,21 +130,23 @@ export async function getIbLeadStats() {
     leadsBySource,
     convertedLeads,
   ] = await Promise.all([
-    prisma.ibLead.count(),
+    prisma.ibLead.count({ where: rangeWhere }),
     prisma.ibLead.count({ where: { clickedAt: { gte: thirtyDaysAgo } } }),
     prisma.ibLead.count({ where: { clickedAt: { gte: sevenDaysAgo } } }),
     prisma.ibLead.groupBy({
       by: ["broker"],
+      where: rangeWhere,
       _count: true,
       orderBy: { _count: { broker: "desc" } },
       take: 10,
     }),
     prisma.ibLead.groupBy({
       by: ["source"],
+      where: rangeWhere,
       _count: true,
       orderBy: { _count: { source: "desc" } },
     }),
-    prisma.ibLead.count({ where: { convertedAt: { not: null } } }),
+    prisma.ibLead.count({ where: { ...rangeWhere, convertedAt: { not: null } } }),
   ]);
 
   return {
@@ -153,7 +166,7 @@ export async function getIbLeadStats() {
   };
 }
 
-export async function getIbOverviewStats() {
+export async function getIbOverviewStats(range: IbStatsRange = "30d") {
   const user = await getAuthUser();
   if (!user) return null;
 
@@ -161,6 +174,11 @@ export async function getIbOverviewStats() {
     where: { userId: user.id },
   });
   if (profile?.role !== "ADMIN") return null;
+
+  const rangeStart = getRangeStart(range);
+  const leadWhere = rangeStart ? { clickedAt: { gte: rangeStart } } : {};
+  const requestWhere = rangeStart ? { createdAt: { gte: rangeStart } } : {};
+  const entitlementWhere = rangeStart ? { createdAt: { gte: rangeStart } } : {};
 
   const [
     totalLeads,
@@ -170,9 +188,9 @@ export async function getIbOverviewStats() {
     graceUsers,
     revokedUsers,
   ] = await Promise.all([
-    prisma.ibLead.count(),
+    prisma.ibLead.count({ where: leadWhere }),
     prisma.vipRequest.count({ where: { status: "PENDING" } }),
-    prisma.proEntitlement.count({ where: { status: "ACTIVE" } }),
+    prisma.proEntitlement.count({ where: { status: "ACTIVE", ...entitlementWhere } }),
     prisma.proEntitlement.count({
       where: {
         status: "ACTIVE",
@@ -186,6 +204,7 @@ export async function getIbOverviewStats() {
   return {
     totalLeads,
     pendingRequests,
+    requestsInRange: await prisma.vipRequest.count({ where: requestWhere }),
     verifiedUsers,
     activeProUsers,
     graceUsers,

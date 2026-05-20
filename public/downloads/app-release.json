@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
-  "changelog": "Initial release",
+  "version": "1.0.1",
+  "changelog": "Improved Trade Sync setup flow and account matching guidance.",
   "mandatory": false
 }

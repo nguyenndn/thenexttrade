@@ -66,11 +66,19 @@ export default async function TraderMonitorPage() {
     proUsers.map(async (pe) => {
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-      // PRO-QA-010: Use the entitlement's linked account, not just the first one
-      const account = pe.tradingAccount
-        || (pe.tradingAccountId
-        ? pe.user.tradingAccounts.find((a) => a.id === pe.tradingAccountId) || pe.user.tradingAccounts[0]
-        : pe.user.tradingAccounts[0]);
+      const entitlementAccountNumber = pe.accountNumber || pe.accountNumberMasked?.replace(/\*/g, "");
+      const normalizedEntitlementBroker = pe.broker?.toLowerCase();
+      const account =
+        pe.tradingAccount ||
+        pe.user.tradingAccounts.find((a) => {
+          const accountNumberMatches =
+            !!entitlementAccountNumber &&
+            (a.accountNumber === pe.accountNumber || a.accountNumber?.endsWith(entitlementAccountNumber));
+          const brokerMatches =
+            !normalizedEntitlementBroker || a.broker?.toLowerCase() === normalizedEntitlementBroker;
+          return accountNumberMatches && brokerMatches;
+        }) ||
+        null;
 
       const [trades30d, lotVolume30d, lastTrade] = account
         ? await Promise.all([
@@ -92,7 +100,7 @@ export default async function TraderMonitorPage() {
               _sum: { lotSize: true },
             }),
             prisma.journalEntry.findFirst({
-              where: { userId: pe.userId, status: "CLOSED" },
+              where: { userId: pe.userId, accountId: account.id, status: "CLOSED" },
               orderBy: { exitDate: "desc" },
               select: { exitDate: true },
             }),

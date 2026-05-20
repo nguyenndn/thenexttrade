@@ -30,7 +30,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("tnt-connect")
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 try:
     import pystray

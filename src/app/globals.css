@@ -68,6 +68,7 @@ h4, h5, h6 {
     background-repeat: repeat;
     background-size: 128px 128px;
   }
+
 }
 
 @layer utilities {

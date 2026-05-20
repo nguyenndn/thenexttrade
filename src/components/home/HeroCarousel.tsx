@@ -13,7 +13,10 @@ interface ArticleBase {
     excerpt: string | null;
     thumbnail: string | null;
     category: { name: string };
-    author: { name: string | null };
+    author: { 
+        name: string | null;
+        image: string | null;
+    };
     createdAt: Date;
     readTime?: string;
 }
@@ -76,7 +79,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
     if (!articles.length) return null;
 
     return (
-        <div className="relative group rounded-2xl overflow-hidden shadow-2xl h-full min-h-[420px] md:min-h-[500px] lg:aspect-[16/9]">
+        <div className="relative group rounded-2xl overflow-hidden shadow-2xl h-full min-h-[380px] md:min-h-0 md:aspect-[16/9]">
             {/* Slides */}
             {articles.map((article, idx) => {
                 const isActive = idx === current;
@@ -116,21 +119,29 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                         </div>
 
                         {/* Content */}
-                        <div className="absolute bottom-0 left-0 p-6 md:p-12 w-full max-w-4xl">
+                        <div className="absolute bottom-0 left-0 p-6 md:p-8 lg:p-12 w-full max-w-4xl">
                             <Link href={`/articles/${article.slug}`} className="block group/text">
-                                <span className={`inline-block px-4 py-1.5 mt-2 mb-4 md:mb-5 rounded-lg ${catColor.bg} ${catColor.text} text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg`}>
+                                <span className={`inline-block px-4 py-1.5 mt-2 mb-3 md:mb-4 lg:mb-5 rounded-lg ${catColor.bg} ${catColor.text} text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg`}>
                                     {article.category.name}
                                 </span>
-                                <h2 className="text-2xl md:text-5xl font-extrabold text-white mb-3 md:mb-5 leading-[1.1] tracking-tight text-balance group-hover/text:underline decoration-primary decoration-2 underline-offset-4 transition-all">
+                                <h2 className="text-2xl md:text-3xl lg:text-5xl font-extrabold text-white mb-2 md:mb-3 lg:mb-5 leading-[1.1] tracking-tight text-balance group-hover/text:underline decoration-primary decoration-2 underline-offset-4 transition-all">
                                     {article.title}
                                 </h2>
-                                <p className="text-gray-300 text-sm md:text-lg line-clamp-2 mb-5 md:mb-7 max-w-2xl hidden sm:block leading-relaxed">
+                                <p className="text-gray-300 text-sm md:text-base lg:text-lg line-clamp-2 mb-4 md:mb-5 lg:mb-7 max-w-2xl hidden sm:block leading-relaxed">
                                     {article.excerpt}
                                 </p>
                                 <div className="flex items-center gap-4 text-xs md:text-sm text-gray-300 font-medium">
                                     <span className="flex items-center gap-2">
-                                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-teal-400 flex items-center justify-center text-xs text-white font-bold ring-2 ring-white/20">
-                                            {article.author.name?.charAt(0) || "G"}
+                                        <div className="relative w-7 h-7 rounded-full overflow-hidden flex items-center justify-center text-xs text-white font-bold ring-2 ring-white/20 bg-gradient-to-br from-primary to-teal-400 flex-shrink-0">
+                                            {article.author.image ? (
+                                                <img
+                                                    src={article.author.image}
+                                                    alt={article.author.name || "Author"}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                article.author.name?.charAt(0) || "G"
+                                            )}
                                         </div>
                                         {article.author.name || "TheNextTrade Team"}
                                     </span>

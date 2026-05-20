@@ -302,14 +302,14 @@ export default function TNTConnectClient() {
 
                     {/* Download button */}
                     <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => toast.info("Download will be available soon!")}
+                        <a
+                            href="/downloads/TheNextTradeConnect.exe"
+                            download
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-colors shadow-sm shadow-primary/20"
                         >
-                            <Download size={14} />
+                            <Download size={15} />
                             Download TNT Connect for Windows
-                        </Button>
+                        </a>
                         <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2">
                             Requires Windows 10/11 · MetaTrader 5 installed · ~50MB
                         </p>

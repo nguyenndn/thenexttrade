@@ -9,6 +9,7 @@ import type { VipRequestStatus } from "@prisma/client";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { maskAccountNumber, findOrMatchTradingAccount } from "@/lib/pro-access";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
+import type { IbStatsRange } from "@/actions/ib-lead";
 
 // ============================================================================
 // USER ACTIONS
@@ -173,7 +174,14 @@ export async function getVipRequests(filter?: {
   return { requests, total };
 }
 
-export async function getVipRequestStats() {
+function getVipStatsRangeStart(range: IbStatsRange) {
+  const now = new Date();
+  if (range === "7d") return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  if (range === "30d") return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  return null;
+}
+
+export async function getVipRequestStats(range: IbStatsRange = "30d") {
   const user = await getAuthUser();
   if (!user) return null;
 
@@ -182,11 +190,14 @@ export async function getVipRequestStats() {
   });
   if (profile?.role !== "ADMIN") return null;
 
+  const rangeStart = getVipStatsRangeStart(range);
+  const rangeWhere = rangeStart ? { createdAt: { gte: rangeStart } } : {};
+
   const [total, pending, approved, rejected] = await Promise.all([
-    prisma.vipRequest.count(),
+    prisma.vipRequest.count({ where: rangeWhere }),
     prisma.vipRequest.count({ where: { status: "PENDING" } }),
-    prisma.vipRequest.count({ where: { status: "APPROVED" } }),
-    prisma.vipRequest.count({ where: { status: "REJECTED" } }),
+    prisma.vipRequest.count({ where: { status: "APPROVED", ...rangeWhere } }),
+    prisma.vipRequest.count({ where: { status: "REJECTED", ...rangeWhere } }),
   ]);
 
   return { total, pending, approved, rejected };
@@ -325,7 +336,7 @@ export async function rejectVipRequest(requestId: string, reason: string) {
       title: "VIP Request Rejected",
       message: `Your VIP request was rejected. Reason: ${reason.trim()}`,
       priority: NotificationPriority.NORMAL,
-      link: NOTIFICATION_ROUTES.VIP_UNLOCK_PRO,
+      link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
     },
   });
 
@@ -348,6 +359,19 @@ export async function deleteVipRequest(requestId: string) {
   });
 
   if (!existingRequest) return { error: "Not found" };
+
+  // Clean up associated ProEntitlement so user reverts to "Free Plan"
+  await prisma.proEntitlement.deleteMany({
+    where: {
+      OR: [
+        { vipRequestId: requestId },
+        // Also match by user + account number if vipRequestId wasn't linked
+        ...(existingRequest.tradingAccountId
+          ? [{ tradingAccountId: existingRequest.tradingAccountId }]
+          : []),
+      ],
+    },
+  });
 
   await prisma.vipRequest.delete({
     where: { id: requestId },
@@ -496,7 +520,7 @@ export async function revokeProAccess(
         ? `Your Pro access has been revoked. Reason: ${reason}`
         : "Your Pro access has been revoked. Contact support for details.",
       priority: NotificationPriority.HIGH,
-      link: NOTIFICATION_ROUTES.VIP_UNLOCK_PRO,
+      link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
     },
   });
 

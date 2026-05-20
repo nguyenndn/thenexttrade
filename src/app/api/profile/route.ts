@@ -1,4 +1,3 @@
-
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
@@ -38,6 +37,7 @@ export async function GET() {
         }
 
         return NextResponse.json({
+            id: dbUser.id,
             name: dbUser.name,
             email: dbUser.email,
             image: dbUser.image,

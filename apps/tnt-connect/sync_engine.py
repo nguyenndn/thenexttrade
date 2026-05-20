@@ -185,10 +185,10 @@ class SyncEngine:
                         self._log(f"MT5 account #{self.mt5_account} matched after refresh!")
                     else:
                         self._log(f"MT5 account #{self.mt5_account} NOT registered on web")
-                        self._notify("warning", f"Account #{self.mt5_account} not on web")
+                        self._notify("warning", f"Account #{self.mt5_account} is not added in Account Hub. Add it on TheNextTrade, then reconnect.")
                 else:
                     self._log(f"MT5 account #{self.mt5_account} NOT registered on web")
-                    self._notify("warning", f"Account #{self.mt5_account} not on web")
+                    self._notify("warning", f"Account #{self.mt5_account} is not added in Account Hub. Add it on TheNextTrade, then reconnect.")
 
         # Notify GUI with accounts
         if self.on_accounts_loaded:

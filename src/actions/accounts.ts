@@ -48,6 +48,9 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                 accountType: true,
                 useForLeaderboard: true,
                 apiKey: false,
+                syncSource: true,
+                appLastHeartbeat: true,
+                eaVersion: true,
                 currency: true,
                 isDefault: true,
                 maxDailyLoss: true,
@@ -89,6 +92,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
             platform: acc.platform || "MetaTrader 4",
             lastHeartbeat: acc.lastHeartbeat ? acc.lastHeartbeat.toISOString() : null,
             lastSync: acc.lastSync ? acc.lastSync.toISOString() : null,
+            appLastHeartbeat: acc.appLastHeartbeat ? acc.appLastHeartbeat.toISOString() : null,
             createdAt: acc.createdAt.toISOString(),
             isConnected: acc.lastHeartbeat
                 ? Date.now() - new Date(acc.lastHeartbeat).getTime() < 10 * 60 * 1000

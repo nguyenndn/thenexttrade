@@ -164,14 +164,14 @@ export function RemoteSyncButton({
                     variant="outline"
                     size={variant === "icon" ? "icon" : "sm"}
                     className={
-                        variant === "premium" 
-                            ? "flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 hover:shadow-sm border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 font-bold text-xs transition-all h-auto shadow-none" 
+                        variant === "premium"
+                            ? "flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3.5 text-[11px] font-black text-gray-950 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-950 dark:border-white/10 dark:bg-white/5 dark:text-gray-100 dark:hover:bg-white/10 dark:hover:text-white"
                             : variant === "icon" ? "h-8 w-8 text-gray-600" : "gap-2"
                     }
                     title={!isConnected ? "EA must be connected to sync" : "Remote Sync"}
                 >
-                    <RefreshCw className={variant === "premium" ? "h-4 w-4 text-gray-500 hover:text-primary" : "h-4 w-4"} />
-                    {variant !== "icon" && <span className={variant === "premium" ? "hidden sm:inline-block" : "hidden sm:inline"}>Sync</span>}
+                    <RefreshCw className={variant === "premium" ? "h-3.5 w-3.5 text-gray-500" : "h-4 w-4"} />
+                    {variant !== "icon" && <span>Sync</span>}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">

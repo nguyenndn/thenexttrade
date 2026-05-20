@@ -1,5 +1,5 @@
 // TheNextTrade Service Worker — Network-first with offline fallback
-const CACHE_NAME = 'tnt-v1';
+const CACHE_NAME = 'tnt-v2';
 const OFFLINE_URL = '/offline';
 
 // Assets to pre-cache on install

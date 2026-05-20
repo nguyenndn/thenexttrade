@@ -208,10 +208,10 @@ async function HomeFeed() {
                     <Link
                       key={article.id}
                       href={`/articles/${article.slug}`}
-                      className="group flex gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.07] border border-transparent hover:border-gray-200 dark:hover:border-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md relative overflow-hidden"
+                      className="group flex gap-3 p-3 rounded-xl bg-gray-50/50 dark:bg-white/[0.02] hover:bg-gold/5 dark:hover:bg-gold/10 border border-gold/30 dark:border-gold/20 hover:border-gold dark:hover:border-gold/60 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gold/10 relative overflow-hidden"
                     >
                       {/* Accent border left */}
-                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-primary to-teal-400 rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gold to-amber-500 rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                       <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gray-200 dark:bg-white/10">
                         {article.thumbnail && (
@@ -227,7 +227,7 @@ async function HomeFeed() {
                       </div>
                       <div className="flex-1 flex flex-col justify-center min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-primary group-hover:text-gold transition-colors">
                             {article.category.name}
                           </span>
                           {isNew && (
@@ -236,7 +236,7 @@ async function HomeFeed() {
                             </span>
                           )}
                         </div>
-                        <h4 className="text-sm font-bold text-gray-700 dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                        <h4 className="text-sm font-bold text-gray-700 dark:text-white line-clamp-2 leading-snug group-hover:text-gold transition-colors">
                           {article.title}
                         </h4>
                         <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-600 dark:text-gray-300">
@@ -277,12 +277,12 @@ async function HomeFeed() {
               <Link
                 key={idx}
                 href={`/knowledge?category=${cat.slug}`}
-                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-primary/20 hover:bg-primary/5 dark:hover:bg-primary/10 hover:border-primary/50 transition-all duration-300"
+                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-white/5 backdrop-blur-xl border border-gold/40 dark:border-gold/30 shadow-sm hover:shadow-gold/20 hover:bg-gold/5 dark:hover:bg-gold/10 hover:border-gold transition-all duration-300"
               >
-                <span className="text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors">
+                <span className="text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-gold transition-colors">
                   # {cat.name}
                 </span>
-                <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/10 group-hover:bg-gold/15 group-hover:text-gold px-1.5 py-0.5 rounded transition-all">
                   {cat._count.articles}
                 </span>
               </Link>
