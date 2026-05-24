@@ -1,5 +1,6 @@
 {
-  "version": "1.0.1",
-  "changelog": "Improved Trade Sync setup flow and account matching guidance.",
+  "version": "1.0.2",
+  "downloadPath": "/downloads/TheNextTradeConnect-1.0.2.exe",
+  "changelog": "Fixed broker timezone detection so period sync no longer stores invalid dashboard date ranges.",
   "mandatory": false
 }

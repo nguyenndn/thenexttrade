@@ -1,10 +1,40 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { parseISO, endOfDay } from "date-fns";
+import { parseISO, endOfDay, isValid } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function isValidTimeZone(timezone?: string | null): timezone is string {
+    if (!timezone) return false;
+    try {
+        Intl.DateTimeFormat(undefined, { timeZone: timezone });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export function normalizeBrokerTimezone(timezone?: string | null, offsetSeconds?: number | string | null): string | undefined {
+    if (isValidTimeZone(timezone)) return timezone;
+
+    const numericOffset = typeof offsetSeconds === "string" ? Number(offsetSeconds) : offsetSeconds;
+    if (typeof numericOffset === "number" && Number.isFinite(numericOffset)) {
+        const roundedHours = Math.round(numericOffset / 3600);
+        const roundedSeconds = roundedHours * 3600;
+        const isCloseToWholeHour = Math.abs(numericOffset - roundedSeconds) <= 60;
+        const isPossibleTimezone = roundedHours >= -12 && roundedHours <= 14;
+
+        if (isCloseToWholeHour && isPossibleTimezone) {
+            if (roundedHours === 0) return "Etc/UTC";
+            const candidate = `Etc/GMT${roundedHours < 0 ? "+" : "-"}${Math.abs(roundedHours)}`;
+            if (isValidTimeZone(candidate)) return candidate;
+        }
+    }
+
+    return timezone ? "Etc/UTC" : undefined;
 }
 
 /**
@@ -28,11 +58,13 @@ export function parseLocalStartOfDay(dateString?: string, timezone?: string): Da
     if (!dateString) return undefined;
     // Parse as a "wall clock" date: "2026-03-11" => year=2026, month=3, day=11
     const parsed = parseISO(dateString);
-    if (timezone) {
+    if (!isValid(parsed)) return undefined;
+    if (isValidTimeZone(timezone)) {
         // Create midnight in the broker's timezone, return as UTC Date
         // fromZonedTime("2026-03-11T00:00:00", "Europe/Athens") => UTC equivalent of midnight Athens
         const midnightInTz = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate(), 0, 0, 0, 0);
-        return fromZonedTime(midnightInTz, timezone);
+        const zonedDate = fromZonedTime(midnightInTz, timezone);
+        return isValid(zonedDate) ? zonedDate : parsed;
     }
     return parsed;
 }
@@ -44,10 +76,12 @@ export function parseLocalStartOfDay(dateString?: string, timezone?: string): Da
 export function parseLocalEndOfDay(dateString?: string, timezone?: string): Date | undefined {
     if (!dateString) return undefined;
     const parsed = parseISO(dateString);
-    if (timezone) {
+    if (!isValid(parsed)) return undefined;
+    if (isValidTimeZone(timezone)) {
         // Create 23:59:59.999 in the broker's timezone, return as UTC Date
         const endInTz = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate(), 23, 59, 59, 999);
-        return fromZonedTime(endInTz, timezone);
+        const zonedDate = fromZonedTime(endInTz, timezone);
+        return isValid(zonedDate) ? zonedDate : endOfDay(parsed);
     }
     return endOfDay(parsed);
 }

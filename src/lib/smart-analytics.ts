@@ -130,12 +130,14 @@ async function getRevengeTradePatterns(
         WITH ordered_trades AS (
             SELECT 
                 "id",
+                "symbol",
                 "entryDate",
                 "exitDate",
                 "result",
                 "pnl",
                 LAG("exitDate") OVER (ORDER BY "entryDate" ASC) as "prevExitDate",
-                LAG("result") OVER (ORDER BY "entryDate" ASC) as "prevResult"
+                LAG("result") OVER (ORDER BY "entryDate" ASC) as "prevResult",
+                LAG("symbol") OVER (ORDER BY "entryDate" ASC) as "prevSymbol"
             FROM "JournalEntry"
             WHERE "userId" = ${userId}::uuid
             AND "status" = 'CLOSED'
@@ -148,6 +150,8 @@ async function getRevengeTradePatterns(
         WHERE "prevResult" = 'LOSS'
         AND "entryDate" - "prevExitDate" < INTERVAL '60 minutes'
         AND "prevExitDate" IS NOT NULL
+        -- Exclude trades on the same symbol entered within 15 minutes of previous exit (scale-in / split position safety block)
+        AND NOT ("symbol" = "prevSymbol" AND "entryDate" - "prevExitDate" < INTERVAL '15 minutes')
         ${dateFilter}
     `;
 

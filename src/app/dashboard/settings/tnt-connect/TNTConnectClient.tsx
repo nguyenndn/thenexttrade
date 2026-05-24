@@ -303,7 +303,7 @@ export default function TNTConnectClient() {
                     {/* Download button */}
                     <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
                         <a
-                            href="/downloads/TheNextTradeConnect.exe"
+                            href="/downloads/TheNextTradeConnect-1.0.2.exe"
                             download
                             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-colors shadow-sm shadow-primary/20"
                         >

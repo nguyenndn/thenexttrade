@@ -121,6 +121,13 @@ export const BADGES = {
         description: "Reached a 365-day login streak.",
         icon: "Trophy",
         xpReward: 5000
+    },
+    MINDSET_MASTER: {
+        code: "MINDSET_MASTER",
+        name: "Mindset Master",
+        description: "Completed the AI-prescribed mindset lesson to conquer cognitive bias.",
+        icon: "Brain",
+        xpReward: 100
     }
 } as const;
 

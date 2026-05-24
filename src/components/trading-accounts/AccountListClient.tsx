@@ -7,6 +7,7 @@ import { AddAccountModal } from "./AddAccountModal";
 import { AccountSettingsModal } from "./AccountSettingsModal";
 import { RegenerateKeyModal } from "./RegenerateKeyModal";
 import { DeleteAccountModal } from "./DeleteAccountModal";
+import { TradeSyncWizard } from "./TradeSyncWizard";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -308,120 +309,12 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
                 onSuccess={() => router.refresh()}
             />
 
-            {/* Trade Sync Setup Modal */}
-            <Dialog open={activeModal.type === "SYNC_SETUP"} onOpenChange={(open) => !open && setActiveModal({ type: "NONE" })}>
-                <DialogContent className="max-w-2xl p-0 overflow-hidden bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10">
-                    <div className="p-6 pb-4 border-b border-gray-100 dark:border-white/10">
-                        <DialogHeader>
-                            <DialogTitle className="flex items-center gap-2 text-xl">
-                                <Cable className="w-6 h-6 text-cyan-500" />
-                                Trade Sync Setup
-                            </DialogTitle>
-                            <DialogDescription className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                Sync your MT5 account automatically with TheNextTrade.
-                            </DialogDescription>
-                        </DialogHeader>
-                    </div>
-
-                    <div className="p-6 space-y-4">
-                        {/* Option 1: TNT Connect — Recommended */}
-                        <div className="relative rounded-xl border-2 border-primary/40 dark:border-primary/30 bg-primary/[0.03] dark:bg-primary/[0.05] p-5 group hover:shadow-md transition-shadow">
-                            <span className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-md">
-                                Recommended
-                            </span>
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1.5">
-                                        <Monitor size={18} className="text-primary shrink-0" />
-                                        <h3 className="text-base font-bold text-gray-800 dark:text-white">TNT Connect</h3>
-                                        <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md">Best for most users</span>
-                                    </div>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                                        Runs on Windows, detects MT5 automatically, syncs in the background, and supports auto-updates.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3 mt-4">
-                                <a
-                                    href="/downloads/TheNextTradeConnect.exe"
-                                    download
-                                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-colors shadow-sm shadow-primary/20"
-                                >
-                                    <Download size={15} />
-                                    Download TNT Connect
-                                </a>
-                                <Link
-                                    href="/dashboard/settings/tnt-connect"
-                                    onClick={() => setActiveModal({ type: "NONE" })}
-                                    className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                                >
-                                    Open setup guide
-                                    <ArrowRight size={14} />
-                                </Link>
-                            </div>
-                        </div>
-
-                        {/* Option 2: EA Sync — Advanced */}
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.02] p-5 group hover:shadow-md transition-shadow">
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1.5">
-                                        <Download size={18} className="text-amber-500 shrink-0" />
-                                        <h3 className="text-base font-bold text-gray-800 dark:text-white">EA Sync</h3>
-                                        <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-200/80 dark:border-amber-500/20">Advanced</span>
-                                    </div>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                                        For MT5 users who prefer running an Expert Advisor directly on a chart.
-                                    </p>
-                                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1.5">
-                                        Requires enabling WebRequest in MT5 and pasting your Sync API Key into EA inputs.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="mt-4">
-                                <a
-                                    href="/downloads/TheNextTrade_TradeSync.ex5"
-                                    download
-                                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 font-bold text-sm transition-colors"
-                                >
-                                    <Download size={15} />
-                                    Download EA Sync
-                                </a>
-                            </div>
-                        </div>
-
-                        {/* Pre-sync Checklist */}
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.02] p-4">
-                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Before syncing</p>
-                            <div className="space-y-2">
-                                <div className="flex items-start gap-2.5">
-                                    <div className="w-5 h-5 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
-                                        <span className="text-[10px] font-black text-primary">1</span>
-                                    </div>
-                                    <p className="text-sm text-gray-600 dark:text-gray-300">Add your MT5 account number in Account Hub.</p>
-                                </div>
-                                <div className="flex items-start gap-2.5">
-                                    <div className="w-5 h-5 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
-                                        <span className="text-[10px] font-black text-primary">2</span>
-                                    </div>
-                                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                                        Generate your Sync API Key in{" "}
-                                        <Link href="/dashboard/settings/tnt-connect" onClick={() => setActiveModal({ type: "NONE" })} className="text-primary hover:underline font-bold">
-                                            Settings &gt; TNT Connect
-                                        </Link>.
-                                    </p>
-                                </div>
-                                <div className="flex items-start gap-2.5">
-                                    <div className="w-5 h-5 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
-                                        <span className="text-[10px] font-black text-primary">3</span>
-                                    </div>
-                                    <p className="text-sm text-gray-600 dark:text-gray-300">Keep MT5 logged into the same account number.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
+            {/* Trade Sync Setup Wizard */}
+            <TradeSyncWizard
+                isOpen={activeModal.type === "SYNC_SETUP"}
+                onClose={() => setActiveModal({ type: "NONE" })}
+                accounts={initialAccounts}
+            />
 
             {/* Free vs Pro Modal */}
             <Dialog open={activeModal.type === "FREE_VS_PRO"} onOpenChange={(open) => !open && setActiveModal({ type: "NONE" })}>

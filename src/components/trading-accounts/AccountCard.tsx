@@ -142,8 +142,8 @@ export function AccountCard({
                         </span>
                     )}
                     {isMain && (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-[9px] font-black uppercase tracking-[0.1em] bg-primary/15 text-primary border border-primary/30" title="Main Account">
-                            <Star size={8} className="fill-current" />
+                        <span className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-[9px] font-black uppercase tracking-[0.1em] bg-amber-500/15 text-amber-600 border border-amber-500/30 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30" title="Main Account">
+                            <Star size={8} className="fill-current text-amber-500 dark:text-amber-400" />
                             Main
                         </span>
                     )}
@@ -174,7 +174,7 @@ export function AccountCard({
                                     disabled={isMain}
                                     className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <Star size={15} className={isMain ? "text-primary fill-current" : "text-gray-500"} />
+                                    <Star size={15} className={isMain ? "text-amber-500 fill-current" : "text-gray-500"} />
                                     <span>{isMain ? "Main Account" : "Set as Main"}</span>
                                 </DropdownMenuItem>
                             )}

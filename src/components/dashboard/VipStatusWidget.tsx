@@ -3,7 +3,7 @@
 import { useProAccess } from "@/components/pro/ProProvider";
 import { Crown, Loader2, Shield, Timer, AlertTriangle, ArrowRight, ChevronRight, type LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProBenefitsModal } from "./ProBenefitsModal";
 
@@ -103,13 +103,47 @@ export function VipStatusWidget() {
 
   const currentAccountId = searchParams?.get("accountId") ?? undefined;
 
+  // State to hold the actively selected account ID, resolved client-side to prevent SSR hydration mismatch
+  const [activeAccountId, setActiveAccountId] = useState<string | null>(null);
+
+  // Helper to read cookie on the client side
+  const getCookie = useCallback((name: string) => {
+    if (typeof window === "undefined" || typeof document === "undefined") return null;
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
+  }, []);
+
+  useEffect(() => {
+    // 1. Initial resolution on mount/render
+    const urlAccountId = searchParams?.get("accountId");
+    const cookieAccountId = getCookie("last_account_id");
+    setActiveAccountId(urlAccountId || cookieAccountId || proAccess.mainAccountId || null);
+
+    // 2. Event listener for account changes
+    const handleAccountChange = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      if (customEvent.detail) {
+        setActiveAccountId(customEvent.detail);
+      }
+    };
+
+    window.addEventListener("tnt_account_changed", handleAccountChange);
+    return () => {
+      window.removeEventListener("tnt_account_changed", handleAccountChange);
+    };
+  }, [currentAccountId, proAccess.mainAccountId, searchParams, getCookie]);
+
+  const resolvedAccountId = activeAccountId || proAccess.mainAccountId || undefined;
+
   useEffect(() => {
     import("@/actions/vip-request")
-      .then((mod) => mod.getMyVipRequest(currentAccountId))
+      .then((mod) => mod.getMyVipRequest(resolvedAccountId))
       .then((vip) => setVipRequest(vip as any))
       .catch(() => {})
       .finally(() => setLoadingVip(false));
-  }, [currentAccountId]);
+  }, [resolvedAccountId]);
 
   if (proAccess.loading) {
     return (
@@ -122,11 +156,13 @@ export function VipStatusWidget() {
     );
   }
 
-  // Derive status from Main account, fallback to aggregate
-  const mainAccount = proAccess.mainAccountId
-    ? proAccess.accounts.find((a) => a.tradingAccountId === proAccess.mainAccountId)
+  // Derive status and details from selected/main account, fallback to aggregate
+  const activeAccount = resolvedAccountId
+    ? proAccess.accounts.find((a) => a.tradingAccountId === resolvedAccountId)
     : null;
-  const status = mainAccount ? mainAccount.status : (proAccess.status || "NONE");
+  const status = activeAccount ? activeAccount.status : (proAccess.status || "NONE");
+  const isPro = activeAccount ? activeAccount.isPro : proAccess.isPro;
+  const expiresAt = activeAccount ? activeAccount.expiresAt : proAccess.expiresAt;
   const cfg = statusConfig[status] || statusConfig.NONE;
   const StatusIcon = cfg.icon;
   const hasPendingRequest = !loadingVip && vipRequest?.status === "PENDING";
@@ -311,7 +347,7 @@ export function VipStatusWidget() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <span className={`text-sm font-black tracking-tight ${cfg.labelColor}`}>{cfg.label}</span>
-                {proAccess.isPro && (
+                {isPro && (
                   <span className={`rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] ring-1 ring-current/15 ${cfg.badgeClass}`}>
                     Pro
                   </span>
@@ -322,17 +358,17 @@ export function VipStatusWidget() {
           </div>
 
           {/* Grace expiry */}
-          {status === "GRACE" && proAccess.expiresAt && (
+          {status === "GRACE" && expiresAt && (
             <div className="flex items-center gap-2 rounded-xl bg-violet-50 dark:bg-violet-500/10 border border-violet-200/60 dark:border-violet-500/20 px-3 py-2">
               <Timer className="h-3.5 w-3.5 text-violet-500 shrink-0" />
               <p className="text-[11px] font-semibold text-violet-600 dark:text-violet-400">
-                Expires {new Date(proAccess.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                Expires {new Date(expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
               </p>
             </div>
           )}
 
           {/* CTAs */}
-          {!proAccess.isPro && (status === "EXPIRED" || status === "REVOKED") && (
+          {!isPro && (status === "EXPIRED" || status === "REVOKED") && (
             <Link
               href="/dashboard/accounts?action=add&intent=unlock-pro"
               className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"

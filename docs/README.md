@@ -1,93 +1,67 @@
-# 📚 Documentation Index
+# TheNextTrade Docs
 
-Welcome to TheNextTrade documentation! Organized for clarity and easy navigation.
+Last reviewed: 2026-05-24
 
-## 🎯 Start Here
+This folder is the active source of truth for the product, system, operations, design, and email behavior. Old sprint plans, completed QA reports, and stale implementation notes should not live here.
 
-**New to the project?** Read in this order:
-1. [ENVIRONMENT_SETUP.md](setup/ENVIRONMENT_SETUP.md) - Quick start + environment configuration
-2. [overview.md](architecture/overview.md) - System architecture
-3. [VERCEL_DEPLOYMENT.md](deployment/VERCEL_DEPLOYMENT.md) - Production deployment
+## Read Order
 
-## 📁 Documentation Structure
+| File | Purpose |
+| --- | --- |
+| [SYSTEM.md](SYSTEM.md) | Architecture, data flow, database areas, routes, APIs, security |
+| [PRODUCT.md](PRODUCT.md) | User-facing modules, admin modules, product rules, current behavior |
+| [FEATURE_SPECS.md](FEATURE_SPECS.md) | Detailed route/function specs for bug fixing and feature continuation |
+| [OPERATIONS.md](OPERATIONS.md) | Environment, self-host stack, deploy, storage, monitoring, release ops |
+| [DESIGN.md](DESIGN.md) | UI standards for dashboard, auth pages, cards, buttons, metrics |
+| [EMAIL.md](EMAIL.md) | Transactional email strategy, templates needed, delivery rules |
 
-```
-📁 docs/
-├── README.md                              # ⭐ This index
-│
-├── 📁 api/                                # API Documentation
-│   └── endpoints.md                       # All API endpoints reference
-│
-├── 📁 architecture/                       # System Architecture
-│   ├── overview.md                        # Tech stack + system diagram
-│   ├── database-schema.md                 # Prisma models + ER diagram
-│   └── routes.md                          # All routes (public/dashboard/admin/api)
-│
-├── 📁 deployment/                         # Production Deployment
-│   └── VERCEL_DEPLOYMENT.md               # Vercel deploy guide + env vars
-│
-├── 📁 design-system/                      # UI/UX Standards
-│   └── USER_DASHBOARD_SPECS.md            # Colors, typography, components
-│
-├── 📁 features/                           # Feature Documentation
-│   ├── academy.md                         # 12-level curriculum + AI pipeline
-│   ├── analytics.md                       # Dashboard + Profit Calendar
-│   ├── authentication.md                  # Auth flow (Supabase)
-│   ├── trader-tools.md                    # Risk Calculator, Market Hours, etc.
-│   └── trading-journal.md                 # Journal + trade logging
-│
-├── 📁 setup/                              # Development Setup
-│   └── ENVIRONMENT_SETUP.md               # Quick start + env management
-│
-└── 📁 templates/                          # Email Templates
-    ├── supabase_email_template.html       # Confirm email
-    ├── supabase_magic_link_template.html   # Magic link login
-    └── supabase_reset_password_template.html # Password reset
-```
+## Current Snapshot
 
-## 🚀 Quick Reference
+- App: Next.js App Router, React, TypeScript, Tailwind CSS, Lucide icons.
+- Database: PostgreSQL through Prisma.
+- Auth: Supabase Auth plus app-owned `User`, `Profile`, role, session, and security records.
+- Deploy target: VPS with Coolify behind Cloudflare.
+- Storage: Cloudflare R2 for generated assets, uploads, article media, and backups.
+- Email: SMTP-compatible service. Brevo or Postmark recommended for production.
+- Analytics: internal Postgres analytics plus optional GA4.
+- Trade sync: EA Sync and TNT Connect. Current TNT Connect release is `1.0.2`.
 
-### Daily Development
+## New Developer Handoff
+
+If a new developer needs to fix bugs or continue feature work, use this order:
+
+1. Read [PRODUCT.md](PRODUCT.md) to understand what features exist and what each feature is supposed to do.
+2. Read [FEATURE_SPECS.md](FEATURE_SPECS.md) to understand the exact route behavior, query params, edge cases, and QA checklist.
+3. Read [SYSTEM.md](SYSTEM.md) to find the route, component, API, database model, and service ownership for that feature.
+4. Read [DESIGN.md](DESIGN.md) before changing user-facing UI.
+5. Read [OPERATIONS.md](OPERATIONS.md) before touching env vars, deploy, storage, sync releases, or production services.
+6. Read [EMAIL.md](EMAIL.md) before changing transactional email behavior.
+
+Most bug fixes should start from the feature inventory in [PRODUCT.md](PRODUCT.md), then jump to the route spec in [FEATURE_SPECS.md](FEATURE_SPECS.md), then use the code ownership map in [SYSTEM.md](SYSTEM.md).
+
+## Common Commands
+
 ```bash
-npm run dev:local      # Start with local database (FAST ⚡)
-npm run dev:prod       # Start with production database
+npm run dev
+npm run type-check
+npm run lint
+npm test
+npm run build
 ```
 
-### Database
+Database:
+
 ```bash
-npm run db:migrate     # Run migrations
-npm run db:seed        # Seed database
-npm run db:studio      # Database GUI
+npm run db:push
+npm run db:migrate
+npm run db:seed
+npm run db:studio
 ```
 
-### Deployment
-```bash
-git push origin main   # Auto-deploy to Vercel
-```
+## Documentation Rules
 
-## 📖 By Topic
-
-| Topic | File |
-|-------|------|
-| **Getting Started** | [ENVIRONMENT_SETUP.md](setup/ENVIRONMENT_SETUP.md) |
-| **Architecture** | [overview.md](architecture/overview.md) |
-| **Database Schema** | [database-schema.md](architecture/database-schema.md) |
-| **All Routes** | [routes.md](architecture/routes.md) |
-| **API Endpoints** | [endpoints.md](api/endpoints.md) |
-| **Deploy to Vercel** | [VERCEL_DEPLOYMENT.md](deployment/VERCEL_DEPLOYMENT.md) |
-| **UI Standards** | [USER_DASHBOARD_SPECS.md](design-system/USER_DASHBOARD_SPECS.md) |
-| **Academy & AI** | [academy.md](features/academy.md) |
-| **Analytics** | [analytics.md](features/analytics.md) |
-| **Authentication** | [authentication.md](features/authentication.md) |
-| **Trading Journal** | [trading-journal.md](features/trading-journal.md) |
-| **Trader Tools** | [trader-tools.md](features/trader-tools.md) |
-
-## ✅ Documentation Standards
-
-- All docs use Markdown format
-- Use relative links for internal references
-- Keep docs up-to-date with code changes
-
----
-
-**Last Updated:** April 3, 2026 · **Total: 14 files**
+- Keep docs short, factual, and current.
+- Prefer one maintained source of truth over many small files.
+- Move planning drafts outside `/docs` once the feature ships.
+- Delete QA reports after all real bugs are fixed.
+- Link to code paths only when the behavior is implementation-specific.

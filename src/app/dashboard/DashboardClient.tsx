@@ -18,8 +18,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-
 // Static imports for above-fold charts (always visible — no skeleton needed)
 import { BalanceGrowthChart } from "@/components/dashboard/BalanceGrowthChart";
 import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";

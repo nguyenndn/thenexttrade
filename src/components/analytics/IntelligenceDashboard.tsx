@@ -39,6 +39,7 @@ import type { IntelligenceData, Insight, InsightSeverity, ScoreHistoryPoint } fr
 import { format, parseISO } from "date-fns";
 import { BehavioralRadarChart } from "./BehavioralRadarChart";
 import { DeepSeekCoachCard } from "./DeepSeekCoachCard";
+import { BiasProfileWidget } from "@/components/dashboard/BiasProfileWidget";
 
 // ============================================================================
 // ICON MAP
@@ -783,13 +784,18 @@ export function IntelligenceDashboard({
             {/* Unified Score & Risk Panel — full width, 3 columns */}
             <ScoreAndRiskPanel data={data} />
 
-            {/* Behavioral Radar + Score History — side by side */}
+            {/* Radar Charts Grid (50% / 50% split) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <BehavioralRadarChart data={data} />
-                {scoreHistory && scoreHistory.length >= 3 && (
-                    <ScoreHistoryChart data={scoreHistory} />
-                )}
+                <BiasProfileWidget />
             </div>
+
+            {/* Score History Chart — rendered below as full width if available */}
+            {scoreHistory && scoreHistory.length >= 3 && (
+                <div className="mt-2">
+                    <ScoreHistoryChart data={scoreHistory} />
+                </div>
+            )}
         </div>
     );
 }

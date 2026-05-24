@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { generateTradeHash } from "@/lib/importers";
+import { normalizeBrokerTimezone } from "@/lib/utils";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -128,7 +129,8 @@ export async function POST(request: NextRequest) {
             if (server) accountUpdate.server = server;
             if (currency) accountUpdate.currency = currency;
             if (leverage) accountUpdate.leverage = String(leverage);
-            if (brokerTimezone) accountUpdate.timezone = brokerTimezone;
+            const normalizedTimezone = normalizeBrokerTimezone(brokerTimezone, brokerTimezoneOffset);
+            if (normalizedTimezone) accountUpdate.timezone = normalizedTimezone;
 
             await prisma.tradingAccount.update({
                 where: { id: dbAccount.id },

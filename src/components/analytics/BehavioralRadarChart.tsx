@@ -111,7 +111,7 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
     const color = getScoreColor(avgScore);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5 min-h-[460px] lg:h-full flex flex-col justify-between">
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2.5">
@@ -134,7 +134,7 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
             </div>
 
             {/* Radar Chart */}
-            <div className="h-[280px] sm:h-[300px] w-full">
+            <div className="flex-1 min-h-0 w-full my-2">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
                     <RadarChart data={radarData} outerRadius="72%">
                         <PolarGrid

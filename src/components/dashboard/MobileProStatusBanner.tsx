@@ -3,6 +3,8 @@
 import { useProAccess } from "@/components/pro/ProProvider";
 import { Crown, Timer, Shield, AlertTriangle, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
 
 /**
  * Compact Pro status bar for mobile main content area.
@@ -11,9 +13,52 @@ import Link from "next/link";
  * Hidden on desktop (lg:hidden) since the sidebar widget handles desktop.
  */
 export function MobileProStatusBanner() {
-  const { status, isPro, expiresAt, loading } = useProAccess();
+  const proAccess = useProAccess();
+  const searchParams = useSearchParams();
+  const currentAccountId = searchParams?.get("accountId") ?? undefined;
 
-  if (loading) return null;
+  // State to hold the actively selected account ID, resolved client-side to prevent SSR hydration mismatch
+  const [activeAccountId, setActiveAccountId] = useState<string | null>(null);
+
+  // Helper to read cookie on the client side
+  const getCookie = useCallback((name: string) => {
+    if (typeof window === "undefined" || typeof document === "undefined") return null;
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
+  }, []);
+
+  useEffect(() => {
+    // 1. Initial resolution on mount/render
+    const urlAccountId = searchParams?.get("accountId");
+    const cookieAccountId = getCookie("last_account_id");
+    setActiveAccountId(urlAccountId || cookieAccountId || proAccess.mainAccountId || null);
+
+    // 2. Event listener for account changes
+    const handleAccountChange = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      if (customEvent.detail) {
+        setActiveAccountId(customEvent.detail);
+      }
+    };
+
+    window.addEventListener("tnt_account_changed", handleAccountChange);
+    return () => {
+      window.removeEventListener("tnt_account_changed", handleAccountChange);
+    };
+  }, [currentAccountId, proAccess.mainAccountId, searchParams, getCookie]);
+
+  if (proAccess.loading) return null;
+
+  const resolvedAccountId = activeAccountId || proAccess.mainAccountId;
+  const activeAccount = resolvedAccountId
+    ? proAccess.accounts.find((a) => a.tradingAccountId === resolvedAccountId)
+    : null;
+
+  const status = activeAccount ? activeAccount.status : (proAccess.status || "NONE");
+  const isPro = activeAccount ? activeAccount.isPro : proAccess.isPro;
+  const expiresAt = activeAccount ? activeAccount.expiresAt : proAccess.expiresAt;
 
   const currentStatus = status || "NONE";
 

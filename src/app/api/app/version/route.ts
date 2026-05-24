@@ -10,6 +10,7 @@ import path from "path";
  * Release workflow:
  * 1. Build new exe → change VERSION in main.py
  * 2. Upload exe as: public/downloads/TheNextTradeConnect.exe
+ *    or add "downloadPath" to app-release.json for versioned artifacts.
  * 3. Edit public/downloads/app-release.json → bump "version"
  * Done! All users see the update.
  */
@@ -27,9 +28,11 @@ export async function GET(request: NextRequest) {
     // Derive base URL from the incoming request
     const origin = request.nextUrl.origin;
 
+    const downloadPath = release.downloadPath || "/downloads/TheNextTradeConnect.exe";
+
     return NextResponse.json({
       version: release.version,
-      downloadUrl: `${origin}/downloads/TheNextTradeConnect.exe`,
+      downloadUrl: `${origin}${downloadPath}`,
       changelog: release.changelog || "",
       mandatory: release.mandatory || false,
     });

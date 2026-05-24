@@ -134,6 +134,12 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
         if (active) {
             setSelectedAccount(active);
 
+            // Dispatch event to sync sidebar widget immediately on resolve
+            if (typeof window !== "undefined") {
+                const event = new CustomEvent("tnt_account_changed", { detail: active.id });
+                window.dispatchEvent(event);
+            }
+
             // Navigate ONLY if URL param is missing/wrong AND we haven't already navigated
             if ((!urlAccountId || active.id !== urlAccountId) && !hasSetAccount.current) {
                 hasSetAccount.current = true;
@@ -156,7 +162,13 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
         // 1. Set Cookie for persistence
         document.cookie = `last_account_id=${account.id}; path=/; max-age=31536000; SameSite=Lax`;
 
-        // 2. Update URL
+        // 2. Dispatch event to sync sidebar widget immediately
+        if (typeof window !== "undefined") {
+            const event = new CustomEvent("tnt_account_changed", { detail: account.id });
+            window.dispatchEvent(event);
+        }
+
+        // 3. Update URL
         const params = new URLSearchParams(searchParams?.toString());
         params.set("accountId", account.id);
 

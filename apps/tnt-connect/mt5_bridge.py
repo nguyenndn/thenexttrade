@@ -277,6 +277,13 @@ for ($i = 0; $i -lt 40; $i++) {
 
         # Round to nearest 30 min (standard timezone increments)
         offset = round(raw_offset / 1800) * 1800
+        if abs(offset) > 14 * 3600:
+            logger.warning(
+                f"Broker timezone offset out of range: {offset}s. "
+                "Quote time may be stale; falling back to UTC."
+            )
+            return 0
+
         logger.info(f"Broker timezone offset: {offset}s = GMT{'+' if offset >= 0 else ''}{offset // 3600}")
         return offset
 
@@ -286,7 +293,16 @@ for ($i = 0; $i -lt 40; $i++) {
         Note: Etc/GMT signs are inverted per IANA convention.
         E.g. offset +10800 (GMT+3) = 'Etc/GMT-3'
         """
+        if offset_seconds % 3600 != 0:
+            logger.warning(
+                f"Broker timezone offset is not a whole hour: {offset_seconds}s. "
+                "Falling back to UTC because Etc/GMT cannot represent partial-hour offsets."
+            )
+            return "Etc/UTC"
+
         hours = offset_seconds // 3600
+        if hours < -12 or hours > 14:
+            return "Etc/UTC"
         if hours == 0:
             return "Etc/UTC"
         # IANA Etc/GMT uses inverted sign
@@ -526,4 +542,3 @@ for ($i = 0; $i -lt 40; $i++) {
         }
         delta = period_seconds.get(period, 86400)
         return self.get_deals(from_date=broker_ts - delta, to_date=broker_ts + 60)
-

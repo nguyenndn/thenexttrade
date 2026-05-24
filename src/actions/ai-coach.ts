@@ -4,8 +4,56 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { getIntelligenceData } from "@/lib/smart-analytics";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { getUserProAccess } from "@/lib/pro-access";
+import { prisma } from "@/lib/prisma";
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+
+function cleanAndParseAIResponse(content: string) {
+    let clean = content.trim();
+
+    // Strip markdown code fences if present
+    if (clean.startsWith("```")) {
+        const firstNewline = clean.indexOf("\n");
+        if (firstNewline !== -1) {
+            clean = clean.substring(firstNewline + 1);
+        }
+        if (clean.endsWith("```")) {
+            clean = clean.substring(0, clean.length - 3);
+        }
+        clean = clean.trim();
+    }
+
+    try {
+        return JSON.parse(clean);
+    } catch (parseError) {
+        console.warn("[JSON Clean Parse Failed - Attempting Fallback Parsing]:", parseError);
+
+        // Fallback: Use Regex to extract keys
+        let assessment = "Your trading patterns are generally consistent, but continue focusing on risk-reward control.";
+        const assessMatch = clean.match(/"assessment"\s*:\s*"([\s\S]*?)"(?=\s*,\s*"|\s*\})/i);
+        if (assessMatch && assessMatch[1]) {
+            assessment = assessMatch[1].replace(/\\"/g, '"').trim();
+        }
+
+        let pattern = "Review your session statistics to identify minor discipline variances.";
+        const patternMatch = clean.match(/"pattern"\s*:\s*"([\s\S]*?)"(?=\s*,\s*"|\s*\})/i);
+        if (patternMatch && patternMatch[1]) {
+            pattern = patternMatch[1].replace(/\\"/g, '"').trim();
+        }
+
+        let actionPlan = "Maintain a strict 1% risk target and set hard stop-losses before entry.";
+        const actionMatch = clean.match(/"actionPlan"\s*:\s*"([\s\S]*?)"(?=\s*\})/i);
+        if (actionMatch && actionMatch[1]) {
+            actionPlan = actionMatch[1].replace(/\\"/g, '"').trim();
+        }
+
+        return {
+            assessment,
+            pattern,
+            actionPlan
+        };
+    }
+}
 
 export async function generateDeepSeekInsights(
     accountId?: string,
@@ -29,6 +77,55 @@ export async function generateDeepSeekInsights(
     try {
         const startDate = parseLocalStartOfDay(dateFrom, timezone);
         const endDate = parseLocalEndOfDay(dateTo, timezone);
+
+        // Check cache in User settings to avoid redundant DeepSeek calls
+        const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { settings: true }
+        });
+
+        const existingSettings = (dbUser?.settings as Record<string, any>) || {};
+
+        // Construct cache key based on closed trades count and last trade timestamp
+        const cacheCheck = await prisma.journalEntry.findFirst({
+            where: {
+                userId: user.id,
+                status: "CLOSED",
+                ...(accountId ? { accountId } : {}),
+            },
+            orderBy: { entryDate: "desc" },
+            select: { id: true, entryDate: true }
+        });
+
+        const totalClosedCount = await prisma.journalEntry.count({
+            where: {
+                userId: user.id,
+                status: "CLOSED",
+                ...(accountId ? { accountId } : {}),
+            }
+        });
+
+        const lastTradeTime = cacheCheck?.entryDate ? new Date(cacheCheck.entryDate).getTime() : 0;
+        const currentCacheKey = `coach_${totalClosedCount}_${lastTradeTime}_${accountId || 'all'}_${dateFrom || 'all'}_${dateTo || 'all'}_${timezone || 'UTC'}`;
+
+        const cachedData = existingSettings.cachedCoachInsights as {
+            cacheKey: string;
+            insight: {
+                assessment: string;
+                pattern: string;
+                actionPlan: string;
+                generatedAt: string;
+            };
+        } | undefined;
+
+        if (cachedData && cachedData.cacheKey === currentCacheKey) {
+            console.log("[AI Coach Insights] - Serving cached insights for key:", currentCacheKey);
+            return {
+                success: true,
+                insight: cachedData.insight,
+                isCached: true
+            };
+        }
 
         // Fetch Intelligence Data
         const data = await getIntelligenceData(
@@ -69,6 +166,8 @@ Respond with a JSON object containing exactly these fields:
 - "pattern": A 1-2 sentence description of their most dangerous weakness or strongest edge based on the data.
 - "actionPlan": A specific, measurable rule they must follow for the next 7 days to improve their score.
 
+CRITICAL: Inside the "assessment", "pattern", and "actionPlan" text strings, NEVER use raw double quotes ("). If you need to mention a term or put something in quotes, use single quotes (') instead. This is vital to keep the JSON output perfectly valid and prevent parsing errors.
+
 Use a professional but strict "tough love" tone. Do not use markdown backticks in the response values.
 
 Example JSON output format:
@@ -108,16 +207,33 @@ Example JSON output format:
             throw new Error("No content returned from DeepSeek");
         }
 
-        const parsedContent = JSON.parse(content);
+        const parsedContent = cleanAndParseAIResponse(content);
+
+        const finalInsight = {
+            assessment: parsedContent.assessment,
+            pattern: parsedContent.pattern,
+            actionPlan: parsedContent.actionPlan,
+            generatedAt: new Date().toISOString()
+        };
+
+        const finalCachedInsights = {
+            cacheKey: currentCacheKey,
+            insight: finalInsight
+        };
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                settings: {
+                    ...existingSettings,
+                    cachedCoachInsights: finalCachedInsights
+                }
+            }
+        });
 
         return {
             success: true,
-            insight: {
-                assessment: parsedContent.assessment,
-                pattern: parsedContent.pattern,
-                actionPlan: parsedContent.actionPlan,
-                generatedAt: new Date().toISOString()
-            }
+            insight: finalInsight
         };
 
     } catch (error: any) {
