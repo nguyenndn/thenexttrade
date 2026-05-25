@@ -4,7 +4,7 @@ import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import Image from "next/image";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { Clock, TrendingUp, Calendar, ArrowRight, BookOpen, Zap, Flame, MessageCircle, ThumbsUp } from "lucide-react";
+import { Clock, ArrowRight, Flame, MessageCircle, ThumbsUp } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AboutUsSection } from "@/components/home/AboutUsSection";
 import { FadeIn } from "@/components/ui/FadeIn";

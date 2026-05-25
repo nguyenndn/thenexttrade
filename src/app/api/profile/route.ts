@@ -45,7 +45,10 @@ export async function GET() {
             telegramId: dbUser.profile?.telegramId || "",
             country: dbUser.profile?.country || "",
             role: dbUser.profile?.role || "USER",
-            streak: dbUser.streak || 0
+            streak: dbUser.streak || 0,
+            level: dbUser.level || 1,
+            xp: dbUser.xp || 0,
+            username: dbUser.profile?.username || dbUser.name || ""
         });
 
     } catch {

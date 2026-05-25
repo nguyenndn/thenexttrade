@@ -35,6 +35,7 @@ export default function SignupPage() {
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
     const [turnstileToken, setTurnstileToken] = useState("");
+    const [referralCode, setReferralCode] = useState("");
 
     const inputClassName =
         "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:border-white/10 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
@@ -49,6 +50,8 @@ export default function SignupPage() {
         "appearance-none h-5 w-5 rounded border border-amber-900/20 bg-white checked:bg-amber-500 checked:border-amber-500 dark:bg-black/20 dark:border-white/20 dark:checked:bg-amber-400 dark:checked:border-amber-400 checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer shrink-0";
 
     useEffect(() => {
+        setReferralCode(new URLSearchParams(window.location.search).get("ref")?.trim() || "");
+
         let cancelled = false;
 
         fetch("/api/geo/country")
@@ -134,6 +137,9 @@ export default function SignupPage() {
         formData.set("termsAccepted", termsAccepted ? "on" : "");
         formData.set("notify", notify ? "on" : "");
         formData.set("cf-turnstile-response", turnstileToken);
+        if (referralCode) {
+            formData.set("referralCode", referralCode);
+        }
 
         trackEvent("sign_up_submitted", { country, notify: notify ? 1 : 0 });
         const result = await signup(formData);
@@ -147,7 +153,14 @@ export default function SignupPage() {
             return;
         } else if (result?.success) {
             trackEvent("sign_up_completed", { country });
-            router.push("/dashboard");
+            // Build dashboard URL with accountId + today (same as login)
+            const cookieMatch = document.cookie.match(/(?:^|;\s*)last_account_id=([^;]+)/);
+            const acctId = cookieMatch?.[1];
+            const today = new Date().toISOString().slice(0, 10);
+            const dashUrl = acctId
+              ? `/dashboard?accountId=${acctId}&from=${today}&to=${today}`
+              : "/dashboard";
+            router.push(dashUrl);
             return;
         }
 
@@ -166,6 +179,11 @@ export default function SignupPage() {
                 </div>
                 <h1 className="text-3xl font-black text-slate-950 dark:text-white">Create your account</h1>
                 <p className="mt-2 text-base font-medium text-slate-600 dark:text-slate-300">Set up your premium trading workspace in minutes.</p>
+                {referralCode && (
+                    <p className="mx-auto mt-3 inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200">
+                        Referral applied
+                    </p>
+                )}
             </div>
 
             <div className="mb-7 flex items-center justify-center gap-3">

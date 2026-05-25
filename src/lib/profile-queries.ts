@@ -183,7 +183,10 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
             : null,
 
         topPairs: profile.showPairStats
-            ? symbols.slice(0, 5).map((s) => ({
+            ? [...symbols]
+                  .sort((a, b) => b.trades - a.trades)
+                  .slice(0, 3)
+                  .map((s) => ({
                   symbol: s.symbol,
                   winRate: s.winRate,
                   trades: s.trades,

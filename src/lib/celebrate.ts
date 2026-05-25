@@ -28,6 +28,12 @@ export async function celebrateXP(opts: CelebrationOptions) {
     duration: 4000,
   });
 
+  if (opts.leveledUp) {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("tnt_level_up", { detail: opts }));
+    }
+  }
+
   // Fireworks confetti (same effect as streak check-in)
   const confetti = (await import("canvas-confetti")).default;
 

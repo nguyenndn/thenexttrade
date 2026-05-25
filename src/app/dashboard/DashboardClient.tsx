@@ -1,8 +1,8 @@
 "use client";
 
 import { useTheme } from "@/components/providers/ThemeProvider";
-import { TrendingUp, Trophy, PieChart as PieChartIcon, Layers, CalendarRange, Gauge, HelpCircle } from "lucide-react";
-import { useState } from "react";
+import { TrendingUp, Trophy, PieChart as PieChartIcon, Layers, CalendarRange, Gauge, HelpCircle, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
 import { GreetingHeader } from "@/components/dashboard/GreetingHeader";
@@ -124,6 +124,25 @@ export default function DashboardClient({
     const [selectedTrade, setSelectedTrade] = useState<any>(null);
     const [showTradeModal, setShowTradeModal] = useState(false);
 
+    // Report Nudge dismiss state with localStorage + date key
+    const [reportNudgeDismissed, setReportNudgeDismissed] = useState(false);
+    useEffect(() => {
+        const today = new Date().toISOString().slice(0, 10);
+        if (localStorage.getItem(`dismissed_report_nudge_${today}`) === "1") {
+            setReportNudgeDismissed(true);
+        }
+    }, []);
+    const handleDismissReportNudge = () => {
+        const today = new Date().toISOString().slice(0, 10);
+        localStorage.setItem(`dismissed_report_nudge_${today}`, "1");
+        Object.keys(localStorage).forEach(k => {
+            if (k.startsWith("dismissed_report_nudge_") && k !== `dismissed_report_nudge_${today}`) {
+                localStorage.removeItem(k);
+            }
+        });
+        setReportNudgeDismissed(true);
+    };
+
     const handleTradeClick = (id: string) => {
         const trade = recentTrades.find(t => t.id === id);
         if (trade) {
@@ -170,20 +189,25 @@ export default function DashboardClient({
             {insight && <InsightBanner insight={insight} score={intelligenceScore} />}
 
             {/* Report Nudge Card */}
-            {(daysSinceLastReport === undefined || daysSinceLastReport === null || daysSinceLastReport >= 7) && dashboardData.totalBalance > 0 && (
-                <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-indigo-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm relative overflow-hidden">
-                    <div className="flex items-center gap-3 relative z-10">
-                        <div className="p-2.5 bg-indigo-500 text-white rounded-lg shadow-md">
-                            <PieChartIcon size={20} />
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-gray-800 dark:text-white text-sm">Your weekly review is ready</h3>
-                            <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">It's been {daysSinceLastReport == null ? "a while" : `${daysSinceLastReport} days`} since your last report. Generate one to uncover new insights.</p>
-                        </div>
+            {!reportNudgeDismissed && (daysSinceLastReport === undefined || daysSinceLastReport === null || daysSinceLastReport >= 7) && dashboardData.totalBalance > 0 && (
+                <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl border transition-all bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200/60 dark:border-emerald-500/15">
+                    <div className="p-1.5 bg-emerald-100 dark:bg-emerald-500/15 rounded-lg shrink-0">
+                        <PieChartIcon size={14} className="text-emerald-600 dark:text-emerald-400" />
                     </div>
-                    <a href="/dashboard/reports" className="relative z-10 shrink-0 bg-white dark:bg-white/10 hover:bg-gray-50 dark:hover:bg-white/20 text-gray-800 dark:text-white font-semibold text-xs px-4 py-2 rounded-lg border border-gray-200 dark:border-white/10 transition-colors text-center shadow-sm">
+                    <div className="flex-1 min-w-0 truncate">
+                        <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">Your weekly review is ready</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-500 ml-2 hidden sm:inline">— It's been {daysSinceLastReport == null ? "a while" : `${daysSinceLastReport} days`} since your last report. Generate one to uncover new insights.</span>
+                    </div>
+                    <a href="/dashboard/reports" className="shrink-0 bg-primary hover:bg-primary/90 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors text-center">
                         Generate Report →
                     </a>
+                    <button
+                        onClick={handleDismissReportNudge}
+                        className="p-1 rounded-md shrink-0 transition-colors text-emerald-400 hover:text-emerald-600 hover:bg-emerald-100 dark:text-emerald-500 dark:hover:text-emerald-300 dark:hover:bg-emerald-500/15"
+                        aria-label="Dismiss"
+                    >
+                        <X size={14} />
+                    </button>
                 </div>
             )}
 

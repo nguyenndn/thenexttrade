@@ -3,12 +3,74 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { login, signInWithMagicLink } from "@/app/auth/actions";
 import { Mail, Lock, Eye, EyeOff, Sparkles, CheckCircle, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 import { trackEvent } from "@/lib/track";
+
+// ─── Full-screen loading overlay rendered via portal ───
+function LoginSuccessOverlay({ name }: { name: string }) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    // Start progress bar animation
+    const t1 = setTimeout(() => setProgress(100), 100);
+
+    // Build dashboard URL with accountId + today (same logic as UserMenu dropdown)
+    const t2 = setTimeout(() => {
+      const match = document.cookie.match(/(?:^|;\s*)last_account_id=([^;]+)/);
+      const accountId = match?.[1];
+      const today = new Date().toISOString().slice(0, 10);
+      const url = accountId
+        ? `/dashboard?accountId=${accountId}&from=${today}&to=${today}`
+        : "/dashboard";
+      window.location.href = url;
+    }, 2400);
+
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  return createPortal(
+    <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center select-none bg-[#F7F4EC] dark:bg-[#0B0E14] transition-colors" style={{ margin: 0 }}>
+      {/* Light mode: warm amber radial glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(217,154,38,0.12)_0%,rgba(217,154,38,0.04)_40%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(0,200,136,0.08)_0%,rgba(0,200,136,0.02)_40%,transparent_70%)] pointer-events-none" />
+      {/* Secondary glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(16,185,129,0.06)_0%,transparent_50%)] dark:bg-[radial-gradient(ellipse_at_30%_20%,rgba(247,201,72,0.04)_0%,transparent_50%)] pointer-events-none" />
+
+      <div className="flex flex-col items-center space-y-8 max-w-md px-6 text-center z-10 animate-in fade-in duration-500">
+        {/* Logo with glow */}
+        <div className="relative mb-2">
+          <div className="absolute inset-0 scale-[2.5] rounded-full bg-gradient-to-r from-amber-400/20 via-primary/15 to-amber-400/20 dark:from-primary/20 dark:via-emerald-500/10 dark:to-primary/20 blur-3xl animate-pulse" />
+          <div className="relative scale-[1.6]">
+            <Logo />
+          </div>
+        </div>
+
+        {/* Welcome text — more prominent */}
+        <div className="space-y-3 animate-in slide-in-from-bottom-3 duration-700 delay-200 fill-mode-both">
+          <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+            Welcome back, <span className="text-primary">{name}</span>
+          </h2>
+          <p className="text-base text-slate-500 dark:text-gray-400 font-medium">Preparing your dashboard…</p>
+        </div>
+
+        {/* Glowing progress bar */}
+        <div className="w-64 animate-in fade-in duration-500 delay-400 fill-mode-both">
+          <div className="h-1.5 bg-amber-900/10 dark:bg-white/[0.08] rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-amber-500 via-primary to-emerald-400 dark:from-primary dark:via-emerald-400 dark:to-primary shadow-[0_0_16px_rgba(0,200,136,0.45),0_0_4px_rgba(0,200,136,0.7)] transition-all duration-[2200ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -17,6 +79,8 @@ export default function LoginPage() {
   const [mode, setMode] = useState<"password" | "magic">("password");
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [showTransition, setShowTransition] = useState(false);
+  const [transitionName, setTransitionName] = useState("Trader");
 
   const inputClassName =
     "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:border-white/10 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
@@ -41,6 +105,10 @@ export default function LoginPage() {
     } else if (result?.requires2FA) {
       trackEvent("login_requires_2fa", { method: "password" });
       window.location.href = "/auth/verify-2fa";
+    } else if (result?.success) {
+      // ─── Show full-screen loading overlay via portal ───
+      setTransitionName(result.name || "Trader");
+      setShowTransition(true);
     }
   };
 
@@ -71,6 +139,7 @@ export default function LoginPage() {
   };
 
   return (
+    <>
     <div className="w-full max-w-[480px] mx-auto rounded-lg border border-amber-900/10 bg-white/85 p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
       <div className="flex justify-center mb-6">
         <Logo />
@@ -235,5 +304,9 @@ export default function LoginPage() {
         </Link>
       </p>
     </div>
+
+    {/* Full-screen loading overlay — rendered via portal to document.body */}
+    {showTransition && <LoginSuccessOverlay name={transitionName} />}
+    </>
   );
 }

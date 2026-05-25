@@ -10,6 +10,8 @@ import { FloatingQuickActions } from "@/components/dashboard/FloatingQuickAction
 import { DashboardProvider } from "@/lib/dashboard-context";
 import { PageWelcomeGuide } from "@/components/onboarding/PageWelcomeGuide";
 import { ProProvider, type InitialProStatus } from "@/components/pro/ProProvider";
+import { LevelUpModal } from "@/components/dashboard/LevelUpModal";
+
 
 interface DashboardLayoutClientProps {
     children: React.ReactNode;
@@ -65,6 +67,9 @@ export function DashboardLayoutClient({
 
                     {/* Page Welcome Guide — shows once per page */}
                     <PageWelcomeGuide />
+
+                    {/* Level Up Celebration Modal */}
+                    <LevelUpModal />
                 </div>
             </ProProvider>
         </DashboardProvider>

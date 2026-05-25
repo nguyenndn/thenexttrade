@@ -31,8 +31,10 @@ const CATEGORY_LABELS = {
 
 export function MissionCard({ mission, onClaimed }: MissionCardProps) {
   const [isPending, startTransition] = useTransition();
-  const [claimed, setClaimed] = useState(mission.claimed);
+  const [localClaimed, setLocalClaimed] = useState(false);
 
+  // Derive claimed status: true if server says claimed OR if we just claimed locally (optimistic)
+  const claimed = mission.claimed || localClaimed;
   const progressPct = Math.min((mission.progress / mission.target) * 100, 100);
   const isComplete = mission.completed;
   const canClaim = isComplete && !claimed;
@@ -41,7 +43,7 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
     startTransition(async () => {
       const result = await claimMission(mission.missionId);
       if (result.success) {
-        setClaimed(true);
+        setLocalClaimed(true);
         trackEvent("mission_claimed", {
           mission_id: mission.missionId,
           category: mission.def.category,

@@ -1,8 +1,9 @@
 "use client";
 
-import { Brain, AlertTriangle, Flame, TrendingUp, Target, RefreshCw, Sparkles, ShieldOff, ClipboardX, BarChart3, Frown } from "lucide-react";
+import { Brain, AlertTriangle, Flame, TrendingUp, Target, RefreshCw, Sparkles, ShieldOff, ClipboardX, BarChart3, Frown, X } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 const iconMap: Record<string, React.ElementType> = {
     AlertTriangle, Flame, TrendingUp, Target, RefreshCw, Sparkles, Brain,
@@ -20,6 +21,29 @@ export function InsightBanner({ insight, score }: InsightBannerProps) {
     const searchParams = useSearchParams();
     const isWarning = warningIcons.includes(insight.icon);
     const Icon = iconMap[insight.icon] || Brain;
+
+    // Dismiss state with localStorage + date key
+    const [dismissed, setDismissed] = useState(false);
+    useEffect(() => {
+        const today = new Date().toISOString().slice(0, 10);
+        if (localStorage.getItem(`dismissed_insight_${today}`) === "1") {
+            setDismissed(true);
+        }
+    }, []);
+
+    const handleDismiss = () => {
+        const today = new Date().toISOString().slice(0, 10);
+        localStorage.setItem(`dismissed_insight_${today}`, "1");
+        // Clean up old keys (keep only today)
+        Object.keys(localStorage).forEach(k => {
+            if (k.startsWith("dismissed_insight_") && k !== `dismissed_insight_${today}`) {
+                localStorage.removeItem(k);
+            }
+        });
+        setDismissed(true);
+    };
+
+    if (dismissed) return null;
 
     // Build intelligence link with current dashboard filters (accountId + date range)
     const intelligenceParams = new URLSearchParams();
@@ -71,6 +95,17 @@ export function InsightBanner({ insight, score }: InsightBannerProps) {
             >
                 Details →
             </Link>
+            <button
+                onClick={handleDismiss}
+                className={`p-1 rounded-md shrink-0 transition-colors ${
+                    isWarning
+                        ? "text-amber-400 hover:text-amber-600 hover:bg-amber-100 dark:text-amber-500 dark:hover:text-amber-300 dark:hover:bg-amber-500/15"
+                        : "text-emerald-400 hover:text-emerald-600 hover:bg-emerald-100 dark:text-emerald-500 dark:hover:text-emerald-300 dark:hover:bg-emerald-500/15"
+                }`}
+                aria-label="Dismiss"
+            >
+                <X size={14} />
+            </button>
         </div>
     );
 }

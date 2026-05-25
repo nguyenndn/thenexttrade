@@ -142,7 +142,7 @@ export function AccountCard({
                         </span>
                     )}
                     {isMain && (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-[9px] font-black uppercase tracking-[0.1em] bg-amber-500/15 text-amber-600 border border-amber-500/30 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30" title="Main Account">
+                        <span className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-[9px] font-black uppercase tracking-[0.1em] bg-gradient-to-r from-yellow-500/20 via-amber-500/25 to-yellow-500/20 text-yellow-600 dark:text-amber-400 border border-amber-500/40 shadow-sm shadow-amber-500/5" title="Main Account">
                             <Star size={8} className="fill-current text-amber-500 dark:text-amber-400" />
                             Main
                         </span>
@@ -243,7 +243,7 @@ export function AccountCard({
                         {/* Sync Method Badge */}
                         <div className={`inline-flex h-8 min-w-0 flex-1 items-center gap-1.5 rounded-lg border px-2.5 shadow-sm ${
                             syncMethod.variant === "tnt"
-                                ? "bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200/80 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400"
+                                ? "bg-primary/5 dark:bg-primary/10 border-primary/20 dark:border-primary/20 text-primary dark:text-primary"
                                 : syncMethod.variant === "ea"
                                 ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200/80 dark:border-amber-500/20 text-amber-600 dark:text-amber-400"
                                 : syncMethod.variant === "paused"

@@ -6,11 +6,13 @@ import { toast } from "sonner";
 import Link from "next/link";
 import {
     CheckCircle, XCircle, Trophy, ArrowRight, RotateCcw,
-    ChevronRight, GraduationCap, BookOpen, Clock, Menu, X, Lock, Award
+    ChevronRight, GraduationCap, BookOpen, Clock, Menu, X, Lock, Award, BrainCircuit
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
+import { checkQuestionAnswer } from "@/actions/quiz-coach";
+
 
 interface QuizQuestion {
     id: string;
@@ -87,6 +89,16 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
     } | null>(null);
     const [certificateEarned, setCertificateEarned] = useState(false);
 
+    // Interactive Quiz State
+    const [checkedAnswers, setCheckedAnswers] = useState<Record<string, {
+        isCorrect: boolean;
+        correctOptionId: string;
+        explanation: string;
+        checked: boolean;
+    }>>({});
+    const [isCheckingAnswer, setIsCheckingAnswer] = useState(false);
+    const [shakeActive, setShakeActive] = useState(false);
+
     // Save draft
     useEffect(() => {
         if (result) return;
@@ -108,8 +120,51 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
 
     const handleSelectOption = (optionId: string) => {
         if (result) return;
+        // Block changing option if question has already been checked
+        if (checkedAnswers[question.id]?.checked) return;
         setAnswers(prev => ({ ...prev, [question.id]: optionId }));
     };
+
+    const handleCheckCurrentAnswer = async () => {
+        if (!selectedOption || isCheckingAnswer) return;
+        setIsCheckingAnswer(true);
+        try {
+            const res = await checkQuestionAnswer(question.id, selectedOption);
+            if ("error" in res) {
+                toast.error(res.error || "Failed to verify answer");
+            } else {
+                setCheckedAnswers(prev => ({
+                    ...prev,
+                    [question.id]: {
+                        isCorrect: res.isCorrect!,
+                        correctOptionId: res.correctOptionId!,
+                        explanation: res.explanation || "",
+                        checked: true
+                    }
+                }));
+
+                if (res.isCorrect) {
+                    // Fire mini confetti celebration
+                    confetti({
+                        particleCount: 50,
+                        spread: 60,
+                        origin: { y: 0.8 }
+                    });
+                    toast.success("Excellent! Your answer is absolutely correct.");
+                } else {
+                    // Trigger CSS shake
+                    setShakeActive(true);
+                    setTimeout(() => setShakeActive(false), 500);
+                    toast.error("Incorrect! The Quiz Coach is analyzing your response...");
+                }
+            }
+        } catch (err) {
+            toast.error("System error. Please try again.");
+        } finally {
+            setIsCheckingAnswer(false);
+        }
+    };
+
 
     const handleNext = () => {
         if (currentQuestion < totalQuestions - 1) {
@@ -417,46 +472,124 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                     </div>
                                 </div>
 
+                                {/* Style tags for shake keyframes */}
+                                <style dangerouslySetInnerHTML={{ __html: `
+                                  @keyframes quiz-shake {
+                                    0%, 100% { transform: translateX(0); }
+                                    15%, 45%, 75% { transform: translateX(-6px); }
+                                    30%, 60%, 90% { transform: translateX(6px); }
+                                  }
+                                  .animate-quiz-shake {
+                                    animation: quiz-shake 0.4s ease-in-out;
+                                  }
+                                `}} />
+
                                 {/* Question */}
                                 {question && (
-                                    <div className="p-6 lg:p-8">
+                                    <div className={cn("p-6 lg:p-8 transition-transform", shakeActive && "animate-quiz-shake")}>
                                         <h2 className="text-lg font-bold text-gray-700 dark:text-white mb-6">
                                             {question.text}
                                         </h2>
 
                                         <div className="space-y-3">
-                                            {question.options.map((option, idx) => (
-                                                <button
-                                                    key={option.id}
-                                                    onClick={() => handleSelectOption(option.id)}
-                                                    className={cn(
-                                                        "w-full text-left p-4 rounded-xl border transition-all duration-200",
-                                                        selectedOption === option.id
-                                                            ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                                                            : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5"
-                                                    )}
-                                                >
-                                                    <div className="flex items-start gap-3">
-                                                        <span className={cn(
-                                                            "flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border transition-colors",
-                                                            selectedOption === option.id
-                                                                ? "bg-primary text-white border-primary"
-                                                                : "bg-gray-100 dark:bg-white/5 text-gray-600 border-gray-200 dark:border-white/10"
-                                                        )}>
-                                                            {String.fromCharCode(65 + idx)}
-                                                        </span>
-                                                        <span className={cn(
-                                                            "text-sm font-medium pt-1",
-                                                            selectedOption === option.id
-                                                                ? "text-gray-700 dark:text-white"
-                                                                : "text-gray-600 dark:text-gray-300"
-                                                        )}>
-                                                            {option.text}
-                                                        </span>
-                                                    </div>
-                                                </button>
-                                            ))}
+                                            {question.options.map((option, idx) => {
+                                                const checkedInfo = checkedAnswers[question.id];
+                                                const isChecked = checkedInfo?.checked;
+                                                const isCorrectOption = checkedInfo?.correctOptionId === option.id;
+                                                const isSelectedOption = selectedOption === option.id;
+
+                                                let buttonClass = "";
+                                                let circleClass = "";
+
+                                                if (isChecked) {
+                                                    if (isCorrectOption) {
+                                                        buttonClass = "border-emerald-500 bg-emerald-500/5 dark:bg-emerald-500/10 ring-2 ring-emerald-500/20 text-emerald-700 dark:text-emerald-400";
+                                                        circleClass = "bg-emerald-500 text-white border-emerald-500";
+                                                    } else if (isSelectedOption) {
+                                                        buttonClass = "border-red-500 bg-red-500/5 dark:bg-red-500/10 ring-2 ring-red-500/20 text-red-700 dark:text-red-400";
+                                                        circleClass = "bg-red-500 text-white border-red-500";
+                                                    } else {
+                                                        buttonClass = "border-gray-200 dark:border-white/5 opacity-40 cursor-not-allowed";
+                                                        circleClass = "bg-gray-100 dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10";
+                                                    }
+                                                } else {
+                                                    if (isSelectedOption) {
+                                                        buttonClass = "border-primary bg-primary/5 ring-2 ring-primary/20";
+                                                        circleClass = "bg-primary text-white border-primary";
+                                                    } else {
+                                                        buttonClass = "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5";
+                                                        circleClass = "bg-gray-100 dark:bg-white/5 text-gray-600 border-gray-200 dark:border-white/10";
+                                                    }
+                                                }
+
+                                                return (
+                                                    <button
+                                                        key={option.id}
+                                                        disabled={isChecked || isCheckingAnswer}
+                                                        onClick={() => handleSelectOption(option.id)}
+                                                        className={cn(
+                                                            "w-full text-left p-4 rounded-xl border transition-all duration-200",
+                                                            buttonClass
+                                                        )}
+                                                    >
+                                                        <div className="flex items-start gap-3">
+                                                            <span className={cn(
+                                                                "flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border transition-colors",
+                                                                circleClass
+                                                            )}>
+                                                                {String.fromCharCode(65 + idx)}
+                                                            </span>
+                                                            <span className="text-sm font-medium pt-1">
+                                                                {option.text}
+                                                            </span>
+                                                        </div>
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
+
+                                        {/* Check Answer Button */}
+                                        {selectedOption && !checkedAnswers[question.id]?.checked && (
+                                            <div className="mt-6 flex justify-end">
+                                                <Button
+                                                    onClick={handleCheckCurrentAnswer}
+                                                    disabled={isCheckingAnswer}
+                                                    className="bg-amber-500 hover:bg-amber-600 text-white font-black px-6 py-2.5 rounded-xl border-0 flex items-center gap-2 active:scale-95 shadow-md shadow-amber-500/10 transition-all"
+                                                >
+                                                    {isCheckingAnswer ? (
+                                                        <>
+                                                            <BrainCircuit className="animate-spin shrink-0" size={16} />
+                                                            Quiz Coach is analyzing...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <BrainCircuit size={16} className="shrink-0" />
+                                                            Check Answer
+                                                        </>
+                                                    )}
+                                                </Button>
+                                            </div>
+                                        )}
+
+                                        {/* AI Quiz Coach Explanation Box */}
+                                        {checkedAnswers[question.id]?.checked && !checkedAnswers[question.id]?.isCorrect && checkedAnswers[question.id]?.explanation && (
+                                            <div className="mt-6 p-5 rounded-2xl bg-[#0C0F16] border border-amber-500/20 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-300 relative overflow-hidden text-left">
+                                                <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-amber-400 to-amber-600" />
+                                                <div className="flex gap-3">
+                                                    <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shrink-0">
+                                                        <BrainCircuit size={16} />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                                                            Quiz Coach
+                                                        </p>
+                                                        <p className="text-xs text-gray-400 font-medium leading-relaxed">
+                                                            {checkedAnswers[question.id]?.explanation}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -493,7 +626,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                 {isLastQuestion ? (
                                     <Button
                                         onClick={handleSubmit}
-                                        disabled={!allAnswered || submitting}
+                                        disabled={!allAnswered || submitting || !checkedAnswers[question.id]?.checked}
                                         className="bg-primary hover:bg-[#00B078] text-white gap-2 rounded-xl"
                                     >
                                         {submitting ? "Submitting..." : "Submit Quiz"}
@@ -502,7 +635,7 @@ export function QuizClient({ quiz, previousAttempts, bestScore, moduleLessons, c
                                 ) : (
                                     <Button
                                         onClick={handleNext}
-                                        disabled={!selectedOption}
+                                        disabled={!selectedOption || !checkedAnswers[question.id]?.checked}
                                         className="bg-primary hover:bg-[#00B078] text-white gap-2 rounded-xl"
                                     >
                                         Next <ArrowRight size={16} />

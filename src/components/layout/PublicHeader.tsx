@@ -22,9 +22,15 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
     const { theme, toggleTheme } = useTheme();
     const isDark = theme === "dark";
 
+    const [isMounted, setIsMounted] = useState(false);
     const [user, setUser] = useState<AuthUser | null>(initialUser || null);
+    const [isAuthLoaded, setIsAuthLoaded] = useState(initialUser !== undefined);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     // Auto-fetch user when not provided (client-side pages)
     useEffect(() => {
@@ -34,15 +40,27 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
             .then(data => {
                 if (data?.name) {
                     setUser({
-                        id: "",
+                        id: data.id || "",
                         name: data.name,
                         email: data.email,
                         image: data.image,
-                        profile: { username: data.name, role: data.role || "USER" }
+                        profile: { 
+                            username: data.username || data.name || "user", 
+                            role: data.role || "USER",
+                            xp: data.xp || 0,
+                            level: data.level || 1,
+                            streak: data.streak || 0
+                        }
                     } as AuthUser);
+                } else {
+                    setUser(null);
                 }
+                setIsAuthLoaded(true);
             })
-            .catch(() => {});
+            .catch(() => {
+                setUser(null);
+                setIsAuthLoaded(true);
+            });
     }, [initialUser]);
 
     useEffect(() => {
@@ -51,6 +69,10 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
+
+    // Determine loading state: on server or client hydration phase, if initialUser is undefined,
+    // we must render the skeleton to match the server output perfectly.
+    const isHeaderLoading = initialUser === undefined && (!isMounted || !isAuthLoaded);
 
     const userData = {
         name: user?.name || "Trader",
@@ -96,7 +118,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
 
                         {/* Login / User Menu — hidden on mobile/tablet, shown on lg+ */}
                         <div className="hidden lg:flex items-center">
-                            <UserMenu user={user} profile={profile} />
+                            <UserMenu user={user} profile={profile} isLoading={isHeaderLoading} />
                         </div>
 
                         {/* Mobile/Tablet Menu Button */}

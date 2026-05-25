@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { UserTierBadge } from "./UserTierBadge";
 import type { LeaderboardResponse, UserBadgeInfo } from "../actions";
@@ -218,26 +219,52 @@ function BadgeItem({ badge }: { badge: UserBadgeInfo }) {
   const Icon = BADGE_ICONS[badge.icon] || Award;
   const colors = BADGE_COLORS[badge.code] || { bg: "bg-gray-100 dark:bg-white/5", ring: "ring-gray-200 dark:ring-white/10", text: "text-gray-600" };
 
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const box = card.getBoundingClientRect();
+    const x = e.clientX - box.left - box.width / 2;
+    const y = e.clientY - box.top - box.height / 2;
+    // Calculate rotation: max 12 degrees for sleek control
+    const rx = -(y / (box.height / 2)) * 12;
+    const ry = (x / (box.width / 2)) * 12;
+    setTilt({ rx, ry });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ rx: 0, ry: 0 });
+  };
+
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all",
+        "flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all select-none",
         isEarned
-          ? cn(colors.bg, "ring-1", colors.ring)
+          ? cn(colors.bg, "ring-1", colors.ring, "shadow-sm shadow-black/5 hover:shadow-lg dark:hover:shadow-amber-500/5 hover:border-amber-500/20")
           : "opacity-40 grayscale"
       )}
+      style={{
+        transform: isEarned 
+          ? `perspective(800px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) scale3d(${tilt.rx || tilt.ry ? 1.05 : 1}, ${tilt.rx || tilt.ry ? 1.05 : 1}, 1)` 
+          : undefined,
+        transition: tilt.rx === 0 && tilt.ry === 0 ? "transform 0.4s ease-out, shadow 0.4s ease-out" : "shadow 0.2s ease-out",
+        transformStyle: "preserve-3d"
+      }}
+      onMouseMove={isEarned ? handleMouseMove : undefined}
+      onMouseLeave={isEarned ? handleMouseLeave : undefined}
       title={badge.description}
     >
-      <div className="relative">
-        <Icon size={24} className={cn(isEarned ? colors.text : "text-gray-300 dark:text-gray-600")} />
+      <div className="relative" style={{ transform: "translateZ(15px)" }}>
+        <Icon size={24} className={cn(isEarned ? colors.text : "text-gray-300 dark:text-gray-600", "transition-transform")} />
         {!isEarned && (
           <Lock size={10} className="absolute -bottom-0.5 -right-1 text-gray-600 dark:text-gray-300" />
         )}
       </div>
       <span className={cn(
-        "text-[10px] font-bold text-center leading-tight",
+        "text-[10px] font-bold text-center leading-tight transition-transform",
         isEarned ? "text-gray-700 dark:text-gray-200" : "text-gray-500 dark:text-gray-600"
-      )}>
+      )} style={{ transform: "translateZ(10px)" }}>
         {badge.name}
       </span>
     </div>

@@ -255,12 +255,7 @@ export function BiasProfileWidget() {
     ];
 
     return (
-        <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] shadow-lg flex flex-col justify-between min-h-[460px] lg:h-full group transition-all duration-300">
-            {/* Top glowing gold accent border */}
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500" />
-            
-            {/* Radial background ambient light */}
-            <div className="absolute -top-12 -right-12 w-36 h-36 bg-amber-500/5 rounded-full blur-[45px] pointer-events-none" />
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between min-h-[460px] lg:h-full group transition-all duration-300">
 
             <div className="p-5 flex-1 flex flex-col justify-between">
                 {/* Header */}
@@ -270,11 +265,8 @@ export function BiasProfileWidget() {
                             <Brain className="h-5 w-5 animate-pulse" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-1.5">
+                            <h3 className="text-sm font-bold text-gray-700 dark:text-white">
                                 Cognitive Bias Profiler
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-[8px] font-black text-white uppercase tracking-wider shadow-sm">
-                                    Pro
-                                </span>
                             </h3>
                             <p className="text-xs text-gray-500">AI Trading Psychologist Bias Map</p>
                         </div>

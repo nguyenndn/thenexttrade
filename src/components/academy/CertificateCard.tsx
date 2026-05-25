@@ -5,6 +5,7 @@ import { Download, Lock, Share2, Award, Crown, Eye, X } from "lucide-react";
 import { toast } from "sonner";
 import * as htmlToImage from "html-to-image";
 import { CertificateTemplate } from "./CertificateTemplate";
+import { cn } from "@/lib/utils";
 
 interface CertificateCardProps {
     levelTitle: string;
@@ -137,28 +138,68 @@ export function CertificateCard({
     }
 
     // Earned state
+    const [tilt, setTilt] = useState({ x: 50, y: 50, isHovered: false });
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const card = e.currentTarget;
+        const box = card.getBoundingClientRect();
+        const mouseX = e.clientX - box.left;
+        const mouseY = e.clientY - box.top;
+        
+        setTilt({ 
+            x: Math.round((mouseX / box.width) * 100), 
+            y: Math.round((mouseY / box.height) * 100),
+            isHovered: true
+        });
+    };
+
+    const handleMouseLeave = () => {
+        setTilt({ x: 50, y: 50, isHovered: false });
+    };
+
     return (
         <>
             <div
-                className="relative rounded-xl overflow-hidden shadow-lg group"
-                style={{ background: `linear-gradient(to bottom right, ${gradient.from}, ${gradient.to})` }}
+                className="relative rounded-xl overflow-hidden shadow-lg group select-none cursor-pointer"
+                style={{ 
+                    background: `linear-gradient(to bottom right, ${gradient.from}, ${gradient.to})`,
+                    transform: tilt.isHovered ? "scale(1.02)" : "scale(1)",
+                    transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
+                }}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
             >
+                {/* Shiny Holographic Overlay */}
+                <div 
+                    className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-30 transition-opacity duration-300 z-20"
+                    style={{
+                        background: `radial-gradient(circle at ${tilt.x}% ${tilt.y}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
+                        mixBlendMode: "overlay"
+                    }}
+                />
+
                 {/* Decorative glow */}
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-[60px] pointer-events-none" />
                 <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-white/5 rounded-full blur-[40px] pointer-events-none" />
 
                 <div className="relative z-10 p-6 text-white">
                     {/* Award icon — gold, top-right */}
-                    <div className={`absolute top-4 right-4 ${isMaster ? 'w-12 h-12' : 'w-10 h-10'} rounded-full ${isMaster ? 'bg-white/20 shadow-lg shadow-white/10' : 'bg-yellow-400/90 shadow-md shadow-yellow-500/30'} flex items-center justify-center`}>
+                    <div className={cn(
+                        "absolute top-4 right-4 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                        isMaster ? "w-12 h-12 bg-white/20 shadow-lg shadow-white/10" : "w-10 h-10 bg-yellow-400/90 shadow-md shadow-yellow-500/30"
+                    )}>
                         {isMaster ? <Crown size={24} className="text-white" /> : <Award size={20} className="text-white" />}
                     </div>
 
                     {/* Title — centered, bold */}
                     <div className="text-center mb-4">
-                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">
+                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-80 block">
                             {isMaster ? "★ ALL LEVELS COMPLETED ★" : `Level ${levelOrder}`}
                         </span>
-                        <h3 className={`${isMaster ? 'text-2xl' : 'text-xl'} font-black mt-1 leading-tight`}>
+                        <h3 className={cn(
+                            "font-black mt-1 leading-tight",
+                            isMaster ? "text-2xl text-amber-200" : "text-xl"
+                        )}>
                             {isMaster ? "Master Trader" : levelTitle}
                         </h3>
                     </div>
@@ -180,19 +221,19 @@ export function CertificateCard({
                     <div className="flex items-center gap-2 mt-1">
                         <button
                             onClick={() => setShowPreview(true)}
-                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm font-bold text-sm transition-colors"
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm font-bold text-sm transition-colors border-0"
                         >
                             <Eye size={14} /> Preview
                         </button>
                         <button
                             onClick={handleDownload}
-                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm font-bold text-sm transition-colors"
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm font-bold text-sm transition-colors border-0"
                         >
                             <Download size={14} /> Download
                         </button>
                         <button
                             onClick={handleShare}
-                            className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-sm font-bold text-sm transition-colors self-stretch"
+                            className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-sm font-bold text-sm transition-colors self-stretch border-0"
                         >
                             <Share2 size={14} />
                         </button>

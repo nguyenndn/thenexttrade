@@ -4,9 +4,11 @@ import { useState, useCallback } from "react";
 import { CalendarCheck, Target, Trophy, Zap, BookOpen } from "lucide-react";
 import { MissionCard } from "./MissionCard";
 import { NextBestActionCard } from "./NextBestActionCard";
+import { StreakCalendarGrid } from "./StreakCalendarGrid";
 import { getMyMissions } from "@/actions/edge-missions";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import type { MissionProgressItem } from "@/lib/services/edge-missions.service";
+
 
 interface MissionsClientProps {
   initialMissions: MissionProgressItem[];
@@ -47,6 +49,7 @@ function getNextBestMission(missions: MissionProgressItem[]) {
 
 export function MissionsClient({ initialMissions, userXp }: MissionsClientProps) {
   const [missions, setMissions] = useState(initialMissions);
+  const [xp, setXp] = useState(userXp);
   const [activeTab, setActiveTab] = useState<CategoryFilter>("ALL");
 
   const totalXpEarned = missions
@@ -64,6 +67,7 @@ export function MissionsClient({ initialMissions, userXp }: MissionsClientProps)
   const handleClaimed = useCallback(async () => {
     const result = await getMyMissions();
     if (result.missions) setMissions(result.missions);
+    if (result.xp !== undefined) setXp(result.xp);
   }, []);
 
   const nextBestMission = getNextBestMission(missions);
@@ -72,7 +76,7 @@ export function MissionsClient({ initialMissions, userXp }: MissionsClientProps)
     <div className="space-y-8">
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard label="Total Edge" value={userXp.toLocaleString()} icon={Zap} color="text-gold" />
+        <StatCard label="Total Edge" value={xp.toLocaleString()} icon={Zap} color="text-gold" />
         <StatCard label="Missions Done" value={`${completedCount}/${missions.length}`} icon={Trophy} color="text-emerald-500" />
         <StatCard label="Edge Earned" value={totalXpEarned.toLocaleString()} icon={Target} color="text-primary" />
         <StatCard label="Ready to Claim" value={String(claimableCount)} icon={Target} color="text-amber-500" />
@@ -80,6 +84,9 @@ export function MissionsClient({ initialMissions, userXp }: MissionsClientProps)
 
       {/* Next Best Action */}
       <NextBestActionCard mission={nextBestMission} onClaimed={handleClaimed} />
+
+      {/* Visual Streak Contribution Grid */}
+      <StreakCalendarGrid />
 
       {/* Explore Missions */}
       <div className="space-y-6">

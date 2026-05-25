@@ -201,8 +201,8 @@ export default function BrokersClient() {
           {CATEGORIES.map((cat) => (
             <TabsContent key={cat.key} value={cat.key}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {cat.data.items.filter((item) => (item as any).active !== false).map((item, idx) => (
-                  <PartnerCard key={idx} item={item} ctaLabel={cat.cta} depositLabel={cat.depositLabel} />
+                {cat.data.items.filter((item) => (item as any).active !== false).map((item) => (
+                  <PartnerCard key={item.name} item={item} ctaLabel={cat.cta} depositLabel={cat.depositLabel} />
                 ))}
               </div>
             </TabsContent>

@@ -16,9 +16,6 @@ import { useState, useRef, useCallback } from "react";
 import { format } from "date-fns";
 import type { PublicProfileData } from "@/lib/profile-queries";
 
-// ============================================================================
-// 3D TILT HOOK
-// ============================================================================
 function useTilt() {
     const ref = useRef<HTMLDivElement>(null);
 
@@ -40,9 +37,6 @@ function useTilt() {
     return { ref, handleMouseMove, handleMouseLeave };
 }
 
-// ============================================================================
-// SHARE BUTTON
-// ============================================================================
 function ShareButton({ username }: { username: string }) {
     const [copied, setCopied] = useState(false);
     const url = `${typeof window !== "undefined" ? window.location.origin : ""}/trader/${username}`;
@@ -50,112 +44,93 @@ function ShareButton({ username }: { username: string }) {
     const handleShare = async () => {
         if (navigator.share) {
             await navigator.share({ url, title: "Trading Card" });
-        } else {
-            await navigator.clipboard.writeText(url);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
+            return;
         }
+
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
     };
 
     return (
         <button
             onClick={handleShare}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold text-gray-600 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all"
+            className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-[11px] font-bold text-amber-900 shadow-sm transition-all hover:border-amber-300 hover:bg-amber-100"
         >
-            {copied ? <Check size={12} className="text-primary" /> : <Share2 size={12} />}
+            {copied ? <Check size={12} className="text-amber-700" /> : <Share2 size={12} />}
             {copied ? "Copied" : "Share"}
         </button>
     );
 }
 
-// ============================================================================
-// SCORE RARITY
-// ============================================================================
 function getScoreInfo(score: number) {
-    if (score >= 90) return { label: "Legendary", text: "text-yellow-600" };
-    if (score >= 75) return { label: "Epic", text: "text-blue-600" };
-    if (score >= 60) return { label: "Rare", text: "text-cyan-600" };
-    if (score >= 40) return { label: "Common", text: "text-gray-600" };
-    return { label: "Beginner", text: "text-orange-500" };
+    if (score >= 90) return { label: "Legendary", text: "text-amber-500" };
+    if (score >= 75) return { label: "Epic", text: "text-orange-500" };
+    if (score >= 60) return { label: "Rare", text: "text-yellow-600" };
+    if (score >= 40) return { label: "Common", text: "text-slate-600" };
+    return { label: "Beginner", text: "text-orange-600" };
 }
 
-// ============================================================================
-// NFT TRADING CARD — Light Mode, Theme Green
-// ============================================================================
 export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
     const tilt = useTilt();
     const joinDate = format(new Date(profile.joinedDate), "MMM yyyy");
-
-    const scoreInfo = profile.stats.tradeScore !== null && profile.visibility.showTradeScore
-        ? getScoreInfo(profile.stats.tradeScore)
-        : null;
+    const scoreInfo =
+        profile.stats.tradeScore !== null && profile.visibility.showTradeScore
+            ? getScoreInfo(profile.stats.tradeScore)
+            : null;
 
     return (
-        <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 relative overflow-hidden">
-            {/* ═══ Background: Grid dot pattern ═══ */}
-            <div
-                className="absolute inset-0 opacity-[0.04]"
-                style={{
-                    backgroundImage: "radial-gradient(circle, #00C78B 1px, transparent 1px)",
-                    backgroundSize: "24px 24px",
-                }}
-            />
+        <div className="relative flex min-h-[80vh] items-center justify-center overflow-hidden bg-white px-4 py-12 dark:bg-[#0F1117]">
+            <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
-            {/* ═══ THE CARD ═══ */}
             <div
                 ref={tilt.ref}
                 onMouseMove={tilt.handleMouseMove}
                 onMouseLeave={tilt.handleMouseLeave}
-                className="w-full max-w-[420px] transition-transform duration-200 ease-out will-change-transform"
+                className="z-10 w-full max-w-[430px] transition-transform duration-200 ease-out will-change-transform"
                 style={{ transformStyle: "preserve-3d" }}
             >
-                {/* Gradient border wrapper — theme green */}
-                <div className="p-[2px] rounded-3xl bg-gradient-to-br from-primary via-emerald-400 to-cyan-500 shadow-2xl shadow-primary/20">
-                    <div className="bg-white rounded-[22px] overflow-hidden relative">
+                <div className="rounded-3xl bg-gradient-to-br from-amber-500 via-yellow-300 to-orange-600 p-[2px] shadow-2xl shadow-amber-900/20">
+                    <div className="relative overflow-hidden rounded-[22px] border border-amber-100/80 bg-white dark:bg-[#0B0E14]">
+                        <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(120deg,rgba(251,191,36,0.05),transparent_38%,rgba(255,255,255,0.18)_70%,transparent)] dark:bg-[linear-gradient(120deg,rgba(251,191,36,0.08),transparent_38%,rgba(255,255,255,0.04)_70%,transparent)]" />
 
-                        {/* ═══ Holographic sheen overlay ═══ */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-cyan-500/[0.03] pointer-events-none z-10" />
-
-                        {/* ═══ TOP: Label + Share ═══ */}
-                        <div className="flex items-center justify-between px-6 pt-5 relative z-20">
+                        <div className="relative z-20 flex items-center justify-between px-6 pt-5">
                             <div className="flex items-center gap-2">
-                                <Zap size={12} className="text-primary" />
-                                <span className="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
+                                <Zap size={12} className="text-amber-600" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-800">
                                     Trading Card
                                 </span>
                             </div>
                             <ShareButton username={profile.username} />
                         </div>
 
-                        {/* ═══ AVATAR + NAME ═══ */}
-                        <div className="px-6 pt-5 pb-4 relative z-20">
+                        <div className="relative z-20 px-6 pb-4 pt-5">
                             <div className="flex items-center gap-4">
-                                {/* Avatar with green gradient ring */}
-                                <div className="p-[2px] rounded-full bg-gradient-to-br from-primary via-emerald-400 to-cyan-500 shrink-0">
-                                    <div className="w-16 h-16 rounded-full bg-white p-[2px] overflow-hidden">
+                                <div className="shrink-0 rounded-full bg-gradient-to-br from-amber-500 via-yellow-300 to-orange-600 p-[2px] shadow-lg shadow-amber-900/15">
+                                    <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-[2px] dark:bg-[#0B0E14]">
                                         {profile.image ? (
                                             <Image
                                                 src={profile.image}
                                                 alt={profile.name}
                                                 width={64}
                                                 height={64}
-                                                className="w-full h-full rounded-full object-cover"
+                                                className="h-full w-full rounded-full object-cover"
                                             />
                                         ) : (
-                                            <div className="w-full h-full rounded-full bg-gray-50 flex items-center justify-center text-2xl font-black text-gray-300">
+                                            <div className="flex h-full w-full items-center justify-center rounded-full bg-amber-50 text-2xl font-black text-amber-300">
                                                 {profile.name.charAt(0).toUpperCase()}
                                             </div>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="flex-1 min-w-0">
-                                    <h1 className="text-2xl font-black text-gray-700 tracking-tight truncate leading-none">
+                                <div className="min-w-0 flex-1">
+                                    <h1 className="truncate text-2xl font-black leading-none tracking-tight text-slate-800">
                                         {profile.name}
                                     </h1>
-                                    <div className="flex items-center gap-2 mt-1.5">
-                                        <span className="text-sm text-gray-600 font-medium">@{profile.username}</span>
-                                        <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-primary text-white tracking-wide">
+                                    <div className="mt-1.5 flex items-center gap-2">
+                                        <span className="text-sm font-medium text-slate-600">@{profile.username}</span>
+                                        <span className="rounded-full bg-gradient-to-r from-amber-500 to-orange-600 px-2 py-0.5 text-[9px] font-black tracking-wide text-white shadow-sm shadow-amber-700/20">
                                             LV {profile.level}
                                         </span>
                                         {profile.streak >= 3 && (
@@ -168,81 +143,75 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                             </div>
 
                             {profile.headline && (
-                                <p className="text-xs text-gray-600 mt-3 leading-relaxed line-clamp-2">{profile.headline}</p>
+                                <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-slate-600">
+                                    {profile.headline}
+                                </p>
                             )}
                         </div>
 
-                        {/* ═══ DIVIDER — green gradient ═══ */}
-                        <div className="mx-6">
-                            <div className="h-[1px] bg-gradient-to-r from-primary via-emerald-400 to-cyan-500 opacity-30" />
-                        </div>
+                        <div className="mx-6 h-[1px] bg-gradient-to-r from-amber-500 via-yellow-300 to-orange-600 opacity-40" />
 
-                        {/* ═══ STATS GRID 2×2 ═══ */}
-                        <div className="px-6 py-5 relative z-20">
-                            <div className="flex items-center gap-1 mb-4">
-                                <Shield size={10} className="text-gray-600" />
-                                <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">
-                                    Verified · 90d
+                        <div className="relative z-20 px-6 py-5">
+                            <div className="mb-4 flex items-center gap-1">
+                                <Shield size={10} className="text-amber-700" />
+                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-800">
+                                    Verified / 90d
                                 </span>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <p className="text-4xl font-black text-gray-700 tracking-tighter leading-none">
+                                    <p className="text-4xl font-black leading-none tracking-tighter text-slate-800">
                                         {profile.stats.totalTrades.toLocaleString()}
                                     </p>
-                                    <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Trades</p>
+                                    <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Trades</p>
                                 </div>
                                 <div>
-                                    <p className={`text-4xl font-black tracking-tighter leading-none ${profile.stats.winRate >= 50 ? "text-primary" : "text-red-500"}`}>
+                                    <p className={`text-4xl font-black leading-none tracking-tighter ${profile.stats.winRate >= 50 ? "text-amber-600" : "text-red-500"}`}>
                                         {Math.round(profile.stats.winRate)}
-                                        <span className="text-xl text-gray-500">%</span>
+                                        <span className="text-xl text-slate-500">%</span>
                                     </p>
-                                    <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Win Rate</p>
+                                    <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Win Rate</p>
                                 </div>
                                 <div>
-                                    <p className="text-4xl font-black text-gray-700 tracking-tighter leading-none">
-                                        {profile.stats.avgRR > 0 ? profile.stats.avgRR.toFixed(1) : "—"}
+                                    <p className="text-4xl font-black leading-none tracking-tighter text-slate-800">
+                                        {profile.stats.avgRR > 0 ? profile.stats.avgRR.toFixed(1) : "-"}
                                     </p>
-                                    <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Avg R:R</p>
+                                    <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Avg R:R</p>
                                 </div>
                                 {profile.stats.tradeScore !== null && profile.visibility.showTradeScore && scoreInfo ? (
                                     <div>
-                                        <p className={`text-4xl font-black tracking-tighter leading-none ${scoreInfo.text}`}>
+                                        <p className={`text-4xl font-black leading-none tracking-tighter ${scoreInfo.text}`}>
                                             {profile.stats.tradeScore}
                                         </p>
-                                        <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">
-                                            Score · <span className={`${scoreInfo.text} font-black`}>{scoreInfo.label}</span>
+                                        <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                                            Score / <span className={`${scoreInfo.text} font-black`}>{scoreInfo.label}</span>
                                         </p>
                                     </div>
                                 ) : (
                                     <div>
-                                        <p className="text-4xl font-black text-gray-300 tracking-tighter leading-none">—</p>
-                                        <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mt-1">Score</p>
+                                        <p className="text-4xl font-black leading-none tracking-tighter text-amber-200">-</p>
+                                        <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Score</p>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        {/* ═══ DIVIDER ═══ */}
-                        <div className="mx-6">
-                            <div className="h-[1px] bg-gray-100" />
-                        </div>
+                        <div className="mx-6 h-[1px] bg-amber-100" />
 
-                        {/* ═══ PAIRS: Mini badges ═══ */}
                         {profile.topPairs && profile.topPairs.length > 0 && profile.visibility.showPairStats && (
-                            <div className="px-6 py-4 relative z-20">
-                                <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] mb-3">
+                            <div className="relative z-20 px-6 py-4">
+                                <p className="mb-3 text-[9px] font-black uppercase tracking-[0.2em] text-amber-800">
                                     Top Pairs
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                     {profile.topPairs.map((pair, i) => (
                                         <div
                                             key={i}
-                                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-colors"
+                                            className="flex items-center gap-1.5 rounded-lg border border-amber-100 bg-amber-50/70 px-2.5 py-1.5 transition-colors hover:border-amber-300 hover:bg-amber-100/70"
                                         >
-                                            <span className="text-[11px] font-bold text-gray-700">{pair.symbol}</span>
-                                            <span className={`text-[10px] font-black ${pair.winRate >= 50 ? "text-primary" : "text-red-500"}`}>
+                                            <span className="text-[11px] font-bold text-slate-700">{pair.symbol}</span>
+                                            <span className={`text-[10px] font-black ${pair.winRate >= 50 ? "text-amber-600" : "text-red-500"}`}>
                                                 {Math.round(pair.winRate)}%
                                             </span>
                                         </div>
@@ -251,14 +220,13 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                             </div>
                         )}
 
-                        {/* ═══ BADGES ═══ */}
                         {profile.badges && profile.badges.length > 0 && profile.visibility.showBadges && (
                             <>
-                                <div className="mx-6"><div className="h-[1px] bg-gray-100" /></div>
-                                <div className="px-6 py-4 relative z-20">
-                                    <div className="flex items-center gap-1 mb-3">
-                                        <Award size={10} className="text-gray-600" />
-                                        <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">
+                                <div className="mx-6 h-[1px] bg-amber-100" />
+                                <div className="relative z-20 px-6 py-4">
+                                    <div className="mb-3 flex items-center gap-1">
+                                        <Award size={10} className="text-amber-700" />
+                                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-800">
                                             Achievements
                                         </span>
                                     </div>
@@ -266,8 +234,8 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                                         {profile.badges.map((badge, i) => (
                                             <span
                                                 key={i}
-                                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-100 text-[11px] font-bold text-gray-600"
-                                                title={`${badge.name} — ${format(new Date(badge.earnedAt), "MMM d, yyyy")}`}
+                                                className="inline-flex items-center gap-1 rounded-lg border border-amber-100 bg-amber-50/70 px-2.5 py-1.5 text-[11px] font-bold text-slate-600"
+                                                title={`${badge.name} - ${format(new Date(badge.earnedAt), "MMM d, yyyy")}`}
                                             >
                                                 <span className="text-sm">{badge.icon}</span>
                                                 {badge.name}
@@ -278,30 +246,30 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                             </>
                         )}
 
-                        {/* ═══ SESSION ═══ */}
                         {profile.preferredSession && profile.visibility.showSessionStats && (
                             <>
-                                <div className="mx-6"><div className="h-[1px] bg-gray-100" /></div>
-                                <div className="px-6 py-4 relative z-20">
-                                    <div className="flex items-center gap-1 mb-2">
-                                        <Clock size={10} className="text-gray-600" />
-                                        <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">Session</span>
+                                <div className="mx-6 h-[1px] bg-amber-100" />
+                                <div className="relative z-20 px-6 py-4">
+                                    <div className="mb-2 flex items-center gap-1">
+                                        <Clock size={10} className="text-amber-700" />
+                                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-800">
+                                            Session
+                                        </span>
                                     </div>
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-sm font-black text-gray-700">{profile.preferredSession.name}</span>
-                                        <span className="text-xs font-bold text-primary">{profile.preferredSession.percentage}%</span>
+                                        <span className="text-sm font-black text-slate-800">{profile.preferredSession.name}</span>
+                                        <span className="text-xs font-bold text-amber-600">{profile.preferredSession.percentage}%</span>
                                     </div>
                                 </div>
                             </>
                         )}
 
-                        {/* ═══ FOOTER ═══ */}
-                        <div className="px-6 py-4 relative z-20">
+                        <div className="relative z-20 px-6 py-4">
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-gray-600 tracking-wider">
+                                <span className="text-[10px] font-bold tracking-wider text-slate-500">
                                     Est. {joinDate}
                                 </span>
-                                <span className="text-[10px] font-bold text-gray-600 tracking-wider">
+                                <span className="text-[10px] font-bold tracking-wider text-slate-500">
                                     #{String(profile.level).padStart(4, "0")}
                                 </span>
                             </div>
@@ -310,16 +278,15 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                 </div>
             </div>
 
-            {/* ═══ CTA below card ═══ */}
             <div className="absolute bottom-8 left-0 right-0 text-center">
                 <Link
-                    href="/"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary to-emerald-500 text-white font-bold text-sm hover:opacity-90 transition-all hover:scale-[1.03] active:scale-[0.97] shadow-xl shadow-primary/25"
+                    href="/auth/signup"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#F97316] px-6 py-3 text-sm font-black text-white shadow-xl shadow-orange-700/20 transition-all hover:scale-[1.03] hover:bg-[#EA580C] active:scale-[0.97]"
                 >
                     Join TheNextTrade
                     <ArrowUpRight size={16} />
                 </Link>
-                <p className="text-[11px] text-gray-500 mt-2">Track, analyze, and improve your trading</p>
+                <p className="mt-2 text-sm font-medium text-amber-900/70">Track, analyze, and improve your trading</p>
             </div>
         </div>
     );

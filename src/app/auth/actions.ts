@@ -13,6 +13,7 @@ import { headers } from 'next/headers'
 import { checkAuthRateLimit } from '@/lib/security/auth-rate-limit'
 import { AUTH_ERRORS } from '@/lib/security/auth-errors'
 import { normalizeCountryCode } from '@/lib/country-utils'
+import { recordQualifiedReferral, resolveReferrerByCode } from '@/lib/referrals'
 
 async function getClientIP(): Promise<string> {
     const h = await headers()
@@ -94,7 +95,16 @@ export async function login(formData: FormData) {
     }
 
     revalidatePath('/', 'layout')
-    redirect('/dashboard')
+    
+    // Get user display name to return to client
+    const { data: { user: authedUser } } = await supabase.auth.getUser();
+    let displayName = "Trader";
+    if (authedUser) {
+        const dbUser = await prisma.user.findUnique({ where: { id: authedUser.id } });
+        displayName = dbUser?.name || authedUser.user_metadata?.full_name || "Trader";
+    }
+    
+    return { success: true, name: displayName };
 }
 
 export async function verifyLogin2FA(code: string) {
@@ -194,6 +204,8 @@ export async function signup(formData: FormData) {
 
     const { fullName, country, password } = validated.data;
     const normalizedCountry = normalizeCountryCode(country);
+    const referralCode = (formData.get('referralCode') as string | null)?.trim() || null;
+    const referrer = await resolveReferrerByCode(referralCode, validated.data.email);
 
     // Attempt to split name for metadata if needed, otherwise just use full name
     const nameParts = fullName.trim().split(' ');
@@ -209,7 +221,9 @@ export async function signup(formData: FormData) {
                 full_name: fullName.trim(),
                 country: normalizedCountry,
                 first_name: firstName,
-                last_name: lastName
+                last_name: lastName,
+                referral_code: referralCode,
+                referrer_user_id: referrer?.id || null,
             },
         },
     })
@@ -222,28 +236,42 @@ export async function signup(formData: FormData) {
     // Check if session is automatically established (Email Verification disabled)
     if (data?.user && data.session) {
         // Fallback: If verification is disabled, insert immediately
-        await prisma.$transaction([
-            prisma.user.upsert({
-                where: { id: data.user.id },
-                update: {
-                    email: validated.data.email,
-                    name: fullName.trim(),
-                },
-                create: {
-                    id: data.user.id,
-                    email: validated.data.email,
-                    name: fullName.trim(),
-                },
-            }),
-            prisma.profile.upsert({
-                where: { userId: data.user.id },
-                update: normalizedCountry ? { country: normalizedCountry } : {},
-                create: {
-                    userId: data.user.id,
-                    country: normalizedCountry,
-                },
-            }),
-        ]).catch(() => {});
+        try {
+            await prisma.$transaction([
+                prisma.user.upsert({
+                    where: { id: data.user.id },
+                    update: {
+                        email: validated.data.email,
+                        name: fullName.trim(),
+                    },
+                    create: {
+                        id: data.user.id,
+                        email: validated.data.email,
+                        name: fullName.trim(),
+                    },
+                }),
+                prisma.profile.upsert({
+                    where: { userId: data.user.id },
+                    update: normalizedCountry ? { country: normalizedCountry } : {},
+                    create: {
+                        userId: data.user.id,
+                        country: normalizedCountry,
+                    },
+                }),
+            ]);
+
+            if (referrer && referrer.id !== data.user.id) {
+                await recordQualifiedReferral({
+                    referrerId: referrer.id,
+                    referredUserId: data.user.id,
+                    referredEmail: validated.data.email,
+                    referredName: fullName.trim(),
+                    referralCode,
+                }).catch(() => {});
+            }
+        } catch {
+            // Silently handle insert error
+        }
         
         revalidatePath('/', 'layout')
         redirect('/onboarding')
@@ -350,6 +378,8 @@ export async function verifyOtpAction(formData: FormData) {
     if (data.user) {
         const metadata = data.user.user_metadata;
         const fullName = metadata?.full_name || (metadata?.first_name ? metadata.first_name + ' ' + metadata.last_name : 'Trader');
+        const referrerUserId = typeof metadata?.referrer_user_id === 'string' ? metadata.referrer_user_id : null;
+        const referralCode = typeof metadata?.referral_code === 'string' ? metadata.referral_code : null;
         const normalizedCountry = normalizeCountryCode(
             typeof metadata?.country === 'string' ? metadata.country : null
         );
@@ -377,6 +407,16 @@ export async function verifyOtpAction(formData: FormData) {
                     },
                 }),
             ])
+
+            if (referrerUserId && referrerUserId !== data.user.id) {
+                await recordQualifiedReferral({
+                    referrerId: referrerUserId,
+                    referredUserId: data.user.id,
+                    referredEmail: data.user.email,
+                    referredName: fullName.trim(),
+                    referralCode,
+                }).catch(() => {});
+            }
         } catch {
             // Silently handle insert error
         }

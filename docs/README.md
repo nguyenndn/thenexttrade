@@ -14,6 +14,7 @@ This folder is the active source of truth for the product, system, operations, d
 | [OPERATIONS.md](OPERATIONS.md) | Environment, self-host stack, deploy, storage, monitoring, release ops |
 | [DESIGN.md](DESIGN.md) | UI standards for dashboard, auth pages, cards, buttons, metrics |
 | [EMAIL.md](EMAIL.md) | Transactional email strategy, templates needed, delivery rules |
+| [QC_TEST_PLAN_PHASE_3.md](QC_TEST_PLAN_PHASE_3.md) | QC test scenarios, step-by-step test cases, expected behaviors for Phase 3 |
 
 ## Current Snapshot
 

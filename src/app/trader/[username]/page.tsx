@@ -44,8 +44,8 @@ export default async function TraderProfilePage({ params }: { params: Params }) 
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117]">
-            <div className="max-w-3xl mx-auto px-4 py-12 md:py-20">
+        <div className="min-h-screen bg-white dark:bg-[#0F1117]">
+            <div className="max-w-4xl mx-auto px-4 py-10 md:py-16">
                 <PublicProfileCard profile={profile} />
             </div>
         </div>

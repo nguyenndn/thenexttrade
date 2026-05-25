@@ -40,9 +40,10 @@ interface UserMenuProps {
     user: AuthUser | null;
     profile?: any;
     variant?: "default" | "dashboard";
+    isLoading?: boolean;
 }
 
-export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) {
+export function UserMenu({ user, profile, variant = "default", isLoading = false }: UserMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isEdgeModalOpen, setIsEdgeModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -68,6 +69,16 @@ export function UserMenu({ user, profile, variant = "default" }: UserMenuProps) 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center gap-3 animate-pulse">
+                {/* Beautiful clean skeleton for header buttons matching exact sizes */}
+                <div className="w-12 h-6 bg-gray-200 dark:bg-slate-700/50 rounded-xl" />
+                <div className="w-24 h-9 bg-gray-300 dark:bg-slate-700/70 rounded-xl" />
+            </div>
+        );
+    }
 
     if (!user) {
         return (
