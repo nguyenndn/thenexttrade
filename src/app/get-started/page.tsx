@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { getAuthUser } from "@/lib/auth-cache";
@@ -5,12 +6,11 @@ import { prisma } from "@/lib/prisma";
 import { PublicGetStarted } from "@/components/get-started/PublicGetStarted";
 import { OnboardingChecklist } from "@/components/get-started/OnboardingChecklist";
 import type { UserProgress } from "@/components/get-started/OnboardingChecklist";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Get Started — TheNextTrade Trading Journal",
+  title: "Get Started - TheNextTrade",
   description:
-    "Set up your free trading journal in minutes. Connect your MT5 account, auto-sync trades, and start improving with AI-powered insights and gamified missions.",
+    "Start your TheNextTrade workspace, connect MT5, sync your first trade, and begin reviewing your trading edge.",
 };
 
 export const dynamic = "force-dynamic";
@@ -18,10 +18,9 @@ export const dynamic = "force-dynamic";
 export default async function GetStartedPage() {
   const user = await getAuthUser();
 
-  // ─── PUBLIC VIEW (not logged in) ───
   if (!user) {
     return (
-      <main className="min-h-screen bg-white dark:bg-[#0B0E14] overflow-hidden">
+      <main className="min-h-screen overflow-hidden bg-[#F7F4EC] dark:bg-[#090805] text-slate-950 dark:text-white relative">
         <PublicHeader user={user} />
         <PublicGetStarted />
         <SiteFooter />
@@ -29,7 +28,6 @@ export default async function GetStartedPage() {
     );
   }
 
-  // ─── PRIVATE VIEW (logged in) → fetch user progress ───
   const [accountData, journalCount, missionCount] = await Promise.all([
     prisma.tradingAccount.findMany({
       where: { userId: user.id },
@@ -43,23 +41,24 @@ export default async function GetStartedPage() {
     }),
   ]);
 
-  const totalAccountTrades = accountData.reduce((sum: number, a: { totalTrades: number }) => sum + a.totalTrades, 0);
+  const totalAccountTrades = accountData.reduce((sum, account) => sum + account.totalTrades, 0);
+  const totalTrades = journalCount || totalAccountTrades;
 
   const progress: UserProgress = {
     userName: user.name || user.profile?.username || "",
-    hasProfile: !!(user.profile?.username && user.name),
+    hasProfile: Boolean(user.profile?.username && user.name),
     hasAccount: accountData.length > 0,
-    hasFirstTrade: journalCount > 0 || totalAccountTrades > 0,
+    hasFirstTrade: totalTrades > 0,
     hasMissionComplete: missionCount > 0,
     totalAccounts: accountData.length,
-    totalTrades: journalCount || totalAccountTrades,
+    totalTrades,
     totalMissions: missionCount,
     xp: user.profile?.xp ?? 0,
     level: user.profile?.level ?? 1,
   };
 
   return (
-    <main className="min-h-screen bg-white dark:bg-[#0B0E14] overflow-hidden">
+    <main className="min-h-screen overflow-hidden bg-[#F7F4EC] dark:bg-[#090805] text-slate-950 dark:text-white relative">
       <PublicHeader user={user} />
       <OnboardingChecklist progress={progress} />
       <SiteFooter />

@@ -60,7 +60,7 @@ export function buildWeeklyInsights(data: InsightInput): WeeklyInsight[] {
       type: "STRENGTH",
       icon: "trophy",
       title: "Strong Edge",
-      body: `Profit factor of ${data.profitFactor.toFixed(1)} — your winners outweigh losses by a healthy margin.`,
+      body: `Profit factor of ${!isFinite(data.profitFactor) ? "∞" : data.profitFactor.toFixed(1)} — your winners outweigh losses by a healthy margin.`,
     });
   }
 

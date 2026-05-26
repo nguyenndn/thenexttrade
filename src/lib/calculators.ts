@@ -1,45 +1,26 @@
-// PIP VALUES (Approximate for simple calc)
-// Value in USD for 1 Pip Movement on 1 Standard Lot (100k units forex, 100oz gold)
-// For Forex: 1 pip = 0.0001 (or 0.01 JPY). Standard Lot = 100,000.
-// EURUSD: 0.0001 * 100,000 = $10.00
-// USDJPY: 0.01 * 100,000 / 150 = $6.66 (Approx $10 for ease if USD based, but JPY is inverse)
-// Let's store "Standard Lot Pip Value" directly to be safer/simpler?
-// Or stick to "Per Micro" as existing code tried?
-// Existing code used "Per Micro (1000)".
-// EURUSD: 0.10 (Micro) * 100 = 10 (Standard). Correct.
-// XAUUSD: Gold 1 pip (0.01) * 100 oz = $1.00.
-// So XAUUSD value per micro(??) -> Let's just fix the values to be "Per Lot" or normalize.
-// Let's stick to "Per Micro Lot" conceptual value used before, but fix XAU to 0.10 ?
-// If XAU 1 pip(0.01) * 100oz = $1 per Lot.
-// Then "Per Micro (1/100 lot?)" = $0.01.
-// So XAUUSD should be 0.01? 
-// Wait, Gold Standard Lot is 100. Micro Lot is 1. (1 oz).
-// 1 oz * 0.01 = $0.01. 
-// So XAUUSD "PipValuePerMicro" = 0.01. 
-// If I set 0.01. And multiplier 100 (for 2 digits).
-// $1 move (4900-4901) = 100 pips.
-// Profit = 100 * (0.01 * 100) * 1 = 100 * 1 * 1 = $100. Correct.
-// But earlier user got $10 with 0.10. 
-// User wants $1 for 0.01 Lot ($1 move). $100 for 1.0 Lot.
-// So my target is correct.
-// Implies XAUUSD 0.01 value.
+// PIP VALUES (Approximate for simple calculators when current price is not dynamic)
+// Value in USD for 1 Pip Movement on 1 Micro Lot (1,000 units of forex, 1oz gold)
+// For Forex: 1 pip = 0.0001 (or 0.01 for JPY).
+// Standard Lot (100,000) Pip Value = Micro Lot Pip Value * 100.
+// Gold (XAUUSD): 1 pip (0.01) on 1 oz = $0.01. Per Standard Lot (100 oz) = $1.00.
+// Silver (XAGUSD): 1 pip (0.01) on 50 oz = $0.50. Per Standard Lot (5,000 oz) = $50.00.
 
 export const PIP_VALUES: Record<string, number> = {
-    // Forex (Standard 100k)
+    // Forex (Standard 100k units - Value per Micro lot of 1,000 units)
+    // Refined based on 2026 average baseline prices (USDJPY ~155, EURUSD ~1.08, USDCAD ~1.36, etc.)
     "EURUSD": 0.10, "GBPUSD": 0.10, "AUDUSD": 0.10, "NZDUSD": 0.10,
-    "USDJPY": 0.09, "USDCHF": 0.11, "USDCAD": 0.08,
-    "EURJPY": 0.09, "GBPJPY": 0.09, "EURGBP": 0.13, "AUDCAD": 0.08,
+    "USDJPY": 0.065, "USDCHF": 0.11, "USDCAD": 0.073,
+    "EURJPY": 0.065, "GBPJPY": 0.065, "EURGBP": 0.126, "AUDCAD": 0.073,
 
     // Metals (Gold 100oz, Silver 5000oz)
-    "XAUUSD": 0.01, // 1 pip (0.01) on 1 oz (micro) = $0.01 
-    "XAGUSD": 0.50, // 1 pip (0.01) on 50 oz (micro) = $0.50? (Std 5000oz -> Micro 50oz). 
-    // Silver 1 pip(0.01) * 50 = $0.50. Standard(5000) * 0.01 = $50. Checked: Silver tick usually $50/lot. Correct.
+    "XAUUSD": 0.01,
+    "XAGUSD": 0.50,
 
-    // Indices (Usually 1 lot = 1 Contract. Point based)
+    // Indices (1 lot = 1 Contract. Point based)
     "US30": 0.10, "US100": 0.10, "US500": 0.10,
 };
 
-function getPairConfig(pair: string) {
+export function getPairConfig(pair: string) {
     const p = pair.toUpperCase();
 
     // Default Forex
@@ -57,10 +38,8 @@ function getPairConfig(pair: string) {
     } else if (p.includes("BTC")) {
         multiplier = 100; // 0.01
         contractSize = 1;
-    } else if (p.includes("US30") || p.includes("DJI") || p.includes("US100") || p.includes("NAS")) {
-        multiplier = 100; // Assuming 2 decimal pricing often, or 1? Safe with 100 for 0.01?
-        // Often indices are 1.00 move = 1 point.
-        // If 30000 -> 30001.
+    } else if (p.includes("US30") || p.includes("DJI") || p.includes("US100") || p.includes("NAS") || p.includes("US500") || p.includes("SPX")) {
+        multiplier = 100;
         contractSize = 1;
     }
 
@@ -82,13 +61,6 @@ export function calculatePositionSize(input: PositionSizeInput) {
     const pipValueMicro = PIP_VALUES[pair.toUpperCase()] || 0.10; // Value per Micro (1000 units forex)
 
     const riskAmount = accountBalance * (riskPercent / 100);
-
-    // Logic:
-    // Risk = Lots * ContractSize * Pips * PipValuePerUnit? No.
-    // Standard: Risk = Lots * Pips * PipValueStandard.
-    // PipValueStandard = PipValueMicro * 100 (for Forex).
-    // For Gold: PipValueStandard (100oz) = PipValueMicro(1oz) * 100. matches.
-
     const pipValueStandard = pipValueMicro * 100;
 
     if (pipValueStandard === 0 || stopLossPips === 0) return {
@@ -151,10 +123,47 @@ export interface MarginInput {
 export function calculateMargin(input: MarginInput) {
     const { lotSize, leverage, currentPrice, pair } = input;
     const { contractSize } = getPairConfig(pair);
+    const p = pair.toUpperCase();
 
-    const positionValue = lotSize * contractSize * currentPrice;
+    let requiredMargin = 0;
+    let positionValue = 0;
+
+    if (p.startsWith("USD")) {
+        // USD is the base currency (e.g., USDJPY, USDCAD, USDCHF)
+        // Position value is in USD. So 1 lot = $100,000.
+        positionValue = lotSize * contractSize;
+        requiredMargin = positionValue / leverage;
+    } else if (p.endsWith("USD") || p === "US30" || p === "US100" || p === "US500") {
+        // USD is the quote currency (e.g., EURUSD, GBPUSD, XAUUSD)
+        // Position value in USD = Lot Size * Contract Size * currentPrice
+        positionValue = lotSize * contractSize * currentPrice;
+        requiredMargin = positionValue / leverage;
+    } else {
+        // For cross pairs (e.g., EURJPY, GBPJPY, EURGBP)
+        // Position Value in Base Currency = Lot Size * Contract Size.
+        // We approximate the USD exchange rate of the base currency to determine USD value.
+        const positionValueInBase = lotSize * contractSize;
+        
+        if (p.includes("JPY")) {
+            // Convert JPY quote to USD by dividing by USDJPY rate (~155.0)
+            positionValue = positionValueInBase * (currentPrice / 155.0);
+        } else if (p.includes("GBP")) {
+            // Convert GBP quote to USD by multiplying by GBPUSD rate (~1.26)
+            positionValue = positionValueInBase * (currentPrice * 1.26);
+        } else if (p.includes("CAD")) {
+            // Convert CAD quote to USD by dividing by USDCAD rate (~1.36)
+            positionValue = positionValueInBase * (currentPrice / 1.36);
+        } else {
+            // General Fallback
+            positionValue = positionValueInBase * (currentPrice / 1.5);
+        }
+        
+        requiredMargin = positionValue / leverage;
+    }
+
     return {
-        requiredMargin: positionValue / leverage
+        requiredMargin,
+        positionValue
     };
 }
 
@@ -169,18 +178,40 @@ export interface ProfitLossInput {
 
 export function calculateProfitLoss(input: ProfitLossInput) {
     const { entryPrice, exitPrice, lotSize, direction, pair } = input;
-    const { multiplier } = getPairConfig(pair);
+    const { multiplier, contractSize } = getPairConfig(pair);
+    const p = pair.toUpperCase();
 
-    let pips = direction === "LONG"
-        ? (exitPrice - entryPrice) * multiplier
-        : (entryPrice - exitPrice) * multiplier;
+    const directionMultiplier = direction === "LONG" ? 1 : -1;
+    
+    // Profit/Loss in Quote Currency (YYY)
+    const profitLossInQuote = directionMultiplier * (exitPrice - entryPrice) * lotSize * contractSize;
+    
+    let profitLoss = 0;
+    
+    if (p.endsWith("USD") || p === "US30" || p === "US100" || p === "US500") {
+        // YYY is USD, no conversion needed
+        profitLoss = profitLossInQuote;
+    } else if (p.startsWith("USD")) {
+        // XXX is USD, we convert by dividing the quote profit by the exitPrice (the exchange rate of XXX/YYY)
+        profitLoss = profitLossInQuote / exitPrice;
+    } else {
+        // Crosses
+        if (p.includes("JPY")) {
+            // Convert JPY quote profit to USD by dividing by USDJPY rate (~155.0)
+            profitLoss = profitLossInQuote / 155.0;
+        } else if (p.includes("GBP")) {
+            // Convert GBP quote profit to USD by multiplying by GBPUSD rate (~1.26)
+            profitLoss = profitLossInQuote * 1.26;
+        } else if (p.includes("CAD")) {
+            // Convert CAD quote profit to USD by dividing by USDCAD rate (~1.36)
+            profitLoss = profitLossInQuote / 1.36;
+        } else {
+            // General Fallback
+            profitLoss = profitLossInQuote / 1.5;
+        }
+    }
 
-    // Pip Value per Standard Lot
-    // Default 0.10 micro * 100 = 10.
-    const pipValueMicro = PIP_VALUES[pair.toUpperCase()] || 0.10;
-    const pipValueStandard = pipValueMicro * 100;
-
-    const profitLoss = pips * pipValueStandard * lotSize;
+    const pips = directionMultiplier * (exitPrice - entryPrice) * multiplier;
 
     return {
         pips: Math.round(pips * 10) / 10,

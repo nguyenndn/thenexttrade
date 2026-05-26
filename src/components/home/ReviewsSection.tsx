@@ -115,10 +115,10 @@ export function ReviewsSection() {
 
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-700 dark:text-white mb-3 tracking-tight">
+                    <h2 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-white mb-3 tracking-tight">
                         What Traders Say
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-300 text-base">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                         Real reviews from our community
                     </p>
                 </div>
@@ -135,8 +135,8 @@ export function ReviewsSection() {
                                 key={`${currentIndex}-${idx}`}
                                 className={`relative p-6 rounded-2xl border transition-all duration-500 animate-in fade-in slide-in-from-right-4 ${
                                     isDark
-                                        ? "bg-white/[0.04] border-white/10 hover:border-primary/30"
-                                        : "bg-white border-gray-200 shadow-sm hover:border-primary/30 hover:shadow-md"
+                                        ? "bg-white/[0.03] border-amber-500/15 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/[0.02]"
+                                        : "bg-white border-amber-200/70 shadow-sm hover:border-emerald-500/30 hover:shadow-md hover:shadow-emerald-500/[0.02]"
                                 }`}
                             >
                                 {/* Quote icon */}

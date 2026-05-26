@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, Circle, ArrowRight, Sparkles } from "lucide-react";
+import { CheckCircle2, Circle, ArrowRight, Compass } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { ActivationState } from "@/lib/activation/activation-types";
 import { trackEvent } from "@/lib/track";
@@ -25,7 +25,7 @@ export function ActivationChecklist({ state }: ActivationChecklistProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="p-1.5 bg-primary/10 rounded-lg">
-              <Sparkles size={16} className="text-primary" />
+              <Compass size={16} className="text-primary" />
             </div>
             <div>
               <h3 className="text-sm font-bold text-gray-800 dark:text-white">Your next step</h3>

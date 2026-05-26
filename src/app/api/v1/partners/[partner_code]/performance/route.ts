@@ -283,7 +283,9 @@ function calculatePerformanceStats(
     const totalTrades = trades.length;
     const initialBalance = reg.tradingCapital || (account?.balance || 0) - totalNetProfit;
     const growthPercent = initialBalance > 0 ? round((totalNetProfit / initialBalance) * 100) : 0;
-    const profitFactor = grossLoss > 0 ? round(grossProfit / grossLoss) : grossProfit > 0 ? 999 : 0;
+    // Note: Using 999.99 cap instead of Infinity because JSON.stringify(Infinity) → null.
+    // Internal UI uses Infinity directly; this API uses a capped numeric value.
+    const profitFactor = grossLoss > 0 ? round(grossProfit / grossLoss) : grossProfit > 0 ? 999.99 : 0;
     const winRatePercent = totalTrades > 0 ? round((winCount / totalTrades) * 100) : 0;
 
     // Max drawdown calculation

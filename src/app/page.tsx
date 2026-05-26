@@ -4,7 +4,7 @@ import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import Image from "next/image";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { Clock, ArrowRight, Flame, MessageCircle, ThumbsUp } from "lucide-react";
+import { Clock, ArrowRight, Flame, MessageCircle, ThumbsUp, Compass } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AboutUsSection } from "@/components/home/AboutUsSection";
 import { FadeIn } from "@/components/ui/FadeIn";
@@ -418,15 +418,14 @@ async function HomeFeed() {
           <LearningPathTimeline />
 
           <FadeIn delay={0.3} direction="up">
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-6">
             <Link href="/academy">
               <Button 
-                size="lg" 
-                className="relative overflow-hidden rounded-full bg-gradient-to-r from-primary to-[#00A570] text-white font-black shadow-[0_0_20px_rgba(0,200,136,0.3)] hover:shadow-[0_0_30px_rgba(0,200,136,0.5)] transform hover:scale-105 transition-all duration-300 px-10 py-6 text-lg group"
+                className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-emerald-600 text-white font-extrabold shadow-[0_4px_12px_rgba(0,200,136,0.2)] dark:shadow-[0_4px_12px_rgba(0,200,136,0.1)] hover:shadow-[0_4px_20px_rgba(0,200,136,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 min-h-11 px-8 py-3 text-sm group"
               >
-                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <span className="flex items-center gap-2 relative z-10">
-                  Start Learning Now <ArrowRight strokeWidth={3} size={20} className="group-hover:translate-x-1 transition-transform" />
+                  Start Learning Now <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
                 </span>
               </Button>
             </Link>
@@ -453,6 +452,39 @@ async function HomeFeed() {
       <FadeIn delay={0.1} direction="up">
       {/* FAQ Section */}
       <HomeFAQSection />
+      </FadeIn>
+
+      <FadeIn delay={0.1} direction="up">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-8">
+          {/* Premium Breek-style Callout Card */}
+          <div className="relative p-5 sm:p-6 rounded-2xl border border-gold/25 dark:border-gold/15 bg-gradient-to-r from-gold/[0.04] to-amber-500/[0.02] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md shadow-md shadow-gold/[0.01] overflow-hidden group hover:border-gold/45 dark:hover:border-gold/30 hover:shadow-lg hover:shadow-gold/8 transition-all duration-500">
+            {/* Soft decorative glow spot at the right */}
+            <div className="absolute top-1/2 -right-4 -translate-y-1/2 w-40 h-40 bg-gradient-to-br from-gold/15 to-amber-500/5 dark:from-gold/5 dark:to-transparent rounded-full blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-500" />
+            
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between relative z-10">
+              <div className="flex items-start gap-3">
+                <div className="mt-1 p-2 rounded-xl bg-gold/10 dark:bg-gold/15 text-gold group-hover:rotate-45 transition-transform duration-500">
+                  <Compass size={18} className="animate-pulse" />
+                </div>
+                <div>
+                  <h4 className="text-base font-extrabold text-gray-800 dark:text-white flex items-center gap-2">
+                    New here? <span className="text-gold">Start with the setup path</span>
+                  </h4>
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
+                    Create workspace, sync your trades, and review your edge. Follow our guided setup checklist to get started.
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/get-started"
+                className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black px-6 py-2.5 shadow-[0_4px_12px_rgba(245,158,11,0.25)] dark:shadow-[0_4px_12px_rgba(245,158,11,0.15)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.4)] dark:hover:shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group/btn"
+              >
+                <span>Start Here</span>
+                <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
+              </Link>
+            </div>
+          </div>
+        </div>
       </FadeIn>
 
       <FadeIn delay={0.1} direction="up">

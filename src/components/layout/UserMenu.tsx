@@ -197,6 +197,13 @@ export function UserMenu({ user, profile, variant = "default", isLoading = false
 
                     {/* Menu Items */}
                     <div className="p-2 space-y-1">
+                        <Link href="/get-started" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-400/10 transition-colors group">
+                            <Flame size={18} className="text-orange-500 transition-colors" />
+                            <div>
+                                <span className="block text-gray-700 dark:text-white">Getting Started</span>
+                                <span className="text-xs text-gray-600 font-normal">Setup & next action</span>
+                            </div>
+                        </Link>
                         {variant !== 'dashboard' ? (
                             <Link href={dashboardUrl} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
                                 <LayoutDashboard size={18} className="text-gray-500 group-hover:text-primary transition-colors" />

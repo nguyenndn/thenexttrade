@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, BarChart3, Brain, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, BarChart3, Brain, TrendingUp, BookOpen, Target, Sparkles } from "lucide-react";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 
 export const metadata: Metadata = {
@@ -18,30 +18,45 @@ export default function AuthLayout({
 }) {
   const features = [
     {
-      title: "Decision Edge",
-      description: "See the habits behind every win, loss, and missed setup.",
+      title: "AI Journal & Analytics",
+      description: "Log every trade with emotions, screenshots, and strategy tags. Get AI-powered pattern detection across your history.",
       icon: BarChart3,
-      tone: "text-emerald-500 bg-emerald-500/10 border-emerald-500/15",
+      color: "text-emerald-600 dark:text-emerald-400",
+      bgColor: "bg-emerald-500/10 border-emerald-500/20",
+      stat: "6 dimensions",
+      statLabel: "Trade scoring",
     },
     {
-      title: "Psychology Control",
-      description: "Build discipline with cleaner reviews and focused routines.",
+      title: "Psychology Bias Map",
+      description: "AI scans your journal to identify cognitive biases — loss aversion, FOMO, overconfidence — so you can correct them.",
       icon: Brain,
-      tone: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+      color: "text-amber-600 dark:text-amber-400",
+      bgColor: "bg-amber-500/10 border-amber-500/20",
+      stat: "4 bias axes",
+      statLabel: "Radar analysis",
     },
     {
-      title: "Secure Trader Hub",
-      description: "Track accounts, journals, and progress in one protected space.",
-      icon: ShieldCheck,
-      tone: "text-slate-700 bg-slate-900/5 border-slate-900/10 dark:text-slate-200 dark:bg-white/[0.08] dark:border-white/10",
+      title: "Trading Intelligence",
+      description: "Weekly auto-generated reports with actionable insights, strategy performance breakdowns, and personalized recommendations.",
+      icon: TrendingUp,
+      color: "text-violet-600 dark:text-violet-400",
+      bgColor: "bg-violet-500/10 border-violet-500/20",
+      stat: "AI-powered",
+      statLabel: "Weekly reports",
     },
+  ];
+
+  const bottomItems = [
+    { icon: Target, label: "Edge Missions", color: "text-emerald-600 dark:text-emerald-400" },
+    { icon: BookOpen, label: "Trading Academy", color: "text-amber-600 dark:text-amber-400" },
+    { icon: Sparkles, label: "Leaderboard & Badges", color: "text-violet-600 dark:text-violet-400" },
   ];
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-[#090805] dark:text-white p-4 font-outfit relative overflow-hidden transition-colors duration-300">
       <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(180,118,26,0.20)_0%,rgba(9,8,5,0.92)_42%,rgba(16,185,129,0.08)_100%)]" />
 
-      <div className="relative z-10 flex w-full max-w-7xl items-center justify-center gap-10 lg:justify-between lg:gap-16">
+      <div className="relative z-10 flex w-full max-w-7xl items-center justify-center gap-10 lg:justify-between lg:gap-10">
 
         {/* LEFT: Form Section */}
         <div className="w-full lg:w-[480px] shrink-0">
@@ -60,56 +75,65 @@ export default function AuthLayout({
           {children}
         </div>
 
-        {/* RIGHT: Content/Features (Hidden on mobile) */}
+        {/* RIGHT: Premium Features Showcase (Hidden on mobile) */}
         <div className="hidden lg:flex flex-1 flex-col max-w-2xl">
-          <div className="mb-8 inline-flex w-fit items-center gap-2 rounded-full border border-amber-500/25 bg-white/55 px-4 py-2 text-sm font-bold text-amber-700 shadow-sm shadow-amber-900/5 backdrop-blur dark:bg-white/[0.06] dark:text-amber-300">
-            <Sparkles size={16} />
-            Premium trading command center
+          {/* Hero copy */}
+          <div className="mb-10">
+            <h2 className="whitespace-nowrap text-[40px] font-black leading-[1.1] tracking-tight text-slate-950 dark:text-white">
+              Your Trading{" "}
+              <span className="bg-[linear-gradient(90deg,#B7791F,#F7C948,#10B981)] bg-clip-text text-transparent">
+                Command Center
+              </span>
+            </h2>
+            <p className="mt-4 whitespace-nowrap text-base leading-7 text-slate-500 dark:text-slate-400">
+              Journal, analyze, and improve — all in one intelligent workspace designed for serious traders.
+            </p>
           </div>
 
-          <h2 className="whitespace-nowrap text-[42px] font-black leading-[1.08] tracking-normal text-slate-950 dark:text-white">
-            Build Your Trading{" "}
-            <span className="bg-[linear-gradient(90deg,#B7791F,#F7C948,#10B981)] bg-clip-text text-transparent">
-              Edge
-            </span>
-          </h2>
-          <p className="mt-6 max-w-lg text-lg leading-8 text-slate-600 dark:text-slate-300">
-            Stop guessing and start improving with a focused space for journaling, psychology, account tracking, and strategy review.
-          </p>
+          {/* Feature cards with connecting line */}
+          <div className="relative flex flex-col gap-0">
+            {/* Vertical connecting line */}
+            <div className="absolute left-[23px] top-8 bottom-8 w-px bg-gradient-to-b from-emerald-400/40 via-amber-400/30 to-violet-400/40 dark:from-emerald-400/20 dark:via-amber-400/15 dark:to-violet-400/20" />
 
-          <div className="mt-10 flex flex-col gap-4">
-            {features.map((feature) => {
+            {features.map((feature, i) => {
               const Icon = feature.icon;
-
               return (
-                <div
-                  key={feature.title}
-                  className="group flex items-center gap-5 rounded-lg border border-white/70 bg-white/70 p-5 shadow-[0_18px_60px_rgba(88,64,27,0.10)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-amber-400/40 hover:bg-white/85 dark:border-white/10 dark:bg-white/[0.06] dark:shadow-none dark:hover:border-amber-300/25"
-                >
-                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border ${feature.tone}`}>
-                    <Icon size={24} />
+                <div key={feature.title} className="relative flex gap-5 py-4 group">
+                  {/* Icon node */}
+                  <div className={`relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border ${feature.bgColor} transition-transform group-hover:scale-105`}>
+                    <Icon size={22} className={feature.color} />
                   </div>
-                  <div>
-                    <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">{feature.title}</h3>
-                    <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{feature.description}</p>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="text-base font-extrabold text-slate-900 dark:text-white">{feature.title}</h3>
+                      <div className="text-right shrink-0">
+                        <p className={`text-xs font-black ${feature.color}`}>{feature.stat}</p>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">{feature.statLabel}</p>
+                      </div>
+                    </div>
+                    <p className="mt-1.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                      {feature.description}
+                    </p>
                   </div>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-8 grid min-h-[96px] grid-cols-3 overflow-hidden rounded-lg border border-amber-900/10 bg-white/75 text-center text-slate-900 shadow-[0_24px_80px_rgba(88,64,27,0.12)] backdrop-blur dark:border-amber-300/15 dark:bg-slate-950 dark:text-white dark:shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
-            <div className="flex flex-col items-center justify-center border-r border-amber-900/10 px-5 py-4 dark:border-white/10">
-              <p className="text-2xl font-black text-amber-600 dark:text-amber-300">24/7</p>
-              <p className="mt-1 text-xs font-semibold text-slate-600 dark:text-slate-300">Journal access</p>
-            </div>
-            <div className="flex flex-col items-center justify-center border-r border-amber-900/10 px-5 py-4 dark:border-white/10">
-              <p className="text-2xl font-black text-emerald-600 dark:text-emerald-300">Edge</p>
-              <p className="mt-1 text-xs font-semibold text-slate-600 dark:text-slate-300">Progress system</p>
-            </div>
-            <div className="flex flex-col items-center justify-center px-5 py-4">
-              <p className="text-2xl font-black text-amber-600 dark:text-amber-300">Pro</p>
-              <p className="mt-1 text-xs font-semibold text-slate-600 dark:text-slate-300">Tools ready</p>
+          {/* Bottom: also included */}
+          <div className="mt-8 rounded-xl border border-slate-200/80 bg-white/60 backdrop-blur-sm p-4 dark:border-white/[0.08] dark:bg-white/[0.03]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">Also included</p>
+            <div className="grid grid-cols-3 gap-4">
+              {bottomItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.label} className="flex items-center gap-2">
+                    <Icon size={14} className={item.color} />
+                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{item.label}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

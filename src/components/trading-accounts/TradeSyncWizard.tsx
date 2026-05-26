@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { 
@@ -15,11 +15,18 @@ import {
     RefreshCw, 
     CheckCircle2, 
     AlertCircle, 
-    Info 
+    Info,
+    PenLine,
+    Loader2,
+    XCircle,
+    HelpCircle,
+    ExternalLink,
+    Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { getSyncServerUrl } from "@/lib/sync/sync-urls";
 
 interface TradingAccount {
     id: string;
@@ -28,15 +35,29 @@ interface TradingAccount {
     accountNumber: string | null;
 }
 
+type SyncMethod = "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
+
 interface TradeSyncWizardProps {
     isOpen: boolean;
     onClose: () => void;
     accounts: TradingAccount[];
+    defaultMethod?: SyncMethod;
+    onOpenAddAccount?: () => void;
 }
 
-export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardProps) {
-    const [step, setStep] = useState<1 | 2 | 3>(1);
-    const [syncMethod, setSyncMethod] = useState<"TNT_CONNECT" | "EA_SYNC">("TNT_CONNECT");
+interface SyncStatus {
+    hasApiKey: boolean;
+    accountsCount: number;
+    tntConnectedAccounts: number;
+    eaConnectedAccounts: number;
+    lastHeartbeatAt: string | null;
+    lastSyncAt: string | null;
+    totalSyncedTrades: number;
+}
+
+export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOpenAddAccount }: TradeSyncWizardProps) {
+    const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+    const [syncMethod, setSyncMethod] = useState<SyncMethod>(defaultMethod || "TNT_CONNECT");
     
     // API Key states
     const [isLoadingKey, setIsLoadingKey] = useState(false);
@@ -54,9 +75,27 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
     // Checkbox confirmation in step 3
     const [isConfirmed, setIsConfirmed] = useState(false);
 
+    // Verify step states
+    const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(null);
+    const [isCheckingStatus, setIsCheckingStatus] = useState(false);
+    const [showTroubleshooting, setShowTroubleshooting] = useState(false);
+
+    // Reset on open
     useEffect(() => {
-        if (isOpen && step === 2) {
+        if (isOpen) {
+            if (defaultMethod) setSyncMethod(defaultMethod);
+        }
+    }, [isOpen, defaultMethod]);
+
+    useEffect(() => {
+        if (isOpen && step === 2 && syncMethod !== "MANUAL") {
             fetchKey();
+        }
+    }, [isOpen, step, syncMethod]);
+
+    useEffect(() => {
+        if (isOpen && step === 4) {
+            checkSyncStatus();
         }
     }, [isOpen, step]);
 
@@ -108,13 +147,37 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
         }
     };
 
+    const checkSyncStatus = useCallback(async () => {
+        setIsCheckingStatus(true);
+        try {
+            const res = await fetch("/api/sync/status");
+            if (res.ok) {
+                const data = await res.json();
+                setSyncStatus(data);
+            }
+        } catch {
+            toast.error("Failed to check sync status");
+        } finally {
+            setIsCheckingStatus(false);
+        }
+    }, []);
+
     const handleNext = () => {
-        if (step < 3) {
+        // Manual skips step 2 and 3 — go directly to close
+        if (syncMethod === "MANUAL" && step === 1) {
+            onClose();
+            setStep(1);
+            toast.success("You can log trades manually from the Journal page.");
+            return;
+        }
+        if (step < 4) {
             setStep((prev) => (prev + 1) as any);
         } else {
             onClose();
             setStep(1);
             setIsConfirmed(false);
+            setSyncStatus(null);
+            setShowTroubleshooting(false);
             toast.success("Setup wizard completed!");
         }
     };
@@ -122,8 +185,21 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
     const handleBack = () => {
         if (step > 1) {
             setStep((prev) => (prev - 1) as any);
+            setShowTroubleshooting(false);
         }
     };
+
+    const syncServerUrl = getSyncServerUrl();
+
+    // Verify step status checks
+    const checks = syncStatus ? [
+        { label: "API key generated", pass: syncStatus.hasApiKey },
+        { label: "MT5 account registered", pass: syncStatus.accountsCount > 0 },
+        { label: "Heartbeat detected", pass: !!syncStatus.lastHeartbeatAt },
+        { label: "First trade synced", pass: syncStatus.totalSyncedTrades > 0 },
+    ] : [];
+
+    const allChecksPassed = checks.length > 0 && checks.every(c => c.pass);
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -139,24 +215,30 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
                                 Interactive Sync Wizard
                             </DialogTitle>
                             <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                3 simple steps to sync your MT5 trades automatically.
+                                {syncMethod === "MANUAL"
+                                    ? "Log trades manually from the Journal page."
+                                    : "4 steps to sync your MT5 trades automatically."}
                             </DialogDescription>
                         </DialogHeader>
                         
                         {/* Step Dots */}
-                        <div className="flex items-center gap-2">
-                            {[1, 2, 3].map((s) => (
-                                <div 
-                                    key={s} 
-                                    className={cn(
-                                        "h-2 rounded-full transition-all duration-300",
-                                        step === s 
-                                            ? "w-8 bg-amber-500 shadow-sm shadow-amber-500/30" 
-                                            : "w-2 bg-gray-200 dark:bg-white/10"
-                                    )}
-                                />
-                            ))}
-                        </div>
+                        {syncMethod !== "MANUAL" && (
+                            <div className="flex items-center gap-2">
+                                {[1, 2, 3, 4].map((s) => (
+                                    <div 
+                                        key={s} 
+                                        className={cn(
+                                            "h-2 rounded-full transition-all duration-300",
+                                            step === s 
+                                                ? "w-8 bg-amber-500 shadow-sm shadow-amber-500/30" 
+                                                : step > s
+                                                    ? "w-2 bg-amber-500/50"
+                                                    : "w-2 bg-gray-200 dark:bg-white/10"
+                                        )}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -245,6 +327,23 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Manual Journal Option */}
+                            <div 
+                                onClick={() => setSyncMethod("MANUAL")}
+                                className={cn(
+                                    "rounded-xl border p-4 cursor-pointer transition-all duration-200 flex items-center gap-4",
+                                    syncMethod === "MANUAL"
+                                        ? "border-gray-400 bg-gray-50 dark:bg-white/[0.03] dark:border-white/20"
+                                        : "border-gray-200/60 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10"
+                                )}
+                            >
+                                <PenLine size={16} className="text-gray-400 shrink-0" />
+                                <div>
+                                    <p className="text-xs font-bold text-gray-600 dark:text-gray-300">Manual Journal</p>
+                                    <p className="text-[10px] text-gray-400 dark:text-gray-500">No MT5? Log trades manually in Journal. You can set up sync later.</p>
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -266,7 +365,7 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
                                     </div>
                                 ) : !keyData.hasKey ? (
                                     <div className="text-center py-4 space-y-3">
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">You don't have a Sync API Key generated yet.</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">You don&apos;t have a Sync API Key generated yet.</p>
                                         <Button
                                             onClick={handleGenerateKey}
                                             variant="outline"
@@ -321,9 +420,24 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
                                 </div>
 
                                 {accounts.length === 0 ? (
-                                    <div className="text-center py-2">
-                                        <p className="text-xs text-red-500 font-bold">No MT5 account registered in Account Hub.</p>
-                                        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Please add your MT5 account number in the Hub before syncing.</p>
+                                    <div className="text-center py-4 space-y-4">
+                                        <div className="space-y-1">
+                                            <p className="text-xs text-red-500 font-extrabold uppercase tracking-wider">No MT5 account registered</p>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 font-bold">
+                                                Add your MT5 account number first, then continue setup.
+                                            </p>
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            onClick={() => {
+                                                onClose();
+                                                onOpenAddAccount?.();
+                                            }}
+                                            className="w-full sm:w-auto h-11 rounded-xl bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] border-none text-xs font-black text-white hover:shadow-[0_4px_12px_rgba(217,154,38,0.2)] shadow-md active:scale-95 transition-all flex items-center justify-center mx-auto"
+                                        >
+                                            <Plus size={14} className="mr-1.5" />
+                                            Add MT5 Account
+                                        </Button>
                                     </div>
                                 ) : (
                                     <div className="max-h-24 overflow-y-auto space-y-1.5 custom-scrollbar pr-1">
@@ -343,31 +457,51 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
                     )}
 
                     {/* ═══════════════════════════════════════════════════════════════
-                        STEP 3: WHITELIST & WEBREQUEST
+                        STEP 3: CONFIGURATION (Whitelist & WebRequest)
                     ═══════════════════════════════════════════════════════════════ */}
                     {step === 3 && (
                         <div className="space-y-4">
                             <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-amber-500/[0.02] p-4 text-xs space-y-3">
                                 <h3 className="font-bold text-gray-800 dark:text-white flex items-center gap-2">
                                     <CheckCircle2 className="w-4 h-4 text-amber-500" />
-                                    Configure MT5 allowed URLs (Crucial Step)
+                                    {syncMethod === "TNT_CONNECT" 
+                                        ? "TNT Connect Setup"
+                                        : "Configure MT5 allowed URLs (Crucial Step)"}
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-                                    For security and stability, MetaTrader 5 blocks external network requests by default. You must whitelist our secure API gateway:
-                                </p>
-                                
-                                <div className="space-y-2 p-3 bg-gray-50 dark:bg-black/30 rounded-lg border border-gray-200 dark:border-white/5">
-                                    <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide">Path inside MetaTrader 5:</p>
-                                    <p className="font-bold text-gray-700 dark:text-gray-300">Tools &gt; Options &gt; Expert Advisors</p>
-                                    
-                                    <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">1. Check the box:</p>
-                                    <p className="text-gray-700 dark:text-gray-300">☑ Allow WebRequest for listed URL:</p>
-                                    
-                                    <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">2. Add this URL:</p>
-                                    <div className="flex gap-2 items-center">
-                                        <code className="flex-1 bg-white dark:bg-black/40 p-2 rounded border border-gray-200 dark:border-white/10 font-mono text-[11px] text-primary break-all">https://zcedocoskwlvjturukrg.supabase.co</code>
+
+                                {syncMethod === "TNT_CONNECT" ? (
+                                    <div className="space-y-2">
+                                        <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                            After installing TNT Connect:
+                                        </p>
+                                        <ol className="space-y-1.5 text-gray-600 dark:text-gray-300">
+                                            <li className="flex gap-2"><span className="text-amber-500 font-bold">1.</span> Open TNT Connect from your system tray</li>
+                                            <li className="flex gap-2"><span className="text-amber-500 font-bold">2.</span> Paste your Sync API Key in the settings</li>
+                                            <li className="flex gap-2"><span className="text-amber-500 font-bold">3.</span> TNT Connect auto-detects MT5 and starts syncing</li>
+                                        </ol>
                                     </div>
-                                </div>
+                                ) : (
+                                    <>
+                                        <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                            For security and stability, MetaTrader 5 blocks external network requests by default. You must whitelist our secure API gateway:
+                                        </p>
+                                        
+                                        <div className="space-y-2 p-3 bg-gray-50 dark:bg-black/30 rounded-lg border border-gray-200 dark:border-white/5">
+                                            <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide">Path inside MetaTrader 5:</p>
+                                            <p className="font-bold text-gray-700 dark:text-gray-300">Tools &gt; Options &gt; Expert Advisors</p>
+                                            
+                                            <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">1. Check the box:</p>
+                                            <p className="text-gray-700 dark:text-gray-300">☑ Allow WebRequest for listed URL:</p>
+                                            
+                                            <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">2. Add this URL:</p>
+                                            <div className="flex gap-2 items-center">
+                                                <code className="flex-1 bg-white dark:bg-black/40 p-2 rounded border border-gray-200 dark:border-white/10 font-mono text-[11px] text-primary break-all">
+                                                    {syncServerUrl || "https://thenexttrade.com"}
+                                                </code>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </div>
 
                             {/* Confirmation Checkbox */}
@@ -379,12 +513,138 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
                                     className="w-4 h-4 mt-0.5 rounded border-gray-300 text-primary focus:ring-primary shrink-0"
                                 />
                                 <div>
-                                    <p className="text-xs font-bold text-gray-800 dark:text-white">I have configured MT5 correctly</p>
+                                    <p className="text-xs font-bold text-gray-800 dark:text-white">
+                                        {syncMethod === "TNT_CONNECT" 
+                                            ? "I have installed TNT Connect and pasted my API key"
+                                            : "I have configured MT5 correctly"}
+                                    </p>
                                     <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
-                                        I have added the secure URL to WebRequest list and pasted my Sync API Key into settings.
+                                        {syncMethod === "TNT_CONNECT"
+                                            ? "TNT Connect is running and connected to my dashboard."
+                                            : "I have added the secure URL to WebRequest list and pasted my Sync API Key into settings."}
                                     </p>
                                 </div>
                             </label>
+                        </div>
+                    )}
+
+                    {/* ═══════════════════════════════════════════════════════════════
+                        STEP 4: VERIFY
+                    ═══════════════════════════════════════════════════════════════ */}
+                    {step === 4 && (
+                        <div className="space-y-4">
+                            <div className="text-center mb-2">
+                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200">Verify Connection</p>
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                    Let&apos;s confirm everything is working correctly.
+                                </p>
+                            </div>
+
+                            {/* Status Checks */}
+                            <div className="rounded-xl border border-gray-200 dark:border-white/10 p-4 space-y-3">
+                                {isCheckingStatus ? (
+                                    <div className="flex items-center justify-center py-8 gap-2">
+                                        <Loader2 className="animate-spin text-amber-500" size={20} />
+                                        <span className="text-xs text-gray-500">Checking sync status...</span>
+                                    </div>
+                                ) : syncStatus ? (
+                                    <div className="space-y-2">
+                                        {checks.map((c, i) => (
+                                            <div key={i} className={cn(
+                                                "flex items-center gap-3 px-4 py-3 rounded-lg border transition-colors",
+                                                c.pass 
+                                                    ? "border-emerald-200 dark:border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-500/5"
+                                                    : "border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.01]"
+                                            )}>
+                                                {c.pass 
+                                                    ? <CheckCircle2 size={16} className="text-emerald-500 shrink-0" /> 
+                                                    : <XCircle size={16} className="text-gray-300 dark:text-gray-600 shrink-0" />}
+                                                <span className={cn(
+                                                    "text-xs font-semibold",
+                                                    c.pass ? "text-emerald-700 dark:text-emerald-400" : "text-gray-400 dark:text-gray-500"
+                                                )}>
+                                                    {c.label}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : null}
+
+                                {/* Refresh button */}
+                                <div className="flex justify-center pt-1">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={checkSyncStatus}
+                                        disabled={isCheckingStatus}
+                                        className="text-xs gap-1.5"
+                                    >
+                                        <RefreshCw size={12} className={isCheckingStatus ? "animate-spin" : ""} />
+                                        Refresh Status
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {/* Result messages */}
+                            {syncStatus && allChecksPassed && (
+                                <div className="flex items-start gap-2 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/50 dark:border-emerald-500/20">
+                                    <CheckCircle2 size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+                                    <div>
+                                        <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400">All checks passed!</p>
+                                        <p className="text-[10px] text-emerald-600 dark:text-emerald-500 mt-0.5">
+                                            {syncStatus.totalSyncedTrades} trades synced. Your dashboard is ready.
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {syncStatus && !allChecksPassed && (
+                                <div className="space-y-3">
+                                    <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/50 dark:border-amber-500/20">
+                                        <AlertCircle size={14} className="text-amber-500 shrink-0 mt-0.5" />
+                                        <p className="text-[10px] text-amber-700 dark:text-amber-400">
+                                            Some checks haven&apos;t passed yet. This is normal if you just set up — it may take a few minutes for the first heartbeat and trade to sync.
+                                        </p>
+                                    </div>
+
+                                    {/* Troubleshooting toggle */}
+                                    <button
+                                        onClick={() => setShowTroubleshooting(!showTroubleshooting)}
+                                        className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                                    >
+                                        <HelpCircle size={13} />
+                                        {showTroubleshooting ? "Hide" : "Show"} troubleshooting tips
+                                    </button>
+
+                                    {showTroubleshooting && (
+                                        <div className="rounded-xl border border-gray-200 dark:border-white/10 p-4 text-xs space-y-2">
+                                            {syncMethod === "TNT_CONNECT" ? (
+                                                <ul className="space-y-1.5 text-gray-500 dark:text-gray-400">
+                                                    <li>• Ensure TNT Connect is running (check system tray)</li>
+                                                    <li>• Verify your API key is correctly pasted</li>
+                                                    <li>• Check that MT5 is open and logged in</li>
+                                                    <li>• Try restarting TNT Connect</li>
+                                                    <li>• Ensure your firewall isn&apos;t blocking TNT Connect</li>
+                                                </ul>
+                                            ) : (
+                                                <ul className="space-y-1.5 text-gray-500 dark:text-gray-400">
+                                                    <li>• Check that WebRequest URL is whitelisted in MT5</li>
+                                                    <li>• Verify the EA is attached to a chart</li>
+                                                    <li>• Ensure &quot;Allow Algo Trading&quot; is enabled in MT5</li>
+                                                    <li>• Check Expert tab for error messages</li>
+                                                    <li>• Verify the API key in EA settings matches your dashboard key</li>
+                                                </ul>
+                                            )}
+                                            <Link 
+                                                href="/academy/getting-started" 
+                                                className="inline-flex items-center gap-1 text-primary font-bold hover:underline mt-2"
+                                            >
+                                                Full setup guide <ExternalLink size={11} />
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -406,18 +666,35 @@ export function TradeSyncWizard({ isOpen, onClose, accounts }: TradeSyncWizardPr
                     )}
 
                     {/* Next / Finish Button */}
-                    <Button
-                        variant={step === 3 ? "primary" : "outline"}
-                        disabled={step === 3 && !isConfirmed}
-                        onClick={handleNext}
-                        className={cn(
-                            "flex items-center gap-1.5",
-                            step === 3 ? "bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/25 border-none" : "hover:border-primary hover:text-primary"
-                        )}
-                    >
-                        {step === 3 ? "Finish & Active" : "Continue"}
-                        {step < 3 && <ArrowRight size={14} />}
-                    </Button>
+                    {syncMethod === "MANUAL" && step === 1 ? (
+                        <Link href="/dashboard/journal?action=log-trade">
+                            <Button
+                                variant="primary"
+                                onClick={() => { onClose(); setStep(1); }}
+                                className="bg-gray-700 hover:bg-gray-800 text-white border-none flex items-center gap-1.5"
+                            >
+                                <PenLine size={14} />
+                                Go to Journal
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Button
+                            variant={step === 3 || step === 4 ? "primary" : "outline"}
+                            disabled={step === 3 && !isConfirmed}
+                            onClick={handleNext}
+                            className={cn(
+                                "flex items-center gap-1.5",
+                                step >= 3 ? "bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/25 border-none" : "hover:border-primary hover:text-primary"
+                            )}
+                        >
+                            {step === 4 
+                                ? (allChecksPassed ? "Finish & Go to Dashboard" : "Skip & Go to Dashboard")
+                                : step === 3 
+                                    ? "Continue to Verify"
+                                    : "Continue"}
+                            {step < 4 && <ArrowRight size={14} />}
+                        </Button>
+                    )}
                 </div>
             </DialogContent>
         </Dialog>

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Lock, Star, Trophy, ChevronRight, BookOpen, CheckCircle } from "lucide-react";
+import { Lock, TrendingUp, Trophy, ChevronRight, BookOpen, CheckCircle, Shield, Crown } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -32,13 +32,13 @@ interface AcademyMapProps {
     basePath?: string; // e.g., "/dashboard/academy" or "/academy"
 }
 
-// Map Configuration: 5 Phases
+// Map Configuration: 5 Phases (Option A - Regrouping all 12 levels)
 const PHASES = [
-    { title: "The Initiate", subtitle: "Novice Trader", color: "from-blue-400 to-cyan-500", icon: BookOpen },
-    { title: "The Analyst", subtitle: "Technical Master", color: "from-cyan-500 to-green-500", icon: Star },
-    { title: "The Strategist", subtitle: "Market Scholar", color: "from-green-500 to-yellow-500", icon: Trophy },
-    { title: "The Operator", subtitle: "Risk Manager", color: "from-yellow-500 to-orange-500", icon: Lock },
-    { title: "The Master", subtitle: "System Legend", color: "from-orange-500 to-red-500", icon: Lock },
+    { title: "The Initiate", subtitle: "Beginner & Foundations (Lvl 1-2)", color: "from-blue-400 to-cyan-500", icon: BookOpen },
+    { title: "The Analyst", subtitle: "Technical & Price Action (Lvl 3-5)", color: "from-cyan-500 to-green-500", icon: TrendingUp },
+    { title: "The Strategist", subtitle: "Patterns & Strategy Lab (Lvl 6 & 8)", color: "from-green-500 to-yellow-500", icon: Trophy },
+    { title: "The Operator", subtitle: "Mindset & Fundamentals (Lvl 7, 9-10)", color: "from-yellow-500 to-orange-500", icon: Shield },
+    { title: "The Master", subtitle: "Gold & Prop Trading (Lvl 11-12)", color: "from-orange-500 to-red-500", icon: Crown },
 ];
 
 export default function AcademyMap({ levels, userProgress, basePath = "/academy" }: AcademyMapProps) {

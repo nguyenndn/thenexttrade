@@ -136,10 +136,10 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={cat.id}
                                         href={`/knowledge?category=${cat.slug}`}
-                                        className={`px-5 py-2.5 rounded-xl backdrop-blur-md border transition-all cursor-pointer text-sm font-bold ${
+                                        className={`px-5 py-2.5 rounded-xl backdrop-blur-md border cursor-pointer text-sm font-bold transition-all duration-300 shadow-sm hover:-translate-y-0.5 ${
                                             categorySlug === cat.slug
-                                                ? 'bg-primary/10 dark:bg-primary/20 border-primary text-primary'
-                                                : 'bg-white/40 dark:bg-white/5 border-gray-300 dark:border-white/20 hover:border-primary hover:bg-white/60 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'
+                                                ? 'bg-gradient-to-r from-amber-500 to-yellow-500 dark:from-amber-500/90 dark:to-yellow-500/90 border-amber-500 text-white shadow-md shadow-amber-500/20 dark:shadow-amber-500/10'
+                                                : 'bg-white/40 dark:bg-white/5 border-amber-500/20 dark:border-amber-500/10 text-gray-700 dark:text-gray-200 hover:bg-white/60 dark:hover:bg-white/10 hover:border-amber-500/45 dark:hover:border-amber-500/35 hover:shadow-md hover:shadow-amber-500/[0.03]'
                                         }`}
                                     >
                                         {cat.name}
@@ -192,10 +192,10 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={chip.key}
                                         href={chipHref}
-                                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 ${
+                                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${
                                             isActive
-                                                ? 'bg-primary text-white shadow-md shadow-primary/30'
-                                                : 'bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border border-gray-200 dark:border-white/10 hover:border-primary hover:text-primary'
+                                                ? 'bg-primary text-white shadow-md shadow-primary/20'
+                                                : 'bg-white/80 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-primary hover:text-primary backdrop-blur-md shadow-sm'
                                         }`}
                                     >
                                         <chip.icon size={14} />

@@ -350,7 +350,7 @@ function detectInsights(data: {
 }): { issues: Insight[]; strengths: Insight[] } {
     const issues: Insight[] = [];
     const strengths: Insight[] = [];
-    const overallWR = data.stats.winRate;
+    const overallWR = data.stats.winRate ?? 0;
 
     // Rule 1: Revenge Trading
     if (data.revenge.count >= 3) {
@@ -547,7 +547,7 @@ async function getQuickScore(
     const avgRR = stats.avgLoss > 0 ? stats.avgWin / stats.avgLoss : stats.grossProfit > 0 ? 2 : 0;
 
     const result = calculateTradeScore({
-        winRate: stats.winRate,
+        winRate: stats.winRate ?? 0,
         avgRR,
         planCompliance: planCompliance.planComplianceRate >= 0 ? planCompliance.planComplianceRate : 70,
         slUsageRate: riskDiscipline,
@@ -657,7 +657,7 @@ export async function getIntelligenceData(
 
     // Calculate Trade Score
     const overtradingDays = dayOfWeek.filter(
-        (d) => d.tradeCount >= 5 && d.winRate < stats.winRate - 15
+        (d) => d.tradeCount >= 5 && d.winRate < (stats.winRate ?? 0) - 15
     ).length;
     const weakPairCount = symbols.filter((s) => s.trades >= 8 && s.winRate < 40).length;
     const worstEmotion = emotions.sort((a, b) => b.lossRate - a.lossRate)[0];
@@ -665,7 +665,7 @@ export async function getIntelligenceData(
     const avgRR = stats.avgLoss > 0 ? stats.avgWin / stats.avgLoss : 0;
 
     const tradeScore = calculateTradeScore({
-        winRate: stats.winRate,
+        winRate: stats.winRate ?? 0,
         avgRR,
         planCompliance: planCompliance.planComplianceRate >= 0 ? planCompliance.planComplianceRate : 70,
         slUsageRate: riskDiscipline,
@@ -687,7 +687,7 @@ export async function getIntelligenceData(
 
     // Score factors for breakdown UI
     const scoreFactors: IntelligenceData["scoreFactors"] = [
-        { name: "Win Rate", value: stats.winRate, impact: stats.winRate > 50 ? "positive" : stats.winRate < 40 ? "negative" : "neutral" },
+        { name: "Win Rate", value: stats.winRate ?? 0, impact: (stats.winRate ?? 0) > 50 ? "positive" : (stats.winRate ?? 0) < 40 ? "negative" : "neutral" },
         { name: "Risk:Reward", value: Math.round(avgRR * 10) / 10, impact: avgRR > 1.5 ? "positive" : avgRR < 1 ? "negative" : "neutral" },
         { name: "SL Discipline", value: Math.round(riskDiscipline), impact: riskDiscipline > 90 ? "positive" : riskDiscipline < 70 ? "negative" : "neutral" },
         { name: "Plan Compliance", value: Math.round(planCompliance.planComplianceRate >= 0 ? planCompliance.planComplianceRate : -1), impact: planCompliance.planComplianceRate > 80 ? "positive" : planCompliance.planComplianceRate < 60 ? "negative" : "neutral" },
@@ -702,7 +702,7 @@ export async function getIntelligenceData(
         strengths,
         hasEnoughData: true,
         quickStats: {
-            winRate: stats.winRate,
+            winRate: stats.winRate ?? 0,
             avgRR,
             slUsageRate: riskDiscipline,
             planComplianceRate: planCompliance.planComplianceRate,

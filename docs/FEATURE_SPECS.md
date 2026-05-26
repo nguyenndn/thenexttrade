@@ -1,6 +1,6 @@
 # Feature Specs
 
-Last reviewed: 2026-05-24
+Last reviewed: 2026-05-26
 
 This file is the developer handoff layer. Use it when fixing bugs or continuing feature work. `PRODUCT.md` explains what exists at a high level; this file explains what each important URL/function must do.
 
@@ -89,6 +89,49 @@ QA checklist:
 - Header/footer navigation works.
 - Background does not reduce text contrast.
 - Contact validation works.
+
+### `/get-started`
+
+Purpose:
+
+- Gold-accented start page for visitors and logged-in users.
+- For anonymous visitors, explain the fastest path from signup to first trade review.
+- For logged-in users, show a personalized launch checklist based on account, trade, and mission progress.
+
+Users:
+
+- Anonymous visitors who receive a direct start link.
+- Logged-in users who need a simple "what should I do next?" page.
+
+Expected behavior:
+
+- Anonymous users see public copy, gold visual direction, signup/login CTAs, launch steps, and TNT Connect recommended path.
+- Logged-in users see progress cards, next best action, and ordered setup steps.
+- Correct key routes:
+  - Signup: `/auth/signup`
+  - Login: `/auth/login`
+  - Profile: `/dashboard/settings/profile`
+  - Add account: `/dashboard/accounts?action=add`
+  - Sync setup: `/dashboard/accounts?setup=sync`
+  - Reports: `/dashboard/reports`
+  - Missions: `/dashboard/missions`
+- The page is linked from the homepage hero support CTA, mobile navigation, and logged-in user menu as `Start Here` / `Getting Started`.
+- It is also safe as a direct-entry route for campaigns, emails, onboarding links, or future CTAs.
+
+Code paths:
+
+- `src/app/get-started/page.tsx`
+- `src/components/get-started/PublicGetStarted.tsx`
+- `src/components/get-started/OnboardingChecklist.tsx`
+
+QA checklist:
+
+- Anonymous desktop/mobile page loads.
+- Signup and login CTAs route correctly.
+- Logged-in user with no account sees "Add account" as next step.
+- Logged-in user with account but no trades sees sync setup as next step.
+- Logged-in user with trade history sees report/mission progression.
+- No XP wording; use Edge wording where rewards are mentioned.
 
 ### `/articles`, `/articles/[slug]`, `/articles/tags/[slug]`
 
@@ -307,6 +350,48 @@ QA checklist:
 - Verified email flow.
 - No raw token exposure in UI/logs.
 
+### `/onboarding`
+
+Purpose:
+
+- Guide new users through 4-step onboarding: Identity → Trading Goal → Sync Path → Next Action.
+
+Users:
+
+- Newly verified users redirected from `/auth/signup`.
+
+Expected behavior:
+
+- Step 1 (Identity): Username (required), Avatar (optional), Bio (optional). Profile persisted to `Profile` model.
+- Step 2 (Trading Goal): Select one goal. Stored in `User.settings.onboarding.tradingGoal`.
+- Step 3 (Sync Path): Choose TNT Connect, EA Sync, or Manual Journal. Stored in `User.settings.onboarding.preferredSyncMethod`.
+- Step 4 (Next Action): Dynamic CTA based on sync choice + shows unlocked features.
+- Skip button available on all steps. Stores `skippedAt` in `User.settings.onboarding`.
+- Final redirects: TNT → `/dashboard/accounts?setup=sync&method=tnt`, EA → `/dashboard/accounts?setup=sync&method=ea`, Manual → `/dashboard`, Skip → `/dashboard`.
+- Users who completed onboarding should not be forced through it again.
+- Progress bar shows current step position.
+
+Code paths:
+
+- `src/app/onboarding/page.tsx`
+- `src/app/onboarding/actions.ts`
+- `src/lib/onboarding/onboarding.server.ts`
+- `src/app/api/onboarding/route.ts`
+
+Analytics events:
+
+- `onboarding_started`, `onboarding_step_completed`, `onboarding_sync_method_selected`, `onboarding_completed`, `onboarding_skipped`.
+
+QA checklist:
+
+- Complete all 4 steps with TNT selected.
+- Complete all 4 steps with EA selected.
+- Complete all 4 steps with Manual selected.
+- Skip at each step.
+- Duplicate username.
+- No avatar.
+- Mobile viewport 390×844.
+
 ## User Dashboard Routes
 
 ### `/dashboard`
@@ -331,8 +416,10 @@ Expected behavior:
 - Date parsing must not crash on invalid account timezones.
 - Account timezone must be normalized before date range logic.
 - Win rate counts true wins over closed trades. Break-even should not be counted as win or loss unless a specific metric says so.
-- Profit factor should not display raw sentinel values like `999`.
-- Win rate, trade score, profit factor, average win, and average loss need tooltip explanations.
+- Win rate returns `null` when there are no decisive trades (no wins and no losses). Display as `--`, not `0%`.
+- Profit factor uses `Infinity` when there is profit and no loss. Display as `∞`. Never display `999`.
+- All KPI cards use `<MetricHelp>` component from `src/components/metrics/MetricHelp.tsx` with central definitions from `src/lib/metrics/metric-definitions.ts`.
+- Desktop: tooltip on hover. Mobile: popover on tap. All must have `aria-label` and keyboard focus support.
 - Empty periods should show useful empty states, not broken charts.
 
 Code paths:
@@ -372,6 +459,14 @@ Inputs/actions:
 - Free vs Pro modal.
 - Account dashboard.
 - Sync.
+
+Query param support:
+
+- `?setup=sync`: opens TradeSyncWizard.
+- `?setup=sync&method=tnt`: opens wizard with TNT Connect pre-selected.
+- `?setup=sync&method=ea`: opens wizard with EA Sync pre-selected.
+- `?action=add`: opens Add Account flow.
+- After opening, query params are cleaned with `window.history.replaceState`.
 - Request/unlock Pro where eligible.
 
 Expected behavior:

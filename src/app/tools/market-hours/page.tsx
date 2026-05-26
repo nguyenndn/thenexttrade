@@ -15,27 +15,70 @@ export default function MarketHoursPage() {
             <main className="flex-1 pt-28 pb-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumb */}
-                    <div className="flex items-center gap-2 text-sm font-medium bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-xl px-5 py-3 mb-8 shadow-sm border border-[#00C888]/20">
-                        <Home size={14} className="text-white/70 dark:text-gray-500 shrink-0" />
-                        <Link href="/" className="text-white/80 dark:text-gray-500 hover:text-white transition-colors shrink-0">Home</Link>
-                        <ChevronRight size={14} className="text-white/40 shrink-0" />
-                        <Link href="/tools" className="text-white/80 dark:text-gray-500 hover:text-white transition-colors shrink-0">Tools</Link>
-                        <ChevronRight size={14} className="text-white/40 shrink-0" />
-                        <span className="text-white font-semibold truncate">Forex Market Hours</span>
+                    <div className="flex items-center gap-2.5 text-xs font-semibold bg-gray-50/50 dark:bg-white/[0.02] border border-gray-200/80 dark:border-white/5 rounded-xl px-4 py-2.5 mb-8 w-fit shadow-sm relative z-10 backdrop-blur-sm">
+                        <Link href="/" className="text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold transition-colors shrink-0 flex items-center gap-1.5">
+                            <Home size={13} />
+                            <span>Home</span>
+                        </Link>
+                        <ChevronRight size={12} className="text-gray-400 dark:text-gray-600 shrink-0" />
+                        <Link href="/tools" className="text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold transition-colors shrink-0">Tools</Link>
+                        <ChevronRight size={12} className="text-gray-400 dark:text-gray-600 shrink-0" />
+                        <span className="text-gray-800 dark:text-gray-200 font-bold truncate">Forex Market Hours</span>
                     </div>
 
-                    <div className="mb-12 text-center max-w-4xl mx-auto">
-                        <div className="flex items-center justify-center gap-3 mb-4">
-                            <div className="p-2 bg-blue-500/10 text-blue-500 dark:text-blue-400 rounded-lg">
-                                <Clock size={24} />
+                    {/* Header Section - Option B: Split-Staggered HUD (Modern Financial Terminal) */}
+                    <div className="mb-12 relative group">
+                        {/* Soft background glow */}
+                        <div className="absolute -top-12 -left-12 w-64 h-64 bg-amber-500/[0.06] dark:bg-amber-500/[0.03] rounded-full blur-3xl pointer-events-none" />
+
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative z-10">
+                            {/* Column Left: Staggered Content */}
+                            <div className="md:col-span-7 lg:col-span-8 text-left space-y-4">
+                                {/* Capsule Category Badge */}
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-black uppercase tracking-widest">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                    <span>Market Info</span>
+                                </div>
+
+                                {/* Extrabold Lexend Title */}
+                                <h1 className="text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
+                                    Forex <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-500 dark:from-amber-400 dark:to-yellow-300">Market Hours</span>
+                                </h1>
+
+                                {/* Sophisticated Description */}
+                                <p className="text-sm md:text-base text-slate-500 dark:text-gray-400 leading-relaxed max-w-2xl font-semibold">
+                                    Visualize the major global trading sessions—Sydney, Tokyo, London, and New York—in your local time to find high-liquidity overlaps.
+                                </p>
                             </div>
-                            <h1 className="text-3xl font-bold text-gray-700 dark:text-white">
-                                Forex Market Hours
-                            </h1>
+
+                            {/* Column Right: Glassmorphic Micro HUD Panel */}
+                            <div className="md:col-span-5 lg:col-span-4">
+                                <div className="bg-white/80 dark:bg-white/[0.02] border border-amber-500/20 rounded-2xl p-5 shadow-lg relative backdrop-blur-md overflow-hidden group-hover:border-amber-500/35 transition-colors duration-300">
+                                    {/* Abstract digital line background */}
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/[0.04] dark:bg-amber-500/[0.02] rounded-full blur-2xl pointer-events-none" />
+
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3.5">Terminal Status</p>
+                                    
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/5 pb-2">
+                                            <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                                Live Sync
+                                            </span>
+                                            <span className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider">Active</span>
+                                        </div>
+                                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/5 pb-2">
+                                            <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400">Timezone</span>
+                                            <span className="text-xs font-black text-amber-600 dark:text-amber-400">Auto-Detect</span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400">Liquidity Index</span>
+                                            <span className="text-xs font-black text-emerald-500 dark:text-emerald-400">Optimized</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-500 leading-relaxed">
-                            Visualize the major forex market sessions: Sydney, Tokyo, London, and New York.
-                        </p>
                     </div>
 
                     <MarketHoursMonitor />

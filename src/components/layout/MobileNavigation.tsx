@@ -5,7 +5,7 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { menuItems } from "@/config/navigation";
-import { ChevronDown, LogIn, UserPlus, User as UserIcon, LayoutDashboard, Settings, LogOut } from "lucide-react";
+import { ChevronDown, LogIn, UserPlus, User as UserIcon, LayoutDashboard, Settings, LogOut, Compass } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AuthUser } from "@/lib/auth-types";
 import { signout } from "@/app/auth/actions";
@@ -89,6 +89,11 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
                                 </div>
                             </div>
 
+                            <Link href="/get-started" onClick={onClose}
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isDark ? 'text-orange-300 hover:bg-orange-400/10' : 'text-orange-700 hover:bg-orange-50'}`}>
+                                <Compass size={16} className="text-orange-500" />
+                                Getting Started
+                            </Link>
                             <Link href={dashboardUrl} onClick={onClose}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-gray-700 hover:bg-gray-50'}`}>
                                 <LayoutDashboard size={16} className="text-primary" />
@@ -109,17 +114,24 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
                         </div>
                     ) : (
                         /* ── Not logged in: Login + Sign Up ── */
-                        <div className="p-4 flex gap-3">
-                            <Link href="/auth/login" onClick={onClose}
-                                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${isDark ? 'border-slate-600 text-white hover:bg-slate-800' : 'border-gray-200 text-gray-800 hover:bg-gray-50'}`}>
-                                <LogIn size={16} />
-                                Login
+                        <div className="p-4 space-y-3">
+                            <Link href="/get-started" onClick={onClose}
+                                className={`flex min-h-11 items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-colors ${isDark ? 'border-orange-400/20 bg-orange-400/10 text-orange-300 hover:bg-orange-400/15' : 'border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100'}`}>
+                                <Compass size={16} />
+                                Start Here
                             </Link>
-                            <Link href="/auth/signup" onClick={onClose}
-                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-primary to-[#00A570] text-white hover:opacity-90 transition-opacity">
-                                <UserPlus size={16} />
-                                Sign Up Free
-                            </Link>
+                            <div className="grid grid-cols-2 gap-3">
+                                <Link href="/auth/login" onClick={onClose}
+                                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${isDark ? 'border-slate-600 text-white hover:bg-slate-800' : 'border-gray-200 text-gray-800 hover:bg-gray-50'}`}>
+                                    <LogIn size={16} />
+                                    Login
+                                </Link>
+                                <Link href="/auth/signup" onClick={onClose}
+                                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-primary to-[#00A570] text-white hover:opacity-90 transition-opacity">
+                                    <UserPlus size={16} />
+                                    Sign Up
+                                </Link>
+                            </div>
                         </div>
                     )}
                 </div>

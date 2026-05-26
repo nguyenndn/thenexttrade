@@ -1,6 +1,6 @@
 # Design
 
-Last reviewed: 2026-05-24
+Last reviewed: 2026-05-26
 
 Design direction: premium, calm, operational, and fast to scan. Dashboard pages should feel like tools, not landing pages.
 
@@ -61,7 +61,27 @@ Metrics that can confuse users need tooltip explanations:
 - Average Win
 - Average Loss
 
-Do not show raw sentinel values like `999` for profit factor.
+### KPI Tooltip Pattern
+
+Component: `src/components/metrics/MetricHelp.tsx`
+Definitions: `src/lib/metrics/metric-definitions.ts`
+
+Behavior:
+
+- Desktop: tooltip on hover with 250ms delay.
+- Mobile: popover/dialog on tap.
+- Must have `aria-label` for accessibility.
+- Must not shift layout (use absolute/portal positioning).
+- Tooltip content: short description, formula, included data, edge cases, and optional "good to know".
+
+Usage:
+
+```tsx
+<MetricHelp metricId="winRate" />
+<MetricHelp metricId="profitFactor" side="right" />
+```
+
+Do not show raw sentinel values like `999` for profit factor. Use `∞` for infinite and `--` for unavailable.
 
 ## Empty States
 
@@ -97,3 +117,17 @@ Subtle backgrounds are allowed:
 - Soft premium surface treatment.
 
 Avoid decorative blobs/orbs and one-note color palettes.
+
+## Onboarding Wizard Pattern
+
+Onboarding at `/onboarding` uses a 4-step card wizard:
+
+- Progress bar at top (gradient, animated).
+- Step dots showing current/completed/upcoming.
+- Skip button always visible.
+- Each step is a distinct card section within the same container.
+- Step navigation: Continue button (primary), Back button (outline), Skip (text link).
+- Style: matches auth page gold-accented, mobile-first design.
+- Container: `max-w-lg`, `rounded-2xl`, `shadow-xl`.
+- The wizard persists progress in `User.settings.onboarding`.
+

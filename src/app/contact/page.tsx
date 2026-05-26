@@ -83,7 +83,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="max-w-3xl mx-auto">
-                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-12 shadow-xl relative overflow-hidden">
+                    <div className="bg-white/80 dark:bg-[#131622]/60 border border-amber-500/15 dark:border-white/[0.06] rounded-2xl p-8 md:p-12 shadow-xl shadow-amber-500/[0.01] relative overflow-hidden backdrop-blur-md">
                         
                         <div className="relative z-10 mb-10">
                             <h2 className="text-3xl font-black text-gray-700 dark:text-white tracking-tight mb-2">Send us a message</h2>
@@ -162,7 +162,7 @@ export default function ContactPage() {
                                 <textarea
                                     id="message"
                                     rows={6}
-                                    className={`w-full p-5 rounded-xl bg-gray-50 dark:bg-[#151925] border ${errors.message ? "border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/20" : "border-gray-200 dark:border-white/10"} text-base outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 placeholder:font-normal text-gray-700 dark:text-white font-medium resize-none`}
+                                    className={`w-full p-5 rounded-xl bg-gray-50/50 dark:bg-[#131622]/40 border ${errors.message ? "border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/20" : "border-gray-200 dark:border-white/10"} text-base outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 placeholder:font-normal text-gray-700 dark:text-white font-medium resize-none`}
                                     placeholder="Please describe your inquiry in detail..."
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
@@ -178,10 +178,10 @@ export default function ContactPage() {
                                     type="submit" 
                                     variant="primary" 
                                     size="md" 
-                                    className="w-full sm:w-auto rounded-xl" 
+                                    className="w-full sm:w-auto rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30 font-black min-h-[50px] sm:min-h-12 items-center justify-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] px-8" 
                                     isLoading={isPending}
                                 >
-                                    <Send size={20} />
+                                    <Send size={18} />
                                     <span>Send Message</span>
                                 </Button>
                                 

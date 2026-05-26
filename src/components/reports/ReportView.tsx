@@ -357,7 +357,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                 />
                 <StatCard
                     label="Profit Factor"
-                    value={report.profitFactor >= 999 ? "∞" : report.profitFactor.toFixed(2)}
+                    value={!isFinite(report.profitFactor) ? "∞" : report.profitFactor.toFixed(2)}
                     icon={TrendingUp}
                     color="bg-amber-500/10 text-amber-500"
                 />

@@ -8,7 +8,7 @@ const TEAM = [
     name: "Kee",
     role: "Trader - Founder & Lead Developer",
     initials: "K",
-    color: "bg-gradient-to-br from-primary to-teal-500",
+    color: "bg-gradient-to-br from-amber-500 to-teal-500",
   },
   {
     name: "PVSR Capital",
@@ -30,7 +30,7 @@ const SITES = [
     desc: "Main Platform",
     url: "https://thenexttrade.vercel.app",
     initials: "TN",
-    color: "bg-gradient-to-br from-primary to-emerald-500",
+    color: "bg-gradient-to-br from-amber-500 to-emerald-500",
     image: "/icons/icon-192x192.png",
   },
   {
@@ -58,11 +58,11 @@ export function AboutUsSection() {
           {/* Brand Story — full width on tablet */}
           <div className="lg:col-span-1">
             <h2 className="text-2xl font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
-              <Globe size={22} className="text-primary" />
+              <Globe size={22} className="text-amber-500 dark:text-amber-400" />
               About TheNextTrade
             </h2>
             <div className="relative mb-5">
-              <Quote size={16} className="text-primary/30 absolute -left-1 -top-1" />
+              <Quote size={16} className="text-amber-500/30 absolute -left-1 -top-1" />
               <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic pl-4">
                 From hard lessons to building the tools every trader deserves.
               </p>
@@ -73,7 +73,7 @@ export function AboutUsSection() {
             <Link href="/about">
               <Button
                 variant="outline"
-                className="border-primary/30 dark:border-primary/40 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 hover:border-primary dark:hover:border-primary rounded-full text-sm"
+                className="border-amber-500/30 dark:border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 dark:hover:bg-amber-500/20 hover:border-amber-500 dark:hover:border-amber-500 rounded-xl text-sm font-bold"
               >
                 Read My Story <ArrowRight size={16} className="ml-1" />
               </Button>
@@ -89,7 +89,7 @@ export function AboutUsSection() {
                 {TEAM.map((member, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary/60 hover:shadow-md hover:shadow-primary/10 hover:-translate-y-0.5 transition-all duration-200"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-amber-400 dark:hover:border-amber-500/40 hover:shadow-md hover:shadow-amber-500/5 hover:-translate-y-0.5 transition-all duration-200"
                   >
                     <div className="w-10 h-10 rounded-full ring-2 ring-amber-400/60 dark:ring-amber-500/40 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 shrink-0">
                       <div className={`w-full h-full rounded-full ${member.color} flex items-center justify-center text-white text-sm font-black shadow-lg`}>
@@ -115,7 +115,7 @@ export function AboutUsSection() {
                     href={site.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary/60 hover:shadow-md hover:shadow-primary/10 hover:-translate-y-0.5 transition-all duration-200 group"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-amber-400 dark:hover:border-amber-500/40 hover:shadow-md hover:shadow-amber-500/5 hover:-translate-y-0.5 transition-all duration-200 group"
                   >
                     <div className="w-10 h-10 rounded-full ring-2 ring-amber-400/60 dark:ring-amber-500/40 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 shrink-0 overflow-hidden">
                       {site.image ? (
@@ -127,12 +127,12 @@ export function AboutUsSection() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-bold text-gray-700 dark:text-white group-hover:text-primary transition-colors">
+                      <p className="text-sm font-bold text-gray-700 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">
                         {site.name}
                       </p>
                       <p className="text-xs text-gray-600 dark:text-gray-300">{site.desc}</p>
                     </div>
-                    <ExternalLink size={14} className="text-gray-600 dark:text-gray-300 group-hover:text-primary transition-colors" />
+                    <ExternalLink size={14} className="text-gray-600 dark:text-gray-300 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors" />
                   </a>
                 ))}
               </div>

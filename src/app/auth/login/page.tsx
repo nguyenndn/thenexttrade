@@ -141,7 +141,7 @@ export default function LoginPage() {
   return (
     <>
     <div className="w-full max-w-[480px] mx-auto rounded-lg border border-amber-900/10 bg-white/85 p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-5">
         <Logo />
       </div>
       <div className="text-center mb-8">
@@ -149,8 +149,8 @@ export default function LoginPage() {
           <ShieldCheck size={14} />
           Secure access
         </div>
-        <p className="text-base font-semibold text-slate-600 dark:text-slate-300">Welcome back</p>
-        <h1 className="mt-2 text-3xl font-black text-slate-950 dark:text-white">Login to your account</h1>
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Welcome back</p>
+        <h1 className="mt-1 text-3xl font-black text-slate-950 dark:text-white">Login to your account</h1>
       </div>
 
       <div className="flex rounded-lg border border-amber-900/10 bg-[#F8F1E3] p-1 mb-6 dark:border-white/10 dark:bg-white/[0.06]">

@@ -127,7 +127,7 @@ export function buildReportEmailHtml(data: ReportEmailData): string {
                 <tr>
                     <td style="width:50%;padding:12px;background:#f9fafb;border-radius:8px;vertical-align:top">
                         <p style="margin:0;font-size:11px;color:#9ca3af;text-transform:uppercase;font-weight:700">Profit Factor</p>
-                        <p style="margin:6px 0 0;font-size:24px;font-weight:800;color:#1f2937">${data.profitFactor >= 999 ? "∞" : data.profitFactor.toFixed(2)}</p>
+                        <p style="margin:6px 0 0;font-size:24px;font-weight:800;color:#1f2937">${!isFinite(data.profitFactor) ? "∞" : data.profitFactor.toFixed(2)}</p>
                     </td>
                     <td style="width:8px"></td>
                     <td style="width:50%;padding:12px;background:#f9fafb;border-radius:8px;vertical-align:top">

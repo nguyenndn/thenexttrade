@@ -2,14 +2,14 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { BookOpen, Star, Trophy, Shield, Crown } from "lucide-react";
+import { BookOpen, TrendingUp, Trophy, Shield, Crown } from "lucide-react";
 
 const steps = [
-  { icon: BookOpen, title: "1. The Initiate", desc: "Novice Trader", color: "text-blue-500", bg: "bg-blue-500/10", gradient: "from-blue-400 to-cyan-500", glow: "rgba(59,130,246,0.3)" },
-  { icon: Star, title: "2. The Analyst", desc: "Technical Master", color: "text-cyan-500", bg: "bg-cyan-500/10", gradient: "from-cyan-500 to-green-500", glow: "rgba(6,182,212,0.3)" },
-  { icon: Trophy, title: "3. The Strategist", desc: "Market Scholar", color: "text-primary", bg: "bg-primary/10", gradient: "from-green-500 to-yellow-500", glow: "rgba(0,200,136,0.3)" },
-  { icon: Shield, title: "4. The Operator", desc: "Risk Manager", color: "text-amber-500", bg: "bg-amber-500/10", gradient: "from-yellow-500 to-orange-500", glow: "rgba(245,158,11,0.3)" },
-  { icon: Crown, title: "5. The Master", desc: "System Legend", color: "text-orange-500", bg: "bg-orange-500/10", gradient: "from-orange-500 to-red-500", glow: "rgba(249,115,22,0.3)" },
+  { icon: BookOpen, title: "1. The Initiate", desc: "Beginner & Foundations (Lvl 1-2)", color: "text-blue-500", bg: "bg-blue-500/10", gradient: "from-blue-400 to-cyan-500", glow: "rgba(59,130,246,0.3)" },
+  { icon: TrendingUp, title: "2. The Analyst", desc: "Technical & Price Action (Lvl 3-5)", color: "text-cyan-500", bg: "bg-cyan-500/10", gradient: "from-cyan-500 to-green-500", glow: "rgba(6,182,212,0.3)" },
+  { icon: Trophy, title: "3. The Strategist", desc: "Patterns & Strategy Lab (Lvl 6 & 8)", color: "text-primary", bg: "bg-primary/10", gradient: "from-green-500 to-yellow-500", glow: "rgba(0,200,136,0.3)" },
+  { icon: Shield, title: "4. The Operator", desc: "Mindset & Fundamentals (Lvl 7, 9-10)", color: "text-amber-500", bg: "bg-amber-500/10", gradient: "from-yellow-500 to-orange-500", glow: "rgba(245,158,11,0.3)" },
+  { icon: Crown, title: "5. The Master", desc: "Gold & Prop Trading (Lvl 11-12)", color: "text-orange-500", bg: "bg-orange-500/10", gradient: "from-orange-500 to-red-500", glow: "rgba(249,115,22,0.3)" },
 ];
 
 const CARD_DELAY = 0.5;

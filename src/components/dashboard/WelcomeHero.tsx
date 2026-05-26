@@ -1,46 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { Wallet, FileText, GraduationCap, ArrowRight, Sparkles, BarChart3 } from "lucide-react";
+import { ArrowRight, Sparkles, BarChart3, GraduationCap, Cable } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { ActivationState } from "@/lib/activation/activation-types";
+import { trackEvent } from "@/lib/track";
 
 interface WelcomeHeroProps {
   userName: string;
   activationState: ActivationState;
 }
 
-const QUICK_ACTIONS = [
-  {
-    icon: Wallet,
-    title: "Connect Account",
-    description: "Sync your broker to auto-import trades",
-    href: "/dashboard/accounts",
-    color: "text-blue-500",
-    bg: "bg-blue-500/10",
-  },
-  {
-    icon: FileText,
-    title: "Log First Trade",
-    description: "Start building your trading history",
-    href: "/dashboard/journal",
-    color: "text-primary",
-    bg: "bg-primary/10",
-  },
-  {
-    icon: GraduationCap,
-    title: "Explore Academy",
-    description: "Level-up with structured lessons",
-    href: "/dashboard/academy",
-    color: "text-purple-500",
-    bg: "bg-purple-500/10",
-  },
-];
-
 export function WelcomeHero({ userName, activationState }: WelcomeHeroProps) {
   const progress = Math.round(
     (activationState.completedCount / activationState.totalCount) * 100
   );
+
+  const nextStep = activationState.nextStep;
+
+  // Secondary actions: show 2 non-next, non-completed steps
+  const secondarySteps = activationState.steps
+    .filter((s) => !s.completed && s.id !== nextStep?.id)
+    .slice(0, 2);
+
+  const handleCtaClick = (stepId: string, href: string) => {
+    trackEvent("activation_next_step_clicked", { step: stepId, href });
+  };
 
   return (
     <div className="space-y-4">
@@ -66,11 +51,11 @@ export function WelcomeHero({ userName, activationState }: WelcomeHeroProps) {
           </h2>
           <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-xl leading-relaxed mb-6">
             Your dashboard will come alive once you start logging trades.
-            Complete these 3 quick steps to unlock analytics, insights, and your personal Trade Score.
+            Complete these steps to unlock analytics, insights, and your personal Trade Score.
           </p>
 
           {/* Progress */}
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden max-w-xs">
               <div
                 className="h-full bg-gradient-to-r from-primary to-teal-400 rounded-full transition-all duration-700"
@@ -81,42 +66,49 @@ export function WelcomeHero({ userName, activationState }: WelcomeHeroProps) {
               {activationState.completedCount}/{activationState.totalCount} done
             </span>
           </div>
+
+          {/* Primary Next Best Action */}
+          {nextStep && (
+            <Link
+              href={nextStep.ctaHref}
+              onClick={() => handleCtaClick(nextStep.id, nextStep.ctaHref)}
+            >
+              <Button variant="primary" className="gap-2 shadow-lg shadow-primary/25 px-6 py-3 text-sm">
+                {nextStep.ctaLabel}
+                <ArrowRight size={16} />
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
 
-      {/* Quick Action Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {QUICK_ACTIONS.map((action) => {
-          const isCompleted = activationState.steps.some(
-            (s) =>
-              s.ctaHref === action.href && s.completed
-          );
-          return (
-            <Link key={action.href} href={action.href} className="group block">
-              <div
-                className={`relative rounded-xl border p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${
-                  isCompleted
-                    ? "border-primary/20 bg-primary/5 dark:bg-primary/10"
-                    : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#0B0E14] hover:border-primary/30"
-                }`}
-              >
+      {/* Secondary Action Cards — show 2 relevant next actions */}
+      {secondarySteps.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {secondarySteps.map((step) => (
+            <Link
+              key={step.id}
+              href={step.ctaHref}
+              onClick={() => handleCtaClick(step.id, step.ctaHref)}
+              className="group block"
+            >
+              <div className="relative rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0B0E14] p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/30">
                 <div className="flex items-start gap-3">
-                  <div className={`p-2.5 rounded-xl ${action.bg} shrink-0`}>
-                    <action.icon size={20} className={action.color} />
+                  <div className="p-2.5 rounded-xl bg-gray-100 dark:bg-white/5 shrink-0">
+                    {step.id === "START_ACADEMY" ? (
+                      <GraduationCap size={18} className="text-purple-500" />
+                    ) : step.id === "CONNECT_ACCOUNT" ? (
+                      <Cable size={18} className="text-cyan-500" />
+                    ) : (
+                      <BarChart3 size={18} className="text-primary" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-bold text-gray-800 dark:text-white">
-                        {action.title}
-                      </h3>
-                      {isCompleted && (
-                        <span className="text-[9px] font-black text-primary bg-primary/10 px-1.5 py-0.5 rounded-md uppercase tracking-wider">
-                          Done
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {action.description}
+                    <h3 className="text-sm font-bold text-gray-800 dark:text-white">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                      {step.description}
                     </p>
                   </div>
                   <ArrowRight
@@ -126,9 +118,9 @@ export function WelcomeHero({ userName, activationState }: WelcomeHeroProps) {
                 </div>
               </div>
             </Link>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* What you'll unlock hint */}
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">

@@ -105,17 +105,17 @@ export default async function AboutPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[
-                            { icon: Shield, color: "text-blue-600 dark:text-blue-400", bg: "bg-gradient-to-br from-blue-100 to-indigo-50 dark:from-blue-500/15 dark:to-indigo-500/5", border: "border-blue-200/60 dark:border-blue-500/15", title: "No Shortcuts", desc: "I don't sell signals or promise overnight riches. Trading is a skill — it takes time, discipline, and real education to develop." },
-                            { icon: TrendingUp, color: "text-emerald-600 dark:text-primary", bg: "bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-primary/15 dark:to-teal-500/5", border: "border-emerald-200/60 dark:border-primary/15", title: "Systems Over Gambling", desc: "Every tool and lesson on this platform teaches systematic, rule-based trading. Because consistent profits come from consistent processes." },
-                            { icon: Users, color: "text-amber-600 dark:text-amber-400", bg: "bg-gradient-to-br from-amber-100 to-orange-50 dark:from-amber-500/15 dark:to-orange-500/5", border: "border-amber-200/60 dark:border-amber-500/15", title: "Free for Everyone", desc: "I built this because quality forex education shouldn't be expensive. The core tools, Academy, and knowledge base will always be free." }
+                            { icon: Shield, color: "text-blue-600 dark:text-blue-400", bg: "bg-gradient-to-br from-blue-100 to-indigo-50 dark:from-blue-500/15 dark:to-indigo-500/5", border: "border-blue-200/60 dark:border-blue-500/15", hoverBorder: "hover:border-blue-500/35 dark:hover:border-blue-500/30", hoverShadow: "hover:shadow-[0_12px_30px_rgba(59,130,246,0.03)] dark:hover:shadow-[0_12px_30px_rgba(59,130,246,0.01)]", title: "No Shortcuts", desc: "I don't sell signals or promise overnight riches. Trading is a skill — it takes time, discipline, and real education to develop." },
+                            { icon: TrendingUp, color: "text-emerald-600 dark:text-primary", bg: "bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-primary/15 dark:to-teal-500/5", border: "border-emerald-200/60 dark:border-primary/15", hoverBorder: "hover:border-emerald-500/35 dark:hover:border-primary/30", hoverShadow: "hover:shadow-[0_12px_30px_rgba(16,185,129,0.03)] dark:hover:shadow-[0_12px_30px_rgba(16,185,129,0.01)]", title: "Systems Over Gambling", desc: "Every tool and lesson on this platform teaches systematic, rule-based trading. Because consistent profits come from consistent processes." },
+                            { icon: Users, color: "text-amber-600 dark:text-amber-400", bg: "bg-gradient-to-br from-amber-100 to-orange-50 dark:from-amber-500/15 dark:to-orange-500/5", border: "border-amber-200/60 dark:border-amber-500/15", hoverBorder: "hover:border-amber-500/35 dark:hover:border-gold/30", hoverShadow: "hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)]", title: "Free for Everyone", desc: "I built this because quality forex education shouldn't be expensive. The core tools, Academy, and knowledge base will always be free." }
                         ].map((item, i) => (
                             <ScrollReveal key={i} delay={0.15 * i} direction="up">
-                                <div className={`bg-white dark:bg-[#151925] border ${item.border} rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-500 group h-full`}>
+                                <div className={`bg-white/80 dark:bg-[#131622]/60 border border-amber-500/15 dark:border-white/[0.06] rounded-2xl p-8 shadow-sm hover:-translate-y-0.5 transition-all duration-300 h-full backdrop-blur-md overflow-hidden relative group ${item.hoverBorder} ${item.hoverShadow}`}>
                                     <div className={`w-14 h-14 rounded-xl ${item.bg} ${item.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                                         <item.icon size={28} />
                                     </div>
-                                    <h3 className="text-xl font-bold mb-3 text-gray-700 dark:text-white">{item.title}</h3>
-                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{item.desc}</p>
+                                    <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-amber-600 dark:group-hover:text-gold transition-colors">{item.title}</h3>
+                                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
                                 </div>
                             </ScrollReveal>
                         ))}
@@ -125,46 +125,43 @@ export default async function AboutPage() {
                 {/* 5. CTA Bottom */}
                 <section className="px-4 mb-10 max-w-4xl mx-auto">
                     <ScrollReveal>
-                        <div className="bg-gradient-to-br from-emerald-400/90 via-primary/80 to-teal-400/90 dark:from-[#1a2a22] dark:via-[#162420] dark:to-[#0A1410] border border-primary/20 dark:border-primary/15 rounded-3xl p-10 md:p-16 text-center shadow-2xl relative overflow-hidden">
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[500px] bg-white/10 dark:bg-primary/20 blur-[100px] pointer-events-none rounded-full" />
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/20 dark:bg-cyan-400/10 rounded-full blur-3xl pointer-events-none" />
-                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-300/20 dark:bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+                        <div className="rounded-3xl p-10 md:p-16 text-center border border-amber-500/35 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-[#0A0D16] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_60px_rgba(245,158,11,0.06)] relative overflow-hidden backdrop-blur-md">
+                            {/* Futuristic Cyber-Grid Pattern */}
+                            <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(245,158,11,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.02)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+                            
+                            {/* Glowing Tech Mesh Backdrop */}
+                            <div className="absolute -top-20 -right-20 w-80 h-80 bg-sky-400/[0.12] dark:bg-sky-500/10 rounded-full blur-[100px] pointer-events-none" />
+                            <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-amber-400/[0.15] dark:bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
 
                             <div className="relative z-10 space-y-8">
-                                <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter">Ready to Start Your Journey?</h2>
-                                <p className="text-xl text-white/70 dark:text-gray-400 max-w-2xl mx-auto">
+                                <h2 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-gray-900 via-gray-900 to-gray-700 dark:from-white dark:via-white dark:to-gray-300 leading-tight">Ready to Start Your Journey?</h2>
+                                <p className="text-sm sm:text-base md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                                     Don&apos;t make the mistakes I made. Start with the right tools, the right knowledge, and a clear path forward.
                                 </p>
-                                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-3xl mx-auto px-4">
                                     <Link
                                         href="/auth/signup"
-                                        className={buttonVariants({
-                                            variant: 'secondary',
-                                            size: 'lg',
-                                            className: "px-8 py-4 bg-white text-gray-900 hover:bg-gray-100 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 text-lg font-bold"
-                                        })}
+                                        className="inline-flex min-h-[50px] sm:min-h-13 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black px-6 sm:px-8 shadow-[0_4px_12px_rgba(245,158,11,0.20)] dark:shadow-[0_4px_12px_rgba(245,158,11,0.10)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-sm sm:text-base group/btn w-full sm:w-auto whitespace-nowrap"
                                     >
                                         <span>Join TheNextTrade — Free</span>
-                                        <ChevronRight size={20} />
+                                        <ChevronRight size={18} className="group-hover/btn:translate-x-0.5 transition-transform duration-300" />
                                     </Link>
-                                    <div className="flex items-center gap-3">
-                                        <Link
-                                            href="/contact"
-                                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/40 text-white hover:bg-white/15 transition-all duration-300 font-semibold text-sm"
-                                        >
-                                            <Mail size={18} />
-                                            <span>Contact Us</span>
-                                        </Link>
-                                        <a
-                                            href="https://t.me/GoldScalperNinja"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/40 text-white hover:bg-white/15 transition-all duration-300 font-semibold text-sm"
-                                        >
-                                            <Send size={18} />
-                                            <span>Join Telegram</span>
-                                        </a>
-                                    </div>
+                                    <Link
+                                        href="/contact"
+                                        className="inline-flex min-h-[50px] sm:min-h-13 items-center justify-center gap-2 rounded-xl border border-amber-500/35 dark:border-white/10 bg-white/45 dark:bg-white/5 text-gray-800 dark:text-white hover:bg-white/80 dark:hover:bg-white/10 hover:border-amber-500/60 dark:hover:border-white/20 transition-all duration-300 font-black px-6 sm:px-8 text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98] shadow-sm w-full sm:w-auto whitespace-nowrap"
+                                    >
+                                        <Mail size={18} className="text-amber-500 dark:text-gold" />
+                                        <span>Contact Us</span>
+                                    </Link>
+                                    <a
+                                        href="https://t.me/GoldScalperNinja"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex min-h-[50px] sm:min-h-13 items-center justify-center gap-2 rounded-xl border border-amber-500/35 dark:border-white/10 bg-white/45 dark:bg-white/5 text-gray-800 dark:text-white hover:bg-white/80 dark:hover:bg-white/10 hover:border-amber-500/60 dark:hover:border-white/20 transition-all duration-300 font-black px-6 sm:px-8 text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98] shadow-sm w-full sm:w-auto whitespace-nowrap"
+                                    >
+                                        <Send size={18} className="text-amber-500 dark:text-gold" />
+                                        <span>Join Telegram</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

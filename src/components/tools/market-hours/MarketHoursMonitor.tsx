@@ -128,15 +128,15 @@ export function MarketHoursMonitor() {
     };
 
     return (
-        <div className="w-full bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-xl shadow-gray-200/50 dark:shadow-none">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-gray-100 dark:border-white/5 pb-6">
+        <div className="w-full bg-white/80 dark:bg-white/[0.02] border border-gray-200/80 dark:border-white/5 rounded-2xl p-5 sm:p-6 shadow-xl shadow-gray-200/10 dark:shadow-none backdrop-blur-md">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-gray-200/60 dark:border-white/5 pb-6">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                        <Clock className="text-primary" />
+                    <h2 className="text-lg font-extrabold text-gray-800 dark:text-white flex items-center gap-2">
+                        <Clock className="text-amber-500 dark:text-amber-400" />
                         Forex Market Hours
                     </h2>
-                    <p className="text-sm text-gray-600 mt-1">
-                        Currently viewing in <span className="font-semibold text-gray-700 dark:text-white">{userTimezone}</span> time.
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Currently viewing in <span className="font-semibold text-gray-800 dark:text-white">{userTimezone}</span> time.
                     </p>
                 </div>
 
@@ -195,41 +195,41 @@ export function MarketHoursMonitor() {
             </div>
 
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 hover:border-orange-500/30 transition-colors">
-                    <h3 className="font-bold text-orange-500 mb-2 flex items-center gap-2">
+                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-xl border border-gray-200/60 dark:border-white/5 hover:border-orange-500/30 transition-all duration-300">
+                    <h3 className="font-bold text-orange-500 mb-2 flex items-center gap-2 text-sm">
                         <span className="w-2 h-2 rounded-full bg-orange-500"></span>
                         Tokyo Session
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                         Often considered the "calm before the storm". Liquidity is lower, and pairs often trade in ranges.
                         Key pairs to watch include <span className="font-medium text-gray-700 dark:text-gray-300">USD/JPY</span> and <span className="font-medium text-gray-700 dark:text-gray-300">AUD/USD</span>.
                     </p>
                 </div>
 
-                <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 hover:border-red-500/30 transition-colors">
-                    <h3 className="font-bold text-red-500 mb-2 flex items-center gap-2">
+                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-xl border border-gray-200/60 dark:border-white/5 hover:border-red-500/30 transition-all duration-300">
+                    <h3 className="font-bold text-red-500 mb-2 flex items-center gap-2 text-sm">
                         <span className="w-2 h-2 rounded-full bg-red-500"></span>
                         London Session
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                         The heartbeat of the forex market. Trends frequently originate here.
                         Expect highest volatility and volume, specifically in <span className="font-medium text-gray-700 dark:text-gray-300">GBP</span> and <span className="font-medium text-gray-700 dark:text-gray-300">EUR</span> crosses.
                     </p>
                 </div>
 
-                <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 hover:border-green-500/30 transition-colors">
-                    <h3 className="font-bold text-green-500 mb-2 flex items-center gap-2">
+                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-xl border border-gray-200/60 dark:border-white/5 hover:border-green-500/30 transition-all duration-300">
+                    <h3 className="font-bold text-green-500 mb-2 flex items-center gap-2 text-sm">
                         <span className="w-2 h-2 rounded-full bg-green-500"></span>
                         New York Session
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                        High liquidity at the open. The <span className="text-purple-500 font-bold">Overlap</span> with London (approx. 4 hours) is the peak trading time of the day.
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                        High liquidity at the open. The <span className="text-gold font-extrabold">Overlap</span> with London (approx. 4 hours) is the peak trading time of the day.
                         Major economic news (USD) is often released early in this session.
                     </p>
                 </div>
             </div>
 
-            <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-xl flex gap-3 text-sm text-blue-700 dark:text-blue-300 items-start">
+            <div className="mt-4 p-4 bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 dark:border-amber-500/10 rounded-xl flex gap-3 text-sm text-amber-700 dark:text-amber-400 items-start">
                 <Info className="shrink-0 mt-0.5" size={18} />
                 <p className="text-xs">
                     <strong>Pro Tip:</strong> Most experienced traders avoid the "dead zone" (late US session / early Sydney) due to low liquidity and high spreads.

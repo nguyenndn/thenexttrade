@@ -4,17 +4,23 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
 
 export function PublicSearchModal() {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
+    const [mounted, setMounted] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Ctrl+K shortcut
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
                 e.preventDefault();
                 setOpen((prev) => !prev);
             }
@@ -45,7 +51,9 @@ export function PublicSearchModal() {
         setQuery("");
     };
 
-    return (
+    if (!mounted) return null;
+
+    return createPortal(
         <AnimatePresence>
             {open && (
                 <>
@@ -87,7 +95,8 @@ export function PublicSearchModal() {
                     </motion.div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }
 

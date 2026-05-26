@@ -205,7 +205,7 @@ async function AnalyticsDataWrapper({ user, accountId, startDate, endDate, timez
     const data: AnalyticsData = {
         summary: {
             totalTrades: stats.totalTrades,
-            winRate: stats.winRate,
+            winRate: stats.winRate ?? 0,
             profitFactor: stats.profitFactor,
             totalPnL: stats.totalPnL,
             avgRRR: stats.lossCount > 0 ? stats.avgWin / stats.avgLoss : 0,

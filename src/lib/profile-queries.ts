@@ -169,7 +169,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
 
         stats: {
             totalTrades: stats.totalTrades,
-            winRate: stats.winRate,
+            winRate: stats.winRate ?? 0,
             avgRR,
             tradeScore,
         },

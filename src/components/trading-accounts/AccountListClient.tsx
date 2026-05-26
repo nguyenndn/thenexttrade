@@ -90,12 +90,33 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
 
     const [activeModal, setActiveModal] = useState<ModalState>({ type: "NONE" });
 
-    // Handle incoming query params (e.g. ?action=add&intent=unlock-pro or just ?intent=unlock-pro)
+    const [defaultSyncMethod, setDefaultSyncMethod] = useState<"TNT_CONNECT" | "EA_SYNC" | undefined>(undefined);
+    const [wasInSyncSetup, setWasInSyncSetup] = useState(false);
+
+    // Handle incoming query params (e.g. ?action=add&intent=unlock-pro or ?setup=sync&method=tnt)
     useEffect(() => {
         const action = searchParams.get("action");
         const intent = searchParams.get("intent");
+        const setup = searchParams.get("setup");
+        const method = searchParams.get("method");
         const isProIntent = intent === "unlock-pro";
         const isAddAction = action === "add";
+        const isSyncSetup = setup === "sync";
+
+        if (isSyncSetup && activeModal.type === "NONE") {
+            // Auto-open sync wizard with method from query
+            const syncMethod = method === "ea" ? "EA_SYNC" : "TNT_CONNECT";
+            setDefaultSyncMethod(syncMethod);
+            setActiveModal({ type: "SYNC_SETUP" });
+            
+            // Clean query params
+            const newParams = new URLSearchParams(searchParams.toString());
+            newParams.delete("setup");
+            newParams.delete("method");
+            const newUrl = newParams.toString() ? `?${newParams.toString()}` : window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
+            return;
+        }
 
         if ((isAddAction || isProIntent) && activeModal.type === "NONE") {
             const sourceAccountId = searchParams.get("sourceAccountId");
@@ -281,9 +302,19 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
             {/* Add Modal */}
             <AddAccountModal
                 isOpen={activeModal.type === "ADD"}
-                onClose={() => setActiveModal({ type: "NONE" })}
-                onSuccess={(_account) => {
+                onClose={() => {
                     setActiveModal({ type: "NONE" });
+                    setWasInSyncSetup(false);
+                }}
+                onSuccess={(_account) => {
+                    if (wasInSyncSetup) {
+                        setWasInSyncSetup(false);
+                        setActiveModal({ type: "SYNC_SETUP" });
+                        toast.success("Account added successfully! Returning to Sync Wizard...");
+                    } else {
+                        setActiveModal({ type: "NONE" });
+                        toast.success("Account added successfully!");
+                    }
                     router.refresh();
                 }}
                 initialMode={activeModal.type === "ADD" ? activeModal.initialMode : undefined}
@@ -312,8 +343,13 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
             {/* Trade Sync Setup Wizard */}
             <TradeSyncWizard
                 isOpen={activeModal.type === "SYNC_SETUP"}
-                onClose={() => setActiveModal({ type: "NONE" })}
+                onClose={() => { setActiveModal({ type: "NONE" }); setDefaultSyncMethod(undefined); }}
                 accounts={initialAccounts}
+                defaultMethod={defaultSyncMethod}
+                onOpenAddAccount={() => {
+                    setWasInSyncSetup(true);
+                    setActiveModal({ type: "ADD", initialMode: "free" });
+                }}
             />
 
             {/* Free vs Pro Modal */}

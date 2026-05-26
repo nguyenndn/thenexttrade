@@ -1,11 +1,6 @@
-import { HelpCircle, TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import Link from "next/link";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { MetricHelp } from "@/components/metrics/MetricHelp";
 
 interface DashboardHeroProps {
     totalBalance: number;
@@ -22,30 +17,7 @@ function getScoreColor(score: number) {
     return "hsl(0, 72%, 51%)";                         // red
 }
 
-function MetricTooltip({ content }: { content: string }) {
-    return (
-        <TooltipProvider delayDuration={150}>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <button
-                        type="button"
-                        className="inline-flex h-4 w-4 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 dark:hover:bg-white/10 dark:hover:text-gray-200"
-                        aria-label="Explain this metric"
-                    >
-                        <HelpCircle size={13} />
-                    </button>
-                </TooltipTrigger>
-                <TooltipContent
-                    side="top"
-                    align="center"
-                    className="max-w-[270px] bg-gray-950 px-3 py-2 text-xs leading-relaxed text-white shadow-xl dark:bg-white dark:text-gray-950"
-                >
-                    {content}
-                </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
-    );
-}
+
 
 export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, isDark }: DashboardHeroProps) {
     const scoreColor = tradeScore !== null ? getScoreColor(tradeScore) : "transparent";
@@ -59,7 +31,10 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
             <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {/* Balance */}
                 <div className="text-center">
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">Total Balance</p>
+                    <div className="mb-1.5 flex items-center justify-center gap-1.5">
+                        <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">Total Balance</p>
+                        <MetricHelp metricId="totalBalance" />
+                    </div>
                     <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight bg-gradient-to-r from-emerald-500 to-teal-400 bg-clip-text text-transparent">
                         {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalBalance)}
                     </p>
@@ -68,7 +43,10 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
 
                 {/* Period P&L */}
                 <div className="text-center border-l-0 lg:border-l border-gray-200 dark:border-white/10">
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5">Period P&L</p>
+                    <div className="mb-1.5 flex items-center justify-center gap-1.5">
+                        <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">Period P&L</p>
+                        <MetricHelp metricId="periodPnL" />
+                    </div>
                     <div className="flex items-center justify-center gap-2">
                         {periodPnL >= 0
                             ? <TrendingUp size={20} className="text-primary" />
@@ -87,7 +65,7 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
                 <div className="text-center border-l-0 lg:border-l border-gray-200 dark:border-white/10">
                     <div className="mb-1.5 flex items-center justify-center gap-1.5">
                         <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">Win Rate</p>
-                        <MetricTooltip content="Winning trades divided by decisive trades. Break-even trades are excluded from the denominator, so profit + BE with no losses shows 100%." />
+                        <MetricHelp metricId="winRate" />
                     </div>
                     <div className="flex items-center justify-center gap-3">
                         <div className="relative w-14 h-14">
@@ -114,7 +92,7 @@ export function DashboardHero({ totalBalance, periodPnL, winRate, tradeScore, is
                 <div className="text-center border-l-0 lg:border-l border-gray-200 dark:border-white/10">
                     <div className="mb-1.5 flex items-center justify-center gap-1.5">
                         <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">Trade Score</p>
-                        <MetricTooltip content="A 0-100 discipline score based on win rate, risk:reward, plan compliance, stop-loss discipline, revenge trading, weak pairs, and emotion patterns." />
+                        <MetricHelp metricId="tradeScore" />
                     </div>
                     <div className="flex items-center justify-center gap-3">
                         <div className="relative w-14 h-14">

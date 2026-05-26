@@ -9,9 +9,9 @@ import { ReviewBadge } from "./ReviewModal";
 import partnersData from "@/config/partners.json";
 
 const BADGE_STYLES: Record<string, string> = {
-  gold: "bg-gradient-to-r from-amber-500 to-yellow-500 text-white",
-  green: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
-  blue: "bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/20",
+  gold: "bg-gradient-to-r from-gold to-amber-500 text-white font-extrabold shadow-[0_2px_10px_rgba(245,158,11,0.15)]",
+  green: "bg-emerald-500/10 text-emerald-600 dark:text-primary border-b border-emerald-500/15 font-bold",
+  blue: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-b border-sky-500/15 font-bold",
 };
 
 const CATEGORIES = [
@@ -47,7 +47,7 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
   const hasUrl = item.url && item.url !== "#";
 
   return (
-    <div className="group bg-white dark:bg-[#1A1C24] rounded-2xl border border-gray-200 dark:border-white/[0.08] hover:border-primary/40 dark:hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 overflow-hidden flex flex-col">
+    <div className="group bg-white/80 dark:bg-[#131622]/60 rounded-2xl border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col backdrop-blur-md relative h-full">
       {/* Badge ribbon */}
       {item.badge && (
         <div className={`px-4 py-1.5 text-xs font-bold text-center ${BADGE_STYLES[item.badgeType || "green"]}`}>
@@ -84,9 +84,9 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
         const specCount = [item.minDeposit, item.maxLeverage, item.regulation].filter(Boolean).length;
         const gridCols = specCount === 1 ? "grid-cols-1" : specCount === 2 ? "grid-cols-2" : "grid-cols-3";
         return (
-        <div className={`grid ${gridCols} gap-px bg-gray-100 dark:bg-white/5 border-y border-gray-100 dark:border-white/5`}>
+        <div className={`grid ${gridCols} gap-px bg-amber-500/10 dark:bg-white/5 border-y border-amber-500/10 dark:border-white/[0.06]`}>
           {item.minDeposit && (
-            <div className="bg-white dark:bg-[#1A1C24] py-3 text-center">
+            <div className="bg-white/80 dark:bg-[#131622]/40 py-3 text-center">
               <div className="text-[10px] text-gray-500 uppercase tracking-wider font-medium">
                 {depositLabel}
               </div>
@@ -94,13 +94,13 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
             </div>
           )}
           {item.maxLeverage && (
-            <div className="bg-white dark:bg-[#1A1C24] py-3 text-center">
+            <div className="bg-white/80 dark:bg-[#131622]/40 py-3 text-center">
               <div className="text-[10px] text-gray-500 uppercase tracking-wider font-medium">Leverage</div>
               <div className="text-sm font-bold text-gray-700 dark:text-white mt-0.5">{item.maxLeverage}</div>
             </div>
           )}
           {item.regulation && (
-            <div className="bg-white dark:bg-[#1A1C24] py-3 text-center">
+            <div className="bg-white/80 dark:bg-[#131622]/40 py-3 text-center">
               <div className="text-[10px] text-gray-500 uppercase tracking-wider font-medium">Regulation</div>
               <div className="text-sm font-bold text-gray-700 dark:text-white mt-0.5 truncate px-2">{item.regulation}</div>
             </div>
@@ -115,7 +115,7 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
           <ul className="space-y-2">
             {item.features.map((feature, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
-                <ChevronRight size={14} className="text-primary mt-0.5 flex-shrink-0" />
+                <ChevronRight size={14} className="text-amber-500 dark:text-gold mt-0.5 flex-shrink-0" />
                 {feature}
               </li>
             ))}
@@ -130,7 +130,7 @@ function PartnerCard({ item, ctaLabel, depositLabel }: { item: (typeof CATEGORIE
             href={item.url!}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-sm hover:opacity-90 transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black text-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20"
           >
             {ctaLabel}
             <ExternalLink size={14} />

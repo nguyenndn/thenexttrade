@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { normalizeCountryCode } from "@/lib/country-utils";
 import { sanitizeInput } from "@/lib/sanitize";
+import { getOnboardingState, updateOnboardingSettings } from "@/lib/onboarding/onboarding.server";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ const updateProfileSchema = z.object({
         z.literal(""),
     ]).optional(),
     image: z.string().optional(), // In MVP this might be a URL or handled separately
+    tradingGoal: z.string().optional(),
 }).strict();
 
 export async function GET() {
@@ -36,6 +38,8 @@ export async function GET() {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
+        const onboarding = await getOnboardingState(user.id);
+
         return NextResponse.json({
             id: dbUser.id,
             name: dbUser.name,
@@ -48,7 +52,8 @@ export async function GET() {
             streak: dbUser.streak || 0,
             level: dbUser.level || 1,
             xp: dbUser.xp || 0,
-            username: dbUser.profile?.username || dbUser.name || ""
+            username: dbUser.profile?.username || dbUser.name || "",
+            tradingGoal: onboarding?.tradingGoal || ""
         });
 
     } catch {
@@ -74,6 +79,12 @@ export async function PUT(request: Request) {
         const validatedData = updateProfileSchema.parse(body);
         const hasCountry = Object.prototype.hasOwnProperty.call(validatedData, "country");
         const normalizedCountry = normalizeCountryCode(validatedData.country);
+
+        if (validatedData.tradingGoal) {
+            await updateOnboardingSettings(user.id, {
+                tradingGoal: validatedData.tradingGoal,
+            });
+        }
 
         // Update User table
         await prisma.user.update({

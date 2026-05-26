@@ -107,6 +107,9 @@ export function CertificateCard({
         }
     };
 
+    // Earned state
+    const [tilt, setTilt] = useState({ x: 50, y: 50, isHovered: false });
+
     if (!isEarned) {
         const progress = totalQuizzes > 0 ? (passedQuizzes / totalQuizzes) * 100 : 0;
         return (
@@ -136,9 +139,6 @@ export function CertificateCard({
             </div>
         );
     }
-
-    // Earned state
-    const [tilt, setTilt] = useState({ x: 50, y: 50, isHovered: false });
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         const card = e.currentTarget;

@@ -11,9 +11,10 @@ interface FAQItem {
 
 interface FAQAccordionProps {
     items: FAQItem[];
+    hoverClassName?: string;
 }
 
-export function FAQAccordion({ items }: FAQAccordionProps) {
+export function FAQAccordion({ items, hoverClassName }: FAQAccordionProps) {
     const [open, setOpen] = useState<number | null>(null);
 
     return (
@@ -21,13 +22,16 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
             {items.map((item, idx) => (
                 <div
                     key={idx}
-                    className="rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary/60 hover:shadow-md hover:shadow-primary/10 hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
+                    className={cn(
+                        "rounded-xl border border-gray-200/80 dark:border-white/5 bg-white/80 dark:bg-white/[0.02] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden",
+                        hoverClassName || "hover:border-emerald-500/30 dark:hover:border-emerald-500/20 hover:shadow-md hover:shadow-emerald-500/[0.03] dark:hover:shadow-emerald-500/[0.02]"
+                    )}
                 >
                     <button
                         onClick={() => setOpen(open === idx ? null : idx)}
                         className="w-full flex items-center justify-between px-5 py-4 text-left bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/[0.07] transition-colors"
                     >
-                        <span className="font-bold text-gray-700 dark:text-white text-sm pr-4">
+                        <span className="font-semibold text-gray-800 dark:text-gray-100 text-sm pr-4">
                             {item.question}
                         </span>
                         <ChevronDown
@@ -45,7 +49,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
                         )}
                     >
                         <div className="overflow-hidden">
-                            <p className="px-5 pb-4 pt-1 text-sm text-gray-600 dark:text-gray-500 leading-relaxed">
+                            <p className="px-5 pb-4 pt-1 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                                 {item.answer}
                             </p>
                         </div>

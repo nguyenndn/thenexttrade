@@ -3,6 +3,15 @@ import { prisma } from "@/lib/prisma";
 import type { ActivationState, ActivationStep } from "./activation-types";
 
 export async function getActivationState(userId: string): Promise<ActivationState> {
+  // Read user settings for onboarding preferences
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { settings: true },
+  });
+  const settings = (user?.settings as Record<string, unknown>) || {};
+  const onboarding = (settings.onboarding as { preferredSyncMethod?: string }) || {};
+  const syncMethod = onboarding.preferredSyncMethod || "TNT_CONNECT";
+
   const [
     accountCount,
     tradeCount,
@@ -17,20 +26,55 @@ export async function getActivationState(userId: string): Promise<ActivationStat
     prisma.edgeEvent.count({ where: { userId, eventType: "CHECKIN" } }),
   ]);
 
+  // Build connect step CTA based on sync preference
+  let connectTitle: string;
+  let connectDescription: string;
+  let connectCtaLabel: string;
+  let connectCtaHref: string;
+
+  switch (syncMethod) {
+    case "EA_SYNC":
+      connectTitle = "Set up EA Sync";
+      connectDescription = "Attach the EA to your MT5 chart to start auto-syncing trades.";
+      connectCtaLabel = "Set Up EA Sync";
+      connectCtaHref = "/dashboard/accounts?setup=sync&method=ea";
+      break;
+    case "MANUAL":
+      connectTitle = "Add your first account";
+      connectDescription = "Add an account to organize your manual trade entries.";
+      connectCtaLabel = "Add Account";
+      connectCtaHref = "/dashboard/accounts?action=add";
+      break;
+    default: // TNT_CONNECT
+      connectTitle = "Set up TNT Connect";
+      connectDescription = "Install the app to auto-sync trades from MT5 to your dashboard.";
+      connectCtaLabel = "Set Up TNT Connect";
+      connectCtaHref = "/dashboard/accounts?setup=sync&method=tnt";
+      break;
+  }
+
+  // Build log trade step CTA based on sync preference
+  const logTradeTitle = syncMethod === "MANUAL"
+    ? "Log your first trade"
+    : "Sync or log your first trade";
+  const logTradeDescription = syncMethod === "MANUAL"
+    ? "Your first trade unlocks performance stats, reports, and pattern analysis."
+    : "Once connected, trades sync automatically. Or log one manually to kick things off.";
+
   const steps: ActivationStep[] = [
     {
       id: "CONNECT_ACCOUNT",
-      title: "Connect your first account",
-      description: "Connect MT5 or add a manual account so your dashboard has a real source of truth.",
-      ctaLabel: "Add Account",
-      ctaHref: "/dashboard/accounts?action=add",
+      title: connectTitle,
+      description: connectDescription,
+      ctaLabel: connectCtaLabel,
+      ctaHref: connectCtaHref,
       completed: accountCount > 0,
       priority: 10,
     },
     {
       id: "LOG_FIRST_TRADE",
-      title: "Log your first trade",
-      description: "Your first trade unlocks performance stats, reports, and trading pattern analysis.",
+      title: logTradeTitle,
+      description: logTradeDescription,
       ctaLabel: "Log Trade",
       ctaHref: "/dashboard/journal?action=log-trade",
       completed: tradeCount > 0,
@@ -56,7 +100,7 @@ export async function getActivationState(userId: string): Promise<ActivationStat
     },
     {
       id: "CHECK_IN",
-      title: "Do your first check-in",
+      title: "Daily check-in",
       description: "Check-ins build consistency and feed your Edge Missions.",
       ctaLabel: "Check In",
       ctaHref: "/dashboard/settings/streak",

@@ -172,7 +172,7 @@ async function getCoreStats(userId: string, accountId: string | undefined, start
         netPnL: Number(row.netPnL || 0),
         grossProfit,
         grossLoss,
-        profitFactor: grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? 999 : 0,
+        profitFactor: grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? Infinity : 0,
         avgWin: winCount > 0 ? grossProfit / winCount : 0,
         avgLoss: lossCount > 0 ? grossLoss / lossCount : 0,
         largestWin: Math.max(0, Number(row.largestWin || 0)),

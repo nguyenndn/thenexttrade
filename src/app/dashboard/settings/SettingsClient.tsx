@@ -1,18 +1,25 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { User, Save, Loader2, Camera } from 'lucide-react';
+import { User, Save, Loader2, Camera, BarChart3, Search, ShieldCheck, Sparkles, Check } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+
+const TRADING_GOALS = [
+    { id: "track", label: "Track my trades", description: "Keep an organized record of all my entries and exits", icon: BarChart3 },
+    { id: "mistakes", label: "Find my mistakes", description: "Identify patterns that cost me money", icon: Search },
+    { id: "discipline", label: "Build discipline", description: "Follow my plan and manage risk consistently", icon: ShieldCheck },
+    { id: "pro", label: "Prepare for Pro tools", description: "Get EA access, AI coaching, and advanced analytics", icon: Sparkles },
+] as const;
 
 export default function SettingsClient() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
 
-    const [formData, setFormData] = useState({ name: '', email: '', bio: '', telegramId: '', country: '', image: '' });
+    const [formData, setFormData] = useState({ name: '', email: '', bio: '', telegramId: '', country: '', image: '', tradingGoal: '' });
 
     useEffect(() => { fetchProfile(); }, []);
 
@@ -21,7 +28,15 @@ export default function SettingsClient() {
             const res = await fetch('/api/profile');
             if (res.ok) {
                 const data = await res.json();
-                setFormData({ name: data.name || '', email: data.email || '', bio: data.bio || '', telegramId: data.telegramId || '', country: data.country || '', image: data.image || '' });
+                setFormData({
+                    name: data.name || '',
+                    email: data.email || '',
+                    bio: data.bio || '',
+                    telegramId: data.telegramId || '',
+                    country: data.country || '',
+                    image: data.image || '',
+                    tradingGoal: data.tradingGoal || ''
+                });
             }
         } catch { /* Failed to fetch */ }
         finally { setIsLoading(false); }
@@ -39,7 +54,8 @@ export default function SettingsClient() {
                     bio: formData.bio,
                     telegramId: formData.telegramId,
                     country: formData.country,
-                    image: formData.image
+                    image: formData.image,
+                    tradingGoal: formData.tradingGoal
                 })
             });
             if (!res.ok) {
@@ -157,6 +173,50 @@ export default function SettingsClient() {
                             placeholder="Tell us about your trading journey..."
                         />
                         <p className="text-xs text-gray-400 mt-1">{formData.bio.length}/200 characters</p>
+                    </div>
+                </div>
+
+                {/* Main Trading Goal Section */}
+                <div className="border-t border-gray-100 dark:border-white/10 px-6 py-5 space-y-4">
+                    <div className="flex items-center gap-2.5 mb-1">
+                        <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center">
+                            <Sparkles size={14} className="text-amber-500" />
+                        </div>
+                        <h2 className="text-sm font-bold text-gray-700 dark:text-white">Main Trading Goal</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {TRADING_GOALS.map((g) => {
+                            const Icon = g.icon;
+                            const isSelected = formData.tradingGoal === g.id;
+                            return (
+                                <button
+                                    key={g.id}
+                                    type="button"
+                                    onClick={() => setFormData(prev => ({ ...prev, tradingGoal: g.id }))}
+                                    className={cn(
+                                        "flex items-center gap-3.5 p-4 rounded-xl border text-left transition-all duration-200 w-full active:scale-[0.98]",
+                                        isSelected
+                                            ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10"
+                                            : "border-gray-200 dark:border-white/10 bg-transparent hover:border-amber-500/35 dark:hover:border-amber-500/25 hover:bg-gray-50/50 dark:hover:bg-white/[0.01]"
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "p-2 rounded-lg shrink-0 transition-colors",
+                                        isSelected ? "bg-amber-500/10 text-amber-500" : "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500"
+                                    )}>
+                                        <Icon size={18} />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs font-black text-gray-800 dark:text-white">{g.label}</p>
+                                        <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 font-medium leading-relaxed">{g.description}</p>
+                                    </div>
+                                    {isSelected && (
+                                        <Check size={14} className="text-amber-500 shrink-0" />
+                                    )}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 

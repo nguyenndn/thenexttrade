@@ -2,6 +2,7 @@
 
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { TrendingUp, Trophy, PieChart as PieChartIcon, Layers, CalendarRange, Gauge, HelpCircle, X } from "lucide-react";
+import { MetricHelp } from "@/components/metrics/MetricHelp";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
@@ -270,25 +271,25 @@ export default function DashboardClient({
                             <div className="flex divide-x divide-gray-200 dark:divide-white/10">
                                 <div className="text-center flex-1 px-2">
                                     <p className="text-2xl font-black text-blue-500">
-                                        {dashboardData.profitFactor >= 999 ? "∞" : dashboardData.profitFactor.toFixed(2)}
+                                        {!isFinite(dashboardData.profitFactor) ? "∞" : dashboardData.profitFactor.toFixed(2)}
                                     </p>
                                     <div className="mt-0.5 flex items-center justify-center gap-1">
                                         <p className="text-[11px] text-gray-500 font-semibold">Profit Factor</p>
-                                        <HelpTooltip content="Gross profit divided by gross loss. If there is profit and no loss, this displays as infinity because there is no loss base to divide by." />
+                                        <MetricHelp metricId="profitFactor" compact />
                                     </div>
                                 </div>
                                 <div className="text-center flex-1 px-2">
                                     <p className="text-2xl font-black text-primary">${dashboardData.avgWin.toFixed(0)}</p>
                                     <div className="mt-0.5 flex items-center justify-center gap-1">
                                         <p className="text-[11px] text-gray-500 font-semibold">Avg Win</p>
-                                        <HelpTooltip content="Average net profit per winning trade. Net profit includes P&L, commission, and swap." />
+                                        <MetricHelp metricId="avgWin" compact />
                                     </div>
                                 </div>
                                 <div className="text-center flex-1 px-2">
                                     <p className="text-2xl font-black text-red-500">${dashboardData.avgLoss.toFixed(0)}</p>
                                     <div className="mt-0.5 flex items-center justify-center gap-1">
                                         <p className="text-[11px] text-gray-500 font-semibold">Avg Loss</p>
-                                        <HelpTooltip content="Average net loss per losing trade. Break-even trades are not counted as losses." />
+                                        <MetricHelp metricId="avgLoss" compact />
                                     </div>
                                 </div>
                             </div>

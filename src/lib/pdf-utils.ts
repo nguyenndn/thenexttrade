@@ -26,7 +26,7 @@ export async function generatePDF(data: any) {
     yPos += 10;
     const summaryData = [
         ["Net P/L", `$${data.summary.netPnL.toFixed(2)}`, "Win Rate", `${data.summary.winRate.toFixed(1)}%`],
-        ["Profit Factor", data.summary.profitFactor.toFixed(2), "Total Trades", data.summary.totalTrades],
+        ["Profit Factor", !isFinite(data.summary.profitFactor) ? "∞" : data.summary.profitFactor.toFixed(2), "Total Trades", data.summary.totalTrades],
         ["Avg Win", `$${data.summary.avgWin.toFixed(2)}`, "Avg Loss", `$${data.summary.avgLoss.toFixed(2)}`],
         ["Largest Win", `$${data.summary.largestWin.toFixed(2)}`, "Largest Loss", `$${data.summary.largestLoss.toFixed(2)}`],
     ];

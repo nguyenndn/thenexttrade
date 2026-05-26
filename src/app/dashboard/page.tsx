@@ -344,7 +344,7 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     // Dashboard Data Object
     const dashboardData = {
         totalBalance,
-        winRate: stats.winRate,
+        winRate: stats.winRate ?? 0,
         winRateChange: 0, // Needs comparison with previous period (skipped for speed V1)
         streak: userData?.streak || 0,
         periodPnL: stats.totalPnL,

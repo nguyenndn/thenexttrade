@@ -536,7 +536,7 @@ export async function getDayDetails(date: string, accountId?: string) {
                 maxDrawdown,
                 commissionsAndFees: totalCommissions,
                 winrate: trades.length ? (winCount / trades.length) * 100 : 0,
-                profitFactor: grossLoss > 0 ? grossProfit / grossLoss : (grossProfit > 0 ? 999 : 0),
+                profitFactor: grossLoss > 0 ? grossProfit / grossLoss : (grossProfit > 0 ? Infinity : 0),
                 expectancy: trades.length ? (grossProfit - grossLoss) / trades.length : 0
             }
         };

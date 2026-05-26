@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Sparkles, Loader2 } from "lucide-react";
+import { TrendingUp, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/track";
@@ -82,7 +82,7 @@ export function GenerateReportButton({ type, accountId, className, onResult }: G
       {isPending ? (
         <Loader2 size={16} className="animate-spin" />
       ) : (
-        <Sparkles size={16} />
+        <TrendingUp size={16} />
       )}
       {type === "WEEKLY" ? "Generate Weekly Review" : "Generate Monthly Review"}
     </Button>

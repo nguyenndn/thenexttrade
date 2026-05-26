@@ -27,7 +27,7 @@ export function MarginCalc() {
 
     const leverageOptions = [1000, 500, 400, 200, 100, 50, 30, 20, 10, 5];
 
-    const requiredMargin = calculateMargin(inputs).requiredMargin;
+    const { requiredMargin, positionValue } = calculateMargin(inputs);
 
     return (
         <div className="grid lg:grid-cols-12 gap-8">
@@ -99,7 +99,7 @@ export function MarginCalc() {
                 <div className="space-y-3">
                     <div className="bg-white dark:bg-white/5 rounded-xl p-3 flex justify-between items-center border border-gray-200 dark:border-white/10 hover:border-primary/30 transition-colors">
                         <span className="text-xs font-semibold text-gray-600 dark:text-gray-500">Position Value</span>
-                        <span className="text-sm font-bold text-gray-700 dark:text-white">${(inputs.lotSize * 100000 * inputs.currentPrice).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+                        <span className="text-sm font-bold text-gray-700 dark:text-white">${positionValue.toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="bg-white dark:bg-white/5 rounded-xl p-3 border border-gray-200 dark:border-white/10 hover:border-primary/30 transition-colors">
                         <div className="flex justify-between mb-1.5">

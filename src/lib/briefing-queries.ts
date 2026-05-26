@@ -71,7 +71,7 @@ async function getWeekStats(userId: string, accountId?: string) {
     return {
         trades,
         winRate: trades > 0 ? (wins / trades) * 100 : 0,
-        profitFactor: grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? 999 : 0,
+        profitFactor: grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? Infinity : 0,
         bestPair: null,
     };
 }

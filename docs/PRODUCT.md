@@ -1,6 +1,6 @@
 # Product
 
-Last reviewed: 2026-05-24
+Last reviewed: 2026-05-26
 
 This file describes the current product behavior at a practical level. For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -63,6 +63,23 @@ This is the product map a new developer should read before fixing bugs or adding
 - Welcome email should be sent only after successful email verification.
 - Auth security should include rate limiting, Turnstile in production, safe errors, and audit logging.
 
+### First-User Activation Path
+
+The ideal new-user flow is:
+
+`Sign up → Verify email → /onboarding (4 steps) → Connect account → Sync first trade → Review dashboard`
+
+Onboarding is a 4-step wizard:
+
+1. **Identity**: Username (required), Avatar (optional), Bio (optional).
+2. **Trading Goal**: Track trades, Find mistakes, Build discipline, Prepare for Pro.
+3. **Sync Path**: TNT Connect (recommended), EA Sync (advanced), Manual Journal.
+4. **Next Action**: Dynamic CTA based on sync choice, shows unlocked features.
+
+Onboarding stores progress in `User.settings.onboarding` (JSON field, no migration needed). Users who complete or skip onboarding are not forced through it again.
+
+Dashboard activation checklist continues from onboarding. CTAs are personalized based on `preferredSyncMethod`.
+
 ## Account Hub
 
 Route: `/dashboard/accounts`.
@@ -86,25 +103,34 @@ UX rules:
 
 Two sync methods exist:
 
-- EA Sync: MT5 Expert Advisor dropped on a chart.
-- TNT Connect: desktop app that reads MT5 data and syncs selected periods.
+- **TNT Connect** (recommended): Desktop app that reads MT5 data and syncs selected periods. Best for most Windows MT5 users. Runs as a system tray app.
+- **EA Sync** (advanced): MT5 Expert Advisor dropped on a chart. Best for VPS workflows, continuous heartbeat, or users comfortable with Expert Advisors.
+- **Manual Journal**: Users can start without sync and log trades manually.
 
 Current TNT Connect version: `1.0.2`.
+
+The Sync Wizard (`TradeSyncWizard`) is a 4-step flow: Choose Method → Prepare → Connect → Verify.
+
+- Server URL for EA configuration comes from `src/lib/sync/sync-urls.ts` (not hardcoded Supabase URL).
+- Verify step checks: API key generated, accounts exist, heartbeat detected, first trade synced.
+- `/api/sync/status` provides a clean summary of sync state.
 
 User-facing sync should explain:
 
 - Which account is connected.
 - Which method last synced the account.
 - Last sync time and sync result.
-- What to do when sync fails.
+- What to do when sync fails (troubleshooting blocks per method).
 
 ## Journal And Dashboard Metrics
 
 - Manual and imported trades live in the journal.
 - Dashboard shows balance/equity, period P/L, win rate, trade score, quick stats, charts, and symbol distribution.
 - Win rate should calculate only true profitable wins over closed trades. Break-even trades should not be counted as wins.
-- Profit factor should not show raw sentinel values like `999`. If there are no losses, show an infinity/explained state.
-- Win rate, trade score, profit factor, average win, and average loss should have `?` tooltips explaining the calculation.
+- Win rate returns `null` when there are no decisive trades. Display as `--`, never `0%`.
+- Profit factor uses `Infinity` when there are no losses. Display as `∞`. Never display `999`.
+- All KPI cards use the centralized `MetricHelp` component with definitions from `src/lib/metrics/metric-definitions.ts`.
+- Desktop: tooltip on hover. Mobile: popover on tap. All have `aria-label` for accessibility.
 - Risk warnings must distinguish missing imported SL data from actual risky behavior.
 
 ## Edge System

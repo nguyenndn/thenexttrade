@@ -26,24 +26,47 @@ const TABS = [
 ];
 
 function ToolCard({ tool }: { tool: ToolData }) {
+    // Dynamic brand colors based on tool category for rich visual distinction
+    let hoverBorder = "hover:border-amber-500/35 dark:hover:border-gold/30";
+    let hoverShadow = "hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)]";
+    let hoverText = "group-hover:text-amber-600 dark:group-hover:text-gold";
+    let btnText = "text-amber-600 dark:text-gold";
+
+    if (tool.category === "risk-management") {
+        hoverBorder = "hover:border-emerald-500/35 dark:hover:border-primary/30";
+        hoverShadow = "hover:shadow-[0_12px_30px_rgba(16,185,129,0.03)] dark:hover:shadow-[0_12px_30px_rgba(16,185,129,0.01)]";
+        hoverText = "group-hover:text-emerald-600 dark:group-hover:text-primary";
+        btnText = "text-emerald-600 dark:text-primary";
+    } else if (tool.category === "technical-analysis") {
+        hoverBorder = "hover:border-amber-500/35 dark:hover:border-gold/30";
+        hoverShadow = "hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)]";
+        hoverText = "group-hover:text-amber-600 dark:group-hover:text-gold";
+        btnText = "text-amber-600 dark:text-gold";
+    } else {
+        hoverBorder = "hover:border-cyan-500/35 dark:hover:border-cyan-500/30";
+        hoverShadow = "hover:shadow-[0_12px_30px_rgba(6,182,212,0.03)] dark:hover:shadow-[0_12px_30px_rgba(6,182,212,0.01)]";
+        hoverText = "group-hover:text-cyan-600 dark:group-hover:text-cyan-400";
+        btnText = "text-cyan-600 dark:text-cyan-400";
+    }
+
     return (
         <Link
             href={`/tools/${tool.slug}`}
-            className="group relative flex flex-col p-6 rounded-2xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:border-primary/50 dark:hover:border-primary/30 transition-all duration-300 hover:-translate-y-1"
+            className={`group relative flex flex-col p-6 rounded-2xl bg-white/80 dark:bg-[#131622]/60 border border-amber-500/15 dark:border-white/[0.06] hover:-translate-y-0.5 transition-all duration-300 h-full backdrop-blur-md overflow-hidden ${hoverBorder} ${hoverShadow}`}
         >
             <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-            <div className={`w-12 h-12 rounded-xl ${tool.iconBg} flex items-center justify-center mb-4`}>
+            <div className={`w-12 h-12 rounded-xl ${tool.iconBg} flex items-center justify-center mb-4 shrink-0 group-hover:scale-110 transition-transform duration-300`}>
                 <tool.icon size={24} strokeWidth={1.5} />
             </div>
-            <h3 className="text-base font-bold font-heading text-gray-700 dark:text-white mb-2 group-hover:text-primary transition-colors">
+            <h3 className={`text-base font-bold font-heading text-gray-800 dark:text-white mb-2 ${hoverText} transition-colors`}>
                 {tool.title}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-500 leading-relaxed flex-1 mb-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed flex-1 mb-4">
                 {tool.description}
             </p>
-            <div className="flex items-center gap-2 text-sm font-bold text-primary group-hover:gap-3 transition-all">
+            <div className={`flex items-center gap-2 text-sm font-bold ${btnText} group-hover:gap-3 transition-all`}>
                 <span>Open Tool</span>
-                <ArrowRight size={14} />
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
             </div>
         </Link>
     );
