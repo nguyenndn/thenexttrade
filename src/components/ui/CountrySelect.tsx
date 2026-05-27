@@ -70,9 +70,9 @@ export function CountrySelect({ value, onChange, className, error, required = tr
                 ) : selectedCountry ? (
                     <div className="flex items-center gap-3">
                         <img
-                            src={`https://flagcdn.com/w40/${selectedCountry.code.toLowerCase()}.png`}
+                            src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${selectedCountry.code.toLowerCase()}.svg`}
                             alt={selectedCountry.name}
-                            className="w-6 h-auto rounded-sm object-cover shadow-sm"
+                            className="w-6 h-4 rounded-sm object-cover shadow-sm shrink-0"
                         />
                         <span className="text-gray-700 dark:text-white text-base truncate pr-2">{selectedCountry.name}</span>
                     </div>
@@ -124,9 +124,9 @@ export function CountrySelect({ value, onChange, className, error, required = tr
                                 >
                                     <div className="flex items-center gap-3 flex-1">
                                         <img
-                                            src={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png`}
+                                            src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${country.code.toLowerCase()}.svg`}
                                             alt={country.name}
-                                            className="w-6 h-4 rounded-sm object-cover shadow-sm"
+                                            className="w-6 h-4 rounded-sm object-cover shadow-sm shrink-0"
                                         />
                                         <span className="text-sm font-medium truncate">{country.name}</span>
                                     </div>

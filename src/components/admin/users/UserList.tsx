@@ -108,7 +108,7 @@ function CountryDisplay({ country }: { country?: string | null }) {
     return (
         <div className="flex min-w-0 items-center gap-2">
             <img
-                src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
+                src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${code.toLowerCase()}.svg`}
                 alt={getCountryName(code)}
                 className="h-4 w-6 shrink-0 rounded-sm object-cover shadow-sm"
             />
@@ -313,7 +313,7 @@ export function UserList({ initialUsers, pagination, countryOptions }: UserListP
                                     }`}
                                 >
                                     <img
-                                        src={`https://flagcdn.com/w40/${opt.value.toLowerCase()}.png`}
+                                        src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${opt.value.toLowerCase()}.svg`}
                                         alt={opt.label}
                                         className="mr-2 h-4 w-6 shrink-0 rounded-sm object-cover shadow-sm"
                                     />

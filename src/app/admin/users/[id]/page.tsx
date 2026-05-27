@@ -211,7 +211,7 @@ export default async function UserDetailPage({
                                 {countryCode ? (
                                     <>
                                         <img
-                                            src={`https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`}
+                                            src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${countryCode.toLowerCase()}.svg`}
                                             alt={getCountryName(countryCode)}
                                             className="h-4 w-6 shrink-0 rounded-sm object-cover shadow-sm"
                                         />
