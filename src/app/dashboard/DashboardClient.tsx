@@ -12,6 +12,7 @@ import { InsightBanner } from "@/components/dashboard/InsightBanner";
 import { MobileProStatusBanner } from "@/components/dashboard/MobileProStatusBanner";
 import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
 import { WelcomeHero } from "@/components/dashboard/WelcomeHero";
+import { DashboardCoachNudge } from "@/components/coach/DashboardCoachNudge";
 import type { ActivationState } from "@/lib/activation/activation-types";
 import {
     Tooltip,
@@ -94,6 +95,8 @@ interface DashboardClientProps {
     dayOfWeekPerformance: { day: string; dayIndex: number; pnl: number; tradeCount: number; winRate: number }[];
     activationState: ActivationState;
     daysSinceLastReport?: number | null;
+    nextBestAction?: any;
+    learningRecommendations?: any[];
 }
 
 export default function DashboardClient({
@@ -117,6 +120,8 @@ export default function DashboardClient({
     dayOfWeekPerformance,
     activationState,
     daysSinceLastReport,
+    nextBestAction,
+    learningRecommendations,
 }: DashboardClientProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -175,6 +180,14 @@ export default function DashboardClient({
             <div className="mt-4 space-y-4 lg:mt-5 lg:space-y-5">
             {/* Mobile Pro Status Banner — visible on mobile without opening the drawer */}
             <MobileProStatusBanner />
+
+            {/* Coach & Next Action Engine Unified Nudge Bar */}
+            {nextBestAction && (
+                <DashboardCoachNudge 
+                    nextBestAction={nextBestAction} 
+                    learningRecommendations={learningRecommendations || []} 
+                />
+            )}
 
             {/* Welcome Hero — replaces empty charts for new users */}
             {hasNoData ? (

@@ -1,0 +1,68 @@
+import { prisma } from "@/lib/prisma";
+import { computeTraderSignals } from "./signal-engine.server";
+
+export interface NextBestAction {
+    id: string;
+    title: string;
+    description: string;
+    ctaLabel: string;
+    ctaHref: string;
+    priority: number;
+    reason: string;
+    sourceSignalType?: string;
+}
+
+const PRIORITY_ORDER: Record<string, number> = {
+    NO_ACCOUNT: 1,
+    ACCOUNT_NEVER_SYNCED: 2,
+    SYNC_STALE: 3,
+    NO_FIRST_TRADE: 4,
+    NO_WEEKLY_REVIEW: 5,
+    NO_LESSON_STARTED: 6,
+    REVENGE_SIZE_UP: 7,
+    LOW_PLAN_COMPLIANCE: 8,
+    LOSS_STREAK: 9,
+    SL_CLUSTER: 10,
+    BE_HEAVY: 11,
+    WEAK_SYMBOL: 12,
+    WEAK_SESSION: 13,
+    RECURRING_MISTAKE: 14,
+};
+
+export async function getNextBestAction(userId: string): Promise<NextBestAction> {
+    // Dynamically compute the latest signals
+    const signals = await computeTraderSignals(userId, { persist: true });
+    const activeSignals = signals.filter(s => s.status !== "RESOLVED");
+
+    if (activeSignals.length === 0) {
+        return {
+            id: "maintenance",
+            title: "Consistency is your edge",
+            description: "You have connected accounts, synced your trades, and are actively studying. Review your journal to find minor trade optimizations today.",
+            ctaLabel: "Open Journal",
+            ctaHref: "/dashboard/journal",
+            priority: 99,
+            reason: "All core onboarding and activation tasks are completed, and no critical trade weaknesses were detected in the last 30 days."
+        };
+    }
+
+    // Sort active signals by priority order (lowest priority value is highest priority action)
+    const sorted = activeSignals.sort((a, b) => {
+        const pA = PRIORITY_ORDER[a.signalType] ?? 999;
+        const pB = PRIORITY_ORDER[b.signalType] ?? 999;
+        return pA - pB;
+    });
+
+    const top = sorted[0];
+
+    return {
+        id: top.signalType,
+        title: top.title,
+        description: top.summary,
+        ctaLabel: top.actionLabel || "Take Action",
+        ctaHref: top.actionHref || "/dashboard",
+        priority: PRIORITY_ORDER[top.signalType] ?? 99,
+        reason: `Generated automatically from high-priority active signal: ${top.signalType}`,
+        sourceSignalType: top.signalType
+    };
+}

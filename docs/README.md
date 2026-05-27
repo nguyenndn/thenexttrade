@@ -16,6 +16,16 @@ This folder is the active source of truth for the product, system, operations, d
 | [EMAIL.md](EMAIL.md) | Transactional email strategy, templates needed, delivery rules |
 | [QC_TEST_PLAN_PHASE_3.md](QC_TEST_PLAN_PHASE_3.md) | QC test scenarios, step-by-step test cases, expected behaviors for Phase 3 |
 
+## Future Build Plans
+
+These files are unshipped implementation plans. After a feature ships, fold the final behavior into `PRODUCT.md`, `FEATURE_SPECS.md`, and `SYSTEM.md`, then remove the planning file if it becomes stale.
+
+| File | Purpose |
+| --- | --- |
+| [big-update-user-facing-coach-activation-plan.md](big-update-user-facing-coach-activation-plan.md) | Next Best Action, personalized learning, weekly coach report, notifications, Public Trader Card 2.0, admin activation inbox |
+| [trade-replay-implementation-plan.md](trade-replay-implementation-plan.md) | Trade Replay using existing Lightweight Charts plus MT5 candle context from TNT Connect/EA |
+| [mobile-only-auto-sync-strategy.md](mobile-only-auto-sync-strategy.md) | Honest mobile-only sync strategy, MVP UX, and future paid Cloud Sync option |
+
 ## Current Snapshot
 
 - App: Next.js App Router, React, TypeScript, Tailwind CSS, Lucide icons.

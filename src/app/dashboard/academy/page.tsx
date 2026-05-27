@@ -3,6 +3,7 @@ import { GraduationCap, Trophy, ArrowRight, Zap, Target, BookOpen, Award } from 
 import Link from "next/link";
 import { AcademyTree } from "@/components/academy/AcademyTree";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { LearningResumeNudge } from "@/components/academy/LearningResumeNudge";
 
 import { getAuthUser } from "@/lib/auth-cache";
 import { redirect } from "next/navigation";
@@ -20,7 +21,17 @@ export default async function UserAcademyDashboard() {
     const userId = user.id;
 
     // Parallel Fetching for Performance
-    const [completedLessons, totalLessons, levels, userData, allQuizzes, certificates, totalLevels] = await Promise.all([
+    const [
+        completedLessons, 
+        totalLessons, 
+        levels, 
+        userData, 
+        allQuizzes, 
+        certificates, 
+        totalLevels,
+        lastProgress,
+        lastQuizAttempt
+    ] = await Promise.all([
         prisma.userProgress.count({ where: { userId, isCompleted: true } }),
         prisma.lesson.count(),
         prisma.level.findMany({
@@ -86,7 +97,17 @@ export default async function UserAcademyDashboard() {
             where: { userId },
             select: { levelId: true }
         }),
-        prisma.level.count()
+        prisma.level.count(),
+        prisma.userProgress.findFirst({
+            where: { userId, isCompleted: true },
+            orderBy: { completedAt: "desc" },
+            select: { completedAt: true }
+        }),
+        prisma.userQuizAttempt.findFirst({
+            where: { userId },
+            orderBy: { completedAt: "desc" },
+            select: { completedAt: true }
+        })
     ]);
 
     // Find Next Lesson (Resume Logic)
@@ -126,6 +147,20 @@ export default async function UserAcademyDashboard() {
     const hasStarted = completedLessons > 0;
     const earnedCerts = certificates.length;
 
+    // Calculate Inactivity Days
+    const lastActivityDate = [
+        lastProgress?.completedAt,
+        lastQuizAttempt?.completedAt
+    ]
+        .filter((d): d is Date => !!d)
+        .sort((a, b) => b.getTime() - a.getTime())[0];
+
+    let idleDays = 0;
+    if (lastActivityDate) {
+        const diffMs = new Date().getTime() - lastActivityDate.getTime();
+        idleDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    }
+
     return (
         <div className="space-y-4">
             <PageHeader
@@ -147,6 +182,9 @@ export default async function UserAcademyDashboard() {
             <div className="grid lg:grid-cols-3 gap-4">
                 {/* Main Map Column */}
                 <div className="lg:col-span-2 space-y-4">
+                    {idleDays >= 7 && (
+                        <LearningResumeNudge idleDays={idleDays} nextLessonSlug={nextLesson?.slug || null} />
+                    )}
 
                     {/* Focus Banner (Next Lesson) */}
                     {nextLesson ? (

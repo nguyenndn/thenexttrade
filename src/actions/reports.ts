@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { ReportType } from "@prisma/client";
 import { recordEdgeEventOnce } from "@/lib/edge-awards";
+import { generateWeeklyActionPlan } from "@/lib/coach/weekly-action-plan.server";
 
 export async function getReports(type: ReportType, page = 1, limit = 10) {
     const user = await getAuthUser();
@@ -21,14 +22,45 @@ export async function getReports(type: ReportType, page = 1, limit = 10) {
         }),
     ]);
 
-    return {
-        reports: reports.map(r => ({
+    // Fetch corresponding coach plans
+    const reportIds = reports.map(r => `plan-${r.id}`);
+    const plans = await prisma.coachActionPlan.findMany({
+        where: { id: { in: reportIds } }
+    });
+    
+    const planMap = new Map(plans.map(p => [p.id, p]));
+    const reportsWithPlans = [];
+
+    for (const r of reports) {
+        let coachPlan = planMap.get(`plan-${r.id}`) || null;
+        if (!coachPlan && type === "WEEKLY") {
+            try {
+                coachPlan = await generateWeeklyActionPlan(user.id, r.id);
+            } catch (err) {
+                console.error(`Auto generate weekly action plan error [type=${type}, userId=${user.id}, reportId=${r.id}]:`, err);
+                if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test" || process.env.USER_QA_EMAIL) {
+                    throw err;
+                }
+            }
+        }
+        reportsWithPlans.push({
             ...r,
             periodStart: r.periodStart.toISOString(),
             periodEnd: r.periodEnd.toISOString(),
             emailSentAt: r.emailSentAt?.toISOString() || null,
             createdAt: r.createdAt.toISOString(),
-        })),
+            coachPlan: coachPlan ? {
+                ...coachPlan,
+                periodStart: coachPlan.periodStart?.toISOString() || null,
+                periodEnd: coachPlan.periodEnd?.toISOString() || null,
+                createdAt: coachPlan.createdAt.toISOString(),
+                completedAt: coachPlan.completedAt?.toISOString() || null
+            } : null
+        });
+    }
+
+    return {
+        reports: reportsWithPlans,
         total,
     };
 }

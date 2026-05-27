@@ -3,10 +3,11 @@
 import { useState } from "react";
 import {
     TrendingUp, TrendingDown, BarChart3, Target, Brain,
-    AlertTriangle, Trophy, ChevronLeft, ChevronRight, Calendar, ArrowUpRight, ArrowDownRight, Minus, Sparkles
+    ChevronLeft, ChevronRight, Calendar,
+    ArrowUpRight, ArrowDownRight, Minus, Crosshair, Clock
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { buildWeeklyInsights } from "@/lib/services/report-insights.service";
+import { WeeklyCoachPlan } from "@/components/coach/WeeklyCoachPlan";
 
 interface ReportData {
     id: string;
@@ -40,6 +41,7 @@ interface ReportData {
     bestTrades: any[] | null;
     worstTrades: any[] | null;
     createdAt: string;
+    coachPlan?: any;
 }
 
 interface ReportViewProps {
@@ -62,49 +64,63 @@ function DeltaBadge({ current, previous, suffix = "", isPercent = false }: { cur
     );
 }
 
-function StatCard({ label, value, icon: Icon, color, delta, previous, isPercent }: {
-    label: string; value: string; icon: any; color: string; delta?: number; previous?: number | null; isPercent?: boolean;
+function StatCard({ label, value, icon: Icon, color, iconBg, delta, previous, isPercent, borderColor }: {
+    label: string; value: string; icon: any; color: string; iconBg: string; delta?: number; previous?: number | null; isPercent?: boolean; borderColor?: string;
 }) {
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-2">
-                <div className={`p-1.5 rounded-lg ${color}`}>
-                    <Icon size={14} />
+        <div className={`bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm hover:shadow-md transition-shadow duration-200 border-t-4 ${borderColor || "border-t-transparent"}`}>
+            <div className="flex items-center gap-3 mb-3">
+                <div className={`p-2 rounded-lg ${iconBg}`}>
+                    <Icon size={18} className={color} />
                 </div>
-                <span className="text-xs font-medium text-gray-500">{label}</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">{label}</span>
             </div>
-            <p className="text-lg sm:text-xl font-black text-gray-800 dark:text-white">{value}</p>
+            <p className="text-2xl font-black text-gray-800 dark:text-white">{value}</p>
             {previous !== undefined && (
-                <div className="mt-1">
+                <div className="mt-1.5 flex items-center gap-1.5">
                     <DeltaBadge current={delta ?? 0} previous={previous} isPercent={isPercent} />
-                    <span className="text-[10px] text-gray-400 ml-1">vs prev</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500">vs prev</span>
                 </div>
             )}
         </div>
     );
 }
 
-function BreakdownTable({ data, title }: { data: any[] | null; title: string }) {
+function BreakdownTable({ data, title, icon: Icon, iconColor }: { data: any[] | null; title: string; icon: any; iconColor: string }) {
     if (!data || data.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
-            <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-3">{title}</h3>
-            <div className="space-y-2">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
+                <div className={`p-2 ${iconColor} rounded-lg`}>
+                    <Icon size={18} />
+                </div>
+                <h3 className="text-sm font-bold text-gray-700 dark:text-white">{title}</h3>
+            </div>
+
+            {/* Table header */}
+            <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 dark:bg-white/[0.02]">
+                <div className="col-span-5">Name</div>
+                <div className="col-span-2 text-right">Trades</div>
+                <div className="col-span-2 text-right">Win Rate</div>
+                <div className="col-span-3 text-right">P&L</div>
+            </div>
+
+            {/* Rows */}
+            <div>
                 {data.map((item, i) => (
-                        <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/5 last:border-0">
-                            <div className="flex items-center gap-2 min-w-0">
-                                <span className="text-xs font-mono bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded shrink-0">{i + 1}</span>
-                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{item.name}</span>
-                            </div>
-                            <div className="flex items-center gap-3 sm:gap-4 text-xs shrink-0 ml-2">
-                                <span className="text-gray-500 hidden sm:inline">{item.trades} trades</span>
-                                <span className="text-gray-500">{item.winRate?.toFixed(0)}% WR</span>
-                                <span className={`font-bold ${item.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}>
-                                    {item.pnl >= 0 ? "+" : ""}${item.pnl?.toFixed(2)}
-                                </span>
-                            </div>
+                    <div key={i} className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 dark:border-white/5 last:border-0">
+                        <div className="col-span-5 flex items-center gap-2 min-w-0">
+                            <span className="text-xs font-mono bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded shrink-0">{i + 1}</span>
+                            <span className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">{item.name}</span>
                         </div>
+                        <div className="col-span-2 text-right text-xs text-gray-500 font-medium">{item.trades}</div>
+                        <div className="col-span-2 text-right text-xs text-gray-500 font-medium">{item.winRate?.toFixed(0)}%</div>
+                        <div className={`col-span-3 text-right font-bold text-sm ${item.pnl >= 0 ? "text-primary" : "text-red-500"}`}>
+                            {item.pnl >= 0 ? "+" : ""}${item.pnl?.toFixed(2)}
+                        </div>
+                    </div>
                 ))}
             </div>
         </div>
@@ -118,86 +134,104 @@ function PsychologySection({ confidence, compliance, emotions, mistakes }: {
     if (!hasData) return null;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-4">
-                <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-500"><Brain size={16} /></div>
-                <h3 className="text-sm font-bold text-gray-700 dark:text-white">Psychology & Discipline</h3>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-4">
-                {confidence !== null && (
-                    <div>
-                        <p className="text-xs text-gray-500 mb-1">Avg Confidence</p>
-                        <div className="flex items-center gap-2">
-                            <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
-                                <div className="h-full bg-purple-500 rounded-full transition-all" style={{ width: `${(confidence / 5) * 100}%` }} />
-                            </div>
-                            <span className="text-sm font-bold text-gray-700 dark:text-white">{confidence.toFixed(1)}/5</span>
-                        </div>
-                    </div>
-                )}
-                {compliance !== null && (
-                    <div>
-                        <p className="text-xs text-gray-500 mb-1">Plan Compliance</p>
-                        <div className="flex items-center gap-2">
-                            <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
-                                <div className={`h-full rounded-full transition-all ${compliance >= 70 ? "bg-emerald-500" : compliance >= 40 ? "bg-amber-500" : "bg-red-500"}`} style={{ width: `${compliance}%` }} />
-                            </div>
-                            <span className="text-sm font-bold text-gray-700 dark:text-white">{compliance.toFixed(0)}%</span>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {emotions && emotions.length > 0 && (
-                <div className="mb-4">
-                    <p className="text-xs text-gray-500 mb-2">Top Emotions</p>
-                    <div className="flex flex-wrap gap-1.5">
-                        {emotions.map((e: any, i: number) => (
-                            <span key={i} className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-300">
-                                {e.emotion} <span className="text-gray-400">×{e.count}</span>
-                            </span>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {mistakes && mistakes.length > 0 && (
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
+                <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500"><Brain size={18} /></div>
                 <div>
-                    <p className="text-xs text-gray-500 mb-2">Top Mistakes</p>
-                    <div className="space-y-1.5">
-                        {mistakes.map((m: any, i: number) => (
-                            <div key={i} className="flex items-center justify-between py-1.5">
-                                <span className="text-sm text-gray-600 dark:text-gray-300">{m.name}</span>
-                                <span className="text-xs font-bold bg-red-50 dark:bg-red-500/10 text-red-500 px-2 py-0.5 rounded">{m.count}×</span>
-                            </div>
-                        ))}
-                    </div>
+                    <h3 className="text-sm font-bold text-gray-700 dark:text-white">Psychology & Discipline</h3>
+                    <p className="text-xs text-gray-500">Mindset & emotional tracking</p>
                 </div>
-            )}
+            </div>
+
+            <div className="p-5">
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    {confidence !== null && (
+                        <div>
+                            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Avg Confidence</p>
+                            <div className="flex items-center gap-2">
+                                <div className="flex-1 h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                    <div className="h-full bg-purple-500 rounded-full transition-all" style={{ width: `${(confidence / 5) * 100}%` }} />
+                                </div>
+                                <span className="text-sm font-bold text-gray-700 dark:text-white">{confidence.toFixed(1)}/5</span>
+                            </div>
+                        </div>
+                    )}
+                    {compliance !== null && (
+                        <div>
+                            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Plan Compliance</p>
+                            <div className="flex items-center gap-2">
+                                <div className="flex-1 h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                    <div className={`h-full rounded-full transition-all ${compliance >= 70 ? "bg-emerald-500" : compliance >= 40 ? "bg-amber-500" : "bg-red-500"}`} style={{ width: `${compliance}%` }} />
+                                </div>
+                                <span className="text-sm font-bold text-gray-700 dark:text-white">{compliance.toFixed(0)}%</span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {emotions && emotions.length > 0 && (
+                    <div className="mb-4">
+                        <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Top Emotions</p>
+                        <div className="flex flex-wrap gap-1.5">
+                            {emotions.map((e: any, i: number) => (
+                                <span key={i} className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-300">
+                                    {e.emotion} <span className="text-gray-400">×{e.count}</span>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {mistakes && mistakes.length > 0 && (
+                    <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Top Mistakes</p>
+                        <div className="space-y-1.5">
+                            {mistakes.map((m: any, i: number) => (
+                                <div key={i} className="flex items-center justify-between py-1.5">
+                                    <span className="text-sm text-gray-600 dark:text-gray-300">{m.name}</span>
+                                    <span className="text-xs font-bold bg-red-50 dark:bg-red-500/10 text-red-500 px-2 py-0.5 rounded">{m.count}×</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
 
-function TradesList({ trades, title, color }: { trades: any[] | null; title: string; color: string }) {
+function TradesList({ trades, title, icon: Icon, iconColor, pnlColor }: { trades: any[] | null; title: string; icon: any; iconColor: string; pnlColor: string }) {
     if (!trades || trades.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-                <div className={`p-1.5 rounded-lg ${color}`}><Trophy size={14} /></div>
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
+                <div className={`p-2 rounded-lg ${iconColor}`}><Icon size={18} /></div>
                 <h3 className="text-sm font-bold text-gray-700 dark:text-white">{title}</h3>
             </div>
-            <div className="space-y-2">
+
+            {/* Table header */}
+            <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 dark:bg-white/[0.02]">
+                <div className="col-span-5">Symbol</div>
+                <div className="col-span-4 text-center">Date</div>
+                <div className="col-span-3 text-right">P&L</div>
+            </div>
+
+            {/* Rows */}
+            <div>
                 {trades.map((t: any, i: number) => (
-                    <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-white/5 last:border-0">
-                        <div>
-                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">{t.symbol}</span>
-                            {t.date && <span className="text-xs text-gray-400 ml-2">{new Date(t.date).toLocaleDateString()}</span>}
+                    <div key={i} className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 dark:border-white/5 last:border-0">
+                        <div className="col-span-5">
+                            <span className="text-sm font-bold text-gray-800 dark:text-gray-200">{t.symbol}</span>
                         </div>
-                        <span className={`text-sm font-bold ${t.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                        <div className="col-span-4 text-center text-xs text-gray-500 font-medium">
+                            {t.date ? new Date(t.date).toLocaleDateString() : ""}
+                        </div>
+                        <div className={`col-span-3 text-right font-bold text-sm ${pnlColor}`}>
                             {t.pnl >= 0 ? "+" : ""}${t.pnl?.toFixed(2)}
-                        </span>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -205,79 +239,20 @@ function TradesList({ trades, title, color }: { trades: any[] | null; title: str
     );
 }
 
-function WeeklyFocus({ report }: { report: ReportData }) {
-    const input = {
-        totalTrades: report.totalTrades,
-        winRate: report.winRate,
-        netPnL: report.netPnL,
-        profitFactor: report.profitFactor,
-        avgWin: report.avgWin,
-        avgLoss: report.avgLoss,
-        planCompliance: report.planCompliance,
-        avgConfidence: report.avgConfidence,
-        bySymbol: report.bySymbol || [],
-        bySession: report.bySession || [],
-        topMistakes: report.topMistakes || [],
-        prevWinRate: report.prevWinRate,
-        prevPnL: report.prevPnL,
-        prevTrades: report.prevTrades,
-    };
 
-    const insights = buildWeeklyInsights(input);
-    if (insights.length === 0) return null;
-
-    const InsightIconMap = {
-        "trophy": Trophy,
-        "alert-triangle": AlertTriangle,
-        "target": Target,
-        "trending-up": TrendingUp,
-        "trending-down": TrendingDown,
-        "brain": Brain
-    };
-
-    return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-4">
-                <div className="p-1.5 rounded-lg bg-gold/10 text-gold">
-                    <Sparkles size={16} />
-                </div>
-                <h3 className="text-base font-bold text-gray-800 dark:text-white">Weekly Focus</h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {insights.map((insight, i) => {
-                    const Icon = InsightIconMap[insight.icon] || Target;
-                    const colorClasses = 
-                        insight.type === "STRENGTH" ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20" :
-                        insight.type === "WARNING" ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100 dark:border-red-500/20" :
-                        "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-500/20";
-                    
-                    return (
-                        <div key={i} className={`p-4 rounded-xl border ${colorClasses}`}>
-                            <div className="flex items-center gap-2 mb-2 font-bold">
-                                <Icon size={16} />
-                                <h4>{insight.title}</h4>
-                            </div>
-                            <p className="text-sm opacity-90 leading-relaxed">{insight.body}</p>
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
-}
 
 export function ReportView({ reports, total, type }: ReportViewProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     if (reports.length === 0) {
         return (
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-8 sm:p-12 text-center shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-8 sm:p-12 text-center shadow-sm">
                 <div className="p-4 bg-gray-100 dark:bg-white/5 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                     <Calendar size={28} className="text-gray-400" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">
+                <h2 className="text-lg font-bold text-gray-700 dark:text-white mb-2">
                     {type === "weekly" ? "No weekly reviews yet" : "No monthly reviews yet"}
-                </h3>
+                </h2>
                 <p className="text-sm text-gray-500 max-w-sm mx-auto">
                     {type === "weekly"
                         ? "Log trades during the week, then generate a review to find one strength, one leak, and one next focus."
@@ -296,7 +271,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
     return (
         <div className="space-y-4">
             {/* Period Navigator */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 px-3 sm:px-5 py-3 shadow-sm flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 px-5 py-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center justify-between">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -327,16 +302,22 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                 </Button>
             </div>
 
-            {/* Weekly Focus Insights */}
-            <WeeklyFocus report={report} />
+            {/* Weekly Coach Plan checklist */}
+            {report.coachPlan && (
+                <WeeklyCoachPlan plan={report.coachPlan} />
+            )}
+
+
 
             {/* Core Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <StatCard
                     label="Net P/L"
                     value={`${report.netPnL >= 0 ? "+" : ""}$${report.netPnL.toFixed(2)}`}
                     icon={report.netPnL >= 0 ? TrendingUp : TrendingDown}
-                    color={report.netPnL >= 0 ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"}
+                    color={report.netPnL >= 0 ? "text-emerald-500" : "text-red-500"}
+                    iconBg={report.netPnL >= 0 ? "bg-emerald-500/10" : "bg-red-500/10"}
+                    borderColor={report.netPnL >= 0 ? "border-t-emerald-500" : "border-t-red-500"}
                     delta={report.netPnL}
                     previous={report.prevPnL}
                 />
@@ -344,7 +325,9 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     label="Win Rate"
                     value={`${report.winRate.toFixed(1)}%`}
                     icon={Target}
-                    color="bg-blue-500/10 text-blue-500"
+                    color="text-blue-500"
+                    iconBg="bg-blue-500/10"
+                    borderColor="border-t-blue-500"
                     delta={report.winRate}
                     previous={report.prevWinRate}
                     isPercent
@@ -353,41 +336,45 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     label="Total Trades"
                     value={`${report.totalTrades}`}
                     icon={BarChart3}
-                    color="bg-purple-500/10 text-purple-500"
+                    color="text-purple-500"
+                    iconBg="bg-purple-500/10"
+                    borderColor="border-t-purple-500"
                 />
                 <StatCard
                     label="Profit Factor"
                     value={!isFinite(report.profitFactor) ? "∞" : report.profitFactor.toFixed(2)}
                     icon={TrendingUp}
-                    color="bg-amber-500/10 text-amber-500"
+                    color="text-amber-500"
+                    iconBg="bg-amber-500/10"
+                    borderColor="border-t-amber-500"
                 />
             </div>
 
             {/* Secondary Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
-                    <p className="text-xs text-gray-500 mb-1">Avg Win</p>
-                    <p className="text-sm font-bold text-emerald-500">+${report.avgWin.toFixed(2)}</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Avg Win</p>
+                    <p className="text-lg font-black text-primary">+${report.avgWin.toFixed(2)}</p>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
-                    <p className="text-xs text-gray-500 mb-1">Avg Loss</p>
-                    <p className="text-sm font-bold text-red-500">-${report.avgLoss.toFixed(2)}</p>
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Avg Loss</p>
+                    <p className="text-lg font-black text-red-500">-${report.avgLoss.toFixed(2)}</p>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
-                    <p className="text-xs text-gray-500 mb-1">Largest Win</p>
-                    <p className="text-sm font-bold text-emerald-500">+${report.largestWin.toFixed(2)}</p>
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Largest Win</p>
+                    <p className="text-lg font-black text-primary">+${report.largestWin.toFixed(2)}</p>
                 </div>
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-gray-200 dark:border-white/10 p-3 sm:p-4 shadow-sm">
-                    <p className="text-xs text-gray-500 mb-1">Largest Loss</p>
-                    <p className="text-sm font-bold text-red-500">${report.largestLoss.toFixed(2)}</p>
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Largest Loss</p>
+                    <p className="text-lg font-black text-red-500">${report.largestLoss.toFixed(2)}</p>
                 </div>
             </div>
 
             {/* Breakdowns + Psychology Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <BreakdownTable data={report.bySymbol} title="📊 Performance by Symbol" />
-                <BreakdownTable data={report.byStrategy} title="🎯 Performance by Strategy" />
-                <BreakdownTable data={report.bySession} title="🕐 Performance by Session" />
+                <BreakdownTable data={report.bySymbol} title="Performance by Symbol" icon={BarChart3} iconColor="bg-cyan-500/10 text-cyan-500" />
+                <BreakdownTable data={report.byStrategy} title="Performance by Strategy" icon={Crosshair} iconColor="bg-primary/10 text-primary" />
+                <BreakdownTable data={report.bySession} title="Performance by Session" icon={Clock} iconColor="bg-indigo-500/10 text-indigo-500" />
                 <PsychologySection
                     confidence={report.avgConfidence}
                     compliance={report.planCompliance}
@@ -398,8 +385,8 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
 
             {/* Best/Worst Trades */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <TradesList trades={report.bestTrades} title="Best Trades" color="bg-emerald-500/10 text-emerald-500" />
-                <TradesList trades={report.worstTrades} title="Worst Trades" color="bg-red-500/10 text-red-500" />
+                <TradesList trades={report.bestTrades} title="Best Trades" icon={TrendingUp} iconColor="bg-emerald-500/10 text-emerald-500" pnlColor="text-primary" />
+                <TradesList trades={report.worstTrades} title="Worst Trades" icon={TrendingDown} iconColor="bg-red-500/10 text-red-500" pnlColor="text-red-500" />
             </div>
         </div>
     );

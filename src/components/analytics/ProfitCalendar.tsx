@@ -151,9 +151,9 @@ export function ProfitCalendar({ data, equityCurve, accountId }: ProfitCalendarP
         const intensity = Math.min(Math.abs(pnl) / maxPnL, 1);
         // Use opacity based on intensity
         if (pnl > 0) {
-            return "bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary border-emerald-100/50 dark:border-primary/20";
+            return "bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary border border-emerald-400 dark:border-primary/60";
         } else if (pnl < 0) {
-            return "bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100/50 dark:border-red-500/20";
+            return "bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-400 dark:border-red-500/60";
         }
         return "bg-gray-50 dark:bg-white/5 text-gray-500";
     };

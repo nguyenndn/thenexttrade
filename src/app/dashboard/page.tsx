@@ -13,6 +13,9 @@ import { format, subDays } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { TradingAlertBanner } from "@/components/dashboard/TradingAlertBanner";
 import { measurePerformance } from "@/lib/performance/timing";
+import { getNextBestAction } from "@/lib/coach/next-action.server";
+import { computeTraderSignals } from "@/lib/coach/signal-engine.server";
+import { getLearningRecommendations } from "@/lib/coach/lesson-recommendations.server";
 
 export const dynamic = "force-dynamic";
 
@@ -357,6 +360,13 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
         breakEvenCount: Math.max(0, stats.totalTrades - stats.winCount - stats.lossCount),
     };
 
+    // Fetch Coach & Next Action recommendations
+    const [nextBestAction, signals] = await Promise.all([
+        getNextBestAction(user.id),
+        computeTraderSignals(user.id, { persist: true })
+    ]);
+    const learningRecommendations = await getLearningRecommendations(user.id, signals);
+
     return (
         <>
             {/* Trading Protection Alerts */}
@@ -383,6 +393,8 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
                 dayOfWeekPerformance={dayOfWeekPerformance}
                 activationState={activationState}
                 daysSinceLastReport={latestReport ? Math.floor((new Date().getTime() - latestReport.createdAt.getTime()) / (1000 * 60 * 60 * 24)) : null}
+                nextBestAction={nextBestAction}
+                learningRecommendations={learningRecommendations}
             />
         </>
     );

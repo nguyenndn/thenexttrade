@@ -573,3 +573,108 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
   - Deleted the component file `src/components/dashboard/PersonalizedWelcomeBanner.tsx` to prevent zombie files in the directory.
 - **Flawless Type Safety & Compilation**:
   - Confirmed `npx tsc --noEmit` and `npm run lint` compile cleanly with **0 type errors** and **0 lint errors** across the workspace.
+
+---
+
+## Phase 31: User-Facing Coach & Activation Plan ✅
+
+### Key Achievements
+- **TypeScript Type Safety Hardening**:
+  - Surgically resolved a critical typescript compilation error inside the core signal engine [`src/lib/coach/signal-engine.server.ts`](file:///c:/laragon/www/gsn-crm/src/lib/coach/signal-engine.server.ts) by updating the `UserProgress` query from the outdated `completed: true` to the actual Prisma column name `isCompleted: true`.
+- **Smart Notifications & Nudges Service**:
+  - Created [`src/lib/coach/coach-notifications.server.ts`](file:///c:/laragon/www/gsn-crm/src/lib/coach/coach-notifications.server.ts) with strict anti-spam cooldown policies:
+    * Standard Coach Signals: once per 7 days cooldown.
+    * Stale Syncs (`SYNC_STALE`): once per 24 hours per account cooldown.
+    * Lesson Recommendations (`NO_LESSON_STARTED`): once per 14 days cooldown.
+  - Automatically creates system-compliant notifications using existing `FEATURE_UPDATE` enum types to ensure 100% database compatibility without requiring schema migrations.
+  - Safely records notification delivery time directly into `TraderSignal.metadata.notificationSentAt`.
+- **Public Trader Card 2.0 CTA Referral Polish**:
+  - Upgraded the primary call-to-action signup link on the verified trader public profile card in [`src/components/profile/PublicProfileCard.tsx`](file:///c:/laragon/www/gsn-crm/src/components/profile/PublicProfileCard.tsx).
+  - The CTA button now dynamically passes the trader's unique username as a referral query parameters tag (`/auth/signup?ref=${profile.username}`), ensuring all signup conversions are tracked correctly.
+- **Secure Admin Activation Inbox Actions**:
+  - Created the server-side action layer [`src/actions/admin-activation.ts`](file:///c:/laragon/www/gsn-crm/src/actions/admin-activation.ts) containing:
+    * `getAdminActivationSignals()`: Securely queries all active activation-focused signals (No Account, Account Never Synced, Sync Stale, No First Trade, No Weekly Review) representing stuck traders, fully integrated with user profiles.
+    * `markUserContacted(signalId)`: Sets contacted timestamp metadata.
+    * `dismissUserSignal(signalId, days)`: Temporarily hides signals from the admin inbox.
+    * `saveAdminSignalNote(signalId, note)`: Persists customized administrator notes.
+- **Premium Dynamic Admin Activation Inbox UI**:
+  - Built the gorgeous, interactive dashboard component [`src/components/admin/reports/AdminActivationInboxPanel.tsx`](file:///c:/laragon/www/gsn-crm/src/components/admin/reports/AdminActivationInboxPanel.tsx):
+    * Clean, responsive tabular grid of stuck users with their current level, join date, current stuck stage, last activity sync, and a plain-English recommended action.
+    * Integrated real-time client-side search input and stage selection filters.
+    * Inline administrative note editor with automatic save actions and visual loaders.
+    * Optimistic contacted toggles and temporary dismissals with zero screen lag.
+- **Reports Dashboard Integration**:
+  - Successfully mounted the new `<AdminActivationInboxPanel />` directly at the top of the Admin Reports page in [`src/components/admin/reports/AdminReportsDashboard.tsx`](file:///c:/laragon/www/gsn-crm/src/components/admin/reports/AdminReportsDashboard.tsx), right under the North Star metric panel.
+- **Database Migration & Schema Realization**:
+  - Resolved `BUG-001` (missing database structures blocking Dashboard and Weekly Reports).
+  - Created and successfully applied PostgreSQL migration `20260527204800_add_coach_activation_signals` to introduce the `trader_signals` and `coach_action_plans` tables with precise indexing.
+  - Successfully resolved a local migration conflict for the `edge_events` model using `npx prisma migrate resolve --applied 20260516110000_add_missions_and_events`.
+  - Regenerated the Prisma Client successfully under zero file locks.
+- **System Verification & Quality Checks**:
+  - Verified static compilation with `npx tsc --noEmit` -> **`0` errors** ✅
+  - Verified linter rules with `npm run lint` -> **`0` errors** ✅
+  - Ran the complete test suite with `npx vitest run` -> **`26` passed (100% success)** ✅
+
+---
+
+## Phase 30: Next.js 15 Link Deprecation Fix ✅
+
+### Key Achievements
+- **Resolved Visual Warning / Deprecation Crash**:
+  - Corrected next-link warnings/errors that were triggering in development mode on Turbopack under Next.js 15 due to deprecated props.
+  - Surgically removed `passHref` and `legacyBehavior` properties from `<Link>` components where they wrapped standard components without intermediate `<a>` tags.
+- **Affected Files Adjusted**:
+  1. [NextBestActionPanel.tsx](file:///c:/laragon/www/gsn-crm/src/components/coach/NextBestActionPanel.tsx): Fixed `<Link>` component on line 71.
+  2. [WeeklyCoachPlan.tsx](file:///c:/laragon/www/gsn-crm/src/components/coach/WeeklyCoachPlan.tsx): Fixed `<Link>` component on line 113.
+  3. [RecommendedForYou.tsx](file:///c:/laragon/www/gsn-crm/src/components/coach/RecommendedForYou.tsx): Fixed `<Link>` component on line 76.
+- **Clean HTML Compliance**:
+  - Removed outdated Next.js 12 legacy bridging mechanisms, allowing modern React 19 / Next.js 15 hydration engine to handle clean, native standard link rendering safely.
+
+### Verification Results
+- `npx tsc --noEmit` -> **`0` errors** ✅
+- `npm run lint` -> **`0` errors** (warnings checked and clean of blocking issues) ✅
+- `npx vitest run` -> **`26 passed` (100% test success)** ✅
+
+---
+
+## Phase 31: Academy Inactivity Nudge & Weekly Report Focus Cleanup ✅
+
+### Key Achievements
+- **Built Academy Inactivity Nudge**:
+  - Implemented a premium, responsive client component [LearningResumeNudge.tsx](file:///c:/laragon/www/gsn-crm/src/components/academy/LearningResumeNudge.tsx) using the project's standard amber/gold luxury theme and high-contrast glassmorphic styling.
+  - Added native dynamic querying of the user's latest learning progress: parses completed lessons (`UserProgress` via `completedAt` key) and quiz attempts (`UserQuizAttempt` via `completedAt`) in parallel.
+  - Computes exact idle days in `/dashboard/academy/page.tsx` and renders the nudge cleanly at the top of the map column if inactivity is **`>= 7` days**, prompting users to pick back up their trading consistency.
+  - Fully supports seamless, single-session dismissal via React Client state and `sessionStorage`.
+- **Cleaned Up Redundant Weekly Focus insights**:
+  - Removed the outdated `<WeeklyFocus>` component, rendering hooks, and its unused `buildWeeklyInsights` import from [ReportView.tsx](file:///c:/laragon/www/gsn-crm/src/components/reports/ReportView.tsx). This completely aligns the weekly report to focus solely on the high-end `Weekly Coach Plan` checklist.
+  - Cleanly removed the dead code file `src/lib/services/report-insights.service.ts` from Git to keep the repository modular and maintainable.
+
+### Verification Results
+- `npx tsc --noEmit` (Typecheck Sweeps) -> **`0` errors** ✅
+- `npm run lint` (ESLint Audit) -> **`0` errors** ✅
+- `npx vitest run` (Test Suite Execution) -> **`26/26 passed` (100% success)** ✅
+
+---
+
+## Phase 32: QA Report Fixes (BUG-001 & UX-001) ✅
+
+### Key Achievements
+- **Resolved BUG-001 (Weekly Coach Action Plan Auto-generation)**:
+  - Surgically verified the static import of `generateWeeklyActionPlan` in [`src/actions/reports.ts`](file:///c:/laragon/www/gsn-crm/src/actions/reports.ts) to avoid ESM dynamic import interop quirks (`default.generateWeeklyActionPlan` nesting under Next.js server actions).
+  - Enhanced error handling in the catch block of `getReports` to log all three critical context arguments (`user.id`, `report.id`, and `type`).
+  - Added strict environment checking to throw the caught error in `development`, `test`, or when running Playwright E2E QA sweeps (where `process.env.USER_QA_EMAIL` is set). This prevents silent generation failures, forcing clear Playwright failures with highly detailed stack traces during testing, while safely keeping production resilient.
+- **Resolved UX-001 (Dashboard Coach Panel Consolidation)**:
+  - Audited `src/app/dashboard/DashboardClient.tsx` and confirmed the total removal of old, bulky full-width blocks (`NextBestActionPanel` and `RecommendedForYou`) above the fold.
+  - Implemented sleek, premium, space-saving nudge component [`<DashboardCoachNudge />`](file:///c:/laragon/www/gsn-crm/src/components/coach/DashboardCoachNudge.tsx) at the top fold of the dashboard route. It renders a clean one-line status banner that triggers a gold-glassmorphic Radix Dialog holding the complete Next Best Action card, dynamic CTAs, and lesson recommendations list.
+  - Refined the Next.js `Link` components inside `DashboardCoachNudge.tsx` to remove deprecated `passHref` attributes, fully securing compliance with Next.js 15 routing standards.
+  - **[FIXED]** Resolved text-wrapping visual bug inside the Coach Plan dialog where all content rendered on a single line and overflowed the parent container on wider text strings:
+    * Added `whitespace-normal` class to `DialogContent` base component in [`src/components/ui/Dialog.tsx`](file:///c:/laragon/www/gsn-crm/src/components/ui/Dialog.tsx) to override inherited `white-space: nowrap` browser user-agent defaults, securing standard text-wrapping behavior across all dialog panels in the app.
+    * Added `whitespace-normal` explicitly to `DialogContent` in `DashboardCoachNudge.tsx` as a secondary safety shield.
+    * Upgraded the text content wrapper of the Primary Action card to use `flex-1 min-w-0` to block horizontal expansion of flex items under long descriptions.
+    * Upgraded the recommended items text wrapper to use `flex-1` alongside `min-w-0` to correctly enable standard flex space calculations and restore high-readability truncation rules for titles.
+
+### Verification Results
+- `npx tsc --noEmit` (Typecheck Sweeps) -> **`0` errors** ✅
+- `npm run lint` (ESLint Audit) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅
+- `npx vitest run` (Test Suite Execution) -> **`26/26 passed` (100% success)** ✅
+

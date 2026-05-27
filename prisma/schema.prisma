@@ -61,6 +61,8 @@ model User {
   tradingReports           TradingReport[]
   missionProgress          UserMissionProgress[]
   vipRequests              VipRequest[]
+  traderSignals            TraderSignal[]
+  coachActionPlans         CoachActionPlan[]
 
   @@index([createdAt])
   @@index([email])
@@ -1298,4 +1300,52 @@ enum ActivityStatus {
   HIGH_VALUE_ACTIVE
   AT_RISK
   DORMANT
+}
+
+model TraderSignal {
+  id           String    @id @default(cuid())
+  userId       String    @db.Uuid
+  signalType   String    @db.VarChar(80)
+  severity     String    @default("INFO") @db.VarChar(20)
+  status       String    @default("ACTIVE") @db.VarChar(20)
+  sourceType   String?   @db.VarChar(80)
+  sourceId     String?   @db.VarChar(120)
+  title        String    @db.VarChar(160)
+  summary      String
+  actionLabel  String?   @db.VarChar(80)
+  actionHref   String?
+  metadata     Json?
+  firstSeenAt  DateTime  @default(now()) @db.Timestamptz(6)
+  lastSeenAt   DateTime  @default(now()) @db.Timestamptz(6)
+  resolvedAt   DateTime? @db.Timestamptz(6)
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, signalType, sourceType, sourceId])
+  @@index([userId, status, severity])
+  @@index([signalType, status])
+  @@map("trader_signals")
+}
+
+model CoachActionPlan {
+  id            String    @id @default(cuid())
+  userId        String    @db.Uuid
+  periodStart   DateTime? @db.Timestamptz(6)
+  periodEnd     DateTime? @db.Timestamptz(6)
+  type          String    @default("WEEKLY") @db.VarChar(30)
+  title         String    @db.VarChar(160)
+  summary       String
+  keepDoing     String?
+  fixNext       String?
+  nextActions   Json
+  lessonSlugs   String[]  @default([])
+  status        String    @default("ACTIVE") @db.VarChar(20)
+  createdAt     DateTime  @default(now()) @db.Timestamptz(6)
+  completedAt   DateTime? @db.Timestamptz(6)
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([userId, type, createdAt])
+  @@map("coach_action_plans")
 }

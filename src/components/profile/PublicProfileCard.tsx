@@ -280,8 +280,8 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
 
             <div className="absolute bottom-8 left-0 right-0 text-center">
                 <Link
-                    href="/auth/signup"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#F97316] px-6 py-3 text-sm font-black text-white shadow-xl shadow-orange-700/20 transition-all hover:scale-[1.03] hover:bg-[#EA580C] active:scale-[0.97]"
+                    href={`/auth/signup?ref=${profile.username}`}
+                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-amber-500/25 transition-all hover:scale-[1.03] active:scale-[0.97] border-0"
                 >
                     Join TheNextTrade
                     <ArrowUpRight size={16} />

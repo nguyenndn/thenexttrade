@@ -253,3 +253,46 @@
 - [x] Pass tradingGoal prop down to DashboardClient (Cleaned up prop structure)
 - [x] Implement local-storage aware daily dismissal mechanism (Reverted)
 - [x] Verify flawless TypeScript and ESLint builds (0 errors)
+
+## Phase 29: User-Facing Coach & Activation Plan
+- [x] Step 29.1: Fix UserProgress compilation error in `signal-engine.server.ts` (isCompleted check)
+- [x] Step 29.2: Implement Smart Notifications service `src/lib/coach/coach-notifications.server.ts` with strict cooldown logic
+- [x] Step 29.3: Polish Public Trader Card 2.0 CTA in `PublicProfileCard.tsx` to include `?ref=${profile.username}`
+- [x] Step 29.4: Build Admin Activation Inbox actions `src/actions/admin-activation.ts`
+- [x] Step 29.5: Implement AdminActivationInboxPanel component in `src/components/admin/reports/AdminActivationInboxPanel.tsx`
+- [x] Step 29.6: Mount AdminActivationInboxPanel inside AdminReportsDashboard
+- [x] Step 29.7: Run Typecheck, Lint, and Tests to verify complete type safety, lint correctness, and 0 regression
+## Phase 30: Next.js 15 Link Deprecation Fix
+- [x] Remove `passHref` and `legacyBehavior` from `<Link>` wrapping `<Button>` in `NextBestActionPanel.tsx`
+- [x] Remove `passHref` and `legacyBehavior` from `<Link>` wrapping `<Button>` in `WeeklyCoachPlan.tsx`
+- [x] Remove `passHref` and `legacyBehavior` from `<Link>` wrapping `<Button>` in `RecommendedForYou.tsx`
+- [x] Run typecheck (`npx tsc --noEmit`) to verify 0 errors
+- [x] Run ESLint (`npm run lint`) to verify 0 errors
+- [x] Run tests (`npx vitest run`) to verify 0 errors
+
+## Phase 31: Academy Inactivity Nudge & Weekly Report Focus Cleanup
+- [x] Implement the `LearningResumeNudge` client component for Academy learning path pause warnings (Phase 2)
+- [x] Query user's last `UserProgress` (completed lessons) and `UserQuizAttempt` timestamps to compute idle days
+- [x] Render `LearningResumeNudge` banner at the top of `/dashboard/academy` if user is idle for >= 7 days
+- [x] Remove `WeeklyFocus` component, `buildWeeklyInsights` import, and rendering call from `ReportView.tsx` (Phase 3)
+- [x] Cleanly delete the unused `report-insights.service.ts` file from Git
+- [x] Run full type-check and linter sweeps to verify 0 errors
+- [x] Run vitest suite to ensure complete system consistency (26/26 tests passed)
+
+## Phase 32: QA Report Fixes (BUG-001 & UX-001)
+- [x] Resolve BUG-001: Auto-generation of Weekly Coach Action Plan for Weekly Reports
+  - [x] Statically import `generateWeeklyActionPlan` in `src/actions/reports.ts` to bypass ESM dynamic import interop quirks
+  - [x] Upgrade error handling in `getReports` to include all required context (`userId`, `reportId`, and `type`)
+  - [x] Throw errors in development, test, and Playwright QA runs instead of silently swallowing, preventing silent failures and easing debugging
+- [x] Resolve UX-001: Consolidated compact nudge bar dialog on Dashboard
+  - [x] Refined `DashboardCoachNudge.tsx` to remove deprecated `passHref` from Next.js `<Link>` elements
+  - [x] Verified `DashboardClient.tsx` completely removed old bulky panels (`NextBestActionPanel` & `RecommendedForYou`) in favor of `<DashboardCoachNudge>`
+  - [x] **[FIXED]** Resolved text-wrapping visual bug inside the Coach Plan dialog:
+    - [x] Added `whitespace-normal` class to `DialogContent` base component inside `src/components/ui/Dialog.tsx` to reset standard text wrapping across all dialogs in the app.
+    - [x] Added `whitespace-normal` explicitly to `DialogContent` in `src/components/coach/DashboardCoachNudge.tsx`.
+    - [x] Added `flex-1 min-w-0` to the text content wrapper of the Primary Action card to prevent horizontal expansion of flex items under long text descriptions.
+    - [x] Added `flex-1` to the recommended item cards text content wrapper to correctly compute remaining flex space and enable robust truncation rules.
+  - [x] Verified `npx tsc --noEmit` returns exactly 0 compile errors
+  - [x] Verified `npm run lint` completes with exactly 0 lint errors
+  - [x] Verified `npx vitest run` completes with 100% passing tests (26/26 tests passed)
+
