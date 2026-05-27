@@ -182,7 +182,7 @@ function addSecurityHeaders(response: NextResponse, isDev: boolean): void {
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net",
         "font-src 'self' data: https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com",
+        "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net",
         "frame-src https://challenges.cloudflare.com",
         "worker-src 'self' blob:",
         "object-src 'none'",
