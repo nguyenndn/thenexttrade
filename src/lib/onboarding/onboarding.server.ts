@@ -67,6 +67,19 @@ export async function completeOnboarding(userId: string): Promise<void> {
         completedAt: new Date().toISOString(),
         lastCompletedStep: 4,
     });
+
+    // Create welcome notification so the bell is never empty for new users
+    await prisma.notification.create({
+        data: {
+            userId,
+            type: "FEATURE_UPDATE",
+            title: "Welcome to TheNextTrade! 🎉",
+            message: "Your trading command center is ready. Connect your MT5 account to start syncing trades automatically, or explore Academy to sharpen your edge.",
+            link: "/dashboard/accounts",
+            icon: "Rocket",
+            priority: "NORMAL",
+        },
+    });
 }
 
 /**

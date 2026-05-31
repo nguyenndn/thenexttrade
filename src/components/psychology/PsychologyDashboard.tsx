@@ -14,6 +14,7 @@ import { TradingMoodHeatmap } from "./TradingMoodHeatmap";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
+import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 
 interface PsychologyData {
     emotionBeforeStats: Array<{
@@ -69,7 +70,11 @@ interface PsychologyData {
     }>;
 }
 
-export function PsychologyDashboard() {
+interface PsychologyDashboardProps {
+    hasTradeData?: boolean;
+}
+
+export function PsychologyDashboard({ hasTradeData = true }: PsychologyDashboardProps) {
     const [data, setData] = useState<PsychologyData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [dateRange, setDateRange] = useState({
@@ -105,14 +110,78 @@ export function PsychologyDashboard() {
         return <PsychologyLoadingSkeleton />;
     }
 
-    if (!data) {
+    // Check if data is truly empty (null OR has no meaningful content)
+    const totalEmotionTrades = data
+        ? data.emotionBeforeStats.reduce((s, e) => s + e.totalTrades, 0)
+        : 0;
+    const hasNoMeaningfulData = !data || (
+        data.emotionBeforeStats.length === 0 &&
+        data.emotionAfterStats.length === 0 &&
+        data.confidenceCorrelation.length === 0 &&
+        data.emotionTrend.length === 0 &&
+        totalEmotionTrades === 0
+    );
+
+    if (hasNoMeaningfulData) {
         return (
-            <div className="py-20">
-                <ChartEmptyState
-                    title="No psychology data yet"
-                    description="Start tracking emotions when logging trades to see insights here."
-                />
+            <>
+            <PageHeader
+                title="Psychology Analysis"
+                description="Understand how emotions affect your trading"
+                mobileFullWidthButton
+            >
+                {hasTradeData && (
+                    <DateRangePicker
+                        value={dateRange}
+                        onChange={setDateRange}
+                    />
+                )}
+            </PageHeader>
+            <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 mt-8">
+                {/* Animated Brain Icon */}
+                <div className="relative w-20 h-20 mb-6 mx-auto">
+                    <div className="absolute inset-0 rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 animate-[psych-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                    <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center animate-[psych-float_3s_ease-in-out_infinite]">
+                        <Brain size={32} className="text-indigo-500 dark:text-indigo-400" strokeWidth={1.5} />
+                        {/* Thought bubble dots */}
+                        <div className="absolute -top-1 right-1 w-2 h-2 rounded-full bg-indigo-400/30 animate-[psych-thought_3s_ease-in-out_infinite]" />
+                        <div className="absolute -top-3 right-3 w-1.5 h-1.5 rounded-full bg-indigo-400/20 animate-[psych-thought_3s_ease-in-out_infinite_0.3s]" />
+                        <div className="absolute -top-4 right-5 w-1 h-1 rounded-full bg-indigo-400/15 animate-[psych-thought_3s_ease-in-out_infinite_0.6s]" />
+                        {/* Sparkle dots */}
+                        <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-primary/40 animate-[psych-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
+                        <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-primary/30 animate-[psych-sparkle_3s_ease-in-out_infinite_0.8s]" />
+                    </div>
+                </div>
+
+                <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
+                    No Psychology Data Yet
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-2">
+                    Start tracking emotions and confidence when logging trades to unlock psychology insights here.
+                </p>
+
+                <EmptyStateCTAs />
+
+                <style jsx>{`
+                    @keyframes psych-float {
+                        0%, 100% { transform: translateY(0px); }
+                        50% { transform: translateY(-6px); }
+                    }
+                    @keyframes psych-ping {
+                        0% { transform: scale(1); opacity: 0.3; }
+                        75%, 100% { transform: scale(1.3); opacity: 0; }
+                    }
+                    @keyframes psych-thought {
+                        0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+                        50% { opacity: 1; transform: translateY(-4px) scale(1); }
+                    }
+                    @keyframes psych-sparkle {
+                        0%, 100% { opacity: 0; transform: scale(0); }
+                        50% { opacity: 1; transform: scale(1); }
+                    }
+                `}</style>
             </div>
+            </>
         );
     }
 

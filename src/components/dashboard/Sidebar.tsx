@@ -134,6 +134,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     // const [collapsed, setCollapsed] = useState(false); // Removed local state
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
     const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
+
     const [claimableCount, setClaimableCount] = useState(0);
 
     // Fetch claimable mission count for badge

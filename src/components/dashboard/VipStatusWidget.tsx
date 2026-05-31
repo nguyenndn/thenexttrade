@@ -137,13 +137,7 @@ export function VipStatusWidget() {
 
   const resolvedAccountId = activeAccountId || proAccess.mainAccountId || undefined;
 
-  console.log("DEBUG_PRO:", {
-    activeAccountId,
-    mainAccountId: proAccess.mainAccountId,
-    resolvedAccountId,
-    accountsCount: proAccess.accounts.length,
-    accounts: proAccess.accounts.map(a => ({ id: a.tradingAccountId, isPro: a.isPro, status: a.status }))
-  });
+
 
   useEffect(() => {
     import("@/actions/vip-request")
@@ -162,6 +156,12 @@ export function VipStatusWidget() {
         </div>
       </div>
     );
+  }
+
+  // Hide entire widget for users with no trading accounts —
+  // "Check Pro Eligibility" is confusing before account setup
+  if (proAccess.accounts.length === 0) {
+    return null;
   }
 
   // Derive status and details from selected/main account, fallback to aggregate

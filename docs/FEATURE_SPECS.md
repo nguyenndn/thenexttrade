@@ -1,6 +1,6 @@
 # Feature Specs
 
-Last reviewed: 2026-05-26
+Last reviewed: 2026-05-31
 
 This file is the developer handoff layer. Use it when fixing bugs or continuing feature work. `PRODUCT.md` explains what exists at a high level; this file explains what each important URL/function must do.
 
@@ -275,6 +275,7 @@ Expected behavior:
 
 - Premium gold/light visual style.
 - Safe validation errors.
+- If the authenticated user has not completed or skipped `/onboarding`, successful login redirects to `/onboarding` instead of `/dashboard`.
 - Password visibility toggle works.
 - Forgot password link works.
 - Auth/rate-limit/Turnstile behavior should not block local development if dev bypass is supported.
@@ -363,11 +364,13 @@ Users:
 Expected behavior:
 
 - Step 1 (Identity): Username (required), Avatar (optional), Bio (optional). Profile persisted to `Profile` model.
+- Country prefill priority: `Profile.country` -> Supabase `user_metadata.country` captured at signup -> request geo header (`cf-ipcountry`/Vercel geo) -> local dev fallback `VN` / production fallback `US`.
 - Step 2 (Trading Goal): Select one goal. Stored in `User.settings.onboarding.tradingGoal`.
 - Step 3 (Sync Path): Choose TNT Connect, EA Sync, or Manual Journal. Stored in `User.settings.onboarding.preferredSyncMethod`.
 - Step 4 (Next Action): Dynamic CTA based on sync choice + shows unlocked features.
 - Skip button available on all steps. Stores `skippedAt` in `User.settings.onboarding`.
 - Final redirects: TNT → `/dashboard/accounts?setup=sync&method=tnt`, EA → `/dashboard/accounts?setup=sync&method=ea`, Manual → `/dashboard`, Skip → `/dashboard`.
+- Downstream setup surfaces must respect `User.settings.onboarding.preferredSyncMethod`. If the user chose TNT Connect, Account Hub/Add Account setup instructions must show TNT Connect, not EA Sync.
 - Users who completed onboarding should not be forced through it again.
 - Progress bar shows current step position.
 
@@ -392,6 +395,154 @@ QA checklist:
 - No avatar.
 - Mobile viewport 390×844.
 
+### First Session Onboarding Wizard
+
+Purpose:
+
+- Help a new user understand the next action on their first dashboard visit.
+- Bridge `/onboarding`, Account Hub, Trade Sync Wizard, and Journal without rebuilding those flows.
+- Get the user to first value: one connected trading account plus at least one synced or manually logged trade.
+
+Users:
+
+- Authenticated users who have not reached first value yet.
+- Users who skipped `/onboarding`.
+- Users who completed `/onboarding` but still have no account or no trade data.
+
+Where it appears:
+
+- `/dashboard` as an auto-open modal when `shouldAutoOpen` is true.
+- `/dashboard` as a compact `Finish Setup` launcher after the modal is dismissed while setup is still incomplete.
+
+Visual orientation:
+
+- Both the modal and compact launcher show a setup progress trail.
+- Full wizard label: `You are here`.
+- Step path: `Account -> Sync Method -> First Data -> Dashboard Live`.
+- Completed steps use a stronger completed/check state.
+- Current step is visually highlighted.
+- Future steps stay muted.
+- The modal close button must remain visually separate from the progress trail.
+- The modal should stay compact and must not become a full-width dashboard overlay.
+
+State rules:
+
+- State lives in `User.settings.onboarding.firstSession`.
+- Sync preference is also mirrored to `User.settings.onboarding.preferredSyncMethod`.
+- No new Prisma table or migration is required for V1.
+- Dismiss uses `dismissedUntil` and should not keep popping up during the same day.
+- Existing active users with trade history should not see the wizard or launcher.
+- `firstDataReminderDismissedUntil` hides the 24h first-data reminder until the stored time expires.
+
+Steps:
+
+| Step | When | Primary CTA |
+| --- | --- | --- |
+| `CONNECT_ACCOUNT` | User has no trading account. | `/dashboard/accounts?action=add&source=first-session` |
+| `CHOOSE_SYNC_METHOD` | User has account but no selected sync method. | TNT, EA, or Manual choice |
+| `BRING_FIRST_DATA` | User has account and sync method but no trades. | Sync setup or manual log |
+| `REVIEW_DASHBOARD` | User has first trade data. | Open dashboard and complete |
+
+Supported routing:
+
+- Add account: `/dashboard/accounts?action=add&source=first-session`
+- TNT setup: `/dashboard/accounts?setup=sync&method=tnt&source=first-session`
+- EA setup: `/dashboard/accounts?setup=sync&method=ea&source=first-session`
+- Manual journal: `/dashboard/journal?action=log-trade&source=first-session`
+- Force open for QA/support: `/dashboard?firstSession=1` or `/dashboard?onboarding=1`
+
+24h first-data reminder:
+
+- Shows on `/dashboard` only when:
+  - user has at least one `TradingAccount`;
+  - user has zero `JournalEntry` records;
+  - selected/oldest account was created at least 24 hours ago;
+  - `firstSession.completedAt` is not set;
+  - `firstDataReminderDismissedUntil` is missing or expired.
+- Does not show for no-account users because `Finish Setup` already covers that state.
+- Does not show for users with at least one trade.
+- Copy:
+  - `Your account is connected, but no trade data yet.`
+  - `Sync your first trades to unlock charts, Trade Score, and your first review.`
+- Primary CTA follows `User.settings.onboarding.preferredSyncMethod`:
+  - `TNT_CONNECT`: `Open TNT Connect Setup` -> `/dashboard/accounts?setup=sync&method=tnt&source=first-data-reminder`
+  - `EA_SYNC`: `Open EA Setup` -> `/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder`
+  - `MANUAL`: `Log First Trade` -> `/dashboard/journal?action=log-trade&source=first-data-reminder`
+- Secondary action `Remind me tomorrow` calls `dismissFirstDataReminderAction()` and revalidates `/dashboard`.
+
+No-trade filter rule:
+
+- Until the user has at least one `JournalEntry`, dashboard-style filters must stay hidden because empty filters create confusion.
+- Affected routes:
+  - `/dashboard`
+  - `/dashboard/journal`
+  - `/dashboard/sessions`
+  - `/dashboard/analytics`
+  - `/dashboard/intelligence`
+  - `/dashboard/psychology`
+- After the first trade exists, filters return on the routes where they are useful.
+
+Expected behavior:
+
+- New no-account user sees the wizard on `/dashboard`.
+- Modal should be compact, centered, and not full-width. Desktop target is about `560px` wide with max height constrained to the viewport.
+- `Remind me later` closes the modal and leaves a compact launcher.
+- Launcher reopens the wizard.
+- `Add Account` routes to Account Hub and opens the Add Account flow.
+- TNT and EA choices persist the selected method, close the wizard, and route to Account Hub sync setup.
+- Manual choice persists `MANUAL` and routes to Journal manual trade logging.
+- User with at least one trade does not get interrupted.
+- Mobile modal remains readable and buttons must not overflow.
+- Account/date filters are hidden while the user has zero trades and return after the first trade exists.
+
+Code paths:
+
+- `src/lib/onboarding/first-session.server.ts`
+- `src/actions/first-session-onboarding.ts`
+- `src/components/onboarding/FirstSessionWizard.tsx`
+- `src/components/onboarding/FirstSessionLauncher.tsx`
+- `src/components/onboarding/SetupProgressTrail.tsx`
+- `src/components/onboarding/FirstDataReminderBanner.tsx`
+- `src/lib/trading-data-state.ts`
+- `src/app/dashboard/page.tsx`
+- `src/app/dashboard/DashboardClient.tsx`
+- `src/components/trading-accounts/AccountListClient.tsx`
+- Journal client handling for `action=log-trade`
+
+Analytics events:
+
+- `first_session_progress_trail_viewed`
+- `first_data_24h_reminder_viewed`
+- `first_data_24h_reminder_clicked`
+- `first_data_24h_reminder_dismissed`
+- `account_card_sync_first_trades_clicked`
+
+QA checklist:
+
+- Fresh verified user with no account: wizard auto-opens at `CONNECT_ACCOUNT`.
+- Fresh verified user with no account: dashboard account/date filters are hidden.
+- Dismiss and refresh: wizard stays dismissed, launcher remains available.
+- Force open `/dashboard?firstSession=1`: full wizard shows `You are here` and all four steps.
+- Add Account CTA: routes to `/dashboard/accounts` and opens add account flow.
+- Account but no sync method: wizard starts at `CHOOSE_SYNC_METHOD`.
+- TNT selected: preference saves as `TNT_CONNECT` and Account Hub sync wizard opens.
+- EA selected: preference saves as `EA_SYNC` and Account Hub sync wizard opens.
+- Manual selected: preference saves as `MANUAL` and Journal opens.
+- Account created less than 24h ago and no trades: no 24h reminder.
+- Account created more than 24h ago and no trades: reminder appears.
+- Reminder `Remind me tomorrow`: hides reminder after reload.
+- TNT reminder CTA opens TNT Connect setup.
+- EA reminder CTA opens EA setup.
+- Manual reminder CTA opens Journal log-trade route.
+- Active user with account and trade: no wizard, no launcher.
+- `/dashboard?firstSession=1`: force opens only if first session is incomplete.
+
+Last verified:
+
+- 2026-05-31 with Playwright against `onboarding-clean-20260528091136@example.test`.
+- `npm run type-check` passed.
+- Screenshots saved under `test-results/new-user-activation-polish-doc-qa`.
+
 ## User Dashboard Routes
 
 ### `/dashboard`
@@ -413,6 +564,11 @@ Inputs:
 Expected behavior:
 
 - If account/date are selected, all metrics and charts reflect those filters.
+- If the user has zero `JournalEntry` records, hide the account selector and date range filter.
+- If the user has zero `JournalEntry` records, show setup/empty-state guidance instead of empty charts.
+- Once the user has at least one `JournalEntry`, restore the account selector and date range filter.
+- First Session Wizard should auto-open only for users who have not reached first value.
+- The compact `Finish Setup` launcher should show only while first-session setup is incomplete.
 - Date parsing must not crash on invalid account timezones.
 - Account timezone must be normalized before date range logic.
 - Win rate counts true wins over closed trades. Break-even should not be counted as win or loss unless a specific metric says so.
@@ -437,6 +593,9 @@ Data:
 
 QA checklist:
 
+- Fresh user with no account: no account/date filters.
+- User with an account but zero trades: no account/date filters.
+- User with at least one trade: account/date filters visible.
 - No trades today.
 - All winning trades.
 - Break-even trades.
@@ -466,6 +625,7 @@ Query param support:
 - `?setup=sync&method=tnt`: opens wizard with TNT Connect pre-selected.
 - `?setup=sync&method=ea`: opens wizard with EA Sync pre-selected.
 - `?action=add`: opens Add Account flow.
+- `source=first-session`: keeps analytics/support context for first-session routing.
 - After opening, query params are cleaned with `window.history.replaceState`.
 - Request/unlock Pro where eligible.
 
@@ -477,6 +637,13 @@ Expected behavior:
 - Do not show duplicated negative states.
 - Unsupported brokers/accounts should explain why no Pro request is available.
 - JustMarkets is not in the official Partner Pro flow unless explicitly approved.
+- For accounts with `totalTrades = 0`, the main account-card CTA is first-data oriented:
+  - `TNT_CONNECT`: show `Sync first trades`, open `TradeSyncWizard` with TNT Connect selected.
+  - `EA_SYNC`: show `Sync first trades`, open `TradeSyncWizard` with EA Sync selected.
+  - `MANUAL`: show `Log first trade`, route to `/dashboard/journal?action=log-trade&accountId={account.id}&source=account-card`.
+- For accounts with `totalTrades > 0`, keep normal `Dashboard` + `Sync` actions.
+- `lastSync` can support sync-status copy, but first-data CTA should be based on `totalTrades > 0`.
+- Event `account_card_sync_first_trades_clicked` should include `method`, `accountId`, and `source: "account-card"`.
 
 Code paths:
 
@@ -503,6 +670,10 @@ QA checklist:
 - Unsupported account.
 - TNT synced account.
 - EA synced account.
+- Zero-trade TNT account: `Sync first trades` opens TNT setup.
+- Zero-trade EA account: `Sync first trades` opens EA setup.
+- Zero-trade Manual account: `Log first trade` routes to Journal and includes `accountId`.
+- Account with trade data: no `Sync first trades`; normal `Dashboard` + `Sync` actions.
 - Empty account list.
 - Free vs Pro modal.
 - Add account modal.
@@ -551,8 +722,8 @@ Query params:
 
 | Param | Type | Meaning |
 | --- | --- | --- |
-| `from` | `YYYY-MM-DD` | Start date filter. If missing, page redirects and injects today. |
-| `to` | `YYYY-MM-DD` | End date filter. If missing, page redirects and injects today. |
+| `from` | `YYYY-MM-DD` | Start date filter. If missing and the user already has trade data, page redirects and injects today. |
+| `to` | `YYYY-MM-DD` | End date filter. If missing and the user already has trade data, page redirects and injects today. |
 | `accountId` | string | Internal `TradingAccount.id`; filters trades to one account. |
 | `page` | number | Pagination page. Defaults to `1`. |
 | `limit` | number | Server page size. Defaults to `20`. |
@@ -563,11 +734,16 @@ Query params:
 | `strategy` | string | Case-insensitive exact strategy filter. |
 | `sort` | string | Sort column. `date` and `openTime` map to `entryDate`; `closeTime` maps to `exitDate`. |
 | `dir` | `asc`/`desc` | Sort direction. |
+| `action` | `log-trade` | Opens the manual trade form when supported. Used by first-session onboarding. |
+| `source` | string | Tracks the origin of deep links, such as `first-session`. |
 
 Expected behavior:
 
 - Page requires login.
-- If `from` or `to` is missing, redirect to the same route with today injected.
+- If the user has zero `JournalEntry` records, do not auto-inject `from/to`; show the empty journal state without account/date filters.
+- If the user has at least one `JournalEntry` and `from` or `to` is missing, redirect to the same route with today injected.
+- If the user has zero `JournalEntry` records, hide the `DashboardFilter` above the journal tabs.
+- If the user has at least one `JournalEntry`, show account/date filters above the journal table.
 - If `accountId` is present, first verify the account belongs to the user and read its timezone.
 - Date filtering should use broker/account timezone when available.
 - Date filter should include trades whose `entryDate` or `exitDate` falls inside the range.
@@ -617,6 +793,8 @@ Edge cases:
 QA checklist:
 
 - Open journal with no query params and confirm redirect injects today.
+- Fresh user with zero trades: no redirect loop, no account/date filter, empty state CTA visible.
+- User with at least one trade: account/date filter visible.
 - Open with `from/to/accountId`.
 - Filter by symbol, type, result, tag, strategy.
 - Sort by open time, close time, P/L.
@@ -630,6 +808,37 @@ QA checklist:
 - Verify empty state.
 - Mobile horizontal table behavior.
 
+### `/dashboard/sessions`
+
+Purpose:
+
+- Help users understand which market sessions and hours produce better or worse results.
+
+Expected behavior:
+
+- Page requires login.
+- Shows `Trades` / `Sessions` tabs.
+- If the user has zero `JournalEntry` records, hide account/date filters and show a session empty state.
+- If the user has at least one `JournalEntry`, show account/date filters.
+- Session data should follow `accountId`, `from`, and `to` query params when filters are present.
+- Empty state should explain that session analysis depends on trade timestamps.
+
+Code paths:
+
+- `src/app/dashboard/sessions/page.tsx`
+- `src/components/sessions/SessionDashboard.tsx`
+- `src/components/sessions/*`
+- `/api/analytics/sessions`
+- `src/lib/trading-data-state.ts`
+
+QA checklist:
+
+- Fresh user with zero trades: no account/date filters.
+- User with at least one trade: account/date filters visible.
+- Session empty state.
+- Session charts with trade data.
+- Account/date filter changes update the data.
+
 ### `/dashboard/analytics`, `/dashboard/reports`, `/dashboard/reports/weekly`, `/dashboard/reports/monthly`
 
 Purpose:
@@ -641,6 +850,9 @@ Expected behavior:
 - Reports should use the selected period/account where applicable.
 - Empty data should guide users to sync or log trades.
 - Generated reports should not fail if the user has too few trades; show a clear limitation message.
+- `/dashboard/analytics` hides its account filter until the user has at least one `JournalEntry`.
+- `/dashboard/analytics` intentionally hides the date filter in the current product direction; it can still use date params internally when passed.
+- `/dashboard/reports/weekly` should focus on the weekly coach/action plan and should not duplicate a separate `Weekly Focus` block.
 
 Code paths:
 
@@ -655,7 +867,9 @@ Code paths:
 QA checklist:
 
 - No trades.
+- No trades: analytics page has no account/date filter.
 - Enough trades.
+- Enough trades: analytics page restores account filter.
 - Single account vs all accounts.
 - Weekly/monthly report generation.
 - Export/download if available.
@@ -671,6 +885,9 @@ Expected behavior:
 - Mistake data should come from journal trade annotations.
 - Psychology/intelligence pages should handle insufficient data.
 - Pro-only blocks should explain what is locked and where to upgrade.
+- `/dashboard/psychology` hides its date filter until the user has at least one `JournalEntry`; once trade data exists, date filter returns.
+- `/dashboard/intelligence` hides account/date filters until the user has at least one `JournalEntry`; once trade data exists, both filters return.
+- Insufficient-data states should guide users toward logging/syncing trades, not show empty KPI shells.
 
 Code paths:
 
@@ -684,6 +901,10 @@ Code paths:
 QA checklist:
 
 - No annotated trades.
+- Fresh user with zero trades: psychology has no date filter.
+- Fresh user with zero trades: intelligence has no account/date filter.
+- User with at least one trade: psychology date filter visible.
+- User with at least one trade: intelligence account/date filters visible.
 - Trades with mistakes.
 - Free user.
 - Pro user.

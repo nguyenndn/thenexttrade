@@ -127,10 +127,16 @@ export function PageWelcomeGuide() {
         const seen = localStorage.getItem(key);
 
         if (!seen) {
+            // On dashboard, use longer delay to let FirstSessionWizard open first
+            const delay = pathname === "/dashboard" ? 2000 : 800;
             const timer = setTimeout(() => {
+                // Suppress if FirstSessionWizard dialog is currently open
+                const wizardOpen = document.querySelector("[role='dialog']");
+                if (wizardOpen) return;
+
                 setVisible(true);
                 setDismissed(false);
-            }, 800);
+            }, delay);
             return () => clearTimeout(timer);
         }
     }, [pathname, guide]);

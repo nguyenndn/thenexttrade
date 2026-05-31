@@ -5,6 +5,9 @@ import { Loader2 } from "lucide-react";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
+import { redirect } from "next/navigation";
+import { getAuthUser } from "@/lib/auth-cache";
+import { getUserTradingDataState } from "@/lib/trading-data-state";
 
 export const metadata: Metadata = {
     title: "Session Analysis | TheNextTrade",
@@ -16,7 +19,15 @@ const journalTabs = [
     { label: "Sessions", href: "/dashboard/sessions" },
 ];
 
-export default function SessionAnalysisPage() {
+export default async function SessionAnalysisPage() {
+    const user = await getAuthUser();
+
+    if (!user) {
+        redirect("/auth/login");
+    }
+
+    const tradingDataState = await getUserTradingDataState(user.id);
+
     return (
         <div className="space-y-4">
             <PageHeader
@@ -25,7 +36,7 @@ export default function SessionAnalysisPage() {
             />
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
                 <TabBar tabs={journalTabs} equalWidth />
-                <DashboardFilter equalWidth />
+                {tradingDataState.hasTradeData && <DashboardFilter equalWidth />}
             </div>
 
             <Suspense fallback={

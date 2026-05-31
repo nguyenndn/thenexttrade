@@ -9,6 +9,7 @@ import { createTradingAccount } from "@/actions/accounts";
 import { createPartnerProAccount, upgradeToPartnerPro } from "@/actions/account-pro";
 import { trackEvent } from "@/lib/track";
 import { trackBrokerClick } from "@/actions/ib-lead";
+import { SyncTroubleshootingPanel } from "@/components/trading-accounts/SyncTroubleshootingPanel";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 import { BROKER_INFO, SUPPORTED_BROKERS, SupportedBroker } from "@/lib/validations/vip-request";
 import Image from "next/image";
@@ -18,6 +19,7 @@ interface AddAccountModalProps {
     onClose: () => void;
     onSuccess: (account: any) => void;
     initialMode?: "chooser" | "free" | "pro" | "upgrade-pro";
+    setupSyncMethod?: "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
     sourceAccount?: {
         id: string;
         name: string;
@@ -49,6 +51,7 @@ export function AddAccountModal({
     onClose,
     onSuccess,
     initialMode = "chooser",
+    setupSyncMethod = "TNT_CONNECT",
     sourceAccount,
     userEmail = "",
     userName = "",
@@ -121,6 +124,27 @@ export function AddAccountModal({
     }, [isOpen]);
 
     const brokerInfo = selectedBroker ? BROKER_INFO[selectedBroker] : null;
+    const effectiveSetupMethod = setupSyncMethod === "EA_SYNC" ? "EA_SYNC" : "TNT_CONNECT";
+    const setupInstructions =
+        effectiveSetupMethod === "EA_SYNC"
+            ? {
+                description: "Connect your MT5 account with EA Sync",
+                steps: [
+                    <>Download the <strong className="text-gray-700 dark:text-white">TheNextTrade Sync EA</strong> for {platform}.</>,
+                    <>Copy the file to your <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-white/10 rounded text-gray-800 dark:text-gray-200 font-mono text-xs">MQL{platform === "MT5" ? "5" : "4"}/Experts</code> folder.</>,
+                    <>Restart {platform} and attach EA to any chart.</>,
+                    <>Paste the API Key above into EA settings input.</>,
+                ],
+            }
+            : {
+                description: "Connect your MT5 account with TNT Connect",
+                steps: [
+                    <>Download and open <strong className="text-gray-700 dark:text-white">TNT Connect</strong> for Windows.</>,
+                    <>Paste the API Key above into TNT Connect settings.</>,
+                    <>Keep {platform} open and logged in to the same account number.</>,
+                    <>Click Sync in TNT Connect. Your dashboard will match the registered MT5 account automatically.</>,
+                ],
+            };
 
     if (!isOpen) return null;
 
@@ -473,12 +497,28 @@ export function AddAccountModal({
                     </>
                 )}
 
-                {/* 3. FREE ACCOUNT SETUP */}
-                {step === "free-setup" && createdAccount && (
+                {/* 3. FREE ACCOUNT SETUP — method-specific success handoff */}
+                {step === "free-setup" && createdAccount && (() => {
+                    const isManual = setupSyncMethod === "MANUAL";
+                    const successTitle = isManual
+                        ? "Account created"
+                        : effectiveSetupMethod === "EA_SYNC"
+                            ? "EA Sync is ready"
+                            : "TNT Connect is ready";
+                    const successDesc = isManual
+                        ? "You can now start logging trades manually."
+                        : setupInstructions.description;
+                    const primaryCtaLabel = isManual
+                        ? "Log First Trade"
+                        : effectiveSetupMethod === "EA_SYNC"
+                            ? "Continue to EA Setup"
+                            : "Continue to TNT Connect Setup";
+
+                    return (
                     <>
-                        {renderHeader("Setup Instructions", "Connect your MT5 account to the platform", false)}
+                        {renderHeader(successTitle, successDesc, false)}
                         <div className="p-6 space-y-6">
-                            {/* API Key */}
+                            {/* API Key — always shown */}
                             <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10">
                                 <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
                                     Your Sync API Key
@@ -497,48 +537,74 @@ export function AddAccountModal({
                                         {copied ? <Check size={18} /> : <Copy size={18} />}
                                     </Button>
                                 </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">This key works for both TNT Connect and EA Sync. Save it now — you can find it later in Settings → TNT Connect.</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                    {isManual
+                                        ? "Save this key — you can use it later to set up auto-sync with TNT Connect or EA."
+                                        : "This key works for both TNT Connect and EA Sync. Save it now — you can find it later in Settings → TNT Connect."}
+                                </p>
                             </div>
 
-                            {/* Instructions */}
-                            <div className="space-y-4">
-                                <h3 className="font-semibold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-2">
-                                    Setup Steps
-                                </h3>
-                                <ol className="space-y-4 text-sm text-gray-600 dark:text-gray-500">
-                                    <li className="flex gap-3 items-start">
-                                        <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-                                        <span>Download the <strong className="text-gray-700 dark:text-white">TheNextTrade Sync EA</strong> for {platform}.</span>
-                                    </li>
-                                    <li className="flex gap-3 items-start">
-                                        <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-                                        <span className="break-all">Copy the file to your <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-white/10 rounded text-gray-800 dark:text-gray-200 font-mono text-xs">MQL{platform === "MT5" ? "5" : "4"}/Experts</code> folder.</span>
-                                    </li>
-                                    <li className="flex gap-3 items-start">
-                                        <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-                                        <span>Restart {platform} and attach EA to any chart.</span>
-                                    </li>
-                                    <li className="flex gap-3 items-start">
-                                        <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-                                        <span>Paste the API Key above into EA settings input.</span>
-                                    </li>
-                                </ol>
+                            {/* Setup steps — only for TNT/EA, hidden for MANUAL */}
+                            {!isManual && (
+                                <div className="space-y-4">
+                                    <h3 className="font-semibold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-2">
+                                        Setup Steps
+                                    </h3>
+                                    <ol className="space-y-4 text-sm text-gray-600 dark:text-gray-500">
+                                        {setupInstructions.steps.map((stepText, index) => (
+                                            <li key={index} className="flex gap-3 items-start">
+                                                <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{index + 1}</span>
+                                                <span className="break-words">{stepText}</span>
+                                            </li>
+                                        ))}
+                                    </ol>
+                                </div>
+                            )}
+
+                            {/* Troubleshooting help — only for TNT/EA */}
+                            {!isManual && (
+                                <SyncTroubleshootingPanel method={effectiveSetupMethod as "TNT_CONNECT" | "EA_SYNC"} />
+                            )}
+
+                            {/* Primary CTA — method-aware */}
+                            <div className="flex flex-col gap-2">
+                                <Button
+                                    variant="primary"
+                                    onClick={() => {
+                                        trackEvent("add_account_success_next_clicked", {
+                                            method: isManual ? "manual" : effectiveSetupMethod === "EA_SYNC" ? "ea" : "tnt",
+                                        });
+                                        if (isManual) {
+                                            // Route to journal
+                                            handleClose();
+                                            onSuccess(createdAccount);
+                                            window.location.href = "/dashboard/journal?action=log-trade&source=first-session";
+                                        } else {
+                                            // Close modal, then reopen sync wizard via onSuccess callback
+                                            handleClose();
+                                            onSuccess(createdAccount);
+                                        }
+                                    }}
+                                    className="w-full h-12 font-bold shadow-lg shadow-primary/20 gap-2"
+                                >
+                                    {primaryCtaLabel}
+                                    <ArrowRight size={16} />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        handleClose();
+                                        onSuccess(createdAccount);
+                                    }}
+                                    className="w-full h-10 text-sm"
+                                >
+                                    Skip for now
+                                </Button>
                             </div>
-
-
-                            <Button
-                                variant="outline"
-                                onClick={() => {
-                                    handleClose();
-                                    onSuccess(createdAccount);
-                                }}
-                                className="w-full h-12 font-medium"
-                            >
-                                Done
-                            </Button>
                         </div>
                     </>
-                )}
+                    );
+                })()}
 
                 {/* 4. PRO - BROKER SELECTION */}
                 {step === "pro-broker" && (

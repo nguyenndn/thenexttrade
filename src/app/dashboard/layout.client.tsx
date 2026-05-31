@@ -11,6 +11,7 @@ import { DashboardProvider } from "@/lib/dashboard-context";
 import { PageWelcomeGuide } from "@/components/onboarding/PageWelcomeGuide";
 import { ProProvider, type InitialProStatus } from "@/components/pro/ProProvider";
 import { LevelUpModal } from "@/components/dashboard/LevelUpModal";
+import { MilestoneCelebrationModal } from "@/components/dashboard/MilestoneCelebrationModal";
 
 
 interface DashboardLayoutClientProps {
@@ -70,6 +71,9 @@ export function DashboardLayoutClient({
 
                     {/* Level Up Celebration Modal */}
                     <LevelUpModal />
+
+                    {/* Milestone Celebration Modal */}
+                    <MilestoneCelebrationModal />
                 </div>
             </ProProvider>
         </DashboardProvider>

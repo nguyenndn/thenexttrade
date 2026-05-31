@@ -1,6 +1,6 @@
 # System
 
-Last reviewed: 2026-05-24
+Last reviewed: 2026-05-31
 
 TheNextTrade is a trader operating system: account sync, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, and admin reporting in one Next.js app. For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -46,6 +46,7 @@ Source of truth: `prisma/schema.prisma`.
 - Gamification: Edge points, missions, achievements, daily check-in.
 - Analytics: `PageView`, `AnalyticsEvent`, country/referrer/device/campaign data.
 - Content: articles, images, SEO fields, comments, votes, content ops metadata.
+- User activation state: first-session wizard, selected sync path, reminder dismissal, first sync celebration. Stored under `User.settings.onboarding.firstSession`.
 
 ## Route Groups
 
@@ -69,7 +70,7 @@ Use this table when assigning bugs or feature work.
 | Articles/CMS | `/articles`, `/admin/articles`, `/admin/articles/ops` | `src/app/articles`, `src/app/admin/articles`, article components | Article models, image storage, SEO checks |
 | Auth | `/auth/login`, `/auth/register`, auth callbacks | `src/app/auth`, auth actions, middleware/proxy | Supabase Auth, `User`, `Profile`, sessions, security logs |
 | Dashboard shell | `/dashboard/*` | `src/app/dashboard/layout.client.tsx`, `src/components/dashboard`, `src/config/navigation.ts` | Auth session, profile, navigation |
-| Main dashboard | `/dashboard` | `src/app/dashboard/page.tsx`, `src/app/dashboard/DashboardClient.tsx` | dashboard stats, chart queries, performance helpers |
+| Main dashboard | `/dashboard` | `src/app/dashboard/page.tsx`, `src/app/dashboard/DashboardClient.tsx` | dashboard stats, chart queries, performance helpers, first-session activation state |
 | Account hub | `/dashboard/accounts` | `src/components/trading-accounts`, account APIs | `TradingAccount`, Pro eligibility, sync state |
 | EA Sync | account setup, EA APIs | `public/downloads/TheNextTrade_TradeSync.mq5`, `src/app/api/ea` | API key auth, commands, account heartbeat |
 | TNT Connect | account setup, app version API | `apps/tnt-connect`, `src/app/api/sync`, `src/app/api/app/version` | sync import, timezone normalization, release manifest |
@@ -83,6 +84,38 @@ Use this table when assigning bugs or feature work.
 | Security | `/admin/security` | security admin pages/APIs | `AuditLog`, `SecurityLog`, `BlockedIP` |
 | Email | no single route | `src/lib/services/email.service.ts`, email actions | SMTP provider, templates, send logs later |
 | Storage | media and generated files | `src/lib/storage/object-storage.ts` | R2/local storage adapter |
+
+## New-User Activation
+
+The first-session activation flow is the current source of truth for new users after signup/verification.
+
+Primary code paths:
+
+- `src/lib/onboarding/first-session.server.ts`: computes activation step, next action, reminder visibility, and preferred sync path.
+- `src/actions/first-session-onboarding.ts`: saves sync preference, dismisses reminders, completes wizard, and celebrates first sync.
+- `src/components/onboarding/FirstSessionWizard.tsx`: compact setup modal.
+- `src/components/onboarding/FirstSessionLauncher.tsx`: dashboard setup launcher.
+- `src/components/onboarding/FirstDataReminderBanner.tsx`: 24h no-first-data reminder.
+- `src/components/onboarding/SetupProgressTrail.tsx`: visual trail for `Account -> Sync -> Data -> Live`.
+- `src/lib/trading-data-state.ts`: central helper for `accountCount`, `tradeCount`, `hasTradeData`, and zero-trade UI decisions.
+
+Stored state under `User.settings.onboarding.firstSession`:
+
+| Field | Meaning |
+| --- | --- |
+| `selectedSyncMethod` | User's chosen setup path: `tnt`, `ea`, or `manual`. |
+| `dismissedUntil` | Temporarily hides the full first-session wizard. |
+| `firstDataReminderDismissedUntil` | Temporarily hides the 24h "sync/log first trade" reminder. |
+| `completedAt` | Marks first-session setup as completed. |
+| `firstSyncCelebratedAt` | Prevents the first-sync success message from repeating. |
+| `selectedAccountId` | Account chosen during setup, when available. |
+
+Zero-trade rule:
+
+- If the user has no `JournalEntry`, dashboard filters that depend on account/date context should stay hidden.
+- This applies to `/dashboard`, `/dashboard/journal`, `/dashboard/sessions`, `/dashboard/analytics`, `/dashboard/intelligence`, and `/dashboard/psychology`.
+- Once the user has at least one `JournalEntry`, the relevant filters return on each route.
+- Account Hub cards with `totalTrades = 0` use first-data CTAs instead of generic sync actions: TNT/EA accounts show `Sync first trades`; manual users should be guided to log the first trade.
 
 ## Common Bug Entry Points
 
@@ -98,6 +131,8 @@ Use this table when assigning bugs or feature work.
 | Email not sent | `src/lib/services/email.service.ts`, SMTP env, relevant action/API |
 | Auth form validation issue | auth page/action, Turnstile bypass rules, rate-limit adapter |
 | Admin route unauthorized | role check, `Profile.role`, middleware/server auth helper |
+| New user sees duplicate/irrelevant dashboard CTAs | `getFirstSessionState()`, `FirstSessionLauncher`, `FirstDataReminderBanner`, `getUserTradingDataState()` |
+| New user sees account/date filters before first trade | route server page, `GreetingHeader.hideFilters`, `JournalList.hasTradeData`, `getUserTradingDataState()` |
 
 ## API Rules
 

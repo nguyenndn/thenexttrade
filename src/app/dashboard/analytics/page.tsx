@@ -8,6 +8,7 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { startOfMonth, endOfMonth, startOfDay, endOfDay, parseISO } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
+import { getUserTradingDataState } from "@/lib/trading-data-state";
 import {
     getKeyStats,
     getMonthlyAnalytics,
@@ -45,6 +46,7 @@ export default async function AnalyticsPage({
     if (!user) {
         redirect("/auth/login");
     }
+    const tradingDataState = await getUserTradingDataState(user.id);
 
     // 1. Account & Date Filters
     let accountId = resolvedParams?.accountId as string | undefined;
@@ -101,7 +103,9 @@ export default async function AnalyticsPage({
                 title="Analytics"
                 description="Analyze your trading performance."
             >
-                <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
+                {tradingDataState.hasTradeData && (
+                    <DashboardFilter currentAccountId={accountId ?? undefined} hideDateFilter />
+                )}
             </PageHeader>
             <div id="onborda-analytics-tabs" className="mb-4">
                 <TabBar tabs={analyticsTabs} equalWidth />

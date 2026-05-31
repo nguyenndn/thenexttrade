@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/Button";
 import { setMainAccount } from "@/actions/main-account";
 import { useProAccess } from "@/components/pro/ProProvider";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/track";
 
 interface TradingAccount {
     id: string;
@@ -70,9 +71,12 @@ interface AccountListClientProps {
     userTelegramId?: string;
     userCountry?: string;
     mainAccountId?: string | null;
+    preferredSyncMethod?: SyncMethod;
 }
 
-export function AccountListClient({ initialAccounts, meta, userEmail, userName, userTelegramId, userCountry, mainAccountId: initialMainId }: AccountListClientProps) {
+type SyncMethod = "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
+
+export function AccountListClient({ initialAccounts, meta, userEmail, userName, userTelegramId, userCountry, mainAccountId: initialMainId, preferredSyncMethod }: AccountListClientProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
@@ -90,8 +94,15 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
 
     const [activeModal, setActiveModal] = useState<ModalState>({ type: "NONE" });
 
-    const [defaultSyncMethod, setDefaultSyncMethod] = useState<"TNT_CONNECT" | "EA_SYNC" | undefined>(undefined);
+    const [defaultSyncMethod, setDefaultSyncMethod] = useState<SyncMethod | undefined>(preferredSyncMethod);
     const [wasInSyncSetup, setWasInSyncSetup] = useState(false);
+
+    const getSyncMethodFromQuery = (method: string | null): SyncMethod => {
+        if (method === "ea") return "EA_SYNC";
+        if (method === "manual") return "MANUAL";
+        if (method === "tnt") return "TNT_CONNECT";
+        return preferredSyncMethod ?? "TNT_CONNECT";
+    };
 
     // Handle incoming query params (e.g. ?action=add&intent=unlock-pro or ?setup=sync&method=tnt)
     useEffect(() => {
@@ -104,8 +115,8 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
         const isSyncSetup = setup === "sync";
 
         if (isSyncSetup && activeModal.type === "NONE") {
-            // Auto-open sync wizard with method from query
-            const syncMethod = method === "ea" ? "EA_SYNC" : "TNT_CONNECT";
+            // Auto-open sync wizard with method from query, then saved onboarding preference.
+            const syncMethod = getSyncMethodFromQuery(method);
             setDefaultSyncMethod(syncMethod);
             setActiveModal({ type: "SYNC_SETUP" });
             
@@ -146,7 +157,7 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
             const newUrl = newParams.toString() ? `?${newParams.toString()}` : window.location.pathname;
             window.history.replaceState({}, '', newUrl);
         }
-    }, [searchParams, activeModal.type, mainAccountId, initialAccounts]);
+    }, [searchParams, activeModal.type, mainAccountId, initialAccounts, preferredSyncMethod]);
 
     return (
         <div className="space-y-4">
@@ -157,15 +168,6 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
                 >
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
                         <Button
-                            id="onborda-trade-sync-setup"
-                            variant="outline"
-                            onClick={() => setActiveModal({ type: "SYNC_SETUP" })}
-                            className="flex items-center justify-center gap-2 border-cyan-200 dark:border-cyan-500/30 bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-100 dark:hover:bg-cyan-500/20 flex-1 sm:flex-none"
-                        >
-                            <Cable size={16} />
-                            Set up Trade Sync
-                        </Button>
-                        <Button
                             variant="outline"
                             onClick={() => {
                                 startTransition(() => {
@@ -173,15 +175,24 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
                                 });
                             }}
                             disabled={isPending}
-                            className="flex items-center justify-center gap-2 sm:mr-2 flex-1 sm:flex-none"
+                            className="flex items-center justify-center gap-2 border-gray-300 dark:border-white/15 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/15 font-extrabold flex-1 sm:flex-none"
                         >
                             <RefreshCw size={16} className={isPending ? "animate-spin text-primary" : ""} />
                             Refresh
                         </Button>
                         <Button
+                            id="onborda-trade-sync-setup"
+                            variant="outline"
+                            onClick={() => setActiveModal({ type: "SYNC_SETUP" })}
+                            className="flex items-center justify-center gap-2 border-cyan-400 dark:border-cyan-500/40 bg-cyan-100 dark:bg-cyan-500/15 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-500/25 font-extrabold flex-1 sm:flex-none"
+                        >
+                            <Cable size={16} />
+                            Set up Trade Sync
+                        </Button>
+                        <Button
                             variant="outline"
                             onClick={() => setActiveModal({ type: "FREE_VS_PRO" })}
-                            className="flex items-center justify-center gap-2 border-emerald-200 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 flex-1 sm:flex-none"
+                            className="flex items-center justify-center gap-2 border-emerald-400 dark:border-emerald-500/40 bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-500/25 font-extrabold flex-1 sm:flex-none"
                         >
                             <Crown size={16} />
                             Free vs Pro
@@ -209,30 +220,94 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
                     ))}
                 </div>
             ) : initialAccounts.length === 0 ? (
-                <div className="py-20">
-                    <EmptyState
-                        icon={Wallet}
-                        title="No Accounts Yet"
-                        description="Connect Free MT5 accounts to track and sync trades, or open an eligible Partner Pro account to unlock EA access, VIP tools, and premium trading intelligence."
-                        action={
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                                <Button
-                                    variant="outline"
-                                    onClick={() => setActiveModal({ type: "ADD", initialMode: "free" })}
-                                    className="min-w-[140px]"
-                                >
-                                    Free Account
-                                </Button>
-                                <Button
-                                    variant="primary"
-                                    onClick={() => setActiveModal({ type: "ADD", initialMode: "pro" })}
-                                    className="shadow-lg min-w-[160px] bg-gradient-to-r from-amber-500 to-amber-600 border-none hover:from-amber-600 hover:to-amber-700"
-                                >
-                                    Apply for Partner Pro
-                                </Button>
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 mt-8">
+                    <div className="flex flex-col items-center justify-center text-center">
+                        {/* Animated Wallet Icon */}
+                        <div className="relative w-20 h-20 mb-6 mx-auto">
+                            {/* Glow ring */}
+                            <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-ping-slow" />
+                            {/* Icon container with float */}
+                            <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center shadow-sm animate-float">
+                                <Wallet size={32} className="text-gray-500 dark:text-gray-300" strokeWidth={1.5} />
+                                {/* Coin dropping in */}
+                                <div className="absolute -top-1 right-1 animate-coin-drop">
+                                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 dark:from-gold dark:to-amber-500 border-2 border-amber-300 dark:border-amber-400/50 shadow-md flex items-center justify-center">
+                                        <span className="text-[6px] font-black text-white">$</span>
+                                    </div>
+                                </div>
+                                {/* Sparkle dots */}
+                                <div className="absolute -top-2 -left-1 w-1.5 h-1.5 rounded-full bg-primary/40 animate-sparkle-1" />
+                                <div className="absolute -bottom-1 -right-2 w-1 h-1 rounded-full bg-primary/30 animate-sparkle-2" />
+                                <div className="absolute top-1 -right-2 w-1 h-1 rounded-full bg-primary/25 animate-sparkle-3" />
                             </div>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
+                            No Accounts Yet
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-6">
+                            Connect Free MT5 accounts to track and sync trades, or open an eligible Partner Pro account to unlock EA access, VIP tools, and premium trading intelligence.
+                        </p>
+                        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    trackEvent("first_session_add_account_clicked", { mode: "free" });
+                                    setActiveModal({ type: "ADD", initialMode: "free" });
+                                }}
+                                className="min-w-[140px] border-amber-300 dark:border-amber-500/30 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:border-amber-400 dark:hover:border-amber-500/50 font-extrabold"
+                            >
+                                Free Account
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={() => {
+                                    trackEvent("first_session_add_account_clicked", { mode: "pro" });
+                                    setActiveModal({ type: "ADD", initialMode: "pro" });
+                                }}
+                                className="shadow-lg min-w-[160px] bg-gradient-to-r from-amber-500 to-amber-600 border-none hover:from-amber-600 hover:to-amber-700"
+                            >
+                                Apply for Partner Pro
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Keyframe styles */}
+                    <style jsx>{`
+                        @keyframes float {
+                            0%, 100% { transform: translateY(0px); }
+                            50% { transform: translateY(-6px); }
                         }
-                    />
+                        @keyframes coin-drop {
+                            0% { transform: translateY(-12px) scale(0.6); opacity: 0; }
+                            30% { transform: translateY(0px) scale(1); opacity: 1; }
+                            50% { transform: translateY(-3px) scale(1); opacity: 1; }
+                            65% { transform: translateY(2px) scale(0.95); opacity: 1; }
+                            80%, 100% { transform: translateY(0px) scale(1); opacity: 1; }
+                        }
+                        @keyframes sparkle-1 {
+                            0%, 100% { opacity: 0; transform: scale(0); }
+                            50% { opacity: 1; transform: scale(1); }
+                        }
+                        @keyframes sparkle-2 {
+                            0%, 100% { opacity: 0; transform: scale(0); }
+                            60% { opacity: 1; transform: scale(1.2); }
+                        }
+                        @keyframes sparkle-3 {
+                            0%, 100% { opacity: 0; transform: scale(0); }
+                            40% { opacity: 0.8; transform: scale(1); }
+                        }
+                        @keyframes ping-slow {
+                            0% { transform: scale(1); opacity: 0.3; }
+                            75%, 100% { transform: scale(1.3); opacity: 0; }
+                        }
+                        .animate-float { animation: float 3s ease-in-out infinite; }
+                        .animate-coin-drop { animation: coin-drop 2.5s ease-out infinite; animation-delay: 0.5s; }
+                        .animate-sparkle-1 { animation: sparkle-1 2.5s ease-in-out infinite; animation-delay: 1.2s; }
+                        .animate-sparkle-2 { animation: sparkle-2 3s ease-in-out infinite; animation-delay: 0.8s; }
+                        .animate-sparkle-3 { animation: sparkle-3 2s ease-in-out infinite; animation-delay: 1.5s; }
+                        .animate-ping-slow { animation: ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite; }
+                    `}</style>
                 </div>
             ) : (
                 <div id="onborda-account-grid" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
@@ -265,6 +340,11 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
                                 onUnlockPro={(acc) =>
                                     setActiveModal({ type: "ADD", initialMode: "upgrade-pro", sourceAccount: acc })
                                 }
+                                preferredSyncMethod={preferredSyncMethod}
+                                onOpenSyncSetup={(method) => {
+                                    setDefaultSyncMethod(method);
+                                    setActiveModal({ type: "SYNC_SETUP" });
+                                }}
                             />
                         </div>
                     ))}
@@ -323,6 +403,7 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
                 userName={userName}
                 userTelegramId={userTelegramId}
                 userCountry={userCountry}
+                setupSyncMethod={wasInSyncSetup ? defaultSyncMethod : preferredSyncMethod}
             />
 
             {/* Regenerate Key Modal */}
@@ -346,8 +427,9 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
                 onClose={() => { setActiveModal({ type: "NONE" }); setDefaultSyncMethod(undefined); }}
                 accounts={initialAccounts}
                 defaultMethod={defaultSyncMethod}
-                onOpenAddAccount={() => {
+                onOpenAddAccount={(method) => {
                     setWasInSyncSetup(true);
+                    setDefaultSyncMethod(method);
                     setActiveModal({ type: "ADD", initialMode: "free" });
                 }}
             />

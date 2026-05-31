@@ -59,7 +59,8 @@ const SIGNAL_CONTENT_MAP: Record<string, { academyLessonSlugs: string[]; article
 
 export async function getLearningRecommendations(
     userId: string,
-    activeSignals: TraderSignalInput[]
+    activeSignals: TraderSignalInput[],
+    tradingGoal?: string | null
 ): Promise<LearningRecommendation[]> {
     const recommendations: LearningRecommendation[] = [];
 
@@ -145,9 +146,51 @@ export async function getLearningRecommendations(
         }
     }
 
+    // Goal-based fallback: when no signal-based recommendations exist,
+    // surface lessons based on the user's chosen trading goal
+    if (recommendations.length === 0 && tradingGoal) {
+        const { GOAL_LESSON_MAP } = await import("./goal-content-map");
+        const goalMapping = GOAL_LESSON_MAP[tradingGoal];
+        if (goalMapping) {
+            const uncompletedGoalSlugs = goalMapping.lessonSlugs.filter(
+                (slug) => !completedSlugs.has(slug)
+            );
+            if (uncompletedGoalSlugs.length > 0) {
+                const dbLessons = await prisma.lesson.findMany({
+                    where: {
+                        slug: { in: uncompletedGoalSlugs },
+                        status: "published",
+                    },
+                    select: {
+                        id: true,
+                        title: true,
+                        slug: true,
+                        duration: true,
+                    },
+                });
+
+                for (const lesson of dbLessons) {
+                    recommendations.push({
+                        id: `goal-lesson-${lesson.id}`,
+                        type: "ACADEMY_LESSON",
+                        slug: lesson.slug,
+                        title: lesson.title,
+                        url: `/dashboard/academy/lessons/${lesson.slug}`,
+                        reason: goalMapping.reason,
+                        signalType: "GOAL_RECOMMENDATION",
+                        priority: 4,
+                        estimatedMinutes: lesson.duration || 10,
+                        completed: false,
+                    });
+                }
+            }
+        }
+    }
+
     // Sort by priority (1 is highest) and return top 3
     return recommendations
         .sort((a, b) => a.priority - b.priority)
         .slice(0, 3);
 }
 export { SIGNAL_CONTENT_MAP };
+

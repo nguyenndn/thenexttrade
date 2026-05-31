@@ -104,9 +104,10 @@ interface JournalListProps {
     initialStats?: any;
     strategies: any[];
     userTags?: string[];
+    hasTradeData?: boolean;
 }
 
-export default function JournalList({ initialEntries, meta, initialStats, strategies: initialStrategies, userTags = [] }: JournalListProps) {
+export default function JournalList({ initialEntries, meta, initialStats, strategies: initialStrategies, userTags = [], hasTradeData = true }: JournalListProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 

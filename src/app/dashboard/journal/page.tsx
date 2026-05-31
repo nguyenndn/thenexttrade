@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { format } from "date-fns";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
+import { getUserTradingDataState } from "@/lib/trading-data-state";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,13 @@ export default async function JournalPage({
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const resolvedParams = await searchParams;
+    const user = await getAuthUser();
+
+    if (!user) {
+        redirect("/auth/login");
+    }
+
+    const tradingDataState = await getUserTradingDataState(user.id);
 
     // Parse Pagination
     const page = typeof resolvedParams.page === "string" ? parseInt(resolvedParams.page) : 1;
@@ -37,7 +45,7 @@ export default async function JournalPage({
     let dateTo = typeof resolvedParams.to === "string" ? resolvedParams.to : undefined;
 
     // Auto-inject Today's date if missing
-    if (!dateFrom || !dateTo) {
+    if (tradingDataState.hasTradeData && (!dateFrom || !dateTo)) {
         const todayStr = format(new Date(), 'yyyy-MM-dd');
         dateFrom = dateFrom || todayStr;
         dateTo = dateTo || todayStr;
@@ -59,7 +67,6 @@ export default async function JournalPage({
 
     // Fetch account timezone for broker-aligned day boundaries
     let accountTimezone: string | undefined;
-    const user = await getAuthUser();
     if (user && accountId) {
         const acc = await prisma.tradingAccount.findFirst({
             where: { id: accountId, userId: user.id },
@@ -88,7 +95,14 @@ export default async function JournalPage({
 
     return (
         <div className="space-y-4">
-            <JournalList initialEntries={entries} meta={meta} initialStats={stats} strategies={strategies} userTags={userTags} />
+            <JournalList
+                initialEntries={entries}
+                meta={meta}
+                initialStats={stats}
+                strategies={strategies}
+                userTags={userTags}
+                hasTradeData={tradingDataState.hasTradeData}
+            />
         </div>
     );
 }

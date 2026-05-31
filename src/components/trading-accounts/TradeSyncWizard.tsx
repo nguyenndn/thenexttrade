@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { getSyncServerUrl } from "@/lib/sync/sync-urls";
+import { SyncTroubleshootingPanel } from "@/components/trading-accounts/SyncTroubleshootingPanel";
 
 interface TradingAccount {
     id: string;
@@ -42,7 +43,7 @@ interface TradeSyncWizardProps {
     onClose: () => void;
     accounts: TradingAccount[];
     defaultMethod?: SyncMethod;
-    onOpenAddAccount?: () => void;
+    onOpenAddAccount?: (method: SyncMethod) => void;
 }
 
 interface SyncStatus {
@@ -430,8 +431,7 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
                                         <Button
                                             type="button"
                                             onClick={() => {
-                                                onClose();
-                                                onOpenAddAccount?.();
+                                                onOpenAddAccount?.(syncMethod);
                                             }}
                                             className="w-full sm:w-auto h-11 rounded-xl bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] border-none text-xs font-black text-white hover:shadow-[0_4px_12px_rgba(217,154,38,0.2)] shadow-md active:scale-95 transition-all flex items-center justify-center mx-auto"
                                         >
@@ -607,42 +607,7 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
                                         </p>
                                     </div>
 
-                                    {/* Troubleshooting toggle */}
-                                    <button
-                                        onClick={() => setShowTroubleshooting(!showTroubleshooting)}
-                                        className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-                                    >
-                                        <HelpCircle size={13} />
-                                        {showTroubleshooting ? "Hide" : "Show"} troubleshooting tips
-                                    </button>
-
-                                    {showTroubleshooting && (
-                                        <div className="rounded-xl border border-gray-200 dark:border-white/10 p-4 text-xs space-y-2">
-                                            {syncMethod === "TNT_CONNECT" ? (
-                                                <ul className="space-y-1.5 text-gray-500 dark:text-gray-400">
-                                                    <li>• Ensure TNT Connect is running (check system tray)</li>
-                                                    <li>• Verify your API key is correctly pasted</li>
-                                                    <li>• Check that MT5 is open and logged in</li>
-                                                    <li>• Try restarting TNT Connect</li>
-                                                    <li>• Ensure your firewall isn&apos;t blocking TNT Connect</li>
-                                                </ul>
-                                            ) : (
-                                                <ul className="space-y-1.5 text-gray-500 dark:text-gray-400">
-                                                    <li>• Check that WebRequest URL is whitelisted in MT5</li>
-                                                    <li>• Verify the EA is attached to a chart</li>
-                                                    <li>• Ensure &quot;Allow Algo Trading&quot; is enabled in MT5</li>
-                                                    <li>• Check Expert tab for error messages</li>
-                                                    <li>• Verify the API key in EA settings matches your dashboard key</li>
-                                                </ul>
-                                            )}
-                                            <Link 
-                                                href="/academy/getting-started" 
-                                                className="inline-flex items-center gap-1 text-primary font-bold hover:underline mt-2"
-                                            >
-                                                Full setup guide <ExternalLink size={11} />
-                                            </Link>
-                                        </div>
-                                    )}
+                                    <SyncTroubleshootingPanel method={syncMethod as "TNT_CONNECT" | "EA_SYNC"} />
                                 </div>
                             )}
                         </div>

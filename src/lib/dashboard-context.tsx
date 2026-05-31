@@ -20,6 +20,8 @@ interface SystemConfigState {
 interface DashboardContextValue {
     featureFlags: FeatureFlagsState;
     systemConfig: SystemConfigState;
+    hasTradeData: boolean;
+    hasTradeDataLoaded: boolean;
 }
 
 const DEFAULT_SYSTEM_CONFIG = {
@@ -113,6 +115,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         systemAnnouncement: "",
         loaded: false,
     });
+    const [hasTradeData, setHasTradeData] = useState(true); // Default to true to avoid flash
+    const [hasTradeDataLoaded, setHasTradeDataLoaded] = useState(false);
 
     // Fetch feature flags ONCE (singleton survives StrictMode double-mount)
     useEffect(() => {
@@ -151,9 +155,22 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
             });
     }, []);
 
+    // Fetch trade data status (lightweight count check)
+    useEffect(() => {
+        fetch("/api/user/has-trade-data")
+            .then(res => res.json())
+            .then(data => {
+                setHasTradeData(!!data.hasTradeData);
+                setHasTradeDataLoaded(true);
+            })
+            .catch(() => {
+                setHasTradeDataLoaded(true);
+            });
+    }, []);
+
     const value = useMemo<DashboardContextValue>(
-        () => ({ featureFlags, systemConfig }),
-        [featureFlags, systemConfig]
+        () => ({ featureFlags, systemConfig, hasTradeData, hasTradeDataLoaded }),
+        [featureFlags, systemConfig, hasTradeData, hasTradeDataLoaded]
     );
 
     return (
@@ -181,4 +198,12 @@ export function useSystemConfig() {
         return { feedbackEnabled: true, systemAnnouncement: "", loaded: true };
     }
     return ctx.systemConfig;
+}
+
+export function useHasTradeData() {
+    const ctx = useContext(DashboardContext);
+    if (!ctx) {
+        return { hasTradeData: true, loaded: true };
+    }
+    return { hasTradeData: ctx.hasTradeData, loaded: ctx.hasTradeDataLoaded };
 }

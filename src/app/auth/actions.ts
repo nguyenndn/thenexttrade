@@ -14,6 +14,7 @@ import { checkAuthRateLimit } from '@/lib/security/auth-rate-limit'
 import { AUTH_ERRORS } from '@/lib/security/auth-errors'
 import { normalizeCountryCode } from '@/lib/country-utils'
 import { recordQualifiedReferral, resolveReferrerByCode } from '@/lib/referrals'
+import { isOnboardingDone } from '@/lib/onboarding/onboarding.server'
 
 async function getClientIP(): Promise<string> {
     const h = await headers()
@@ -24,6 +25,7 @@ export async function login(formData: FormData) {
     const supabase = await createClient()
     const ip = await getClientIP()
     const email = formData.get('email') as string
+    let redirectTo = '/dashboard'
 
     // Apply Rate Limit
     if (await checkAuthRateLimit('login', ip, email)) {
@@ -83,6 +85,10 @@ export async function login(formData: FormData) {
             }
         }
         await recordSession(user.id);
+        const onboardingDone = await isOnboardingDone(user.id);
+        if (!onboardingDone) {
+            redirectTo = '/onboarding';
+        }
 
         // Check for 2FA
         const { data: { user: freshUser } } = await supabase.auth.getUser();
@@ -104,7 +110,7 @@ export async function login(formData: FormData) {
         displayName = dbUser?.name || authedUser.user_metadata?.full_name || "Trader";
     }
     
-    return { success: true, name: displayName };
+    return { success: true, name: displayName, redirectTo };
 }
 
 export async function verifyLogin2FA(code: string) {

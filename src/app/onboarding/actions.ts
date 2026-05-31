@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { updateOnboardingSettings, completeOnboarding, skipOnboarding } from "@/lib/onboarding/onboarding.server";
+import { normalizeCountryCode } from "@/lib/country-utils";
 
 // ============================================================================
 // STEP 1: IDENTITY (username + avatar + bio)
@@ -24,7 +25,7 @@ export async function updateProfile(formData: FormData) {
 
     const username = formData.get("username") as string;
     const bio = formData.get("bio") as string;
-    const country = formData.get("country") as string;
+    const country = normalizeCountryCode(formData.get("country") as string);
     const avatarFile = formData.get("avatar") as File;
 
     let avatarUrl = null;

@@ -6,12 +6,22 @@ import { AnimatedMorningIcon, AnimatedAfternoonIcon, AnimatedEveningIcon } from 
 import { tradingQuotes } from "@/config/quotes";
 import { Quote } from "lucide-react";
 
+// Motivational quotes for new users who haven't started trading yet
+const newUserQuotes = [
+    { text: "Every expert was once a beginner. Your journey starts now.", author: "Helen Hayes" },
+    { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+    { text: "Small daily improvements lead to stunning results.", author: "Robin Sharma" },
+    { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
+    { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+];
+
 interface GreetingHeaderProps {
     userName: string;
     currentAccountId?: string;
+    hideFilters?: boolean;
 }
 
-export function GreetingHeader({ userName, currentAccountId }: GreetingHeaderProps) {
+export function GreetingHeader({ userName, currentAccountId, hideFilters = false }: GreetingHeaderProps) {
     const [mounted, setMounted] = useState(false);
     const [greeting, setGreeting] = useState({
         text: "Welcome",
@@ -30,7 +40,13 @@ export function GreetingHeader({ userName, currentAccountId }: GreetingHeaderPro
             setGreeting({ text: "Good evening", icon: <AnimatedEveningIcon size={32} /> });
         }
 
-        // Fetch from DB, fallback to static
+        // New users get motivational onboarding quotes (skip API call)
+        if (hideFilters) {
+            setQuote(newUserQuotes[Math.floor(Math.random() * newUserQuotes.length)]);
+            return;
+        }
+
+        // Existing users: fetch from DB, fallback to static
         fetch('/api/quotes?type=DASHBOARD&active=true')
             .then(res => res.json())
             .then((data: { text: string; author?: string }[]) => {
@@ -44,7 +60,7 @@ export function GreetingHeader({ userName, currentAccountId }: GreetingHeaderPro
             .catch(() => {
                 setQuote(tradingQuotes[Math.floor(Math.random() * tradingQuotes.length)]);
             });
-    }, []);
+    }, [hideFilters]);
 
     return (
         <div id="onborda-greeting" className="flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-6">
@@ -72,9 +88,11 @@ export function GreetingHeader({ userName, currentAccountId }: GreetingHeaderPro
                 </div>
             </div>
 
-            <div className="flex items-center gap-3">
-                <DashboardFilter currentAccountId={currentAccountId} />
-            </div>
+            {!hideFilters && (
+                <div className="flex items-center gap-3">
+                    <DashboardFilter currentAccountId={currentAccountId} />
+                </div>
+            )}
         </div>
     );
 }

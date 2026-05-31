@@ -41,6 +41,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
     const pathname = usePathname();
     const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
 
+
     const rawItems = items ?? dashboardMenuItems;
 
     const navItems = useMemo(() =>
@@ -135,7 +136,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                                             className={isActive ? "text-primary" : "text-gray-600 dark:text-gray-300"}
                                         />
                                     )}
-                                    <span>{item.name}</span>
+                                    <span className="flex-1">{item.name}</span>
                                 </Link>
                             </div>
                         );

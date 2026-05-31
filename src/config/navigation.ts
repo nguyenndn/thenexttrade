@@ -77,11 +77,13 @@ export const dashboardMenuItems = [
         name: "Dashboard",
         href: "/dashboard",
         icon: LayoutDashboard,
+        requiresTradeData: false,
     },
     {
         name: "Accounts & Props",
         href: "/dashboard/accounts",
         icon: Wallet,
+        requiresTradeData: false,
     },
 
     // --- EXECUTION ---
@@ -89,11 +91,13 @@ export const dashboardMenuItems = [
         name: "Trading Journal",
         href: "/dashboard/journal",
         icon: FileText,
+        requiresTradeData: true,
     },
     {
         name: "Strategies",
         href: "/dashboard/strategies",
         icon: Route,
+        requiresTradeData: false,
     },
 
     // --- REVIEW ---
@@ -101,11 +105,13 @@ export const dashboardMenuItems = [
         name: "Analytics Hub",
         href: "/dashboard/analytics",
         icon: BarChart3,
+        requiresTradeData: true,
     },
     {
         name: "Psychology",
         href: "/dashboard/psychology",
         icon: Activity,
+        requiresTradeData: true,
     },
 
     // --- RESOURCES ---
@@ -113,21 +119,25 @@ export const dashboardMenuItems = [
         name: "Academy",
         href: "/dashboard/academy",
         icon: GraduationCap,
+        requiresTradeData: false,
     },
     {
         name: "Leaderboard",
         href: "/dashboard/leaderboard",
         icon: Trophy,
+        requiresTradeData: false,
     },
     {
         name: "Trading System",
         href: "/dashboard/trading-systems",
         icon: Bot,
+        requiresTradeData: false,
     },
     {
         name: "Edge Missions",
         href: "/dashboard/missions",
         icon: Target,
+        requiresTradeData: false,
     },
 
     // --- INVESTING ---
@@ -136,12 +146,14 @@ export const dashboardMenuItems = [
         href: "/dashboard/copy-trading",
         icon: Copy,
         featureFlag: "feature_copy_trading",
+        requiresTradeData: false,
     },
     {
         name: "Funded Challenge",
         href: "/dashboard/funded-challenge",
         icon: Shield,
         featureFlag: "feature_funded_challenge",
+        requiresTradeData: false,
     }
 ];
 

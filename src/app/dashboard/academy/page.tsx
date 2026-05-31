@@ -168,11 +168,11 @@ export default async function UserAcademyDashboard() {
                 description="Your professional trading journey tracker."
             >
                 <div className="flex items-center gap-3 text-sm font-bold w-full sm:w-auto">
-                    <div className="flex items-center justify-center gap-1.5 text-white bg-primary px-3 py-1.5 rounded-full shadow-sm flex-1 sm:flex-none">
+                    <div className="flex items-center justify-center gap-1.5 text-primary bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 px-3 py-1.5 rounded-full flex-1 sm:flex-none">
                         <GraduationCap size={14} />
                         <span>{Math.round(overallProgress)}% Complete</span>
                     </div>
-                    <div className="flex items-center justify-center gap-1.5 text-primary bg-primary/10 dark:bg-primary/20 px-3 py-1.5 rounded-full flex-1 sm:flex-none">
+                    <div className="flex items-center justify-center gap-1.5 text-primary bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 px-3 py-1.5 rounded-full flex-1 sm:flex-none">
                         <BookOpen size={14} />
                         <span>{completedLessons}/{totalLessons} Lessons</span>
                     </div>

@@ -23,6 +23,7 @@ import { unstable_cache } from "next/cache";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { parseHowToSteps, minutesToIsoDuration } from "@/lib/parseHowToSteps";
+import { parseFaq } from "@/lib/parseFaq";
 
 
 // CACHING: Cache article data + processed content for 60 seconds
@@ -211,6 +212,25 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                             image: article.thumbnail || undefined,
                             ...(article.estimatedTime ? { totalTime: minutesToIsoDuration(article.estimatedTime) } : {}),
                             step: howTo.steps,
+                        }}
+                    />
+                );
+            })()}
+            {(() => {
+                const faqList = parseFaq(article.content);
+                if (faqList.length === 0) return null;
+                return (
+                    <JsonLd
+                        type="FAQPage"
+                        data={{
+                            mainEntity: faqList.map(item => ({
+                                "@type": "Question",
+                                name: item.question,
+                                acceptedAnswer: {
+                                    "@type": "Answer",
+                                    text: item.answer
+                                }
+                            }))
                         }}
                     />
                 );

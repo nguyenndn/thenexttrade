@@ -29,7 +29,7 @@ const PRIORITY_ORDER: Record<string, number> = {
     RECURRING_MISTAKE: 14,
 };
 
-export async function getNextBestAction(userId: string): Promise<NextBestAction> {
+export async function getNextBestAction(userId: string, tradingGoal?: string | null): Promise<NextBestAction> {
     // Dynamically compute the latest signals
     const signals = await computeTraderSignals(userId, { persist: true });
     const activeSignals = signals.filter(s => s.status !== "RESOLVED");
@@ -55,10 +55,23 @@ export async function getNextBestAction(userId: string): Promise<NextBestAction>
 
     const top = sorted[0];
 
+    // Apply goal-specific nudge overrides when available
+    let title = top.title;
+    let description = top.summary;
+
+    if (tradingGoal) {
+        const { GOAL_NUDGE_OVERRIDES } = await import("./goal-content-map");
+        const goalOverrides = GOAL_NUDGE_OVERRIDES[tradingGoal];
+        if (goalOverrides && goalOverrides[top.signalType]) {
+            title = goalOverrides[top.signalType].title;
+            description = goalOverrides[top.signalType].summary;
+        }
+    }
+
     return {
         id: top.signalType,
-        title: top.title,
-        description: top.summary,
+        title,
+        description,
         ctaLabel: top.actionLabel || "Take Action",
         ctaHref: top.actionHref || "/dashboard",
         priority: PRIORITY_ORDER[top.signalType] ?? 99,

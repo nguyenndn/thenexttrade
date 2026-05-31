@@ -31,11 +31,17 @@ export default async function OnboardingPage() {
         },
     });
 
-    // Get IP Geo Country
+    // Get IP Geo Country. In local dev this is usually empty because there is no
+    // Cloudflare/Vercel proxy adding geo headers.
     const reqHeaders = await headers();
     const geo = getGeoFromHeaders(reqHeaders);
     const ipCountry = geo.country?.toUpperCase();
-    const normalizedIpCountry = normalizeCountryCode(ipCountry) ?? "US";
+    const profileCountry = normalizeCountryCode(dbUser?.profile?.country);
+    const metadataCountry = normalizeCountryCode(
+        typeof user.user_metadata?.country === "string" ? user.user_metadata.country : null
+    );
+    const normalizedIpCountry = normalizeCountryCode(ipCountry);
+    const fallbackCountry = process.env.NODE_ENV === "production" ? "US" : "VN";
 
     const initialData = {
         email: user.email ?? "",
@@ -43,7 +49,7 @@ export default async function OnboardingPage() {
         username: dbUser?.profile?.username ?? "",
         bio: dbUser?.profile?.bio ?? "",
         avatarUrl: dbUser?.image ?? user.user_metadata?.avatar_url ?? null,
-        country: dbUser?.profile?.country ?? normalizedIpCountry,
+        country: profileCountry ?? metadataCountry ?? normalizedIpCountry ?? fallbackCountry,
     };
 
     return <OnboardingClient initialData={initialData} />;

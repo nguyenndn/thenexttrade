@@ -49,9 +49,16 @@ export function NotificationBell() {
 
                 <div className="max-h-[300px] overflow-y-auto">
                     {notifications.length === 0 ? (
-                        <div className="p-8 text-center text-gray-600">
-                            <Bell size={24} className="mx-auto mb-2 opacity-50" />
-                            <p className="text-xs">{isLoading ? "Loading..." : "No notifications"}</p>
+                        <div className="p-6 text-center">
+                            <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                                <Bell size={20} className="text-gray-400 dark:text-gray-500" />
+                            </div>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                                {isLoading ? "Loading..." : "All caught up!"}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 max-w-[220px] mx-auto">
+                                Sync alerts, weekly reports, and AI insights will appear here.
+                            </p>
                         </div>
                     ) : (
                         notifications.map(n => (

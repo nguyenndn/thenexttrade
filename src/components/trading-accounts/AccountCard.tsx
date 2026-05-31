@@ -10,6 +10,9 @@ import {
     Star,
     Cable,
     Monitor,
+    ArrowRight,
+    Zap,
+    PenLine,
 } from "lucide-react";
 import Link from "next/link";
 import { RemoteSyncButton } from "./RemoteSyncButton";
@@ -21,6 +24,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/track";
+import type { SyncMethod } from "@/lib/onboarding/first-session.server";
 
 // Compute the sync method label for each account.
 // Uses syncSource as the primary source of truth (set by the API on each sync).
@@ -52,6 +57,8 @@ interface AccountCardProps {
     onUnlockPro?: (account: any) => void;
     isMain?: boolean;
     onSetMain?: (accountId: string) => void;
+    preferredSyncMethod?: SyncMethod;
+    onOpenSyncSetup?: (method?: SyncMethod) => void;
 }
 
 // Returns account type label, or null if not yet synced
@@ -92,6 +99,8 @@ export function AccountCard({
     onUnlockPro,
     isMain = false,
     onSetMain,
+    preferredSyncMethod,
+    onOpenSyncSetup,
 }: AccountCardProps) {
     // Only trust accountType if account has actually synced at least once
     const hasSynced = !!account.lastSync;
@@ -99,6 +108,8 @@ export function AccountCard({
     const isReal = accountType === "REAL";
     const accentColor = account.color || "hsl(var(--primary))";
     const syncMethod = getSyncMethodLabel(account);
+    const hasTradeData = (account.totalTrades ?? 0) > 0;
+    const shouldShowFirstSyncCta = !hasTradeData && !!onOpenSyncSetup;
 
     return (
         <div className="group relative flex flex-col rounded-2xl transition-all duration-500 hover:shadow-lg bg-white dark:bg-[#151925] border border-gray-200/80 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/15">
@@ -255,6 +266,13 @@ export function AccountCard({
                         </div>
                     </div>
 
+                    {/* Zero-trade microcopy */}
+                    {shouldShowFirstSyncCta && (
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium px-0.5">
+                            No trades synced yet — Sync history to unlock analytics
+                        </p>
+                    )}
+
                     {/* Row 2: Status chips + Action buttons */}
                     <div className="flex flex-wrap items-center gap-1.5">
                         {/* Status Chips (read-only) */}
@@ -293,6 +311,56 @@ export function AccountCard({
                         <div className="flex-1" />
 
                         {/* Action Buttons — unified style */}
+                        {shouldShowFirstSyncCta ? (
+                            /* Zero-trade: show prominent first-sync CTA */
+                            <>
+                                {preferredSyncMethod === "MANUAL" ? (
+                                    <Link
+                                        href={`/dashboard/journal?action=log-trade&accountId=${account.id}&source=account-card`}
+                                        onClick={() => {
+                                            trackEvent("account_card_sync_first_trades_clicked", {
+                                                method: "MANUAL",
+                                                accountId: account.id,
+                                                source: "account-card",
+                                            });
+                                        }}
+                                        className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-primary px-3.5 text-[11px] font-black text-white shadow-sm shadow-primary/20 transition-all hover:bg-primary/90 group/link"
+                                    >
+                                        <PenLine size={11} />
+                                        <span>Log first trade</span>
+                                        <ArrowRight size={10} className="transition-transform group-hover/link:translate-x-0.5" />
+                                    </Link>
+                                ) : (
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => {
+                                            trackEvent("account_card_sync_first_trades_clicked", {
+                                                method: preferredSyncMethod || "TNT_CONNECT",
+                                                accountId: account.id,
+                                                source: "account-card",
+                                            });
+                                            onOpenSyncSetup?.(preferredSyncMethod);
+                                        }}
+                                        className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-primary px-3.5 text-[11px] font-black text-white shadow-sm shadow-primary/20 transition-all hover:bg-primary/90 hover:text-white group/link"
+                                        aria-label="Sync first trades"
+                                    >
+                                        {preferredSyncMethod === "EA_SYNC" ? <Zap size={11} /> : <Monitor size={11} />}
+                                        <span>Sync first trades</span>
+                                        <ArrowRight size={10} className="transition-transform group-hover/link:translate-x-0.5" />
+                                    </Button>
+                                )}
+                                <Link
+                                    href={`/dashboard?accountId=${account.id}`}
+                                    className="flex h-8 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 text-[11px] font-black text-gray-600 shadow-sm transition-all hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10 group/link"
+                                    title="View Dashboard"
+                                >
+                                    <ExternalLink size={10} className="text-gray-400" />
+                                    <span>Dashboard</span>
+                                </Link>
+                            </>
+                        ) : (
+                            /* Normal: existing action buttons */
+                            <>
                         {(() => {
                             const elig = account.eligibility;
                             if (!elig) {
@@ -344,6 +412,8 @@ export function AccountCard({
                             isConnected={account.isConnected}
                             variant="premium"
                         />
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

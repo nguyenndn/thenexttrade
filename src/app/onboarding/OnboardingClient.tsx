@@ -527,7 +527,7 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
                                     { icon: BarChart3, label: "Performance Dashboard", color: "text-amber-500" },
                                     { icon: Target, label: "Trade Score & Intelligence", color: "text-amber-600 dark:text-amber-400" },
                                     { icon: FileText, label: "Weekly Review Reports", color: "text-emerald-500" },
-                                    { icon: Trophy, label: "Edge Missions & XP", color: "text-amber-500" },
+                                    { icon: Trophy, label: "Edge Missions", color: "text-amber-500" },
                                 ].map((f, i) => (
                                     <div
                                         key={i}

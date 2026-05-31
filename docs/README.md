@@ -1,6 +1,6 @@
 # TheNextTrade Docs
 
-Last reviewed: 2026-05-24
+Last reviewed: 2026-05-31
 
 This folder is the active source of truth for the product, system, operations, design, and email behavior. Old sprint plans, completed QA reports, and stale implementation notes should not live here.
 
@@ -14,17 +14,6 @@ This folder is the active source of truth for the product, system, operations, d
 | [OPERATIONS.md](OPERATIONS.md) | Environment, self-host stack, deploy, storage, monitoring, release ops |
 | [DESIGN.md](DESIGN.md) | UI standards for dashboard, auth pages, cards, buttons, metrics |
 | [EMAIL.md](EMAIL.md) | Transactional email strategy, templates needed, delivery rules |
-| [QC_TEST_PLAN_PHASE_3.md](QC_TEST_PLAN_PHASE_3.md) | QC test scenarios, step-by-step test cases, expected behaviors for Phase 3 |
-
-## Future Build Plans
-
-These files are unshipped implementation plans. After a feature ships, fold the final behavior into `PRODUCT.md`, `FEATURE_SPECS.md`, and `SYSTEM.md`, then remove the planning file if it becomes stale.
-
-| File | Purpose |
-| --- | --- |
-| [big-update-user-facing-coach-activation-plan.md](big-update-user-facing-coach-activation-plan.md) | Next Best Action, personalized learning, weekly coach report, notifications, Public Trader Card 2.0, admin activation inbox |
-| [trade-replay-implementation-plan.md](trade-replay-implementation-plan.md) | Trade Replay using existing Lightweight Charts plus MT5 candle context from TNT Connect/EA |
-| [mobile-only-auto-sync-strategy.md](mobile-only-auto-sync-strategy.md) | Honest mobile-only sync strategy, MVP UX, and future paid Cloud Sync option |
 
 ## Current Snapshot
 
@@ -36,6 +25,7 @@ These files are unshipped implementation plans. After a feature ships, fold the 
 - Email: SMTP-compatible service. Brevo or Postmark recommended for production.
 - Analytics: internal Postgres analytics plus optional GA4.
 - Trade sync: EA Sync and TNT Connect. Current TNT Connect release is `1.0.2`.
+- New-user activation polish is shipped and documented in `PRODUCT.md` and `FEATURE_SPECS.md`; old implementation plans should not be treated as the source of truth.
 
 ## New Developer Handoff
 
@@ -76,3 +66,4 @@ npm run db:studio
 - Move planning drafts outside `/docs` once the feature ships.
 - Delete QA reports after all real bugs are fixed.
 - Link to code paths only when the behavior is implementation-specific.
+- Keep route QA checklists inside [FEATURE_SPECS.md](FEATURE_SPECS.md). Do not keep completed QA reports in `/docs`.

@@ -1,6 +1,6 @@
 # Product
 
-Last reviewed: 2026-05-26
+Last reviewed: 2026-05-31
 
 This file describes the current product behavior at a practical level. For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -15,7 +15,8 @@ This is the product map a new developer should read before fixing bugs or adding
 | Articles | SEO traffic and education | Active with admin ops | `/articles`, `/admin/articles`, `/admin/articles/ops` |
 | Article SEO ops | Find/fix missing SEO and images | Active | `/admin/articles/ops` |
 | Academy | Lessons, quizzes, trader education | Active | `/academy`, `/dashboard/academy`, `/admin/academy` |
-| Auth/register/login | Account creation and secure access | Active | `/auth/login`, `/auth/register` |
+| Auth/register/login | Account creation and secure access | Active | `/auth/login`, `/auth/signup` |
+| First Session Wizard | Helps a new user know exactly what to do after first login | Active and QA-verified | `/dashboard`, `/dashboard/accounts`, `/dashboard/journal` |
 | User country reporting | Show registered user geography | Active | `/admin/users`, `/admin/analytics` |
 | Main dashboard | Trading performance overview | Active | `/dashboard` |
 | Account hub | Manage MT5 accounts and sync setup | Active | `/dashboard/accounts` |
@@ -59,6 +60,8 @@ This is the product map a new developer should read before fixing bugs or adding
 
 - Auth uses Supabase Auth with custom login/register UI.
 - Registration is step-based, premium/gold styled, and auto-detects country where possible.
+- New verified users go to `/onboarding`. Later logins also return incomplete users to `/onboarding` until they complete or skip it.
+- `/onboarding` country uses this priority: saved profile country, signup metadata country, request geo headers, then environment fallback.
 - Country display should show flag plus country name, without repeating the country code in list rows.
 - Welcome email should be sent only after successful email verification.
 - Auth security should include rate limiting, Turnstile in production, safe errors, and audit logging.
@@ -76,9 +79,36 @@ Onboarding is a 4-step wizard:
 3. **Sync Path**: TNT Connect (recommended), EA Sync (advanced), Manual Journal.
 4. **Next Action**: Dynamic CTA based on sync choice, shows unlocked features.
 
-Onboarding stores progress in `User.settings.onboarding` (JSON field, no migration needed). Users who complete or skip onboarding are not forced through it again.
+Onboarding stores progress in `User.settings.onboarding` (JSON field, no migration needed). `preferredSyncMethod` is the source of truth for downstream setup copy, so Account Hub must keep showing the user's chosen TNT Connect / EA Sync / Manual path. Users who complete or skip onboarding are not forced through it again.
 
-Dashboard activation checklist continues from onboarding. CTAs are personalized based on `preferredSyncMethod`.
+Dashboard activation continues from onboarding through the **First Session Wizard**.
+
+First Session Wizard behavior:
+
+- Lives on `/dashboard` as a modal, with a compact `Finish Setup` launcher after dismiss.
+- Shows a compact "You are here" setup trail so users understand the path: `Account -> Sync Method -> First Data -> Dashboard Live`.
+- Does not replace `/onboarding`. It does not ask for username, avatar, country, or bio again.
+- Uses existing product surfaces instead of rebuilding them:
+  - Add account: `/dashboard/accounts?action=add&source=first-session`
+  - TNT setup: `/dashboard/accounts?setup=sync&method=tnt&source=first-session`
+  - EA setup: `/dashboard/accounts?setup=sync&method=ea&source=first-session`
+  - Manual journal: `/dashboard/journal?action=log-trade&source=first-session`
+- Supports three paths: TNT Connect, EA Sync, and Manual Journal.
+- Stores state in `User.settings.onboarding.firstSession`.
+- Also writes `User.settings.onboarding.preferredSyncMethod` when the user chooses TNT, EA, or Manual, so the dashboard activation checklist stays consistent.
+- Auto-opens only for users who have not reached first value yet.
+- First value means the user has at least one trading account and at least one synced or manually logged trade.
+- Existing active users with trade history are not interrupted.
+- If the user has no trade data, dashboard account/date filters are hidden because there is nothing meaningful to filter yet.
+- The same no-trade filter rule applies to `/dashboard/journal`, `/dashboard/sessions`, `/dashboard/analytics`, `/dashboard/intelligence`, and `/dashboard/psychology`.
+- If a user has at least one account but no trades after 24 hours, `/dashboard` shows a small first-data reminder instead of a modal.
+- The first-data reminder CTA follows `preferredSyncMethod`:
+  - TNT Connect: opens `/dashboard/accounts?setup=sync&method=tnt&source=first-data-reminder`
+  - EA Sync: opens `/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder`
+  - Manual Journal: opens `/dashboard/journal?action=log-trade&source=first-data-reminder`
+- `Remind me tomorrow` stores `firstDataReminderDismissedUntil` in `User.settings.onboarding.firstSession`.
+
+Dashboard activation checklist and coach nudges continue after the wizard. CTAs are personalized based on `preferredSyncMethod`.
 
 ## Account Hub
 
@@ -98,6 +128,11 @@ UX rules:
 - `PRO` implies EA access. Do not show separate `EA` and `PRO` chips together.
 - Do not show duplicate negative states such as `Not Supported` and `Not eligible` for the same account.
 - Keep account-card footer actions aligned and easy to scan.
+- Accounts with `totalTrades = 0` prioritize first-data CTA:
+  - TNT/EA users see `Sync first trades`, opening the selected sync setup.
+  - Manual users see `Log first trade`, routing to Journal with `source=account-card`.
+  - `Dashboard` remains secondary because opening an empty dashboard is less useful for a new user.
+- Accounts with `totalTrades > 0` return to the normal `Dashboard` + `Sync` action layout.
 
 ## Trade Sync
 
@@ -153,6 +188,13 @@ Daily check-in should appear every new day if unclaimed.
 User-facing:
 
 - `/dashboard/analytics`, `/dashboard/reports`, `/dashboard/mistakes`, and `/dashboard/intelligence` help traders understand performance and behavior.
+- Analytics-style pages should not show account/date filters until the user has at least one `JournalEntry`.
+- Once the user has trade data, filters return where relevant:
+  - `/dashboard/journal`: account + date filter
+  - `/dashboard/sessions`: account + date filter
+  - `/dashboard/analytics`: account filter only
+  - `/dashboard/intelligence`: account + date filter
+  - `/dashboard/psychology`: date filter only
 
 Admin-facing:
 

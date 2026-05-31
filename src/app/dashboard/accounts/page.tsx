@@ -23,13 +23,26 @@ export default async function TradingAccountsPage({
     const page = typeof resolvedParams.page === "string" ? parseInt(resolvedParams.page) : 1;
     const limit = typeof resolvedParams.limit === "string" ? parseInt(resolvedParams.limit) : 12;
 
-    const [{ accounts, meta }, profile] = await Promise.all([
+    const [{ accounts, meta }, profile, dbUser] = await Promise.all([
         getTradingAccounts(page, limit),
         prisma.profile.findUnique({
             where: { userId: user.id },
             select: { mainTradingAccountId: true, telegramId: true, country: true },
         }),
+        prisma.user.findUnique({
+            where: { id: user.id },
+            select: { settings: true },
+        }),
     ]);
+
+    const settings = (dbUser?.settings as Record<string, unknown>) || {};
+    const onboarding = (settings.onboarding as Record<string, unknown>) || {};
+    const preferredSyncMethod =
+        onboarding.preferredSyncMethod === "EA_SYNC" ||
+        onboarding.preferredSyncMethod === "MANUAL" ||
+        onboarding.preferredSyncMethod === "TNT_CONNECT"
+            ? onboarding.preferredSyncMethod
+            : undefined;
 
     // Auto-set first account as main if user hasn't set one yet
     let mainAccountId = profile?.mainTradingAccountId ?? null;
@@ -52,6 +65,7 @@ export default async function TradingAccountsPage({
             userTelegramId={profile?.telegramId || undefined}
             userCountry={profile?.country || undefined}
             mainAccountId={mainAccountId}
+            preferredSyncMethod={preferredSyncMethod}
         />
     );
 }

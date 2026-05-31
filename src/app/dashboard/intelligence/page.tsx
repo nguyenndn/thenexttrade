@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
+import { getUserTradingDataState } from "@/lib/trading-data-state";
 import { getIntelligenceData, getScoreHistory } from "@/lib/smart-analytics";
 import { IntelligenceDashboard } from "@/components/analytics/IntelligenceDashboard";
 import { EdgeLeakDetector } from "@/components/pro/EdgeLeakDetector";
@@ -38,6 +39,7 @@ export default async function IntelligencePage({
     if (!user) {
         redirect("/auth/login");
     }
+    const tradingDataState = await getUserTradingDataState(user.id);
 
     // Account filter
     let accountId = resolvedParams?.accountId as string | undefined;
@@ -99,7 +101,9 @@ export default async function IntelligencePage({
                 title="Trading Intelligence"
                 description="Pattern detection and insights from your trading data."
             >
-                <DashboardFilter currentAccountId={accountId ?? undefined} />
+                {tradingDataState.hasTradeData && (
+                    <DashboardFilter currentAccountId={accountId ?? undefined} />
+                )}
             </PageHeader>
             <div className="mb-4">
                 <TabBar tabs={analyticsTabs} equalWidth />
@@ -203,4 +207,3 @@ function IntelligenceLoadingSkeleton() {
         </div>
     );
 }
-

@@ -13,7 +13,11 @@ import { MobileProStatusBanner } from "@/components/dashboard/MobileProStatusBan
 import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
 import { WelcomeHero } from "@/components/dashboard/WelcomeHero";
 import { DashboardCoachNudge } from "@/components/coach/DashboardCoachNudge";
-import type { ActivationState } from "@/lib/activation/activation-types";
+import { FirstSessionWizard } from "@/components/onboarding/FirstSessionWizard";
+import { FirstSessionLauncher } from "@/components/onboarding/FirstSessionLauncher";
+import { FirstSyncSuccessModal } from "@/components/onboarding/FirstSyncSuccessModal";
+import { FirstDataReminderBanner } from "@/components/onboarding/FirstDataReminderBanner";
+import { celebrateFirstSyncAction } from "@/actions/first-session-onboarding";
 import {
     Tooltip,
     TooltipContent,
@@ -60,69 +64,35 @@ function HelpTooltip({ content }: { content: string }) {
     );
 }
 
-interface DashboardClientProps {
-    userName?: string;
-    dashboardData: {
-        totalBalance: number;
-        winRate: number;
-        winRateChange: number;
-        streak: number;
-        todayPnL: number;
-        periodPnL: number; // Added
-        // Pro Metrics
-        profitFactor: number;
-        avgWin: number;
-        avgLoss: number;
-        winCount: number;
-        lossCount: number;
-        breakEvenCount: number;
-    };
-    chartData: { date: string; balance: number }[];
-    recentTrades: any[]; // Full trade objects
-    symbolPerformance: { name: string; value: number }[];
-    currentAccountId?: string;
-    monthlyAnalytics: { date: string; value: number }[];
-    dailyWinRates: { date: string; winRate: number; trades: number; wins: number }[];
-    selectedDates?: { from?: string; to?: string };
-    bestTrades: any[];
-    worstTrades: any[];
-    symbolAnalytics: any[];
-    lotDistribution: { name: string; value: number }[];
-    tradeScore: number | null;
-    insight: { icon: string; title: string; description: string } | null;
-    intelligenceScore?: number | null;
-    sessionPerformance: { session: string; trades: number; pnl: number; winRate: number }[];
-    dayOfWeekPerformance: { day: string; dayIndex: number; pnl: number; tradeCount: number; winRate: number }[];
-    activationState: ActivationState;
-    daysSinceLastReport?: number | null;
-    nextBestAction?: any;
-    learningRecommendations?: any[];
-}
+import type { DashboardPageData } from "./dashboard-data.server";
 
-export default function DashboardClient({
-    userName = "Trader",
-    dashboardData,
-    chartData,
-    recentTrades,
-    symbolPerformance,
-    currentAccountId,
-    monthlyAnalytics,
-    dailyWinRates,
-    selectedDates,
-    bestTrades,
-    worstTrades,
-    symbolAnalytics,
-    lotDistribution,
-    tradeScore,
-    insight,
-    intelligenceScore,
-    sessionPerformance,
-    dayOfWeekPerformance,
-    activationState,
-    daysSinceLastReport,
-    nextBestAction,
-    learningRecommendations,
-}: DashboardClientProps) {
+export default function DashboardClient(data: DashboardPageData) {
+    const {
+        userName = "Trader",
+        dashboardData,
+        chartData,
+        recentTrades,
+        symbolPerformance,
+        currentAccountId,
+        monthlyAnalytics,
+        dailyWinRates,
+        selectedDates,
+        bestTrades,
+        worstTrades,
+        symbolAnalytics,
+        lotDistribution,
+        tradeScore,
+        insight,
+        intelligenceScore,
+        sessionPerformance,
+        dayOfWeekPerformance,
+        activationState,
+        daysSinceLastReport,
+        nextBestAction,
+        learningRecommendations,
+        firstSessionState,
+        tradingGoal,
+    } = data;
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
@@ -162,9 +132,37 @@ export default function DashboardClient({
         setShowTradeModal(true);
     };
 
+    // First Session Wizard State
+    const [showFirstSession, setShowFirstSession] = useState(false);
+
+    // Auto-open first session wizard on mount or when ?firstSession=1
+    useEffect(() => {
+        if (!firstSessionState) return;
+        const params = new URLSearchParams(window.location.search);
+        const forceOpen = params.get("firstSession") === "1" || params.get("onboarding") === "1";
+        if ((firstSessionState.shouldAutoOpen || forceOpen) && !firstSessionState.isCompleted) {
+            setShowFirstSession(true);
+        }
+    }, [firstSessionState]);
 
     // Detect "brand new user" — no trades at all
     const hasNoData = dashboardData.winCount === 0 && dashboardData.lossCount === 0 && recentTrades.length === 0;
+
+    const shouldSuppressCoachNudge =
+        hasNoData ||
+        (nextBestAction?.id === "NO_ACCOUNT" &&
+        firstSessionState &&
+        !firstSessionState.isCompleted &&
+        firstSessionState.accountCount === 0);
+
+    // First Sync Success Modal state
+    const [showSyncSuccess, setShowSyncSuccess] = useState(
+        () => !!firstSessionState?.showFirstSyncSuccess
+    );
+    const handleCelebrate = async () => {
+        setShowSyncSuccess(false);
+        await celebrateFirstSyncAction();
+    };
 
     return (
         <div className="w-full relative min-h-screen">
@@ -174,24 +172,58 @@ export default function DashboardClient({
                 entry={selectedTrade}
             />
 
+            {/* First Sync Success Modal */}
+            <FirstSyncSuccessModal
+                open={showSyncSuccess}
+                onClose={handleCelebrate}
+                hasReports={firstSessionState?.hasReports ?? false}
+            />
+
             {/* Header Section */}
-            <GreetingHeader userName={userName} currentAccountId={currentAccountId} />
+            <GreetingHeader
+                userName={userName}
+                currentAccountId={currentAccountId}
+                hideFilters={hasNoData}
+            />
 
             <div className="mt-4 space-y-4 lg:mt-5 lg:space-y-5">
-            {/* Mobile Pro Status Banner — visible on mobile without opening the drawer */}
-            <MobileProStatusBanner />
+            {/* Mobile Pro Status Banner — suppress for brand-new users */}
+            {!hasNoData && <MobileProStatusBanner />}
 
             {/* Coach & Next Action Engine Unified Nudge Bar */}
-            {nextBestAction && (
+            {nextBestAction && !shouldSuppressCoachNudge && (
                 <DashboardCoachNudge 
                     nextBestAction={nextBestAction} 
                     learningRecommendations={learningRecommendations || []} 
                 />
             )}
 
+            {/* First Session Onboarding Wizard & Launcher */}
+            {firstSessionState && !firstSessionState.isCompleted && (
+                <>
+                    <FirstSessionLauncher
+                        currentStep={firstSessionState.currentStep}
+                        onOpen={() => setShowFirstSession(true)}
+                    />
+                    <FirstSessionWizard
+                        state={firstSessionState}
+                        open={showFirstSession}
+                        onOpenChange={setShowFirstSession}
+                    />
+                </>
+            )}
+
+            {/* 24h Reminder: account connected but no trade data */}
+            {firstSessionState?.showFirstDataReminder && (
+                <FirstDataReminderBanner
+                    preferredSyncMethod={firstSessionState.preferredSyncMethod}
+                    firstAccountCreatedAt={firstSessionState.firstAccountCreatedAt}
+                />
+            )}
+
             {/* Welcome Hero — replaces empty charts for new users */}
             {hasNoData ? (
-                <WelcomeHero userName={userName} activationState={activationState} />
+                <WelcomeHero userName={userName} activationState={activationState} tradingGoal={tradingGoal} />
             ) : (
             <>
             {/* Activation Checklist — shown for in-progress users */}

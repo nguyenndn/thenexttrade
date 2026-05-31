@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { SessionRecommendations } from "./SessionRecommendations";
 import { useSearchParams } from "next/navigation";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 
 const SessionPerformance = dynamic(() => import("./SessionPerformance").then(m => m.SessionPerformance), {
     loading: () => <div className="h-[400px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl" />,
@@ -96,12 +97,48 @@ export function SessionDashboard() {
             {isLoading ? (
                 <SessionLoadingSkeleton />
             ) : !data || data.sessionStats.length === 0 ? (
-                <div className="min-h-[60vh] flex items-center justify-center p-8 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10">
-                    <EmptyState 
-                        icon={Clock} 
-                        title="No Session Data Available" 
-                        description="We rely on the timestamps of your trades to analyze session performance. Log some closed trades to see your optimal trading times." 
-                    />
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 mt-8">
+                    {/* Animated Clock Icon */}
+                    <div className="relative w-20 h-20 mb-6 mx-auto">
+                        <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-[session-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                        <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center animate-[session-float_3s_ease-in-out_infinite]">
+                            <Clock size={32} className="text-gray-500 dark:text-gray-300" strokeWidth={1.5} />
+                            {/* Rotating hour hand */}
+                            <div className="absolute w-0.5 h-4 bg-primary/30 rounded-full origin-bottom animate-[session-hand_8s_linear_infinite]" style={{ bottom: '50%', left: 'calc(50% - 1px)' }} />
+                            {/* Sparkle dots */}
+                            <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-primary/40 animate-[session-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
+                            <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-primary/30 animate-[session-sparkle_3s_ease-in-out_infinite_0.8s]" />
+                            <div className="absolute top-0 -right-2 w-1 h-1 rounded-full bg-primary/25 animate-[session-sparkle_2s_ease-in-out_infinite_1.5s]" />
+                        </div>
+                    </div>
+
+                    <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
+                        No Session Data Available
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-2">
+                        We rely on the timestamps of your trades to analyze session performance. Log some closed trades to see your optimal trading times.
+                    </p>
+
+                    <EmptyStateCTAs />
+
+                    <style jsx>{`
+                        @keyframes session-float {
+                            0%, 100% { transform: translateY(0px); }
+                            50% { transform: translateY(-6px); }
+                        }
+                        @keyframes session-ping {
+                            0% { transform: scale(1); opacity: 0.3; }
+                            75%, 100% { transform: scale(1.3); opacity: 0; }
+                        }
+                        @keyframes session-hand {
+                            from { transform: rotate(0deg); }
+                            to { transform: rotate(360deg); }
+                        }
+                        @keyframes session-sparkle {
+                            0%, 100% { opacity: 0; transform: scale(0); }
+                            50% { opacity: 1; transform: scale(1); }
+                        }
+                    `}</style>
                 </div>
             ) : (
                 <>

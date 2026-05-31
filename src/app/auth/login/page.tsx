@@ -12,7 +12,7 @@ import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 import { trackEvent } from "@/lib/track";
 
 // ─── Full-screen loading overlay rendered via portal ───
-function LoginSuccessOverlay({ name }: { name: string }) {
+function LoginSuccessOverlay({ name, redirectTo }: { name: string; redirectTo?: string }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -24,14 +24,14 @@ function LoginSuccessOverlay({ name }: { name: string }) {
       const match = document.cookie.match(/(?:^|;\s*)last_account_id=([^;]+)/);
       const accountId = match?.[1];
       const today = new Date().toISOString().slice(0, 10);
-      const url = accountId
+      const url = redirectTo || (accountId
         ? `/dashboard?accountId=${accountId}&from=${today}&to=${today}`
-        : "/dashboard";
+        : "/dashboard");
       window.location.href = url;
     }, 2400);
 
     return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, []);
+  }, [redirectTo]);
 
   return createPortal(
     <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center select-none bg-[#F7F4EC] dark:bg-[#0B0E14] transition-colors" style={{ margin: 0 }}>
@@ -54,7 +54,9 @@ function LoginSuccessOverlay({ name }: { name: string }) {
           <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
             Welcome back, <span className="text-primary">{name}</span>
           </h2>
-          <p className="text-base text-slate-500 dark:text-gray-400 font-medium">Preparing your dashboard…</p>
+          <p className="text-base text-slate-500 dark:text-gray-400 font-medium">
+            {redirectTo === "/onboarding" ? "Preparing your setup..." : "Preparing your dashboard..."}
+          </p>
         </div>
 
         {/* Glowing progress bar */}
@@ -81,6 +83,7 @@ export default function LoginPage() {
   const [turnstileToken, setTurnstileToken] = useState("");
   const [showTransition, setShowTransition] = useState(false);
   const [transitionName, setTransitionName] = useState("Trader");
+  const [transitionRedirectTo, setTransitionRedirectTo] = useState<string | undefined>();
 
   const inputClassName =
     "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:border-white/10 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
@@ -108,6 +111,7 @@ export default function LoginPage() {
     } else if (result?.success) {
       // ─── Show full-screen loading overlay via portal ───
       setTransitionName(result.name || "Trader");
+      setTransitionRedirectTo(result.redirectTo);
       setShowTransition(true);
     }
   };
@@ -306,7 +310,7 @@ export default function LoginPage() {
     </div>
 
     {/* Full-screen loading overlay — rendered via portal to document.body */}
-    {showTransition && <LoginSuccessOverlay name={transitionName} />}
+    {showTransition && <LoginSuccessOverlay name={transitionName} redirectTo={transitionRedirectTo} />}
     </>
   );
 }

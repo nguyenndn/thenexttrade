@@ -653,15 +653,27 @@ function InsightCard({ insight }: { insight: Insight }) {
 function EmptyState({ totalTrades }: { totalTrades: number }) {
     const progress = Math.min(100, (totalTrades / 30) * 100);
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 sm:p-8 md:p-12 border border-gray-200 dark:border-white/10 shadow-sm text-center">
-            <div className="inline-flex items-center justify-center p-4 rounded-xl bg-cyan-500/10 text-cyan-500 mb-6 ring-4 ring-cyan-500/5">
-                <Brain size={32} />
+        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 mt-8">
+            {/* Animated Brain Icon */}
+            <div className="relative w-20 h-20 mb-6 mx-auto">
+                <div className="absolute inset-0 rounded-full bg-cyan-500/10 dark:bg-cyan-500/5 animate-[intel-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center animate-[intel-float_3s_ease-in-out_infinite]">
+                    <Brain size={32} className="text-cyan-500 dark:text-cyan-400" strokeWidth={1.5} />
+                    {/* Neural pulse dots */}
+                    <div className="absolute -top-1 right-2 w-1.5 h-1.5 rounded-full bg-cyan-400/50 animate-[intel-neuron_2s_ease-in-out_infinite]" />
+                    <div className="absolute -bottom-1 left-4 w-1 h-1 rounded-full bg-cyan-400/30 animate-[intel-neuron_2.5s_ease-in-out_infinite_0.5s]" />
+                    <div className="absolute top-1 -left-2 w-1 h-1 rounded-full bg-cyan-400/40 animate-[intel-neuron_3s_ease-in-out_infinite_1s]" />
+                    {/* Sparkle dots */}
+                    <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-primary/40 animate-[intel-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
+                    <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-primary/30 animate-[intel-sparkle_3s_ease-in-out_infinite_0.8s]" />
+                </div>
             </div>
-            <h2 className="text-xl font-bold text-gray-700 dark:text-white mb-2">More Trades Needed</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
+
+            <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">More Trades Needed</h3>
+            <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-6">
                 Complete at least 30 closed trades to unlock Trading Intelligence.
             </p>
-            <div className="max-w-xs mx-auto">
+            <div className="max-w-xs mx-auto mb-6">
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-bold text-gray-600">{totalTrades} / 30 trades</span>
                     <span className="text-sm font-bold text-primary">{Math.round(progress)}%</span>
@@ -672,10 +684,29 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
             </div>
             <Link
                 href="/dashboard/journal"
-                className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:opacity-90 transition-opacity"
             >
                 Log a Trade <ChevronRight size={16} />
             </Link>
+
+            <style jsx>{`
+                @keyframes intel-float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-6px); }
+                }
+                @keyframes intel-ping {
+                    0% { transform: scale(1); opacity: 0.3; }
+                    75%, 100% { transform: scale(1.3); opacity: 0; }
+                }
+                @keyframes intel-neuron {
+                    0%, 100% { opacity: 0; transform: scale(0.5); }
+                    50% { opacity: 1; transform: scale(1.2); }
+                }
+                @keyframes intel-sparkle {
+                    0%, 100% { opacity: 0; transform: scale(0); }
+                    50% { opacity: 1; transform: scale(1); }
+                }
+            `}</style>
         </div>
     );
 }

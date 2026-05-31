@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { WeeklyCoachPlan } from "@/components/coach/WeeklyCoachPlan";
+import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 
 interface ReportData {
     id: string;
@@ -246,18 +247,44 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
 
     if (reports.length === 0) {
         return (
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-8 sm:p-12 text-center shadow-sm">
-                <div className="p-4 bg-gray-100 dark:bg-white/5 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <Calendar size={28} className="text-gray-400" />
+            <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 mt-8">
+                {/* Animated Calendar Icon */}
+                <div className="relative w-20 h-20 mb-6 mx-auto">
+                    <div className="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-blue-500/5 animate-[report-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                    <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center animate-[report-float_3s_ease-in-out_infinite]">
+                        <Calendar size={32} className="text-gray-500 dark:text-gray-300" strokeWidth={1.5} />
+                        {/* Sparkle dots */}
+                        <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-blue-400/40 animate-[report-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
+                        <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-blue-400/30 animate-[report-sparkle_3s_ease-in-out_infinite_0.8s]" />
+                        <div className="absolute top-0 -right-2 w-1 h-1 rounded-full bg-blue-400/25 animate-[report-sparkle_2s_ease-in-out_infinite_1.5s]" />
+                    </div>
                 </div>
-                <h2 className="text-lg font-bold text-gray-700 dark:text-white mb-2">
-                    {type === "weekly" ? "No weekly reviews yet" : "No monthly reviews yet"}
-                </h2>
-                <p className="text-sm text-gray-500 max-w-sm mx-auto">
+
+                <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
+                    {type === "weekly" ? "No Weekly Reviews Yet" : "No Monthly Reviews Yet"}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-2">
                     {type === "weekly"
                         ? "Log trades during the week, then generate a review to find one strength, one leak, and one next focus."
                         : "Generate a monthly review after you have trading data for the month."}
                 </p>
+
+                <EmptyStateCTAs />
+
+                <style jsx>{`
+                    @keyframes report-float {
+                        0%, 100% { transform: translateY(0px); }
+                        50% { transform: translateY(-6px); }
+                    }
+                    @keyframes report-ping {
+                        0% { transform: scale(1); opacity: 0.3; }
+                        75%, 100% { transform: scale(1.3); opacity: 0; }
+                    }
+                    @keyframes report-sparkle {
+                        0%, 100% { opacity: 0; transform: scale(0); }
+                        50% { opacity: 1; transform: scale(1); }
+                    }
+                `}</style>
             </div>
         );
     }
