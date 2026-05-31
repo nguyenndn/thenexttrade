@@ -57,6 +57,9 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                 maxDailyTrades: true,
                 maxRiskPercent: true,
                 cooldownAfterLosses: true,
+                _count: {
+                    select: { journalEntries: true },
+                },
                 // Pro/VIP status joins
                 proEntitlement: {
                     select: { status: true, source: true, expiresAt: true },
@@ -86,9 +89,14 @@ export async function getTradingAccounts(page = 1, limit = 12) {
         const isPro = proStatus === "ACTIVE" || proStatus === "GRACE";
         const eaAccess: "INCLUDED" | "NOT_INCLUDED" = isPro ? "INCLUDED" : "NOT_INCLUDED";
         const eligibility = eligibilityMap[acc.id] || null;
+        const effectiveTotalTrades = Math.max(
+            acc.totalTrades || 0,
+            acc._count?.journalEntries || 0
+        );
 
         return {
             ...acc,
+            totalTrades: effectiveTotalTrades,
             platform: acc.platform || "MetaTrader 4",
             lastHeartbeat: acc.lastHeartbeat ? acc.lastHeartbeat.toISOString() : null,
             lastSync: acc.lastSync ? acc.lastSync.toISOString() : null,
@@ -107,6 +115,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
             // Remove raw relations from serialized output
             proEntitlement: undefined,
             vipRequests: undefined,
+            _count: undefined,
         };
     });
 

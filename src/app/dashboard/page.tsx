@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import DashboardSkeleton from "@/components/dashboard/loading/DashboardSkeleton";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
-import { prisma } from "@/lib/prisma";
+import { getUserTradingDataState } from "@/lib/trading-data-state";
 
 import DashboardClient from "./DashboardClient";
 import { TradingAlertBanner } from "@/components/dashboard/TradingAlertBanner";
@@ -34,11 +34,9 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
     // 1. Resolve account & date params (handles redirect if needed)
     const params = await resolveAccountAndDates(user.id, searchParams);
 
-    // 2. Short-circuit for users with 0 trades
-    const globalTradeCount = await prisma.journalEntry.count({
-        where: { userId: user.id },
-        take: 1,
-    });
+    // 2. Short-circuit for users with 0 trades globally
+    const tradingDataState = await getUserTradingDataState(user.id);
+    const globalTradeCount = tradingDataState.tradeCount;
 
     if (globalTradeCount === 0) {
         const data = await getEmptyDashboardData(user.id, params.accountId, params.fromParam, params.toParam);

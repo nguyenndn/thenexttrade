@@ -1,6 +1,6 @@
 # Email
 
-Last reviewed: 2026-05-24
+Last reviewed: 2026-05-31
 
 The app should own transactional email instead of relying on provider-default templates long term.
 
@@ -28,6 +28,7 @@ Required transactional emails:
 - EA license or download delivery.
 - Copy trading registration status.
 - Account sync issue or disconnected account.
+- New-user activation reminder emails when a user is stuck before first value.
 
 Optional product emails:
 
@@ -35,6 +36,25 @@ Optional product emails:
 - Academy progress nudges.
 - New article/Academy content notifications.
 - Feature announcements.
+
+## New-User Reminder Rules
+
+Use in-app reminders first. Email should be a backup, not the primary onboarding UX.
+
+Approved lifecycle reminders:
+
+- **T+24h no account**: user verified but has no `TradingAccount`.
+- **T+24h account connected, no trade data**: user has at least one `TradingAccount` but zero `JournalEntry` and `totalTrades = 0`.
+- **T+72h still no first value**: user still has no first synced/logged trade after the first reminder.
+- **Desktop setup link request**: user on mobile asks to send TNT/EA setup instructions to desktop email.
+
+Caps:
+
+- Maximum two activation reminder emails in the first 7 days after verification.
+- Do not send if the user has reached first value.
+- Do not send if the user disabled product emails.
+- Do not send again while a reminder cooldown is active.
+- Store `lastSentAt`, `reminderType`, and idempotency key in send metadata/logs.
 
 ## Sending Rules
 

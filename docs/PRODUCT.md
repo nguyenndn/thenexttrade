@@ -110,6 +110,13 @@ First Session Wizard behavior:
 
 Dashboard activation checklist and coach nudges continue after the wizard. CTAs are personalized based on `preferredSyncMethod`.
 
+Approved next optimizations for new users:
+
+- **Activation funnel reporting**: `/admin/reports` already has a partial funnel, but it must be expanded from a Pro-oriented funnel into a first-value funnel. Track `Signed Up -> Verified -> Onboarding Started -> Onboarding Completed/Skipped -> Sync Method Selected -> Account Connected -> First Trade Data -> First Insight Viewed -> Weekly Review Generated -> Pro Requested -> Pro Active`.
+- **Light stuck-user reminders**: use in-app reminders first, then at most one 24h and one 72h lifecycle email if the user has not connected an account or has connected an account but still has zero trade data.
+- **First Insight Moment**: after the first synced or manually logged trade, show a one-time success moment that tells the user what changed and gives one next action, such as `View my first insight`.
+- **Mobile fallback**: if the user is on mobile and picks TNT/EA sync, explain that MT5 sync requires desktop/VPS, offer `Send setup link to desktop`, and keep `Log manually for now` as a clear fallback.
+
 ## Account Hub
 
 Route: `/dashboard/accounts`.
@@ -199,6 +206,7 @@ User-facing:
 Admin-facing:
 
 - `/admin/reports` shows north star, lifecycle, quality, revenue, friction, content ROI, alerts, and action queue.
+- `/admin/reports` currently covers activation partially. The next target is to make it the canonical admin view for where new users get stuck before first value.
 - `/admin/analytics` shows traffic, countries, registered user countries, referrers, devices, campaigns, and events.
 - `/admin/users` shows country, activity, user detail, accounts, sessions, notes, and admin actions.
 

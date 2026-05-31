@@ -1,5 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { getFirstInsightPayload } from "./first-insight.server";
+import { FIRST_SESSION_ROLLOUT_AT } from "./constants";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -22,6 +24,7 @@ export type FirstSessionWizardState = {
   dismissedUntil?: string;
   completedAt?: string;
   firstSyncCelebratedAt?: string;
+  firstInsightViewedAt?: string;
   helpViewedAt?: string;
   firstDataReminderDismissedUntil?: string;
 };
@@ -41,6 +44,12 @@ export type FirstSessionComputedState = {
   hasReports: boolean;
   showFirstDataReminder: boolean;
   firstAccountCreatedAt?: string;
+  firstInsight?: {
+    shouldShow: boolean;
+    facts: string[];
+    primaryCta: string;
+    secondaryCta: string;
+  };
 };
 
 // ---------------------------------------------------------------------------
@@ -57,11 +66,11 @@ type OnboardingSettings = {
 async function readSettings(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { settings: true },
+    select: { settings: true, createdAt: true },
   });
   const settings = (user?.settings as UserSettings) || {};
   const onboarding = (settings.onboarding as OnboardingSettings) || {};
-  return { settings, onboarding };
+  return { settings, onboarding, userCreatedAt: user?.createdAt };
 }
 
 // ---------------------------------------------------------------------------
@@ -71,12 +80,11 @@ async function readSettings(userId: string) {
 export async function getFirstSessionState(
   userId: string
 ): Promise<FirstSessionComputedState> {
-  const { onboarding } = await readSettings(userId);
+  const { onboarding, userCreatedAt } = await readSettings(userId);
   const firstSession = onboarding.firstSession || {};
 
   // Parallel data queries
-  const [accountCount, tradeCount, accounts, reportCount] = await Promise.all([
-    prisma.tradingAccount.count({ where: { userId } }),
+  const [journalTradeCount, accounts, reportCount] = await Promise.all([
     prisma.journalEntry.count({ where: { userId } }),
     prisma.tradingAccount.findMany({
       where: { userId },
@@ -93,6 +101,13 @@ export async function getFirstSessionState(
     }),
     prisma.tradingReport.count({ where: { userId } }),
   ]);
+
+  const accountCount = accounts.length;
+  const accountTradeCount = accounts.reduce(
+    (sum, account) => sum + Math.max(0, account.totalTrades || 0),
+    0
+  );
+  const tradeCount = Math.max(journalTradeCount, accountTradeCount);
 
   // Determine sync activity
   const hasSyncActivity = accounts.some(
@@ -123,12 +138,40 @@ export async function getFirstSessionState(
 
   // Determine completed
   const isCompleted = tradeCount > 0 || !!firstSession.completedAt;
+  const isLegacyUser = userCreatedAt
+    ? userCreatedAt < FIRST_SESSION_ROLLOUT_AT
+    : true;
+  const hasFirstSessionIntent = Boolean(
+    firstSession.startedAt ||
+      firstSession.selectedAccountId ||
+      firstSession.selectedSyncMethod ||
+      firstSession.dismissedUntil ||
+      firstSession.completedAt ||
+      firstSession.firstSyncCelebratedAt ||
+      firstSession.firstInsightViewedAt ||
+      onboarding.preferredSyncMethod ||
+      onboarding.tradingGoal ||
+      onboarding.completedAt
+  );
+  const isLegacyActiveUser = isLegacyUser && tradeCount > 0;
 
   // First sync success moment — show once when user gets first trade data
   const showFirstSyncSuccess =
     tradeCount > 0 &&
+    !isLegacyActiveUser &&
+    (hasFirstSessionIntent || !isLegacyUser) &&
+    !firstSession.firstInsightViewedAt &&
     !firstSession.firstSyncCelebratedAt &&
     !firstSession.completedAt;
+
+  const firstInsight = showFirstSyncSuccess
+    ? await getFirstInsightPayload(userId)
+    : {
+        shouldShow: false,
+        facts: [],
+        primaryCta: "/dashboard",
+        secondaryCta: "/dashboard",
+      };
 
   // Auto-open logic
   const isDismissed =
@@ -178,6 +221,7 @@ export async function getFirstSessionState(
     hasReports: reportCount > 0,
     showFirstDataReminder,
     firstAccountCreatedAt,
+    firstInsight,
   };
 }
 

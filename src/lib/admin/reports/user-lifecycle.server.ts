@@ -9,6 +9,7 @@ export async function getUserLifecycleReport(range: DateRange): Promise<UserLife
     where: { createdAt: { gte: since } },
     select: {
       id: true,
+      settings: true,
       profile: { select: { id: true } },
       tradingAccounts: { select: { id: true, totalTrades: true, lastSync: true, balance: true, status: true } },
       journalEntries: { select: { id: true }, take: 1 },
@@ -21,7 +22,8 @@ export async function getUserLifecycleReport(range: DateRange): Promise<UserLife
 
   const stageCounts: Record<LifecycleStage, number> = {
     "Signed Up": 0, "Profile Ready": 0, "Account Connected": 0, "First Trade": 0,
-    "Weekly Review": 0, "Pro Candidate": 0, "Pro User": 0, "At Risk": 0, "Churned": 0,
+    "First Insight Viewed": 0, "Weekly Review": 0, "Pro Candidate": 0, "Pro User": 0,
+    "At Risk": 0, "Churned": 0,
   };
 
   const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
@@ -39,10 +41,17 @@ export async function getUserLifecycleReport(range: DateRange): Promise<UserLife
       return max && max > a.lastSync ? max : a.lastSync;
     }, null);
 
+    // Resolve onboarding settings
+    const settings = (user.settings as Record<string, any>) || {};
+    const onboarding = (settings.onboarding || {}) as Record<string, any>;
+    const firstSession = (onboarding.firstSession || {}) as Record<string, any>;
+    const hasViewedFirstInsight = !!(firstSession.firstInsightViewedAt || firstSession.firstSyncCelebratedAt);
+
     let stage: LifecycleStage = "Signed Up";
     if (hasPro) stage = "Pro User";
     else if (hasTrades && hasRealAccount) stage = "Pro Candidate";
     else if (hasWeeklyReport) stage = "Weekly Review";
+    else if (hasTrades && hasViewedFirstInsight) stage = "First Insight Viewed";
     else if (hasTrades) stage = "First Trade";
     else if (hasAccount) stage = "Account Connected";
     else if (hasProfile) stage = "Profile Ready";
@@ -55,15 +64,16 @@ export async function getUserLifecycleReport(range: DateRange): Promise<UserLife
   }
 
   const totalUsers = users.length;
-  const stageOrder: LifecycleStage[] = ["Signed Up", "Profile Ready", "Account Connected", "First Trade", "Weekly Review", "Pro Candidate", "Pro User", "At Risk", "Churned"];
+  const stageOrder: LifecycleStage[] = ["Signed Up", "Profile Ready", "Account Connected", "First Trade", "First Insight Viewed", "Weekly Review", "Pro Candidate", "Pro User", "At Risk", "Churned"];
   const stages: LifecycleStageStat[] = stageOrder.map((stage) => ({ stage, count: stageCounts[stage], percent: pct(stageCounts[stage], totalUsers) }));
 
-  const funnelStages: LifecycleStage[] = ["Signed Up", "Profile Ready", "Account Connected", "First Trade", "Weekly Review", "Pro Candidate", "Pro User"];
+  const funnelStages: LifecycleStage[] = ["Signed Up", "Profile Ready", "Account Connected", "First Trade", "First Insight Viewed", "Weekly Review", "Pro Candidate", "Pro User"];
   const dropoffActions: Record<string, string> = {
     "Signed Up→Profile Ready": "Improve onboarding profile capture",
     "Profile Ready→Account Connected": "Improve account connect CTA",
     "Account Connected→First Trade": "Improve sync setup flow",
-    "First Trade→Weekly Review": "Surface weekly reports more",
+    "First Trade→First Insight Viewed": "Encourage dashboard check-in for insights",
+    "First Insight Viewed→Weekly Review": "Surface weekly reports more",
     "Weekly Review→Pro Candidate": "Show Pro value proposition",
     "Pro Candidate→Pro User": "Streamline Pro request flow",
   };
@@ -80,3 +90,4 @@ export async function getUserLifecycleReport(range: DateRange): Promise<UserLife
 
   return { stages, dropoffs, totalUsers };
 }
+

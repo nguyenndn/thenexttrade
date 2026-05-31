@@ -17,7 +17,7 @@ import { FirstSessionWizard } from "@/components/onboarding/FirstSessionWizard";
 import { FirstSessionLauncher } from "@/components/onboarding/FirstSessionLauncher";
 import { FirstSyncSuccessModal } from "@/components/onboarding/FirstSyncSuccessModal";
 import { FirstDataReminderBanner } from "@/components/onboarding/FirstDataReminderBanner";
-import { celebrateFirstSyncAction } from "@/actions/first-session-onboarding";
+import { celebrateFirstSyncAction, markFirstInsightViewedAction } from "@/actions/first-session-onboarding";
 import {
     Tooltip,
     TooltipContent,
@@ -69,6 +69,7 @@ import type { DashboardPageData } from "./dashboard-data.server";
 export default function DashboardClient(data: DashboardPageData) {
     const {
         userName = "Trader",
+        hasGlobalTrades,
         dashboardData,
         chartData,
         recentTrades,
@@ -145,8 +146,8 @@ export default function DashboardClient(data: DashboardPageData) {
         }
     }, [firstSessionState]);
 
-    // Detect "brand new user" — no trades at all
-    const hasNoData = dashboardData.winCount === 0 && dashboardData.lossCount === 0 && recentTrades.length === 0;
+    // Detect "brand new user" — no trades at all globally in database
+    const hasNoData = !hasGlobalTrades;
 
     const shouldSuppressCoachNudge =
         hasNoData ||
@@ -161,7 +162,7 @@ export default function DashboardClient(data: DashboardPageData) {
     );
     const handleCelebrate = async () => {
         setShowSyncSuccess(false);
-        await celebrateFirstSyncAction();
+        await markFirstInsightViewedAction();
     };
 
     return (
@@ -177,6 +178,7 @@ export default function DashboardClient(data: DashboardPageData) {
                 open={showSyncSuccess}
                 onClose={handleCelebrate}
                 hasReports={firstSessionState?.hasReports ?? false}
+                firstInsight={firstSessionState?.firstInsight}
             />
 
             {/* Header Section */}

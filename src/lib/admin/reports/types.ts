@@ -90,6 +90,7 @@ export type LifecycleStage =
   | "Profile Ready"
   | "Account Connected"
   | "First Trade"
+  | "First Insight Viewed"
   | "Weekly Review"
   | "Pro Candidate"
   | "Pro User"

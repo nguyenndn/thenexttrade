@@ -51,6 +51,7 @@ export interface DashboardData {
 
 export interface DashboardPageData {
     userName: string;
+    hasGlobalTrades: boolean;
     dashboardData: DashboardData;
     chartData: { date: string; balance: number }[];
     recentTrades: any[];
@@ -218,6 +219,7 @@ export async function getEmptyDashboardData(
 
     return {
         userName: userData?.name || "Trader",
+        hasGlobalTrades: false,
         dashboardData: {
             totalBalance: 0,
             winRate: 0,
@@ -382,6 +384,7 @@ export async function getFullDashboardData(
 
     return {
         userName: userData?.name || "Trader",
+        hasGlobalTrades: globalTradeCount > 0,
         dashboardData,
         chartData,
         recentTrades,

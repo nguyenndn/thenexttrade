@@ -161,6 +161,8 @@ Internal analytics is the product/admin source of truth:
 - Product actions use `trackEvent()` and are stored in `AnalyticsEvent`.
 - Registered user country comes from `Profile.country`.
 - Admin reports aggregate users, profiles, accounts, trades, events, pageviews, Pro/VIP state, and IB activity.
+- New-user activation reporting should combine `User.emailVerified`, `User.settings.onboarding`, `TradingAccount`, `JournalEntry`, `TradingReport`, `VipRequest`, `ProEntitlement`, `TraderSignal`, `Notification`, and safe `AnalyticsEvent` events.
+- First-value tracking should not depend only on page views. It should use durable product state such as first account, first trade data, first insight celebration, and weekly report generation.
 
 GA4 is optional. Only sanitized client events should be sent when analytics env vars are enabled.
 

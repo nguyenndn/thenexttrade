@@ -28,6 +28,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { getSyncServerUrl } from "@/lib/sync/sync-urls";
 import { SyncTroubleshootingPanel } from "@/components/trading-accounts/SyncTroubleshootingPanel";
+import { useIsMobileSyncDevice } from "@/lib/device";
 
 interface TradingAccount {
     id: string;
@@ -59,6 +60,8 @@ interface SyncStatus {
 export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOpenAddAccount }: TradeSyncWizardProps) {
     const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
     const [syncMethod, setSyncMethod] = useState<SyncMethod>(defaultMethod || "TNT_CONNECT");
+    const isMobile = useIsMobileSyncDevice();
+    const [linkSent, setLinkSent] = useState(false);
     
     // API Key states
     const [isLoadingKey, setIsLoadingKey] = useState(false);
@@ -85,8 +88,19 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
     useEffect(() => {
         if (isOpen) {
             if (defaultMethod) setSyncMethod(defaultMethod);
+            setLinkSent(false);
         }
     }, [isOpen, defaultMethod]);
+
+    // Track mobile sync warning viewed in accounts setup steps
+    useEffect(() => {
+        if (isOpen && isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") && (step === 2 || step === 3)) {
+            import("@/actions/first-session-onboarding").then(m => {
+                m.recordMobileSyncFallbackViewedAction(syncMethod);
+            });
+        }
+    }, [isOpen, step, isMobile, syncMethod]);
+
 
     useEffect(() => {
         if (isOpen && step === 2 && syncMethod !== "MANUAL") {
@@ -353,6 +367,62 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
                     ═══════════════════════════════════════════════════════════════ */}
                     {step === 2 && (
                         <div className="space-y-4">
+                            {isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") && (
+                                <div className="p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
+                                    <div className="flex gap-2.5 items-start">
+                                        <span className="text-lg">💻</span>
+                                        <div>
+                                            <p className="text-xs font-black text-slate-800 dark:text-amber-300 uppercase tracking-wider">Desktop Required for Auto-Sync</p>
+                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed font-semibold">
+                                                Because MetaTrader 5 auto-syncing requires running our local helper app, setup must be completed on a <strong>Windows Desktop or VPS</strong>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                                        <Button
+                                            variant="outline"
+                                            type="button"
+                                            size="sm"
+                                            onClick={async () => {
+                                                setIsLoadingKey(true);
+                                                try {
+                                                    const { sendDesktopSetupLinkAction } = await import("@/actions/first-session-onboarding");
+                                                    const res = await sendDesktopSetupLinkAction(syncMethod);
+                                                    if (res.success) {
+                                                        setLinkSent(true);
+                                                        toast.success("Setup link sent to your email!");
+                                                    } else {
+                                                        toast.error(res.error || "Failed to send email");
+                                                    }
+                                                } finally {
+                                                    setIsLoadingKey(false);
+                                                }
+                                            }}
+                                            disabled={linkSent}
+                                            className="w-full text-xs font-extrabold h-9 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 shrink-0"
+                                        >
+                                            {linkSent ? "📩 Setup Link Sent!" : "📩 Email Desktop Setup Link"}
+                                        </Button>
+                                        <Link href="/dashboard/journal?action=log-trade&source=mobile-fallback" className="w-full">
+                                            <Button
+                                                variant="ghost"
+                                                type="button"
+                                                size="sm"
+                                                onClick={async () => {
+                                                    const { recordMobileSyncManualFallbackAction } = await import("@/actions/first-session-onboarding");
+                                                    await recordMobileSyncManualFallbackAction(syncMethod);
+                                                    onClose();
+                                                }}
+                                                className="w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0"
+                                            >
+                                                ✍️ Log Manually instead
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
+
                             {/* API Key Panel */}
                             <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] p-4">
                                 <div className="flex items-center gap-2 mb-3">
@@ -461,6 +531,62 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
                     ═══════════════════════════════════════════════════════════════ */}
                     {step === 3 && (
                         <div className="space-y-4">
+                            {isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") && (
+                                <div className="p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
+                                    <div className="flex gap-2.5 items-start">
+                                        <span className="text-lg">💻</span>
+                                        <div>
+                                            <p className="text-xs font-black text-slate-800 dark:text-amber-300 uppercase tracking-wider">Desktop Required for Auto-Sync</p>
+                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed font-semibold">
+                                                Because MetaTrader 5 auto-syncing requires running our local helper app, setup must be completed on a <strong>Windows Desktop or VPS</strong>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                                        <Button
+                                            variant="outline"
+                                            type="button"
+                                            size="sm"
+                                            onClick={async () => {
+                                                setIsLoadingKey(true);
+                                                try {
+                                                    const { sendDesktopSetupLinkAction } = await import("@/actions/first-session-onboarding");
+                                                    const res = await sendDesktopSetupLinkAction(syncMethod);
+                                                    if (res.success) {
+                                                        setLinkSent(true);
+                                                        toast.success("Setup link sent to your email!");
+                                                    } else {
+                                                        toast.error(res.error || "Failed to send email");
+                                                    }
+                                                } finally {
+                                                    setIsLoadingKey(false);
+                                                }
+                                            }}
+                                            disabled={linkSent}
+                                            className="w-full text-xs font-extrabold h-9 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 shrink-0"
+                                        >
+                                            {linkSent ? "📩 Setup Link Sent!" : "📩 Email Desktop Setup Link"}
+                                        </Button>
+                                        <Link href="/dashboard/journal?action=log-trade&source=mobile-fallback" className="w-full">
+                                            <Button
+                                                variant="ghost"
+                                                type="button"
+                                                size="sm"
+                                                onClick={async () => {
+                                                    const { recordMobileSyncManualFallbackAction } = await import("@/actions/first-session-onboarding");
+                                                    await recordMobileSyncManualFallbackAction(syncMethod);
+                                                    onClose();
+                                                }}
+                                                className="w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0"
+                                            >
+                                                ✍️ Log Manually instead
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-amber-500/[0.02] p-4 text-xs space-y-3">
                                 <h3 className="font-bold text-gray-800 dark:text-white flex items-center gap-2">
                                     <CheckCircle2 className="w-4 h-4 text-amber-500" />

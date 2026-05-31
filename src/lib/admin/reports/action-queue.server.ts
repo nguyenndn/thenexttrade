@@ -15,6 +15,8 @@ export async function getActionQueueReport(range: DateRange): Promise<ActionQueu
     feedbackOpen,
     securityRecent,
     articleOps,
+    stuckUsers72h,
+    stuckMobileSyncUsers,
   ] = await Promise.all([
     prisma.vipRequest.count({ where: { status: "PENDING" } }),
     prisma.tradingAccount.count({
@@ -28,7 +30,46 @@ export async function getActionQueueReport(range: DateRange): Promise<ActionQueu
       where: { createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
     }),
     getArticleOpsData("all").then((d) => d.summary),
+    prisma.user.count({
+      where: {
+        createdAt: { lt: new Date(Date.now() - 72 * 60 * 60 * 1000) },
+        journalEntries: { none: {} },
+        tradingAccounts: {
+          every: { totalTrades: 0 }
+        }
+      }
+    }),
+    prisma.user.findMany({
+      select: {
+        settings: true,
+        journalEntries: { select: { id: true }, take: 1 },
+        tradingAccounts: { select: { id: true, totalTrades: true } },
+      },
+      take: 2000,
+    }),
   ]);
+
+  const stuckMobileSyncCount = stuckMobileSyncUsers.filter(u => {
+    const hasTrades = u.journalEntries.length > 0 || u.tradingAccounts.some(a => a.totalTrades > 0);
+    if (hasTrades) return false;
+    
+    const settings = (u.settings as Record<string, any>) || {};
+    const onboarding = (settings.onboarding || {}) as Record<string, any>;
+    return !!onboarding.mobileSyncFallback;
+  }).length;
+
+  if (stuckMobileSyncCount > 0) {
+    items.push({
+      id: "stuck-mobile-sync",
+      severity: stuckMobileSyncCount > 5 ? "high" : "medium",
+      category: "activation",
+      title: "Mobile Sync Dropoffs",
+      description: `${stuckMobileSyncCount} mobile user(s) chose sync but never reached first value`,
+      count: stuckMobileSyncCount,
+      href: "/admin/users",
+      cta: "View Users",
+    });
+  }
 
   if (pendingVipRequests > 0) {
     items.push({
@@ -91,6 +132,13 @@ export async function getActionQueueReport(range: DateRange): Promise<ActionQueu
       id: "security-events", severity: securityRecent > 200 ? "critical" : "high", category: "security",
       title: "Security Events (24h)", description: `${securityRecent} security event(s) in the last 24 hours`,
       count: securityRecent, href: "/admin/security", cta: "Review Security",
+    });
+  }
+  if (stuckUsers72h > 0) {
+    items.push({
+      id: "stuck-users-72h", severity: stuckUsers72h > 20 ? "high" : "medium", category: "activation",
+      title: "Stuck Users (>72h)", description: `${stuckUsers72h} user(s) stuck after 72 hours without first value`,
+      count: stuckUsers72h, href: "/admin/users", cta: "View Users",
     });
   }
 

@@ -1103,12 +1103,38 @@ Expected behavior:
 - Reports should show clear action paths, not just passive metrics.
 - Empty/low-data periods should explain why data is small.
 - "View Users" and action queue links should route correctly.
+- Current implementation already has a partial funnel: `New Users -> Connected -> First Trade -> Weekly Review -> Pro Request -> Pro Active`.
+- Treat that current funnel as incomplete for new-user activation because it skips verification, onboarding, sync-method choice, first insight, and mobile fallback states.
+- Target activation funnel:
+  - `Signed Up`: `User.createdAt` in selected period.
+  - `Verified`: `User.emailVerified` exists.
+  - `Onboarding Started`: `AnalyticsEvent.name = onboarding_started` or onboarding settings exist.
+  - `Onboarding Completed`: `User.settings.onboarding.completedAt` exists.
+  - `Onboarding Skipped`: `User.settings.onboarding.skippedAt` exists. This should be visible separately, not merged with completed users.
+  - `Sync Method Selected`: `User.settings.onboarding.preferredSyncMethod` exists.
+  - `Account Connected`: at least one `TradingAccount`.
+  - `First Trade Data`: at least one `JournalEntry` or account `totalTrades > 0`.
+  - `First Insight Viewed`: first-sync success/insight event or `firstSession.firstSyncCelebratedAt` exists.
+  - `Weekly Review Generated`: at least one weekly `TradingReport`.
+  - `Pro Requested`: at least one `VipRequest`.
+  - `Pro Active`: active/grace `ProEntitlement`.
+- Funnel should show drop-off percentage between adjacent stages and a recommended admin action for the biggest drop-off.
+- Admin Activation Inbox should map stuck users to the same stage names as the funnel so the report and inbox tell one story.
+- Admin should be able to filter stuck users by stage: no account, no sync method, account but no first trade, mobile sync fallback needed, no first insight, no weekly review.
+- Mobile fallback state should be tracked when a user on a mobile viewport/device chooses TNT Connect or EA Sync but does not complete desktop sync.
+- First Insight Moment should be tracked as its own activation step, not hidden inside dashboard page views.
+- Stuck reminders should be visible in admin context: last reminder sent, next eligible reminder date, and whether the user dismissed the in-app reminder.
+- Email reminders must be capped and respect user notification preferences.
 
 Code paths:
 
 - `src/app/admin/reports/page.tsx`
 - `src/components/admin/reports/*`
 - `src/lib/admin/reports/*`
+- `src/actions/admin-activation.ts`
+- `src/lib/coach/signal-engine.server.ts`
+- `src/lib/coach/coach-notifications.server.ts`
+- `src/lib/emails/welcome-sequence.ts`
 
 Data:
 
@@ -1117,12 +1143,22 @@ Data:
 - Analytics events/pageviews.
 - Pro/VIP/IB records.
 - Articles/content data.
+- User settings under `User.settings.onboarding`.
+- Trader signals and notification metadata.
+- Email/send-log data if lifecycle email logging is implemented.
 
 QA checklist:
 
 - Admin access only.
 - Date range changes.
 - North star panel.
+- Activation funnel includes verified/onboarding/sync-method/first-insight stages.
+- Onboarding skipped is visible separately from onboarding completed.
+- Biggest drop-off has a recommended action.
+- Activation inbox stage labels match the funnel stage names.
+- Mobile sync fallback users can be identified.
+- First Insight Viewed increases after a first-sync insight is shown.
+- Reminder metadata appears for stuck users without creating duplicate sends.
 - Lifecycle panel.
 - User quality panel.
 - Revenue opportunity panel.

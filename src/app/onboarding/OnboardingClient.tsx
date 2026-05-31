@@ -36,6 +36,8 @@ import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/track";
+import { useIsMobileSyncDevice } from "@/lib/device";
+import { sendDesktopSetupLinkAction } from "@/actions/first-session-onboarding";
 
 type SyncMethod = "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
 
@@ -65,6 +67,8 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
     const [error, setError] = useState<string | null>(null);
     const [tradingGoal, setTradingGoal] = useState<string | null>(null);
     const [syncMethod, setSyncMethod] = useState<SyncMethod>("TNT_CONNECT");
+    const isMobile = useIsMobileSyncDevice();
+    const [linkSent, setLinkSent] = useState(false);
 
     const router = useRouter();
 
@@ -72,6 +76,16 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
     useEffect(() => {
         trackEvent("onboarding_started");
     }, []);
+
+    // Track mobile sync warning viewed
+    useEffect(() => {
+        if (step === 3 && isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC")) {
+            import("@/actions/first-session-onboarding").then(m => {
+                m.recordMobileSyncFallbackViewedAction(syncMethod);
+            });
+        }
+    }, [step, isMobile, syncMethod]);
+
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -484,6 +498,55 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
                                     </div>
                                 </button>
                             </div>
+
+                            {isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") && (
+                                <div className="mb-6 p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3 animate-in slide-in-from-top duration-300">
+                                    <div className="flex gap-2.5 items-start">
+                                        <span className="text-lg">💻</span>
+                                        <div>
+                                            <p className="text-xs font-black text-slate-800 dark:text-amber-300 uppercase tracking-wider">Desktop/VPS Required for Auto-Sync</p>
+                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed font-semibold">
+                                                MetaTrader 5 auto-syncing requires running our local helper app, which only runs on a <strong>Windows Desktop or VPS</strong>. It cannot be set up directly from a phone browser.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex flex-col gap-2 pt-1">
+                                        <Button
+                                            variant="outline"
+                                            type="button"
+                                            size="sm"
+                                            onClick={async () => {
+                                                setIsLoading(true);
+                                                try {
+                                                    const res = await sendDesktopSetupLinkAction(syncMethod);
+                                                    if (res.success) {
+                                                        setLinkSent(true);
+                                                        alert("Setup link sent to your email!");
+                                                    } else {
+                                                        alert(res.error || "Failed to send email");
+                                                    }
+                                                } finally {
+                                                    setIsLoading(false);
+                                                }
+                                            }}
+                                            disabled={linkSent}
+                                            className="w-full text-xs font-extrabold h-9 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 shrink-0"
+                                        >
+                                            {linkSent ? "📩 Setup Link Sent!" : "📩 Send Setup Link to Desktop Email"}
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            type="button"
+                                            size="sm"
+                                            onClick={() => setSyncMethod("MANUAL")}
+                                            className="w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0"
+                                        >
+                                            ✍️ Log Manually for Now
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="flex gap-3">
                                 <Button

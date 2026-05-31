@@ -678,3 +678,68 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
 - `npm run lint` (ESLint Audit) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅
 - `npx vitest run` (Test Suite Execution) -> **`26/26 passed` (100% success)** ✅
 
+---
+
+## Phase 33: New User Reminder, First Insight, Mobile Setup Fallback Plan ✅
+
+### Key Achievements
+
+- **Workstream 1: Light Stuck-User Reminders**:
+  - **Activation Reminder State Helper**: Built [`src/lib/onboarding/activation-reminder-state.ts`](file:///c:/laragon/www/gsn-crm/src/lib/onboarding/activation-reminder-state.ts) to safely manage stuck user reminders in nested `User.settings.onboarding.activationReminders` JSON, preserving all unrelated settings via type assertions.
+  - **Candidate Selection Engine**: Created [`src/lib/onboarding/activation-reminders.server.ts`](file:///c:/laragon/www/gsn-crm/src/lib/onboarding/activation-reminders.server.ts) to identify candidate users stuck at `NO_ACCOUNT_24H`, `NO_FIRST_DATA_24H`, or `STILL_NO_FIRST_VALUE_72H` states, filtering opt-outs and enforcing a strict cap of 2 emails in 7 days to eliminate spam.
+  - **Email Templates Builder**: Added premium transactional email builders (HTML and plain text fallbacks) in [`src/lib/emails/activation-reminders.ts`](file:///c:/laragon/www/gsn-crm/src/lib/emails/activation-reminders.ts) for all reminder states and the mobile setup link.
+  - **Automation Cron Route**: Connected the cron handler at [`src/app/api/cron/activation-reminders/route.ts`](file:///c:/laragon/www/gsn-crm/src/app/api/cron/activation-reminders/route.ts) to trigger in-app notifications and Brevo SMTP transactional emails with a safe dry-run fallback in dev mode.
+  - **Admin Action Queue Alerts**: Updated [`src/lib/admin/reports/action-queue.server.ts`](file:///c:/laragon/www/gsn-crm/src/lib/admin/reports/action-queue.server.ts) to push action items if many users remain stuck after 72 hours.
+
+- **Workstream 2: First Insight Moment**:
+  - **Dynamic Facts Engine**: Built [`src/lib/onboarding/first-insight.server.ts`](file:///c:/laragon/www/gsn-crm/src/lib/onboarding/first-insight.server.ts) to query the database and prioritize up to 3 real trading facts (wins count, net P/L performance, win rate, top symbol, session hints) immediately after a user's first trade is logged.
+  - **First Insight Rebuild**: Rebuilt the sync modal into [`FirstSyncSuccessModal.tsx`](file:///c:/laragon/www/gsn-crm/src/components/onboarding/FirstSyncSuccessModal.tsx) as a gold-glassmorphic, dynamic Insight Cards layout with clear CTA redirections.
+  - **Loader & Actions Integration**: Integrated first insight payloads with dashboard loaders in [`first-session.server.ts`](file:///c:/laragon/www/gsn-crm/src/lib/onboarding/first-session.server.ts) and created the server action `markFirstInsightViewedAction` in [`first-session-onboarding.ts`](file:///c:/laragon/www/gsn-crm/src/actions/first-session-onboarding.ts) to prevent duplicates.
+  - **Admin Funnel Integration**: Modified [`src/lib/admin/reports/user-lifecycle.server.ts`](file:///c:/laragon/www/gsn-crm/src/lib/admin/reports/user-lifecycle.server.ts) to add `"First Insight Viewed"` in the dropoff analysis between `"First Trade"` and `"Weekly Review"`.
+
+- **Workstream 3: Mobile Sync Fallback**:
+  - **Viewport Device Detector**: Created [`src/lib/device.ts`](file:///c:/laragon/www/gsn-crm/src/lib/device.ts) providing a robust client-side `useIsMobileSyncDevice` hook (width < 768px or user-agent matching).
+  - **Honest Copy & Dynamic Warnings**: Injected premium warning cards explaining desktop sync requirements in the Onboarding Choosing step ([`OnboardingClient.tsx`](file:///c:/laragon/www/gsn-crm/src/app/onboarding/OnboardingClient.tsx)), the dashboard launcher ([`FirstSessionWizard.tsx`](file:///c:/laragon/www/gsn-crm/src/components/onboarding/FirstSessionWizard.tsx)), and the main setup interface ([`TradeSyncWizard.tsx`](file:///c:/laragon/www/gsn-crm/src/components/trading-accounts/TradeSyncWizard.tsx)).
+  - **Desktop Setup Link & Actions**: Engineered server actions `sendDesktopSetupLinkAction`, `recordMobileSyncFallbackViewedAction`, `recordMobileSyncManualFallbackAction`, and `recordMobileSyncContinueAnywayAction` to send clean transactional link emails, update timestamps under `mobileSyncFallback` in DB, and track analytics events.
+  - **Manual Redirection & Admin Metrics**: Wired manual CTAs to route to `/dashboard/journal?action=log-trade&source=mobile-fallback` and created active warning counts inside the admin action queue reports.
+
+### Verification Results
+
+- `npx tsc --noEmit` (Typecheck Sweeps) -> **`0` errors** ✅
+- `npm run lint` (ESLint Audit) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅
+- `npx vitest run` (Test Suite Execution) -> **`26/26 passed` (100% success)** ✅
+
+---
+
+## Phase 34: Dashboard Empty State Bug Fix for Historical Users ✅
+
+### Key Achievements
+
+- **Identified Period-Restricted Empty State Bug**:
+  - Found that `hasNoData` in `DashboardClient.tsx` was computed locally based on the *currently selected period stats*:
+    ```typescript
+    const hasNoData = dashboardData.winCount === 0 && dashboardData.lossCount === 0 && recentTrades.length === 0;
+    ```
+  - Since the default dashboard filter range is **today to today**, users with connected accounts and historical data had 0 trades *today*, incorrectly setting `hasNoData` to `true`.
+  - This forced historical users to see the onboarding `WelcomeHero` ("Let's start tracking your trades") and hid the date filters, trapping them.
+
+- **Engineered Global Trades Indicator**:
+  - Exposed a high-reliability boolean flag `hasGlobalTrades` in the `DashboardPageData` interface inside [`dashboard-data.server.ts`](file:///c:/laragon/www/gsn-crm/src/app/dashboard/dashboard-data.server.ts).
+  - Configured `getEmptyDashboardData` to set `hasGlobalTrades: false` and `getFullDashboardData` to set `hasGlobalTrades: globalTradeCount > 0` based on the user's lifetime total trade counts in the database.
+  - Re-mapped `hasNoData = !hasGlobalTrades` inside [`DashboardClient.tsx`](file:///c:/laragon/www/gsn-crm/src/app/dashboard/DashboardClient.tsx) to ensure the WelcomeHero is rendered *only* for genuinely brand-new users.
+  - Kept date filters accessible for all existing users so they can seamlessly navigate to periods containing their trading history.
+
+- **Secured Global Trade Detection Against Sync Edge Cases**:
+  - Replaced isolated, unsafe `prisma.journalEntry.count` queries with our central unified state helper `getUserTradingDataState` inside both [`src/app/dashboard/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/dashboard/page.tsx) and the lightweight visual hint API [`src/app/api/user/has-trade-data/route.ts`](file:///c:/laragon/www/gsn-crm/src/app/api/user/has-trade-data/route.ts).
+  - This ensures users who have connected active MT5/EA accounts (with lifetime trade statistics `totalTrades > 0`) but no manual `journalEntry` records in the database yet are correctly resolved as active/legacy users, successfully bypassing any empty-state short-circuits.
+
+### Verification Results
+
+- `npx tsc --noEmit` (Typecheck Sweeps) -> **`0` errors** ✅
+- `npm run lint` (ESLint Audit) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅
+- `npx vitest run` (Test Suite Execution) -> **`26/26 passed` (100% success)** ✅
+
+
+
+
+

@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { ActivationState, ActivationStep } from "./activation-types";
+import { getUserTradingDataState } from "@/lib/trading-data-state";
 
 export async function getActivationState(userId: string): Promise<ActivationState> {
   // Read user settings for onboarding preferences
@@ -13,18 +14,19 @@ export async function getActivationState(userId: string): Promise<ActivationStat
   const syncMethod = onboarding.preferredSyncMethod || "TNT_CONNECT";
 
   const [
-    accountCount,
-    tradeCount,
+    tradingDataState,
     weeklyReportCount,
     completedLessonCount,
     checkinCount,
   ] = await Promise.all([
-    prisma.tradingAccount.count({ where: { userId } }),
-    prisma.journalEntry.count({ where: { userId } }),
+    getUserTradingDataState(userId),
     prisma.tradingReport.count({ where: { userId, type: "WEEKLY" } }),
     prisma.userProgress.count({ where: { userId, isCompleted: true } }),
     prisma.edgeEvent.count({ where: { userId, eventType: "CHECKIN" } }),
   ]);
+
+  const accountCount = tradingDataState.accountCount;
+  const hasTradeData = tradingDataState.hasTradeData;
 
   // Build connect step CTA based on sync preference
   let connectTitle: string;
@@ -77,7 +79,7 @@ export async function getActivationState(userId: string): Promise<ActivationStat
       description: logTradeDescription,
       ctaLabel: "Log Trade",
       ctaHref: "/dashboard/journal?action=log-trade",
-      completed: tradeCount > 0,
+      completed: hasTradeData,
       priority: 20,
     },
     {

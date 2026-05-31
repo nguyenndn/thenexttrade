@@ -1,0 +1,150 @@
+{
+  "featured": {
+    "total": 209,
+    "unique": 191,
+    "duplicateGroups": [
+      {
+        "hash": "8c7e58ab7d6eb0a80660965ee1b8ad6c",
+        "size": 2008169,
+        "files": [
+          "how-to-build-a-trading-plan.png",
+          "journaling-for-traders-why-and-how.png",
+          "trading-journal-template.png"
+        ]
+      },
+      {
+        "hash": "3ba19f1c0bf8396588da506b153a1263",
+        "size": 1581688,
+        "files": [
+          "best-forex-indicators-for-beginners.png",
+          "top-5-forex-indicators-for-day-trading.png"
+        ]
+      },
+      {
+        "hash": "b420b434c2d889d247b9eb39ff09690d",
+        "size": 1787694,
+        "files": [
+          "best-forex-trading-strategies-2026.png",
+          "best-forex-trading-strategies.png"
+        ]
+      },
+      {
+        "hash": "b9a723c42d34570d1535c87be75e907b",
+        "size": 1768076,
+        "files": [
+          "candlestick-patterns-cheat-sheet.png",
+          "chart-patterns-cheat-sheet-forex.png"
+        ]
+      },
+      {
+        "hash": "67e735f3d0e145957b49a98c8acd8710",
+        "size": 1831579,
+        "files": [
+          "change-of-character-choch-explained.png",
+          "fomo-in-trading.png"
+        ]
+      },
+      {
+        "hash": "d97d69e25998205c467521cf2d029f88",
+        "size": 1746931,
+        "files": [
+          "engulfing-candle-pattern-bullish-bearish.png",
+          "engulfing-candlestick-pattern.png"
+        ]
+      },
+      {
+        "hash": "8854c0087e299ae666439ce0b582b44a",
+        "size": 1667085,
+        "files": [
+          "fibonacci-retracement-how-to-use.png",
+          "fibonacci-retracement-levels-explained.png"
+        ]
+      },
+      {
+        "hash": "a72b5e41e37173078d72c00604859d95",
+        "size": 1877740,
+        "files": [
+          "how-to-trade-pin-bar-reversals.png",
+          "pin-bar-trading-strategy.png"
+        ]
+      },
+      {
+        "hash": "d41be02e23a5eafac97a2efac4228092",
+        "size": 1697790,
+        "files": [
+          "ichimoku-cloud-explained-simply.png",
+          "ichimoku-cloud-trading-strategy.png"
+        ]
+      },
+      {
+        "hash": "ddca4d0842e2ac508161d509ff5a9992",
+        "size": 1713849,
+        "files": [
+          "inverse-head-and-shoulders-pattern.png",
+          "inverse-head-and-shoulders.png"
+        ]
+      },
+      {
+        "hash": "228457293f0908a66197a1dd7663ab27",
+        "size": 1619305,
+        "files": [
+          "macd-indicator-explained-for-beginners.png",
+          "macd-indicator-trading-strategy.png"
+        ]
+      },
+      {
+        "hash": "6f7d58b2c2a5b939f6df094691cca375",
+        "size": 1703079,
+        "files": [
+          "morning-star-and-evening-star-patterns.png",
+          "morning-star-and-evening-star.png"
+        ]
+      },
+      {
+        "hash": "24b271755f3f05602201d3322ea50da1",
+        "size": 1785520,
+        "files": [
+          "price-action-trading-for-beginners.png",
+          "price-action-trading-strategies.png"
+        ]
+      },
+      {
+        "hash": "2060329bc565d14c04dc659c29f946f5",
+        "size": 1830002,
+        "files": [
+          "relative-strength-index-trading-strategy.png",
+          "rsi-indicator-explained.png"
+        ]
+      },
+      {
+        "hash": "c715b9a0ea1ea44c761fcb53bb0187e6",
+        "size": 1760889,
+        "files": [
+          "supply-and-demand-zones-forex.png",
+          "supply-and-demand-zones.png"
+        ]
+      },
+      {
+        "hash": "3f7eafd4907697c5e0aca58033df4fec",
+        "size": 1847519,
+        "files": [
+          "triple-top-and-triple-bottom.png",
+          "wedge-patterns-in-trading.png"
+        ]
+      },
+      {
+        "hash": "56c3477114b32b47d4a0994edd6485c1",
+        "size": 1870036,
+        "files": [
+          "volume-analysis-in-forex.png",
+          "volume-profile-trading-strategy.png"
+        ]
+      }
+    ]
+  },
+  "inline": {
+    "total": 544,
+    "unique": 544,
+    "duplicateGroups": []
+  }
+}

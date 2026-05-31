@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useTransition } from "react";
+import React, { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   Monitor,
@@ -28,6 +28,10 @@ import {
   saveFirstSessionSyncMethodAction,
   dismissFirstSessionWizardAction,
   completeFirstSessionWizardAction,
+  recordMobileSyncFallbackViewedAction,
+  sendDesktopSetupLinkAction,
+  recordMobileSyncManualFallbackAction,
+  recordMobileSyncContinueAnywayAction,
 } from "@/actions/first-session-onboarding";
 import { trackEvent } from "@/lib/track";
 import type {
@@ -36,6 +40,7 @@ import type {
   SyncMethod,
 } from "@/lib/onboarding/first-session.server";
 import { SetupProgressTrail } from "@/components/onboarding/SetupProgressTrail";
+import { useIsMobileSyncDevice } from "@/lib/device";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -60,6 +65,10 @@ export function FirstSessionWizard({
 }: FirstSessionWizardProps) {
   const router = useRouter();
   const hasTrackedRef = useRef(false);
+  const isMobile = useIsMobileSyncDevice();
+  const [mobileFallbackMethod, setMobileFallbackMethod] = useState<"TNT_CONNECT" | "EA_SYNC" | null>(null);
+  const [linkSent, setLinkSent] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   // Track wizard shown — only once
   useEffect(() => {
@@ -71,6 +80,24 @@ export function FirstSessionWizard({
       hasTrackedRef.current = false;
     }
   }, [open, state.currentStep]);
+
+  // Reset fallback state when modal closes
+  useEffect(() => {
+    if (!open) {
+      setMobileFallbackMethod(null);
+      setLinkSent(false);
+    }
+  }, [open]);
+
+  // If user opens the wizard at BRING_FIRST_DATA and has a sync method on mobile, auto-show fallback
+  useEffect(() => {
+    if (open && isMobile && state.currentStep === "BRING_FIRST_DATA" && !mobileFallbackMethod) {
+      if (state.preferredSyncMethod === "TNT_CONNECT" || state.preferredSyncMethod === "EA_SYNC") {
+        setMobileFallbackMethod(state.preferredSyncMethod);
+        recordMobileSyncFallbackViewedAction(state.preferredSyncMethod);
+      }
+    }
+  }, [open, isMobile, state.currentStep, state.preferredSyncMethod, mobileFallbackMethod]);
 
   const handleDismiss = async () => {
     trackEvent("first_session_wizard_dismissed");
@@ -103,20 +130,57 @@ export function FirstSessionWizard({
 
   /**
    * Handle sync method selection from Step 2 (Choose Sync Method).
-   * Saves preference AND navigates to the setup URL.
+   * Saves preference AND navigates to the setup URL (or shows mobile fallback warning).
    */
   const handleSyncMethodSelect = async (method: SyncMethod, href: string) => {
     trackEvent("first_session_sync_method_selected", { method });
     await saveFirstSessionSyncMethodAction(method);
-    trackEvent("first_session_cta_clicked", {
-      step: "CHOOSE_SYNC_METHOD",
-      href,
-    });
-    onOpenChange(false);
-    router.push(href);
+
+    if (isMobile && (method === "TNT_CONNECT" || method === "EA_SYNC")) {
+      await recordMobileSyncFallbackViewedAction(method);
+      setMobileFallbackMethod(method);
+    } else {
+      trackEvent("first_session_cta_clicked", {
+        step: "CHOOSE_SYNC_METHOD",
+        href,
+      });
+      onOpenChange(false);
+      router.push(href);
+    }
   };
 
+  const handleSendLink = () => {
+    if (!mobileFallbackMethod) return;
+    startTransition(async () => {
+      const res = await sendDesktopSetupLinkAction(mobileFallbackMethod);
+      if (res.success) {
+        setLinkSent(true);
+      } else {
+        alert(res.error || "Failed to send email");
+      }
+    });
+  };
 
+  const handleLogManually = () => {
+    if (!mobileFallbackMethod) return;
+    startTransition(async () => {
+      await recordMobileSyncManualFallbackAction(mobileFallbackMethod);
+      await saveFirstSessionSyncMethodAction("MANUAL");
+      onOpenChange(false);
+      router.push("/dashboard/journal?action=log-trade&source=mobile-fallback");
+    });
+  };
+
+  const handleContinueAnyway = () => {
+    if (!mobileFallbackMethod) return;
+    startTransition(async () => {
+      await recordMobileSyncContinueAnywayAction(mobileFallbackMethod);
+      const pathMethod = mobileFallbackMethod === "EA_SYNC" ? "ea" : "tnt";
+      const href = `/dashboard/accounts?setup=sync&method=${pathMethod}&source=first-session`;
+      onOpenChange(false);
+      router.push(href);
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -139,7 +203,7 @@ export function FirstSessionWizard({
             type="button"
             aria-label="Close setup wizard"
             onClick={() => onOpenChange(false)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400 dark:hover:bg-white/[0.06] dark:hover:text-white"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-white"
           >
             <X size={15} strokeWidth={2.4} />
           </button>
@@ -153,35 +217,50 @@ export function FirstSessionWizard({
         {/* Header */}
         <DialogHeader className="px-5 pt-3 pb-0">
           <DialogTitle className="text-lg font-black text-gray-900 dark:text-white tracking-tight">
-            Set up your trading workspace
+            {mobileFallbackMethod ? "Mobile setup warning" : "Set up your trading workspace"}
           </DialogTitle>
           <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            One account, one sync path, one useful dashboard.
+            {mobileFallbackMethod 
+              ? "MetaTrader 5 auto-sync setup requires desktop" 
+              : "One account, one sync path, one useful dashboard."}
           </DialogDescription>
         </DialogHeader>
 
         {/* Step Content */}
         <div className="px-5 pt-4 pb-1">
-          {state.currentStep === "CONNECT_ACCOUNT" && (
-            <StepConnectAccount
-              onCtaClick={handleCtaClick}
-              onManualSelect={handleManualSelect}
+          {mobileFallbackMethod ? (
+            <StepMobileSyncFallback
+              method={mobileFallbackMethod}
+              onSendLink={handleSendLink}
+              onLogManually={handleLogManually}
+              onContinueAnyway={handleContinueAnyway}
+              linkSent={linkSent}
+              isPending={isPending}
             />
-          )}
-          {state.currentStep === "CHOOSE_SYNC_METHOD" && (
-            <StepChooseSyncMethod onSelect={handleSyncMethodSelect} />
-          )}
-          {state.currentStep === "BRING_FIRST_DATA" && (
-            <StepBringFirstData
-              method={state.preferredSyncMethod}
-              onCtaClick={handleCtaClick}
-            />
-          )}
-          {state.currentStep === "REVIEW_DASHBOARD" && (
-            <StepReviewDashboard
-              tradeCount={state.tradeCount}
-              onComplete={handleComplete}
-            />
+          ) : (
+            <>
+              {state.currentStep === "CONNECT_ACCOUNT" && (
+                <StepConnectAccount
+                  onCtaClick={handleCtaClick}
+                  onManualSelect={handleManualSelect}
+                />
+              )}
+              {state.currentStep === "CHOOSE_SYNC_METHOD" && (
+                <StepChooseSyncMethod onSelect={handleSyncMethodSelect} />
+              )}
+              {state.currentStep === "BRING_FIRST_DATA" && (
+                <StepBringFirstData
+                  method={state.preferredSyncMethod}
+                  onCtaClick={handleCtaClick}
+                />
+              )}
+              {state.currentStep === "REVIEW_DASHBOARD" && (
+                <StepReviewDashboard
+                  tradeCount={state.tradeCount}
+                  onComplete={handleComplete}
+                />
+              )}
+            </>
           )}
         </div>
 
@@ -523,3 +602,78 @@ function StepReviewDashboard({
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Step Mobile Sync Fallback
+// ---------------------------------------------------------------------------
+
+interface StepMobileSyncFallbackProps {
+  method: "TNT_CONNECT" | "EA_SYNC";
+  onSendLink: () => void;
+  onLogManually: () => void;
+  onContinueAnyway: () => void;
+  linkSent: boolean;
+  isPending: boolean;
+}
+
+function StepMobileSyncFallback({
+  method,
+  onSendLink,
+  onLogManually,
+  onContinueAnyway,
+  linkSent,
+  isPending,
+}: StepMobileSyncFallbackProps) {
+  const setupName = method === "EA_SYNC" ? "EA Sync" : "TNT Connect";
+  return (
+    <div className="space-y-4">
+      <div className="p-4 bg-gradient-to-br from-amber-500/[0.05] to-red-500/[0.02] border border-amber-500/15 rounded-xl space-y-3">
+        <div className="flex items-start gap-3">
+          <div className="p-2.5 bg-amber-500/10 rounded-lg text-amber-500 shrink-0 text-lg">
+            💻
+          </div>
+          <div>
+            <h3 className="text-sm font-black text-gray-800 dark:text-white">
+              Desktop Required for {setupName}
+            </h3>
+            <p className="mt-1.5 text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-semibold">
+              Because MetaTrader 5 auto-syncing requires running our local helper app, setup must be completed on a <strong>Windows Desktop or VPS</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {/* Action 1: Send desktop link */}
+        <Button
+          onClick={onSendLink}
+          disabled={isPending || linkSent}
+          className="w-full h-11 bg-primary text-white font-extrabold text-xs rounded-xl shadow-sm flex items-center justify-center gap-2"
+        >
+          {linkSent ? "📩 Setup Link Sent to Email!" : "📩 Send Setup Link to Desktop Email"}
+        </Button>
+
+        {/* Action 2: Log manually */}
+        <Button
+          variant="outline"
+          onClick={onLogManually}
+          disabled={isPending}
+          className="w-full h-11 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-extrabold text-xs rounded-xl flex items-center justify-center gap-2"
+        >
+          ✍️ Log Trades Manually for Now
+        </Button>
+
+        {/* Action 3: Continue anyway */}
+        <button
+          type="button"
+          onClick={onContinueAnyway}
+          disabled={isPending}
+          className="w-full text-center text-[10px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 font-black uppercase tracking-wider py-2"
+        >
+          Continue anyway (I am on a remote desktop/VPS)
+        </button>
+      </div>
+    </div>
+  );
+}
+

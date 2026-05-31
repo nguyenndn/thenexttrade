@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
-import { prisma } from "@/lib/prisma";
+import { getUserTradingDataState } from "@/lib/trading-data-state";
 
 export const dynamic = "force-dynamic";
 
@@ -15,10 +15,8 @@ export async function GET() {
         return NextResponse.json({ hasTradeData: false }, { status: 401 });
     }
 
-    const count = await prisma.journalEntry.count({
-        where: { userId: user.id },
-        take: 1,
-    });
+    const tradingDataState = await getUserTradingDataState(user.id);
 
-    return NextResponse.json({ hasTradeData: count > 0 });
+    return NextResponse.json({ hasTradeData: tradingDataState.hasTradeData });
 }
+

@@ -296,3 +296,40 @@
   - [x] Verified `npm run lint` completes with exactly 0 lint errors
   - [x] Verified `npx vitest run` completes with 100% passing tests (26/26 tests passed)
 
+## Phase 33: New User Reminder, First Insight & Mobile Fallback
+- [x] Workstream 1: Light Stuck-User Reminders
+  - [x] Create helper `src/lib/onboarding/activation-reminder-state.ts` to manage reminder state & dismissed timestamp in user settings
+  - [x] Create server candidate engine `src/lib/onboarding/activation-reminders.server.ts` to filter stuck users, respect caps, and avoid email duplication
+  - [x] Create cron route `src/app/api/cron/activation-reminders/route.ts` to coordinate in-app notifications and email channels
+  - [x] Design premium email templates (HTML/Text) `src/lib/emails/activation-reminders.ts` for all reminder states
+  - [x] Add counts and Action Queue alerts to `/admin/reports` (`src/lib/admin/reports/action-queue.server.ts`)
+- [x] Workstream 2: First Insight Moment
+  - [x] Build query engine `src/lib/onboarding/first-insight.server.ts` to extract facts (`trade_count`, `net_pnl`, `win_rate`, `top_symbol`, `session_hint`)
+  - [x] Integrate first insight loader in dashboard query and connect dismiss server action
+  - [x] Rebuild `FirstSyncSuccessModal.tsx` to support gold-glassmorphic stats cards, custom CTAs, and elegant transitions
+  - [x] Add funnel step `"First Insight Viewed"` in `/admin/reports` user lifecycle metrics (`src/lib/admin/reports/user-lifecycle.server.ts`)
+- [x] Workstream 3: Mobile Sync Fallback
+  - [x] Create client/viewport device detector helper `src/lib/device.ts`
+  - [x] Integrate warnings and fallback cards into `/onboarding` Step 3 sync preference choosing step (`OnboardingClient.tsx`)
+  - [x] Build mobile screen fallback screen inside dashboard wizard `FirstSessionWizard.tsx` with email setup link CTA
+  - [x] Integrate warnings at the top of MT5 sync steps in `TradeSyncWizard.tsx`
+  - [x] Build backend actions to track fallback events (`mobile_sync_fallback_viewed`, etc.) and send setup link emails (`src/actions/first-session-onboarding.ts`)
+- [x] Verification
+  - [x] Clean type check (`npx tsc --noEmit` -> 0 errors)
+  - [x] Clean lint check (`npm run lint` -> 0 errors)
+  - [x] Clean unit tests (`npx vitest run` -> 26/26 tests passed)
+
+## Phase 34: Dashboard Empty State Bug Fix for Historical Users
+- [x] Diagnose period-restricted empty state bug causing WelcomeHero to show for active users on flat days
+- [x] Add `hasGlobalTrades` boolean flag to `DashboardPageData` interface in `src/app/dashboard/dashboard-data.server.ts`
+- [x] Populate `hasGlobalTrades` correctly in `getEmptyDashboardData` (false) and `getFullDashboardData` (globalTradeCount > 0)
+- [x] Update `hasNoData` definition inside `DashboardClient.tsx` to check `!hasGlobalTrades`
+- [x] Replace unsafe `prisma.journalEntry.count` check with central `getUserTradingDataState` in dashboard `page.tsx` loader to secure historical MT5 active users (0 manual journal entries but synced totalTrades > 0)
+- [x] Integrate unified `getUserTradingDataState` check in lightweight `has-trade-data` route `src/app/api/user/has-trade-data/route.ts`
+- [x] Re-run and verify type check (`npx tsc --noEmit` -> 0 errors)
+- [x] Re-run and verify lint check (`npm run lint` -> 0 errors)
+- [x] Re-run and verify unit tests (`npx vitest run` -> 26/26 tests passed)
+
+
+
+
