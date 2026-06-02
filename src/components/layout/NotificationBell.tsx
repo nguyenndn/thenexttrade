@@ -71,11 +71,11 @@ export function NotificationBell() {
                                 onClick={() => {
                                     if (!n.isRead) markAsRead(n.id);
                                     setIsOpen(false);
-                                    if (n.link) {
+                                    if (n.link && n.link !== "/dashboard") {
                                         router.push(n.link);
                                     } else {
-                                        // If no specific link, go to the notifications page to see full details
-                                        router.push("/dashboard/notifications");
+                                        // If no specific link or just "/dashboard", go to the notifications page to see full details
+                                        router.push(`/dashboard/notifications?id=${n.id}`);
                                     }
                                 }}
                             >

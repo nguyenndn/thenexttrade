@@ -318,20 +318,13 @@ export function AdminActivationInboxPanel() {
                                         </div>
 
                                         {/* Inline admin notes box */}
-                                        <div className="relative">
+                                        <div>
                                             <textarea
                                                 placeholder="Add notes for this user's activation (e.g. Sent discord link...)"
                                                 value={activeNotes[sig.id] || ""}
                                                 onChange={(e) => setActiveNotes(prev => ({ ...prev, [sig.id]: e.target.value }))}
-                                                className="w-full text-[11px] p-2 bg-slate-50 dark:bg-[#07090f] border border-gray-200 dark:border-white/5 rounded-xl h-14 focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white"
+                                                className="w-full text-[11px] p-2 bg-slate-50 dark:bg-[#07090f] border border-gray-200 dark:border-white/5 rounded-xl h-14 focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white resize-none"
                                             />
-                                            <Button
-                                                onClick={() => handleSaveNote(sig.id)}
-                                                disabled={savingNotes[sig.id] || activeNotes[sig.id] === sig.metadata.adminNotes}
-                                                className="absolute bottom-2 right-2 text-[9px] p-1.5 h-auto rounded-lg bg-amber-500 hover:bg-amber-600 text-white shrink-0 shadow-sm"
-                                            >
-                                                {savingNotes[sig.id] ? "..." : "Save"}
-                                            </Button>
                                         </div>
 
                                         {/* Row Quick Action Buttons */}
@@ -341,10 +334,30 @@ export function AdminActivationInboxPanel() {
                                                 disabled={isPending || !!sig.metadata.adminContactedAt}
                                                 variant="outline"
                                                 size="sm"
-                                                className="flex-1 rounded-xl text-[11px] font-bold bg-white dark:bg-transparent border-gray-200 dark:border-white/10 dark:text-gray-300 hover:border-emerald-500/30 hover:text-emerald-500 dark:hover:text-emerald-400 gap-1 h-8 shrink-0 shadow-sm"
+                                                className="flex-1 rounded-xl text-[11px] font-bold bg-white dark:bg-transparent border-gray-200 dark:border-white/10 dark:text-gray-300 hover:border-emerald-500/30 hover:text-emerald-500 dark:hover:text-emerald-400 gap-1.5 h-8 shrink-0 shadow-sm"
                                             >
-                                                <Send size={11} />
-                                                {sig.metadata.adminContactedAt ? "Contacted" : "Contacted"}
+                                                {sig.metadata.adminContactedAt ? (
+                                                    <UserCheck size={11} className="text-emerald-500 shrink-0" />
+                                                ) : (
+                                                    <Send size={11} className="shrink-0" />
+                                                )}
+                                                {sig.metadata.adminContactedAt ? "Contacted" : "Mark Contacted"}
+                                            </Button>
+
+                                            <Button
+                                                onClick={() => handleSaveNote(sig.id)}
+                                                disabled={savingNotes[sig.id] || activeNotes[sig.id] === sig.metadata.adminNotes}
+                                                variant="outline"
+                                                size="sm"
+                                                className={cn(
+                                                    "rounded-xl text-[11px] font-bold h-8 px-3 shrink-0 shadow-sm transition-all border-gray-200 dark:border-white/10 gap-1 flex items-center justify-center",
+                                                    activeNotes[sig.id] !== sig.metadata.adminNotes
+                                                        ? "bg-amber-500 hover:bg-amber-600 text-white border-transparent cursor-pointer"
+                                                        : "text-gray-400 dark:text-gray-600 cursor-not-allowed bg-slate-50/50 dark:bg-white/[0.01]"
+                                                )}
+                                            >
+                                                <Check size={11} className="shrink-0" />
+                                                <span>{savingNotes[sig.id] ? "..." : "Save"}</span>
                                             </Button>
 
                                             <Button
@@ -353,10 +366,10 @@ export function AdminActivationInboxPanel() {
                                                 variant="outline"
                                                 size="sm"
                                                 className="rounded-xl text-[11px] font-bold border-gray-200 dark:border-white/10 text-gray-500 hover:bg-rose-500/5 hover:border-rose-500/30 hover:text-rose-500 gap-1 h-8 px-2.5 shrink-0 shadow-sm"
-                                                title="Tạm ẩn khỏi inbox 7 ngày"
+                                                title="Snooze for 7 days"
                                             >
                                                 <EyeOff size={11} />
-                                                <span>Tạm ẩn</span>
+                                                <span>Snooze</span>
                                             </Button>
                                         </div>
                                     </div>

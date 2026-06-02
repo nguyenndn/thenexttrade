@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -10,6 +10,7 @@ import {
     BarChart3, TrendingUp, Copy
 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface Notification {
     id: string;
@@ -64,8 +65,30 @@ function getRelativeTime(dateStr: string): string {
 
 export function NotificationsList({ initialNotifications }: Props) {
     const [notifications, setNotifications] = useState(initialNotifications);
+    const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const focusId = params.get("id");
+            if (focusId) {
+                setExpandedIds(prev => ({ ...prev, [focusId]: true }));
+                // Scroll the focused notification card into view
+                setTimeout(() => {
+                    const el = document.getElementById(`notification-${focusId}`);
+                    if (el) {
+                        el.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                }, 200);
+            }
+        }
+    }, []);
+
+    const toggleExpand = (id: string) => {
+        setExpandedIds(prev => ({ ...prev, [id]: !prev[id] }));
+    };
 
     const handleDeleteAll = () => {
         if (notifications.length === 0) return;
@@ -123,14 +146,21 @@ export function NotificationsList({ initialNotifications }: Props) {
                             return (
                                 <div
                                     key={n.id}
-                                    className="group p-5 hover:bg-gray-50/80 dark:hover:bg-white/[0.03] transition-colors duration-150 cursor-default"
+                                    id={`notification-${n.id}`}
+                                    onClick={() => toggleExpand(n.id)}
+                                    className={cn(
+                                        "group p-5 hover:bg-gray-50/80 dark:hover:bg-white/[0.03] transition-all duration-300 cursor-pointer border-l-2",
+                                        expandedIds[n.id] 
+                                            ? "bg-amber-500/[0.02] dark:bg-amber-500/[0.01] border-l-amber-500" 
+                                            : "border-l-transparent"
+                                    )}
                                 >
                                     <div className="flex gap-4">
                                         {/* Icon */}
                                         <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${config.bg}`}>
                                             <Icon size={18} className={config.color} />
                                         </div>
-
+ 
                                         {/* Content */}
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-start justify-between gap-3">
@@ -141,17 +171,33 @@ export function NotificationsList({ initialNotifications }: Props) {
                                                     {getRelativeTime(n.createdAt)}
                                                 </span>
                                             </div>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-2">
+                                            <p className={cn(
+                                                "text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed transition-all duration-200",
+                                                !expandedIds[n.id] && "line-clamp-2"
+                                            )}>
                                                 {n.message}
                                             </p>
-                                            {n.link && (
-                                                <a
-                                                    href={n.link}
-                                                    className="inline-block mt-2 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                                            
+                                            <div className="flex items-center gap-4 mt-2">
+                                                {n.link && n.link !== "/dashboard" && (
+                                                    <a
+                                                        href={n.link}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="inline-flex items-center text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+                                                    >
+                                                        Take Action →
+                                                    </a>
+                                                )}
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleExpand(n.id);
+                                                    }}
+                                                    className="text-xs font-semibold text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
                                                 >
-                                                    View details →
-                                                </a>
-                                            )}
+                                                    {expandedIds[n.id] ? "Show less" : "Read more"}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
