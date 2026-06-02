@@ -23,7 +23,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // 1b. Tool sub-pages
     const toolRoutes = [ 
-        '/tools/risk-calculator',
         '/tools/position-size-calculator',
         '/tools/pip-value-calculator',
         '/tools/margin-calculator',

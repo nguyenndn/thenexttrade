@@ -18,10 +18,10 @@ export default function ToolsPage() {
         <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
             <PublicHeader />
 
-            <main className="flex-1 pt-32 pb-20">
+            <main className="flex-1 pt-32 pb-10 sm:pb-16">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Hero */}
-                    <div className="text-center mb-16">
+                    <div className="text-center mb-8 sm:mb-12">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-6">
                             <Wrench size={16} />
                             <span>Trader&apos;s Toolkit</span>

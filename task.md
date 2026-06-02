@@ -330,6 +330,65 @@
 - [x] Re-run and verify lint check (`npm run lint` -> 0 errors)
 - [x] Re-run and verify unit tests (`npx vitest run` -> 26/26 tests passed)
 
+## Phase 35: Public Pages Spacing Optimization (Mobile & Tablet)
+- [x] Optimize spacing in Contact Page (`src/app/contact/page.tsx`)
+- [x] Optimize spacing in Brokers Page (`src/app/brokers/page.tsx` & `src/app/brokers/BrokersClient.tsx`)
+- [x] Optimize spacing in About Page (`src/app/about/page.tsx`)
+- [x] Optimize spacing in Home Page (`src/app/page.tsx`)
+- [x] Optimize spacing in Academy Page (`src/app/academy/page.tsx`)
+- [x] Optimize spacing in Tools Page (`src/app/tools/page.tsx`)
+- [x] Optimize spacing in Knowledge Page (`src/app/knowledge/page.tsx`)
+- [x] Optimize spacing in Community Page (`src/app/community/page.tsx`)
+- [x] Optimize spacing in Edge Page (`src/app/edge/page.tsx`)
+- [x] Run typescript typecheck (`npx tsc --noEmit`) and linter (`npm run lint`) to verify 0 errors
+- [x] Run Playwright tests to capture and verify public pages visual layout (`npx playwright test tests/e2e/capture-public-pages.spec.ts`)
+
+## Phase 36: Public Pages Spacing Top Restorations (Mobile & Tablet)
+- [x] Restore top padding/margin next to Header on Contact Page (`src/app/contact/page.tsx`)
+- [x] Restore top padding/margin next to Header on Brokers Page (`src/app/brokers/page.tsx`)
+- [x] Restore top padding/margin next to Header on About Page (`src/app/about/page.tsx`)
+- [x] Restore top padding/margin next to Header on Home Page (`src/app/page.tsx`)
+- [x] Restore top padding/margin next to Header on Academy Page (`src/app/academy/page.tsx`)
+- [x] Restore top padding/margin next to Header on Tools Page (`src/app/tools/page.tsx`)
+- [x] Restore top padding/margin next to Header on Knowledge Page (`src/app/knowledge/page.tsx`)
+- [x] Restore top padding/margin next to Header on Community Page (`src/app/community/page.tsx`)
+- [x] Restore top padding/margin next to Header on Edge Page (`src/app/edge/page.tsx`)
+- [x] Run typescript typecheck (`npx tsc --noEmit`) and linter (`npm run lint`) to verify 0 errors
+- [x] Run Playwright tests to capture and verify public pages visual layout (`npx playwright test tests/e2e/capture-public-pages.spec.ts`)
+
+## Phase 37: Standardize Contact Page Spacing to Legal Style (Mobile & Tablet)
+- [x] Rebuild Contact Page spacing using `legal/cookie-policy` standard (`src/app/contact/page.tsx`)
+- [x] Run typescript typecheck (`npx tsc --noEmit`) and linter (`npm run lint`) to verify 0 errors
+- [x] Run Playwright tests to capture and verify public pages visual layout (`npx playwright test tests/e2e/capture-public-pages.spec.ts`)
+
+## Phase 38: Delete /tools/risk-calculator & Set Up 301 Redirect
+- [x] Delete `src/app/tools/risk-calculator` route code and folder
+- [x] Update footer links in `SiteFooter.tsx` from `risk-calculator` to `position-size-calculator`
+- [x] Update risk-management guide tools links in `risk-management/page.tsx`
+- [x] Remove `risk-calculator` from `sitemap.ts`
+- [x] Configure 301 redirect in `next.config.js`
+- [x] Verify typescript compile (`npx tsc --noEmit`) and linter (`npm run lint`) has 0 errors
+
+## Phase 39: Responsive Heading Sizing for Tools and Guides on Mobile
+- [x] Re-architect heading wrapper from horizontal to flex-col on mobile inside `ToolPageLayout.tsx` (15 calculator pages)
+- [x] Reduce heading size to `text-[22px] sm:text-3xl` in `ToolPageLayout.tsx`
+- [x] Reduce heading size in Forex Market Hours page (`market-hours/page.tsx`)
+- [x] Reduce heading size & adjust wrapper in Economic Calendar page (`EconomicCalendarClient.tsx`)
+- [x] Reduce heading size & adjust wrapper in Risk Management Guide page (`risk-management/page.tsx`)
+- [x] Reduce heading size & adjust wrapper in Search page (`SearchClient.tsx`)
+- [x] Verify type safety and ESLint sweep (0 errors)
+- [x] Run Playwright screenshots capture to verify all headings fit perfectly on a single line on mobile
 
 
+## Phase 40: Auditing Public Pages & E2E Updates
+- [x] Scan Next.js app routes for remaining public pages
+- [x] Add missing public routes (Legal pages, other tools, community, get-started, auth forms) to Playwright test (`tests/e2e/capture-public-pages.spec.ts`)
+- [x] Check mobile/tablet responsiveness, alignment, and top padding on all public routes
+- [x] Run type safety check (`npx tsc --noEmit`) and linter (`npm run lint`) to confirm 0 errors
 
+## Phase 41: Dashboard Journal Empty State Alignment
+- [x] Analyze empty state UI of `dashboard/sessions` (animated clock, floating icons, sparkles, etc.)
+- [x] Refactor empty state rendering in `dashboard/journal` component (`JournalList.tsx`) to match the sessions page empty state structure
+- [x] Build premium animated folder/paper icon with floating and sparkle effects
+- [x] Integrate `EmptyStateCTAs` to provide guided user action
+- [x] Run typescript typecheck (`npx tsc --noEmit`) and linter (`npm run lint`) to verify 0 errors

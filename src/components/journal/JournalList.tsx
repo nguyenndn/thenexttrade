@@ -22,7 +22,7 @@ import { PnLDisplay } from "@/components/ui/PnLDisplay";
 import { useDebouncedCallback } from "use-debounce";
 import dynamic from "next/dynamic";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 import { JournalTableFilters } from "@/components/journal/JournalTableFilters";
 import { FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -346,241 +346,272 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
                 onLogTrade={handleCreate}
             />
 
-                    {/* Table Container - Mobile Responsive Scroll */}
-                    <div id="onborda-journal-list" className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 overflow-x-auto custom-scrollbar">
-                        {/* Desktop View */}
-                        <div className="hidden md:block overflow-x-auto w-full">
-                            <table className="w-auto min-w-full text-left text-sm whitespace-nowrap">
-                                <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
-                                    <tr>
-                                        <th className="px-6 py-4 w-14"></th>
-                                        {columnsConfig.map((col) => (
-                                            visibleColumns.has(col.id) && (
-                                                <th
-                                                    key={col.id}
-                                                    className={`px-6 py-4 cursor-pointer hover:text-gray-600 dark:hover:text-gray-200 group/th ${getColumnWidthClass(col.id)}`}
-                                                    onClick={() => ["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl", "status"].includes(col.id) ? handleSort(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id) : null}
-                                                >
-                                                    <div className={`flex items-center gap-1 w-full ${getColumnAlignmentClass(col.id)}`}>
-                                                        {col.label}
-                                                        {["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl", "status"].includes(col.id) && renderSortIcon(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id)}
-                                                    </div>
-                                                </th>
-                                            )
-                                        ))}
-                                        <th className="px-6 py-4 w-14"></th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                                    {isLoading ? (
-                                        <tr>
-                                            <td colSpan={14} className="px-6 py-8 text-center text-gray-600">Loading...</td>
-                                        </tr>
-                                    ) : entries.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={14} className="p-0">
-                                                <EmptyState 
-                                                    icon={FolderOpen} 
-                                                    title="No Trades Found" 
-                                                    description="You haven't recorded any trades matching the current filters." 
-                                                />
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        entries.map((entry) => (
-                                            <tr key={entry.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <TooltipProvider delayDuration={200}>
-                                                            <Tooltip>
-                                                                <TooltipTrigger asChild>
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        size="icon"
-                                                                        aria-label={`View Details for ${entry.symbol}`}
-                                                                        onClick={() => {
-                                                                            setSelectedDetailEntry(entry);
-                                                                            setIsDetailOpen(true);
-                                                                        }}
-                                                                        className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all hover:scale-110 active:scale-95 group/detail"
-                                                                    >
-                                                                        <Activity size={14} className="transition-all duration-300 group-hover/detail:scale-110 group-hover/detail:text-primary" />
-                                                                    </Button>
-                                                                </TooltipTrigger>
-                                                                <TooltipContent side="bottom" className="font-bold">
-                                                                    Details
-                                                                </TooltipContent>
-                                                            </Tooltip>
-                                                        </TooltipProvider>
-                                                    </div>
-                                                </td>
-                                                {columnsConfig.map((col) => (
-                                                    visibleColumns.has(col.id) && (
-                                                        <td 
-                                                            key={col.id} 
-                                                            className={`px-6 py-4
-                                                                ${col.id === 'pnl' ? 'w-[140px] min-w-[140px] max-w-[140px] text-right' : col.id === 'tp' || col.id === 'sl' ? 'w-[120px] min-w-[120px] max-w-[120px] text-right' : col.id === 'strategy' || col.id === 'mindset' || col.id === 'customTags' || col.id === 'mistakes' ? 'text-left min-w-[200px]' : col.id.toLowerCase().includes("time") ? 'text-center min-w-[130px]' : col.id === 'type' || col.id === 'volume' || col.id === 'status' ? 'text-center min-w-[100px]' : 'text-left min-w-[120px]'}
-                                                            `}
-                                                        >
-                                                            <div className={`w-full ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'flex justify-end pr-2' : ''}`}>
-                                                                {col.id === "date" && utcTime(entry.entryDate, "dd MMM yyyy")}
-                                                                {col.id === "symbol" && <span className="font-bold text-gray-700 dark:text-white">{entry.symbol}</span>}
-                                                                {col.id === "type" && <TradeTypeBadge type={entry.type} />}
-                                                                {col.id === "openTime" && utcTime(entry.entryDate)}
-                                                                {col.id === "closeTime" && (entry.exitDate ? utcTime(entry.exitDate) : "-")}
-                                                                {col.id === "volume" && <span className="font-mono text-gray-600">{(entry as any).lotSize || "0.00"}</span>}
-                                                                {col.id === "pnl" && <PnLDisplay value={entry.pnl} />}
-                                                                {col.id === "tp" && <span className="font-mono text-primary font-medium">{(entry as any).takeProfit || "-"}</span>}
-                                                                {col.id === "sl" && <span className="font-mono text-red-500 font-medium">{(entry as any).stopLoss || "-"}</span>}
-                                                                {col.id === "strategy" && (
-                                                                    <div className="w-full text-left inline-block">
-                                                                        <StrategyCell entry={entry} strategies={strategies} onUpdate={handleEntryUpdate} />
-                                                                    </div>
-                                                                )}
-                                                                {col.id === "mindset" && (
-                                                                    <div className="w-full text-left inline-block">
-                                                                        <MindsetCell entry={entry} onUpdate={handleEntryUpdate} />
-                                                                    </div>
-                                                                )}
-                                                                {col.id === "customTags" && (
-                                                                    <div className="w-full text-left inline-block">
-                                                                        <TagsCell entry={entry} onUpdate={handleEntryUpdate} />
-                                                                    </div>
-                                                                )}
-                                                                {col.id === "mistakes" && (
-                                                                    <div className="w-full text-left inline-block">
-                                                                        <MistakesCell entry={entry} onUpdate={handleEntryUpdate} />
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </td>
-                                                    )
-                                                ))}
-                                                <td className="px-6 py-4 text-right">
-                                                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <Button 
-                                                            variant="outline" 
-                                                            size="icon"
-                                                            onClick={() => handleEdit(entry)} 
-                                                            className="text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                                                        >
-                                                            <Edit2 size={16} />
-                                                        </Button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Mobile View */}
-                        <div className="md:hidden flex flex-col gap-2.5 p-3">
-                            {isLoading ? (
-                                <div className="text-center text-gray-600 py-8">Loading...</div>
-                            ) : entries.length === 0 ? (
-                                <EmptyState
-                                    icon={FolderOpen}
-                                    title="No Trades Found"
-                                    description="You haven't recorded any trades matching the current filters."
-                                />
-                            ) : (
-                                entries.map((entry) => (
-                                    <div key={entry.id} className="bg-gray-50 dark:bg-white/5 p-3 sm:p-4 rounded-xl border relative transition-all duration-200 hover:shadow-md active:scale-[0.98] border-gray-200 dark:border-white/10">
-                                        {/* Header Row */}
-                                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                                            <div className="flex items-center gap-2 flex-1">
-                                                <span className="font-bold text-gray-700 dark:text-white text-base sm:text-lg">{entry.symbol}</span>
-                                                <TradeTypeBadge type={entry.type} />
-                                                <StatusBadge status={entry.status} />
-                                            </div>
-                                            <TooltipProvider delayDuration={200}>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="icon"
-                                                            aria-label={`View Details for ${entry.symbol}`}
-                                                            onClick={() => {
-                                                                setSelectedDetailEntry(entry);
-                                                                setIsDetailOpen(true);
-                                                            }}
-                                                            className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all"
-                                                        >
-                                                            <Activity size={14} className="transition-all duration-300 hover:scale-110 hover:text-primary" />
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent side="bottom" className="font-bold">
-                                                        Details
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </TooltipProvider>
-                                        </div>
-                                        
-                                        {/* Info Grid */}
-                                        <div className="grid grid-cols-2 gap-y-3 text-sm mb-3">
-                                            <div>
-                                                <p className="text-xs text-gray-500 mb-0.5">Open Time</p>
-                                                <p className="font-medium text-gray-700 dark:text-gray-300">
-                                                    {utcTime(entry.entryDate, "dd MMM HH:mm")}
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-500 mb-0.5">Net Profit</p>
-                                                <PnLDisplay value={entry.pnl} />
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-500 mb-0.5">Volume</p>
-                                                <p className="font-mono text-gray-700 dark:text-gray-300">{(entry as any).lotSize || "0.00"}</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-500 mb-0.5">Close Time</p>
-                                                <p className="font-medium text-gray-700 dark:text-gray-300">
-                                                    {entry.exitDate ? utcTime(entry.exitDate) : "-"}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Tags & Mistakes Summary (Simulated simple view) */}
-                                        <div className="flex flex-wrap gap-1 mb-3">
-                                            {entry.strategy && (
-                                                <span className="px-2 py-0.5 text-[10px] font-medium bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 rounded-md border border-blue-100 dark:border-blue-500/20">
-                                                    {entry.strategy}
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        {/* Footer Actions */}
-                                        <div className="pt-3 border-t border-gray-200 dark:border-white/10 flex justify-end">
-                                            <Button 
-                                                variant="outline"
-                                                onClick={() => handleEdit(entry)} 
-                                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                                            >
-                                                <Edit2 size={14} />
-                                                Edit Trade
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
-
-
-                        {/* New Pagination Control */}
-                        <div className="p-4 md:px-6 md:py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
-                            <PaginationControl
-                                currentPage={meta.page}
-                                totalPages={meta.totalPages}
-                                pageSize={meta.limit}
-                                totalItems={meta.total}
-                                onPageChange={(page) => updateParams({ page: page.toString() })}
-                                onPageSizeChange={(size) => updateParams({ limit: size.toString() })}
-                                itemName="trades"
-                            />
+            {entries.length === 0 ? (
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 mt-6 shadow-sm">
+                    {/* Animated Folder Icon */}
+                    <div className="relative w-20 h-20 mb-6 mx-auto">
+                        <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-[journal-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                        <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center animate-[journal-float_3s_ease-in-out_infinite]">
+                            <FolderOpen size={32} className="text-gray-500 dark:text-gray-300 relative z-10" strokeWidth={1.5} />
+                            {/* Sliding paper sheet */}
+                            <div className="absolute w-5 h-6 bg-primary/20 dark:bg-primary/10 rounded border border-primary/30 top-4 left-7 animate-[journal-paper_3s_ease-in-out_infinite]" />
+                            {/* Sparkle dots */}
+                            <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-primary/40 animate-[journal-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
+                            <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-primary/30 animate-[journal-sparkle_3s_ease-in-out_infinite_0.8s]" />
+                            <div className="absolute top-0 -right-2 w-1 h-1 rounded-full bg-primary/25 animate-[journal-sparkle_2s_ease-in-out_infinite_1.5s]" />
                         </div>
                     </div>
+
+                    <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
+                        {hasTradeData ? "No Trades Found" : "Your Journal is Empty"}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-2 font-medium">
+                        {hasTradeData 
+                            ? "You haven't recorded any trades matching the current filters." 
+                            : "Start your trading journal to track your trades, analyze performance, and find your trading edge."}
+                    </p>
+
+                    <EmptyStateCTAs primaryLabel={hasTradeData ? "Log a New Trade" : "Log Your First Trade"} />
+
+                    <style jsx>{`
+                        @keyframes journal-float {
+                            0%, 100% { transform: translateY(0px); }
+                            50% { transform: translateY(-6px); }
+                        }
+                        @keyframes journal-ping {
+                            0% { transform: scale(1); opacity: 0.3; }
+                            75%, 100% { transform: scale(1.3); opacity: 0; }
+                        }
+                        @keyframes journal-paper {
+                            0%, 100% { transform: translateY(0px) rotate(5deg); }
+                            50% { transform: translateY(-5px) rotate(12deg); }
+                        }
+                        @keyframes journal-sparkle {
+                            0%, 100% { opacity: 0; transform: scale(0); }
+                            50% { opacity: 1; transform: scale(1); }
+                        }
+                    `}</style>
+                </div>
+            ) : (
+                <div id="onborda-journal-list" className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 overflow-x-auto custom-scrollbar">
+                    {/* Desktop View */}
+                    <div className="hidden md:block overflow-x-auto w-full">
+                        <table className="w-auto min-w-full text-left text-sm whitespace-nowrap">
+                            <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
+                                <tr>
+                                    <th className="px-6 py-4 w-14"></th>
+                                    {columnsConfig.map((col) => (
+                                        visibleColumns.has(col.id) && (
+                                            <th
+                                                key={col.id}
+                                                className={`px-6 py-4 cursor-pointer hover:text-gray-600 dark:hover:text-gray-200 group/th ${getColumnWidthClass(col.id)}`}
+                                                onClick={() => ["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl", "status"].includes(col.id) ? handleSort(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id) : null}
+                                            >
+                                                <div className={`flex items-center gap-1 w-full ${getColumnAlignmentClass(col.id)}`}>
+                                                    {col.label}
+                                                    {["date", "symbol", "type", "openTime", "closeTime", "volume", "pnl", "tp", "sl", "status"].includes(col.id) && renderSortIcon(col.id === "volume" ? "lotSize" : col.id === "tp" ? "takeProfit" : col.id === "sl" ? "stopLoss" : col.id)}
+                                                </div>
+                                            </th>
+                                        )
+                                    ))}
+                                    <th className="px-6 py-4 w-14"></th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                {isLoading ? (
+                                    <tr>
+                                        <td colSpan={14} className="px-6 py-8 text-center text-gray-600">Loading...</td>
+                                    </tr>
+                                ) : (
+                                    entries.map((entry) => (
+                                        <tr key={entry.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <TooltipProvider delayDuration={200}>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="icon"
+                                                                    aria-label={`View Details for ${entry.symbol}`}
+                                                                    onClick={() => {
+                                                                        setSelectedDetailEntry(entry);
+                                                                        setIsDetailOpen(true);
+                                                                    }}
+                                                                    className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all hover:scale-110 active:scale-95 group/detail"
+                                                                >
+                                                                    <Activity size={14} className="transition-all duration-300 group-hover/detail:scale-110 group-hover/detail:text-primary" />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent side="bottom" className="font-bold">
+                                                                Details
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </div>
+                                            </td>
+                                            {columnsConfig.map((col) => (
+                                                visibleColumns.has(col.id) && (
+                                                    <td 
+                                                        key={col.id} 
+                                                        className={`px-6 py-4
+                                                            ${col.id === 'pnl' ? 'w-[140px] min-w-[140px] max-w-[140px] text-right' : col.id === 'tp' || col.id === 'sl' ? 'w-[120px] min-w-[120px] max-w-[120px] text-right' : col.id === 'strategy' || col.id === 'mindset' || col.id === 'customTags' || col.id === 'mistakes' ? 'text-left min-w-[200px]' : col.id.toLowerCase().includes("time") ? 'text-center min-w-[130px]' : col.id === 'type' || col.id === 'volume' || col.id === 'status' ? 'text-center min-w-[100px]' : 'text-left min-w-[120px]'}
+                                                        `}
+                                                    >
+                                                        <div className={`w-full ${col.id === 'pnl' || col.id === 'tp' || col.id === 'sl' ? 'flex justify-end pr-2' : ''}`}>
+                                                            {col.id === "date" && utcTime(entry.entryDate, "dd MMM yyyy")}
+                                                            {col.id === "symbol" && <span className="font-bold text-gray-700 dark:text-white">{entry.symbol}</span>}
+                                                            {col.id === "type" && <TradeTypeBadge type={entry.type} />}
+                                                            {col.id === "openTime" && utcTime(entry.entryDate)}
+                                                            {col.id === "closeTime" && (entry.exitDate ? utcTime(entry.exitDate) : "-")}
+                                                            {col.id === "volume" && <span className="font-mono text-gray-600">{(entry as any).lotSize || "0.00"}</span>}
+                                                            {col.id === "pnl" && <PnLDisplay value={entry.pnl} />}
+                                                            {col.id === "tp" && <span className="font-mono text-primary font-medium">{(entry as any).takeProfit || "-"}</span>}
+                                                            {col.id === "sl" && <span className="font-mono text-red-500 font-medium">{(entry as any).stopLoss || "-"}</span>}
+                                                            {col.id === "strategy" && (
+                                                                <div className="w-full text-left inline-block">
+                                                                    <StrategyCell entry={entry} strategies={strategies} onUpdate={handleEntryUpdate} />
+                                                                </div>
+                                                            )}
+                                                            {col.id === "mindset" && (
+                                                                <div className="w-full text-left inline-block">
+                                                                    <MindsetCell entry={entry} onUpdate={handleEntryUpdate} />
+                                                                </div>
+                                                            )}
+                                                            {col.id === "customTags" && (
+                                                                <div className="w-full text-left inline-block">
+                                                                    <TagsCell entry={entry} onUpdate={handleEntryUpdate} />
+                                                                </div>
+                                                            )}
+                                                            {col.id === "mistakes" && (
+                                                                <div className="w-full text-left inline-block">
+                                                                    <MistakesCell entry={entry} onUpdate={handleEntryUpdate} />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                )
+                                            ))}
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <Button 
+                                                        variant="outline" 
+                                                        size="icon"
+                                                        onClick={() => handleEdit(entry)} 
+                                                        className="text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                    >
+                                                        <Edit2 size={16} />
+                                                    </Button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Mobile View */}
+                    <div className="md:hidden flex flex-col gap-2.5 p-3">
+                        {isLoading ? (
+                            <div className="text-center text-gray-600 py-8">Loading...</div>
+                        ) : (
+                            entries.map((entry) => (
+                                <div key={entry.id} className="bg-gray-50 dark:bg-white/5 p-3 sm:p-4 rounded-xl border relative transition-all duration-200 hover:shadow-md active:scale-[0.98] border-gray-200 dark:border-white/10">
+                                    {/* Header Row */}
+                                    <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                                        <div className="flex items-center gap-2 flex-1">
+                                            <span className="font-bold text-gray-700 dark:text-white text-base sm:text-lg">{entry.symbol}</span>
+                                            <TradeTypeBadge type={entry.type} />
+                                            <StatusBadge status={entry.status} />
+                                        </div>
+                                        <TooltipProvider delayDuration={200}>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="icon"
+                                                        aria-label={`View Details for ${entry.symbol}`}
+                                                        onClick={() => {
+                                                            setSelectedDetailEntry(entry);
+                                                            setIsDetailOpen(true);
+                                                        }}
+                                                        className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all"
+                                                    >
+                                                        <Activity size={14} className="transition-all duration-300 hover:scale-110 hover:text-primary" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent side="bottom" className="font-bold">
+                                                    Details
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
+                                    
+                                    {/* Info Grid */}
+                                    <div className="grid grid-cols-2 gap-y-3 text-sm mb-3">
+                                        <div>
+                                            <p className="text-xs text-gray-500 mb-0.5">Open Time</p>
+                                            <p className="font-medium text-gray-700 dark:text-gray-300">
+                                                {utcTime(entry.entryDate, "dd MMM HH:mm")}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-gray-500 mb-0.5">Net Profit</p>
+                                            <PnLDisplay value={entry.pnl} />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-gray-500 mb-0.5">Volume</p>
+                                            <p className="font-mono text-gray-700 dark:text-gray-300">{(entry as any).lotSize || "0.00"}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-gray-500 mb-0.5">Close Time</p>
+                                            <p className="font-medium text-gray-700 dark:text-gray-300">
+                                                {entry.exitDate ? utcTime(entry.exitDate) : "-"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Tags & Mistakes Summary (Simulated simple view) */}
+                                    <div className="flex flex-wrap gap-1 mb-3">
+                                        {entry.strategy && (
+                                            <span className="px-2 py-0.5 text-[10px] font-medium bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 rounded-md border border-blue-100 dark:border-blue-500/20">
+                                                {entry.strategy}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Footer Actions */}
+                                    <div className="pt-3 border-t border-gray-200 dark:border-white/10 flex justify-end">
+                                        <Button 
+                                            variant="outline"
+                                            onClick={() => handleEdit(entry)} 
+                                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                        >
+                                            <Edit2 size={14} />
+                                            Edit Trade
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+
+
+                    {/* New Pagination Control */}
+                    <div className="p-4 md:px-6 md:py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
+                        <PaginationControl
+                            currentPage={meta.page}
+                            totalPages={meta.totalPages}
+                            pageSize={meta.limit}
+                            totalItems={meta.total}
+                            onPageChange={(page) => updateParams({ page: page.toString() })}
+                            onPageSizeChange={(size) => updateParams({ limit: size.toString() })}
+                            itemName="trades"
+                        />
+                    </div>
+                </div>
+            )}
 
 
 

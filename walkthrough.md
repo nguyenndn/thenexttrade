@@ -739,7 +739,154 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
 - `npm run lint` (ESLint Audit) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅
 - `npx vitest run` (Test Suite Execution) -> **`26/26 passed` (100% success)** ✅
 
+---
 
+## Phase 35: Public Pages Spacing Optimization (Mobile & Tablet) ✅
 
+### Key Achievements
 
+- **Contact Page Spacing Optimization**:
+  - Reduced padding-top and adjusted padding-bottom on the main wrapper inside [`src/app/contact/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/contact/page.tsx) (`py-12 sm:py-24` -> `pt-8 pb-12 sm:pt-16 sm:pb-24`) to bring the content closer to the header on mobile viewports.
+  - Decreased margin-bottom and margin-top of the Hero Header (`mb-10 sm:mb-20 mt-6 sm:mt-12` -> `mb-6 sm:mb-12 mt-4 sm:mt-8`) to significantly reduce the gap between "Let's Get in Touch" title and the contact card.
+  - Adjusted internal padding inside the card wrapper (`p-6 sm:p-8 md:p-12` -> `p-5 sm:p-8 md:p-10`) for a tighter mobile layout.
+  - Optimized spacing above the "Send us a message" text (`mb-6 sm:mb-10` -> `mb-4 sm:mb-6`).
+- **Brokers Page Spacing Optimization**:
+  - Tightened vertical spacing on the wrapper element inside [`src/app/brokers/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/brokers/page.tsx) (`pt-20 sm:pt-32 pb-12 sm:pb-20` -> `pt-16 sm:pt-24 pb-8 sm:pb-16`).
+  - Reduced Hero block margins (`mb-10 sm:mb-16` -> `mb-6 sm:mb-10`) and filter tabs margin-bottom (`mb-10` -> `mb-6`) in [`src/app/brokers/BrokersClient.tsx`](file:///c:/laragon/www/gsn-crm/src/app/brokers/BrokersClient.tsx) to ensure a compact card grid layout.
+- **About Page Spacing Optimization**:
+  - Decreased vertical padding on main wrapper inside [`src/app/about/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/about/page.tsx) (`py-24` -> `py-12 sm:py-24`).
+  - Tightened margin-bottom and top margins of the Hero Section (`mb-20 mt-12 space-y-8` -> `mb-10 sm:mb-20 mt-6 sm:mt-12 space-y-4 sm:space-y-6`).
+  - Reduced margins for Mission & Vision (`mb-24` -> `mb-12 sm:mb-24`), Core Values (`mb-24` -> `mb-12 sm:mb-24`), and Bottom CTA (`mb-10` -> `mb-6 sm:mb-10`).
+- **Home Page Spacing Optimization**:
+  - Adjusted vertical padding of Hero container in [`src/app/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/page.tsx) (`pt-24 pb-10` -> `pt-20 sm:pt-24 pb-6 sm:pb-10`).
+  - Tamed padding of Trending Topics (`py-16` -> `py-10 sm:py-16`), Popular Guides (`py-20` -> `py-12 sm:py-20`), Academy Preview (`py-16` -> `py-10 sm:py-16`), and Daily Quote (`py-16` -> `py-10 sm:py-16`) to build a cohesive visual vertical flow.
+- **Academy Page Spacing Optimization**:
+  - Reduced Hero Section padding top and bottom in [`src/app/academy/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/academy/page.tsx) (`pt-32 pb-5` -> `pt-20 sm:pt-28 pb-4 sm:pb-6`).
+  - Reduced subtext margin-bottom (`mb-10` -> `mb-6 sm:mb-10`) to let content sit closer to header elements.
+- **Tools Page Spacing Optimization**:
+  - Optimized main container padding in [`src/app/tools/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/tools/page.tsx) (`pt-32 pb-20` -> `pt-20 sm:pt-28 pb-10 sm:pb-16`).
+  - Reduced Hero block margin bottom (`mb-16` -> `mb-8 sm:mb-12`).
+- **Knowledge Page Spacing Optimization**:
+  - Tailored Hero padding inside [`src/app/knowledge/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/knowledge/page.tsx) (`pt-32 pb-16` -> `pt-20 sm:pt-28 pb-10 sm:pb-16`).
+  - Tighter padding for content grid block (`py-12` -> `py-8 sm:py-12`).
+- **Community Page Spacing Optimization**:
+  - Adjusted main padding inside [`src/app/community/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/community/page.tsx) (`py-16 md:py-24` -> `pt-12 pb-16 sm:pt-16 sm:pb-24`).
+  - Standardized bottom margins for Hero (`mb-14 md:mb-20` -> `mb-10 sm:mb-16`), What You Get (`mb-16 md:mb-24` -> `mb-10 sm:mb-16`), VIP Upgrade (`mb-16 md:mb-24` -> `mb-10 sm:mb-16`), Platform Links (`mb-16 md:mb-24` -> `mb-10 sm:mb-16`), Get Started (`mb-16 md:mb-24` -> `mb-10 sm:mb-16`), FAQ (`mb-16 md:mb-24` -> `mb-10 sm:mb-16`), and Bottom CTA (`mb-10` -> `mb-6 sm:mb-10`).
+- **Edge Page Spacing Optimization**:
+  - Decreased layout wrapper padding top and bottom in [`src/app/edge/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/edge/page.tsx) (`pt-24 pb-16` -> `pt-20 sm:pt-24 pb-10 sm:pb-16`).
+  - Tamed Hero spacing (`mb-16 mt-8` -> `mb-10 sm:mb-16 mt-4 sm:mt-8`) and card content padding (`p-8 md:p-14` -> `p-6 sm:p-8 md:p-14`) to ensure great mobile rendering.
 
+### Verification Results
+
+- `npx tsc --noEmit` (Typecheck Verification) -> **`0` errors** ✅
+- `npm run lint` (ESLint Audit Verification) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅
+- `npx playwright test tests/e2e/capture-public-pages.spec.ts` (Visual E2E Screens Capture) -> **`100% passed` (2/2 tests passed)** ✅
+
+---
+
+## Phase 36: Public Pages Spacing Top Restorations (Mobile & Tablet) ✅
+
+### Key Achievements
+
+- **Spacing Top Restorations next to Header**:
+  - **Contact Page**: Restored `pt-12 sm:pt-24` on the main wrapper and `mt-6 sm:mt-12` on the Hero Header in [`src/app/contact/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/contact/page.tsx) to ensure the title isn't too close to the header.
+  - **Brokers Page**: Restored `pt-20 sm:pt-32` top padding on the main wrapper in [`src/app/brokers/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/brokers/page.tsx).
+  - **About Page**: Restored `pt-24` top padding on the main wrapper in [`src/app/about/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/about/page.tsx).
+  - **Home Page**: Restored `pt-24` top padding of the Hero Section container in [`src/app/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/page.tsx).
+  - **Academy Page**: Restored `pt-32` top padding of the Hero Section in [`src/app/academy/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/academy/page.tsx).
+  - **Tools Page**: Restored `pt-32` top padding on the main container in [`src/app/tools/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/tools/page.tsx).
+  - **Knowledge Page**: Restored `pt-32` top padding of the Hero Section in [`src/app/knowledge/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/knowledge/page.tsx).
+  - **Community Page**: Restored `pt-16 md:pt-24` top padding on the main container in [`src/app/community/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/community/page.tsx).
+  - **Edge Page**: Restored `pt-24` top padding on the main layout wrapper and `mt-8` on the Hero Header in [`src/app/edge/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/edge/page.tsx).
+
+### Verification Results
+
+- `npx tsc --noEmit` (Typecheck Verification) -> **`0` errors** ✅
+- `npm run lint` (ESLint Audit Verification) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅
+- `npx playwright test tests/e2e/capture-public-pages.spec.ts` (Visual E2E Screens Capture) -> **`100% passed` (2/2 tests passed)** ✅
+
+---
+
+## Phase 37: Standardize Contact Page Spacing to Legal Style (Mobile & Tablet) ✅
+
+### Key Achievements
+
+- **Standardized Spacing & Card Design**:
+  - Fully synchronized the `/contact` page with the standard `/legal/cookie-policy` layout.
+  - Aligned page outer container classes (`flex flex-col min-h-screen bg-[#F7F4EC] dark:bg-[#090805] text-gray-700 dark:text-white transition-colors duration-300 relative overflow-hidden`), ensuring smooth dark/light mode switches.
+  - Aligned page-level typography by setting description text to a refined `text-xl` size.
+  - Synchronized Card container border and background properties to solid Breek legal standards: `bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl transition-colors duration-300`, removing unnecessary glassmorphism blur and amber tints for visual layout parity.
+
+---
+
+## Phase 38: Delete /tools/risk-calculator & Set Up 301 Redirect ✅
+
+### Key Achievements
+
+- **Clean Route Deletion**:
+  - Deleted the redundant `/tools/risk-calculator` directory and its source code file (`src/app/tools/risk-calculator/page.tsx`), eliminating UX fragmentation.
+- **Link Audits & Cleanup**:
+  - Updated `SiteFooter.tsx` to point to `/tools/position-size-calculator` (Position Size Calculator) in both mobile and desktop views, removing references to the deleted page.
+  - Updated the risk management guide (`src/app/knowledge/risk-management/page.tsx`) to link directly to `/tools/position-size-calculator` and removed the redundant first tool entry in `RISK_TOOLS`.
+  - Removed `'/tools/risk-calculator'` from `sitemap.ts`.
+- **301 Permanent Redirect**:
+  - Configured a permanent 301 redirect in `next.config.js` to automatically redirect incoming traffic from `/tools/risk-calculator` to `/tools/position-size-calculator`.
+
+### Verification Results
+
+- `npx tsc --noEmit` (Typecheck Verification) -> **`0` errors** ✅
+- `npm run lint` (ESLint Audit Verification) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅
+- `npx playwright test tests/e2e/capture-public-pages.spec.ts` (Visual E2E Screens Capture) -> **`100% passed` (2/2 tests passed)** ✅
+
+---
+
+## Phase 39: Responsive Heading Sizing for Tools and Guides on Mobile ✅
+
+### Key Achievements
+
+- **Re-architected Mobile Layout**:
+  - Converted the heading flex containers from horizontal row (`flex items-center`) to vertical stack on mobile (`flex flex-col sm:flex-row items-start sm:items-center`), giving the heading the absolute maximum horizontal screen width.
+- **Sized Down Headings on Mobile**:
+  - Reduced the heading size from `text-3xl` to a highly compact and elegant `text-[22px] sm:text-3xl` across 15 calculator pages in [`src/components/tools/ToolPageLayout.tsx`](file:///c:/laragon/www/gsn-crm/src/components/tools/ToolPageLayout.tsx).
+  - Reduced heading size to `text-[22px] sm:text-3xl` in Forex Market Hours [`src/app/tools/market-hours/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/tools/market-hours/page.tsx).
+  - Reduced heading size and updated wrapper to vertical-stack on mobile in Economic Calendar [`src/app/tools/economic-calendar/EconomicCalendarClient.tsx`](file:///c:/laragon/www/gsn-crm/src/app/tools/economic-calendar/EconomicCalendarClient.tsx).
+  - Reduced heading size and updated wrapper to vertical-stack on mobile in Risk Management Guide [`src/app/knowledge/risk-management/page.tsx`](file:///c:/laragon/www/gsn-crm/src/app/knowledge/risk-management/page.tsx).
+  - Reduced heading size and updated wrapper to vertical-stack on mobile in Universal Search page [`src/app/search/SearchClient.tsx`](file:///c:/laragon/www/gsn-crm/src/app/search/SearchClient.tsx).
+- **Prevented Mobile Text Wrapping**:
+  - Verified that all tool titles (including long names like "Position Size Calculator", "Risk of Ruin Calculator", and "Forex Risk Management") now fit perfectly on a single line on mobile screen sizes (e.g. 390px viewports).
+
+### Verification Results
+
+- `npx tsc --noEmit` (Typecheck Verification) -> **`0` errors** ✅
+- `npm run lint` (ESLint Audit Verification) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅
+- `npx playwright test tests/e2e/capture-public-pages.spec.ts` (Visual E2E Screens Capture) -> **`100% passed` (2/2 tests passed)** ✅
+
+---
+
+## Phase 40: Auditing Public Pages & E2E Updates ✅
+
+### Key Achievements
+
+- **Identified Remaining Public Pages**:
+  - Scanned the routing directory structure under `src/app` and compiled a complete list of 25+ public routes, identifying key pages previously omitted in the Playwright E2E script (such as privacy policy, terms of service, tools index, knowledge index, Telegram community, and user auth forms).
+- **Expanded Playwright E2E Coverage**:
+  - Updated [`tests/e2e/capture-public-pages.spec.ts`](file:///c:/laragon/www/gsn-crm/tests/e2e/capture-public-pages.spec.ts) with all the missing public pages.
+  - Verified and confirmed that mobile headings and icon layouts remain fully aligned, centered, and optimized on both mobile/tablet viewports.
+
+---
+
+## Phase 41: Dashboard Journal Empty State Alignment ✅
+
+### Key Achievements
+
+- **Synchronized Journal and Session Empty States**:
+  - Aligned the empty state of the Trading Journal page ([`src/components/journal/JournalList.tsx`](file:///c:/laragon/www/gsn-crm/src/components/journal/JournalList.tsx)) with the premium animated style of the Session Analysis page.
+- **Created Premium Animated Folder Icon**:
+  - Built a custom container that mimics the floating/sparkling Clock icon in `SessionDashboard`, utilizing a `FolderOpen` icon with a document sheet sliding up/down, floating animations, and sparkling dots.
+- **Integrated Guidance CTAs**:
+  - Integrated the `EmptyStateCTAs` component in the empty state block to prompt users to log their first trade (or sync a broker) or visit the Academy, giving them a clear path when no data is found.
+
+### Verification Results
+
+- `npx tsc --noEmit` (Typecheck Verification) -> **`0` errors** ✅
+- `npm run lint` (ESLint Audit Verification) -> **`0` errors** (0 static analysis errors, 100% clean ESLint sweeps) ✅

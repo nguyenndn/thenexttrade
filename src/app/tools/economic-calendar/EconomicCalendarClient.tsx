@@ -136,11 +136,11 @@ export function EconomicCalendarClient() {
                                 </div>
 
                                 {/* Extrabold Lexend Title with custom icon */}
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2.5 sm:gap-3">
                                     <div className="p-2.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-xl shadow-sm shrink-0">
                                         <Calendar size={22} className="stroke-[2.5]" />
                                     </div>
-                                    <h1 className="text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
+                                    <h1 className="text-[20px] sm:text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
                                         Economic <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-400 dark:from-emerald-400 dark:to-teal-300">Calendar</span>
                                     </h1>
                                 </div>

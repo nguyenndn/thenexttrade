@@ -68,7 +68,7 @@ export function SiteFooter() {
                                 <ul className="space-y-3 px-2 pb-4">
                                     <li><Link href="/academy" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Academy</Link></li>
                                     <li><Link href="/knowledge" className="text-sm text-gray-600 hover:text-primary transition-colors">Knowledge Base</Link></li>
-                                    <li><Link href="/analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Analysis</Link></li>
+                                    <li><Link href="/knowledge?category=market-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Analysis</Link></li>
                                     <li><Link href="/knowledge?tag=technical-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Technical Analysis</Link></li>
                                     <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Psychology</Link></li>
                                 </ul>
@@ -79,7 +79,7 @@ export function SiteFooter() {
                                 <ul className="space-y-3">
                                     <li><Link href="/academy" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Academy</Link></li>
                                     <li><Link href="/knowledge" className="text-sm text-gray-600 hover:text-primary transition-colors">Knowledge Base</Link></li>
-                                    <li><Link href="/analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Analysis</Link></li>
+                                    <li><Link href="/knowledge?category=market-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Analysis</Link></li>
                                     <li><Link href="/knowledge?tag=technical-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Technical Analysis</Link></li>
                                     <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Psychology</Link></li>
                                 </ul>
@@ -99,7 +99,7 @@ export function SiteFooter() {
                                 <ul className="space-y-3 px-2 pb-4">
                                     <li><Link href="/tools/economic-calendar" className="text-sm text-gray-600 hover:text-primary transition-colors">Economic Calendar</Link></li>
                                     <li><Link href="/tools/market-hours" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Hours</Link></li>
-                                    <li><Link href="/tools/risk-calculator" className="text-sm text-gray-600 hover:text-primary transition-colors">Risk Calculator</Link></li>
+                                    <li><Link href="/tools/position-size-calculator" className="text-sm text-gray-600 hover:text-primary transition-colors">Position Size Calculator</Link></li>
                                 </ul>
                             </details>
                             {/* Desktop View */}
@@ -108,7 +108,7 @@ export function SiteFooter() {
                                 <ul className="space-y-3">
                                     <li><Link href="/tools/economic-calendar" className="text-sm text-gray-600 hover:text-primary transition-colors">Economic Calendar</Link></li>
                                     <li><Link href="/tools/market-hours" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Hours</Link></li>
-                                    <li><Link href="/tools/risk-calculator" className="text-sm text-gray-600 hover:text-primary transition-colors">Risk Calculator</Link></li>
+                                    <li><Link href="/tools/position-size-calculator" className="text-sm text-gray-600 hover:text-primary transition-colors">Position Size Calculator</Link></li>
                                 </ul>
                             </div>
                         </div>

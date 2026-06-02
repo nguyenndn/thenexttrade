@@ -114,11 +114,11 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                                 </div>
 
                                 {/* Extrabold Lexend Title with custom icons */}
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2.5 sm:gap-3">
                                     <div className={`p-2.5 ${tool.iconBg} border border-white/10 dark:border-white/5 rounded-xl shadow-sm shrink-0`}>
                                         <tool.icon size={22} className="stroke-[2.5]" />
                                     </div>
-                                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
+                                    <h1 className="text-[20px] sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
                                         {tool.title}
                                     </h1>
                                 </div>

@@ -41,7 +41,7 @@ export default function MarketHoursPage() {
                                 </div>
 
                                 {/* Extrabold Lexend Title */}
-                                <h1 className="text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
+                                <h1 className="text-[22px] sm:text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
                                     Forex <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-500 dark:from-amber-400 dark:to-yellow-300">Market Hours</span>
                                 </h1>
 

@@ -172,7 +172,7 @@ async function HomeFeed() {
     <>
       <FadeIn delay={0.1}>
         {/* Hero Section */}
-        <div className="pt-24 pb-10 dark:bg-[#0B0E14] relative">
+        <div className="pt-24 pb-6 sm:pb-10 dark:bg-[#0B0E14] relative">
           <h1 className="sr-only">TheNextTrade — Professional Forex Trading Tools, Academy & Market Analysis</h1>
           {/* Subtle noise texture */}
           <div className="absolute inset-0 noise-bg opacity-[0.03] dark:opacity-[0.05] pointer-events-none" />
@@ -236,7 +236,7 @@ async function HomeFeed() {
                               </span>
                             )}
                           </div>
-                          <h4 className="text-sm font-bold text-gray-700 dark:text-white line-clamp-2 leading-snug group-hover:text-gold transition-colors">
+                          <h4 className="text-xs sm:text-sm font-bold text-gray-700 dark:text-white line-clamp-2 leading-snug group-hover:text-gold transition-colors">
                             {article.title}
                           </h4>
                           <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-600 dark:text-gray-300">
@@ -259,7 +259,7 @@ async function HomeFeed() {
 
       <FadeIn delay={0.2} direction="up">
         {/* Trending Topics */}
-        <section className="py-16 relative bg-gray-50/50 dark:bg-[#0F1117] border-t border-gray-200 dark:border-white/10 overflow-hidden">
+        <section className="py-10 sm:py-16 relative bg-gray-50/50 dark:bg-[#0F1117] border-t border-gray-200 dark:border-white/10 overflow-hidden">
           {/* Dot Pattern Background - Increased Visibility */}
           <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
 
@@ -272,17 +272,17 @@ async function HomeFeed() {
               align="center"
             />
 
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
               {trendingCategories.map((cat, idx) => (
                 <Link
                   key={idx}
                   href={`/knowledge?category=${cat.slug}`}
-                  className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-white/5 backdrop-blur-xl border border-gold/40 dark:border-gold/30 shadow-sm hover:shadow-gold/20 hover:bg-gold/5 dark:hover:bg-gold/10 hover:border-gold transition-all duration-300"
+                  className="group flex items-center gap-1.5 sm:gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full bg-white dark:bg-white/5 backdrop-blur-xl border border-gold/40 dark:border-gold/30 shadow-sm hover:shadow-gold/20 hover:bg-gold/5 dark:hover:bg-gold/10 hover:border-gold transition-all duration-300"
                 >
-                  <span className="text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-gold transition-colors">
+                  <span className="text-xs sm:text-sm font-bold font-heading text-gray-800 dark:text-gray-100 group-hover:text-gold transition-colors">
                     # {cat.name}
                   </span>
-                  <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/10 group-hover:bg-gold/15 group-hover:text-gold px-1.5 py-0.5 rounded transition-all">
+                  <span className="text-[9px] sm:text-[10px] font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/10 group-hover:bg-gold/15 group-hover:text-gold px-1.5 py-0.5 rounded transition-all">
                     {cat._count.articles}
                   </span>
                 </Link>
@@ -294,7 +294,7 @@ async function HomeFeed() {
 
       <FadeIn delay={0.1} direction="up">
         {/* Popular Guides Section */}
-        <section className="relative py-20 border-t border-gray-200 dark:border-white/5 bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 dark:from-[#0B0E14] dark:via-[#0F1219] dark:to-[#0B0E14] overflow-hidden">
+        <section className="relative py-12 sm:py-20 border-t border-gray-200 dark:border-white/5 bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 dark:from-[#0B0E14] dark:via-[#0F1219] dark:to-[#0B0E14] overflow-hidden">
           {/* Background Effects */}
           <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.2] pointer-events-none" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
@@ -398,14 +398,14 @@ async function HomeFeed() {
       </FadeIn>
 
       {/* Academy Learning Path Section */}
-      <section id="academy-preview" className="py-16 relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10">
+      <section id="academy-preview" className="py-10 sm:py-16 relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10">
         {/* Grid Pattern Background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/20 via-transparent to-transparent dark:from-blue-900/10 dark:via-transparent dark:to-transparent"></div>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn delay={0.1} direction="up">
             <div className="mb-16 text-center">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-700 dark:text-white mb-6 tracking-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-700 dark:text-white mb-6 tracking-tight">
                 Your Journey to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Pro Trader</span> status
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-500 max-w-2xl mx-auto leading-relaxed">
@@ -460,7 +460,7 @@ async function HomeFeed() {
             {/* Soft decorative glow spot at the right */}
             <div className="absolute top-1/2 -right-4 -translate-y-1/2 w-40 h-40 bg-gradient-to-br from-gold/15 to-amber-500/5 dark:from-gold/5 dark:to-transparent rounded-full blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-500" />
 
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between relative z-10">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between relative z-10">
               <div className="flex items-start gap-3">
                 <div className="mt-1 p-2 rounded-xl bg-gold/10 dark:bg-gold/15 text-gold group-hover:rotate-45 transition-transform duration-500">
                   <Compass size={18} className="animate-pulse" />
@@ -476,7 +476,7 @@ async function HomeFeed() {
               </div>
               <Link
                 href="/get-started"
-                className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black px-6 py-2.5 shadow-[0_4px_12px_rgba(245,158,11,0.25)] dark:shadow-[0_4px_12px_rgba(245,158,11,0.15)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.4)] dark:hover:shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group/btn"
+                className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black px-6 py-2.5 shadow-[0_4px_12px_rgba(245,158,11,0.25)] dark:shadow-[0_4px_12px_rgba(245,158,11,0.15)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.4)] dark:hover:shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group/btn w-full sm:w-auto justify-center text-center"
               >
                 <span>Start Here</span>
                 <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
@@ -493,7 +493,7 @@ async function HomeFeed() {
 
       <FadeIn delay={0.2} direction="up">
         {/* Daily Quote */}
-        <section className="py-16 relative overflow-hidden border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
+        <section className="py-10 sm:py-16 relative overflow-hidden border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-[#0F1117]">
           {/* Background Effects */}
           <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
           <DynamicFirefly />

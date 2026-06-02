@@ -27,11 +27,11 @@ export default async function AboutPage() {
 
             <PublicHeader />
 
-            <main className="py-24 relative z-10">
+            <main className="pt-24 pb-12 sm:pb-24 relative z-10">
                 {/* 1. Hero Section */}
-                <section className="px-4 mb-20">
+                <section className="px-4 mb-10 sm:mb-20">
                     <ScrollReveal>
-                        <div className="max-w-4xl mx-auto text-center space-y-8 mt-12">
+                        <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6 mt-6 sm:mt-12">
                             <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 text-primary mb-2 ring-4 ring-primary/5">
                                 <Globe2 size={40} strokeWidth={1.5} />
                             </div>
@@ -50,7 +50,7 @@ export default async function AboutPage() {
                 <AboutTimeline />
 
                 {/* 3. Mission & Vision */}
-                <section className="px-4 mb-24 max-w-6xl mx-auto">
+                <section className="px-4 mb-12 sm:mb-24 max-w-6xl mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Mission */}
                         <ScrollReveal delay={0.1} direction="left">
@@ -93,7 +93,7 @@ export default async function AboutPage() {
                 </section>
 
                 {/* 4. Core Values */}
-                <section className="px-4 mb-24 max-w-6xl mx-auto">
+                <section className="px-4 mb-12 sm:mb-24 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-16 space-y-4">
                             <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-700 dark:text-white">What I Believe In</h2>
@@ -123,7 +123,7 @@ export default async function AboutPage() {
                 </section>
 
                 {/* 5. CTA Bottom */}
-                <section className="px-4 mb-10 max-w-4xl mx-auto">
+                <section className="px-4 mb-6 sm:mb-10 max-w-4xl mx-auto">
                     <ScrollReveal>
                         <div className="rounded-3xl p-10 md:p-16 text-center border border-amber-500/35 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-[#0A0D16] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_60px_rgba(245,158,11,0.06)] relative overflow-hidden backdrop-blur-md">
                             {/* Futuristic Cyber-Grid Pattern */}
@@ -138,17 +138,17 @@ export default async function AboutPage() {
                                 <p className="text-sm sm:text-base md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                                     Don&apos;t make the mistakes I made. Start with the right tools, the right knowledge, and a clear path forward.
                                 </p>
-                                <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-3xl mx-auto px-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 md:flex md:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-3xl mx-auto px-4">
                                     <Link
                                         href="/auth/signup"
-                                        className="inline-flex min-h-[50px] sm:min-h-13 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black px-6 sm:px-8 shadow-[0_4px_12px_rgba(245,158,11,0.20)] dark:shadow-[0_4px_12px_rgba(245,158,11,0.10)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-sm sm:text-base group/btn w-full sm:w-auto whitespace-nowrap"
+                                        className="inline-flex min-h-[50px] sm:min-h-13 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black px-6 sm:px-8 shadow-[0_4px_12px_rgba(245,158,11,0.20)] dark:shadow-[0_4px_12px_rgba(245,158,11,0.10)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-sm sm:text-base group/btn w-full md:w-auto whitespace-nowrap"
                                     >
                                         <span>Join TheNextTrade — Free</span>
                                         <ChevronRight size={18} className="group-hover/btn:translate-x-0.5 transition-transform duration-300" />
                                     </Link>
                                     <Link
                                         href="/contact"
-                                        className="inline-flex min-h-[50px] sm:min-h-13 items-center justify-center gap-2 rounded-xl border border-amber-500/35 dark:border-white/10 bg-white/45 dark:bg-white/5 text-gray-800 dark:text-white hover:bg-white/80 dark:hover:bg-white/10 hover:border-amber-500/60 dark:hover:border-white/20 transition-all duration-300 font-black px-6 sm:px-8 text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98] shadow-sm w-full sm:w-auto whitespace-nowrap"
+                                        className="inline-flex min-h-[50px] sm:min-h-13 items-center justify-center gap-2 rounded-xl border border-amber-500/35 dark:border-white/10 bg-white/45 dark:bg-white/5 text-gray-800 dark:text-white hover:bg-white/80 dark:hover:bg-white/10 hover:border-amber-500/60 dark:hover:border-white/20 transition-all duration-300 font-black px-6 sm:px-8 text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98] shadow-sm w-full md:w-auto whitespace-nowrap"
                                     >
                                         <Mail size={18} className="text-amber-500 dark:text-gold" />
                                         <span>Contact Us</span>
@@ -157,7 +157,7 @@ export default async function AboutPage() {
                                         href="https://t.me/GoldScalperNinja"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex min-h-[50px] sm:min-h-13 items-center justify-center gap-2 rounded-xl border border-amber-500/35 dark:border-white/10 bg-white/45 dark:bg-white/5 text-gray-800 dark:text-white hover:bg-white/80 dark:hover:bg-white/10 hover:border-amber-500/60 dark:hover:border-white/20 transition-all duration-300 font-black px-6 sm:px-8 text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98] shadow-sm w-full sm:w-auto whitespace-nowrap"
+                                        className="inline-flex min-h-[50px] sm:min-h-13 items-center justify-center gap-2 rounded-xl border border-amber-500/35 dark:border-white/10 bg-white/45 dark:bg-white/5 text-gray-800 dark:text-white hover:bg-white/80 dark:hover:bg-white/10 hover:border-amber-500/60 dark:hover:border-white/20 transition-all duration-300 font-black px-6 sm:px-8 text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98] shadow-sm w-full md:w-auto whitespace-nowrap"
                                     >
                                         <Send size={18} className="text-amber-500 dark:text-gold" />
                                         <span>Join Telegram</span>

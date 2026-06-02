@@ -297,9 +297,16 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
         }
     }, [completedLessonIds]);
 
+    const [isMobileScreen, setIsMobileScreen] = useState(false);
+
     useEffect(() => {
-        const isMobile = window.innerWidth < 768;
-        const count = isMobile ? 30 : 100;
+        const checkMobile = () => {
+            setIsMobileScreen(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+
+        const count = window.innerWidth < 768 ? 30 : 100;
         setFireflies(Array.from({ length: count }).map((_, i) => ({
             id: i,
             top: `${Math.random() * 100}%`,
@@ -307,6 +314,8 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
             duration: Math.random() * 5 + 3,
             delay: Math.random() * 3,
         })));
+
+        return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
     return (
@@ -514,7 +523,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
 
                                 {/* Modules List Side */}
                                 <motion.div
-                                    initial={{ opacity: 0, x: isEven ? 30 : -30 }}
+                                    initial={{ opacity: 0, x: isMobileScreen ? 0 : (isEven ? 30 : -30) }}
                                     whileInView={{ opacity: 1, x: 0 }}
                                     viewport={{ once: true, margin: "-50px" }}
                                     transition={{ duration: 0.4, delay: index * 0.05 + 0.15 }}
@@ -525,8 +534,8 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                     )}
                                 >
                                     <div className={cn(
-                                        "space-y-2 flex flex-col",
-                                        isEven ? "items-center md:items-start" : "items-center md:items-end"
+                                        "space-y-2 flex flex-col w-full items-center",
+                                        isEven ? "md:items-start" : "md:items-end"
                                     )}>
                                         {level.modules.map((mod, modIndex) => {
                                             const modFirstSlug = mod.lessons?.[0]?.slug;
@@ -560,7 +569,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                             "flex items-center gap-2.5 py-2 px-3 rounded-lg border w-full max-w-[85%] sm:max-w-xs cursor-not-allowed",
                                                             "bg-gray-50 dark:bg-white/[0.01] border-gray-200 dark:border-white/5",
                                                             isLevelLocked ? "opacity-30" : "opacity-50",
-                                                            isEven ? "" : "md:flex-row-reverse"
+                                                            isEven ? "mx-auto md:ml-0 md:mr-auto" : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
                                                         )}
                                                         title={isLevelLocked ? `Complete Level ${level.order - 1} to unlock` : "Complete previous lessons to unlock"}
                                                     >
@@ -580,6 +589,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         whileInView={{ opacity: 1, y: 0 }}
                                                         viewport={{ once: true }}
                                                         transition={{ duration: 0.3, delay: modIndex * 0.05 }}
+                                                        className="w-full flex justify-center md:block"
                                                     >
                                                         <Link
                                                             href={`${isGuest ? '/academy/lesson' : '/dashboard/academy/lessons'}/${modFirstSlug}`}
@@ -587,7 +597,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                                 "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs",
                                                                 "bg-emerald-50 dark:bg-emerald-500/5 border-emerald-200 dark:border-emerald-500/20",
                                                                 "hover:border-emerald-400 dark:hover:border-emerald-500/40 hover:shadow-sm",
-                                                                isEven ? "" : "md:flex-row-reverse"
+                                                                isEven ? "mx-auto md:ml-0 md:mr-auto" : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
                                                             )}
                                                         >
                                                             <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-emerald-100 dark:bg-emerald-500/20">
@@ -618,7 +628,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                             ? { duration: 0.6, delay: 0.3, type: "spring", stiffness: 200 }
                                                             : { duration: 0.3, delay: modIndex * 0.05 }
                                                         }
-                                                        className="relative"
+                                                        className="relative w-full flex justify-center md:block"
                                                     >
                                                         {/* Unlock glow burst */}
                                                         {isJustUnlocked && (
@@ -641,7 +651,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                                 "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-[85%] sm:max-w-xs relative z-10",
                                                                 "bg-white dark:bg-white/[0.03] border-primary/60 dark:border-primary/40",
                                                                 "hover:border-primary dark:hover:border-primary/60 hover:shadow-md hover:shadow-primary/10",
-                                                                isEven ? "" : "md:flex-row-reverse"
+                                                                isEven ? "mx-auto md:ml-0 md:mr-auto" : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
                                                             )}
                                                         >
                                                             <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-primary/10 relative">
@@ -674,6 +684,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                         whileInView={{ opacity: 1, y: 0 }}
                                                         viewport={{ once: true }}
                                                         transition={{ duration: 0.3, delay: modIndex * 0.05 }}
+                                                        className="w-full flex justify-center md:block"
                                                     >
                                                         <Link
                                                             href={`${isGuest ? '/academy/lesson' : '/dashboard/academy/lessons'}/${modFirstSlug}`}
@@ -681,7 +692,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                                 "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left",
                                                                 "bg-white dark:bg-white/[0.03] border-gray-200 dark:border-white/10",
                                                                 "hover:border-primary/50 dark:hover:border-primary/30 hover:shadow-sm",
-                                                                isEven ? "" : "md:flex-row-reverse"
+                                                                isEven ? "mx-auto md:ml-0 md:mr-auto" : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
                                                             )}
                                                         >
                                                             <div className={cn(
@@ -711,6 +722,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                     whileInView={{ opacity: 1, y: 0 }}
                                                     viewport={{ once: true }}
                                                     transition={{ duration: 0.3, delay: modIndex * 0.05 }}
+                                                    className="w-full flex justify-center md:block"
                                                 >
                                                     <Link
                                                         href={`${isGuest ? '/academy/lesson' : '/dashboard/academy/lessons'}/${modFirstSlug}`}
@@ -718,7 +730,7 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
                                                             "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs",
                                                             "bg-white dark:bg-white/[0.03] border-gray-200 dark:border-white/10",
                                                             "hover:border-primary/50 dark:hover:border-primary/30 hover:shadow-sm",
-                                                            isEven ? "" : "md:flex-row-reverse"
+                                                            isEven ? "mx-auto md:ml-0 md:mr-auto" : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
                                                         )}
                                                     >
                                                         <div className={cn(

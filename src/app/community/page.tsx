@@ -205,10 +205,10 @@ export default async function CommunityPage() {
 
             <PublicHeader user={user} />
 
-            <main className="py-16 md:py-24 relative z-10">
+            <main className="pt-16 md:pt-24 pb-16 sm:pb-24 relative z-10">
 
                 {/* ═══════ 1. HERO ═══════ */}
-                <section className="px-4 sm:px-6 mb-14 md:mb-20">
+                <section className="px-4 sm:px-6 mb-10 sm:mb-16">
                     <ScrollReveal>
                         <div className="max-w-4xl mx-auto text-center space-y-5 sm:space-y-6 md:space-y-8 mt-6 md:mt-12">
                             <div className="inline-flex items-center gap-2 sm:gap-2.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#2AABEE]/10 border border-[#2AABEE]/20 ring-4 ring-[#2AABEE]/5">
@@ -269,7 +269,7 @@ export default async function CommunityPage() {
                 </section>
 
                 {/* ═══════ 2. WHAT YOU GET (FREE) ═══════ */}
-                <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto">
+                <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-12 space-y-4">
                             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-gray-800 dark:text-white">
@@ -309,7 +309,7 @@ export default async function CommunityPage() {
                 </section>
 
                 {/* ═══════ 4. VIP UPGRADE ═══════ */}
-                <section id="vip-section" className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto scroll-mt-16 md:scroll-mt-24">
+                <section id="vip-section" className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto scroll-mt-16 md:scroll-mt-24">
                     <ScrollReveal>
                         <div className="rounded-2xl sm:rounded-3xl border border-amber-500/35 dark:border-amber-500/30 p-5 sm:p-6 md:p-8 relative overflow-hidden bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-[#0A0D16] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_50px_rgba(245,158,11,0.06)] backdrop-blur-md">
                             {/* Futuristic Cyber-Grid Pattern */}
@@ -359,7 +359,7 @@ export default async function CommunityPage() {
                 </ScrollReveal>
 
                 {/* ═══════ 6. PLATFORM LINKS ═══════ */}
-                <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto">
+                <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-12 space-y-4">
                             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-gray-800 dark:text-white">
@@ -393,7 +393,7 @@ export default async function CommunityPage() {
                 </section>
 
                 {/* ═══════ 6.5 GET STARTED CALLOUT ═══════ */}
-                <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto">
+                <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
                     <ScrollReveal>
                         {/* Premium Breek-style Callout Card */}
                         <div className="relative p-5 sm:p-6 rounded-2xl border border-gold/25 dark:border-gold/15 bg-gradient-to-r from-gold/[0.04] to-amber-500/[0.02] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md shadow-md shadow-gold/[0.01] overflow-hidden group hover:border-gold/45 dark:hover:border-gold/30 hover:shadow-lg hover:shadow-gold/8 transition-all duration-500">
@@ -427,7 +427,7 @@ export default async function CommunityPage() {
                 </section>
 
                 {/* ═══════ 7. FAQ ═══════ */}
-                <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto">
+                <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-12">
                             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-700 dark:text-white mb-3 tracking-tight">
@@ -464,7 +464,7 @@ export default async function CommunityPage() {
                 </section>
 
                 {/* ═══════ 8. BOTTOM CTA ═══════ */}
-                <section className="px-4 sm:px-6 mb-10 max-w-4xl mx-auto">
+                <section className="px-4 sm:px-6 mb-6 sm:mb-10 max-w-4xl mx-auto">
                     <ScrollReveal>
                         <div className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center border border-amber-500/35 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-[#0A0D16] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_60px_rgba(245,158,11,0.06)] relative overflow-hidden backdrop-blur-md">
                             {/* Futuristic Cyber-Grid Pattern */}

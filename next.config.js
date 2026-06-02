@@ -143,6 +143,15 @@ const nextConfig = {
       }
     ]
   },
+  async redirects() {
+    return [
+      {
+        source: '/tools/risk-calculator',
+        destination: '/tools/position-size-calculator',
+        permanent: true,
+      },
+    ];
+  },
 }
 
 module.exports = withBundleAnalyzer(nextConfig);

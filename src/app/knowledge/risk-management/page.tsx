@@ -23,14 +23,6 @@ export const metadata: Metadata = {
 
 const RISK_TOOLS = [
     {
-        title: "Risk Calculator",
-        description: "Calculate the maximum amount you can risk per trade based on your account size and risk tolerance.",
-        href: "/tools/risk-calculator",
-        icon: Shield,
-        color: "text-red-500",
-        bg: "bg-red-500/10",
-    },
-    {
         title: "Position Size Calculator",
         description: "Determine the exact lot size for any trade based on your risk parameters and stop loss distance.",
         href: "/tools/position-size-calculator",
@@ -160,11 +152,11 @@ export default async function RiskManagementPage() {
                                 </div>
 
                                 {/* Title with icon backdrop */}
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2.5 sm:gap-3">
                                     <div className="p-2.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl shadow-sm shrink-0">
                                         <Shield size={22} className="stroke-[2.5]" />
                                     </div>
-                                    <h1 className="text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
+                                    <h1 className="text-[20px] sm:text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
                                         Forex <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-500">Risk Management</span>
                                     </h1>
                                 </div>

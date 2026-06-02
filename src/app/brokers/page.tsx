@@ -20,7 +20,7 @@ export default async function BrokersPage() {
         <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
             <PublicHeader />
 
-            <main className="flex-1 pt-32 pb-20 relative overflow-hidden">
+            <main className="flex-1 pt-20 sm:pt-32 pb-8 sm:pb-16 relative overflow-hidden">
                 {/* Background */}
                 <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
                 <FireflyBackground />

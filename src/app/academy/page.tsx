@@ -68,7 +68,7 @@ export default async function AcademyPage() {
             />
 
             {/* ── Hero Section ── */}
-            <section className="pt-32 pb-5 px-6 relative overflow-hidden">
+            <section className="pt-32 pb-4 sm:pb-6 px-6 relative overflow-hidden">
                 <div className="max-w-5xl mx-auto text-center relative z-10">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-6">
                         <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
@@ -81,7 +81,7 @@ export default async function AcademyPage() {
                             Ascent
                         </span>
                     </h1>
-                    <p className="text-lg md:text-xl mb-10 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-lg md:text-xl mb-6 sm:mb-10 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                         Master the markets step by step. From your first trade to institutional mastery.
                     </p>
 

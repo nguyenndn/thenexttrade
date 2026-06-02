@@ -159,7 +159,7 @@ export default function BrokersClient() {
   return (
     <>
       {/* Hero */}
-      <div className="text-center mb-16">
+      <div className="text-center mb-6 sm:mb-10">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-6 border border-primary/20">
           <Sparkles size={14} />
           <span>Curated by TheNextTrade</span>
@@ -177,7 +177,7 @@ export default function BrokersClient() {
 
         {/* Tabs - same style as /tools page */}
         <Tabs value={activeTab} onValueChange={setActiveTab} tabsId="brokers-page">
-          <div className="mb-10 overflow-x-auto scrollbar-hide flex sm:justify-center">
+          <div className="mb-6 overflow-x-auto scrollbar-hide flex sm:justify-center">
             <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
               {CATEGORIES.map((cat) => {
                 const Icon = cat.icon;

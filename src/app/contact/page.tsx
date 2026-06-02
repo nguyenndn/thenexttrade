@@ -62,12 +62,12 @@ export default function ContactPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F7F4EC] dark:bg-[#090805] text-gray-700 dark:text-white relative overflow-hidden">
+        <div className="flex flex-col min-h-screen bg-[#F7F4EC] dark:bg-[#090805] text-gray-700 dark:text-white transition-colors duration-300 relative overflow-hidden">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(180,118,26,0.20)_0%,rgba(9,8,5,0.92)_42%,rgba(16,185,129,0.08)_100%)] pointer-events-none" />
 
             <PublicHeader />
             
-            <main className="py-24 relative z-10 px-4">
+            <main className="flex-grow pt-24 pb-20 relative z-10 px-4">
                 
                 {/* Hero Header */}
                 <div className="max-w-3xl mx-auto text-center space-y-6 mb-20 mt-12">
@@ -77,15 +77,15 @@ export default function ContactPage() {
                     <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-700 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
                         Let's Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00A06D]">Touch</span>
                     </h1>
-                    <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                    <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
                         Have a question about our ecosystem, pricing, or need technical support? Drop us a message below.
                     </p>
                 </div>
 
                 <div className="max-w-3xl mx-auto">
-                    <div className="bg-white/80 dark:bg-[#131622]/60 border border-amber-500/15 dark:border-white/[0.06] rounded-2xl p-8 md:p-12 shadow-xl shadow-amber-500/[0.01] relative overflow-hidden backdrop-blur-md">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl relative overflow-hidden transition-colors duration-300">
                         
-                        <div className="relative z-10 mb-10">
+                        <div className="relative z-10 mb-8">
                             <h2 className="text-3xl font-black text-gray-700 dark:text-white tracking-tight mb-2">Send us a message</h2>
                             <p className="text-gray-600 dark:text-gray-300">Fill out the form below and we'll get back to you shortly.</p>
                         </div>

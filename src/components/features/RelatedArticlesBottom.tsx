@@ -77,7 +77,7 @@ export default async function RelatedArticlesBottom({ categoryId, currentArticle
                         href={`/articles/${article.slug}`}
                         className="group bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                     >
-                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-200 dark:bg-gray-800">
+                        <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-200 dark:bg-gray-800">
                             {article.thumbnail ? (
                                 <SafeImage
                                     src={article.thumbnail}

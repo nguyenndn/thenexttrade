@@ -111,7 +111,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                 <PublicHeader />
 
                 {/* Hero Section - Glass Effect */}
-                <div className="pt-32 pb-16 relative z-10">
+                <div className="pt-32 pb-10 sm:pb-16 relative z-10">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
                             <div className="flex-1 text-center md:text-left">
@@ -151,7 +151,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                 </div>
 
                 {/* Content Section */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
                     <div className="flex items-center justify-between mb-8">
                         <SectionHeader
                             title={
