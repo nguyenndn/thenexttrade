@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { SignalType, TraderSignalInput } from "./signal-types";
+import { TraderSignalInput } from "./signal-types";
 import { getMistakeByCode } from "@/lib/mistakes";
 import { subDays } from "date-fns";
+import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
 
 export async function computeTraderSignals(
     userId: string,
@@ -30,13 +31,6 @@ export async function computeTraderSignals(
             entryDate: { gte: thirtyDaysAgo }
         },
         orderBy: { entryDate: "desc" }
-    });
-    
-    const countWeeklyReports = await prisma.tradingReport.count({
-        where: {
-            userId,
-            type: "WEEKLY"
-        }
     });
     
     const countCompletedLessons = await prisma.userProgress.count({
@@ -110,14 +104,16 @@ export async function computeTraderSignals(
     }
     
     // 5. NO_WEEKLY_REVIEW
-    if (trades.length > 0 && countWeeklyReports === 0) {
+    const weeklyReviewEligibility = await getWeeklyReviewEligibility({ userId });
+    const showFirstWeeklyReview = weeklyReviewEligibility.ready && weeklyReviewEligibility.isFirstWeeklyReview;
+    if (showFirstWeeklyReview) {
         signals.push({
             signalType: "NO_WEEKLY_REVIEW",
             severity: "MEDIUM",
-            title: "Generate your first Weekly Coach Plan",
-            summary: "You have synced trades. Run a weekly review to construct your first automated Weekly Coach Report and leak detector.",
-            actionLabel: "Generate Review",
-            actionHref: "/dashboard/reports"
+            title: "Generate your first Weekly Review",
+            summary: "You have enough synced trade data to generate your first review.",
+            actionLabel: "Generate First Review",
+            actionHref: "/dashboard/reports?type=weekly-review"
         });
     }
     

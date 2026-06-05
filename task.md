@@ -403,3 +403,11 @@
 - [x] Run typescript typecheck (`npx tsc --noEmit`) and linter (`npm run lint`) to verify 0 errors
 - [x] Run unit tests (`npx vitest run`) to verify 100% success
 
+## Phase 43: Dashboard Alert Orchestration and Weekly Review Gating
+- [x] Create `src/lib/reports/weekly-review-eligibility.ts` central helper
+- [x] Modify `src/app/dashboard/dashboard-data.server.ts` to include weeklyReviewEligibility and display suppress flags
+- [x] Modify `src/app/dashboard/DashboardClient.tsx` to handle suppress flags, customize review nudges, and prioritize alerts
+- [x] Modify `src/lib/activation/activation.server.ts` to make weekly review available check dynamic
+- [x] Modify `src/components/dashboard/ActivationChecklist.tsx` to disable weekly review if not ready
+- [x] Modify `src/lib/coach/signal-engine.server.ts` to check `showFirstWeeklyReview` for `NO_WEEKLY_REVIEW` signal
+- [x] Run typescript typecheck (`npx tsc --noEmit`) and linter (`npm run lint`) to verify 0 errors

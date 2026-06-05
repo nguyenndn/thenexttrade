@@ -31,6 +31,8 @@ import { checkAndTriggerMilestones } from "@/lib/milestones/milestones.server";
 import type { ActivationState } from "@/lib/activation/activation-types";
 import type { FirstSessionComputedState } from "@/lib/onboarding/first-session.server";
 import { redirect } from "next/navigation";
+import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
+import type { WeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
@@ -75,7 +77,15 @@ export interface DashboardPageData {
     learningRecommendations?: any[];
     firstSessionState?: FirstSessionComputedState;
     tradingGoal?: string | null;
+    weeklyReviewEligibility?: WeeklyReviewEligibility;
+    suppress?: {
+        activationChecklist?: boolean;
+        reportNudge?: boolean;
+        positiveInsight?: boolean;
+        coachNudge?: boolean;
+    };
 }
+
 
 // ─── Account & Date Resolution ──────────────────────────────────────────
 
@@ -205,13 +215,14 @@ export async function getEmptyDashboardData(
     fromParam: string,
     toParam: string
 ): Promise<DashboardPageData> {
-    const [userData, activationState, firstSessionState] = await Promise.all([
+    const [userData, activationState, firstSessionState, weeklyReviewEligibility] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
             select: { streak: true, name: true, settings: true },
         }),
         getActivationState(userId),
         getFirstSessionState(userId),
+        getWeeklyReviewEligibility({ userId, accountId: accountId || undefined }),
     ]);
 
     const settings = (userData?.settings as Record<string, any>) || {};
@@ -257,6 +268,13 @@ export async function getEmptyDashboardData(
         activationState,
         firstSessionState,
         tradingGoal,
+        weeklyReviewEligibility,
+        suppress: {
+            activationChecklist: false,
+            reportNudge: true,
+            positiveInsight: true,
+            coachNudge: false,
+        },
     };
 }
 
@@ -382,6 +400,43 @@ export async function getFullDashboardData(
         accountCount: accounts.length,
     }).catch(() => { /* silent */ });
 
+    // Calculate Weekly Review Eligibility
+    const weeklyReviewEligibility = await getWeeklyReviewEligibility({
+        userId,
+        accountId: accountId || undefined,
+    });
+
+    const showFirstWeeklyReview = weeklyReviewEligibility.ready && weeklyReviewEligibility.isFirstWeeklyReview;
+    const showReturningWeeklyReview = weeklyReviewEligibility.ready && !weeklyReviewEligibility.isFirstWeeklyReview;
+    const criticalSyncIssue = nextBestAction?.id === "SYNC_STALE" || nextBestAction?.id === "ACCOUNT_NEVER_SYNCED";
+
+    const suppress = {
+        activationChecklist: false,
+        reportNudge: false,
+        positiveInsight: false,
+        coachNudge: false,
+    };
+
+    if (criticalSyncIssue) {
+        suppress.reportNudge = true;
+        suppress.positiveInsight = true;
+    } else if (showFirstWeeklyReview) {
+        suppress.reportNudge = false; // Show first weekly review nudge (copy customized in client)
+        suppress.positiveInsight = true;
+        suppress.coachNudge = true;   // Suppress "Generate your first Weekly Coach Plan" signal to avoid duplicate nudge
+    } else if (showReturningWeeklyReview) {
+        suppress.positiveInsight = true;
+    }
+
+    const isPositiveInsight = !intelligenceData || !intelligenceData.issues || intelligenceData.issues.length === 0;
+    const canShowPositiveInsight = weeklyReviewEligibility.weeklyReportCount > 0 || globalTradeCount >= 20;
+
+    if (isPositiveInsight) {
+        if (!canShowPositiveInsight || showFirstWeeklyReview || showReturningWeeklyReview || criticalSyncIssue) {
+            suppress.positiveInsight = true;
+        }
+    }
+
     return {
         userName: userData?.name || "Trader",
         hasGlobalTrades: globalTradeCount > 0,
@@ -410,6 +465,8 @@ export async function getFullDashboardData(
         learningRecommendations,
         firstSessionState,
         tradingGoal,
+        weeklyReviewEligibility,
+        suppress,
     };
 }
 

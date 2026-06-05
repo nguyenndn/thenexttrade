@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { ActivationState, ActivationStep } from "./activation-types";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
+import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
 
 export async function getActivationState(userId: string): Promise<ActivationState> {
   // Read user settings for onboarding preferences
@@ -18,11 +19,13 @@ export async function getActivationState(userId: string): Promise<ActivationStat
     weeklyReportCount,
     completedLessonCount,
     checkinCount,
+    weeklyReviewEligibility,
   ] = await Promise.all([
     getUserTradingDataState(userId),
     prisma.tradingReport.count({ where: { userId, type: "WEEKLY" } }),
     prisma.userProgress.count({ where: { userId, isCompleted: true } }),
     prisma.edgeEvent.count({ where: { userId, eventType: "CHECKIN" } }),
+    getWeeklyReviewEligibility({ userId }),
   ]);
 
   const accountCount = tradingDataState.accountCount;
@@ -90,6 +93,8 @@ export async function getActivationState(userId: string): Promise<ActivationStat
       ctaHref: "/dashboard/reports?type=weekly-review",
       completed: weeklyReportCount > 0,
       priority: 30,
+      available: weeklyReviewEligibility.ready,
+      disabledReason: "Sync more trades before your first weekly review is ready.",
     },
     {
       id: "START_ACADEMY",
@@ -112,7 +117,7 @@ export async function getActivationState(userId: string): Promise<ActivationStat
   ];
 
   const sorted = steps.sort((a, b) => a.priority - b.priority);
-  const nextStep = sorted.find((s) => !s.completed) ?? null;
+  const nextStep = sorted.find((s) => !s.completed && s.available !== false) ?? null;
 
   return {
     steps: sorted,

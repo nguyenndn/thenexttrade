@@ -93,6 +93,8 @@ export default function DashboardClient(data: DashboardPageData) {
         learningRecommendations,
         firstSessionState,
         tradingGoal,
+        weeklyReviewEligibility,
+        suppress,
     } = data;
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -193,7 +195,7 @@ export default function DashboardClient(data: DashboardPageData) {
             {!hasNoData && <MobileProStatusBanner />}
 
             {/* Coach & Next Action Engine Unified Nudge Bar */}
-            {nextBestAction && !shouldSuppressCoachNudge && (
+            {nextBestAction && !shouldSuppressCoachNudge && !suppress?.coachNudge && (
                 <DashboardCoachNudge 
                     nextBestAction={nextBestAction} 
                     learningRecommendations={learningRecommendations || []} 
@@ -234,20 +236,26 @@ export default function DashboardClient(data: DashboardPageData) {
             )}
 
             {/* AI Insight Banner */}
-            {insight && <InsightBanner insight={insight} score={intelligenceScore} />}
+            {insight && !suppress?.positiveInsight && <InsightBanner insight={insight} score={intelligenceScore} />}
 
             {/* Report Nudge Card */}
-            {!reportNudgeDismissed && (daysSinceLastReport === undefined || daysSinceLastReport === null || daysSinceLastReport >= 7) && dashboardData.totalBalance > 0 && (
+            {!reportNudgeDismissed && !suppress?.reportNudge && weeklyReviewEligibility?.ready && (
                 <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl border transition-all bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200/60 dark:border-emerald-500/15">
                     <div className="p-1.5 bg-emerald-100 dark:bg-emerald-500/15 rounded-lg shrink-0">
                         <PieChartIcon size={14} className="text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div className="flex-1 min-w-0 truncate">
-                        <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">Your weekly review is ready</span>
-                        <span className="text-sm text-gray-600 dark:text-gray-500 ml-2 hidden sm:inline">— It's been {daysSinceLastReport == null ? "a while" : `${daysSinceLastReport} days`} since your last report. Generate one to uncover new insights.</span>
+                        <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                            {weeklyReviewEligibility.isFirstWeeklyReview ? "Your first review is ready" : "Your weekly review is ready"}
+                        </span>
+                        <span className="text-sm text-gray-600 dark:text-gray-500 ml-2 hidden sm:inline">
+                            — {weeklyReviewEligibility.isFirstWeeklyReview 
+                                ? "We found enough synced trades to build your first Weekly Review. Generate it to see one strength, one leak, and one next action." 
+                                : "You have new trade data since your last review. Generate the latest review to update your action plan."}
+                        </span>
                     </div>
-                    <a href="/dashboard/reports" className="shrink-0 bg-primary hover:bg-primary/90 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors text-center">
-                        Generate Report →
+                    <a href="/dashboard/reports?type=weekly-review" className="shrink-0 bg-primary hover:bg-primary/90 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors text-center">
+                        {weeklyReviewEligibility.isFirstWeeklyReview ? "Generate First Review" : "Generate Review"} →
                     </a>
                     <button
                         onClick={handleDismissReportNudge}

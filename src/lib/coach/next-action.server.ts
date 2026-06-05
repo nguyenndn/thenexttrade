@@ -1,4 +1,3 @@
-import { prisma } from "@/lib/prisma";
 import { computeTraderSignals } from "./signal-engine.server";
 
 export interface NextBestAction {

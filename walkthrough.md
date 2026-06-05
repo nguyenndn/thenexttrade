@@ -911,3 +911,30 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
 - `npm run lint` (ESLint Linter) -> **`0` errors** ✅
 - `npx vitest run` (Unit Tests) -> **`26/26` tests passed (100% success)** ✅
 
+---
+
+## Phase 43: Dashboard Alert Orchestration and Weekly Review Gating ✅
+
+### Key Achievements
+
+- **Centralized Weekly Review Eligibility**:
+  - Created [`src/lib/reports/weekly-review-eligibility.ts`](file:///c:/laragon/www/gsn-crm/src/lib/reports/weekly-review-eligibility.ts) which handles eligibility math for first-time review generation (requiring `closedTradeCount >= 5`, `tradeDateSpanDays >= 5`, or trades in the previous completed calendar week) and returning-user review nudges (7+ days since last report and new trades logged).
+- **Consolidated Dashboard Alert Orchestration**:
+  - Refactored the dashboard data loader [`src/app/dashboard/dashboard-data.server.ts`](file:///c:/laragon/www/gsn-crm/src/app/dashboard/dashboard-data.server.ts) to calculate weekly review readiness and return display suppression flags (`suppress.reportNudge`, `suppress.positiveInsight`, `suppress.coachNudge`).
+  - Gated positive insights so they only appear if the user has `weeklyReportCount > 0` or `closedTradeCount >= 20`, and suppressed them while there are active review nudges or critical sync warnings.
+- **Customized Nudge Cards & Copy Rules**:
+  - Updated [`src/app/dashboard/DashboardClient.tsx`](file:///c:/laragon/www/gsn-crm/src/app/dashboard/DashboardClient.tsx) to read the suppression flags.
+  - Customized the report nudge card copy: first-time users see *"Your first review is ready"* with details on uncovering strengths/leaks/actions, while returning users see *"Your weekly review is ready"* to update their action plans.
+- **Activation Checklist Gating**:
+  - Refactored [`src/lib/activation/activation.server.ts`](file:///c:/laragon/www/gsn-crm/src/lib/activation/activation.server.ts) and the checklist view [`src/components/dashboard/ActivationChecklist.tsx`](file:///c:/laragon/www/gsn-crm/src/components/dashboard/ActivationChecklist.tsx).
+  - The weekly review step is marked as locked/unavailable if the user lacks sufficient trade history, bypassing it for the primary highlighted `nextStep` and rendering it as "Locked" with a helpful tooltip/title instead of an active link.
+- **Coach Signals Gating**:
+  - Modified [`src/lib/coach/signal-engine.server.ts`](file:///c:/laragon/www/gsn-crm/src/lib/coach/signal-engine.server.ts) to only inject the `NO_WEEKLY_REVIEW` signal once the first weekly review has met the eligibility criteria.
+  - Cleaned up unused imports (`SignalType`) and legacy database queries (`countWeeklyReports`) from the signals engine.
+
+### Verification Results
+
+- `npx tsc --noEmit` (TypeScript Compiler) -> **`0` errors** ✅
+- `npm run lint` (ESLint Linter) -> **`0` errors** ✅
+
+

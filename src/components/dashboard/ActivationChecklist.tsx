@@ -87,13 +87,22 @@ export function ActivationChecklist({ state }: ActivationChecklistProps) {
               {step.title}
             </span>
             {!step.completed && step.id !== nextStep?.id && (
-              <Link
-                href={step.ctaHref}
-                onClick={() => handleCtaClick(step.id, step.ctaHref)}
-                className="text-xs text-primary font-semibold hover:underline"
-              >
-                {step.ctaLabel}
-              </Link>
+              step.available !== false ? (
+                <Link
+                  href={step.ctaHref}
+                  onClick={() => handleCtaClick(step.id, step.ctaHref)}
+                  className="text-xs text-primary font-semibold hover:underline"
+                >
+                  {step.ctaLabel}
+                </Link>
+              ) : (
+                <span
+                  className="text-xs text-gray-400 dark:text-gray-600 cursor-not-allowed select-none"
+                  title={step.disabledReason}
+                >
+                  Locked
+                </span>
+              )
             )}
           </div>
         ))}

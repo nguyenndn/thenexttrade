@@ -13,6 +13,8 @@ export type ActivationStep = {
   ctaHref: string;
   completed: boolean;
   priority: number;
+  available?: boolean;
+  disabledReason?: string;
 };
 
 export type ActivationState = {
