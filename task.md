@@ -411,3 +411,8 @@
 - [x] Modify `src/components/dashboard/ActivationChecklist.tsx` to disable weekly review if not ready
 - [x] Modify `src/lib/coach/signal-engine.server.ts` to check `showFirstWeeklyReview` for `NO_WEEKLY_REVIEW` signal
 - [x] Run typescript typecheck (`npx tsc --noEmit`) and linter (`npm run lint`) to verify 0 errors
+
+## Phase 44: Fix Duplicate Review CTA Bug
+- [x] Refine ActivationChecklist suppression condition to check `!reportNudgeDismissed` and `!suppress?.reportNudge`
+- [x] Verify build and type checking
+

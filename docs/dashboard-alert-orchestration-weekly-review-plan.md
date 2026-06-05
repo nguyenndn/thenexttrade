@@ -264,6 +264,46 @@ Preferred UX:
 - Show completed prior steps.
 - Show "Generate First Review" only when eligible.
 
+### Known QA Bug: Duplicate Review CTA
+
+After implementing weekly review eligibility, a duplicate CTA can still happen:
+
+- `Report Nudge Card` shows `Your first review is ready`.
+- `ActivationChecklist` also highlights `Generate your first weekly review` as `nextStep`.
+
+This still violates the main product rule: one primary dashboard action at a time.
+
+Expected behavior:
+
+- If `weeklyReviewEligibility.ready === true`
+- And `activationState.nextStep?.id === "GENERATE_WEEKLY_REVIEW"`
+- And the dashboard is already rendering the first/returning weekly review nudge as the primary message
+- Then hide the full `ActivationChecklist` for that render, or at minimum hide its highlighted next-step CTA.
+
+Preferred fix in `src/app/dashboard/DashboardClient.tsx`:
+
+```ts
+const shouldHideActivationChecklistForPrimaryReview =
+  weeklyReviewEligibility?.ready &&
+  activationState.nextStep?.id === "GENERATE_WEEKLY_REVIEW";
+```
+
+Then guard checklist rendering:
+
+```tsx
+{activationState.completedCount < activationState.totalCount &&
+  !suppress?.activationChecklist &&
+  !shouldHideActivationChecklistForPrimaryReview && (
+    <ActivationChecklist state={activationState} />
+  )}
+```
+
+Alternative fix:
+
+- Set `suppress.activationChecklist = true` server-side when first/returning review nudge is selected as the primary dashboard message.
+
+Do not solve this by hiding the review nudge. The review nudge is the clearer primary action.
+
 ## Dashboard Display Orchestration
 
 Current source:
@@ -515,6 +555,7 @@ Tasks:
 - Does not show `Generate your first Weekly Coach Plan` separately.
 - Does not show `No critical issues — keep it up`.
 - Activation checklist should not duplicate the same CTA as a separate alert.
+- If `ActivationChecklist.nextStep.id === GENERATE_WEEKLY_REVIEW`, hide the checklist or its highlighted CTA while the review nudge is visible.
 
 ### New User, First Sync Last Week But Only 1 Trade
 
@@ -607,4 +648,3 @@ Generate your first Weekly Review to understand your strengths, leaks, and next 
 ```
 
 The dashboard should feel guided, not noisy.
-

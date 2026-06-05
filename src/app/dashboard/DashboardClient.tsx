@@ -158,6 +158,12 @@ export default function DashboardClient(data: DashboardPageData) {
         !firstSessionState.isCompleted &&
         firstSessionState.accountCount === 0);
 
+    const shouldHideActivationChecklistForPrimaryReview =
+        weeklyReviewEligibility?.ready &&
+        activationState.nextStep?.id === "GENERATE_WEEKLY_REVIEW" &&
+        !reportNudgeDismissed &&
+        !suppress?.reportNudge;
+
     // First Sync Success Modal state
     const [showSyncSuccess, setShowSyncSuccess] = useState(
         () => !!firstSessionState?.showFirstSyncSuccess
@@ -231,7 +237,7 @@ export default function DashboardClient(data: DashboardPageData) {
             ) : (
             <>
             {/* Activation Checklist — shown for in-progress users */}
-            {activationState.completedCount < activationState.totalCount && (
+            {activationState.completedCount < activationState.totalCount && !suppress?.activationChecklist && !shouldHideActivationChecklistForPrimaryReview && (
                 <ActivationChecklist state={activationState} />
             )}
 

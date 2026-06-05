@@ -937,4 +937,22 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
 - `npx tsc --noEmit` (TypeScript Compiler) -> **`0` errors** ✅
 - `npm run lint` (ESLint Linter) -> **`0` errors** ✅
 
+---
+
+## Phase 44: Fix Duplicate Review CTA Bug ✅
+
+### Key Achievements
+
+- **Refined ActivationChecklist Suppression**:
+  - Modified the checklist visibility logic in [`src/app/dashboard/DashboardClient.tsx`](file:///c:/laragon/www/gsn-crm/src/app/dashboard/DashboardClient.tsx) to check `!reportNudgeDismissed` and `!suppress?.reportNudge`.
+  - Ensures that the `ActivationChecklist` is only suppressed when the primary review nudge card is **actively visible** on the dashboard.
+  - If the user dismisses the review nudge card, the checklist will reappear showing `Generate your first weekly review` as the `nextStep`, allowing them to complete their onboarding flow smoothly without getting stuck.
+
+### Verification Results
+
+- TypeScript check (`npx tsc --noEmit`) -> **`0` errors** ✅
+- Linter audit (`npm run lint`) -> **`0` errors** ✅
+- Unit tests (`npx vitest run`) -> **`32/32` passed (100% success)** ✅
+
+
 
