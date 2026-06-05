@@ -392,3 +392,14 @@
 - [x] Build premium animated folder/paper icon with floating and sparkle effects
 - [x] Integrate `EmptyStateCTAs` to provide guided user action
 - [x] Run typescript typecheck (`npx tsc --noEmit`) and linter (`npm run lint`) to verify 0 errors
+
+## Phase 42: EA Sync API Route DB Performance Optimization (Batching)
+- [x] Refactor `/api/ea/trades` Route (`src/app/api/ea/trades/route.ts`) to use batch database operations
+  - [x] Parse all incoming trades in memory first
+  - [x] Query all existing tickets in a single `findMany` call with `{ externalTicket: { in: tickets } }`
+  - [x] Filter out existing trades to find new ones
+  - [x] Batch insert new trades in a single `createMany` transaction
+  - [x] Handle any errors gracefully and return skipped vs imported counts
+- [x] Run typescript typecheck (`npx tsc --noEmit`) and linter (`npm run lint`) to verify 0 errors
+- [x] Run unit tests (`npx vitest run`) to verify 100% success
+

@@ -72,57 +72,66 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Invalid trades data" }, { status: 400 });
         }
 
-        let imported = 0;
-        let skipped = 0;
+        const parsedTrades: any[] = [];
         const errors: string[] = [];
 
-        // Process each trade
+        // 1. Parse all incoming trades in memory first
         for (const rawTrade of trades) {
             try {
-                const trade = parseEATrade(rawTrade, account.platform || "MT4");
-
-                // Check for duplicate
-                const existing = await prisma.journalEntry.findFirst({
-                    where: {
-                        accountId: account.id,
-                        externalTicket: trade.ticket,
-                    },
-                });
-
-                if (existing) {
-                    skipped++;
-                    continue;
-                }
-
-                // Create trade
-                await prisma.journalEntry.create({
-                    data: {
-                        userId: account.userId,
-                        accountId: account.id,
-                        symbol: trade.symbol,
-                        type: trade.type,
-                        entryDate: trade.openTime,
-                        entryPrice: trade.openPrice,
-                        exitDate: trade.closeTime,
-                        exitPrice: trade.closePrice,
-                        stopLoss: trade.stopLoss || null,
-                        takeProfit: trade.takeProfit || null,
-                        lotSize: trade.volume, // lotSize in schema vs size/volume
-                        pnl: trade.profit,
-                        commission: trade.commission,
-                        swap: trade.swap,
-                        status: "CLOSED",
-                        result: trade.profit > 0 ? "WIN" : trade.profit < 0 ? "LOSS" : "BREAK_EVEN",
-                        externalTicket: trade.ticket,
-                        syncSource: "EA_SYNC",
-                        syncedAt: new Date(),
-                    },
-                });
-
-                imported++;
+                parsedTrades.push(parseEATrade(rawTrade, account.platform || "MT4"));
             } catch (err: any) {
-                errors.push(`Trade ${rawTrade.ticket}: ${err.message}`);
+                errors.push(`Trade parsing failed for ticket ${rawTrade?.ticket || "unknown"}: ${err.message}`);
             }
+        }
+
+        const tickets = parsedTrades.map(t => t.ticket);
+
+        // 2. Query all existing tickets in a single findMany call
+        const existingEntries = await prisma.journalEntry.findMany({
+            where: {
+                accountId: account.id,
+                externalTicket: { in: tickets },
+            },
+            select: { externalTicket: true },
+        });
+
+        const existingTicketsSet = new Set(existingEntries.map(e => e.externalTicket));
+
+        // 3. Filter out existing trades
+        const newTrades = parsedTrades.filter(t => !existingTicketsSet.has(t.ticket));
+        const skipped = trades.length - newTrades.length;
+        let imported = 0;
+
+        if (newTrades.length > 0) {
+            // 4. Batch insert new trades in a single createMany transaction
+            const insertData = newTrades.map(trade => ({
+                userId: account.userId,
+                accountId: account.id,
+                symbol: trade.symbol,
+                type: trade.type, // "BUY" | "SELL" (matches enum)
+                entryDate: trade.openTime,
+                entryPrice: trade.openPrice,
+                exitDate: trade.closeTime,
+                exitPrice: trade.closePrice,
+                stopLoss: trade.stopLoss || null,
+                takeProfit: trade.takeProfit || null,
+                lotSize: trade.volume,
+                pnl: trade.profit,
+                commission: trade.commission,
+                swap: trade.swap,
+                status: "CLOSED" as const,
+                result: trade.profit > 0 ? ("WIN" as const) : trade.profit < 0 ? ("LOSS" as const) : ("BREAK_EVEN" as const),
+                externalTicket: trade.ticket,
+                syncSource: "EA_SYNC",
+                syncedAt: new Date(),
+            }));
+
+            // Use createMany to insert in bulk
+            const result = await prisma.journalEntry.createMany({
+                data: insertData,
+                skipDuplicates: true, // Safeguard
+            });
+            imported = result.count;
         }
 
         // Log sync history
