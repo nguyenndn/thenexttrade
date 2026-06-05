@@ -13,6 +13,11 @@ export async function verifyTurnstile(
   ip?: string
 ): Promise<{ success: boolean; error?: string }> {
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
+  const disableTurnstile = process.env.DISABLE_TURNSTILE === "true" || process.env.NEXT_PUBLIC_DISABLE_TURNSTILE === "true";
+
+  if (disableTurnstile) {
+    return { success: true };
+  }
 
   const isProd = process.env.NODE_ENV === "production";
 

@@ -50,11 +50,15 @@ Thêm các biến sau vào **Vercel Dashboard → Settings → Environment Varia
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=<site-key-từ-cloudflare>
 TURNSTILE_SECRET_KEY=<secret-key-từ-cloudflare>
 
+# Tắt tạm thời Turnstile khi test ở Vercel (Optional)
+DISABLE_TURNSTILE=true
+NEXT_PUBLIC_DISABLE_TURNSTILE=true
+
 # Cron Protection (BẮT BUỘC)
 CRON_SECRET=<random-string-dài>
 ```
 
-> ⚠️ **QUAN TRỌNG**: Nếu không có `TURNSTILE_SECRET_KEY`, Turnstile sẽ block mọi request ở production.
+> ⚠️ **QUAN TRỌNG**: Nếu không có `TURNSTILE_SECRET_KEY`, Turnstile sẽ block mọi request ở production (Vercel/Coolify). Nếu muốn tạm thời tắt Turnstile để test (ví dụ trên Vercel), hãy thiết lập `DISABLE_TURNSTILE=true` và `NEXT_PUBLIC_DISABLE_TURNSTILE=true`. Khi deploy chính thức lên Coolify, hãy gỡ bỏ hoặc đặt các biến này thành `false`.
 
 ### 3. Turnstile — Test Keys (Dev Only)
 

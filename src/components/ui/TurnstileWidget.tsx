@@ -26,6 +26,7 @@ declare global {
 }
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
+const DISABLE_TURNSTILE = process.env.NEXT_PUBLIC_DISABLE_TURNSTILE === "true";
 
 /**
  * Cloudflare Turnstile widget component.
@@ -78,8 +79,8 @@ export function TurnstileWidget({
   }, [onVerify, onExpire, onError, theme, size]);
 
   useEffect(() => {
-    // Skip in dev mode or if no site key — auto-bypass so forms still work
-    if (isDev || !SITE_KEY) {
+    // Skip in dev mode, if no site key, or if Turnstile is explicitly disabled — auto-bypass so forms still work
+    if (isDev || !SITE_KEY || DISABLE_TURNSTILE) {
       onVerify("dev-mode-bypass");
       return;
     }
@@ -117,8 +118,8 @@ export function TurnstileWidget({
     };
   }, [renderWidget, onVerify, isDev]);
 
-  // Don't render widget in dev mode or if no site key
-  if (isDev || !SITE_KEY) return null;
+  // Don't render widget in dev mode, if no site key, or if Turnstile is explicitly disabled
+  if (isDev || !SITE_KEY || DISABLE_TURNSTILE) return null;
 
   return <div ref={containerRef} className={className} />;
 }
