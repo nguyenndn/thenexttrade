@@ -416,3 +416,16 @@
 - [x] Refine ActivationChecklist suppression condition to check `!reportNudgeDismissed` and `!suppress?.reportNudge`
 - [x] Verify build and type checking
 
+## Phase 47: Leaderboard Top 3 Medal Strip Polish & Refinement
+- [x] Increase user avatar size from `w-12 h-12` to `w-14 h-14` (56px) for better layout balance
+- [x] Color-code card and avatar borders by rank (Gold, Silver, Bronze) for visual consistency
+- [x] Preserve card-level rank borders for the current user and highlight them using a green ring-offset
+- [x] Remove the forbidden `hover:-translate-y` classes to comply with Breek UI guidelines
+- [x] Verify compilation (`npx tsc --noEmit`), lint (`npm run lint`), and test suite (`npx vitest run`) pass with 0 errors
+
+## Phase 48: Dashboard Pages Spacing Synchronization
+- [x] Reduce default PageHeader bottom margin from `mb-6` (24px) to `mb-2` (8px) in `PageHeader.tsx`
+- [x] Update Leaderboard page wrapper layout from `space-y-6` to standard Breek spacing `space-y-4` (16px) in `leaderboard/page.tsx`
+- [x] Unify layout spacing gap (exactly 24px margin-to-margin) between headers and tabs/content widgets across all dashboard views
+- [x] Run `npx tsc --noEmit` and `npm run lint` to confirm 0 compile/lint errors across the codebase
+- [x] Ensure unit tests pass 100% (32/32 tests passed)

@@ -63,7 +63,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
   const isMyStats = type === "mystats";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <PageHeader
         title="Leaderboard"
         description="See where you stand in the community."

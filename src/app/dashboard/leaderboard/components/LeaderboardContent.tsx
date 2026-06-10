@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Trophy, Medal } from "lucide-react";
-import { TopPodium } from "./TopPodium";
+import { TopMedalStrip } from "./TopMedalStrip";
 import { LeaderboardTable } from "./LeaderboardTable";
 import { UserProfileCard } from "./UserProfileCard";
 import type { LeaderboardEntry, LeaderboardType } from "../actions";
@@ -34,19 +34,19 @@ export function LeaderboardContent({
 
   return (
     <div className="space-y-6">
-      {/* Top 3 Podium Section */}
+      {/* Top Performers Section */}
       <div className="bg-white dark:bg-[#151925] rounded-2xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
-        <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 dark:border-white/5">
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-white/5">
           <div className="w-8 h-8 rounded-lg bg-yellow-50 dark:bg-yellow-500/10 flex items-center justify-center">
             <Trophy size={16} className="text-yellow-500" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-gray-700 dark:text-white">Top 3</h3>
-            <p className="text-xs text-gray-500">Hall of Fame</p>
+            <h3 className="text-sm font-bold text-gray-700 dark:text-white">Top Performers</h3>
+            <p className="text-xs text-gray-500">The current leaders in this ranking.</p>
           </div>
         </div>
-        <div className="p-6">
-          <TopPodium
+        <div className="p-4">
+          <TopMedalStrip
             entries={top3}
             currentUserId={currentUserId}
             onUserClick={setSelectedUser}
