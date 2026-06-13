@@ -1,36 +1,39 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import styles from './FireflyBackground.module.css';
 
 export const FireflyBackground = () => {
-    const [fireflies, setFireflies] = useState<{ id: number; style: React.CSSProperties; animationClass?: string }[]>([]);
+  const [fireflies, setFireflies] = useState<{ id: number; style: React.CSSProperties; animationClass?: string }[]>([]);
 
-    useEffect(() => {
-        // Create 40 fireflies
-        const count = 40;
-        const newFireflies = Array.from({ length: count }).map((_, i) => ({
-            id: i,
-            animationClass: `animate-firefly-${Math.floor(Math.random() * 3) + 1}`,
-            style: {
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDuration: `${8 + Math.random() * 10}s`, // Faster movement
-                animationDelay: `${Math.random() * 5}s`,
-                scale: Math.random() * 0.5 + 0.5,
-            } as React.CSSProperties
-        }));
-        setFireflies(newFireflies);
-    }, []);
+  useEffect(() => {
+    // Create 40 fireflies
+    const count = 40;
+    const classes = [styles.firefly1, styles.firefly2, styles.firefly3];
+    const newFireflies = Array.from({ length: count }).map((_, i) => ({
+      id: i,
+      animationClass: classes[Math.floor(Math.random() * classes.length)],
+      style: {
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        animationDuration: `${8 + Math.random() * 10}s`, // Faster movement
+        animationDelay: `${Math.random() * 5}s`,
+        scale: Math.random() * 0.5 + 0.5,
+      } as React.CSSProperties
+    }));
+    setFireflies(newFireflies);
+  }, []);
 
-    return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {fireflies.map((fly) => (
-                <div
-                    key={fly.id}
-                    className={`absolute w-1.5 h-1.5 bg-primary rounded-full blur-[1px] opacity-0 ${fly.animationClass}`}
-                    style={fly.style}
-                />
-            ))}
-        </div>
-    );
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {fireflies.map((fly) => (
+        <div
+          key={fly.id}
+          className={`absolute w-1.5 h-1.5 bg-primary rounded-full blur-[1px] opacity-0 ${fly.animationClass || ''}`}
+          style={fly.style}
+        />
+      ))}
+    </div>
+  );
 };
+

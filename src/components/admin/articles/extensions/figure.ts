@@ -5,34 +5,34 @@ import { Node, mergeAttributes } from '@tiptap/core';
  * Preserves figure structure, passes through class + style attributes.
  */
 export const Figure = Node.create({
-    name: 'figure',
+ name: 'figure',
 
-    group: 'block',
+ group: 'block',
 
-    content: 'block+',
+ content: 'block+',
 
-    defining: true,
+ defining: true,
 
-    addAttributes() {
-        return {
-            class: {
-                default: null,
-                parseHTML: (el) => el.getAttribute('class'),
-            },
-            style: {
-                default: null,
-                parseHTML: (el) => el.getAttribute('style'),
-            },
-        };
-    },
+ addAttributes() {
+ return {
+ class: {
+ default: null,
+ parseHTML: (el) => el.getAttribute('class'),
+ },
+ style: {
+ default: null,
+ parseHTML: (el) => el.getAttribute('style'),
+ },
+ };
+ },
 
-    parseHTML() {
-        return [{ tag: 'figure' }];
-    },
+ parseHTML() {
+ return [{ tag: 'figure' }];
+ },
 
-    renderHTML({ HTMLAttributes }) {
-        return ['figure', mergeAttributes(HTMLAttributes), 0];
-    },
+ renderHTML({ HTMLAttributes }) {
+ return ['figure', mergeAttributes(HTMLAttributes), 0];
+ },
 });
 
 /**
@@ -41,36 +41,36 @@ export const Figure = Node.create({
  * User can freely toggle italic, change alignment via toolbar.
  */
 export const FigCaption = Node.create({
-    name: 'figcaption',
+ name: 'figcaption',
 
-    group: 'block',
+ group: 'block',
 
-    content: 'inline*',
+ content: 'inline*',
 
-    defining: true,
+ defining: true,
 
-    addAttributes() {
-        return {
-            style: {
-                default: null,
-                parseHTML: (el) => el.getAttribute('style'),
-            },
-            textAlign: {
-                default: null,
-                parseHTML: (el) => el.style.textAlign || null,
-                renderHTML: (attrs) => {
-                    if (!attrs.textAlign) return {};
-                    return { style: `text-align: ${attrs.textAlign}` };
-                },
-            },
-        };
-    },
+ addAttributes() {
+ return {
+ style: {
+ default: null,
+ parseHTML: (el) => el.getAttribute('style'),
+ },
+ textAlign: {
+ default: null,
+ parseHTML: (el) => el.style.textAlign || null,
+ renderHTML: (attrs) => {
+ if (!attrs.textAlign) return {};
+ return { style: `text-align: ${attrs.textAlign}` };
+ },
+ },
+ };
+ },
 
-    parseHTML() {
-        return [{ tag: 'figcaption' }];
-    },
+ parseHTML() {
+ return [{ tag: 'figcaption' }];
+ },
 
-    renderHTML({ HTMLAttributes }) {
-        return ['figcaption', mergeAttributes(HTMLAttributes), 0];
-    },
+ renderHTML({ HTMLAttributes }) {
+ return ['figcaption', mergeAttributes(HTMLAttributes), 0];
+ },
 });

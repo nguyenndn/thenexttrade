@@ -9,11 +9,11 @@ import { getUserMissions } from "@/lib/services/edge-missions.service";
  * repeatable missions become claimable as soon as the user completes the source event.
  */
 export async function GET() {
-  const user = await getAuthUser();
-  if (!user) return NextResponse.json({ count: 0 }, { status: 401 });
+ const user = await getAuthUser();
+ if (!user) return NextResponse.json({ count: 0 }, { status: 401 });
 
-  const missions = await getUserMissions(user.id);
-  const claimableCount = missions.filter((mission) => mission.completed && !mission.claimed).length;
+ const missions = await getUserMissions(user.id);
+ const claimableCount = missions.filter((mission) => mission.completed && !mission.claimed).length;
 
-  return NextResponse.json({ count: claimableCount });
+ return NextResponse.json({ count: claimableCount });
 }

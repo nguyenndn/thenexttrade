@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("position-size-calculator")!;
 
 export const metadata: Metadata = {
-    title: `${tool.title} | TheNextTrade`,
-    description: tool.description,
+ title: `${tool.title} | TheNextTrade`,
+ description: tool.description,
 };
 
 export default function PositionSizeCalculatorPage() {
-    return (
-        <ToolPageLayout tool={tool}>
-            <PositionSizeCalc />
-        </ToolPageLayout>
-    );
+ return (
+ <ToolPageLayout tool={tool}>
+ <PositionSizeCalc />
+ </ToolPageLayout>
+ );
 }

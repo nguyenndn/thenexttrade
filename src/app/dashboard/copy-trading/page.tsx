@@ -7,35 +7,35 @@ import { CopyTradingMyAccount } from "@/components/copy-trading/CopyTradingMyAcc
 import { Copy, User } from "lucide-react";
 
 export default function CopyTradingPage() {
-    return (
-        <div className="space-y-4">
-            <PageHeader
-                title="Copy Trading"
-                description="Powered by PVSR Capital — institutional-grade trade synchronization."
-            />
+ return (
+ <div className="space-y-4">
+ <PageHeader
+ title="Copy Trading"
+ description="Powered by PVSR Capital — institutional-grade trade synchronization."
+ />
 
-            <Tabs defaultValue="overview" tabsId="copy-trading">
-                <div className="mb-4">
-                    <TabsList>
-                        <TabsTrigger value="overview">
-                            <Copy size={15} />
-                            <span>Overview</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="my-account">
-                            <User size={15} />
-                            <span>My Account</span>
-                        </TabsTrigger>
-                    </TabsList>
-                </div>
+ <Tabs defaultValue="overview" tabsId="copy-trading">
+ <div className="mb-4">
+ <TabsList>
+ <TabsTrigger value="overview">
+ <Copy size={15} />
+ <span>Overview</span>
+ </TabsTrigger>
+ <TabsTrigger value="my-account">
+ <User size={15} />
+ <span>My Account</span>
+ </TabsTrigger>
+ </TabsList>
+ </div>
 
-                <TabsContent value="overview">
-                    <CopyTradingOverview />
-                </TabsContent>
+ <TabsContent value="overview">
+ <CopyTradingOverview />
+ </TabsContent>
 
-                <TabsContent value="my-account">
-                    <CopyTradingMyAccount />
-                </TabsContent>
-            </Tabs>
-        </div>
-    );
+ <TabsContent value="my-account">
+ <CopyTradingMyAccount />
+ </TabsContent>
+ </Tabs>
+ </div>
+ );
 }

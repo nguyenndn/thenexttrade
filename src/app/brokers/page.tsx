@@ -7,8 +7,8 @@ import { DynamicFirefly as FireflyBackground } from '@/components/ui/DynamicFire
 import BrokersClient from './BrokersClient';
 
 export const metadata: Metadata = {
-    title: "Trusted Partners — Brokers, Crypto & VPS | The Next Trade",
-    description: 'Handpicked forex brokers, crypto exchanges, and VPS hosting we personally use and trust.',
+ title: "Trusted Partners — Brokers, Crypto & VPS | The Next Trade",
+ description: 'Handpicked forex brokers, crypto exchanges, and VPS hosting we personally use and trust.',
 };
 
 export const revalidate = 86400;
@@ -16,21 +16,21 @@ export const revalidate = 86400;
 export default async function BrokersPage() {
 
 
-    return (
-        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
-            <PublicHeader />
+ return (
+ <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
+ <PublicHeader />
 
-            <main className="flex-1 pt-20 sm:pt-32 pb-8 sm:pb-16 relative overflow-hidden">
-                {/* Background */}
-                <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
-                <FireflyBackground />
+ <main className="flex-1 pt-20 sm:pt-32 pb-8 sm:pb-16 relative overflow-hidden">
+ {/* Background */}
+ <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
+ <FireflyBackground />
 
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <BrokersClient />
-                </div>
-            </main>
+ <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+ <BrokersClient />
+ </div>
+ </main>
 
-            <SiteFooter />
-        </div>
-    );
+ <SiteFooter />
+ </div>
+ );
 }

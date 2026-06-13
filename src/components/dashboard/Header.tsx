@@ -17,105 +17,105 @@ import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { Button } from "@/components/ui/Button";
 
 export function Header({
-    onMobileMenuClick,
-    searchRoute = "/dashboard/search",
-    showAccountSelector = false,
-    user: initialUser,
-    bell,
-    collapsed,
-    setCollapsed
+ onMobileMenuClick,
+ searchRoute = "/dashboard/search",
+ showAccountSelector = false,
+ user: initialUser,
+ bell,
+ collapsed,
+ setCollapsed
 }: {
-    onMobileMenuClick?: () => void,
-    searchRoute?: string,
-    showAccountSelector?: boolean,
-    user?: AuthUser | null,
-    bell?: React.ReactNode,
-    collapsed?: boolean,
-    setCollapsed?: (v: boolean) => void
+ onMobileMenuClick?: () => void,
+ searchRoute?: string,
+ showAccountSelector?: boolean,
+ user?: AuthUser | null,
+ bell?: React.ReactNode,
+ collapsed?: boolean,
+ setCollapsed?: (v: boolean) => void
 }) {
-    const searchParams = useSearchParams();
-    const accountId = searchParams.get("accountId");
+ const searchParams = useSearchParams();
+ const accountId = searchParams.get("accountId");
 
-    const { theme, toggleTheme } = useTheme();
-    const isDark = theme === "dark";
+ const { theme, toggleTheme } = useTheme();
+ const isDark = theme === "dark";
 
-    const [user, setUser] = useState<AuthUser | null>(initialUser || null);
+ const [user, setUser] = useState<AuthUser | null>(initialUser || null);
 
-    useEffect(() => {
-        if (initialUser) {
-            setUser(initialUser);
-        }
-    }, [initialUser]);
+ useEffect(() => {
+ if (initialUser) {
+ setUser(initialUser);
+ }
+ }, [initialUser]);
 
-    // Streak / Profile fetch logic can be added here if needed
+ // Streak / Profile fetch logic can be added here if needed
 
-    // Listen for streak updates or other custom events
-    useEffect(() => {
-        if (!user) return;
-        // Logic restored...
-    }, [user]);
+ // Listen for streak updates or other custom events
+ useEffect(() => {
+ if (!user) return;
+ // Logic restored...
+ }, [user]);
 
-    return (
-        <>
-            <header className="mx-4 mt-3 mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-gray-200 dark:border-white/10 h-16 px-4 lg:px-6 flex items-center justify-between z-40 relative transition-all duration-100 ease-in-out">
-                {/* Left Section: Toggle + Logo */}
-                <div className="flex items-center gap-4">
-                    {/* Desktop Toggle + Logo (Toggle FIRST) */}
-                    <div className="flex items-center gap-3">
-                        {/* Desktop Toggle */}
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setCollapsed?.(!collapsed)}
-                            className="hidden lg:flex p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                        >
-                            <Menu size={20} />
-                        </Button>
-                        {/* Mobile Toggle */}
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={onMobileMenuClick}
-                            className="flex lg:hidden p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                        >
-                            <Menu size={20} />
-                        </Button>
-                        <Logo textClassName="text-lg font-bold tracking-tight text-gray-700 dark:text-white" />
-                    </div>
-                </div>
+ return (
+ <>
+ <header className="mx-4 mt-3 mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-dashboard h-16 px-4 lg:px-6 flex items-center justify-between z-40 relative transition-all duration-100 ease-in-out">
+ {/* Left Section: Toggle + Logo */}
+ <div className="flex items-center gap-4">
+ {/* Desktop Toggle + Logo (Toggle FIRST) */}
+ <div className="flex items-center gap-3">
+ {/* Desktop Toggle */}
+ <Button
+ variant="ghost"
+ size="icon"
+ onClick={() => setCollapsed?.(!collapsed)}
+ className="hidden lg:flex p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+ >
+ <Menu size={20} />
+ </Button>
+ {/* Mobile Toggle */}
+ <Button
+ variant="ghost"
+ size="icon"
+ onClick={onMobileMenuClick}
+ className="flex lg:hidden p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+ >
+ <Menu size={20} />
+ </Button>
+ <Logo textClassName="text-lg font-bold tracking-tight text-gray-700 dark:text-white" />
+ </div>
+ </div>
 
-                {/* Spacer */}
-                <div className="flex-1" />
+ {/* Spacer */}
+ <div className="flex-1" />
 
-                {/* Right Side Actions & Search */}
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                    <div className="hidden md:block mr-2">
-                        <CommandPaletteTrigger />
-                    </div>
+ {/* Right Side Actions & Search */}
+ <div className="flex items-center gap-1.5 sm:gap-2">
+ <div className="hidden md:block mr-2">
+ <CommandPaletteTrigger />
+ </div>
 
-                    {showAccountSelector && (
-                        <div className="hidden md:block">
-                            <AccountSelector currentAccountId={accountId ?? undefined} />
-                        </div>
-                    )}
+ {showAccountSelector && (
+ <div className="hidden md:block">
+ <AccountSelector currentAccountId={accountId ?? undefined} />
+ </div>
+ )}
 
-                    {/* Theme Toggle — visible on all sizes, next to avatar */}
-                    <ThemeToggleSwitch />
+ {/* Theme Toggle — visible on all sizes, next to avatar */}
+ <ThemeToggleSwitch />
 
 
-                    {/* Notification Bell — visible on all sizes, next to avatar */}
-                    <div key="notification-bell">
-                        {bell ? bell : <NotificationBell />}
-                    </div>
+ {/* Notification Bell — visible on all sizes, next to avatar */}
+ <div key="notification-bell">
+ {bell ? bell : <NotificationBell />}
+ </div>
 
-                    <div className="h-6 w-[1px] bg-gray-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
+ <div className="h-6 w-[1px] bg-gray-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
 
-                    <UserMenu user={initialUser ?? null} variant="dashboard" />
-                </div>
-            </header>
+ <UserMenu user={initialUser ?? null} variant="dashboard" />
+ </div>
+ </header>
 
-            {/* Command Palette Modal (Ctrl+K) */}
-            <CommandPalette searchRoute={searchRoute} />
-        </>
-    );
+ {/* Command Palette Modal (Ctrl+K) */}
+ <CommandPalette searchRoute={searchRoute} />
+ </>
+ );
 }

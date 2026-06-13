@@ -7,53 +7,53 @@ import { TradingSystemsClient } from "@/components/dashboard/trading-systems/Tra
 import { getMyVipRequest, getVipLink } from "@/actions/vip-request";
 
 export const metadata: Metadata = {
-    title: "Trading System | TheNextTrade",
-    description: "Download professional trading EAs, indicators, and join VIP",
+ title: "Trading System | TheNextTrade",
+ description: "Download professional trading EAs, indicators, and join VIP",
 };
 
 export default async function TradingSystemsPage() {
-    const user = await getAuthUser();
+ const user = await getAuthUser();
 
-    if (!user) {
-        redirect("/auth/login");
-    }
+ if (!user) {
+ redirect("/auth/login");
+ }
 
-    // OPTIMIZED: Fetch all data in parallel
-    const [licenses, products, downloadCount, vipRequest, vipLink, tradingAccountCount] = await Promise.all([
-        prisma.eALicense.findMany({
-            where: { userId: user.id },
-            orderBy: { createdAt: "desc" },
-        }),
-        prisma.eAProduct.findMany({
-            where: { isActive: true },
-            orderBy: { createdAt: "desc" },
-        }),
-        prisma.eADownload.count({
-            where: { userId: user.id },
-        }),
-        getMyVipRequest(),
-        getVipLink(),
-        prisma.tradingAccount.count({ where: { userId: user.id } }),
-    ]);
+ // OPTIMIZED: Fetch all data in parallel
+ const [licenses, products, downloadCount, vipRequest, vipLink, tradingAccountCount] = await Promise.all([
+ prisma.eALicense.findMany({
+ where: { userId: user.id },
+ orderBy: { createdAt: "desc" },
+ }),
+ prisma.eAProduct.findMany({
+ where: { isActive: true },
+ orderBy: { createdAt: "desc" },
+ }),
+ prisma.eADownload.count({
+ where: { userId: user.id },
+ }),
+ getMyVipRequest(),
+ getVipLink(),
+ prisma.tradingAccount.count({ where: { userId: user.id } }),
+ ]);
 
-    // Check for Approved License
-    const hasApprovedLicense = licenses.some(
-        (l) => l.status === AccountStatus.APPROVED && (!l.expiryDate || l.expiryDate >= new Date())
-    );
+ // Check for Approved License
+ const hasApprovedLicense = licenses.some(
+ (l) => l.status === AccountStatus.APPROVED && (!l.expiryDate || l.expiryDate >= new Date())
+ );
 
-    return (
-        <div className="space-y-4">
-            <TradingSystemsClient
-                licenses={licenses}
-                products={products}
-                hasApprovedLicense={hasApprovedLicense}
-                hasAccount={tradingAccountCount > 0}
-                hasDownloaded={downloadCount > 0}
-                vipRequest={vipRequest}
-                vipLink={vipLink}
-                userEmail={user.email || ""}
-                userName={user.name || undefined}
-            />
-        </div>
-    );
+ return (
+ <div className="space-y-4">
+ <TradingSystemsClient
+ licenses={licenses}
+ products={products}
+ hasApprovedLicense={hasApprovedLicense}
+ hasAccount={tradingAccountCount > 0}
+ hasDownloaded={downloadCount > 0}
+ vipRequest={vipRequest}
+ vipLink={vipLink}
+ userEmail={user.email || ""}
+ userName={user.name || undefined}
+ />
+ </div>
+ );
 }

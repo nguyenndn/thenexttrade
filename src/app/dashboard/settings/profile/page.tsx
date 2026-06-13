@@ -5,38 +5,48 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function PublicProfilePage() {
-    const user = await getAuthUser();
+ const user = await getAuthUser();
 
-    if (!user) {
-        return (
-            <div className="py-8 text-center text-gray-600 dark:text-gray-300">
-                <p>Please log in to access profile settings.</p>
-            </div>
-        );
-    }
+ if (!user) {
+ return (
+ <div className="py-8 text-center text-gray-600 dark:text-gray-300">
+ <p>Please log in to access profile settings.</p>
+ </div>
+ );
+ }
 
-    const profile = await prisma.profile.findUnique({
-        where: { userId: user.id },
-        select: {
-            username: true,
-            isPublicProfile: true,
-            showTradeScore: true,
-            showBadges: true,
-            showPairStats: true,
-            showSessionStats: true,
-            profileHeadline: true,
-        },
-    });
+ const profile = await prisma.profile.findUnique({
+ where: { userId: user.id },
+ select: {
+ username: true,
+ isPublicProfile: true,
+ showTradeScore: true,
+ showBadges: true,
+ showPairStats: true,
+ showSessionStats: true,
+ profileHeadline: true,
+ showMoney: true,
+ showBroker: true,
+ showAccountNumber: true,
+ showRealName: true,
+ showPercentMetrics: true,
+ },
+ });
 
-    const settings = profile || {
-        username: null,
-        isPublicProfile: false,
-        showTradeScore: false,
-        showBadges: true,
-        showPairStats: true,
-        showSessionStats: true,
-        profileHeadline: null,
-    };
+ const settings = profile || {
+ username: null,
+ isPublicProfile: false,
+ showTradeScore: false,
+ showBadges: true,
+ showPairStats: true,
+ showSessionStats: true,
+ profileHeadline: null,
+ showMoney: false,
+ showBroker: false,
+ showAccountNumber: false,
+ showRealName: false,
+ showPercentMetrics: true,
+ };
 
-    return <ProfileClient initialSettings={settings} />;
+ return <ProfileClient initialSettings={settings} />;
 }

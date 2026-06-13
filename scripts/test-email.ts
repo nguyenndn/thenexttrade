@@ -1,5 +1,5 @@
 
-import { sendEmail } from '../src/lib/email';
+import { sendEmail } from '../src/lib/services/email.service';
 
 async function main() {
     console.log("Testing Email Sending...");

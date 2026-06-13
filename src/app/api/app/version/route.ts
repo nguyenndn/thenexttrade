@@ -10,36 +10,36 @@ import path from "path";
  * Release workflow:
  * 1. Build new exe → change VERSION in main.py
  * 2. Upload exe as: public/downloads/TheNextTradeConnect.exe
- *    or add "downloadPath" to app-release.json for versioned artifacts.
+ * or add "downloadPath" to app-release.json for versioned artifacts.
  * 3. Edit public/downloads/app-release.json → bump "version"
  * Done! All users see the update.
  */
 export async function GET(request: NextRequest) {
-  try {
-    const releasePath = path.join(
-      process.cwd(),
-      "public",
-      "downloads",
-      "app-release.json"
-    );
-    const raw = await readFile(releasePath, "utf-8");
-    const release = JSON.parse(raw);
+ try {
+ const releasePath = path.join(
+ process.cwd(),
+ "public",
+ "downloads",
+ "app-release.json"
+ );
+ const raw = await readFile(releasePath, "utf-8");
+ const release = JSON.parse(raw);
 
-    // Derive base URL from the incoming request
-    const origin = request.nextUrl.origin;
+ // Derive base URL from the incoming request
+ const origin = request.nextUrl.origin;
 
-    const downloadPath = release.downloadPath || "/downloads/TheNextTradeConnect.exe";
+ const downloadPath = release.downloadPath || "/downloads/TheNextTradeConnect.exe";
 
-    return NextResponse.json({
-      version: release.version,
-      downloadUrl: `${origin}${downloadPath}`,
-      changelog: release.changelog || "",
-      mandatory: release.mandatory || false,
-    });
-  } catch {
-    return NextResponse.json(
-      { error: "Release info not found" },
-      { status: 500 }
-    );
-  }
+ return NextResponse.json({
+ version: release.version,
+ downloadUrl: `${origin}${downloadPath}`,
+ changelog: release.changelog || "",
+ mandatory: release.mandatory || false,
+ });
+ } catch {
+ return NextResponse.json(
+ { error: "Release info not found" },
+ { status: 500 }
+ );
+ }
 }

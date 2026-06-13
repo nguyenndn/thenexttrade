@@ -10,45 +10,45 @@ import { revalidatePath } from "next/cache";
  * Pass null to clear the main account.
  */
 export async function setMainAccount(accountId: string | null) {
-  const user = await getAuthUser();
-  if (!user) return { error: "Unauthorized" };
+ const user = await getAuthUser();
+ if (!user) return { error: "Unauthorized" };
 
-  // If setting an account, verify it belongs to this user
-  if (accountId) {
-    const account = await prisma.tradingAccount.findFirst({
-      where: { id: accountId, userId: user.id },
-      select: { id: true },
-    });
-    if (!account) return { error: "Account not found" };
-  }
+ // If setting an account, verify it belongs to this user
+ if (accountId) {
+ const account = await prisma.tradingAccount.findFirst({
+ where: { id: accountId, userId: user.id },
+ select: { id: true },
+ });
+ if (!account) return { error: "Account not found" };
+ }
 
-  await prisma.profile.upsert({
-    where: { userId: user.id },
-    create: {
-      userId: user.id,
-      mainTradingAccountId: accountId,
-    },
-    update: {
-      mainTradingAccountId: accountId,
-    },
-  });
+ await prisma.profile.upsert({
+ where: { userId: user.id },
+ create: {
+ userId: user.id,
+ mainTradingAccountId: accountId,
+ },
+ update: {
+ mainTradingAccountId: accountId,
+ },
+ });
 
-  revalidatePath("/dashboard/accounts");
-  revalidatePath("/dashboard");
-  return { success: true };
+ revalidatePath("/dashboard/accounts");
+ revalidatePath("/dashboard");
+ return { success: true };
 }
 
 /**
  * Get the user's main trading account ID.
  */
 export async function getMainAccountId(): Promise<string | null> {
-  const user = await getAuthUser();
-  if (!user) return null;
+ const user = await getAuthUser();
+ if (!user) return null;
 
-  const profile = await prisma.profile.findUnique({
-    where: { userId: user.id },
-    select: { mainTradingAccountId: true },
-  });
+ const profile = await prisma.profile.findUnique({
+ where: { userId: user.id },
+ select: { mainTradingAccountId: true },
+ });
 
-  return profile?.mainTradingAccountId ?? null;
+ return profile?.mainTradingAccountId ?? null;
 }

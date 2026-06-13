@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("profit-loss-calculator")!;
 
 export const metadata: Metadata = {
-    title: `${tool.title} | TheNextTrade`,
-    description: tool.description,
+ title: `${tool.title} | TheNextTrade`,
+ description: tool.description,
 };
 
 export default function ProfitLossCalculatorPage() {
-    return (
-        <ToolPageLayout tool={tool}>
-            <ProfitLossCalc />
-        </ToolPageLayout>
-    );
+ return (
+ <ToolPageLayout tool={tool}>
+ <ProfitLossCalc />
+ </ToolPageLayout>
+ );
 }

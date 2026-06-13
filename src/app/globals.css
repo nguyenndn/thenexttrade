@@ -5,7 +5,7 @@
 /* ===== Dashboard Background ===== */
 /* Edit these hex values to change the dashboard background color */
 :root {
-  --dashboard-bg: #f5f7f8ba;
+  --dashboard-bg: #f5f3ef8c;
   /* Light mode: gray-50 */
   /* --dashboard-bg: #f9fafb; */
   --tooltip-bg: rgba(255, 255, 255, 0.95);
@@ -127,85 +127,7 @@ select:-webkit-autofill:focus {
   transition: background-color 0s 600000s, color 0s 600000s !important;
 }
 
-/* Firefly Animations */
-@keyframes firefly-1 {
-  0% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
 
-  10% {
-    opacity: 1;
-  }
-
-  50% {
-    transform: translate(50px, -80px);
-    opacity: 0.5;
-  }
-
-  90% {
-    opacity: 0.8;
-  }
-
-  100% {
-    transform: translate(-30px, -150px);
-    opacity: 0;
-  }
-}
-
-@keyframes firefly-2 {
-  0% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
-
-  20% {
-    opacity: 0.8;
-  }
-
-  60% {
-    transform: translate(-60px, -60px);
-    opacity: 0.2;
-  }
-
-  100% {
-    transform: translate(40px, -120px);
-    opacity: 0;
-  }
-}
-
-@keyframes firefly-3 {
-  0% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
-
-  30% {
-    opacity: 1;
-  }
-
-  70% {
-    transform: translate(80px, 40px);
-    opacity: 0.4;
-  }
-
-  100% {
-    transform: translate(20px, -100px);
-    opacity: 0;
-  }
-}
-
-.animate-firefly-1 {
-  animation: firefly-1 linear infinite;
-}
-
-.animate-firefly-2 {
-  animation: firefly-2 linear infinite;
-}
-
-.animate-firefly-3 {
-  animation: firefly-3 linear infinite;
-}
 
 .custom-scrollbar {
   scrollbar-width: thin;

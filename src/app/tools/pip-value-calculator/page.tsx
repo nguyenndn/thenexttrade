@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("pip-value-calculator")!;
 
 export const metadata: Metadata = {
-    title: `${tool.title} | TheNextTrade`,
-    description: tool.description,
+ title: `${tool.title} | TheNextTrade`,
+ description: tool.description,
 };
 
 export default function PipValueCalculatorPage() {
-    return (
-        <ToolPageLayout tool={tool}>
-            <PipValueCalc />
-        </ToolPageLayout>
-    );
+ return (
+ <ToolPageLayout tool={tool}>
+ <PipValueCalc />
+ </ToolPageLayout>
+ );
 }

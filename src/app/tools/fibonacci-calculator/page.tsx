@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("fibonacci-calculator")!;
 
 export const metadata: Metadata = {
-    title: `${tool.title} | TheNextTrade`,
-    description: tool.description,
+ title: `${tool.title} | TheNextTrade`,
+ description: tool.description,
 };
 
 export default function FibonacciCalculatorPage() {
-    return (
-        <ToolPageLayout tool={tool}>
-            <FibonacciCalc />
-        </ToolPageLayout>
-    );
+ return (
+ <ToolPageLayout tool={tool}>
+ <FibonacciCalc />
+ </ToolPageLayout>
+ );
 }

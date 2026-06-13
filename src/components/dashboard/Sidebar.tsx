@@ -6,9 +6,9 @@ import { Logo } from '@/components/ui/Logo';
 import { cn } from '@/lib/utils';
 import { dashboardMenuItems } from '@/config/navigation';
 import {
-    Menu,
-    LogOut,
-    ChevronDown
+ Menu,
+ LogOut,
+ ChevronDown
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { signout } from '@/app/auth/actions';
@@ -17,291 +17,291 @@ import { Button } from "@/components/ui/Button";
 import { VipStatusWidget } from "@/components/dashboard/VipStatusWidget";
 
 export interface SidebarItem {
-    name: string;
-    href: string;
-    icon?: any;
-    items?: SidebarItem[];
+ name: string;
+ href: string;
+ icon?: any;
+ items?: SidebarItem[];
 }
 
 interface SidebarProps {
-    items?: any[];
-    className?: string;
-    collapsed?: boolean;
-    setCollapsed?: (value: boolean) => void;
+ items?: any[];
+ className?: string;
+ collapsed?: boolean;
+ setCollapsed?: (value: boolean) => void;
 }
 
 interface SidebarItemComponentProps {
-    item: SidebarItem;
-    pathname: string | null;
-    collapsed: boolean;
-    setCollapsed: (value: boolean) => void;
-    isExpanded: boolean;
-    onToggle: () => void;
-    activeHref: string | null;
-    claimableCount?: number;
+ item: SidebarItem;
+ pathname: string | null;
+ collapsed: boolean;
+ setCollapsed: (value: boolean) => void;
+ isExpanded: boolean;
+ onToggle: () => void;
+ activeHref: string | null;
+ claimableCount?: number;
 }
 
 // Extracted component to follow Rules of Hooks
 function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpanded, onToggle, activeHref, claimableCount }: SidebarItemComponentProps) {
-    const Icon = item.icon;
-    const hasSubItems = item.items && item.items.length > 0;
-    const isGroupLink = hasSubItems && item.href !== "#"; // e.g. Dashboard
+ const Icon = item.icon;
+ const hasSubItems = item.items && item.items.length > 0;
+ const isGroupLink = hasSubItems && item.href !== "#"; // e.g. Dashboard
 
-    // Active Logic
-    // Exact match determined by the parent's longest prefix match
-    const isSelfActive = item.href !== "#" && item.href === activeHref;
+ // Active Logic
+ // Exact match determined by the parent's longest prefix match
+ const isSelfActive = item.href !== "#" && item.href === activeHref;
 
-    // Check if any child is precisely the active one
-    const isChildActive = item.items && item.items.some(sub => sub.href === activeHref);
+ // Check if any child is precisely the active one
+ const isChildActive = item.items && item.items.some(sub => sub.href === activeHref);
 
-    const isBranchActive = isSelfActive || isChildActive;
+ const isBranchActive = isSelfActive || isChildActive;
 
-    // Handle Main Click
-    const handleMainClick = (e: React.MouseEvent) => {
-        if (!isGroupLink && collapsed) {
-            setCollapsed(false);
-        }
-    };
+ // Handle Main Click
+ const handleMainClick = (e: React.MouseEvent) => {
+ if (!isGroupLink && collapsed) {
+ setCollapsed(false);
+ }
+ };
 
-    const isActiveStyle = isBranchActive;
+ const isActiveStyle = isBranchActive;
 
-    return (
-        <div className="mb-1 relative">
-            {/* Active indicator bar — flush against sidebar left edge */}
-            {isActiveStyle && (
-                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-primary" />
-            )}
-            <div
-                className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 mx-3 rounded-xl cursor-pointer transition-all duration-300 group relative select-none overflow-hidden",
-                    collapsed ? "justify-center px-0 mx-2" : "",
-                    isActiveStyle
-                        ? "text-primary font-semibold shadow-sm"
-                        : "text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
-                )}
-                style={isActiveStyle ? {
-                    background: 'linear-gradient(to right, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.02))',
-                } : undefined}
-                onClick={handleMainClick}
-            >
-                <Link
-                    href={item.href === "#" ? "" : item.href}
-                    className="absolute inset-0 z-0"
-                    onClick={(e) => {
-                        if (item.href === "#") e.preventDefault();
-                    }}
-                />
+ return (
+ <div className="mb-1 relative">
+ {/* Active indicator bar — flush against sidebar left edge */}
+ {isActiveStyle && (
+ <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-primary" />
+ )}
+ <div
+ className={cn(
+ "flex items-center gap-3 px-3 py-2.5 mx-3 rounded-xl cursor-pointer transition-all duration-300 group relative select-none overflow-hidden",
+ collapsed ? "justify-center px-0 mx-2" : "",
+ isActiveStyle
+ ? "text-primary font-semibold shadow-sm"
+ : "text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
+ )}
+ style={isActiveStyle ? {
+ background: 'linear-gradient(to right, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.02))',
+ } : undefined}
+ onClick={handleMainClick}
+ >
+ <Link
+ href={item.href === "#" ? "" : item.href}
+ className="absolute inset-0 z-0"
+ onClick={(e) => {
+ if (item.href === "#") e.preventDefault();
+ }}
+ />
 
-                <Icon size={20} className={cn(
-                    "transition-colors relative z-10 pointer-events-none min-w-[20px]",
-                    isActiveStyle ? "text-primary" : "text-gray-600 dark:text-gray-300 group-hover:text-gray-600 dark:group-hover:text-gray-300"
-                )} />
+ <Icon size={20} className={cn(
+ "transition-colors relative z-10 pointer-events-none min-w-[20px]",
+ isActiveStyle ? "text-primary" : "text-gray-600 dark:text-gray-300 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+ )} />
 
-                {!collapsed && (
-                    <span className="flex-1 text-sm relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-between">
-                        {item.name}
-                        {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
-                            <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
-                                {claimableCount}
-                            </span>
-                        )}
-                    </span>
-                )}
+ {!collapsed && (
+ <span className="flex-1 text-sm relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-between">
+ {item.name}
+ {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
+ <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+ {claimableCount}
+ </span>
+ )}
+ </span>
+ )}
 
-                {collapsed && (
-                    <>
-                        {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#1E2028]" />
-                        )}
-                        <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10 flex items-center gap-2">
-                            {item.name}
-                            {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
-                                <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                                    {claimableCount}
-                                </span>
-                            )}
-                        </div>
-                    </>
-                )}
-            </div>
-        </div>
-    );
+ {collapsed && (
+ <>
+ {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
+ <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#1E2028]" />
+ )}
+ <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10 flex items-center gap-2">
+ {item.name}
+ {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
+ <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+ {claimableCount}
+ </span>
+ )}
+ </div>
+ </>
+ )}
+ </div>
+ </div>
+ );
 }
 
 export function Sidebar({ items = dashboardMenuItems, className, collapsed, setCollapsed }: SidebarProps) {
-    const pathname = usePathname();
-    const isCollapsed = collapsed ?? false;
-    // const [collapsed, setCollapsed] = useState(false); // Removed local state
-    const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-    const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
+ const pathname = usePathname();
+ const isCollapsed = collapsed ?? false;
+ // const [collapsed, setCollapsed] = useState(false); // Removed local state
+ const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+ const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
 
-    const [claimableCount, setClaimableCount] = useState(0);
+ const [claimableCount, setClaimableCount] = useState(0);
 
-    // Fetch claimable mission count for badge
-    useEffect(() => {
-        let cancelled = false;
-        const fetchCount = async () => {
-            try {
-                const res = await fetch("/api/missions/claimable-count");
-                if (res.ok && !cancelled) {
-                    const data = await res.json();
-                    setClaimableCount(data.count || 0);
-                }
-            } catch { /* silent */ }
-        };
-        fetchCount();
-        const timer = setInterval(fetchCount, 60_000);
-        return () => { cancelled = true; clearInterval(timer); };
-    }, [pathname]);
+ // Fetch claimable mission count for badge
+ useEffect(() => {
+ let cancelled = false;
+ const fetchCount = async () => {
+ try {
+ const res = await fetch("/api/missions/claimable-count");
+ if (res.ok && !cancelled) {
+ const data = await res.json();
+ setClaimableCount(data.count || 0);
+ }
+ } catch { /* silent */ }
+ };
+ fetchCount();
+ const timer = setInterval(fetchCount, 60_000);
+ return () => { cancelled = true; clearInterval(timer); };
+ }, [pathname]);
 
-    // Filter out items with disabled feature flags (hide flagged items until loaded)
-    const visibleItems = useMemo(() =>
-        items.filter((item: any) => {
-            if (!item.featureFlag) return true;
-            if (!flagsLoaded) return false;
-            return !disabledFlags.has(item.featureFlag);
-        }),
-        [items, disabledFlags, flagsLoaded]
-    );
+ // Filter out items with disabled feature flags (hide flagged items until loaded)
+ const visibleItems = useMemo(() =>
+ items.filter((item: any) => {
+ if (!item.featureFlag) return true;
+ if (!flagsLoaded) return false;
+ return !disabledFlags.has(item.featureFlag);
+ }),
+ [items, disabledFlags, flagsLoaded]
+ );
 
-    // Map child tab routes to their parent menu item routes
-    // (These routes are accessed via TabBar but not shown in sidebar)
-    const childRouteMap: Record<string, string> = {
-        "/dashboard/sessions": "/dashboard/journal",
-        "/dashboard/reports": "/dashboard/analytics",
-        "/dashboard/reports/weekly": "/dashboard/analytics",
-        "/dashboard/reports/monthly": "/dashboard/analytics",
-        "/dashboard/mistakes": "/dashboard/analytics",
-        "/dashboard/intelligence": "/dashboard/analytics",
-    };
+ // Map child tab routes to their parent menu item routes
+ // (These routes are accessed via TabBar but not shown in sidebar)
+ const childRouteMap: Record<string, string> = {
+ "/dashboard/sessions": "/dashboard/journal",
+ "/dashboard/reports": "/dashboard/analytics",
+ "/dashboard/reports/weekly": "/dashboard/analytics",
+ "/dashboard/reports/monthly": "/dashboard/analytics",
+ "/dashboard/mistakes": "/dashboard/analytics",
+ "/dashboard/intelligence": "/dashboard/analytics",
+ };
 
-    // Calculate the most specific active route using longest prefix match
-    const activeHref = useMemo(() => {
-        if (!pathname) return null;
+ // Calculate the most specific active route using longest prefix match
+ const activeHref = useMemo(() => {
+ if (!pathname) return null;
 
-        // Resolve child routes to their parent menu item
-        const effectivePath = childRouteMap[pathname] || pathname;
+ // Resolve child routes to their parent menu item
+ const effectivePath = childRouteMap[pathname] || pathname;
 
-        let bestMatch = "";
-        
-        const checkMatch = (href: string) => {
-             if (href && href !== "#" && (effectivePath === href || effectivePath.startsWith(`${href}/`))) {
-                 if (href.length > bestMatch.length) {
-                     bestMatch = href;
-                 }
-             }
-        }
-        
-        visibleItems.forEach((item: any) => {
-            checkMatch(item.href);
-            if (item.items) {
-                item.items.forEach((sub: any) => checkMatch(sub.href));
-            }
-        });
-        
-        return bestMatch || null;
-    }, [pathname, visibleItems]);
+ let bestMatch = "";
+ 
+ const checkMatch = (href: string) => {
+ if (href && href !== "#" && (effectivePath === href || effectivePath.startsWith(`${href}/`))) {
+ if (href.length > bestMatch.length) {
+ bestMatch = href;
+ }
+ }
+ }
+ 
+ visibleItems.forEach((item: any) => {
+ checkMatch(item.href);
+ if (item.items) {
+ item.items.forEach((sub: any) => checkMatch(sub.href));
+ }
+ });
+ 
+ return bestMatch || null;
+ }, [pathname, visibleItems]);
 
-    useEffect(() => {
-        if (!pathname) return;
-        const activeGroup = visibleItems.find((item: any) => {
-            if (item.href !== "#" && pathname === item.href) return true;
-            if (item.items) {
-                return item.items.some((sub: any) => pathname === sub.href || pathname.startsWith(`${sub.href}/`));
-            }
-            return false;
-        });
+ useEffect(() => {
+ if (!pathname) return;
+ const activeGroup = visibleItems.find((item: any) => {
+ if (item.href !== "#" && pathname === item.href) return true;
+ if (item.items) {
+ return item.items.some((sub: any) => pathname === sub.href || pathname.startsWith(`${sub.href}/`));
+ }
+ return false;
+ });
 
-        if (activeGroup) {
-            setExpandedGroup(activeGroup.name);
-        }
-    }, [pathname, visibleItems]);
+ if (activeGroup) {
+ setExpandedGroup(activeGroup.name);
+ }
+ }, [pathname, visibleItems]);
 
-    // Detect if we're in Admin sidebar by checking first item href
-    const isAdmin = visibleItems[0]?.href === "/admin";
+ // Detect if we're in Admin sidebar by checking first item href
+ const isAdmin = visibleItems[0]?.href === "/admin";
 
-    const sectionNames: Record<string, string> = isAdmin
-        ? {
-            // Admin groups
-            "Release Health": "MONITORING",
-            "Articles": "CONTENT",
-            "Academy": "EDUCATION",
-            "IB Overview": "IB & VIP",
-            "Copy Trading": "INVESTING",
-            "EA Management": "SYSTEM",
-        }
-        : {
-            // User Dashboard groups
-            "Dashboard": "OPERATIONS",
-            "Trading Journal": "EXECUTION",
-            "Analytics Hub": "REVIEW",
-            "Academy": "RESOURCES",
-            "Copy Trading": "INVESTING",
-        };
+ const sectionNames: Record<string, string> = isAdmin
+ ? {
+ // Admin groups
+ "Release Health": "MONITORING",
+ "Articles": "CONTENT",
+ "Academy": "EDUCATION",
+ "IB Overview": "IB & VIP",
+ "Copy Trading": "INVESTING",
+ "EA Management": "SYSTEM",
+ }
+ : {
+ // User Dashboard groups
+ "Dashboard": "OPERATIONS",
+ "Trading Journal": "EXECUTION",
+ "Analytics Hub": "REVIEW",
+ "Academy": "RESOURCES",
+ "Copy Trading": "INVESTING",
+ };
 
-    return (
-        <aside id="onborda-sidebar" className={cn(
-            "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30",
-            isCollapsed ? "w-20" : "w-[280px]",
-            className
-        )}>
-            {/* Navigation Items */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
+ return (
+ <aside id="onborda-sidebar" className={cn(
+ "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-dashboard h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30",
+ isCollapsed ? "w-20" : "w-[280px]",
+ className
+ )}>
+ {/* Navigation Items */}
+ <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
 
-                {visibleItems.map((item: any, index: number) => {
-                    const sectionLabel = sectionNames[item.name];
+ {visibleItems.map((item: any, index: number) => {
+ const sectionLabel = sectionNames[item.name];
 
-                    return (
-                        <div key={item.name}>
-                            {/* Section Label */}
-                            {sectionLabel && !isCollapsed && (
-                                <div className="px-5 py-2 mt-2">
-                                    <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 tracking-widest uppercase">{sectionLabel}</span>
-                                </div>
-                            )}
+ return (
+ <div key={item.name}>
+ {/* Section Label */}
+ {sectionLabel && !isCollapsed && (
+ <div className="px-5 py-2 mt-2">
+ <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 tracking-widest uppercase">{sectionLabel}</span>
+ </div>
+ )}
 
-                            {/* Divider for Collapsed State */}
-                            {sectionLabel && index > 0 && isCollapsed && (
-                                <div className="mx-4 my-2 h-px bg-gray-200 dark:bg-white/10" />
-                            )}
+ {/* Divider for Collapsed State */}
+ {sectionLabel && index > 0 && isCollapsed && (
+ <div className="mx-4 my-2 h-px bg-gray-200 dark:bg-white/10" />
+ )}
 
-                            <SidebarItemComponent
-                                item={item}
-                                pathname={pathname}
-                                collapsed={isCollapsed}
-                                setCollapsed={setCollapsed || (() => { })}
-                                isExpanded={expandedGroup === item.name}
-                                onToggle={() => {
-                                    setExpandedGroup(prev => prev === item.name ? null : item.name);
-                                }}
-                                activeHref={activeHref}
-                                claimableCount={item.name === "Missions" ? claimableCount : undefined}
-                            />
-                        </div>
-                    );
-                })}
-            </div>
+ <SidebarItemComponent
+ item={item}
+ pathname={pathname}
+ collapsed={isCollapsed}
+ setCollapsed={setCollapsed || (() => { })}
+ isExpanded={expandedGroup === item.name}
+ onToggle={() => {
+ setExpandedGroup(prev => prev === item.name ? null : item.name);
+ }}
+ activeHref={activeHref}
+ claimableCount={item.name === "Missions" ? claimableCount : undefined}
+ />
+ </div>
+ );
+ })}
+ </div>
 
-            {/* VIP Pro Status Widget — only show in user dashboard, not admin */}
-            {!isCollapsed && !isAdmin && (
-                <div className="px-4 pb-2">
-                    <VipStatusWidget />
-                </div>
-            )}
+ {/* VIP Pro Status Widget — only show in user dashboard, not admin */}
+ {!isCollapsed && !isAdmin && (
+ <div className="px-4 pb-2">
+ <VipStatusWidget />
+ </div>
+ )}
 
-            {/* Bottom Actions */}
-            <div className="p-4 border-t border-gray-200 dark:border-white/10 m-4 mt-auto">
-                <Button
-                    variant="ghost"
-                    onClick={() => signout()}
-                    className={cn(
-                        "flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group justify-start font-normal",
-                        isCollapsed && "justify-center px-0"
-                    )}>
-                    <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
-                    {!isCollapsed && <span className="font-medium text-sm">Logout</span>}
-                </Button>
-            </div>
-        </aside>
-    );
+ {/* Bottom Actions */}
+ <div className="p-4 border-t border-dashboard m-4 mt-auto">
+ <Button
+ variant="ghost"
+ onClick={() => signout()}
+ className={cn(
+ "flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group justify-start font-normal",
+ isCollapsed && "justify-center px-0"
+ )}>
+ <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
+ {!isCollapsed && <span className="font-medium text-sm">Logout</span>}
+ </Button>
+ </div>
+ </aside>
+ );
 }

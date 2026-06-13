@@ -1,8 +1,8 @@
 
 import { Worker } from "bullmq";
 import { redis } from "@/lib/redis";
-import { sendEmail } from "@/lib/email";
-import { EMAIL_JOB_TYPES } from "@/lib/queue/email-queue";
+import { sendEmail } from "@/lib/services/email.service";
+// import { EMAIL_JOB_TYPES } from "@/lib/queue/email-queue";
 
 const worker = new Worker("email-queue", async (job) => {
     console.log(`Processing job ${job.id} of type ${job.name}`);

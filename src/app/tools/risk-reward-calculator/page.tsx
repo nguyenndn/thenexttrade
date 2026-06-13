@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("risk-reward-calculator")!;
 
 export const metadata: Metadata = {
-    title: `${tool.title} | TheNextTrade`,
-    description: tool.description,
+ title: `${tool.title} | TheNextTrade`,
+ description: tool.description,
 };
 
 export default function RiskRewardCalculatorPage() {
-    return (
-        <ToolPageLayout tool={tool}>
-            <RiskRewardCalc />
-        </ToolPageLayout>
-    );
+ return (
+ <ToolPageLayout tool={tool}>
+ <RiskRewardCalc />
+ </ToolPageLayout>
+ );
 }

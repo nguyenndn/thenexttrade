@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("pivot-point-calculator")!;
 
 export const metadata: Metadata = {
-    title: `${tool.title} | TheNextTrade`,
-    description: tool.description,
+ title: `${tool.title} | TheNextTrade`,
+ description: tool.description,
 };
 
 export default function PivotPointCalculatorPage() {
-    return (
-        <ToolPageLayout tool={tool}>
-            <PivotPointCalc />
-        </ToolPageLayout>
-    );
+ return (
+ <ToolPageLayout tool={tool}>
+ <PivotPointCalc />
+ </ToolPageLayout>
+ );
 }

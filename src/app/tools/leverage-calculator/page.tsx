@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("leverage-calculator")!;
 
 export const metadata: Metadata = {
-    title: `${tool.title} | TheNextTrade`,
-    description: tool.description,
+ title: `${tool.title} | TheNextTrade`,
+ description: tool.description,
 };
 
 export default function LeverageCalculatorPage() {
-    return (
-        <ToolPageLayout tool={tool}>
-            <LeverageCalc />
-        </ToolPageLayout>
-    );
+ return (
+ <ToolPageLayout tool={tool}>
+ <LeverageCalc />
+ </ToolPageLayout>
+ );
 }

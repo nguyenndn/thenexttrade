@@ -5,5 +5,5 @@ import { Sidebar } from "./Sidebar";
 import { adminMenuItems } from "@/config/navigation";
 
 export function AdminSidebar() {
-    return <Sidebar items={adminMenuItems} />;
+ return <Sidebar items={adminMenuItems} />;
 }

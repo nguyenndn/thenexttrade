@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("drawdown-calculator")!;
 
 export const metadata: Metadata = {
-    title: `${tool.title} | TheNextTrade`,
-    description: tool.description,
+ title: `${tool.title} | TheNextTrade`,
+ description: tool.description,
 };
 
 export default function DrawdownCalculatorPage() {
-    return (
-        <ToolPageLayout tool={tool}>
-            <DrawdownCalc />
-        </ToolPageLayout>
-    );
+ return (
+ <ToolPageLayout tool={tool}>
+ <DrawdownCalc />
+ </ToolPageLayout>
+ );
 }

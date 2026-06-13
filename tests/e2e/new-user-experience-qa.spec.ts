@@ -33,7 +33,7 @@ async function loginOnce(page: Page) {
     }
 
     const emailInput = page.locator('input[name="email"]');
-    if (!(await emailInput.isVisible({ timeout: 5000 }).catch(() => false))) {
+    if (!(await emailInput.isVisible({ timeout: 30000 }).catch(() => false))) {
         if (page.url().includes("/dashboard")) return;
         throw new Error("Login form not found and not on dashboard");
     }

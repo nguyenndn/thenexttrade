@@ -5,22 +5,22 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 
 export const metadata: Metadata = {
-    title: "Psychology Tracking | TheNextTrade",
-    description: "Track your emotions and confidence to identify trading patterns.",
+ title: "Psychology Tracking | TheNextTrade",
+ description: "Track your emotions and confidence to identify trading patterns.",
 };
 
 export default async function PsychologyPage() {
-    const user = await getAuthUser();
+ const user = await getAuthUser();
 
-    if (!user) {
-        redirect("/auth/login");
-    }
+ if (!user) {
+ redirect("/auth/login");
+ }
 
-    const tradingDataState = await getUserTradingDataState(user.id);
+ const tradingDataState = await getUserTradingDataState(user.id);
 
-    return (
-        <div className="space-y-4">
-            <PsychologyDashboard hasTradeData={tradingDataState.hasTradeData} />
-        </div>
-    );
+ return (
+ <div className="space-y-4">
+ <PsychologyDashboard hasTradeData={tradingDataState.hasTradeData} />
+ </div>
+ );
 }

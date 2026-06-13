@@ -87,6 +87,11 @@ model Profile {
   mainTradingAccountId String?         @map("main_trading_account_id")
   telegramId           String?         @map("telegram_id") @db.VarChar(50)
   country              String?         @db.VarChar(100)
+  showMoney            Boolean         @default(false) @map("show_money")
+  showBroker           Boolean         @default(false) @map("show_broker")
+  showAccountNumber    Boolean         @default(false) @map("show_account_number")
+  showRealName         Boolean         @default(false) @map("show_real_name")
+  showPercentMetrics   Boolean         @default(true) @map("show_percent_metrics")
   mainTradingAccount   TradingAccount? @relation("ProfileMainAccount", fields: [mainTradingAccountId], references: [id])
   user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 

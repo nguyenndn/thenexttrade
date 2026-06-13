@@ -86,3 +86,18 @@ Tone:
 - Keep templates app-owned so self-hosting is not tied to Vercel email templates.
 - Keep provider-specific logic inside the email service boundary.
 - Add retry/dead-letter behavior later if volume grows.
+
+## Email Lab (Testing Suite)
+
+An internal test dashboard is available at `/admin/email-lab` to trigger and preview transactional HTML email templates.
+
+### Security Configurations
+To prevent accidental delivery or unauthorized access, the following environment variables must be configured in `.env.local` / production environment settings:
+
+- `ENABLE_EMAIL_TEST_PAGE`: Must be explicitly set to `"true"` to enable the admin route. If not set or set to `"false"`, the page returns a `404 Not Found`.
+- `EMAIL_TEST_TO`: The default recipient email address for SMTP test runs.
+- `EMAIL_TEST_ALLOW_CUSTOM_TO`: If set to `"true"`, administrators can input a custom recipient email address directly on the dashboard. If `"false"`, the page locks the recipient input and only allows sending to the address specified in `EMAIL_TEST_TO`.
+
+### Audit Logs
+All manual dispatch actions are recorded in the PostgreSQL database using Prisma's `AuditLog` model under the action `EMAIL_TEST_SEND`. Recipient email addresses are automatically masked in the audit log (e.g. `te***@example.com`) to protect personal data.
+

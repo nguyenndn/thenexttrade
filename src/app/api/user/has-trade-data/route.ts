@@ -10,13 +10,13 @@ export const dynamic = "force-dynamic";
  * Returns { hasTradeData: boolean }
  */
 export async function GET() {
-    const user = await getAuthUser();
-    if (!user) {
-        return NextResponse.json({ hasTradeData: false }, { status: 401 });
-    }
+ const user = await getAuthUser();
+ if (!user) {
+ return NextResponse.json({ hasTradeData: false }, { status: 401 });
+ }
 
-    const tradingDataState = await getUserTradingDataState(user.id);
+ const tradingDataState = await getUserTradingDataState(user.id);
 
-    return NextResponse.json({ hasTradeData: tradingDataState.hasTradeData });
+ return NextResponse.json({ hasTradeData: tradingDataState.hasTradeData });
 }
 

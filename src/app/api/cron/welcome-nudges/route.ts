@@ -13,20 +13,20 @@ export const dynamic = "force-dynamic";
  * Auth: Bearer CRON_SECRET
  */
 export async function GET(request: NextRequest) {
-    try {
-        const authHeader = request.headers.get("authorization");
-        if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-            return new NextResponse("Unauthorized", { status: 401 });
-        }
+ try {
+ const authHeader = request.headers.get("authorization");
+ if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+ return new NextResponse("Unauthorized", { status: 401 });
+ }
 
-        const result = await processWelcomeNudges();
+ const result = await processWelcomeNudges();
 
-        return NextResponse.json({
-            success: true,
-            ...result,
-        });
-    } catch (error) {
-        console.error("[Cron] Welcome Nudges Error:", error);
-        return new NextResponse("Internal Server Error", { status: 500 });
-    }
+ return NextResponse.json({
+ success: true,
+ ...result,
+ });
+ } catch (error) {
+ console.error("[Cron] Welcome Nudges Error:", error);
+ return new NextResponse("Internal Server Error", { status: 500 });
+ }
 }

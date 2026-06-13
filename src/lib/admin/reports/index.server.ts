@@ -13,44 +13,44 @@ import { getFrictionReport } from "./friction.server";
 import { getDataQualityReport } from "./data-quality.server";
 
 export async function getAdminReportsData(period: ReportPeriod): Promise<AdminReportsData> {
-  const range = getDateRange(period);
+ const range = getDateRange(period);
 
-  const [
-    actionQueue,
-    northStar,
-    userQuality,
-    userLifecycle,
-    featureAdoption,
-    revenueOpportunity,
-    contentRoi,
-    friction,
-    dataQuality,
-    alerts,
-  ] = await Promise.all([
-    getActionQueueReport(range),
-    getNorthStarReport(range),
-    getUserQualityReport(range),
-    getUserLifecycleReport(range),
-    getFeatureAdoptionReport(range),
-    getRevenueOpportunityReport(range),
-    getContentRoiReport(range),
-    getFrictionReport(range),
-    getDataQualityReport(),
-    getAlertReport(range),
-  ]);
+ const [
+ actionQueue,
+ northStar,
+ userQuality,
+ userLifecycle,
+ featureAdoption,
+ revenueOpportunity,
+ contentRoi,
+ friction,
+ dataQuality,
+ alerts,
+ ] = await Promise.all([
+ getActionQueueReport(range),
+ getNorthStarReport(range),
+ getUserQualityReport(range),
+ getUserLifecycleReport(range),
+ getFeatureAdoptionReport(range),
+ getRevenueOpportunityReport(range),
+ getContentRoiReport(range),
+ getFrictionReport(range),
+ getDataQualityReport(),
+ getAlertReport(range),
+ ]);
 
-  return {
-    period,
-    generatedAt: new Date().toISOString(),
-    actionQueue,
-    northStar,
-    userQuality,
-    userLifecycle,
-    featureAdoption,
-    revenueOpportunity,
-    contentRoi,
-    friction,
-    dataQuality,
-    alerts,
-  };
+ return {
+ period,
+ generatedAt: new Date().toISOString(),
+ actionQueue,
+ northStar,
+ userQuality,
+ userLifecycle,
+ featureAdoption,
+ revenueOpportunity,
+ contentRoi,
+ friction,
+ dataQuality,
+ alerts,
+ };
 }

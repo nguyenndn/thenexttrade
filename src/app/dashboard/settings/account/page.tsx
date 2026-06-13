@@ -7,18 +7,18 @@ import { AccountSettingsTabs } from "@/components/profile/AccountSettingsTabs";
 export const dynamic = "force-dynamic";
 
 export default async function AccountSettingsPage() {
-    const user = await getAuthUser();
+ const user = await getAuthUser();
 
-    if (!user) {
-        redirect("/auth/login");
-    }
+ if (!user) {
+ redirect("/auth/login");
+ }
 
-    // 2. Get Profile
-    const profile = await prisma.profile.findUnique({
-        where: { userId: user.id }
-    });
+ // 2. Get Profile
+ const profile = await prisma.profile.findUnique({
+ where: { userId: user.id }
+ });
 
-    return (
-        <AccountSettingsTabs user={user} profile={profile} />
-    );
+ return (
+ <AccountSettingsTabs user={user} profile={profile} />
+ );
 }

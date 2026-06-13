@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://thenexttrade.vercel.app';
+ const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://thenexttrade.vercel.app';
 
-    const content = `# TheNextTrade
+ const content = `# TheNextTrade
 > Professional Forex Trading Tools, Education & Market Analysis Platform
 
 ## About
@@ -84,10 +84,10 @@ Honest, data-driven forex broker comparisons and reviews.
 - About: ${baseUrl}/about
 `;
 
-    return new NextResponse(content, {
-        headers: {
-            'Content-Type': 'text/plain; charset=utf-8',
-            'Cache-Control': 'public, max-age=86400, s-maxage=86400',
-        },
-    });
+ return new NextResponse(content, {
+ headers: {
+ 'Content-Type': 'text/plain; charset=utf-8',
+ 'Cache-Control': 'public, max-age=86400, s-maxage=86400',
+ },
+ });
 }
