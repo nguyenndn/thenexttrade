@@ -261,7 +261,7 @@ async function publicInteractions(page: Page) {
         await page.getByPlaceholder(/search for anything/i).fill("risk");
         await page.getByRole("button", { name: /^search$/i }).click();
         await page.waitForURL(/\/search\?q=risk/i, { timeout: 10_000 });
-        await expect(page.getByText(/Search Results/i)).toBeVisible();
+        await expect(page.getByText(/Universal Search/i)).toBeVisible();
     });
 
     await recordStep("mobile", "Homepage", "Mobile menu opens, links render, and closes", async () => {
@@ -295,7 +295,7 @@ async function publicInteractions(page: Page) {
 
     await recordStep("desktop", "Brokers", "Partner category tabs switch without errors", async () => {
         await gotoHealthy(page, "/brokers");
-        for (const label of [/Prop Firms/i, /Crypto/i, /VPS Hosting/i, /CFD Brokers/i]) {
+        for (const label of [/Crypto/i, /VPS Hosting/i, /CFD Brokers/i]) {
             await page.getByRole("button", { name: label }).click();
             await expect(page.locator("body")).not.toContainText(/Application error|Unhandled Runtime Error/i);
         }

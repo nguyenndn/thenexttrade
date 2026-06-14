@@ -52,7 +52,7 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
  key={item.name}
  href={item.href}
  onClick={onClose}
- className={`block px-4 py-3 rounded-lg font-medium transition-colors ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-700 hover:bg-gray-50 hover:text-teal-600'}`}
+ className={`block px-4 py-3 rounded-lg nav-menu-text transition-colors ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-700 hover:bg-gray-50 hover:text-teal-600'}`}
  >
  {item.name}
  </Link>
@@ -90,23 +90,23 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
  </div>
 
  <Link href="/get-started" onClick={onClose}
- className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isDark ? 'text-orange-300 hover:bg-orange-400/10' : 'text-orange-700 hover:bg-orange-50'}`}>
+ className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors ${isDark ? 'text-orange-300 hover:bg-orange-400/10' : 'text-orange-700 hover:bg-orange-50'}`}>
  <Compass size={16} className="text-orange-500" />
  Getting Started
  </Link>
  <Link href={dashboardUrl} onClick={onClose}
- className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-gray-700 hover:bg-gray-50'}`}>
+ className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-gray-700 hover:bg-gray-50'}`}>
  <LayoutDashboard size={16} className="text-primary" />
  Dashboard
  </Link>
  <Link href="/dashboard/settings" onClick={onClose}
- className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-gray-700 hover:bg-gray-50'}`}>
+ className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-gray-700 hover:bg-gray-50'}`}>
  <Settings size={16} className="text-gray-500" />
  Settings
  </Link>
  <button
  onClick={() => { signout(); onClose(); }}
- className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+ className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
  >
  <LogOut size={16} />
  Log Out

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
  title: "The Trader's Ascent | TheNextTrade Academy",
  description: "Master the art of Forex trading through our structured 11-Level career path. From First Steps to Ready to Trade.",
  openGraph: {
- title: "The Trader's Ascent - Zero to Funded",
+ title: "The Trader's Ascent - Zero to Pro",
  description: "Start your professional trading journey.",
  images: ["/academy-og.jpg"],
  }

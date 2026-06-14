@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useClaimableCount } from "@/hooks/useClaimableCount";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, Bug, Lightbulb } from "lucide-react";
@@ -12,24 +13,7 @@ export function MobileBottomTabBar() {
  const pathname = usePathname();
  const [openGroup, setOpenGroup] = useState<string | null>(null);
  const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
- const [claimableCount, setClaimableCount] = useState(0);
-
- // Fetch claimable mission count for badge
- useEffect(() => {
- let cancelled = false;
- const fetchCount = async () => {
- try {
- const res = await fetch("/api/missions/claimable-count");
- if (res.ok && !cancelled) {
- const data = await res.json();
- setClaimableCount(data.count || 0);
- }
- } catch { /* silent */ }
- };
- fetchCount();
- const timer = setInterval(fetchCount, 60_000);
- return () => { cancelled = true; clearInterval(timer); };
- }, [pathname]);
+ const claimableCount = useClaimableCount();
 
  // Determine which groups to use based on the path
  const isAdmin = pathname?.startsWith("/admin");
@@ -143,7 +127,7 @@ export function MobileBottomTabBar() {
  key={item.href}
  href={item.href}
  className={cn(
- "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+ "flex items-center gap-3 px-4 py-3 rounded-xl text-sm nav-menu-text transition-colors",
  isActive
  ? "bg-primary/10 text-primary"
  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
@@ -169,7 +153,7 @@ export function MobileBottomTabBar() {
  setOpenGroup(null);
  window.dispatchEvent(new CustomEvent("open-feedback", { detail: "BUG" }));
  }}
- className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full text-left"
+ className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm nav-menu-text text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full text-left"
  >
  <Bug size={20} className="text-red-400" />
  <span>Bug Report</span>
@@ -179,7 +163,7 @@ export function MobileBottomTabBar() {
  setOpenGroup(null);
  window.dispatchEvent(new CustomEvent("open-feedback", { detail: "FEATURE" }));
  }}
- className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full text-left"
+ className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm nav-menu-text text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full text-left"
  >
  <Lightbulb size={20} className="text-amber-400" />
  <span>Feature Request</span>

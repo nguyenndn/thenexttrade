@@ -77,11 +77,11 @@ export function HomeFAQSection() {
  }))
  }}
  />
- <section className="pt-6 pb-16 relative overflow-hidden border-t border-dashboard bg-white dark:bg-[#0B0E14]">
+ <div className="relative overflow-hidden border-t border-dashboard bg-white dark:bg-[#0B0E14]">
  {/* Grid pattern */}
  <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
 
- <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+ <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
  <div className="text-center mb-12">
  <h2 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-white mb-2 tracking-tight">
  Frequently Asked Questions
@@ -114,8 +114,8 @@ export function HomeFAQSection() {
  <FAQAccordion items={TRADING_FAQ} />
  </div>
  </div>
- </div>
  </section>
+ </div>
  </>
  );
 }

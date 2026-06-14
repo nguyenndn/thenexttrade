@@ -83,11 +83,11 @@ const SECTIONS: CategoryConfig[] = [
 
 export function TrustedPartners() {
  return (
- <section className="pt-10 pb-12 relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14] border-t border-dashboard/60">
+ <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14] border-t border-dashboard/60">
  {/* Background pattern */}
  <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,200,136,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,200,136,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:40px_40px]" />
 
- <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+ <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
  <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-12">
  <h2 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-white mb-2 tracking-tight">
  Trusted <span className="text-cyan-600 dark:text-cyan-400">Partners</span>
@@ -181,7 +181,7 @@ export function TrustedPartners() {
  </FadeIn>
  ))}
  </div>
- </div>
  </section>
+ </div>
  );
 }

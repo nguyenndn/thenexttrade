@@ -5,11 +5,11 @@ import { ALL_TOOLS } from "@/config/tools-data";
 
 export function WebForexTools() {
  return (
- <section className="pt-6 pb-16 relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14]">
+ <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14]">
  {/* Background dot pattern */}
  <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--cyan-500))_1.2px,transparent_1.2px)] [background-size:32px_32px] opacity-[0.05] dark:opacity-[0.03] pointer-events-none" />
 
- <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+ <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
  <FadeIn delay={0.1} direction="up">
  {/* Header */}
  <div className="relative flex flex-col items-center text-center max-w-full mb-10 pb-4 border-b border-dashboard/60">
@@ -47,7 +47,7 @@ export function WebForexTools() {
  ))}
  </div>
  </FadeIn>
- </div>
  </section>
+ </div>
  );
 }

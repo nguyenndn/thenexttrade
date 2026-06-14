@@ -26,7 +26,6 @@ import {
  Quote,
  MoreHorizontal,
  Copy,
- Shield,
  ShieldAlert,
  MessageCircle,
  Crown,
@@ -148,13 +147,6 @@ export const dashboardMenuItems = [
  featureFlag: "feature_copy_trading",
  requiresTradeData: false,
  },
- {
- name: "Funded Challenge",
- href: "/dashboard/funded-challenge",
- icon: Shield,
- featureFlag: "feature_funded_challenge",
- requiresTradeData: false,
- }
 ];
 
 export const adminMenuItems = [
@@ -227,7 +219,6 @@ export const dashboardMenuGroups = [
  { name: "Leaderboard", href: "/dashboard/leaderboard", icon: Trophy },
  { name: "Trading System", href: "/dashboard/trading-systems", icon: Bot },
  { name: "Copy Trading", href: "/dashboard/copy-trading", icon: Copy, featureFlag: "feature_copy_trading" },
- { name: "Funded Challenge", href: "/dashboard/funded-challenge", icon: Shield, featureFlag: "feature_funded_challenge" },
  ],
  },
 ];

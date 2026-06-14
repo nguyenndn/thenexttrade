@@ -34,8 +34,8 @@ const REVIEWS: Review[] = [
  },
  {
  name: "James K.",
- role: "Prop Trader",
- text: "Passed my funded challenge using strategies from the Academy. Risk management module was a game-changer. Clean UI, no fluff, just actionable content.",
+ role: "Active Trader",
+ text: "The journaling tools and automated stats completely changed my consistency. Seeing my Win Rate by session helped me cut bad trades. Clean UI, no fluff, just actionable content.",
  rating: 5,
  initials: "JK",
  color: "bg-rose-500",
@@ -109,11 +109,11 @@ export function ReviewsSection() {
  const visibleReviews = REVIEWS.slice(currentIndex, currentIndex + visibleCount);
 
  return (
- <section className="py-16 relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-[#0F1117]">
+ <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-[#0F1117]">
  {/* Dot pattern bg — same as Quote section */}
  <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
- <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+ <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
  <div className="text-center mb-12">
  <h2 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-white mb-3 tracking-tight">
  What Traders Say
@@ -215,7 +215,7 @@ export function ReviewsSection() {
  </Button>
  </div>
  </div>
- </div>
  </section>
+ </div>
  );
 }

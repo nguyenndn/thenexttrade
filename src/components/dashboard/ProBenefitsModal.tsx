@@ -63,7 +63,7 @@ const BENEFITS: { category: string; items: Benefit[] }[] = [
  icon: BookOpen,
  title: "Full Academy Access",
  description:
- "Unlock all Level 2 and Level 3 Academy lessons — prop firm prep, advanced strategy, and live market walkthroughs.",
+ "Unlock all Level 2 and Level 3 Academy lessons — advanced risk management, advanced strategy, and live market walkthroughs.",
  },
  {
  icon: Shield,

@@ -124,7 +124,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
  href={item.href}
  onClick={onClose}
  className={cn(
- "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors mb-0.5",
+ "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm nav-menu-text transition-colors mb-0.5",
  isActive
  ? "bg-primary/10 text-primary dark:text-primary"
  : "text-gray-600 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
@@ -156,7 +156,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
  <Button
  variant="ghost"
  onClick={() => { onClose(); signout(); }}
- className="flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left justify-start font-medium text-sm"
+ className="flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left justify-start nav-menu-text text-sm"
  >
  <LogOut size={18} className="shrink-0" />
  <span>Logout</span>

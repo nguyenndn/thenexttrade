@@ -109,13 +109,13 @@ export const ALL_TOOLS: ToolData[] = [
  paragraphs: [
  "A Drawdown Calculator shows you how much percentage gain you need to recover from a trading loss. The math is asymmetric — a 50% loss requires a 100% gain to recover.",
  "This tool is critical for understanding why risk management matters. Small losses are easy to recover from (a 10% loss needs just 11.1% recovery), but larger losses become exponentially harder.",
- "Professional traders use drawdown awareness to set strict risk limits. Most prop firms cap maximum drawdown at 5-10% to protect capital.",
+ "Professional traders use drawdown awareness to set strict risk limits. Many professional risk frameworks cap maximum drawdown at 5-10% to protect capital.",
  ],
  },
  features: ["Account balance input", "Drawdown percentage", "Recovery % calculation", "Interactive reference table", "Severity color coding", "Loss amount display"],
  faqs: [
  { question: "Why is recovery harder than loss?", answer: "Because percentages work on different bases. If you lose 50% of $10,000, you have $5,000. To get back to $10,000, you need to gain $5,000 — which is 100% of your remaining $5,000." },
- { question: "What is maximum acceptable drawdown?", answer: "Most professional traders and prop firms consider 5-10% maximum drawdown acceptable. Beyond 20%, recovery becomes very difficult and often leads to revenge trading." },
+ { question: "What is maximum acceptable drawdown?", answer: "Most professional risk frameworks consider 5-10% maximum drawdown acceptable. Beyond 20%, recovery becomes very difficult and often leads to revenge trading." },
  { question: "How can I minimize drawdown?", answer: "Use strict position sizing (1-2% risk per trade), set stop losses on every trade, avoid overtrading, and diversify across uncorrelated setups." },
  ],
  },

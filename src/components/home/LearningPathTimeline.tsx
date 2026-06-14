@@ -9,7 +9,7 @@ const steps = [
  { icon: TrendingUp, title: "2. The Analyst", desc: "Technical & Price Action (Lvl 3-5)", color: "text-cyan-500", bg: "bg-cyan-500/10", gradient: "from-cyan-500 to-green-500", glow: "rgba(6,182,212,0.3)" },
  { icon: Trophy, title: "3. The Strategist", desc: "Patterns & Strategy Lab (Lvl 6 & 8)", color: "text-primary", bg: "bg-primary/10", gradient: "from-green-500 to-yellow-500", glow: "rgba(0,200,136,0.3)" },
  { icon: Shield, title: "4. The Operator", desc: "Mindset & Fundamentals (Lvl 7, 9-10)", color: "text-amber-500", bg: "bg-amber-500/10", gradient: "from-yellow-500 to-orange-500", glow: "rgba(245,158,11,0.3)" },
- { icon: Crown, title: "5. The Master", desc: "Gold & Prop Trading (Lvl 11-12)", color: "text-orange-500", bg: "bg-orange-500/10", gradient: "from-orange-500 to-red-500", glow: "rgba(249,115,22,0.3)" },
+ { icon: Crown, title: "5. The Master", desc: "Gold & Pro Trading (Lvl 11-12)", color: "text-orange-500", bg: "bg-orange-500/10", gradient: "from-orange-500 to-red-500", glow: "rgba(249,115,22,0.3)" },
 ];
 
 const CARD_DELAY = 0.5;

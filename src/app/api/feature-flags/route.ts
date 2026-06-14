@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 /**
- * GET /api/feature-flags?keys=feature_funded_challenge,feature_x
+ * GET /api/feature-flags?keys=feature_journal,feature_x
  * Public endpoint to check if features are enabled
  */
 export async function GET(request: NextRequest) {

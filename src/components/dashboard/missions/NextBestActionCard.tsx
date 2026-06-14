@@ -6,6 +6,7 @@ import { ArrowRight, Trophy, Sparkles, Target, Loader2, CheckCircle2, BookOpen }
 import { Button } from "@/components/ui/Button";
 import type { MissionProgressItem } from "@/lib/services/edge-missions.service";
 import { claimMission } from "@/actions/edge-missions";
+import { refreshClaimableCount } from "@/hooks/useClaimableCount";
 import { trackEvent } from "@/lib/track";
 import { celebrateXP } from "@/lib/celebrate";
 import { toast } from "sonner";
@@ -34,6 +35,7 @@ export function NextBestActionCard({ mission, onClaimed }: NextBestActionCardPro
  xp: result.xpAwarded || 0,
  message: `Mission Complete: ${mission.def.title}`,
  });
+ refreshClaimableCount();
  if (onClaimed) onClaimed();
  } else {
  toast.error(result.error || "Claim Failed");

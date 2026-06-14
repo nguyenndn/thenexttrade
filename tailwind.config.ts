@@ -6,6 +6,10 @@ const config: Config = {
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 		"./node_modules/onborda/dist/**/*.{js,ts,jsx,tsx}",
+		// Exclusions: prevent Tailwind from scanning test/temp dirs
+		"!./test-results/**",
+		"!./playwright-report/**",
+		"!./.next/**",
 	],
 	theme: {
 		extend: {
@@ -171,7 +175,7 @@ const config: Config = {
 		],
 		darkTheme: "dark",
 		base: true,
-		styled: true,
+		styled: false,
 		utils: true,
 		prefix: "",
 		logs: false,

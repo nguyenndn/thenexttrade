@@ -38,7 +38,7 @@ const PHASES = [
  { title: "The Analyst", subtitle: "Technical & Price Action (Lvl 3-5)", color: "from-cyan-500 to-green-500", icon: TrendingUp },
  { title: "The Strategist", subtitle: "Patterns & Strategy Lab (Lvl 6 & 8)", color: "from-green-500 to-yellow-500", icon: Trophy },
  { title: "The Operator", subtitle: "Mindset & Fundamentals (Lvl 7, 9-10)", color: "from-yellow-500 to-orange-500", icon: Shield },
- { title: "The Master", subtitle: "Gold & Prop Trading (Lvl 11-12)", color: "from-orange-500 to-red-500", icon: Crown },
+ { title: "The Master", subtitle: "Gold & Pro Trading (Lvl 11-12)", color: "from-orange-500 to-red-500", icon: Crown },
 ];
 
 export default function AcademyMap({ levels, userProgress, basePath = "/academy" }: AcademyMapProps) {

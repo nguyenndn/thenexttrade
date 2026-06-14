@@ -1,0 +1,120 @@
+"use client";
+
+import Link from "next/link";
+import { BookOpen, LineChart, Calculator, Building, ArrowRight } from "lucide-react";
+
+interface StartByGoalSectionProps {
+  isLoggedIn: boolean;
+}
+
+export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
+  const cards = [
+    {
+      title: "Learn Trading",
+      description: "Structured lessons and practical guides.",
+      href: "/academy",
+      icon: <BookOpen size={20} />,
+      color: "text-primary",
+      chipBg: "bg-primary/8",
+      ctaText: "Start Learning",
+      animClass: "group-hover:scale-110 group-hover:-rotate-6",
+      bgClass: "bg-white dark:bg-white/[0.02] border-dashboard/50 dark:border-white/[0.06] hover:border-primary/40 hover:bg-gradient-to-br hover:from-primary/[0.03] hover:to-transparent hover:shadow-[0_8px_30px_rgba(16,185,129,0.04)]",
+      ctaColor: "group-hover:text-primary"
+    },
+    {
+      title: "Track My Trades",
+      description: "Sync MT5 trades or log them manually.",
+      href: isLoggedIn ? "/dashboard/accounts" : "/auth/signup?source=home_goal&intent=track",
+      icon: <LineChart size={20} />,
+      color: "text-gold",
+      chipBg: "bg-gold/8",
+      ctaText: "Setup Journal",
+      animClass: "group-hover:scale-110 group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
+      bgClass: "bg-gradient-to-br from-gold/[0.04] to-amber-500/[0.01] border-gold/30 hover:border-gold/60 hover:shadow-[0_8px_30px_rgba(245,158,11,0.1)] dark:from-gold/[0.03] dark:to-transparent",
+      ctaColor: "group-hover:text-gold",
+      isRecommended: true
+    },
+    {
+      title: "Calculate Risk",
+      description: "Risk calculators and position sizing tools.",
+      href: "/tools",
+      icon: <Calculator size={20} />,
+      color: "text-blue-500",
+      chipBg: "bg-blue-500/8",
+      ctaText: "Open Calculators",
+      animClass: "group-hover:scale-110 group-hover:rotate-6",
+      bgClass: "bg-white dark:bg-white/[0.02] border-dashboard/50 dark:border-white/[0.06] hover:border-blue-500/40 hover:bg-gradient-to-br hover:from-blue-500/[0.03] hover:to-transparent hover:shadow-[0_8px_30px_rgba(59,130,246,0.04)]",
+      ctaColor: "group-hover:text-blue-500"
+    },
+    {
+      title: "Compare Brokers",
+      description: "Compare brokers and trading platforms.",
+      href: "/brokers",
+      icon: <Building size={20} />,
+      color: "text-emerald-500",
+      chipBg: "bg-emerald-500/8",
+      ctaText: "Compare Now",
+      animClass: "group-hover:scale-110 group-hover:-translate-y-0.5",
+      bgClass: "bg-white dark:bg-white/[0.02] border-dashboard/50 dark:border-white/[0.06] hover:border-emerald-500/40 hover:bg-gradient-to-br hover:from-emerald-500/[0.03] hover:to-transparent hover:shadow-[0_8px_30px_rgba(16,185,129,0.04)]",
+      ctaColor: "group-hover:text-emerald-500"
+    }
+  ];
+
+  return (
+    <div className="relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-dashboard">
+      {/* Grid Pattern Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
+
+      <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-black text-gray-800 dark:text-white tracking-tight leading-none mb-3">
+            What do you want to improve today?
+          </h2>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium max-w-xl mx-auto">
+            Choose a path and we will take you to the right starting point.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {cards.map((card, idx) => (
+            <Link
+              key={idx}
+              href={card.href}
+              className={`group relative flex flex-col justify-between p-5 rounded-2xl border transition-all duration-305 hover:-translate-y-1 ${card.bgClass}`}
+            >
+              {/* Recommended badge */}
+              {'isRecommended' in card && card.isRecommended && (
+                <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-gold/10 border border-gold/20 text-[9px] font-black uppercase tracking-wider text-gold">
+                  Recommended
+                </div>
+              )}
+
+              {/* Subtle inner gradient — matches TrustMetrics style */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
+
+              <div className="relative z-10">
+                {/* Icon and Title Inline */}
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`p-2.5 rounded-xl shrink-0 ${card.chipBg}`}>
+                    <span className={`${card.color} block transition-transform duration-300 ${card.animClass}`}>{card.icon}</span>
+                  </div>
+                  <h3 className={`text-sm sm:text-base font-black text-gray-800 dark:text-white transition-colors leading-tight ${card.ctaColor}`}>
+                    {card.title}
+                  </h3>
+                </div>
+
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-medium mb-5">
+                  {card.description}
+                </p>
+              </div>
+
+              <div className={`relative z-10 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 transition-colors mt-auto ${card.ctaColor}`}>
+                {card.ctaText} <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -47,7 +47,7 @@ Expected behavior:
 
 - Hero must clearly explain the product.
 - Trusted partners should show brokers, exchanges, and VPS hosting.
-- Prop firm blocks should remain removed unless the product direction changes.
+- Prop firm blocks and discovery flow are completely removed.
 - Public analytics can track page view and high-level CTA clicks.
 
 Code paths:
@@ -61,7 +61,7 @@ QA checklist:
 - Desktop and mobile layout.
 - CTA routes.
 - No broken partner links/images.
-- No prop firm section.
+- No prop firm section or references.
 
 ### `/about`, `/contact`, `/edge`, `/legal/privacy-policy`, `/legal/terms-of-service`, `/legal/cookie-policy`
 
@@ -202,17 +202,20 @@ Purpose:
 Expected behavior:
 
 - Focus on brokers, exchanges, and VPS hosting.
-- Prop firm tab/section should remain removed.
+- Prop firm tab/section is completely removed.
+- Falling back: `/brokers?tab=propFirms` must safely fall back to the default `brokers` tab.
 
 Code paths:
 
 - `src/app/brokers/page.tsx`
+- `src/app/brokers/BrokersClient.tsx`
 
 QA checklist:
 
 - No prop firm tab or card.
 - Partner cards are aligned.
 - External links are correct.
+- Fallback from `?tab=propFirms` to CFD Brokers works with no console errors.
 
 ### `/tools/*`
 
@@ -678,6 +681,14 @@ QA checklist:
 - Free vs Pro modal.
 - Add account modal.
 - Mobile layout.
+
+### `/dashboard/funded-challenge` (Removed)
+
+Purpose:
+- Previously used for the Funded Challenge program.
+- This feature/route has been **completely removed** from the dashboard and product.
+- Accessing `/dashboard/funded-challenge` will now yield a **404 Not Found** page.
+- References to `feature_funded_challenge` system setting have been deprecated and removed.
 
 ### `/dashboard/settings/tnt-connect`
 

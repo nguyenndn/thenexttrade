@@ -11,6 +11,7 @@ import {
  ChevronDown
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
+import { useClaimableCount } from '@/hooks/useClaimableCount';
 import { signout } from '@/app/auth/actions';
 import { useFeatureFlags } from '@/lib/dashboard-context';
 import { Button } from "@/components/ui/Button";
@@ -98,7 +99,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
  )} />
 
  {!collapsed && (
- <span className="flex-1 text-sm relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-between">
+ <span className="flex-1 text-sm nav-menu-text relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-between">
  {item.name}
  {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
  <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
@@ -135,24 +136,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
  const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
 
- const [claimableCount, setClaimableCount] = useState(0);
-
- // Fetch claimable mission count for badge
- useEffect(() => {
- let cancelled = false;
- const fetchCount = async () => {
- try {
- const res = await fetch("/api/missions/claimable-count");
- if (res.ok && !cancelled) {
- const data = await res.json();
- setClaimableCount(data.count || 0);
- }
- } catch { /* silent */ }
- };
- fetchCount();
- const timer = setInterval(fetchCount, 60_000);
- return () => { cancelled = true; clearInterval(timer); };
- }, [pathname]);
+ const claimableCount = useClaimableCount();
 
  // Filter out items with disabled feature flags (hide flagged items until loaded)
  const visibleItems = useMemo(() =>
@@ -299,7 +283,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
  isCollapsed && "justify-center px-0"
  )}>
  <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
- {!isCollapsed && <span className="font-medium text-sm">Logout</span>}
+ {!isCollapsed && <span className="nav-menu-text text-sm">Logout</span>}
  </Button>
  </div>
  </aside>

@@ -11,7 +11,7 @@ import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { Button } from "@/components/ui/Button";
-import { PublicSearchModal, PublicSearchTrigger } from "@/components/search/PublicSearchModal";
+import { PublicSearchModal } from "@/components/search/PublicSearchModal";
 import { usePathname } from "next/navigation";
 
 interface PublicHeaderProps {
@@ -113,8 +113,6 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
 
  {/* Action Buttons */}
  <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
- {/* Search */}
- {!isSearchPage && <PublicSearchTrigger className="hidden sm:flex" />}
 
  {/* Theme Toggle */}
  <ThemeToggleSwitch />

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Gift, Check, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { claimMission } from "@/actions/edge-missions";
+import { refreshClaimableCount } from "@/hooks/useClaimableCount";
 import { trackEvent } from "@/lib/track";
 import { celebrateXP } from "@/lib/celebrate";
 import { toast } from "sonner";
@@ -53,6 +54,7 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
  xp: result.xpAwarded || mission.def.xpReward,
  message: `Mission Complete: ${mission.def.title}`,
  });
+ refreshClaimableCount();
  onClaimed?.();
  } else if (result.error) {
  toast.error(result.error);
