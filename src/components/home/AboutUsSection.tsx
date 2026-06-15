@@ -89,7 +89,7 @@ export function AboutUsSection() {
  {TEAM.map((member, idx) => (
  <div
  key={idx}
- className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/40 hover:shadow-md hover:shadow-amber-500/5 hover:-translate-y-0.5 transition-all duration-200"
+ className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/40 hover:shadow-md hover:shadow-amber-500/5 transition-all duration-200"
  >
  <div className="w-10 h-10 rounded-full ring-2 ring-amber-400/60 dark:ring-amber-500/40 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 shrink-0">
  <div className={`w-full h-full rounded-full ${member.color} flex items-center justify-center text-white text-sm font-black shadow-lg`}>
@@ -115,7 +115,7 @@ export function AboutUsSection() {
  href={site.url}
  target="_blank"
  rel="noopener noreferrer"
- className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/40 hover:shadow-md hover:shadow-amber-500/5 hover:-translate-y-0.5 transition-all duration-200 group"
+ className="flex items-center gap-3 p-3 rounded-xl bg-white/80 dark:bg-white/[0.05] backdrop-blur-sm border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/40 hover:shadow-md hover:shadow-amber-500/5 transition-all duration-200 group"
  >
  <div className="w-10 h-10 rounded-full ring-2 ring-amber-400/60 dark:ring-amber-500/40 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 shrink-0 overflow-hidden">
  {site.image ? (

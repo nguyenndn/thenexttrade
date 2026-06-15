@@ -1,9 +1,9 @@
 "use client";
 
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { HelpCircle, TrendingUp } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
 const PLATFORM_FAQ = [
  {
@@ -82,14 +82,15 @@ export function HomeFAQSection() {
  <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
 
  <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
- <div className="text-center mb-12">
- <h2 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-white mb-2 tracking-tight">
- Frequently Asked Questions
- </h2>
- <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
- Quick answers to common questions
- </p>
- </div>
+ <HomeSectionHeading
+ align="center"
+ eyebrow="Before you start"
+ title="Frequently Asked Questions"
+ highlight="Questions"
+ description="Quick answers to common platform and trading questions."
+ icon={HelpCircle}
+ className="mb-12"
+ />
 
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
  {/* About Platform */}

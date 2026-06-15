@@ -16,7 +16,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
   };
 
   return (
-    <div className="pt-28 pb-14 bg-white dark:bg-[#0B0E14] relative overflow-hidden text-center">
+    <div className="pt-28 pb-8 bg-white dark:bg-[#0B0E14] relative overflow-hidden text-center">
       {/* Grid Pattern Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
 
@@ -27,20 +27,20 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
         {/* Pill Badge */}
         <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gold/10 text-gold text-xs font-black uppercase tracking-wider mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
-          <Sparkles size={12} /> Sync Trades. See Your Edge.
+          <Sparkles size={12} /> Free MT5 sync + weekly coach reports
         </div>
 
         {/* Main Headline */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-800 dark:text-white tracking-tight leading-[1.08] mb-6 max-w-4xl animate-in fade-in slide-in-from-top-4 duration-700">
-          Take Your Trading To The <br />
+          Turn Your Trade History <br className="hidden sm:inline" /> Into{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold to-amber-500 dark:from-gold dark:to-yellow-400">
-            Next Level.
+            Your Next Move
           </span>
         </h1>
 
         {/* Supporting Copy */}
         <p className="text-base sm:text-lg text-gray-650 dark:text-gray-300 leading-relaxed mb-8 max-w-5xl font-medium animate-in fade-in duration-1000 lg:whitespace-nowrap">
-          Use MT5 sync, guided reviews, and weekly coach insights to turn your trading history into a practical improvement plan
+          Sync MT5 trades, review what happened, and get one focused weekly action to improve your trading
         </p>
 
         {/* Dual CTAs */}
@@ -48,7 +48,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
           {isLoggedIn ? (
             <Link href="/dashboard" className="w-full sm:w-auto group">
               <Button
-                className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black text-sm shadow-[0_4px_14px_rgba(245,158,11,0.3)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 <LayoutDashboard size={16} className="group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300" /> Open Dashboard
               </Button>
@@ -56,7 +56,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
           ) : (
             <Link href="/auth/signup?source=home_hero&intent=track" className="w-full sm:w-auto group">
               <Button
-                className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black text-sm shadow-[0_4px_14px_rgba(245,158,11,0.3)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 Start Free Journal <Zap size={16} className="text-yellow-300 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
               </Button>

@@ -61,6 +61,15 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
 
   if (activeItems.length === 0) return null;
 
+  const colMap: Record<number, string> = {
+    1: "md:grid-cols-1",
+    2: "md:grid-cols-2",
+    3: "md:grid-cols-3",
+    4: "md:grid-cols-4",
+    5: "md:grid-cols-5",
+  };
+  const gridColsClass = colMap[activeItems.length] || "md:grid-cols-5";
+
   return (
     <div className="relative w-full overflow-hidden bg-white dark:bg-[#0B0E14]">
       <section className="mx-auto max-w-6xl px-4 pt-2 pb-10 sm:px-6 sm:pb-12 lg:px-8">
@@ -68,7 +77,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.055),transparent_34%,rgba(16,185,129,0.045)_72%,transparent)]" />
           <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent" />
 
-          <div className="relative z-10 grid grid-cols-1 divide-y divide-gray-200/70 sm:grid-cols-2 sm:divide-x sm:[&>*:nth-child(2n+1)]:border-l-0 md:grid-cols-5 md:divide-y-0 md:divide-x dark:divide-white/[0.07]">
+          <div className={`relative z-10 grid grid-cols-1 divide-y divide-gray-200/70 sm:grid-cols-2 sm:divide-x sm:[&>*:nth-child(2n+1)]:border-l-0 ${gridColsClass} md:divide-y-0 md:divide-x dark:divide-white/[0.07]`}>
             {activeItems.map((item, idx) => (
               <div
                 key={idx}
@@ -83,7 +92,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                   </span>
                 </div>
 
-                <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border ${item.border} ${item.bg} transition-transform duration-300 group-hover:-translate-y-0.5`}>
+                <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border ${item.border} ${item.bg} transition-transform duration-300`}>
                   <span className={`${item.color} block transition-transform duration-300 group-hover:scale-110`}>
                     {item.icon}
                   </span>

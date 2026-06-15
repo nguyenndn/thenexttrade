@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { Star, Check, ExternalLink, Award, Sparkles } from "lucide-react";
+import { Star, Check, ExternalLink, Award, Sparkles, Landmark, TrendingUp } from "lucide-react";
 import partnersData from "@/config/partners.json";
+import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
 interface BrokerItem {
   name: string;
@@ -19,10 +22,75 @@ interface BrokerItem {
   features: string[];
 }
 
+interface CryptoItem {
+  name: string;
+  desc: string;
+  badge: string | null;
+  badgeType: string | null;
+  logo: string | null;
+  initials: string;
+  url: string | null;
+  rating: number;
+  minDeposit: string;
+  maxLeverage: string;
+  regulation: string;
+  features: string[];
+}
+
+interface UnifiedItem {
+  name: string;
+  desc: string;
+  badge: string | null;
+  badgeType: string | null;
+  logo: string | null;
+  initials: string;
+  url: string | null;
+  rating: number;
+  regulation: string;
+  features: string[];
+  // Broker specific
+  minDeposit?: string;
+  maxLeverage?: string;
+  // Crypto specific
+  marketType?: string;
+  assets?: string;
+}
+
 export function BrokerRankingsSection() {
-  const brokers: BrokerItem[] = (partnersData.brokers.items as BrokerItem[])
+  const [activeTab, setActiveTab] = useState<'brokers' | 'crypto'>('brokers');
+
+  const brokers: UnifiedItem[] = (partnersData.brokers.items as BrokerItem[])
     .filter(item => (item as any).active !== false)
-    .slice(0, 4);
+    .slice(0, 4)
+    .map(item => ({
+      ...item,
+    }));
+
+  const cryptoExchanges: UnifiedItem[] = (partnersData.cryptoExchanges.items as CryptoItem[])
+    .filter(item => (item as any).active !== false)
+    .slice(0, 4)
+    .map(item => {
+      const nameLower = item.name.toLowerCase();
+      let marketType = "Spot & Derivatives";
+      let assets = "300+ Assets";
+      if (nameLower.includes("binance")) {
+        marketType = "Spot & Futures";
+        assets = "600+ Cryptos";
+      } else if (nameLower.includes("bybit")) {
+        marketType = "Derivatives & Spot";
+        assets = "600+ Assets";
+      } else if (nameLower.includes("okx")) {
+        marketType = "Spot, Futures & Options";
+        assets = "300+ Assets";
+      }
+      return {
+        ...item,
+        marketType,
+        assets,
+      };
+    });
+
+  const activeItems = activeTab === 'brokers' ? brokers : cryptoExchanges;
 
   return (
     <div className="relative overflow-hidden bg-slate-50/50 dark:bg-[#0B0E14] border-t border-dashboard">
@@ -32,22 +100,45 @@ export function BrokerRankingsSection() {
 
       <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Title */}
-        <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gold/10 text-gold text-xs font-bold mb-3">
-            <Sparkles size={12} className="animate-spin-slow" /> Compare & Trade
+        <HomeSectionHeading
+          align="center"
+          eyebrow="Compare and trade"
+          title="Recommended Trading Platforms"
+          highlight="Platforms"
+          description="Compare CFD brokers and crypto exchanges by fit, fees, platform, and trading style."
+          icon={Sparkles}
+          className="mb-8"
+        />
+
+        {/* Tab Switcher */}
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} tabsId="platforms-tabs" className="w-full">
+          <div className="flex justify-center mb-8 overflow-x-auto scrollbar-hide">
+            <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
+              <TabsTrigger
+                value="brokers"
+                className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+                activeIndicatorClassName="!bg-gradient-to-r from-amber-500 to-gold shadow-md border-0"
+                activeTextClassName="!text-white"
+              >
+                <Landmark size={15} className={activeTab === 'brokers' ? "text-white" : "text-gray-500 dark:text-gray-400"} />
+                <span>CFD Brokers</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="crypto"
+                className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+                activeIndicatorClassName="!bg-gradient-to-r from-amber-500 to-gold shadow-md border-0"
+                activeTextClassName="!text-white"
+              >
+                <TrendingUp size={15} className={activeTab === 'crypto' ? "text-white" : "text-gray-500 dark:text-gray-400"} />
+                <span>Crypto Exchanges</span>
+              </TabsTrigger>
+            </TabsList>
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-white mb-2 tracking-tight">
-            Recommended <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold to-amber-500">CFD Brokers</span>
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-            Compare regulated brokers by deposit, leverage, regulation, and platform fit.
-          </p>
-        </div>
+        </Tabs>
 
         {/* Comparison List/Cards */}
         <div className="space-y-4 max-w-5xl mx-auto">
-          {brokers.map((item, idx) => (
+          {activeItems.map((item, idx) => (
             <div 
               key={item.name}
               className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 p-5 sm:p-6 rounded-2xl bg-white/80 dark:bg-white/[0.02] border border-amber-200/50 dark:border-amber-500/10 hover:border-gold/50 dark:hover:border-gold/30 hover:shadow-lg transition-all duration-300 group"
@@ -55,7 +146,7 @@ export function BrokerRankingsSection() {
               {/* Badge for #1 Rated */}
               {idx === 0 && (
                 <div className="absolute -top-3 left-6 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-gold text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
-                  <Award size={10} /> Editor&apos;s Choice
+                  <Award size={10} /> {activeTab === 'brokers' ? "Editor's Choice" : "Top Volume"}
                 </div>
               )}
 
@@ -88,14 +179,29 @@ export function BrokerRankingsSection() {
 
               {/* Mid Column: Key Metrics */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 flex-1 max-w-xl">
-                <div>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Min Deposit</p>
-                  <p className="text-sm font-extrabold text-gray-700 dark:text-white mt-0.5">{item.minDeposit}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Max Leverage</p>
-                  <p className="text-sm font-extrabold text-gray-700 dark:text-white mt-0.5">{item.maxLeverage || "N/A"}</p>
-                </div>
+                {activeTab === 'brokers' ? (
+                  <>
+                    <div>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Min Deposit</p>
+                      <p className="text-sm font-extrabold text-gray-700 dark:text-white mt-0.5">{item.minDeposit}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Max Leverage</p>
+                      <p className="text-sm font-extrabold text-gray-700 dark:text-white mt-0.5">{item.maxLeverage || "N/A"}</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Market Type</p>
+                      <p className="text-sm font-extrabold text-gray-700 dark:text-white mt-0.5">{item.marketType}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Assets</p>
+                      <p className="text-sm font-extrabold text-gray-700 dark:text-white mt-0.5">{item.assets}</p>
+                    </div>
+                  </>
+                )}
                 <div className="col-span-2 sm:col-span-1">
                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Key Features</p>
                   <ul className="mt-1 space-y-0.5 text-xs text-gray-600 dark:text-gray-300 font-medium">
@@ -111,20 +217,41 @@ export function BrokerRankingsSection() {
 
               {/* Right Column: CTA Actions */}
               <div className="flex sm:flex-row md:flex-col lg:flex-row items-center gap-3 shrink-0">
-                <a 
-                  href={item.url || "#"} 
-                  target={item.url && item.url !== "#" ? "_blank" : undefined}
-                  rel={item.url && item.url !== "#" ? "noopener noreferrer" : undefined}
-                  className="flex-1 md:w-full lg:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black text-xs shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer text-center"
-                >
-                  Trade Now <ExternalLink size={10} />
-                </a>
-                <a
-                  href="/brokers?tab=brokers"
-                  className="flex-1 md:w-full lg:w-auto inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-dashboard hover:border-gold/40 hover:bg-gold/5 text-gray-700 dark:text-white dark:hover:text-gold text-xs font-bold transition-all duration-300"
-                >
-                  Full Review
-                </a>
+                {activeTab === 'brokers' ? (
+                  <>
+                    <a 
+                      href={item.url || "#"} 
+                      target={item.url && item.url !== "#" ? "_blank" : undefined}
+                      rel={item.url && item.url !== "#" ? "noopener noreferrer" : undefined}
+                      className="flex-1 md:w-full lg:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black text-xs shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer text-center whitespace-nowrap animate-none"
+                    >
+                      Trade Now <ExternalLink size={10} />
+                    </a>
+                    <a
+                      href="/brokers?tab=brokers"
+                      className="flex-1 md:w-full lg:w-auto inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-dashboard hover:border-gold/40 hover:bg-gold/5 text-gray-700 dark:text-white dark:hover:text-gold text-xs font-bold transition-all duration-300 whitespace-nowrap"
+                    >
+                      Full Review
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <a 
+                      href={item.url || "#"} 
+                      target={item.url && item.url !== "#" ? "_blank" : undefined}
+                      rel={item.url && item.url !== "#" ? "noopener noreferrer" : undefined}
+                      className="flex-1 md:w-full lg:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black text-xs shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer text-center whitespace-nowrap animate-none"
+                    >
+                      Open Exchange <ExternalLink size={10} />
+                    </a>
+                    <a
+                      href="/brokers?tab=cryptoExchanges"
+                      className="flex-1 md:w-full lg:w-auto inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-dashboard hover:border-gold/40 hover:bg-gold/5 text-gray-700 dark:text-white dark:hover:text-gold text-xs font-bold transition-all duration-300 whitespace-nowrap"
+                    >
+                      Compare Exchanges
+                    </a>
+                  </>
+                )}
               </div>
 
             </div>

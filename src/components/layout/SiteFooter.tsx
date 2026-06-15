@@ -40,7 +40,7 @@ export function SiteFooter() {
  aria-label={social.label}
  target="_blank"
  rel="noopener noreferrer"
- className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-dashboard flex items-center justify-center text-gray-500 transition-all hover:text-primary hover:border-primary/30 hover:bg-primary/5 hover:-translate-y-1 shadow-sm"
+ className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-dashboard flex items-center justify-center text-gray-500 transition-all hover:text-primary hover:border-primary/30 hover:bg-primary/5 shadow-sm"
  >
  <social.icon size={18} />
  </a>

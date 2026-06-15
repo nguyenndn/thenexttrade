@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
+import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
 interface Review {
  name: string;
@@ -114,14 +114,15 @@ export function ReviewsSection() {
  <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
  <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
- <div className="text-center mb-12">
- <h2 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-white mb-3 tracking-tight">
- What Traders Say
- </h2>
- <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
- Real reviews from our community
- </p>
- </div>
+ <HomeSectionHeading
+ align="center"
+ eyebrow="Community proof"
+ title="What Traders Say"
+ highlight="Traders"
+ description="Real reviews from our community."
+ icon={Star}
+ className="mb-12"
+ />
 
  {/* Cards */}
  <div

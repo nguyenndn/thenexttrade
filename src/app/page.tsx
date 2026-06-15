@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import Image from "next/image";
-import { Clock, ArrowRight, Flame, MessageCircle, Compass } from "lucide-react";
-import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Clock, ArrowRight, Flame, MessageCircle, Compass, BookOpen, GraduationCap } from "lucide-react";
 import { AboutUsSection } from "@/components/home/AboutUsSection";
+import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { cache } from "@/lib/cache";
 import { getAuthUser } from "@/lib/auth-cache";
@@ -27,7 +27,6 @@ const QuoteDisplay = dynamic(() => import("@/components/shared/QuoteDisplay"), {
 const MarketTickerSection = dynamic(() => import("@/components/home/MarketTickerSection").then(m => ({ default: m.MarketTickerSection })), { loading: () => <div className="h-24" /> });
 const ToolsPreviewSection = dynamic(() => import("@/components/home/ToolsPreviewSection").then(m => ({ default: m.ToolsPreviewSection })), { loading: () => <div className="h-96" /> });
 const LearningPathTimeline = dynamic(() => import("@/components/home/LearningPathTimeline").then(m => ({ default: m.LearningPathTimeline })), { loading: () => <div className="h-96" /> });
-const TrustedPartners = dynamic(() => import("@/components/home/TrustedPartners").then(m => ({ default: m.TrustedPartners })), { loading: () => <div className="h-96" /> });
 const WebForexTools = dynamic(() => import("@/components/home/WebForexTools").then(m => ({ default: m.WebForexTools })), { loading: () => <div className="h-48" /> });
 const SaaSHeroSection = dynamic(() => import("@/components/home/SaaSHeroSection").then(m => ({ default: m.SaaSHeroSection })), { loading: () => <div className="h-[450px]" /> });
 const StartByGoalSection = dynamic(() => import("@/components/home/StartByGoalSection").then(m => ({ default: m.StartByGoalSection })), { loading: () => <div className="h-48" /> });
@@ -188,7 +187,15 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
           <DynamicFirefly />
 
           <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <SectionHeader title="Trending Topics" align="center" />
+            <HomeSectionHeading
+              align="center"
+              eyebrow="Trending now"
+              title="Trending Topics"
+              highlight="Trending"
+              description="Explore what traders are reading and discussing this week."
+              icon={Flame}
+              className="mb-10"
+            />
 
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
               {trendingCategories.map((cat, idx) => (
@@ -220,11 +227,14 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
           <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-primary/10 dark:bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
           <section className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-            <SectionHeader
+            <HomeSectionHeading
+              align="center"
+              eyebrow="Editor's picks"
               title="Popular Guides"
-              align="left"
-              linkHref="/knowledge"
-              linkText="Explore Library"
+              highlight="Guides"
+              description="Start with the most useful lessons, broker guides, and trading playbooks."
+              icon={BookOpen}
+              className="mb-8"
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -298,6 +308,16 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
               ))}
             </div>
 
+            <div className="mt-8 flex justify-center">
+              <Link
+                href="/knowledge"
+                className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-gold/35 bg-white/80 px-5 py-2.5 text-xs font-black text-gray-800 shadow-sm shadow-gold/[0.03] transition-all duration-300 hover:border-gold hover:bg-gold/[0.08] hover:text-gray-950 hover:shadow-md dark:bg-white/[0.03] dark:text-white dark:hover:bg-gold/[0.06]"
+              >
+                Explore Library
+                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </div>
+
             {/* Compact Latest Updates Text-Only Row */}
             {latestArticles && latestArticles.length > 0 && (
               <div className="mt-12 pt-8 border-t border-dashboard/60 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -357,15 +377,17 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent dark:from-gold/[0.03] dark:via-transparent dark:to-transparent"></div>
         <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn delay={0.1} direction="up">
-            <div className="mb-16 text-center">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-700 dark:text-white mb-6 tracking-tight">
-                Build your foundation before{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold to-amber-500">increasing risk</span>
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-500 max-w-2xl mx-auto leading-relaxed">
-                Follow structured lessons, quizzes, and practical guides. From basics to advanced strategies.
-              </p>
-            </div>
+            <HomeSectionHeading
+              align="center"
+              eyebrow="Academy path"
+              title="Build your foundation before increasing risk"
+              highlight="foundation"
+              description="Follow structured lessons, quizzes, and practical guides. From basics to advanced strategies."
+              icon={GraduationCap}
+              contentClassName="lg:max-w-5xl"
+              titleClassName="lg:whitespace-nowrap"
+              className="mb-16"
+            />
           </FadeIn>
 
           <LearningPathTimeline />
@@ -392,10 +414,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
         <ReviewsSection />
       </FadeIn>
 
-      {/* 13. Trusted Partners */}
-      <FadeIn delay={0.1} direction="up">
-        <TrustedPartners />
-      </FadeIn>
+
 
       {/* 14. Web Forex Tools */}
       <FadeIn delay={0.1} direction="up">

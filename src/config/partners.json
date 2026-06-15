@@ -119,44 +119,6 @@
       },
       {
         "active": true,
-        "name": "IC Markets",
-        "desc": "True ECN • Raw Spreads from 0.0",
-        "badge": "Best ECN",
-        "badgeType": "gold",
-        "logo": "/images/brokers/icmarkets.png",
-        "initials": "IC",
-        "color": "from-blue-500 to-blue-600",
-        "url": "https://icmarkets.com/?camp=75999",
-        "rating": 4.6,
-        "minDeposit": "$200",
-        "maxLeverage": "1:500",
-        "regulation": "ASIC, CySEC, FSA",
-        "features": [
-          "Raw spreads from 0.0 pips",
-          "Commission from $6/lot (cTrader)",
-          "MT4, MT5 & cTrader",
-          "Ultra-fast execution for algo traders"
-        ],
-        "review": {
-          "summary": "IC Markets is a **true ECN broker** regulated by ASIC and CySEC. Built for **algorithmic and active traders**, it offers raw spreads from 0.0 pips with ultra-fast execution speeds.",
-          "pros": [
-            "True Raw ECN spreads from 0.0 pips",
-            "ASIC & CySEC regulated — top-tier trust",
-            "MT4, MT5 & cTrader supported",
-            "Ultra-fast execution — ideal for algo trading",
-            "No dealing desk intervention"
-          ],
-          "cons": [
-            "Minimum deposit $200 — higher entry point",
-            "Commission on Raw Spread accounts ($6-7/lot)",
-            "Not available in US, Canada"
-          ],
-          "bestFor": "Algorithmic traders and scalpers who need **raw ECN pricing** and ultra-fast execution.",
-          "verdict": "**4.6/5** — The go-to broker for professional ECN trading."
-        }
-      },
-      {
-        "active": true,
         "name": "Ultima Markets",
         "desc": "CySEC & FCA • Up to 1:2000",
         "badge": "Beginner Friendly",
@@ -191,6 +153,44 @@
           ],
           "bestFor": "Traders who want a **CySEC/FCA-regulated broker** with competitive leverage on global accounts.",
           "verdict": "**4.1/5** — Promising dual-regulated broker with growing reputation."
+        }
+      },
+      {
+        "active": true,
+        "name": "IC Markets",
+        "desc": "True ECN • Raw Spreads from 0.0",
+        "badge": "Best ECN",
+        "badgeType": "gold",
+        "logo": "/images/brokers/icmarkets.png",
+        "initials": "IC",
+        "color": "from-blue-500 to-blue-600",
+        "url": "https://icmarkets.com/?camp=75999",
+        "rating": 4.6,
+        "minDeposit": "$200",
+        "maxLeverage": "1:500",
+        "regulation": "ASIC, CySEC, FSA",
+        "features": [
+          "Raw spreads from 0.0 pips",
+          "Commission from $6/lot (cTrader)",
+          "MT4, MT5 & cTrader",
+          "Ultra-fast execution for algo traders"
+        ],
+        "review": {
+          "summary": "IC Markets is a **true ECN broker** regulated by ASIC and CySEC. Built for **algorithmic and active traders**, it offers raw spreads from 0.0 pips with ultra-fast execution speeds.",
+          "pros": [
+            "True Raw ECN spreads from 0.0 pips",
+            "ASIC & CySEC regulated — top-tier trust",
+            "MT4, MT5 & cTrader supported",
+            "Ultra-fast execution — ideal for algo trading",
+            "No dealing desk intervention"
+          ],
+          "cons": [
+            "Minimum deposit $200 — higher entry point",
+            "Commission on Raw Spread accounts ($6-7/lot)",
+            "Not available in US, Canada"
+          ],
+          "bestFor": "Algorithmic traders and scalpers who need **raw ECN pricing** and ultra-fast execution.",
+          "verdict": "**4.6/5** — The go-to broker for professional ECN trading."
         }
       },
       {

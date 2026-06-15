@@ -13,7 +13,7 @@ export function NewsletterSection() {
     if (!email.trim()) return;
 
     setStatus("loading");
-    
+
     // Simulate API registration
     setTimeout(() => {
       setStatus("success");
@@ -30,7 +30,7 @@ export function NewsletterSection() {
 
       <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
-          
+
           {/* Left Column: Telegram Community Callout */}
           <div className="lg:col-span-5 p-6 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.02] backdrop-blur-md">
             <div className="flex items-center gap-3 mb-4">
@@ -45,9 +45,9 @@ export function NewsletterSection() {
             <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-5">
               Get real-time market updates, trade ideas, automated EA reports, and connect with other successful traders instantly.
             </p>
-            <a 
-              href="https://t.me/thenexttrade" 
-              target="_blank" 
+            <a
+              href="https://t.me/GoldScalperNinja"
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex min-h-11 items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-[#0088cc] to-[#00a2ed] hover:from-[#00a2ed] hover:to-[#00b6ff] text-white font-black text-sm shadow-[0_4px_12px_rgba(0,136,204,0.3)] hover:shadow-[0_4px_20px_rgba(0,136,204,0.45)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-300"
             >
@@ -102,7 +102,7 @@ export function NewsletterSection() {
                 </Button>
               </form>
             )}
-            
+
             <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-3 flex items-center gap-1">
               <ShieldCheck size={11} /> No spam. Unsubscribe anytime. Your data is 100% secure.
             </p>

@@ -1,53 +1,103 @@
-import { Wrench, ChevronRight } from "lucide-react";
+import { Wrench } from "lucide-react";
 import { FadeIn } from "@/components/ui/FadeIn";
 import Link from "next/link";
 import { ALL_TOOLS } from "@/config/tools-data";
+import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
+
+// Import custom preview mockups
+import { MarketHoursMock } from "./tools-previews/MarketHoursMock";
+import { LotSizeMock } from "./tools-previews/LotSizeMock";
+import { FibonacciMock } from "./tools-previews/FibonacciMock";
+import { MarginMock } from "./tools-previews/MarginMock";
+import { CorrelationMock } from "./tools-previews/CorrelationMock";
+import { LeverageMock } from "./tools-previews/LeverageMock";
+
+const VISUAL_TOOLS = [
+  {
+    slug: "market-hours",
+    Mock: MarketHoursMock,
+    shortTitle: "Market Hours",
+    description: "See which forex markets and stock exchanges are currently open. Times shown in your timezone."
+  },
+  {
+    slug: "position-size-calculator",
+    Mock: LotSizeMock,
+    shortTitle: "Lot Size Optimizer",
+    description: "Find the optimal trade volume for your account size and risk tolerance."
+  },
+  {
+    slug: "fibonacci-calculator",
+    Mock: FibonacciMock,
+    shortTitle: "Fibonacci Calculator",
+    description: "Calculate Fibonacci retracement and extension levels for price action."
+  },
+  {
+    slug: "margin-calculator",
+    Mock: MarginMock,
+    shortTitle: "Margin Calculator",
+    description: "Calculate the required margin to open a leveraged forex position."
+  },
+  {
+    slug: "correlation-matrix",
+    Mock: CorrelationMock,
+    shortTitle: "Correlation Matrix",
+    description: "See how currency pairs move together. Use correlations to diversify risk and find opportunities."
+  },
+  {
+    slug: "leverage-calculator",
+    Mock: LeverageMock,
+    shortTitle: "Leverage Calculator",
+    description: "Understand your leverage exposure and calculate effective ratio."
+  }
+];
 
 export function WebForexTools() {
- return (
- <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14]">
- {/* Background dot pattern */}
- <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--cyan-500))_1.2px,transparent_1.2px)] [background-size:32px_32px] opacity-[0.05] dark:opacity-[0.03] pointer-events-none" />
+  return (
+    <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14] border-t border-gray-200 dark:border-white/10">
+      {/* Background dot pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--cyan-500))_1.2px,transparent_1.2px)] [background-size:40px_40px] opacity-[0.08] dark:opacity-[0.04] pointer-events-none" />
 
- <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
- <FadeIn delay={0.1} direction="up">
- {/* Header */}
- <div className="relative flex flex-col items-center text-center max-w-full mb-10 pb-4 border-b border-dashboard/60">
- <h2 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-white mb-2 tracking-tight">
- Trading <span className="text-cyan-600 dark:text-cyan-400">Calculators</span>
- </h2>
- <p className="text-xs text-gray-500 dark:text-slate-400 font-medium">
- Free pro calculators, live data, and visualizers — no signup.
- </p>
- <Link
- href="/tools"
- className="mt-4 sm:mt-0 sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2 text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:opacity-80 transition-colors flex items-center gap-1.5 bg-white dark:bg-white/5 border border-dashboard px-3.5 py-1.5 rounded-lg whitespace-nowrap"
- >
- View all {ALL_TOOLS.length} tools →
- </Link>
- </div>
+      <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <FadeIn delay={0.1} direction="up">
+          <HomeSectionHeading
+            align="center"
+            eyebrow="Free tools"
+            title="Trading Calculators"
+            highlight="Calculators"
+            description="Free pro calculators, live data, and visualizers. No signup required."
+            icon={Wrench}
+            linkHref="/tools"
+            linkText={`View all ${ALL_TOOLS.length} tools`}
+            className="mb-10"
+          />
 
- {/* Tools Grid — 2 rows x 4 cols, cardless floating design */}
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
- {ALL_TOOLS.slice(0, 8).map((tool) => (
- <Link
- key={tool.slug}
- href={`/tools/${tool.slug}`}
- className="flex items-center gap-3 p-3.5 rounded-2xl bg-white/85 dark:bg-white/[0.03] border border-amber-200/60 dark:border-amber-500/15 hover:border-cyan-300 dark:hover:border-cyan-500/20 hover:shadow-md dark:hover:shadow-none hover:-translate-y-0.5 transition-all duration-300 group"
- >
- <div className={`w-9 h-9 rounded-lg ${tool.iconBg} flex items-center justify-center flex-shrink-0 shadow-sm`}>
- <tool.icon size={16} strokeWidth={2.5} />
- </div>
- <div className="flex-1 min-w-0">
- <p className="text-base font-bold text-gray-800 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors truncate">{tool.shortTitle}</p>
- <p className="text-xs text-gray-500 dark:text-slate-400 truncate mt-0.5">{tool.description}</p>
- </div>
- <ChevronRight size={14} className="text-gray-400 dark:text-slate-600 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
- </Link>
- ))}
- </div>
- </FadeIn>
- </section>
- </div>
- );
+          {/* Premium Tools Grid - 3 Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {VISUAL_TOOLS.map((tool) => (
+              <Link
+                key={tool.slug}
+                href={`/tools/${tool.slug}`}
+                className="group relative bg-white dark:bg-[#1E2028] rounded-2xl p-2.5 shadow-sm hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 border border-gray-200/80 dark:border-white/5 flex flex-col gap-4 overflow-hidden"
+              >
+                {/* Visual Preview Half */}
+                <div className="rounded-xl overflow-hidden bg-transparent">
+                  <tool.Mock />
+                </div>
+
+                {/* Info Half */}
+                <div className="px-1.5 pb-2 flex-1 flex flex-col">
+                  <h3 className="text-base font-extrabold text-gray-800 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors leading-snug">
+                    {tool.shortTitle}
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 font-medium leading-relaxed mt-1.5">
+                    {tool.description}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </FadeIn>
+      </section>
+    </div>
+  );
 }

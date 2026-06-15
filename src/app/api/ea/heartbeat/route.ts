@@ -14,8 +14,8 @@ function mapGmtOffsetToTimezone(offsetHours: number): string {
  [-3]: "America/Sao_Paulo", // Brazil
  0: "Etc/UTC", // Exness, some FXCM
  1: "Europe/London", // UK (BST / DST)
- 2: "Europe/Athens", // EET - Vantage, IC Markets, FTMO (Winter)
- 3: "Europe/Athens", // EEST - Vantage, IC Markets, FTMO (Summer / DST)
+ 2: "Europe/Athens", // EET - common MT5 server timezone in winter
+ 3: "Europe/Athens", // EEST - common MT5 server timezone in summer/DST
  };
  return map[offsetHours] || `Etc/GMT${offsetHours <= 0 ? '+' : '-'}${Math.abs(offsetHours)}`;
 }

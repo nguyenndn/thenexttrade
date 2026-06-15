@@ -1,187 +1,117 @@
-import { Building2, Server, Bitcoin, ExternalLink } from "lucide-react";
+import { Server, ExternalLink, Check } from "lucide-react";
 import { FadeIn } from "@/components/ui/FadeIn";
-import Link from "next/link";
 import Image from "next/image";
 import partnersData from "@/config/partners.json";
+import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
 const BADGE_STYLES: Record<string, string> = {
- gold: "bg-amber-500 text-white shadow-sm",
- green: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30",
- blue: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-200 dark:border-sky-500/30",
+  gold: "bg-amber-500 text-white shadow-sm",
+  green: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30",
+  blue: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-200 dark:border-sky-500/30",
 };
 
-interface CategoryConfig {
- title: string;
- accentTitle?: string;
- subtitle: string;
- viewAllHref?: string;
- icon: React.ElementType;
- iconBg: string;
- iconColor: string;
- accentColor: string;
- borderGradient: string;
- hoverBorder: string;
- hoverText: string;
- visitStyle: string;
- items: {
- name: string;
- desc: string;
- badge: string | null;
- badgeType: string | null;
- logo: string | null;
- initials: string;
- color: string;
- url: string | null;
- }[];
+interface VPSItem {
+  name: string;
+  desc: string;
+  badge: string | null;
+  badgeType: string | null;
+  logo: string | null;
+  initials: string;
+  color: string;
+  url: string | null;
+  rating: number;
+  minDeposit: string;
+  features: string[];
+  active?: boolean;
 }
 
-const SECTIONS: CategoryConfig[] = [
- {
- ...partnersData.brokers,
- title: "Best Forex",
- accentTitle: "Brokers",
- subtitle: "Regulated & Low Spreads",
- icon: Building2,
- iconBg: "bg-blue-100 dark:bg-blue-500/20",
- iconColor: "text-blue-600 dark:text-blue-400",
- accentColor: "text-blue-600 dark:text-blue-400",
- borderGradient: "from-blue-400 via-cyan-400 to-emerald-400",
- hoverBorder: "hover:border-blue-300 dark:hover:border-blue-500/30",
- hoverText: "group-hover:text-blue-600 dark:group-hover:text-blue-400",
- visitStyle: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-400/10 border-blue-200 dark:border-blue-400/20 group-hover:bg-blue-100 dark:group-hover:bg-blue-400/20",
- },
- {
- ...partnersData.cryptoExchanges,
- title: "Crypto",
- accentTitle: "Exchanges",
- subtitle: "Trade 600+ Cryptocurrencies",
- viewAllHref: "/brokers?tab=cryptoExchanges",
- icon: Bitcoin,
- iconBg: "bg-amber-100 dark:bg-amber-500/20",
- iconColor: "text-amber-600 dark:text-amber-400",
- accentColor: "text-amber-600 dark:text-amber-400",
- borderGradient: "from-amber-400 via-orange-400 to-rose-400",
- hoverBorder: "hover:border-amber-300 dark:hover:border-amber-500/30",
- hoverText: "group-hover:text-amber-600 dark:group-hover:text-amber-400",
- visitStyle: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-400/10 border-amber-200 dark:border-amber-400/20 group-hover:bg-amber-100 dark:group-hover:bg-amber-400/20",
- },
- {
- ...partnersData.vps,
- title: "Trading",
- accentTitle: "Infrastructure",
- subtitle: "Tools we run alongside the brokers above",
- icon: Server,
- iconBg: "bg-emerald-100 dark:bg-emerald-500/20",
- iconColor: "text-emerald-600 dark:text-emerald-400",
- accentColor: "text-emerald-600 dark:text-emerald-400",
- borderGradient: "from-emerald-400 via-teal-400 to-cyan-400",
- hoverBorder: "hover:border-emerald-300 dark:hover:border-emerald-500/30",
- hoverText: "group-hover:text-emerald-600 dark:group-hover:text-emerald-400",
- visitStyle: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-400/10 border-emerald-200 dark:border-emerald-400/20 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-400/20",
- },
-];
-
 export function TrustedPartners() {
- return (
- <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14] border-t border-dashboard/60">
- {/* Background pattern */}
- <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,200,136,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,200,136,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:40px_40px]" />
+  const vpsItems: VPSItem[] = (partnersData.vps.items as VPSItem[])
+    .filter((item) => item.active !== false);
 
- <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
- <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-12">
- <h2 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-white mb-2 tracking-tight">
- Trusted <span className="text-cyan-600 dark:text-cyan-400">Partners</span>
- </h2>
- <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
- Services we use and trust
- </p>
- </div>
+  return (
+    <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14] border-t border-dashboard/60">
+      {/* Background pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,200,136,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,200,136,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:40px_40px]" />
 
- <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
- {SECTIONS.map((section, sectionIdx) => (
- <FadeIn key={sectionIdx} delay={sectionIdx * 0.1} direction="up">
- {/* Cardless Column */}
- <div className="flex flex-col h-full bg-white/80 dark:bg-white/[0.02] border border-amber-200/70 dark:border-amber-500/15 rounded-2xl p-5 sm:p-6 backdrop-blur-md shadow-sm hover:border-amber-400 dark:hover:border-amber-500/30 hover:shadow-md transition-all duration-300">
- {/* Section Header */}
- <div className="flex items-center justify-between gap-3 mb-5 pb-4 border-b border-dashboard/60">
- <div className="flex items-center gap-3">
- <div className={`w-10 h-10 rounded-xl ${section.iconBg} ${section.iconColor} flex items-center justify-center flex-shrink-0`}>
- <section.icon size={20} strokeWidth={2.5} />
- </div>
- <div>
- <h3 className="text-sm font-bold text-gray-800 dark:text-white">
- {section.title}{" "}
- {section.accentTitle && (
- <span className={section.accentColor}>{section.accentTitle}</span>
- )}
- </h3>
- <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{section.subtitle}</p>
- </div>
- </div>
- {section.viewAllHref && (
- <Link
- href={section.viewAllHref}
- className={`text-xs font-bold ${section.accentColor} hover:opacity-80 transition-colors flex items-center gap-1 bg-white dark:bg-white/5 border border-dashboard px-2.5 py-1 rounded-lg flex-shrink-0`}
- >
- All →
- </Link>
- )}
- </div>
+      <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <HomeSectionHeading
+          align="center"
+          eyebrow="Trading Infrastructure"
+          title="Recommended Forex VPS"
+          highlight="VPS"
+          description="Highly reliable virtual private servers to run your trading EAs 24/7 with ultra-low latency."
+          icon={Server}
+          linkHref="/brokers?tab=vps"
+          linkText="Compare VPS Hosting"
+          className="mb-10"
+        />
 
- {/* Items — vertical stack inside column */}
- <div className="flex flex-col gap-3 flex-1">
- {section.items
- .filter((item: any) => item.active !== false)
- .slice(0, 3)
- .map((item, idx) => (
- <a
- key={idx}
- href={item.url && item.url !== "#" ? item.url : undefined}
- target={item.url && item.url !== "#" ? "_blank" : undefined}
- rel={item.url && item.url !== "#" ? "noopener noreferrer" : undefined}
- className={`flex items-center gap-3 p-3 rounded-xl bg-white/50 dark:bg-white/[0.02] border border-amber-100 dark:border-amber-500/10 ${section.hoverBorder} hover:shadow-sm dark:hover:shadow-none hover:-translate-y-0.5 transition-all duration-200 group ${item.url && item.url !== "#" ? "cursor-pointer" : ""}`}
- >
- {/* Logo */}
- <div className="w-10 h-10 rounded-xl bg-white border border-dashboard dark:border-white/15 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-sm">
- {item.logo ? (
- <Image
- src={item.logo}
- alt={item.name}
- width={40}
- height={40}
- className="object-contain w-full h-full p-1"
- />
- ) : (
- <span className="text-gray-700 dark:text-white text-xs font-bold">{item.initials}</span>
- )}
- </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {vpsItems.map((item, idx) => (
+            <FadeIn key={item.name} delay={idx * 0.05} direction="up">
+              <a
+                href={item.url && item.url !== "#" ? item.url : undefined}
+                target={item.url && item.url !== "#" ? "_blank" : undefined}
+                rel={item.url && item.url !== "#" ? "noopener noreferrer" : undefined}
+                className="flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-white/[0.02] border border-gray-200/80 dark:border-white/5 hover:border-emerald-500/40 dark:hover:border-emerald-500/30 hover:shadow-lg transition-all duration-300 group cursor-pointer h-full"
+              >
+                <div>
+                  {/* Top line with Logo & Badge */}
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-white border border-dashboard dark:border-white/10 flex items-center justify-center overflow-hidden shadow-sm p-1">
+                      {item.logo ? (
+                        <Image
+                          src={item.logo}
+                          alt={item.name}
+                          width={48}
+                          height={48}
+                          className="object-contain w-full h-full"
+                        />
+                      ) : (
+                        <span className="text-gray-700 dark:text-white text-sm font-black">{item.initials}</span>
+                      )}
+                    </div>
+                    {item.badge && (
+                      <span className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md ${BADGE_STYLES[item.badgeType || "green"]}`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
 
- {/* Info */}
- <div className="flex-1 min-w-0">
- <p className={`text-base font-bold text-gray-800 dark:text-white ${section.hoverText} transition-colors truncate`}>
- {item.name}
- </p>
- <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{item.desc}</p>
- </div>
+                  {/* Name & Desc */}
+                  <h4 className="text-base font-extrabold text-gray-800 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors flex items-center gap-1">
+                    {item.name}
+                  </h4>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">
+                    {item.desc}
+                  </p>
 
- {/* Badge or Visit */}
- {item.badge ? (
- <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap ${BADGE_STYLES[item.badgeType || "green"]}`}>
- {item.badge}
- </span>
- ) : item.url && item.url !== "#" ? (
- <span className={`text-[10px] font-bold border px-2 py-0.5 rounded-md whitespace-nowrap flex items-center gap-1 transition-colors ${section.visitStyle}`}>
- Visit <ExternalLink size={8} />
- </span>
- ) : null}
- </a>
- ))}
- </div>
- </div>
- </FadeIn>
- ))}
- </div>
- </section>
- </div>
- );
+                  {/* Key metrics / price */}
+                  <div className="mt-3 inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-[10px] font-bold text-gray-700 dark:text-gray-300 font-mono">
+                    {item.minDeposit}
+                  </div>
+
+                  {/* Features checklist */}
+                  <ul className="mt-4 space-y-1 text-xs text-gray-600 dark:text-gray-400 font-medium border-t border-slate-100 dark:border-white/5 pt-3">
+                    {item.features.slice(0, 2).map((feat, i) => (
+                      <li key={i} className="flex items-center gap-1.5 truncate">
+                        <Check size={12} className="text-emerald-500 flex-shrink-0" />
+                        <span className="truncate">{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Bottom link */}
+                <div className="mt-5 flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 group-hover:underline">
+                  Get Hosting <ExternalLink size={10} />
+                </div>
+              </a>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
 }

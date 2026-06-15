@@ -1,15 +1,11 @@
-
 // Map of broker names to identifying patterns in server names or company names
 const BROKER_PATTERNS: Record<string, string[]> = {
  "IC Markets": ["ICMarkets", "ICMarketsEU", "ICMarkets-Live", "International Capital Markets"],
  "Pepperstone": ["Pepperstone", "PepperstoneUK", "Pepperstone-Edge"],
- "FTMO": ["FTMO", "FTMODemo", "FTMO-Server"],
  "Exness": ["Exness", "Exness-Real", "Exness-Trial"],
  "XM": ["XMGlobal", "XM.COM", "XM-Real", "XM-Demo"],
  "FxPro": ["FxPro", "FxPro.com", "FxPro-Real"],
  "Tickmill": ["Tickmill", "TickmillEU", "Tickmill-Live"],
- "MyForexFunds": ["MyForexFunds", "MFF"],
- "The5ers": ["The5ers", "5ers"],
  "ThinkMarkets": ["ThinkMarkets", "ThinkForex"],
  "FBS": ["FBS", "FBS-Real"],
  "OANDA": ["OANDA", "OANDA-Live"],
