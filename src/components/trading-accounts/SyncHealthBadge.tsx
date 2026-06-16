@@ -1,6 +1,6 @@
 "use client";
 
-import { Wifi, WifiOff, AlertCircle, Clock, CheckCircle2, HelpCircle, Radio } from "lucide-react";
+import { WifiOff, AlertCircle, Clock, CheckCircle2, HelpCircle, Radio } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SyncHealth, SyncHealthStatus } from "@/lib/sync-health";
 import { Button } from "@/components/ui/Button";

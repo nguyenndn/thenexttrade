@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
-import { prisma } from "@/lib/prisma";
 import { createTradePlan, getTradePlans } from "@/actions/trade-plans";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +11,7 @@ export async function GET() {
   try {
     const plans = await getTradePlans();
     return NextResponse.json(plans);
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch trade plans" }, { status: 500 });
   }
 }
@@ -28,7 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: result.error }, { status: 400 });
     }
     return NextResponse.json(result.plan);
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Failed to create trade plan" }, { status: 500 });
   }
 }

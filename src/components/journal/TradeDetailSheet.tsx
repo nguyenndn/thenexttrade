@@ -4,7 +4,7 @@ import * as React from "react"
 import { useState } from "react"
 import { utcTime } from "@/lib/utils"
 import { ShareTradeModal } from "./ShareTradeModal"
-import { Share2, ArrowLeft, ArrowRight, TrendingUp, TrendingDown, Clock, Info, DollarSign, Tag, Brain, BarChart3, MessageSquare, AlertTriangle, X, Medal, Target, ShieldAlert, Scale } from "lucide-react"
+import { Share2, ArrowLeft, ArrowRight, TrendingUp, TrendingDown, Clock, DollarSign, Tag, Brain, BarChart3, MessageSquare, X, Medal, Target, ShieldAlert, Scale } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/Sheet"
 import { Button } from "@/components/ui/Button"
@@ -61,7 +61,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
  const isWin = entry.pnl && entry.pnl > 0;
  const pnlColor = entry.pnl && entry.pnl > 0 ? "text-primary" : entry.pnl && entry.pnl < 0 ? "text-red-500" : "text-gray-600";
  const typeColor = entry.type === "BUY" ? "bg-blue-500" : "bg-red-500";
- const statusColor = entry.status === "OPEN" ? "bg-yellow-500/20 text-yellow-500" : "bg-gray-500/20 text-gray-600";
+ // const statusColor = entry.status === "OPEN" ? "bg-yellow-500/20 text-yellow-500" : "bg-gray-500/20 text-gray-600";
 
  const currentStrategy = entry.strategy ? strategies.find(s => s.name === entry.strategy || s.id === entry.strategy) : null;
  const strategyColor = currentStrategy?.color || "#6B7280";
@@ -125,6 +125,7 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
  variant="outline" 
  size="icon" 
  onClick={onPrev}
+ disabled={!hasPrev}
  aria-label="Previous Trade"
  className="h-10 w-10 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
  >

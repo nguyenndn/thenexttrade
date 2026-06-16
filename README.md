@@ -1,64 +1,97 @@
-# TheNextTrade - Forex Education & Trading Platform
+# TheNextTrade
 
-> **Web app giáo dục và hỗ trợ phân tích forex với hệ thống học liệu, quiz, trading journal, risk calculator và performance dashboard.**
+TheNextTrade is a trading education and journal platform built around one loop:
 
-## 🚀 Quick Start
+`Connect or log trades -> Analyze behavior -> Build rules -> Plan trades -> Review execution -> Improve the next decision`
+
+## Current Product Areas
+
+- Public education site, articles, Academy, brokers, and trading tools.
+- Auth, onboarding, first-session setup, and new-user activation.
+- MT5 sync through TNT Connect and EA Sync.
+- Trading journal, dashboard metrics, analytics, sessions, psychology, and reports.
+- Sync Health Center for account/sync troubleshooting.
+- Rulebook, behavior goals, trade plans, and Plan vs Actual review.
+- Weekly Coach action loop.
+- Privacy presets for public trader cards, trade shares, and OG images.
+- Admin reports, analytics, users, articles, Academy, IB/VIP, EA products, notifications, and security.
+
+## Documentation
+
+Start here:
+
+- [docs/README.md](docs/README.md) - documentation index and read order.
+- [docs/PRODUCT.md](docs/PRODUCT.md) - product feature inventory and behavior rules.
+- [docs/FEATURE_SPECS.md](docs/FEATURE_SPECS.md) - route-by-route specs for bug fixing.
+- [docs/SYSTEM.md](docs/SYSTEM.md) - architecture, ownership map, data flow, and common bug entry points.
+
+Current hardening scope:
+
+- [traderwaves-gap-production-hardening-plan.md](traderwaves-gap-production-hardening-plan.md)
+- [docs/traderwaves-gap-production-hardening-qa-report.md](docs/traderwaves-gap-production-hardening-qa-report.md)
+
+Competitor research reference:
+
+- [competitor-research/TRADERWAVES_RESEARCH_SUMMARY.md](competitor-research/TRADERWAVES_RESEARCH_SUMMARY.md)
+
+## Quick Start
 
 ```bash
-# Install dependencies
 npm install
-
-# Start development (local database - recommended)
 npm run dev:local
 ```
 
-📖 **Full guide:** [docs/QUICK_START.md](docs/QUICK_START.md)
+Default local URL:
 
----
+```text
+http://localhost:3000
+```
 
-## 📚 Technical Documentation
+## Common Commands
 
-We have organized the documentation into the following sections:
+```bash
+npm run dev
+npm run dev:local
+npm run type-check
+npm run lint
+npm test
+npm run build
+```
 
-### 🏗️ Architecture
-- [System Overview](docs/architecture/overview.md) - Tech stack & High-level architecture.
-- [Database Schema](docs/architecture/database.md) - ER Diagram & Data Models.
-- [Project Documentation Index](DOCUMENTATION_INDEX.md) - Complete directory guides.
+Database:
 
-### 🧩 Key Features
-- [Authentication](docs/features/authentication.md) - Auth flows & RBAC.
-- [Analytics Dashboard](docs/features/analytics.md) - Performance metrics & calculations.
-- [Trading Journal](docs/features/trading-journal.md) - Logging trades & psychology.
-- [Academy & Knowledge](#) - Educational content and lesson progress mapping.
-- [Trader Tools](docs/features/trader-tools.md) - Risk calculator, market hours, etc.
+```bash
+npm run db:push
+npm run db:migrate
+npm run db:seed
+npm run db:studio
+```
 
-### 🔌 API Reference
-- [API Endpoints](docs/api/endpoints.md) - Backend API Routes.
+TraderWaves hardening checks:
 
----
+```bash
+npx tsx scripts/audit-sync-source.ts
+npx playwright test tests/e2e/traderwaves-existing-user-regression.spec.ts --reporter=list --workers=1
+npx playwright test tests/e2e/traderwaves-fresh-user-regression.spec.ts --reporter=list --workers=1
+```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **Framework:** Next.js 14+ (App Router)
-- **Database:** PostgreSQL (Supabase) + Prisma ORM
-- **Styling:** Tailwind CSS (Breek Premium Design)
-- **State:** React Hooks + Server Components
+- Next.js App Router, React, TypeScript.
+- Tailwind CSS, Radix primitives, Lucide icons.
+- PostgreSQL with Prisma.
+- Supabase Auth plus app-owned user/profile/session/security data.
+- Cloudflare R2 storage.
+- SMTP-compatible email service.
+- Internal analytics plus optional GA4.
+- Coolify on VPS behind Cloudflare for self-hosting.
 
-## 🧪 Development Commands
+## Windows Build Note
 
-- `npm run dev:local` - Run local dev server.
-- `npm run db:migrate` - Run Prisma migrations.
-- `npm run type-check` - Run TypeScript compiler check.
+If `npm run build` fails with an `EPERM` rename error for Prisma's Windows query engine, stop local `node.exe` / Next dev processes and rerun the command.
 
-## 🛡️ Testing & QA
+For a compile-only local check without Prisma generate:
 
-We maintain a rigorous testing standard including Security Hardening and Logic Verification.
-
-- **Full Regression:** `npm test` (Runs all unit tests)
-- **Security Audit:** `npx vitest tests/security/hardening.test.ts` (CSRF, XSS, RBAC)
-- **System Logic:** `npx vitest tests/user/integration/system-logic.test.ts` (Calculators, Access Control)
-- **Profile Logic:** `npx vitest tests/user/api/profile-advanced.test.ts` (File Uploads, Validation)
-
----
-
-**Version:** 1.0.0 | **Maintainer:** TheNextTrade Team
+```bash
+npm run build:next
+```

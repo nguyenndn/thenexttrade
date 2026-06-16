@@ -27,6 +27,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { applyPrivacyPreset, type PublicPrivacyPreset } from "@/lib/profile/privacy-presets";
+import { isPrivacyPresetsEnabled } from "@/lib/feature-flags";
 import { PublicProfileCard } from "@/components/profile/PublicProfileCard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 
@@ -347,51 +348,53 @@ export default function ProfileClient({
           </div>
 
           {/* Privacy Presets Segmented Control */}
-          <div className="border-b border-dashboard px-5 py-4 bg-gray-50/50 dark:bg-white/[0.01]">
-            <h4 className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3 flex items-center gap-2">
-              <Shield size={12} className="text-primary" />
-              Privacy Presets
-            </h4>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {(["PRIVATE", "SAFE_PUBLIC", "PERFORMANCE_ONLY", "FULL_PUBLIC"] as PublicPrivacyPreset[]).map((preset) => {
-                const isSelected = (() => {
-                  if (preset === "PRIVATE") return !settings.isPublicProfile;
-                  if (preset === "SAFE_PUBLIC") {
-                    return settings.isPublicProfile && !settings.showRealName && !settings.showMoney && !settings.showBroker && !settings.showAccountNumber;
-                  }
-                  if (preset === "PERFORMANCE_ONLY") {
-                    return settings.isPublicProfile && !settings.showRealName && !settings.showMoney && !settings.showBroker && !settings.showAccountNumber && settings.showPercentMetrics;
-                  }
-                  if (preset === "FULL_PUBLIC") {
-                    return settings.isPublicProfile && settings.showRealName && settings.showMoney && settings.showBroker && settings.showAccountNumber;
-                  }
-                  return false;
-                })();
+          {isPrivacyPresetsEnabled() && (
+            <div className="border-b border-dashboard px-5 py-4 bg-gray-50/50 dark:bg-white/[0.01]">
+              <h4 className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3 flex items-center gap-2">
+                <Shield size={12} className="text-primary" />
+                Privacy Presets
+              </h4>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {(["PRIVATE", "SAFE_PUBLIC", "PERFORMANCE_ONLY", "FULL_PUBLIC"] as PublicPrivacyPreset[]).map((preset) => {
+                  const isSelected = (() => {
+                    if (preset === "PRIVATE") return !settings.isPublicProfile;
+                    if (preset === "SAFE_PUBLIC") {
+                      return settings.isPublicProfile && !settings.showRealName && !settings.showMoney && !settings.showBroker && !settings.showAccountNumber;
+                    }
+                    if (preset === "PERFORMANCE_ONLY") {
+                      return settings.isPublicProfile && !settings.showRealName && !settings.showMoney && !settings.showBroker && !settings.showAccountNumber && settings.showPercentMetrics;
+                    }
+                    if (preset === "FULL_PUBLIC") {
+                      return settings.isPublicProfile && settings.showRealName && settings.showMoney && settings.showBroker && settings.showAccountNumber;
+                    }
+                    return false;
+                  })();
 
-                const labelMap: Record<PublicPrivacyPreset, string> = {
-                  PRIVATE: "Private",
-                  SAFE_PUBLIC: "Safe Public",
-                  PERFORMANCE_ONLY: "Performance Only",
-                  FULL_PUBLIC: "Full Public",
-                };
+                  const labelMap: Record<PublicPrivacyPreset, string> = {
+                    PRIVATE: "Private",
+                    SAFE_PUBLIC: "Safe Public",
+                    PERFORMANCE_ONLY: "Performance Only",
+                    FULL_PUBLIC: "Full Public",
+                  };
 
-                return (
-                  <button
-                    key={preset}
-                    type="button"
-                    onClick={() => handlePresetSelect(preset)}
-                    className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
-                      isSelected
-                        ? "bg-primary/10 border-primary text-primary"
-                        : "bg-white dark:bg-[#151925] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-300"
-                    }`}
-                  >
-                    {labelMap[preset]}
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => handlePresetSelect(preset)}
+                      className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
+                        isSelected
+                          ? "bg-primary/10 border-primary text-primary"
+                          : "bg-white dark:bg-[#151925] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-300"
+                      }`}
+                    >
+                      {labelMap[preset]}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Toggle Grid */}
           <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -439,7 +442,7 @@ export default function ProfileClient({
       )}
 
       {/* Data Privacy Controls (only when public) */}
-      {settings.isPublicProfile && (
+      {settings.isPublicProfile && isPrivacyPresetsEnabled() && (
         <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
             <div className="flex items-center gap-3">

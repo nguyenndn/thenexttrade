@@ -78,6 +78,27 @@ export async function updateTradePlanStatus(id: string, status: "PLANNED" | "ACT
   if (!user) return { error: "Unauthorized" };
 
   try {
+    const currentPlan = await prisma.tradePlan.findUnique({
+      where: { id, userId: user.id },
+      select: { status: true },
+    });
+    if (!currentPlan) return { error: "Trade plan not found" };
+
+    const currentStatus = currentPlan.status;
+
+    // Define permitted transitions
+    const validTransitions: Record<string, string[]> = {
+      PLANNED: ["ACTIVE", "CANCELLED", "MATCHED"],
+      ACTIVE: ["MATCHED", "CANCELLED", "PLANNED"],
+      MATCHED: ["REVIEWED", "PLANNED"],
+      REVIEWED: [],
+      CANCELLED: ["PLANNED"],
+    };
+
+    if (!validTransitions[currentStatus]?.includes(status)) {
+      return { error: `Invalid transition from ${currentStatus} to ${status}` };
+    }
+
     const data: any = { status };
     if (status === "ACTIVE") {
       data.openedAt = new Date();
@@ -85,6 +106,11 @@ export async function updateTradePlanStatus(id: string, status: "PLANNED" | "ACT
       data.cancelledAt = new Date();
     } else if (status === "REVIEWED") {
       data.reviewedAt = new Date();
+    } else if (status === "PLANNED") {
+      data.openedAt = null;
+      data.cancelledAt = null;
+      data.reviewedAt = null;
+      data.journalEntryId = null;
     }
 
     const plan = await prisma.tradePlan.update({
@@ -105,6 +131,16 @@ export async function cancelTradePlan(id: string, reason: string) {
   if (!user) return { error: "Unauthorized" };
 
   try {
+    const currentPlan = await prisma.tradePlan.findUnique({
+      where: { id, userId: user.id },
+      select: { status: true }
+    });
+    if (!currentPlan) return { error: "Trade plan not found" };
+
+    if (currentPlan.status !== "PLANNED" && currentPlan.status !== "ACTIVE") {
+      return { error: `Cannot cancel trade plan in ${currentPlan.status} state` };
+    }
+
     const plan = await prisma.tradePlan.update({
       where: { id, userId: user.id },
       data: {
@@ -127,6 +163,16 @@ export async function linkPlanToTrade(planId: string, journalEntryId: string) {
   if (!user) return { error: "Unauthorized" };
 
   try {
+    const currentPlan = await prisma.tradePlan.findUnique({
+      where: { id: planId, userId: user.id },
+      select: { status: true }
+    });
+    if (!currentPlan) return { error: "Trade plan not found" };
+
+    if (currentPlan.status === "CANCELLED" || currentPlan.status === "REVIEWED") {
+      return { error: `Cannot link trade plan in ${currentPlan.status} state` };
+    }
+
     const plan = await prisma.tradePlan.update({
       where: { id: planId, userId: user.id },
       data: {

@@ -1,4 +1,4 @@
-import { Wrench } from "lucide-react";
+import { Wrench, ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/ui/FadeIn";
 import Link from "next/link";
 import { ALL_TOOLS } from "@/config/tools-data";
@@ -16,38 +16,26 @@ const VISUAL_TOOLS = [
   {
     slug: "market-hours",
     Mock: MarketHoursMock,
-    shortTitle: "Market Hours",
-    description: "See which forex markets and stock exchanges are currently open. Times shown in your timezone."
   },
   {
     slug: "position-size-calculator",
     Mock: LotSizeMock,
-    shortTitle: "Lot Size Optimizer",
-    description: "Find the optimal trade volume for your account size and risk tolerance."
   },
   {
     slug: "fibonacci-calculator",
     Mock: FibonacciMock,
-    shortTitle: "Fibonacci Calculator",
-    description: "Calculate Fibonacci retracement and extension levels for price action."
   },
   {
     slug: "margin-calculator",
     Mock: MarginMock,
-    shortTitle: "Margin Calculator",
-    description: "Calculate the required margin to open a leveraged forex position."
   },
   {
     slug: "correlation-matrix",
     Mock: CorrelationMock,
-    shortTitle: "Correlation Matrix",
-    description: "See how currency pairs move together. Use correlations to diversify risk and find opportunities."
   },
   {
     slug: "leverage-calculator",
     Mock: LeverageMock,
-    shortTitle: "Leverage Calculator",
-    description: "Understand your leverage exposure and calculate effective ratio."
   }
 ];
 
@@ -73,28 +61,45 @@ export function WebForexTools() {
 
           {/* Premium Tools Grid - 3 Columns */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {VISUAL_TOOLS.map((tool) => (
-              <Link
-                key={tool.slug}
-                href={`/tools/${tool.slug}`}
-                className="group relative bg-white dark:bg-[#1E2028] rounded-2xl p-2.5 shadow-sm hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 border border-gray-200/80 dark:border-white/5 flex flex-col gap-4 overflow-hidden"
-              >
-                {/* Visual Preview Half */}
-                <div className="rounded-xl overflow-hidden bg-transparent">
-                  <tool.Mock />
-                </div>
+            {VISUAL_TOOLS.map((tool) => {
+              const fullTool = ALL_TOOLS.find((t) => t.slug === tool.slug);
+              if (!fullTool) return null;
 
-                {/* Info Half */}
-                <div className="px-1.5 pb-2 flex-1 flex flex-col">
-                  <h3 className="text-base font-extrabold text-gray-800 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors leading-snug">
-                    {tool.shortTitle}
-                  </h3>
-                  <p className="text-xs text-gray-500 dark:text-slate-400 font-medium leading-relaxed mt-1.5">
-                    {tool.description}
-                  </p>
-                </div>
-              </Link>
-            ))}
+              return (
+                <Link
+                  key={tool.slug}
+                  href={`/tools/${tool.slug}`}
+                  className="group relative flex flex-col p-2.5 rounded-2xl bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 border border-gray-200/80 dark:border-white/5 overflow-hidden h-full justify-between"
+                >
+                  <div>
+                    {/* Visual Preview Half */}
+                    <div className="rounded-xl overflow-hidden bg-transparent mb-3.5">
+                      <tool.Mock />
+                    </div>
+
+                    {/* Info Half */}
+                    <div className="px-2 pb-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className={`w-6 h-6 rounded-md ${fullTool.iconBg} flex items-center justify-center shrink-0`}>
+                          <fullTool.icon size={13} strokeWidth={2} />
+                        </div>
+                        <h3 className="text-sm font-extrabold text-gray-800 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors leading-snug">
+                          {fullTool.title}
+                        </h3>
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-slate-400 font-medium leading-relaxed mb-4">
+                        {fullTool.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="px-2 pb-2 flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 group-hover:gap-2.5 transition-all">
+                    <span>Open Tool</span>
+                    <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform duration-300" />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </FadeIn>
       </section>

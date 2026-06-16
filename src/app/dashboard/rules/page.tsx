@@ -5,6 +5,7 @@ import { getTradingRulesList, getTraderGoalsList } from "@/actions/rulebook";
 import { getStrategies } from "@/actions/strategies";
 import { prisma } from "@/lib/prisma";
 import { RulebookClient } from "@/components/rules/RulebookClient";
+import { isRulebookGoalsEnabled } from "@/lib/feature-flags";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,10 @@ export const metadata: Metadata = {
 };
 
 export default async function RulesPage() {
+  if (!isRulebookGoalsEnabled()) {
+    redirect("/dashboard");
+  }
+
   const user = await getAuthUser();
   if (!user) {
     redirect("/auth/login");

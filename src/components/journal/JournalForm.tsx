@@ -7,6 +7,7 @@ import { EmotionSelector } from "@/components/psychology/EmotionSelector";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
 import { JournalTemplateSelector, TEMPLATE_PROMPTS, type JournalTemplateType } from "./JournalTemplateSelector";
 import { getTradingRulesList } from "@/actions/rulebook";
+import { computePlanMatchConfidence, getBestPlanMatch } from "@/lib/trade-plans/matching";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -139,10 +140,54 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
     loadRulesAndPlans();
   }, [initialData]);
 
-  const matchingPlans = useMemo(() => {
+  const [hasManuallySelectedPlan, setHasManuallySelectedPlan] = useState(false);
+
+  const matchingPlansWithConfidence = useMemo(() => {
     if (!formData.symbol) return [];
-    return activePlans.filter((p: any) => p.symbol.toUpperCase() === formData.symbol.toUpperCase());
-  }, [formData.symbol, activePlans]);
+    return activePlans
+      .filter((p: any) => p.symbol.toUpperCase() === formData.symbol.toUpperCase())
+      .map((p) => {
+        const match = computePlanMatchConfidence(p, {
+          symbol: formData.symbol,
+          type: formData.type,
+          accountId: formData.accountId,
+          entryDate: formData.entryDate || new Date(),
+        });
+        return {
+          plan: p,
+          confidence: match.confidence,
+          reason: match.reason,
+        };
+      })
+      .sort((a, b) => {
+        const order = { HIGH: 3, MEDIUM: 2, LOW: 1 };
+        return order[b.confidence] - order[a.confidence];
+      });
+  }, [formData.symbol, formData.type, formData.accountId, formData.entryDate, activePlans]);
+
+  // Reset override flag on symbol change
+  useEffect(() => {
+    setHasManuallySelectedPlan(false);
+  }, [formData.symbol]);
+
+  // Auto-matching guardrail: auto-select if high confidence match is found
+  useEffect(() => {
+    if (isEditMode || !formData.symbol || hasManuallySelectedPlan) return;
+
+    const bestMatch = getBestPlanMatch(activePlans, {
+      symbol: formData.symbol,
+      type: formData.type,
+      accountId: formData.accountId,
+      entryDate: formData.entryDate || new Date(),
+    });
+
+    if (bestMatch && bestMatch.confidence === "HIGH") {
+      setSelectedPlanId(bestMatch.plan.id);
+    } else {
+      setSelectedPlanId("");
+    }
+  }, [formData.symbol, formData.type, formData.accountId, formData.entryDate, activePlans, isEditMode, hasManuallySelectedPlan]);
+
 
   const addCustomTag = () => {
  if (!customTagInput.trim()) return;
@@ -183,37 +228,39 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
  }
  };
 
- useEffect(() => {
- fetchStrategies();
- fetchAccounts();
- 
- // Anti-pattern Fix: Client-side Date Initialization prevents Hydration Mismatch
- if (!isEditMode && !formData.entryDate) {
- setFormData(prev => ({ ...prev, entryDate: format(new Date(), "yyyy-MM-dd'T'HH:mm") }));
- }
- }, []);
+  useEffect(() => {
+  fetchStrategies();
+  fetchAccounts();
+  
+  // Anti-pattern Fix: Client-side Date Initialization prevents Hydration Mismatch
+  if (!isEditMode && !formData.entryDate) {
+  setFormData(prev => ({ ...prev, entryDate: format(new Date(), "yyyy-MM-dd'T'HH:mm") }));
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
- // Auto-Calculate PnL
- useEffect(() => {
- const { entryPrice, exitPrice, lotSize, type, symbol } = formData;
+  // Auto-Calculate PnL
+  useEffect(() => {
+  const { entryPrice, exitPrice, lotSize, type, symbol } = formData;
 
- if (entryPrice && exitPrice && lotSize && symbol) {
- const entry = parseFloat(entryPrice);
- const exit = parseFloat(exitPrice);
- const lots = parseFloat(lotSize);
+  if (entryPrice && exitPrice && lotSize && symbol) {
+  const entry = parseFloat(entryPrice);
+  const exit = parseFloat(exitPrice);
+  const lots = parseFloat(lotSize);
 
- if (!isNaN(entry) && !isNaN(exit) && !isNaN(lots)) {
- const result = calculateProfitLoss({
- entryPrice: entry,
- exitPrice: exit,
- lotSize: lots,
- direction: type === "BUY" ? "LONG" : "SHORT",
- pair: symbol
- });
- setFormData(prev => ({ ...prev, pnl: result.profitLoss.toString() }));
- }
- }
- }, [formData.entryPrice, formData.exitPrice, formData.lotSize, formData.type, formData.symbol]);
+  if (!isNaN(entry) && !isNaN(exit) && !isNaN(lots)) {
+  const result = calculateProfitLoss({
+  entryPrice: entry,
+  exitPrice: exit,
+  lotSize: lots,
+  direction: type === "BUY" ? "LONG" : "SHORT",
+  pair: symbol
+  });
+  setFormData(prev => ({ ...prev, pnl: result.profitLoss.toString() }));
+  }
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.entryPrice, formData.exitPrice, formData.lotSize, formData.type, formData.symbol]);
 
  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
  const { name, value } = e.target;
@@ -412,27 +459,32 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
  </Select>
  </div>
 
- {matchingPlans.length > 0 && (
-  <div className="col-span-1 md:col-span-2 space-y-2 bg-purple-500/5 p-4 rounded-xl border border-purple-500/10">
-   <label className="text-sm font-bold text-purple-600 dark:text-purple-400">Link to Trade Plan</label>
-   <Select
-    value={selectedPlanId}
-    onValueChange={setSelectedPlanId}
-   >
-    <SelectTrigger className="w-full h-[50px] px-3 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:outline-none font-medium text-sm">
-     <SelectValue placeholder="Unlinked (Select plan to link)" />
-    </SelectTrigger>
-    <SelectContent>
-     <SelectItem value="none">Unlinked (Do not link to plan)</SelectItem>
-     {matchingPlans.map((p: any) => (
-      <SelectItem key={p.id} value={p.id}>
-       {p.setupName || "Setup"} ({p.type}) at {p.plannedEntry ? p.plannedEntry.toFixed(5) : "market"} (Planned: {format(new Date(p.createdAt), "dd MMM HH:mm")})
-      </SelectItem>
-     ))}
-    </SelectContent>
-   </Select>
-  </div>
- )}
+  {matchingPlansWithConfidence.length > 0 && (
+   <div className="col-span-1 md:col-span-2 space-y-2 bg-purple-500/5 p-4 rounded-xl border border-purple-500/10">
+    <label className="text-sm font-bold text-purple-600 dark:text-purple-400">Link to Trade Plan</label>
+    <Select
+     value={selectedPlanId || "none"}
+     onValueChange={(val) => {
+      setSelectedPlanId(val === "none" ? "" : val);
+      setHasManuallySelectedPlan(true);
+     }}
+    >
+     <SelectTrigger className="w-full h-[50px] px-3 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:outline-none font-medium text-sm">
+      <SelectValue placeholder="Unlinked (Select plan to link)" />
+     </SelectTrigger>
+     <SelectContent>
+      <SelectItem value="none">Unlinked (Do not link to plan)</SelectItem>
+      {matchingPlansWithConfidence.map(({ plan: p, confidence }) => (
+       <SelectItem key={p.id} value={p.id}>
+        {confidence === "HIGH" && "⭐ [Recommended] "}
+        {confidence === "MEDIUM" && "[Suggested] "}
+        {p.setupName || "Setup"} ({p.type}) at {p.plannedEntry ? p.plannedEntry.toFixed(5) : "market"} (Planned: {format(new Date(p.createdAt), "dd MMM HH:mm")})
+       </SelectItem>
+      ))}
+     </SelectContent>
+    </Select>
+   </div>
+  )}
 
  <div className="space-y-2">
  <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Pair / Symbol</label>
@@ -737,47 +789,64 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
      const currentCheck = ruleChecks[rule.id] || { status: "FOLLOWED", note: "" };
 
      return (
-      <div key={rule.id} className="p-4 rounded-xl border border-dashboard bg-gray-50/50 dark:bg-black/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-         <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-black uppercase border ${
-          rule.severity === "HIGH"
-           ? "bg-red-50 text-red-500 border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
-           : rule.severity === "MEDIUM"
-           ? "bg-amber-50 text-amber-500 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
-           : "bg-blue-50 text-blue-500 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20"
-         }`}>
-          {rule.severity}
-         </span>
-         <span className="text-xs font-black uppercase text-gray-400">{rule.category}</span>
+      <div key={rule.id} className="p-4 rounded-xl border border-dashboard bg-gray-50/50 dark:bg-black/10 space-y-3">
+       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="min-w-0 flex-1">
+         <div className="flex items-center gap-2">
+          <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-black uppercase border ${
+           rule.severity === "HIGH"
+            ? "bg-red-50 text-red-500 border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
+            : rule.severity === "MEDIUM"
+            ? "bg-amber-50 text-amber-500 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
+            : "bg-blue-50 text-blue-500 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20"
+          }`}>
+           {rule.severity}
+          </span>
+          <span className="text-xs font-black uppercase text-gray-400">{rule.category}</span>
+         </div>
+         <h4 className="text-sm font-bold text-gray-700 dark:text-white mt-1">{rule.title}</h4>
+         {rule.description && <p className="text-xs text-gray-500 mt-0.5">{rule.description}</p>}
         </div>
-        <h4 className="text-sm font-bold text-gray-700 dark:text-white mt-1">{rule.title}</h4>
-        {rule.description && <p className="text-xs text-gray-500 mt-0.5">{rule.description}</p>}
+
+        <div className="flex flex-wrap items-center gap-2">
+         {(["FOLLOWED", "BROKEN", "SKIPPED"] as const).map((status) => (
+          <button
+           key={status}
+           type="button"
+           onClick={() => setRuleChecks((prev) => ({
+            ...prev,
+            [rule.id]: { ...currentCheck, status }
+           }))}
+           className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border transition-all ${
+            currentCheck.status === status
+             ? status === "FOLLOWED"
+               ? "bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/10"
+               : status === "BROKEN"
+               ? "bg-red-500 border-red-500 text-white shadow-md shadow-red-500/10"
+               : "bg-gray-500 border-gray-500 text-white shadow-md shadow-gray-500/10"
+             : "bg-white dark:bg-black/20 text-gray-500 border-dashboard hover:border-gray-400"
+           }`}
+          >
+           {status}
+          </button>
+         ))}
+        </div>
        </div>
 
-       <div className="flex flex-wrap items-center gap-2">
-        {(["FOLLOWED", "BROKEN", "SKIPPED"] as const).map((status) => (
-         <button
-          key={status}
-          type="button"
-          onClick={() => setRuleChecks((prev) => ({
+       {(currentCheck.status === "BROKEN" || currentCheck.status === "SKIPPED") && (
+        <div className="pt-2 border-t border-dashboard/50 dark:border-white/[0.04]">
+         <input
+          type="text"
+          value={currentCheck.note || ""}
+          onChange={(e) => setRuleChecks((prev) => ({
            ...prev,
-           [rule.id]: { ...currentCheck, status }
+           [rule.id]: { ...currentCheck, note: e.target.value }
           }))}
-          className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border transition-all ${
-           currentCheck.status === status
-            ? status === "FOLLOWED"
-              ? "bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/10"
-              : status === "BROKEN"
-              ? "bg-red-500 border-red-500 text-white shadow-md shadow-red-500/10"
-              : "bg-gray-500 border-gray-500 text-white shadow-md shadow-gray-500/10"
-            : "bg-white dark:bg-black/20 text-gray-500 border-dashboard hover:border-gray-400"
-          }`}
-         >
-          {status}
-         </button>
-        ))}
-       </div>
+          placeholder={`Explain why this rule was ${currentCheck.status.toLowerCase()}...`}
+          className="w-full text-xs p-2 rounded-lg bg-white dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none"
+         />
+        </div>
+       )}
       </div>
      );
     })}

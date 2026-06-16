@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, AlertTriangle, XCircle, Info, Activity } from "lucide-react";
+import { CheckCircle, AlertTriangle, Info, Activity } from "lucide-react";
 
 interface SyncHealthSummaryCardProps {
   summary: {

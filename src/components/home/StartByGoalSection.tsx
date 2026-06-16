@@ -82,7 +82,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             <Link
               key={idx}
               href={card.href}
-              className={`group relative flex flex-col justify-between p-5 rounded-2xl border transition-all duration-305 ${card.bgClass}`}
+              className={`group relative flex flex-col justify-between p-5 rounded-2xl border transition-all duration-305 ${card.bgClass} items-center text-center sm:items-start sm:text-left`}
             >
               {/* Recommended badge */}
               {'isRecommended' in card && card.isRecommended && (
@@ -94,9 +94,9 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
               {/* Subtle inner gradient — matches TrustMetrics style */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
 
-              <div className="relative z-10">
+              <div className="relative z-10 w-full">
                 {/* Icon and Title Inline */}
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center justify-center sm:justify-start gap-3 mb-3">
                   <div className={`p-2.5 rounded-xl shrink-0 ${card.chipBg}`}>
                     <span className={`${card.color} block transition-transform duration-300 ${card.animClass}`}>{card.icon}</span>
                   </div>
@@ -110,7 +110,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                 </p>
               </div>
 
-              <div className={`relative z-10 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 transition-colors mt-auto ${card.ctaColor}`}>
+              <div className={`relative z-10 flex items-center justify-center sm:justify-start gap-1.5 text-[10px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 transition-colors mt-auto ${card.ctaColor}`}>
                 {card.ctaText} <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>

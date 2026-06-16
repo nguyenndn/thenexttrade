@@ -24,12 +24,15 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
  (isBuy ? entry.exitPrice <= entry.stopLoss : entry.exitPrice >= entry.stopLoss) : false;
 
  // Theme Colors based on Result
- const themeColor = isWin ? "#22c55e" : "#ef4444"; // Green-500 : Red-500
+
  const bgGradient = isWin ? "from-green-500/10 to-transparent" : "from-red-500/10 to-transparent";
  const textColor = isWin ? "text-green-500" : "text-red-500";
  const badgeBg = isWin ? "bg-green-500" : "bg-red-500";
 
  const percentGain = entry.pnl ? ((entry.pnl / 10000) * 100).toFixed(2) : "0.00";
+ const showMoney = entry.showMoney !== undefined
+    ? entry.showMoney
+    : (entry.user?.profile?.showMoney ?? true);
 
  return (
  <div className={cn("relative w-full max-w-3xl mx-auto rounded-xl overflow-hidden bg-white dark:bg-[#1E2028] shadow-2xl border border-dashboard transition-all text-left", className)}>
@@ -77,7 +80,11 @@ export function TradeShareCard({ entry, variant, className }: TradeShareCardProp
 
  {/* Big PnL */}
  <div className={cn("text-4xl md:text-6xl font-black tracking-tighter mb-6 md:mb-8", textColor)}>
- {entry.pnl && entry.pnl > 0 ? "+" : ""}${Math.abs(entry.pnl).toFixed(2)}
+    {showMoney ? (
+      <>{entry.pnl && entry.pnl > 0 ? "+" : ""}${Math.abs(entry.pnl).toFixed(2)}</>
+    ) : (
+      <>{entry.pnl && entry.pnl > 0 ? "+" : ""}{percentGain}%</>
+    )}
  </div>
  </div>
 

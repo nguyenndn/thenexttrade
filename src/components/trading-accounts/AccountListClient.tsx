@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { Plus, RefreshCw, Wallet, Download, Monitor, Crown, CheckCircle2, Lock, Clock3, Cable, ArrowRight, Activity } from "lucide-react";
+import { Plus, RefreshCw, Wallet, Crown, CheckCircle2, Lock, Clock3, Cable, Activity } from "lucide-react";
 import { SyncHealthCenter } from "./SyncHealthCenter";
 import { AccountCard } from "./AccountCard";
 import { AddAccountModal } from "./AddAccountModal";
@@ -12,7 +12,6 @@ import { TradeSyncWizard } from "./TradeSyncWizard";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/Dialog";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
@@ -20,6 +19,7 @@ import { setMainAccount } from "@/actions/main-account";
 import { useProAccess } from "@/components/pro/ProProvider";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/track";
+import { isSyncHealthCenterEnabled } from "@/lib/feature-flags";
 
 interface TradingAccount {
  id: string;
@@ -77,6 +77,13 @@ interface AccountListClientProps {
 
 type SyncMethod = "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
 
+const getSyncMethodFromQuery = (method: string | null, preferredSyncMethod?: SyncMethod): SyncMethod => {
+ if (method === "ea") return "EA_SYNC";
+ if (method === "manual") return "MANUAL";
+ if (method === "tnt") return "TNT_CONNECT";
+ return preferredSyncMethod ?? "TNT_CONNECT";
+};
+
 export function AccountListClient({ initialAccounts, meta, userEmail, userName, userTelegramId, userCountry, mainAccountId: initialMainId, preferredSyncMethod }: AccountListClientProps) {
  const router = useRouter();
  const searchParams = useSearchParams();
@@ -99,13 +106,6 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  const [defaultSyncMethod, setDefaultSyncMethod] = useState<SyncMethod | undefined>(preferredSyncMethod);
  const [wasInSyncSetup, setWasInSyncSetup] = useState(false);
 
- const getSyncMethodFromQuery = (method: string | null): SyncMethod => {
- if (method === "ea") return "EA_SYNC";
- if (method === "manual") return "MANUAL";
- if (method === "tnt") return "TNT_CONNECT";
- return preferredSyncMethod ?? "TNT_CONNECT";
- };
-
  // Handle incoming query params (e.g. ?action=add&intent=unlock-pro or ?setup=sync&method=tnt)
  useEffect(() => {
  const action = searchParams.get("action");
@@ -119,19 +119,21 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  const isSyncHealth = health === "sync";
 
  if (isSyncHealth && activeModal.type === "NONE") {
- setActiveModal({ type: "SYNC_HEALTH" });
- 
- // Clean query params
- const newParams = new URLSearchParams(searchParams.toString());
- newParams.delete("health");
- const newUrl = newParams.toString() ? `?${newParams.toString()}` : window.location.pathname;
- window.history.replaceState({}, '', newUrl);
- return;
+  if (isSyncHealthCenterEnabled()) {
+    setActiveModal({ type: "SYNC_HEALTH" });
+  }
+  
+  // Clean query params
+  const newParams = new URLSearchParams(searchParams.toString());
+  newParams.delete("health");
+  const newUrl = newParams.toString() ? `?${newParams.toString()}` : window.location.pathname;
+  window.history.replaceState({}, '', newUrl);
+  return;
  }
 
  if (isSyncSetup && activeModal.type === "NONE") {
  // Auto-open sync wizard with method from query, then saved onboarding preference.
- const syncMethod = getSyncMethodFromQuery(method);
+ const syncMethod = getSyncMethodFromQuery(method, preferredSyncMethod);
  setDefaultSyncMethod(syncMethod);
  setActiveModal({ type: "SYNC_SETUP" });
  
@@ -204,14 +206,16 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  <Cable size={16} />
  Set up Trade Sync
  </Button>
- <Button
- variant="outline"
- onClick={() => setActiveModal({ type: "SYNC_HEALTH" })}
- className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 font-extrabold flex-1 sm:flex-none"
- >
- <Activity size={16} />
- Sync Health Center
- </Button>
+  {isSyncHealthCenterEnabled() && (
+    <Button
+      variant="outline"
+      onClick={() => setActiveModal({ type: "SYNC_HEALTH" })}
+      className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 font-extrabold flex-1 sm:flex-none"
+    >
+      <Activity size={16} />
+      Sync Health Center
+    </Button>
+  )}
  <Button
  variant="outline"
  onClick={() => setActiveModal({ type: "FREE_VS_PRO" })}

@@ -110,8 +110,8 @@ export function ReviewsSection() {
 
  return (
  <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-[#0F1117]">
- {/* Dot pattern bg — same as Quote section */}
- <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
+ {/* Dot pattern bg — same as Quote section but Gold themed */}
+ <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
  <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
  <HomeSectionHeading
@@ -140,10 +140,10 @@ export function ReviewsSection() {
  : "bg-white border-amber-200/70 shadow-sm hover:border-emerald-500/30 hover:shadow-md hover:shadow-emerald-500/[0.02]"
  }`}
  >
- {/* Quote icon */}
+ {/* Quote icon (Gold themed) */}
  <Quote
  size={28}
- className="text-primary/20 absolute top-4 right-4"
+ className="text-gold/20 absolute top-4 right-4"
  />
 
  {/* Header */}
@@ -191,7 +191,7 @@ export function ReviewsSection() {
  <ChevronLeft size={18} />
  </Button>
 
- {/* Dots */}
+ {/* Dots (Gold themed active capsule) */}
  <div className="flex gap-2">
  {Array.from({ length: maxIndex + 1 }).map((_, i) => (
  <button
@@ -199,7 +199,7 @@ export function ReviewsSection() {
  onClick={() => setCurrentIndex(i)}
  className={`w-2 h-2 rounded-full transition-all duration-300 ${
  i === currentIndex
- ? "bg-primary w-6"
+ ? "bg-gold w-6"
  : "bg-gray-300 dark:bg-white/20 hover:bg-gray-400 dark:hover:bg-white/40"
  }`}
  />

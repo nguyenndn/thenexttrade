@@ -1,8 +1,8 @@
 "use client";
 
-import { CheckCircle2, Clock, Trash2, XCircle } from "lucide-react";
+import { CheckCircle2, Trash2, XCircle } from "lucide-react";
 import { useTransition } from "react";
-import { updateTraderGoalStatus, deleteTraderGoal } from "@/actions/rulebook";
+import { updateTraderGoalStatus, deleteTraderGoal, updateTraderGoalProgress } from "@/actions/rulebook";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 
@@ -64,6 +64,20 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
   const target = goal.targetValue || 1;
   const progress = goal.progressValue || 0;
   const percent = Math.min(Math.round((progress / target) * 100), 100);
+  const isManualGoal = ["STOP_AFTER_LOSSES", "STUDY", "CUSTOM"].includes(goal.type);
+
+  const handleUpdateProgress = (newVal: number) => {
+    const safeVal = Math.max(0, newVal);
+    startTransition(async () => {
+      const res = await updateTraderGoalProgress(goal.id, safeVal);
+      if (res.success) {
+        toast.success("Progress updated!");
+        onUpdate();
+      } else {
+        toast.error("Failed to update progress.");
+      }
+    });
+  };
 
   return (
     <div className="p-5 bg-white dark:bg-[#151925] border border-dashboard/80 dark:border-white/[0.08] rounded-2xl flex flex-col justify-between hover:shadow-md transition-all">
@@ -81,8 +95,8 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
 
         {/* Progress Section */}
         {goal.status === "ACTIVE" && goal.targetValue && (
-          <div className="mt-4 space-y-2">
-            <div className="flex justify-between text-xs font-semibold text-gray-500 dark:text-gray-400">
+          <div className="mt-4 space-y-2.5">
+            <div className="flex justify-between items-center text-xs font-semibold text-gray-500 dark:text-gray-400">
               <span>Progress</span>
               <span>{progress} / {target} ({percent}%)</span>
             </div>
@@ -93,6 +107,49 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
                 style={{ width: `${percent}%` }}
               />
             </div>
+
+            {/* Manual controls if manual goal */}
+            {isManualGoal && (
+              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-dashboard/50 dark:border-white/[0.04]">
+                <span className="text-[10px] uppercase font-black text-gray-400 dark:text-gray-500 flex-1">
+                  Update Progress:
+                </span>
+                <div className="flex items-center bg-gray-50 dark:bg-[#11141d] rounded-xl border border-dashboard p-0.5">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleUpdateProgress(progress - 1)}
+                    disabled={isPending || progress <= 0}
+                    className="w-7 h-7 p-0 rounded-lg border-none hover:bg-gray-200 dark:hover:bg-white/5 text-gray-500"
+                  >
+                    -
+                  </Button>
+                  <input
+                    type="number"
+                    min="0"
+                    max={target}
+                    value={progress}
+                    disabled={isPending}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      if (!isNaN(val)) {
+                        handleUpdateProgress(val);
+                      }
+                    }}
+                    className="w-10 text-center bg-transparent border-none focus:outline-none text-xs font-bold text-gray-700 dark:text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleUpdateProgress(progress + 1)}
+                    disabled={isPending || progress >= target}
+                    className="w-7 h-7 p-0 rounded-lg border-none hover:bg-gray-200 dark:hover:bg-white/5 text-gray-500"
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

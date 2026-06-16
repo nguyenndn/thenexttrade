@@ -24,7 +24,7 @@ export async function POST(
     }
 
     return NextResponse.json({ success: true, plan: result.plan });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Failed to link plan to trade" }, { status: 500 });
   }
 }

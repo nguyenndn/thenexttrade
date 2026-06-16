@@ -1046,6 +1046,44 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
 - Linter audit (`npm run lint`) -> **`0` errors** ✅
 - Unit tests (`npx vitest run`) -> **`32/32` passed (100% success)** ✅
 
+---
+
+## Phase 49: TraderWaves-Inspired Upgrade Production Hardening ✅
+
+### Key Achievements
+
+- **Rulebook & Goals System Hardening**:
+  - Engineered a metadata-merging approach for goal progress, letting manual goal types (`STOP_AFTER_LOSSES`, `STUDY`, `CUSTOM`) store progress updates in the `TraderGoal.metadata` JSON field.
+  - Implemented interactive stepper controls (increment/decrement/input) inside `GoalCard.tsx` for manual goals.
+  - Added an active rules checklist inside `JournalForm.tsx` that enables logging compliance (followed/broken/skipped) per trade, prompting users for notes when rules are marked broken/skipped.
+  - Integrated rule compliance checks inside the Context tab of `TradeDetailSheet.tsx`.
+
+- **Trade Plan Lifecycle & Matching Engine**:
+  - Enforced trade plan lifecycle state transitions (`PLANNED -> ACTIVE -> MATCHED -> REVIEWED`) in server actions, preventing nonsense states.
+  - Built a matching engine in `src/lib/trade-plans/matching.ts` that rates candidate plans based on symbol, direction, account, and trade open proximity (within a 48-hour window).
+  - Integrated suggested/recommended badges in the journal form plan dropdown, automatically pre-selecting matching plans unless manually overridden by the user.
+
+- **Weekly Coach Integration**:
+  - Upgraded weekly reports (`weekly-action-plan.server.ts`) to compute compliance rates, identify the most broken rule as a next-week focus point, and surface non-judgmental CTAs showing planned vs actual trade counts.
+
+- **Existing User Regression Protection**:
+  - Ensured fresh users see clear initial Trade Sync guides rather than premature performance reports.
+  - Confirmed existing users are not blocked or interrupted by forced onboarding modals or rules/goals setup checklists.
+
+- **Code Quality & Linter Compliance**:
+  - Swept all touched files (`JournalForm.tsx`, `ShareTradeModal.tsx`, `TradeDetailSheet.tsx`, `TradeShareCard.tsx`, `GoalCard.tsx`, `AccountListClient.tsx`) to remove unused imports, unused variables, and resolve React Hook `useEffect` dependency warnings.
+
+### Verification Results
+
+- **Prisma Schema Check** (`npx prisma validate`) -> **`PASSED`** ✅
+- **TypeScript Compiler** (`npm run type-check`) -> **`0 errors`** ✅
+- **ESLint Linter** (`npm run lint` on touched files) -> **`0 warnings/errors`** ✅
+- **Unit Tests** (`npx vitest run`) -> **`46/46 passed`** ✅
+- **Next.js Production Build** (`npx next build`) -> **`SUCCESSFUL`** ✅
+- **Playwright E2E Routes** (`npx playwright test tests/e2e/traderwaves-routes.spec.ts`) -> **`6/6 passed`** ✅
+- **Sync Source Audit** (`npx tsx scripts/audit-sync-source.ts`) -> **`0 accounts needing update`** ✅
+
+
 
 
 

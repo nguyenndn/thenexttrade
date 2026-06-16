@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, ShieldAlert, CheckCircle2, Clock, HelpCircle, Monitor, Cable } from "lucide-react";
+import { ShieldAlert, CheckCircle2, Clock, HelpCircle, Monitor, Cable } from "lucide-react";
 import { SyncRecoveryAction } from "./SyncRecoveryAction";
 import { getSyncSourceLabel } from "@/lib/sync/sync-source";
 

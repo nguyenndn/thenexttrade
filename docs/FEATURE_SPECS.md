@@ -1,6 +1,6 @@
 # Feature Specs
 
-Last reviewed: 2026-05-31
+Last reviewed: 2026-06-16
 
 This file is the developer handoff layer. Use it when fixing bugs or continuing feature work. `PRODUCT.md` explains what exists at a high level; this file explains what each important URL/function must do.
 
@@ -1526,14 +1526,29 @@ QA checklist:
 Purpose:
 
 - Trading Rulebook and behavior goals page.
-- Enables users to define rules, track compliance metrics, and set actionable consistency goals.
+- Lets traders turn repeated mistakes into explicit rules and process goals.
+
+Users:
+
+- Authenticated traders.
 
 Expected behavior:
 
-- Displays user's trading rules grouped by category (RISK, ENTRY, EXIT, PSYCHOLOGY, SESSION, MANAGEMENT).
-- Displays rule compliance statistics (number of times followed, broken, or skipped).
+- Route is visible in desktop sidebar and mobile navigation.
+- Displays user's trading rules grouped by category: `RISK`, `ENTRY`, `EXIT`, `PSYCHOLOGY`, `SESSION`, `MANAGEMENT`.
+- Displays rule compliance statistics: followed, broken, skipped.
+- Supports create, edit, activate/deactivate, and delete/archive rules.
 - Displays active and completed trading/consistency goals with progress indicators.
-- Modals for creating and editing rules and goals.
+- Goal cards should show target, current progress, timeframe, and status.
+- Empty state should explain why rules matter and offer a clear create-rule CTA.
+- Existing users with no rules should not be blocked from Journal or Dashboard.
+
+Data ownership:
+
+- `TradingRule`
+- `TradeRuleCheck`
+- `TraderGoal`
+- `JournalEntry` rule compliance links
 
 Code paths:
 
@@ -1544,40 +1559,127 @@ Code paths:
 - `src/components/rules/GoalCard.tsx`
 - `src/components/rules/GoalModal.tsx`
 - `src/actions/rulebook.ts`
+- `src/config/navigation.ts`
+
+Edge cases:
+
+- No rules.
+- No goals.
+- Broken/invalid rule category.
+- Duplicate rule names.
+- Mobile layout.
+- Non-owner cannot mutate another user's rules.
+
+QA checklist:
+
+- `/dashboard/rules` appears in sidebar.
+- Create rule.
+- Edit rule.
+- Toggle active/inactive state.
+- Create goal.
+- Update goal progress.
+- Empty state works.
+- Mobile page has no horizontal overflow.
 
 ### `/dashboard/accounts?health=sync`
 
 Purpose:
 
 - Sync Health Center.
-- Allows users to monitor sync logs, identify connectivity issues, and execute recovery actions.
+- Helps users answer: "Is my sync healthy and what should I do next?"
+
+Users:
+
+- Authenticated traders with one or more trading accounts.
+
+Inputs:
+
+- `health=sync`: opens Sync Health Center from Account Hub.
 
 Expected behavior:
 
-- Displays a sync health status indicator (HEALTHY, WARNING, CRITICAL) for each trading account.
-- Lists recent sync attempts and details.
-- Renders troubleshooting advice and actionable recovery options (e.g. key regeneration, config check).
+- Visiting `/dashboard/accounts?health=sync` opens the Sync Health Center.
+- Closing the center should not reopen it in a loop.
+- Displays account-level health: healthy, warning/stale, critical/disconnected, no-data, or missing-data.
+- Lists recent sync/import attempts and key timestamps.
+- Shows one primary recovery action per problem state.
+- Normalizes sync labels through `src/lib/sync/sync-source.ts`.
+- TNT Connect, EA Sync, Manual, and unknown/legacy sources should display safely.
+- Accounts with `totalTrades = 0` should guide the user to sync first trades instead of sending them to an empty dashboard.
+
+Data ownership:
+
+- `TradingAccount`
+- `SyncHistory`
+- `ImportHistory`
+- `JournalEntry.syncSource`
+- `TradingAccount.syncSource`
 
 Code paths:
 
+- `src/components/trading-accounts/AccountListClient.tsx`
 - `src/components/trading-accounts/SyncHealthCenter.tsx`
 - `src/components/trading-accounts/SyncHealthSummaryCard.tsx`
 - `src/components/trading-accounts/SyncHealthAccountRow.tsx`
 - `src/components/trading-accounts/SyncRecoveryAction.tsx`
 - `src/lib/sync-health.ts`
+- `src/lib/sync/sync-source.ts`
 - `src/app/api/sync/health/route.ts`
+- `scripts/audit-sync-source.ts`
+
+Edge cases:
+
+- User has no account.
+- Account has heartbeat but no trades.
+- Account has trades but stale heartbeat.
+- Account has import errors.
+- Legacy `syncSource = APP`.
+- Invalid/unknown sync source with real sync data.
+- Mobile drawer/modal layout.
+
+QA checklist:
+
+- Open `/dashboard/accounts?health=sync`.
+- Close Sync Health Center and confirm it does not reopen.
+- Healthy account state.
+- Stale/disconnected account state.
+- No-trade account state.
+- Recovery action routes to the expected setup.
+- Run `npx tsx scripts/audit-sync-source.ts`.
 
 ### `/dashboard/journal?tab=plans`
 
 Purpose:
 
 - Pre-trade planning lifecycle list and trade-matching view.
+- Bridges planned behavior with actual execution.
+
+Users:
+
+- Authenticated traders.
+
+Inputs:
+
+- `tab=plans`: opens the plans tab.
+- Trade plan form fields: account, symbol, direction, planned entry, stop loss, take profit, size, checklist, notes, status.
+- Link-trade action: selected `JournalEntry.id`.
 
 Expected behavior:
 
-- Tab "Plans" in the journal layout displaying trade setups created in advance.
-- Allows matching a planned setup to a completed journal trade.
-- Comparison tab showing Planned vs Actual entry, SL, TP, lot size, and notes side-by-side.
+- Shows planned trades in a dedicated `Plans` tab.
+- Supports create, edit, cancel, activate, and complete/review states.
+- Allows matching one planned setup to one completed journal trade.
+- `TradePlan.journalEntryId` stays one-to-one.
+- Plan vs Actual compares planned and actual entry, SL, TP, lot size, symbol, direction, and notes.
+- Linked plans should be visible from the trade detail surface.
+- Empty state should explain when to create a plan.
+- The feature should not block normal journal logging.
+
+Data ownership:
+
+- `TradePlan`
+- `JournalEntry`
+- `TradingAccount`
 
 Code paths:
 
@@ -1585,8 +1687,118 @@ Code paths:
 - `src/components/journal/TradePlanModal.tsx`
 - `src/components/journal/TradePlanCard.tsx`
 - `src/components/journal/TradePlanList.tsx`
+- `src/components/journal/TradeDetailSheet.tsx`
 - `src/actions/trade-plans.ts`
 - `src/app/api/trade-plans/route.ts`
+- `src/app/api/trade-plans/[id]/route.ts`
+- `src/app/api/trade-plans/[id]/link-trade/route.ts`
+- `src/lib/trade-plans/*`
+
+Edge cases:
+
+- No trading account.
+- No journal entries.
+- Multiple trades on same symbol.
+- Trade already linked to another plan.
+- Plan deleted or account deleted.
+- Invalid numeric values.
+- Mobile plan modal.
+
+QA checklist:
+
+- Create a plan.
+- Edit a plan.
+- Move plan through planned/active/cancelled or completed states.
+- Link a completed trade.
+- Verify Plan vs Actual values.
+- Verify already-linked trades cannot be linked twice.
+- Mobile layout.
+
+### `/dashboard/settings/profile` Privacy Presets
+
+Purpose:
+
+- Let users decide what their public profile, public share cards, and OG image may reveal.
+
+Expected behavior:
+
+- Privacy presets apply consistently to profile UI, public trader card, trade share card, and OG route.
+- Users can preview the public-facing result before saving.
+- Private values such as account number, broker account number, full monetary values, and sensitive identity fields must not leak when hidden.
+- Existing public profile settings remain backward compatible.
+
+Code paths:
+
+- `src/app/dashboard/settings/profile/ProfileClient.tsx`
+- `src/lib/profile/privacy-presets.ts`
+- `src/lib/profile-queries.ts`
+- `src/app/trader/[username]/page.tsx`
+- `src/app/share/[id]/page.tsx`
+- `src/app/api/og/trader/[username]/route.tsx`
+- `src/components/journal/TradeShareCard.tsx`
+
+QA checklist:
+
+- Save each preset.
+- Public trader page respects preset.
+- Share card respects preset.
+- OG route respects preset.
+- Monetary values hidden when privacy requires it.
+- Broker/account identifiers hidden when privacy requires it.
+
+### `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]`
+
+Purpose:
+
+- Public trader sharing surfaces.
+- Help users share progress without exposing private account details.
+
+Expected behavior:
+
+- Public trader card uses the gold/premium style.
+- `/trader/[username]` only renders when the profile is public.
+- `/share/[id]` respects trade-level privacy and profile preset.
+- OG image route must use the same privacy rules as the visible page.
+- If a profile or share is private/unavailable, show a safe not-found or private state.
+- Top pairs should stay concise and avoid noisy overflow.
+
+Data ownership:
+
+- `Profile`
+- `JournalEntry`
+- aggregate profile stats
+- privacy preset helpers
+
+Code paths:
+
+- `src/app/trader/[username]/page.tsx`
+- `src/app/share/[id]/page.tsx`
+- `src/app/api/og/trader/[username]/route.tsx`
+- `src/components/profile/PublicProfileCard.tsx`
+- `src/components/journal/TradeShareCard.tsx`
+- `src/lib/profile/privacy-presets.ts`
+- `src/lib/profile-queries.ts`
+
+QA checklist:
+
+- Public profile on.
+- Public profile off.
+- Conservative privacy preset.
+- Open/public privacy preset.
+- OG image route.
+- Trade share with hidden monetary values.
+- Mobile public card layout.
+
+### TraderWaves Hardening Follow-up
+
+Current open report:
+
+- `docs/traderwaves-gap-production-hardening-qa-report.md`
+
+Current open items:
+
+- Create/use a true fresh-user E2E fixture for onboarding regression instead of testing with an old data-rich QA account.
+- Backfill legacy `syncSource = APP` values to `TNT_CONNECT` and verify with `scripts/audit-sync-source.ts`.
 
 ## Documentation Maintenance Rule
 

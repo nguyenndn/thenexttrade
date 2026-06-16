@@ -142,6 +142,8 @@ export function TradingRuleCard({ rule, onUpdate, onEdit }: TradingRuleCardProps
           size="icon"
           onClick={() => onEdit(rule)}
           disabled={isPending || isDeleting}
+          title="Edit Rule"
+          aria-label="Edit Rule"
           className="w-7 h-7 rounded-lg border-gray-300 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
         >
           <Edit size={12} />
@@ -151,6 +153,8 @@ export function TradingRuleCard({ rule, onUpdate, onEdit }: TradingRuleCardProps
           size="icon"
           onClick={handleDelete}
           disabled={isPending || isDeleting}
+          title="Delete Rule"
+          aria-label="Delete Rule"
           className="w-7 h-7 rounded-lg border-red-200 dark:border-red-500/15 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
         >
           <Trash2 size={12} />

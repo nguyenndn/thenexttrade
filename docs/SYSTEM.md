@@ -1,6 +1,6 @@
 # System
 
-Last reviewed: 2026-05-31
+Last reviewed: 2026-06-16
 
 TheNextTrade is a trader operating system: account sync, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, and admin reporting in one Next.js app. For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -72,9 +72,13 @@ Use this table when assigning bugs or feature work.
 | Dashboard shell | `/dashboard/*` | `src/app/dashboard/layout.client.tsx`, `src/components/dashboard`, `src/config/navigation.ts` | Auth session, profile, navigation |
 | Main dashboard | `/dashboard` | `src/app/dashboard/page.tsx`, `src/app/dashboard/DashboardClient.tsx` | dashboard stats, chart queries, performance helpers, first-session activation state |
 | Account hub | `/dashboard/accounts` | `src/components/trading-accounts`, account APIs | `TradingAccount`, Pro eligibility, sync state |
+| Sync Health Center | `/dashboard/accounts?health=sync` | `src/components/trading-accounts/SyncHealthCenter.tsx`, `SyncHealthSummaryCard.tsx`, `SyncHealthAccountRow.tsx`, `SyncRecoveryAction.tsx` | `TradingAccount`, `SyncHistory`, `ImportHistory`, `src/lib/sync-health.ts` |
 | EA Sync | account setup, EA APIs | `public/downloads/TheNextTrade_TradeSync.mq5`, `src/app/api/ea` | API key auth, commands, account heartbeat |
 | TNT Connect | account setup, app version API | `apps/tnt-connect`, `src/app/api/sync`, `src/app/api/app/version` | sync import, timezone normalization, release manifest |
 | Journal | `/dashboard/journal` | journal pages/components/actions | `JournalEntry`, imports, manual trades |
+| Trade plans | `/dashboard/journal?tab=plans` | `src/components/journal/TradePlanList.tsx`, `TradePlanCard.tsx`, `TradePlanModal.tsx`, `PlanVsActualPanel.tsx`, `src/actions/trade-plans.ts` | `TradePlan`, `JournalEntry`, account/symbol matching |
+| Rulebook and goals | `/dashboard/rules` | `src/app/dashboard/rules/page.tsx`, `src/components/rules/*`, `src/actions/rulebook.ts` | `TradingRule`, `TradeRuleCheck`, `TraderGoal` |
+| Privacy and public sharing | `/dashboard/settings/profile`, `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` | `src/lib/profile/privacy-presets.ts`, profile settings, public profile/share/OG routes | `Profile`, public stats queries, privacy flags |
 | Reports/analytics | `/dashboard/analytics`, `/dashboard/reports`, `/admin/reports`, `/admin/analytics` | dashboard/admin report pages, `src/lib/analytics.ts`, `src/lib/track.ts` | `PageView`, `AnalyticsEvent`, trade/account/user aggregates |
 | Edge missions | `/dashboard/missions` | missions pages/components, gamification helpers | Edge/XP, missions, daily check-in, achievements |
 | Academy | `/academy`, `/dashboard/academy`, `/admin/academy` | academy routes/components/actions | levels, modules, lessons, quizzes, progress |
@@ -133,6 +137,20 @@ Zero-trade rule:
 | Admin route unauthorized | role check, `Profile.role`, middleware/server auth helper |
 | New user sees duplicate/irrelevant dashboard CTAs | `getFirstSessionState()`, `FirstSessionLauncher`, `FirstDataReminderBanner`, `getUserTradingDataState()` |
 | New user sees account/date filters before first trade | route server page, `GreetingHeader.hideFilters`, `JournalList.hasTradeData`, `getUserTradingDataState()` |
+| Fresh-user onboarding E2E is unreliable | `tests/e2e/traderwaves-fresh-user-regression.spec.ts`, dedicated test fixture, `User.settings.onboarding`, trading-account/journal cleanup |
+| Legacy sync source values remain | `scripts/audit-sync-source.ts`, `src/lib/sync/sync-source.ts`, `TradingAccount.syncSource`, `JournalEntry.syncSource` |
+| Rules menu missing from sidebar/mobile nav | `src/config/navigation.ts`, `/dashboard/rules` route protection |
+| Trade plan matching or Plan vs Actual is wrong | `src/actions/trade-plans.ts`, `/api/trade-plans/*`, `TradePlan.journalEntryId`, `PlanVsActualPanel.tsx` |
+| Public share leaks private values | `src/lib/profile/privacy-presets.ts`, `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` |
+
+## TraderWaves Hardening Watchlist
+
+The active hardening report is `docs/traderwaves-gap-production-hardening-qa-report.md`.
+
+Keep these as release blockers for the current TraderWaves parity scope:
+
+- True fresh-user E2E fixture: do not test onboarding with an old user that already has accounts/trades.
+- `syncSource` DB backfill: no legacy `APP` values should remain after running the audit/backfill script.
 
 ## API Rules
 

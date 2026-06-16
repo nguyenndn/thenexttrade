@@ -20,7 +20,7 @@ export async function GET(
 
     if (!plan) return NextResponse.json({ error: "Plan not found" }, { status: 404 });
     return NextResponse.json(plan);
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch plan" }, { status: 500 });
   }
 }
@@ -57,7 +57,7 @@ export async function PUT(
     });
 
     return NextResponse.json(plan);
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Failed to update plan" }, { status: 500 });
   }
 }
@@ -75,7 +75,7 @@ export async function DELETE(
       where: { id, userId: user.id },
     });
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Failed to delete plan" }, { status: 500 });
   }
 }

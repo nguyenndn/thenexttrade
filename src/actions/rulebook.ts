@@ -181,6 +181,9 @@ export async function getTraderGoalsList() {
             checkedAt: { gte: start, lte: end },
           },
         });
+      } else {
+        const metadata = goal.metadata as Record<string, any> | null;
+        progressValue = typeof metadata === "object" && metadata !== null ? (metadata.progress || 0) : 0;
       }
 
       return {
@@ -237,6 +240,39 @@ export async function updateTraderGoalStatus(id: string, status: "ACTIVE" | "COM
   } catch (err) {
     console.error("Update goal status error:", err);
     return { error: "Failed to update goal status" };
+  }
+}
+
+export async function updateTraderGoalProgress(id: string, progress: number) {
+  const user = await getAuthUser();
+  if (!user) return { error: "Unauthorized" };
+
+  try {
+    const goal = await prisma.traderGoal.findUnique({
+      where: { id, userId: user.id },
+    });
+    if (!goal) return { error: "Goal not found" };
+
+    const currentMeta = (goal.metadata as Record<string, any>) || {};
+    const newMeta = { ...currentMeta, progress };
+
+    // Automatically mark as COMPLETED if progress meets or exceeds targetValue
+    const isCompleted = goal.targetValue ? progress >= goal.targetValue : false;
+    const status = isCompleted ? "COMPLETED" : "ACTIVE";
+
+    const updated = await prisma.traderGoal.update({
+      where: { id, userId: user.id },
+      data: {
+        metadata: newMeta,
+        status,
+      },
+    });
+
+    revalidatePath("/dashboard/rules");
+    return { success: true, goal: updated };
+  } catch (err) {
+    console.error("Update goal progress error:", err);
+    return { error: "Failed to update goal progress" };
   }
 }
 

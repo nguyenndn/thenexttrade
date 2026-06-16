@@ -1397,8 +1397,8 @@ model TradePlan {
   updatedAt       DateTime  @updatedAt @db.Timestamptz(6)
 
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account         TradingAccount? @relation(fields: [accountId], references: [id])
-  journalEntry    JournalEntry?   @relation(fields: [journalEntryId], references: [id])
+  account         TradingAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  journalEntry    JournalEntry?   @relation(fields: [journalEntryId], references: [id], onDelete: SetNull)
 
   @@index([userId, status])
   @@index([userId, accountId, plannedAt])
@@ -1423,8 +1423,8 @@ model TradingRule {
   updatedAt   DateTime @updatedAt @db.Timestamptz(6)
 
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account     TradingAccount? @relation(fields: [accountId], references: [id])
-  strategy    Strategy? @relation(fields: [strategyId], references: [id])
+  account     TradingAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  strategy    Strategy? @relation(fields: [strategyId], references: [id], onDelete: SetNull)
   checks      TradeRuleCheck[]
 
   @@index([userId, isActive])
@@ -1470,7 +1470,7 @@ model TraderGoal {
   updatedAt   DateTime @updatedAt @db.Timestamptz(6)
 
   user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account     TradingAccount? @relation(fields: [accountId], references: [id])
+  account     TradingAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
 
   @@index([userId, status])
   @@index([userId, period, startsAt])

@@ -429,3 +429,23 @@
 - [x] Unify layout spacing gap (exactly 24px margin-to-margin) between headers and tabs/content widgets across all dashboard views
 - [x] Run `npx tsc --noEmit` and `npm run lint` to confirm 0 compile/lint errors across the codebase
 - [x] Ensure unit tests pass 100% (32/32 tests passed)
+
+## Phase 49: TraderWaves-Inspired Upgrade Production Hardening
+- [x] Integrate goal's metadata progress merging for manual goal types (`STOP_AFTER_LOSSES`, `STUDY`, `CUSTOM`)
+- [x] Implement interactive stepper controls (increment/decrement/input) inside `GoalCard.tsx`
+- [x] Add active rules checklist inside `JournalForm.tsx` prompting users for notes when rules are marked broken/skipped
+- [x] Integrate rule compliance checks inside the Context tab of `TradeDetailSheet.tsx`
+- [x] Enforce trade plan lifecycle state transitions (`PLANNED -> ACTIVE -> MATCHED -> REVIEWED`) in server actions
+- [x] Build matching engine in `src/lib/trade-plans/matching.ts` rating candidate plans based on symbol, direction, account, and open proximity (within a 48-hour window)
+- [x] Integrate suggested/recommended badges in the journal form plan dropdown with manual override protection
+- [x] Upgrade weekly reports (`weekly-action-plan.server.ts`) to compute compliance rates and focus point CTAs
+- [x] Ensure regression protection for new users (sync-focused CTAs) and existing users (no onboarding/modal blocks)
+- [x] Swept touched files to remove unused imports, unused variables, and resolve React Hook dependency warnings
+- [x] Verify prisma schema validation (`npx prisma validate`)
+- [x] Verify TypeScript compilation (`npm run type-check`)
+- [x] Verify code quality linter checks (`npm run lint` on touched files)
+- [x] Verify unit tests suite (`npx vitest run`)
+- [x] Verify Next.js production build (`npx next build`)
+- [x] Verify Playwright E2E Routes tests (`npx playwright test tests/e2e/traderwaves-routes.spec.ts`)
+- [x] Run sync source normalization audit script (`npx tsx scripts/audit-sync-source.ts`)
+

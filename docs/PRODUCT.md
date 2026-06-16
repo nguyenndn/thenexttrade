@@ -1,6 +1,6 @@
 # Product
 
-Last reviewed: 2026-05-31
+Last reviewed: 2026-06-16
 
 This file describes the current product behavior at a practical level. For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -16,7 +16,7 @@ This is the product map a new developer should read before fixing bugs or adding
 | Article SEO ops | Find/fix missing SEO and images | Active | `/admin/articles/ops` |
 | Academy | Lessons, quizzes, trader education | Active | `/academy`, `/dashboard/academy`, `/admin/academy` |
 | Auth/register/login | Account creation and secure access | Active | `/auth/login`, `/auth/signup` |
-| First Session Wizard | Helps a new user know exactly what to do after first login | Active and QA-verified | `/dashboard`, `/dashboard/accounts`, `/dashboard/journal` |
+| First Session Wizard | Helps a new user know exactly what to do after first login | Active, with fresh-user fixture hardening still open | `/dashboard`, `/dashboard/accounts`, `/dashboard/journal` |
 | User country reporting | Show registered user geography | Active | `/admin/users`, `/admin/analytics` |
 | Main dashboard | Trading performance overview | Active | `/dashboard` |
 | Account hub | Manage MT5 accounts and sync setup | Active | `/dashboard/accounts` |
@@ -43,6 +43,9 @@ This is the product map a new developer should read before fixing bugs or adding
 | Privacy Presets | Segmented profile visibility presets & live preview | Active | `/dashboard/settings/profile` |
 | Rulebook & Goals | CRUD for rules/goals and compliance tracking | Active | `/dashboard/rules` |
 | Pre-trade Planning | Plan setups, checklists, and match actual trades | Active | `/dashboard/journal?tab=plans` |
+| Plan vs Actual | Compare a planned setup to the executed trade | Active | `/dashboard/journal?tab=plans`, trade detail |
+| Safe public sharing | Public trader card, OG image, and share card respect privacy | Active | `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` |
+| Weekly Coach action loop | Turns trade data, rules, leaks, and reports into next actions | Active | `/dashboard`, `/dashboard/reports/weekly` |
 
 ## Current Product Decisions
 
@@ -52,6 +55,34 @@ This is the product map a new developer should read before fixing bugs or adding
 - Prioritize user-facing clarity over admin-only polish when tradeoffs are needed.
 - For sync, both EA and TNT Connect remain valid paths. The UI should help users pick and troubleshoot either path.
 - For metrics, never show technically correct but confusing values without explanation.
+- TraderWaves-inspired features should strengthen TheNextTrade's core loop, not copy competitor features blindly.
+- Current hardening work is tracked in `docs/traderwaves-gap-production-hardening-qa-report.md`. Do not add new feature scope there.
+
+## TraderWaves-Level Improvement Loop
+
+The current product target is:
+
+`Connect or log trades -> Check sync health -> Define rules/goals -> Plan trades -> Link actual trades -> Review rule compliance -> Receive weekly coach action -> Share safely if desired`
+
+The loop is implemented through these user surfaces:
+
+| Loop step | Primary route | Product behavior |
+| --- | --- | --- |
+| Connect/log trades | `/dashboard/accounts`, `/dashboard/journal` | User brings MT5 trades through TNT Connect, EA Sync, or manual journal. |
+| Check sync health | `/dashboard/accounts?health=sync` | User sees account health, stale/disconnected states, sync attempts, and recovery actions. |
+| Define rules/goals | `/dashboard/rules` | User creates personal rules and behavior goals, then tracks compliance. |
+| Plan trades | `/dashboard/journal?tab=plans` | User creates a trade plan before execution. |
+| Link actual trade | `/dashboard/journal?tab=plans`, trade detail | User links the executed trade back to the plan. |
+| Review plan vs actual | trade detail / plan panel | User compares planned entry/SL/TP/size/notes with actual execution. |
+| Weekly coach action | `/dashboard/reports/weekly`, `/dashboard` | Weekly Coach converts leaks and strengths into one next action. |
+| Share safely | `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` | Privacy presets decide which values appear publicly. |
+
+Parity status:
+
+- The core loop is feature-complete for internal/staging use.
+- Two hardening items remain before calling it fully clean:
+  - Create a true fresh-user E2E fixture for onboarding regression.
+  - Backfill legacy `syncSource = APP` data to `TNT_CONNECT`.
 
 ## Public Product
 

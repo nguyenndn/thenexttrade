@@ -4,11 +4,9 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useState, useRef } from "react";
 import { TradeShareCard } from "./TradeShareCard";
-import { Copy, Check, ChevronDown, ChevronUp, CheckCircle2, Download, Loader2 } from "lucide-react";
+import { Copy, Check, ChevronDown, CheckCircle2, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { format } from "date-fns";
 
 
 interface ShareTradeModalProps {
@@ -24,6 +22,19 @@ import { useDebounce } from "use-debounce";
 // ... inside component ...
 
 export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) {
+ const [profileSettings, setProfileSettings] = useState<any>(null);
+
+ useEffect(() => {
+   if (open) {
+     fetch("/api/profile/settings")
+       .then(res => res.json())
+       .then(data => {
+         setProfileSettings(data);
+       })
+       .catch(err => console.error("Error fetching settings:", err));
+   }
+ }, [open]);
+
  const [mode, setMode] = useState<"basic" | "full">(entry.shareMode as "basic" | "full" || "full");
  const [description, setDescription] = useState(entry.shareDescription || "");
  const [descriptionOpen, setDescriptionOpen] = useState(!!entry.shareDescription);
@@ -101,14 +112,6 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
  setTimeout(() => setCopied(false), 2000);
  };
 
- const handleClose = () => {
- // Force save if pending changes (though debounce handles most, closing immediately might need this if we tracked dirty state,
- // but for now relying on useEffect is safer if we just close. 
- // Actually, to be safe, we can just close. The debounce effect might run or might not depending on race conditions.
- // A better UX is just to show "Saved" state.)
- onClose();
- };
-
  return (
  <Dialog open={open} onOpenChange={onClose}>
  <DialogContent className="max-w-4xl bg-gray-50 dark:bg-[#0F1117] border-none p-0 overflow-hidden">
@@ -164,7 +167,14 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
 
  {/* Card Preview Area */}
  <div className="flex justify-center py-4 w-full rounded-xl bg-white dark:bg-[#1E2028]" ref={cardRef}>
- <TradeShareCard entry={entry} variant={mode} className="max-w-none shadow-xl" />
+ <TradeShareCard 
+   entry={{
+     ...entry,
+     showMoney: profileSettings ? profileSettings.showMoney : false,
+   }} 
+   variant={mode} 
+   className="max-w-none shadow-xl" 
+ />
  </div>
 
  {/* Add Description Accordion */}

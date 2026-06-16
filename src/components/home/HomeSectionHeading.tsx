@@ -102,12 +102,12 @@ export function HomeSectionHeading({
         <Link
           href={linkHref}
           className={[
-            "inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-gold/25 bg-white/80 px-4 py-2 text-xs font-black text-gray-800 shadow-sm transition-all duration-300 hover:border-gold hover:bg-gold/[0.08] hover:text-gray-950 dark:bg-white/[0.03] dark:text-white dark:hover:bg-gold/[0.06]",
+            "group inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-gold hover:text-amber-500 transition-colors",
             isCenter ? "mt-4" : "",
           ].join(" ")}
         >
           {linkText}
-          <ArrowRight size={14} />
+          <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-1" />
         </Link>
       )}
     </div>

@@ -112,7 +112,7 @@ export function BrokerRankingsSection() {
 
         {/* Tab Switcher */}
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} tabsId="platforms-tabs" className="w-full">
-          <div className="mb-8 overflow-x-auto scrollbar-hide flex sm:justify-center">
+          <div className="mb-8 overflow-x-auto scrollbar-hide flex justify-center">
             <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
               <TabsTrigger
                 value="brokers"

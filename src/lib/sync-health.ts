@@ -9,7 +9,6 @@ import { normalizeSyncSource, type CanonicalSyncSource } from "@/lib/sync/sync-s
 
 // Thresholds
 const STALE_HEARTBEAT_HOURS = 6;
-const STALE_SYNC_HOURS = 24;
 
 export type SyncHealthStatus =
  | "healthy"

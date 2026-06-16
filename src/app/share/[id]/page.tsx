@@ -26,12 +26,24 @@ export default async function SharePage({ params }: SharePageProps) {
  select: {
  name: true,
  image: true,
+ profile: {
+ select: {
+ isPublicProfile: true,
+ username: true,
+ showRealName: true,
+ showMoney: true,
+ showBroker: true,
+ showAccountNumber: true,
+ showPercentMetrics: true,
+ }
+ }
  }
  },
  account: {
  select: {
  accountType: true,
  name: true,
+ accountNumber: true,
  }
  }
  }
@@ -40,6 +52,38 @@ export default async function SharePage({ params }: SharePageProps) {
  if (!trade) {
  return notFound();
  }
+
+ // Enforce profile privacy settings on the shared trade data
+ const profile = trade.user?.profile;
+ const showRealName = profile?.showRealName ?? false;
+ const showMoney = profile?.showMoney ?? false;
+ const showBroker = profile?.showBroker ?? false;
+ const showAccountNumber = profile?.showAccountNumber ?? false;
+
+ // Sanitize name
+ const displayName = showRealName 
+ ? (trade.user.name || "Trader") 
+ : (profile?.username ? `@${profile.username}` : "Trader");
+
+ // Sanitize account info
+ if (trade.account) {
+ if (!showBroker) {
+ trade.account.name = trade.account.accountType === "DEMO" ? "Demo Account" : "Trading Account";
+ }
+ }
+
+ // Attach sanitized fields / overrides
+ const sanitizedTrade = {
+ ...trade,
+ showMoney,
+ showRealName,
+ showBroker,
+ showAccountNumber,
+ user: {
+ ...trade.user,
+ name: displayName,
+ }
+ };
 
  return (
  <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 text-gray-900 flex flex-col font-sans selection:bg-primary/20">
@@ -62,17 +106,17 @@ export default async function SharePage({ params }: SharePageProps) {
  {/* Avatar */}
  <div className="relative">
  <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] border-white/50 overflow-hidden bg-white shadow-2xl ring-4 ring-white/10">
- {trade.user.image ? (
+ {sanitizedTrade.user.image ? (
  <Image
- src={trade.user.image}
- alt={trade.user.name || "User"}
+ src={sanitizedTrade.user.image}
+ alt={sanitizedTrade.user.name || "User"}
  width={96}
  height={96}
  className="object-cover"
  />
  ) : (
  <div className="w-full h-full flex items-center justify-center text-2xl md:text-3xl font-bold text-primary bg-primary/10">
- {(trade.user.name?.[0] || "U").toUpperCase()}
+ {(sanitizedTrade.user.name?.[0] || "U").toUpperCase()}
  </div>
  )}
  </div>
@@ -85,7 +129,7 @@ export default async function SharePage({ params }: SharePageProps) {
  <div className="space-y-3">
  <div className="flex items-center justify-center gap-2.5 flex-wrap">
  <h1 className="text-xl md:text-2xl font-black text-white drop-shadow-md">
- {trade.user.name || "Unknown Trader"}
+ {sanitizedTrade.user.name || "Unknown Trader"}
  </h1>
  <span className="px-2.5 py-1 rounded-full bg-white/15 text-white/95 text-[10px] md:text-xs font-bold uppercase tracking-wider border border-white/25 flex items-center gap-1.5 backdrop-blur-md">
  <Medal size={11} />
@@ -97,7 +141,7 @@ export default async function SharePage({ params }: SharePageProps) {
  <div className="relative max-w-md mx-auto">
  <div className="absolute -top-2 -left-1 text-white/20 text-3xl font-serif leading-none">&ldquo;</div>
  <p className="text-white/85 text-sm leading-relaxed italic px-4">
- {trade.shareDescription || "A disciplined approach to the markets. Tracking every trade to master the craft of scalping."}
+ {sanitizedTrade.shareDescription || "A disciplined approach to the markets. Tracking every trade to master the craft of scalping."}
  </p>
  <div className="absolute -bottom-3 -right-1 text-white/20 text-3xl font-serif leading-none">&rdquo;</div>
  </div>
@@ -108,7 +152,7 @@ export default async function SharePage({ params }: SharePageProps) {
 
  {/* Trade Card Section */}
  <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
- <TradeShareCard entry={trade} variant={trade.shareMode as "basic" | "full" || "full"} className="max-w-none" />
+ <TradeShareCard entry={sanitizedTrade} variant={sanitizedTrade.shareMode as "basic" | "full" || "full"} className="max-w-none" />
  </div>
 
  {/* CTA Block - Premium */}

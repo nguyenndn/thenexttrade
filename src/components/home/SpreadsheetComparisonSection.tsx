@@ -85,7 +85,7 @@ export function SpreadsheetComparisonSection({ isLoggedIn }: SpreadsheetComparis
               return (
                 <div
                   key={card.label}
-                  className="rounded-2xl border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-4 shadow-sm"
+                  className="rounded-2xl border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-4 shadow-sm flex flex-col items-center text-center sm:items-start sm:text-left"
                 >
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gold/10 text-gold">
                     <Icon size={18} />
