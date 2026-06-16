@@ -1521,6 +1521,73 @@ QA checklist:
 - GA4 disabled/enabled.
 - Admin analytics panels.
 
+### `/dashboard/rules`
+
+Purpose:
+
+- Trading Rulebook and behavior goals page.
+- Enables users to define rules, track compliance metrics, and set actionable consistency goals.
+
+Expected behavior:
+
+- Displays user's trading rules grouped by category (RISK, ENTRY, EXIT, PSYCHOLOGY, SESSION, MANAGEMENT).
+- Displays rule compliance statistics (number of times followed, broken, or skipped).
+- Displays active and completed trading/consistency goals with progress indicators.
+- Modals for creating and editing rules and goals.
+
+Code paths:
+
+- `src/app/dashboard/rules/page.tsx`
+- `src/components/rules/RulebookClient.tsx`
+- `src/components/rules/TradingRuleCard.tsx`
+- `src/components/rules/TradingRuleModal.tsx`
+- `src/components/rules/GoalCard.tsx`
+- `src/components/rules/GoalModal.tsx`
+- `src/actions/rulebook.ts`
+
+### `/dashboard/accounts?health=sync`
+
+Purpose:
+
+- Sync Health Center.
+- Allows users to monitor sync logs, identify connectivity issues, and execute recovery actions.
+
+Expected behavior:
+
+- Displays a sync health status indicator (HEALTHY, WARNING, CRITICAL) for each trading account.
+- Lists recent sync attempts and details.
+- Renders troubleshooting advice and actionable recovery options (e.g. key regeneration, config check).
+
+Code paths:
+
+- `src/components/trading-accounts/SyncHealthCenter.tsx`
+- `src/components/trading-accounts/SyncHealthSummaryCard.tsx`
+- `src/components/trading-accounts/SyncHealthAccountRow.tsx`
+- `src/components/trading-accounts/SyncRecoveryAction.tsx`
+- `src/lib/sync-health.ts`
+- `src/app/api/sync/health/route.ts`
+
+### `/dashboard/journal?tab=plans`
+
+Purpose:
+
+- Pre-trade planning lifecycle list and trade-matching view.
+
+Expected behavior:
+
+- Tab "Plans" in the journal layout displaying trade setups created in advance.
+- Allows matching a planned setup to a completed journal trade.
+- Comparison tab showing Planned vs Actual entry, SL, TP, lot size, and notes side-by-side.
+
+Code paths:
+
+- `src/components/journal/PlanVsActualPanel.tsx`
+- `src/components/journal/TradePlanModal.tsx`
+- `src/components/journal/TradePlanCard.tsx`
+- `src/components/journal/TradePlanList.tsx`
+- `src/actions/trade-plans.ts`
+- `src/app/api/trade-plans/route.ts`
+
 ## Documentation Maintenance Rule
 
 When a route changes:

@@ -1,8 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getPublicProfileData } from "@/lib/profile-queries";
 
-export const runtime = "edge";
-
 export async function GET(
  request: Request,
  { params }: { params: Promise<{ username: string }> }
@@ -111,9 +109,9 @@ export async function GET(
  <span style={{
  fontSize: "36px",
  fontWeight: 900,
- color: profile.stats.winRate >= 50 ? "#10B981" : "#EF4444",
+ color: profile.visibility.showPercentMetrics ? (profile.stats.winRate >= 50 ? "#10B981" : "#EF4444") : "#6B7280",
  }}>
- {Math.round(profile.stats.winRate)}%
+ {profile.visibility.showPercentMetrics ? `${Math.round(profile.stats.winRate)}%` : "—"}
  </span>
  </div>
  <div style={{ display: "flex", flexDirection: "column" }}>
@@ -124,7 +122,7 @@ export async function GET(
  {profile.stats.avgRR > 0 ? profile.stats.avgRR.toFixed(1) : "N/A"}
  </span>
  </div>
- {profile.stats.tradeScore !== null && (
+ {profile.stats.tradeScore !== null && profile.visibility.showTradeScore && (
  <div style={{ display: "flex", flexDirection: "column" }}>
  <span style={{ fontSize: "14px", color: "#6B7280", fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px" }}>
  Score
@@ -139,7 +137,7 @@ export async function GET(
  {/* Bottom info */}
  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
  <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
- {profile.topPairs && profile.topPairs.slice(0, 3).map((pair, i) => (
+ {profile.topPairs && profile.visibility.showPairStats && profile.topPairs.slice(0, 3).map((pair, i) => (
  <span key={i} style={{
  fontSize: "14px",
  fontWeight: 700,
@@ -149,7 +147,7 @@ export async function GET(
  border: "1px solid rgba(255,255,255,0.1)",
  color: "#D1D5DB",
  }}>
- {pair.symbol} ({Math.round(pair.winRate)}%)
+ {pair.symbol} {profile.visibility.showPercentMetrics ? `(${Math.round(pair.winRate)}%)` : ""}
  </span>
  ))}
  </div>

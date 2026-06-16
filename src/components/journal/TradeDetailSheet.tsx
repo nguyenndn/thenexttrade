@@ -4,7 +4,7 @@ import * as React from "react"
 import { useState } from "react"
 import { utcTime } from "@/lib/utils"
 import { ShareTradeModal } from "./ShareTradeModal"
-import { Share2, ArrowLeft, ArrowRight, TrendingUp, TrendingDown, Clock, Info, DollarSign, Tag, Brain, BarChart3, MessageSquare, AlertTriangle, X, Medal, Target, ShieldAlert } from "lucide-react"
+import { Share2, ArrowLeft, ArrowRight, TrendingUp, TrendingDown, Clock, Info, DollarSign, Tag, Brain, BarChart3, MessageSquare, AlertTriangle, X, Medal, Target, ShieldAlert, Scale } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/Sheet"
 import { Button } from "@/components/ui/Button"
@@ -13,6 +13,7 @@ import { getMistakeByCode } from "@/lib/mistakes"
 import { EmptyState } from "@/components/ui/EmptyState"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { transformImageUrl } from "@/lib/utils"
+import { PlanVsActualPanel } from "./PlanVsActualPanel"
 
 
 interface JournalEntry {
@@ -37,6 +38,8 @@ interface JournalEntry {
  notes?: string;
  mindset?: string;
  images?: string[];
+ tradePlan?: any;
+ ruleChecks?: any[];
 }
 
 interface TradeDetailSheetProps {
@@ -188,6 +191,15 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
  <Tag size={16} />
  Trade Context
  </TabsTrigger>
+ {entry.tradePlan && (
+  <TabsTrigger
+  value="comparison"
+  className="rounded-lg px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 border whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:border-dashboard dark:data-[state=active]:border-white/10 text-gray-600 dark:text-gray-300 border-transparent"
+  >
+  <Scale size={16} />
+  Plan vs Actual
+  </TabsTrigger>
+ )}
  </TabsList>
 
  <TabsContent value="metrics" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -502,6 +514,13 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
  </div>
  </div>
  </TabsContent>
+ {entry.tradePlan && (
+  <TabsContent value="comparison" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+   <div className="pt-2">
+    <PlanVsActualPanel plan={entry.tradePlan} entry={entry} />
+   </div>
+  </TabsContent>
+ )}
  </Tabs>
 
  {/* Screenshots - Always visible at bottom */}

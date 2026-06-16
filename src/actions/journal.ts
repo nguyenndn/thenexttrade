@@ -97,7 +97,12 @@ export async function getJournalEntries(
  orderBy,
  include: {
  account: { select: { name: true, color: true, accountType: true, timezone: true } },
- // strategy is a string, no relation
+ tradePlan: true,
+ ruleChecks: {
+  include: {
+   tradingRule: true
+  }
+ }
  },
  skip,
  take: limit,

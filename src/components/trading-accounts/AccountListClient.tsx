@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { Plus, RefreshCw, Wallet, Download, Monitor, Crown, CheckCircle2, Lock, Clock3, Cable, ArrowRight } from "lucide-react";
+import { Plus, RefreshCw, Wallet, Download, Monitor, Crown, CheckCircle2, Lock, Clock3, Cable, ArrowRight, Activity } from "lucide-react";
+import { SyncHealthCenter } from "./SyncHealthCenter";
 import { AccountCard } from "./AccountCard";
 import { AddAccountModal } from "./AddAccountModal";
 import { AccountSettingsModal } from "./AccountSettingsModal";
@@ -90,7 +91,8 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  | { type: "REGEN"; accountId: string }
  | { type: "DELETE"; accountId: string }
  | { type: "FREE_VS_PRO" }
- | { type: "SYNC_SETUP" };
+ | { type: "SYNC_SETUP" }
+ | { type: "SYNC_HEALTH" };
 
  const [activeModal, setActiveModal] = useState<ModalState>({ type: "NONE" });
 
@@ -110,9 +112,22 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  const intent = searchParams.get("intent");
  const setup = searchParams.get("setup");
  const method = searchParams.get("method");
+ const health = searchParams.get("health");
  const isProIntent = intent === "unlock-pro";
  const isAddAction = action === "add";
  const isSyncSetup = setup === "sync";
+ const isSyncHealth = health === "sync";
+
+ if (isSyncHealth && activeModal.type === "NONE") {
+ setActiveModal({ type: "SYNC_HEALTH" });
+ 
+ // Clean query params
+ const newParams = new URLSearchParams(searchParams.toString());
+ newParams.delete("health");
+ const newUrl = newParams.toString() ? `?${newParams.toString()}` : window.location.pathname;
+ window.history.replaceState({}, '', newUrl);
+ return;
+ }
 
  if (isSyncSetup && activeModal.type === "NONE") {
  // Auto-open sync wizard with method from query, then saved onboarding preference.
@@ -188,6 +203,14 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  >
  <Cable size={16} />
  Set up Trade Sync
+ </Button>
+ <Button
+ variant="outline"
+ onClick={() => setActiveModal({ type: "SYNC_HEALTH" })}
+ className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 font-extrabold flex-1 sm:flex-none"
+ >
+ <Activity size={16} />
+ Sync Health Center
  </Button>
  <Button
  variant="outline"
@@ -524,6 +547,19 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  </div>
  </DialogContent>
  </Dialog>
+
+ {/* Sync Health Center Modal */}
+ <SyncHealthCenter
+ isOpen={activeModal.type === "SYNC_HEALTH"}
+ onOpenChange={(open) => !open && setActiveModal({ type: "NONE" })}
+ onActionTrigger={(action) => {
+ if (action === "open_sync_setup" || action === "reconnect") {
+ setActiveModal({ type: "SYNC_SETUP" });
+ } else if (action === "sync_first_trades") {
+ setActiveModal({ type: "SYNC_SETUP" });
+ }
+ }}
+ />
 
  </div>
  );

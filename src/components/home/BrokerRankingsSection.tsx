@@ -112,24 +112,24 @@ export function BrokerRankingsSection() {
 
         {/* Tab Switcher */}
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} tabsId="platforms-tabs" className="w-full">
-          <div className="flex justify-center mb-8 overflow-x-auto scrollbar-hide">
+          <div className="mb-8 overflow-x-auto scrollbar-hide flex sm:justify-center">
             <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
               <TabsTrigger
                 value="brokers"
                 className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
-                activeIndicatorClassName="!bg-gradient-to-r from-amber-500 to-gold shadow-md border-0"
+                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0"
                 activeTextClassName="!text-white"
               >
-                <Landmark size={15} className={activeTab === 'brokers' ? "text-white" : "text-gray-500 dark:text-gray-400"} />
+                <Landmark size={15} />
                 <span>CFD Brokers</span>
               </TabsTrigger>
               <TabsTrigger
                 value="crypto"
                 className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
-                activeIndicatorClassName="!bg-gradient-to-r from-amber-500 to-gold shadow-md border-0"
+                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0"
                 activeTextClassName="!text-white"
               >
-                <TrendingUp size={15} className={activeTab === 'crypto' ? "text-white" : "text-gray-500 dark:text-gray-400"} />
+                <TrendingUp size={15} />
                 <span>Crypto Exchanges</span>
               </TabsTrigger>
             </TabsList>

@@ -48,5 +48,11 @@ export default async function PublicProfilePage() {
  showPercentMetrics: true,
  };
 
- return <ProfileClient initialSettings={settings} />;
+  return (
+    <ProfileClient
+      initialSettings={settings}
+      userDisplayName={user.name}
+      userJoinedDate={user.createdAt}
+    />
+  );
 }

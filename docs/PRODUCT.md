@@ -39,6 +39,10 @@ This is the product map a new developer should read before fixing bugs or adding
 | Security admin | Security logs and blocked IPs | Active | `/admin/security` |
 | GA4 | External web analytics | Optional | Config-driven |
 | Email notifications | Transactional and product lifecycle email | Partially active, see [EMAIL.md](EMAIL.md) | Service-driven |
+| Sync Health Center | Visualizes sync logs, issues, and recovery actions | Active | `/dashboard/accounts?health=sync` |
+| Privacy Presets | Segmented profile visibility presets & live preview | Active | `/dashboard/settings/profile` |
+| Rulebook & Goals | CRUD for rules/goals and compliance tracking | Active | `/dashboard/rules` |
+| Pre-trade Planning | Plan setups, checklists, and match actual trades | Active | `/dashboard/journal?tab=plans` |
 
 ## Current Product Decisions
 

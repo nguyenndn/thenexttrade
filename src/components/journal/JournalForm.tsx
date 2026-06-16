@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Loader2, AlertCircle, Plus, Brain, Check, X, RefreshCw, ExternalLink, ChevronDown } from "lucide-react";
+import { ArrowLeft, Save, Loader2, AlertCircle, Plus, Brain, Check, X, RefreshCw, ExternalLink, ChevronDown, ClipboardList } from "lucide-react";
 import { EmotionSelector } from "@/components/psychology/EmotionSelector";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
 import { JournalTemplateSelector, TEMPLATE_PROMPTS, type JournalTemplateType } from "./JournalTemplateSelector";
+import { getTradingRulesList } from "@/actions/rulebook";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -101,9 +102,49 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
  images: initialData?.images || []
  });
 
- const [customTagInput, setCustomTagInput] = useState("");
+  const [customTagInput, setCustomTagInput] = useState("");
+  const [activeRules, setActiveRules] = useState<any[]>([]);
+  const [ruleChecks, setRuleChecks] = useState<Record<string, { status: "FOLLOWED" | "BROKEN" | "SKIPPED"; note: string }>>({});
+  const [activePlans, setActivePlans] = useState<any[]>([]);
+  const [selectedPlanId, setSelectedPlanId] = useState<string>(initialData?.tradePlan?.id || "");
 
- const addCustomTag = () => {
+  useEffect(() => {
+    async function loadRulesAndPlans() {
+      try {
+        const activeRulesList = await getTradingRulesList();
+        setActiveRules(activeRulesList.filter((r) => r.isActive));
+
+        if (initialData?.ruleChecks) {
+          const checksMap: any = {};
+          initialData.ruleChecks.forEach((c: any) => {
+            checksMap[c.tradingRuleId] = {
+              status: c.status,
+              note: c.note || "",
+            };
+          });
+          setRuleChecks(checksMap);
+        }
+
+        const res = await fetch("/api/trade-plans");
+        if (res.ok) {
+          const plans = await res.json();
+          if (Array.isArray(plans)) {
+            setActivePlans(plans.filter((p: any) => p.status === "PLANNED" || p.status === "ACTIVE" || p.id === initialData?.tradePlan?.id));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load rules or plans", err);
+      }
+    }
+    loadRulesAndPlans();
+  }, [initialData]);
+
+  const matchingPlans = useMemo(() => {
+    if (!formData.symbol) return [];
+    return activePlans.filter((p: any) => p.symbol.toUpperCase() === formData.symbol.toUpperCase());
+  }, [formData.symbol, activePlans]);
+
+  const addCustomTag = () => {
  if (!customTagInput.trim()) return;
  if (!formData.tags.includes(customTagInput.trim())) {
  setFormData(prev => ({ ...prev, tags: [...prev.tags, customTagInput.trim()] }));
@@ -214,6 +255,13 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
  }
  }
 
+ // Convert ruleChecks mapping back to ruleChecks payload array
+ const ruleChecksPayload = Object.entries(ruleChecks).map(([ruleId, check]) => ({
+ tradingRuleId: ruleId,
+ status: check.status,
+ note: check.note || null,
+ }));
+
  // Convert numbers
  const payload: any = {
  ...formData,
@@ -236,7 +284,9 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
  notesPsychology: formData.notesPsychology || null,
  // Mistakes (Phase 45)
  mistakes: formData.mistakes || [],
- // Screenshots (Phase 53) - Handled above in currentImages
+ // Rule checks & Trade plan ID
+ ruleChecks: ruleChecksPayload,
+ tradePlanId: selectedPlanId && selectedPlanId !== "none" ? selectedPlanId : null,
  };
 
  // For synced trades, strip locked core data to prevent
@@ -361,6 +411,28 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
  </SelectContent>
  </Select>
  </div>
+
+ {matchingPlans.length > 0 && (
+  <div className="col-span-1 md:col-span-2 space-y-2 bg-purple-500/5 p-4 rounded-xl border border-purple-500/10">
+   <label className="text-sm font-bold text-purple-600 dark:text-purple-400">Link to Trade Plan</label>
+   <Select
+    value={selectedPlanId}
+    onValueChange={setSelectedPlanId}
+   >
+    <SelectTrigger className="w-full h-[50px] px-3 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:outline-none font-medium text-sm">
+     <SelectValue placeholder="Unlinked (Select plan to link)" />
+    </SelectTrigger>
+    <SelectContent>
+     <SelectItem value="none">Unlinked (Do not link to plan)</SelectItem>
+     {matchingPlans.map((p: any) => (
+      <SelectItem key={p.id} value={p.id}>
+       {p.setupName || "Setup"} ({p.type}) at {p.plannedEntry ? p.plannedEntry.toFixed(5) : "market"} (Planned: {format(new Date(p.createdAt), "dd MMM HH:mm")})
+      </SelectItem>
+     ))}
+    </SelectContent>
+   </Select>
+  </div>
+ )}
 
  <div className="space-y-2">
  <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Pair / Symbol</label>
@@ -652,6 +724,66 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
  label=""
  />
  </div>
+
+ {/* Rulebook Compliance Checklist */}
+ {activeRules.length > 0 && (
+  <div className="space-y-4 pt-4 border-t border-dashboard">
+   <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
+    <ClipboardList size={18} className="text-primary" />
+    Rulebook Compliance Checklist
+   </h3>
+   <div className="space-y-3">
+    {activeRules.map((rule) => {
+     const currentCheck = ruleChecks[rule.id] || { status: "FOLLOWED", note: "" };
+
+     return (
+      <div key={rule.id} className="p-4 rounded-xl border border-dashboard bg-gray-50/50 dark:bg-black/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+       <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+         <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-black uppercase border ${
+          rule.severity === "HIGH"
+           ? "bg-red-50 text-red-500 border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
+           : rule.severity === "MEDIUM"
+           ? "bg-amber-50 text-amber-500 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
+           : "bg-blue-50 text-blue-500 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20"
+         }`}>
+          {rule.severity}
+         </span>
+         <span className="text-xs font-black uppercase text-gray-400">{rule.category}</span>
+        </div>
+        <h4 className="text-sm font-bold text-gray-700 dark:text-white mt-1">{rule.title}</h4>
+        {rule.description && <p className="text-xs text-gray-500 mt-0.5">{rule.description}</p>}
+       </div>
+
+       <div className="flex flex-wrap items-center gap-2">
+        {(["FOLLOWED", "BROKEN", "SKIPPED"] as const).map((status) => (
+         <button
+          key={status}
+          type="button"
+          onClick={() => setRuleChecks((prev) => ({
+           ...prev,
+           [rule.id]: { ...currentCheck, status }
+          }))}
+          className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border transition-all ${
+           currentCheck.status === status
+            ? status === "FOLLOWED"
+              ? "bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/10"
+              : status === "BROKEN"
+              ? "bg-red-500 border-red-500 text-white shadow-md shadow-red-500/10"
+              : "bg-gray-500 border-gray-500 text-white shadow-md shadow-gray-500/10"
+            : "bg-white dark:bg-black/20 text-gray-500 border-dashboard hover:border-gray-400"
+          }`}
+         >
+          {status}
+         </button>
+        ))}
+       </div>
+      </div>
+     );
+    })}
+   </div>
+  </div>
+ )}
 
  <div className="space-y-2">
  <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Exit Reason / Result</label>

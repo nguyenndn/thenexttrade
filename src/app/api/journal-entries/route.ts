@@ -32,6 +32,12 @@ const journalEntrySchema = z.object({
  confidenceLevel: z.number().int().min(1).max(5).optional().nullable(),
  followedPlan: z.boolean().optional().nullable(),
  notesPsychology: z.string().optional().nullable(),
+ ruleChecks: z.array(z.object({
+  tradingRuleId: z.string(),
+  status: z.enum(["FOLLOWED", "BROKEN", "SKIPPED"]),
+  note: z.string().optional().nullable(),
+ })).optional(),
+ tradePlanId: z.string().optional().nullable(),
 });
 
 export async function POST(request: Request) {
@@ -44,13 +50,37 @@ export async function POST(request: Request) {
  try {
  const body = await request.json();
  const validatedData = journalEntrySchema.parse(body);
+ const { ruleChecks, tradePlanId, ...rest } = validatedData as any;
 
  const entry = await prisma.journalEntry.create({
  data: {
  userId: user.id,
- ...validatedData
+ ...rest
  }
  });
+
+ if (ruleChecks && ruleChecks.length > 0) {
+  await prisma.tradeRuleCheck.createMany({
+   data: ruleChecks.map((c: any) => ({
+    userId: user.id,
+    journalEntryId: entry.id,
+    tradingRuleId: c.tradingRuleId,
+    status: c.status,
+    note: c.note || null,
+   })),
+  });
+ }
+
+ if (tradePlanId) {
+  await prisma.tradePlan.update({
+   where: { id: tradePlanId, userId: user.id },
+   data: {
+    journalEntryId: entry.id,
+    status: "MATCHED",
+    openedAt: new Date(),
+   },
+  });
+ }
 
  // Award XP for logging trade
  let xpEarned = 0;

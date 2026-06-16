@@ -3,11 +3,12 @@
 import { TabBar } from "@/components/ui/TabBar";
 import { FileText, Clock } from "lucide-react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Edit2, ArrowUpDown, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
-import { utcTime } from "@/lib/utils";
+import { utcTime, cn } from "@/lib/utils";
+import { TradePlanList } from "./TradePlanList";
 import JournalStats from "@/components/journal/JournalStats";
 import { Modal } from "@/components/ui/Modal";
 import { StrategyCell } from "@/components/journal/cells/StrategyCell";
@@ -105,9 +106,10 @@ interface JournalListProps {
  strategies: any[];
  userTags?: string[];
  hasTradeData?: boolean;
+ initialTradePlans?: any[];
 }
 
-export default function JournalList({ initialEntries, meta, initialStats, strategies: initialStrategies, userTags = [], hasTradeData = true }: JournalListProps) {
+export default function JournalList({ initialEntries, meta, initialStats, strategies: initialStrategies, userTags = [], hasTradeData = true, initialTradePlans = [] }: JournalListProps) {
  const router = useRouter();
  const searchParams = useSearchParams();
 
@@ -123,18 +125,49 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  const filterStatus = searchParams.get("status") || "ALL";
  const filterTag = searchParams.get("tag") || "ALL";
 
+ // Sub-tabs & Trade plans state
+ const [activeSubTab, setActiveSubTab] = useState<"trades" | "plans" | "open" | "reviews">("trades");
+ const [tradePlans, setTradePlans] = useState<any[]>(initialTradePlans);
+
+ const refreshPlans = async () => {
+  try {
+   const res = await fetch("/api/trade-plans");
+   if (res.ok) {
+    const data = await res.json();
+    setTradePlans(data);
+   }
+  } catch (err) {
+   console.error("Failed to refresh plans", err);
+  }
+ };
+
  // Convert initial data
  const [entries, setEntries] = useState<any[]>(initialEntries);
  const [stats, setStats] = useState<any>(initialStats);
  
  // Sync entries when initialEntries change (e.g. after server refetch)
  useEffect(() => {
- setEntries(initialEntries);
- setStats(initialStats);
+  setEntries(initialEntries);
+  setStats(initialStats);
  }, [initialEntries, initialStats]);
 
- const strategies = initialStrategies || [];
- const [isLoading, setIsLoading] = useState(false);
+ // Sync tradePlans when initialTradePlans change
+ useEffect(() => {
+  setTradePlans(initialTradePlans);
+ }, [initialTradePlans]);
+
+  const strategies = initialStrategies || [];
+  const [isLoading, setIsLoading] = useState(false);
+
+  const displayedEntries = useMemo(() => {
+   if (activeSubTab === "open") {
+    return entries.filter(e => e.status === "OPEN");
+   }
+   if (activeSubTab === "reviews") {
+    return entries.filter(e => e.tradePlan);
+   }
+   return entries;
+  }, [entries, activeSubTab]);
 
  // Column Visibility State
  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set([
@@ -324,30 +357,89 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  <DashboardFilter currentAccountId={accountId || undefined} equalWidth className="order-first lg:order-none" />
  </div>
 
- {stats && <div id="onborda-journal-stats"><JournalStats stats={stats} /></div>}
+  {stats && <div id="onborda-journal-stats"><JournalStats stats={stats} /></div>}
 
+  {/* Inner sub-tabs: Trades, Plans, Open, Reviews */}
+  <div className="flex border-b border-dashboard mt-6 mb-4 gap-6 text-sm font-black">
+   {([
+    { id: "trades", label: "Trades" },
+    { id: "plans", label: "Trade Plans" },
+    { id: "open", label: "Open Positions" },
+    { id: "reviews", label: "Plan Reviews" },
+   ] as const).map((tab) => {
+    const isActive = activeSubTab === tab.id;
+    return (
+     <button
+      key={tab.id}
+      onClick={() => setActiveSubTab(tab.id)}
+      className={cn(
+       "pb-3 border-b-2 transition-all relative -mb-[2px]",
+       isActive
+        ? "border-primary text-primary"
+        : "border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+      )}
+     >
+      {tab.label}
+     </button>
+    );
+   })}
+ </div>
 
- <JournalTableFilters
- searchTerm={searchTerm}
- setSearchTerm={setSearchTerm}
- handleSearch={handleSearch}
- filterType={filterType}
- filterTag={filterTag}
- filterResult={filterStatus}
- filterStrategy={searchParams.get("strategy") || ""}
- userTags={userTags}
- strategies={[...new Set(entries.map((e: any) => e.strategy).filter(Boolean))]}
- updateParams={updateParams}
- isColumnMenuOpen={isColumnMenuOpen}
- setIsColumnMenuOpen={setIsColumnMenuOpen}
- visibleColumns={visibleColumns}
- toggleColumn={toggleColumn}
- columnsConfig={columnsConfig}
- onLogTrade={handleCreate}
- />
+ {activeSubTab === "plans" ? (
+  <TradePlanList
+   plans={tradePlans}
+   onRefresh={refreshPlans}
+   onLogTrade={(plan) => {
+    setEditingEntry({
+     symbol: plan.symbol,
+     type: plan.type || "BUY",
+     entryPrice: plan.plannedEntry || "",
+     stopLoss: plan.plannedStopLoss || "",
+     takeProfit: plan.plannedTakeProfit || "",
+     lotSize: plan.plannedLotSize || "",
+     emotionBefore: plan.emotionBefore || null,
+     confidenceLevel: plan.confidenceLevel || null,
+     accountId: plan.accountId || "",
+     tradePlan: plan,
+     tags: plan.tags || [],
+     notes: plan.thesis || "",
+     tradePlanId: plan.id,
+    } as any);
+    setIsModalOpen(true);
+   }}
+   onViewActual={(journalEntryId) => {
+    const matchingEntry = entries.find(e => e.id === journalEntryId);
+    if (matchingEntry) {
+     setSelectedDetailEntry(matchingEntry);
+     setIsDetailOpen(true);
+    } else {
+     toast.error("Trade entry not found in the current page.");
+    }
+   }}
+  />
+ ) : (
+  <>
+   <JournalTableFilters
+   searchTerm={searchTerm}
+   setSearchTerm={setSearchTerm}
+   handleSearch={handleSearch}
+   filterType={filterType}
+   filterTag={filterTag}
+   filterResult={filterStatus}
+   filterStrategy={searchParams.get("strategy") || ""}
+   userTags={userTags}
+   strategies={[...new Set(entries.map((e: any) => e.strategy).filter(Boolean))]}
+   updateParams={updateParams}
+   isColumnMenuOpen={isColumnMenuOpen}
+   setIsColumnMenuOpen={setIsColumnMenuOpen}
+   visibleColumns={visibleColumns}
+   toggleColumn={toggleColumn}
+   columnsConfig={columnsConfig}
+   onLogTrade={handleCreate}
+   />
 
- {entries.length === 0 ? (
- <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-6 shadow-sm">
+   {displayedEntries.length === 0 ? (
+   <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-6 shadow-sm">
  {/* Animated Folder Icon */}
  <div className="relative w-20 h-20 mb-6 mx-auto">
  <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-[journal-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -423,7 +515,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  <td colSpan={14} className="px-6 py-8 text-center text-gray-600">Loading...</td>
  </tr>
  ) : (
- entries.map((entry) => (
+ displayedEntries.map((entry) => (
  <tr key={entry.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
@@ -516,7 +608,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  {isLoading ? (
  <div className="text-center text-gray-600 py-8">Loading...</div>
  ) : (
- entries.map((entry) => (
+ displayedEntries.map((entry) => (
  <div key={entry.id} className="bg-gray-50 dark:bg-white/5 p-3 sm:p-4 rounded-xl border relative transition-all duration-200 hover:shadow-md active:scale-[0.98] border-dashboard">
  {/* Header Row */}
  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
@@ -612,6 +704,8 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  </div>
  </div>
  )}
+ </>
+ )}
 
 
 
@@ -630,16 +724,16 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  </Modal>
 
  {(() => {
- const currentEntryIndex = selectedDetailEntry ? entries.findIndex((e) => e.id === selectedDetailEntry.id) : -1;
- const hasNext = currentEntryIndex >= 0 && currentEntryIndex < entries.length - 1;
+ const currentEntryIndex = selectedDetailEntry ? displayedEntries.findIndex((e) => e.id === selectedDetailEntry.id) : -1;
+ const hasNext = currentEntryIndex >= 0 && currentEntryIndex < displayedEntries.length - 1;
  const hasPrev = currentEntryIndex > 0;
 
  const handleNextEntry = () => {
- if (hasNext) setSelectedDetailEntry(entries[currentEntryIndex + 1]);
+ if (hasNext) setSelectedDetailEntry(displayedEntries[currentEntryIndex + 1]);
  };
 
  const handlePrevEntry = () => {
- if (hasPrev) setSelectedDetailEntry(entries[currentEntryIndex - 1]);
+ if (hasPrev) setSelectedDetailEntry(displayedEntries[currentEntryIndex - 1]);
  };
 
  return (

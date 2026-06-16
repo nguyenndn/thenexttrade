@@ -40,7 +40,7 @@ flowchart TD
 Source of truth: `prisma/schema.prisma`.
 
 - Auth and user profile: `User`, `Profile`, `UserSession`, `AuditLog`, `SecurityLog`, `BlockedIP`.
-- Trading: `TradingAccount`, `JournalEntry`, `SyncHistory`, broker/account sync metadata.
+- Trading: `TradingAccount`, `JournalEntry`, `SyncHistory`, `TradePlan`, `TradingRule`, `TradeRuleCheck`, `TraderGoal`, broker/account sync metadata.
 - Product access: Pro/VIP entitlement, EA licenses, downloads, copy trading registration.
 - Academy: levels, modules, lessons, quizzes, progress, certificates.
 - Gamification: Edge points, missions, achievements, daily check-in.
@@ -54,9 +54,9 @@ Source of truth: `src/app`.
 
 - Public: `/`, `/about`, `/contact`, `/edge`, `/legal/*`, `/articles`, `/academy`, `/brokers`, `/tools`.
 - Auth: `/auth/login`, `/auth/register`, callbacks, reset/verify flows.
-- User dashboard: `/dashboard`, accounts, journal, analytics, reports, mistakes, intelligence, academy, missions, trading systems, copy trading, settings.
+- User dashboard: `/dashboard`, accounts, journal, rules, analytics, reports, mistakes, intelligence, academy, missions, trading systems, copy trading, settings.
 - Admin: `/admin`, users, reports, analytics, articles, article ops, academy, IB, EA, security, release health.
-- APIs: `/api/auth/*`, `/api/sync/*`, `/api/ea/*`, `/api/analytics/*`, `/api/admin/*`, `/api/articles/*`, `/api/app/version`.
+- APIs: `/api/auth/*`, `/api/sync/*`, `/api/ea/*`, `/api/analytics/*`, `/api/admin/*`, `/api/articles/*`, `/api/app/version`, `/api/trade-plans`, `/api/sync/health`.
 
 Navigation source of truth: `src/config/navigation.ts`.
 

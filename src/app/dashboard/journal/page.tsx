@@ -2,6 +2,7 @@ import JournalList from "@/components/journal/JournalList";
 import { Metadata } from "next";
 import { getJournalEntries, getUserTags } from "@/actions/journal";
 import { getStrategies } from "@/actions/strategies";
+import { getTradePlans } from "@/actions/trade-plans";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
 import { prisma } from "@/lib/prisma";
@@ -75,7 +76,7 @@ export default async function JournalPage({
  accountTimezone = acc?.timezone || undefined;
  }
 
- const [{ entries, meta, stats }, { strategies }, userTags] = await Promise.all([
+ const [{ entries, meta, stats }, { strategies }, userTags, tradePlans] = await Promise.all([
  getJournalEntries(page, limit, {
  accountId,
  symbol,
@@ -90,7 +91,8 @@ export default async function JournalPage({
  timezone: accountTimezone,
  }),
  getStrategies(),
- getUserTags()
+ getUserTags(),
+ getTradePlans(),
  ]);
 
  return (
@@ -102,6 +104,7 @@ export default async function JournalPage({
  strategies={strategies}
  userTags={userTags}
  hasTradeData={tradingDataState.hasTradeData}
+ initialTradePlans={tradePlans}
  />
  </div>
  );

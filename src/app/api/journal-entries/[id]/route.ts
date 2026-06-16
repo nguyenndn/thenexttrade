@@ -31,6 +31,12 @@ const journalEntryUpdateSchema = z.object({
  confidenceLevel: z.number().int().min(1).max(5).optional().nullable(),
  followedPlan: z.boolean().optional().nullable(),
  notesPsychology: z.string().optional().nullable(),
+ ruleChecks: z.array(z.object({
+  tradingRuleId: z.string(),
+  status: z.enum(["FOLLOWED", "BROKEN", "SKIPPED"]),
+  note: z.string().optional().nullable(),
+ })).optional(),
+ tradePlanId: z.string().optional().nullable(),
 });
 
 export async function GET(
@@ -44,9 +50,13 @@ export async function GET(
  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
  try {
- const entry = await prisma.journalEntry.findUnique({
- where: { id: params.id }
- });
+  const entry = await prisma.journalEntry.findUnique({
+   where: { id: params.id },
+   include: {
+    ruleChecks: true,
+    tradePlan: true,
+   }
+  });
 
  if (!entry) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
@@ -81,25 +91,62 @@ export async function PUT(
  if (existing.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
  const body = await request.json();
- const validatedData = journalEntryUpdateSchema.parse(body);
+  const validatedData = journalEntryUpdateSchema.parse(body);
 
- // CRITICAL: Only update fields that were explicitly sent in the request body.
- // Zod transforms can convert undefined (absent field) to null,
- // which would unintentionally overwrite existing DB values (e.g. exitDate → null).
- const updateData: Record<string, unknown> = {};
- const validated = validatedData as Record<string, unknown>;
- for (const key of Object.keys(validated)) {
- if (key in body) {
- updateData[key] = validated[key];
- }
- }
+  // CRITICAL: Only update fields that were explicitly sent in the request body.
+  // Zod transforms can convert undefined (absent field) to null,
+  // which would unintentionally overwrite existing DB values (e.g. exitDate → null).
+  const updateData: Record<string, unknown> = {};
+  const validated = validatedData as Record<string, unknown>;
+  for (const key of Object.keys(validated)) {
+    if (key in body && key !== "ruleChecks" && key !== "tradePlanId") {
+      updateData[key] = validated[key];
+    }
+  }
 
- const updated = await prisma.journalEntry.update({
- where: { id: params.id },
- data: updateData
- });
+  const updated = await prisma.journalEntry.update({
+    where: { id: params.id },
+    data: updateData
+  });
 
- return NextResponse.json(updated);
+  if ("ruleChecks" in body && Array.isArray(body.ruleChecks)) {
+    await prisma.tradeRuleCheck.deleteMany({
+      where: { journalEntryId: params.id, userId: user.id }
+    });
+
+    if (body.ruleChecks.length > 0) {
+      await prisma.tradeRuleCheck.createMany({
+        data: body.ruleChecks.map((c: any) => ({
+          userId: user.id,
+          journalEntryId: params.id,
+          tradingRuleId: c.tradingRuleId,
+          status: c.status,
+          note: c.note || null,
+        })),
+      });
+    }
+  }
+
+  if ("tradePlanId" in body) {
+    const tradePlanId = body.tradePlanId;
+    await prisma.tradePlan.updateMany({
+      where: { journalEntryId: params.id, userId: user.id },
+      data: { journalEntryId: null, status: "PLANNED" },
+    });
+
+    if (tradePlanId) {
+      await prisma.tradePlan.update({
+        where: { id: tradePlanId, userId: user.id },
+        data: {
+          journalEntryId: params.id,
+          status: "MATCHED",
+          openedAt: new Date(),
+        },
+      });
+    }
+  }
+
+  return NextResponse.json(updated);
  } catch (error) {
  if (error instanceof z.ZodError) {
  return NextResponse.json({ error: "Validation Error", details: (error as any).errors }, { status: 400 });

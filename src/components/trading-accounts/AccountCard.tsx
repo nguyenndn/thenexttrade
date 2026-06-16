@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/track";
 import type { SyncMethod } from "@/lib/onboarding/first-session.server";
+import { normalizeSyncSource } from "@/lib/sync/sync-source";
 
 // Compute the sync method label for each account.
 // Uses syncSource as the primary source of truth (set by the API on each sync).
@@ -33,11 +34,12 @@ import type { SyncMethod } from "@/lib/onboarding/first-session.server";
 function getSyncMethodLabel(account: any): { label: string; variant: "tnt" | "ea" | "paused" | "none" } {
  if (account.autoSync === false) return { label: "Sync paused", variant: "paused" };
 
- const source = account.syncSource; // "APP" | "EA_SYNC" | "EA_HISTORY" | null
+ const source = normalizeSyncSource(account.syncSource);
 
  // Primary: use the explicit sync source field
- if (source === "APP") return { label: "Synced via TNT Connect", variant: "tnt" };
- if (source === "EA_SYNC" || source === "EA_HISTORY") return { label: "Synced via EA Sync", variant: "ea" };
+ if (source === "TNT_CONNECT") return { label: "Synced via TNT Connect", variant: "tnt" };
+ if (source === "EA_SYNC") return { label: "Synced via EA Sync", variant: "ea" };
+ if (source === "MANUAL") return { label: "Manual Entry", variant: "paused" };
 
  // Fallback: infer from presence of EA version or app heartbeat
  if (account.eaVersion) return { label: "Synced via EA Sync", variant: "ea" };

@@ -14,34 +14,79 @@ export async function generateWeeklyActionPlan(
  throw new Error("Weekly action plan requires a valid weekly report.");
  }
 
- // Compute dynamic signals
- const signals = await computeTraderSignals(userId, { persist: true });
- 
- // Resolve uncompleted academy lesson & article recommendations
- const recommendations = await getLearningRecommendations(userId, signals);
+  // Compute dynamic signals
+  const signals = await computeTraderSignals(userId, { persist: true });
+  
+  // Resolve uncompleted academy lesson & article recommendations
+  const recommendations = await getLearningRecommendations(userId, signals);
 
- // Build plan details
- let title = "Execute your Consistency Checklist";
- let summary = `You completed ${report.totalTrades} trades this week with a net P/L of $${report.netPnL.toFixed(2)}. Let's refine your execution for next week.`;
- let keepDoing = "You logged your trades consistently and tracked key psychology tags.";
- let fixNext = "Maintain strict capital preservation limits.";
- 
- const nextActions: Array<{ label: string; detail: string; ctaHref?: string }> = [
- {
- label: "Check trade plans",
- detail: "Create and review a pre-trade checklist for every new entry next week.",
- ctaHref: "/dashboard/academy"
- }
- ];
+  // Fetch broken rules during the period
+  const brokenRuleChecks = await prisma.tradeRuleCheck.groupBy({
+    by: ["tradingRuleId"],
+    where: {
+      userId,
+      status: "BROKEN",
+      checkedAt: {
+        gte: report.periodStart || undefined,
+        lte: report.periodEnd || undefined,
+      },
+    },
+    _count: {
+      _all: true,
+    },
+    orderBy: {
+      _count: {
+        tradingRuleId: "desc",
+      },
+    },
+    take: 1,
+  });
 
- const activeWeaknesses = signals.filter(s => [
- "LOSS_STREAK",
- "SL_CLUSTER",
- "REVENGE_SIZE_UP",
- "LOW_PLAN_COMPLIANCE",
- "BE_HEAVY",
- "WEAK_SYMBOL"
- ].includes(s.signalType));
+  let topBrokenRule: { title: string; count: number } | null = null;
+  if (brokenRuleChecks.length > 0) {
+    const ruleId = brokenRuleChecks[0].tradingRuleId;
+    const ruleCount = brokenRuleChecks[0]._count._all;
+    const rule = await prisma.tradingRule.findUnique({
+      where: { id: ruleId },
+      select: { title: true },
+    });
+    if (rule) {
+      topBrokenRule = { title: rule.title, count: ruleCount };
+    }
+  }
+
+  // Build plan details
+  let title = "Execute your Consistency Checklist";
+  let summary = `You completed ${report.totalTrades} trades this week with a net P/L of $${report.netPnL.toFixed(2)}. Let's refine your execution for next week.`;
+  let keepDoing = "You logged your trades consistently and tracked key psychology tags.";
+  let fixNext = "Maintain strict capital preservation limits.";
+  
+  const nextActions: Array<{ label: string; detail: string; ctaHref?: string }> = [
+    {
+      label: "Check trade plans",
+      detail: "Create and review a pre-trade checklist for every new entry next week.",
+      ctaHref: "/dashboard/rules"
+    }
+  ];
+
+  if (topBrokenRule) {
+    title = `Action Plan: Fix Rule Leak`;
+    summary = `Your biggest leak this week came from breaking the rule: "${topBrokenRule.title}" (${topBrokenRule.count} times).`;
+    fixNext = `Set a strict reminder to follow "${topBrokenRule.title}" on all setups.`;
+    nextActions.unshift({
+      label: `Follow "${topBrokenRule.title}"`,
+      detail: `You broke this rule ${topBrokenRule.count} times this week. Make it your primary focus to follow it next week.`,
+      ctaHref: "/dashboard/rules"
+    });
+  } else {
+    const activeWeaknesses = signals.filter(s => [
+      "LOSS_STREAK",
+      "SL_CLUSTER",
+      "REVENGE_SIZE_UP",
+      "LOW_PLAN_COMPLIANCE",
+      "BE_HEAVY",
+      "WEAK_SYMBOL"
+    ].includes(s.signalType));
 
  if (activeWeaknesses.length > 0) {
  const topWeak = activeWeaknesses[0];
@@ -69,6 +114,7 @@ export async function generateWeeklyActionPlan(
  title = "Weekly Action Plan: Scale your Edge";
  summary = `Excellent consistency! Win rate at ${Math.round(report.winRate * 100)}% with profit factor of ${report.profitFactor.toFixed(2)}.`;
  keepDoing = "Fantastic plan compliance and execution quality.";
+ }
  }
  }
 

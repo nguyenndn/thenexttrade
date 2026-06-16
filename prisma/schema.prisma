@@ -63,6 +63,10 @@ model User {
   vipRequests              VipRequest[]
   traderSignals            TraderSignal[]
   coachActionPlans         CoachActionPlan[]
+  tradePlans               TradePlan[]
+  tradingRules             TradingRule[]
+  ruleChecks               TradeRuleCheck[]
+  traderGoals              TraderGoal[]
 
   @@index([createdAt])
   @@index([email])
@@ -301,6 +305,8 @@ model JournalEntry {
   account          TradingAccount? @relation(fields: [accountId], references: [id])
   import           ImportHistory?  @relation(fields: [importId], references: [id])
   user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tradePlan        TradePlan?
+  ruleChecks       TradeRuleCheck[]
 
   @@unique([accountId, externalTicket])
   @@unique([userId, accountId, externalTicket])
@@ -322,6 +328,7 @@ model Strategy {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tradingRules TradingRule[]
 
   @@unique([userId, name])
   @@index([userId])
@@ -378,6 +385,9 @@ model TradingAccount {
   syncHistory              SyncHistory[]
   user                     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   vipRequests              VipRequest[]          @relation("VipRequestAccount")
+  tradePlans               TradePlan[]
+  tradingRules             TradingRule[]
+  traderGoals              TraderGoal[]
 
   @@index([userId])
   @@map("trading_accounts")
@@ -1353,4 +1363,116 @@ model CoachActionPlan {
   @@index([userId, status])
   @@index([userId, type, createdAt])
   @@map("coach_action_plans")
+}
+
+model TradePlan {
+  id              String    @id @default(cuid())
+  userId          String    @db.Uuid
+  accountId       String?
+  journalEntryId  String?   @unique
+
+  symbol          String    @db.VarChar(30)
+  type            TradeType?
+  plannedEntry    Float?
+  plannedStopLoss Float?
+  plannedTakeProfit Float?
+  plannedLotSize  Float?
+  riskAmount      Float?
+  setupName       String?   @db.VarChar(120)
+
+  thesis          String?
+  invalidation    String?
+  emotionBefore   String?   @db.VarChar(50)
+  confidenceLevel Int?
+  ruleChecklist   Json?
+  tags            String[]  @default([])
+  images          String[]  @default([])
+
+  status          String    @default("PLANNED") @db.VarChar(30)
+  plannedAt       DateTime  @default(now()) @db.Timestamptz(6)
+  openedAt        DateTime? @db.Timestamptz(6)
+  cancelledAt     DateTime? @db.Timestamptz(6)
+  reviewedAt      DateTime? @db.Timestamptz(6)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(6)
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account         TradingAccount? @relation(fields: [accountId], references: [id])
+  journalEntry    JournalEntry?   @relation(fields: [journalEntryId], references: [id])
+
+  @@index([userId, status])
+  @@index([userId, accountId, plannedAt])
+  @@index([userId, symbol, plannedAt])
+  @@map("trade_plans")
+}
+
+model TradingRule {
+  id          String   @id @default(cuid())
+  userId      String   @db.Uuid
+  accountId   String?
+  strategyId  String?  @db.Uuid
+
+  title       String   @db.VarChar(140)
+  description String?
+  category    String   @db.VarChar(40)
+  severity    String   @default("MEDIUM") @db.VarChar(20)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account     TradingAccount? @relation(fields: [accountId], references: [id])
+  strategy    Strategy? @relation(fields: [strategyId], references: [id])
+  checks      TradeRuleCheck[]
+
+  @@index([userId, isActive])
+  @@index([userId, accountId])
+  @@index([userId, strategyId])
+  @@map("trading_rules")
+}
+
+model TradeRuleCheck {
+  id             String   @id @default(cuid())
+  userId         String   @db.Uuid
+  journalEntryId String
+  tradingRuleId  String
+  status         String   @db.VarChar(20)
+  note           String?
+  checkedAt      DateTime @default(now()) @db.Timestamptz(6)
+
+  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  tradingRule    TradingRule @relation(fields: [tradingRuleId], references: [id], onDelete: Cascade)
+
+  @@unique([journalEntryId, tradingRuleId])
+  @@index([userId, status])
+  @@index([tradingRuleId, status])
+  @@map("trade_rule_checks")
+}
+
+model TraderGoal {
+  id          String   @id @default(cuid())
+  userId      String   @db.Uuid
+  accountId   String?
+
+  title       String   @db.VarChar(140)
+  type        String   @db.VarChar(40)
+  period      String   @db.VarChar(20)
+  targetValue Int?
+  metadata    Json?
+  status      String   @default("ACTIVE") @db.VarChar(20)
+
+  startsAt    DateTime @default(now()) @db.Timestamptz(6)
+  endsAt      DateTime?
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account     TradingAccount? @relation(fields: [accountId], references: [id])
+
+  @@index([userId, status])
+  @@index([userId, period, startsAt])
+  @@map("trader_goals")
 }

@@ -1,3 +1,5 @@
+import { normalizeSyncSource, type CanonicalSyncSource } from "@/lib/sync/sync-source";
+
 /**
  * Sync Health — Server helper to compute account sync status.
  *
@@ -18,7 +20,7 @@ export type SyncHealthStatus =
  | "sync_error"
  | "unsupported";
 
-export type SyncSource = "TNT_CONNECT" | "EA" | "MANUAL" | "UNKNOWN";
+export type SyncSource = CanonicalSyncSource;
 
 export type SyncHealthAction =
  | "open_sync_setup"
@@ -66,12 +68,8 @@ function hoursSince(date: Date | string | null): number | null {
  return (Date.now() - d.getTime()) / (1000 * 60 * 60);
 }
 
-function resolveSource(syncSource: string): SyncSource {
- const s = syncSource?.toUpperCase();
- if (s === "TNT_CONNECT" || s === "TNTCONNECT") return "TNT_CONNECT";
- if (s === "EA" || s === "EA_SYNC") return "EA";
- if (s === "MANUAL") return "MANUAL";
- return "UNKNOWN";
+function resolveSource(syncSource: string): CanonicalSyncSource {
+ return normalizeSyncSource(syncSource);
 }
 
 export function computeSyncHealth(input: SyncHealthInput): SyncHealth {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
+import { normalizeSyncSource } from "@/lib/sync/sync-source";
 
 export const dynamic = "force-dynamic";
 
@@ -30,13 +31,16 @@ export async function GET() {
  },
  }),
  prisma.journalEntry.count({
- where: { userId: user.id, syncSource: { in: ["MT5_SYNC", "TNT_CONNECT", "EA"] } },
+ where: {
+ userId: user.id,
+ syncSource: { in: ["MT5_SYNC", "TNT_CONNECT", "EA", "APP", "EA_SYNC", "EA_HISTORY", "TNT"] },
+ },
  }),
  ]);
 
  const hasApiKey = accounts.some((a) => !!a.apiKey);
- const tntAccounts = accounts.filter((a) => a.syncSource === "TNT");
- const eaAccounts = accounts.filter((a) => a.syncSource === "EA");
+ const tntAccounts = accounts.filter((a) => normalizeSyncSource(a.syncSource) === "TNT_CONNECT");
+ const eaAccounts = accounts.filter((a) => normalizeSyncSource(a.syncSource) === "EA_SYNC");
 
  const lastHeartbeat = accounts
  .flatMap((a) => [a.lastHeartbeat, a.appLastHeartbeat])
