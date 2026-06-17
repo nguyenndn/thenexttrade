@@ -1,113 +1,65 @@
 "use client";
 
-import { useState } from "react";
-import { Send, MessageCircle, ShieldCheck, Mail, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import Link from "next/link";
+import { ArrowRight, MessageCircle, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
 export function NewsletterSection() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-
-    setStatus("loading");
-
-    // Simulate API registration
-    setTimeout(() => {
-      setStatus("success");
-      setEmail("");
-    }, 1200);
-  };
-
   return (
-    <div className="relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-gray-200 dark:border-white/10">
-      {/* Decorative background effects */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 bg-emerald-500/5 dark:bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-80 h-80 bg-amber-500/5 dark:bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
+    <div className="relative overflow-hidden border-t border-dashboard bg-white dark:bg-[#0B0E14]">
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808010_1px,transparent_1px),linear-gradient(to_bottom,#80808010_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_65%_70%_at_50%_50%,#000_68%,transparent_100%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent" />
 
-      <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
+      <section className="relative z-10 mx-auto max-w-[1440px] px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <div className="mx-auto max-w-5xl overflow-hidden rounded-[28px] border border-gold/25 bg-gradient-to-br from-white via-gold/[0.04] to-amber-50/70 px-5 py-8 text-center shadow-[0_18px_55px_rgba(245,158,11,0.08)] dark:from-white/[0.04] dark:via-gold/[0.04] dark:to-white/[0.02] sm:px-8 sm:py-10">
+          <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-gold">
+            <Sparkles size={12} strokeWidth={2.7} />
+            Ready when you are
+          </div>
 
-          {/* Left Column: Telegram Community Callout */}
-          <div className="lg:col-span-5 p-6 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.02] backdrop-blur-md">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2.5 rounded-xl bg-[#0088cc]/10 text-[#0088cc] animate-pulse">
-                <MessageCircle size={24} fill="currentColor" />
-              </div>
-              <div>
-                <h3 className="text-lg font-extrabold text-gray-800 dark:text-white">Join Telegram Channel</h3>
-                <p className="text-xs text-[#0088cc] font-bold">12,400+ Active Members</p>
-              </div>
-            </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-5">
-              Get real-time market updates, trade ideas, automated EA reports, and connect with other successful traders instantly.
-            </p>
+          <h2 className="mx-auto max-w-3xl font-heading text-3xl font-black leading-tight tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+            Ready to build your trading edge?
+          </h2>
+
+          <p className="mx-auto mt-4 max-w-2xl text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-300 sm:text-base">
+            Create your free account, sync your first trades, and get your first review path.
+          </p>
+
+          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link
+              href="/auth/signup?source=home_final_cta&intent=track"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gold px-7 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(245,158,11,0.24)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-500 hover:shadow-[0_18px_38px_rgba(245,158,11,0.34)] active:translate-y-0"
+            >
+              Start Free Journal
+              <Zap size={16} className="text-yellow-200" />
+            </Link>
+
             <a
               href="https://t.me/GoldScalperNinja"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-[#0088cc] to-[#00a2ed] hover:from-[#00a2ed] hover:to-[#00b6ff] text-white font-black text-sm shadow-[0_4px_12px_rgba(0,136,204,0.3)] hover:shadow-[0_4px_20px_rgba(0,136,204,0.45)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-300"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-black text-gray-800 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#2AABEE]/40 hover:text-[#2AABEE] hover:shadow-md active:translate-y-0 dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
             >
-              <span>Connect Telegram</span>
-              <ArrowRight size={14} />
+              <MessageCircle size={16} />
+              Join Telegram
             </a>
           </div>
 
-          {/* Middle: Or Divider */}
-          <div className="hidden lg:flex lg:col-span-1 justify-center">
-            <span className="text-xs font-bold text-gray-400 dark:text-gray-600 uppercase tracking-widest">OR</span>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs font-bold text-gray-500 dark:text-gray-400">
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheck size={13} className="text-emerald-500" />
+              Free account
+            </span>
+            <span className="hidden h-1 w-1 rounded-full bg-gray-300 sm:block" />
+            <span className="inline-flex items-center gap-1.5">
+              <ArrowRight size={13} className="text-gold" />
+              Setup in minutes
+            </span>
+            <span className="hidden h-1 w-1 rounded-full bg-gray-300 sm:block" />
+            <span className="inline-flex items-center gap-1.5">
+              <MessageCircle size={13} className="text-[#2AABEE]" />
+              GoldScalperNinja community
+            </span>
           </div>
-
-          {/* Right Column: Email Newsletter Capture */}
-          <div className="lg:col-span-6">
-            <h3 className="text-2xl font-extrabold text-gray-800 dark:text-white tracking-tight mb-2 flex items-center gap-2">
-              <Mail size={22} className="text-gold" /> Weekly VIP Newsletter
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-              Subscribe to get exclusive MT5 indicators, free automated EAs, and advanced risk calculators sent to your inbox every Friday.
-            </p>
-
-            {status === "success" ? (
-              <div className="p-4 rounded-xl border border-emerald-300 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/5 text-emerald-600 dark:text-emerald-400 flex items-start gap-3">
-                <ShieldCheck size={18} className="mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-bold">Awesome! You&apos;re subscribed.</p>
-                  <p className="text-xs text-emerald-600/80 dark:text-emerald-400/80 mt-0.5">Please check your inbox to confirm your email and claim your indicators.</p>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-                <div className="relative flex-1">
-                  <input
-                    type="email"
-                    required
-                    placeholder="Enter your trading email..."
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full min-h-11 px-4 py-3 rounded-xl bg-gray-50 dark:bg-white/[0.05] border border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 focus:border-gold outline-none text-gray-800 dark:text-white text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all duration-300"
-                    disabled={status === "loading"}
-                    suppressHydrationWarning
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="min-h-11 px-6 bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black text-sm rounded-xl shadow-[0_4px_12px_rgba(245,158,11,0.25)] flex items-center justify-center gap-1.5 shrink-0"
-                >
-                  {status === "loading" ? "Subscribing..." : "Get Free EA"}
-                  <Send size={12} />
-                </Button>
-              </form>
-            )}
-
-            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-3 flex items-center gap-1">
-              <ShieldCheck size={11} /> No spam. Unsubscribe anytime. Your data is 100% secure.
-            </p>
-          </div>
-
         </div>
       </section>
     </div>

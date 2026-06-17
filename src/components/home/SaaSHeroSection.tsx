@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Sparkles, ShieldCheck, Activity, BarChart3, Search, LayoutDashboard, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, ShieldCheck, Activity, ClipboardList, Search } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 interface SaaSHeroSectionProps {
@@ -19,9 +19,6 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
     <div className="pt-28 pb-8 bg-white dark:bg-[#0B0E14] relative overflow-hidden text-center">
       {/* Grid Pattern Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
-
-      {/* Decorative gradient glowing blobs */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-r from-primary/10 to-blue-500/10 dark:from-primary/5 dark:to-blue-900/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute inset-0 noise-bg opacity-[0.02] dark:opacity-[0.04] pointer-events-none" />
 
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
@@ -40,35 +37,23 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
 
         {/* Supporting Copy */}
         <p className="text-base sm:text-lg text-gray-650 dark:text-gray-300 leading-relaxed mb-8 max-w-5xl font-medium animate-in fade-in duration-1000 lg:whitespace-nowrap">
-          Sync MT5 trades, review what happened, and get one focused weekly action to improve your trading
+          Sync MT5 trades, review what happened, and get one focused weekly action to improve your trading.
         </p>
 
-        {/* Dual CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8 w-full sm:w-auto animate-in fade-in duration-1000">
-          {isLoggedIn ? (
-            <Link href="/dashboard" className="w-full sm:w-auto group">
-              <Button
-                className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
-              >
-                <LayoutDashboard size={16} className="group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300" /> Open Dashboard
-              </Button>
-            </Link>
-          ) : (
-            <Link href="/auth/signup?source=home_hero&intent=track" className="w-full sm:w-auto group">
-              <Button
-                className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
-              >
-                Start Free Journal <Zap size={16} className="text-yellow-300 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
-              </Button>
-            </Link>
-          )}
-          <Link href="/knowledge" className="w-full sm:w-auto group">
+        {/* Soft CTA & Secondary Link */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-8 w-full sm:w-auto animate-in fade-in duration-1000">
+          <Link href="#how-it-works" className="w-full sm:w-auto group">
             <Button
-              variant="outline"
-              className="w-full sm:w-auto min-h-12 px-8 rounded-xl border-primary/40 dark:border-primary/30 hover:border-primary text-gray-850 dark:text-gray-200 hover:text-primary hover:bg-primary/5 hover:shadow-[0_4px_14px_rgba(0,200,136,0.15)] hover:scale-[1.02] active:scale-[0.98] text-sm font-extrabold flex items-center justify-center gap-2 transition-all duration-300"
+              className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
             >
-              Browse Trading Guides <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+              See how it works <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
             </Button>
+          </Link>
+          <Link
+            href="/knowledge"
+            className="text-sm font-extrabold text-gray-650 dark:text-gray-300 hover:text-gold dark:hover:text-gold transition-colors flex items-center justify-center gap-1 group/link shrink-0"
+          >
+            Browse trading guides <span className="group-hover/link:translate-x-0.5 transition-transform duration-300">&rarr;</span>
           </Link>
         </div>
 
@@ -87,12 +72,23 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
         </div>
 
         {/* Feature badges */}
-        <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-gray-550 dark:text-gray-400 font-bold animate-in fade-in duration-1000">
-          <span className="flex items-center gap-1.5"><ShieldCheck size={15} className="text-emerald-500" /> Free to Start</span>
-          <span className="text-gray-350 dark:text-gray-750 hidden sm:inline">•</span>
-          <span className="flex items-center gap-1.5"><Activity size={15} className="text-gold" /> Auto MT5 Sync</span>
-          <span className="text-gray-350 dark:text-gray-750 hidden sm:inline">•</span>
-          <span className="flex items-center gap-1.5"><BarChart3 size={15} className="text-blue-500" /> Advanced Analytics</span>
+        <div className="flex flex-col items-center gap-4 animate-in fade-in duration-1000">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-gray-550 dark:text-gray-400 font-bold">
+            <span className="flex items-center gap-1.5"><ShieldCheck size={15} className="text-emerald-500" /> Free to start</span>
+            <span className="text-gray-350 dark:text-gray-750 hidden sm:inline">•</span>
+            <span className="flex items-center gap-1.5"><Activity size={15} className="text-gold" /> Auto MT5 sync</span>
+            <span className="text-gray-350 dark:text-gray-750 hidden sm:inline">•</span>
+            <span className="flex items-center gap-1.5"><ClipboardList size={15} className="text-blue-500" /> Weekly coach reports</span>
+          </div>
+
+          {isLoggedIn && (
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gold/10 hover:bg-gold/15 text-gold text-[10px] font-black uppercase tracking-wider transition-all border border-gold/25 shadow-sm hover:scale-[1.01]"
+            >
+              Welcome back &mdash; open dashboard &rarr;
+            </Link>
+          )}
         </div>
       </section>
     </div>

@@ -70,9 +70,9 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
         <HomeSectionHeading
           align="center"
           eyebrow="Choose your path"
-          title="What do you want to improve today?"
+          title="What do you want to improve first?"
           highlight="improve"
-          description="Choose a path and we will take you to the right starting point."
+          description="Now that you know the system, pick the next step that fits your current goal."
           icon={Compass}
           className="mb-10"
         />

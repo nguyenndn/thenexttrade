@@ -1,63 +1,87 @@
 import { test, expect, type Page } from "@playwright/test";
 import { PrismaClient } from "@prisma/client";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { loginOnce, goto } from "./helpers/auth";
 
 test.setTimeout(3 * 60 * 1000);
 
 const prisma = new PrismaClient();
-const userEmail = process.env.USER_QA_EMAIL || "keezimin@gmail.com";
+const freshEmail = "fresh_e2e_user@thenexttrade.com";
+const freshPassword = "Password123!";
 
 test.describe("TraderWaves - Fresh User Onboarding Flow E2E", () => {
   test.describe.configure({ mode: "serial" });
 
   let page: Page;
-  let initialSettings: any = null;
   let userId: string = "";
 
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(120_000);
-    // 1. Fetch user and snapshot settings
-    const user = await prisma.user.findFirst({
-      where: { email: userEmail },
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !serviceRoleKey) {
+      throw new Error("Supabase URL and service role key are required for E2E tests");
+    }
+
+    const admin = createSupabaseClient(supabaseUrl, serviceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
     });
-    if (!user) throw new Error(`QA User ${userEmail} not found in database`);
 
-    userId = user.id;
-    initialSettings = user.settings;
+    // 1. Ensure test user exists in Supabase Auth
+    const { data: usersList, error: listError } = await admin.auth.admin.listUsers();
+    if (listError) throw listError;
+    
+    const existingSupabaseUser = usersList.users.find(u => u.email === freshEmail);
+    if (existingSupabaseUser) {
+      userId = existingSupabaseUser.id;
+    } else {
+      const { data: newUser, error: createError } = await admin.auth.admin.createUser({
+        email: freshEmail,
+        password: freshPassword,
+        email_confirm: true,
+        user_metadata: {
+          full_name: "Fresh Trader",
+        }
+      });
+      if (createError || !newUser.user) {
+        throw new Error(`Failed to create fresh user in Supabase: ${createError?.message}`);
+      }
+      userId = newUser.user.id;
+    }
 
-    // 2. Clear onboarding state from user settings to trigger onboarding redirect
-    const currentSettings = (user.settings as Record<string, any>) || {};
-    const newSettings = { ...currentSettings };
-    delete newSettings.onboarding;
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { settings: newSettings },
+    // 2. Wipe out any Prisma DB state for this user (this will cascade delete everything)
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId }
     });
+    if (dbUser) {
+      await prisma.user.delete({
+        where: { id: userId }
+      });
+    }
 
     const context = await browser.newContext({
       viewport: { width: 1440, height: 900 },
     });
     page = await context.newPage();
-    await loginOnce(page);
+    await loginOnce(page, freshEmail, freshPassword);
   });
 
   test.afterAll(async () => {
-    // Restore initial settings
+    // Clean up DB records for fresh user to keep things tidy
     if (userId) {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { settings: initialSettings },
-      });
+      await prisma.user.delete({
+        where: { id: userId }
+      }).catch(() => {});
     }
     await prisma.$disconnect();
     await page.context().close();
   });
 
   test("Should complete 4-step onboarding wizard successfully", async () => {
-    // Navigate to dashboard, should be redirected to /onboarding
+    // Navigate to dashboard, should be redirected to /onboarding because onboardingDone is false and there's no data
     await goto(page, "/dashboard");
-    await page.waitForURL(/\/onboarding/, { timeout: 10_000 });
+    await page.waitForURL(/\/onboarding/, { timeout: 15_000 });
     expect(page.url()).toContain("/onboarding");
 
     // === Step 1: Identity ===

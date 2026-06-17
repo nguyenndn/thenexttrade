@@ -318,7 +318,7 @@ export const ALL_TOOLS: ToolData[] = [
  icon: BarChart3,
  color: "from-emerald-500 to-teal-500",
  iconBg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
- category: "technical-analysis",
+ category: "trade-calculators",
  howToUse: [
  { step: "Enter starting balance", detail: "Your initial trading capital." },
  { step: "Set monthly gain percentage", detail: "Your target or average monthly return." },

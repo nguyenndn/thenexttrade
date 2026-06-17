@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { ImpactLevel } from "@prisma/client";
+import fallbackEvents from "./fallback-economic-events.json";
 
 const FF_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json";
 
@@ -35,16 +36,17 @@ const IMPACT_MAP: Record<string, ImpactLevel> = {
 };
 
 export async function fetchForexFactoryEvents() {
- try {
- const res = await fetch(FF_URL, { cache: 'no-store' });
- if (!res.ok) throw new Error("Failed to fetch from ForexFactory");
+  try {
+    const res = await fetch(FF_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error("Failed to fetch from ForexFactory");
 
- const data: FFEvent[] = await res.json();
- return data;
- } catch (error) {
- console.error("Error fetching FF events:", error);
- return [];
- }
+    const data: FFEvent[] = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching FF events from network:", error);
+    console.warn("Using local fallback events instead.");
+    return fallbackEvents as FFEvent[];
+  }
 }
 
 export async function syncEconomicEvents() {

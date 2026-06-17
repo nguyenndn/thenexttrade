@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Bot, Sparkles, TrendingUp, Zap, Link2, BarChart3, LayoutDashboard } from "lucide-react";
+import { ArrowRight, BarChart3, Bot, PlugZap, Sparkles, TrendingUp, Zap, LayoutDashboard, Target } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
@@ -11,7 +11,7 @@ interface TradeJournalPreviewSectionProps {
 
 export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSectionProps) {
   return (
-    <div className="relative overflow-hidden bg-slate-50/50 dark:bg-[#0F1117] border-t border-gray-200 dark:border-white/10">
+    <div id="how-it-works" className="relative overflow-hidden bg-slate-50/50 dark:bg-[#0F1117] border-t border-gray-200 dark:border-white/10 scroll-mt-20">
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.15] dark:opacity-[0.2]" />
       
       <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -33,34 +33,43 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
             {/* Steps */}
             <div className="space-y-3 mb-6 max-w-md">
               {/* Step 1: Connect — Calm */}
-              <div className="flex gap-3 p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 shadow-sm">
-                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 h-fit flex-shrink-0">
-                  <Link2 size={14} className="text-blue-500" />
+              <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gray-100 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-white/10">
+                  <PlugZap size={17} strokeWidth={2.2} />
                 </div>
-                <div>
-                  <h4 className="text-sm font-black text-gray-800 dark:text-white mb-0.5">1. Connect</h4>
+                <div className="min-w-0 pt-0.5">
+                  <div className="mb-1.5 flex items-center gap-2.5">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">01</span>
+                    <h4 className="text-sm font-black text-gray-800 dark:text-white">1. Connect</h4>
+                  </div>
                   <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-medium">Bring in MT5 trades with TNT Connect or EA Sync.</p>
                 </div>
               </div>
 
               {/* Step 2: Analyze — Calm */}
-              <div className="flex gap-3 p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 shadow-sm">
-                <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 h-fit flex-shrink-0">
-                  <BarChart3 size={14} className="text-emerald-500" />
+              <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gray-100 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-white/10">
+                  <BarChart3 size={17} strokeWidth={2.2} />
                 </div>
-                <div>
-                  <h4 className="text-sm font-black text-gray-800 dark:text-white mb-0.5">2. Analyze</h4>
+                <div className="min-w-0 pt-0.5">
+                  <div className="mb-1.5 flex items-center gap-2.5">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">02</span>
+                    <h4 className="text-sm font-black text-gray-800 dark:text-white">2. Analyze</h4>
+                  </div>
                   <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-medium">See patterns by session, symbol, risk, and behavior.</p>
                 </div>
               </div>
 
               {/* Step 3: Improve — ACTIVE/HIGHLIGHTED */}
-              <div className="flex gap-3 p-3.5 rounded-xl bg-gold/[0.07] dark:bg-gold/[0.05] border border-gold/35 dark:border-gold/25 shadow-[0_12px_28px_rgba(245,158,11,0.12)]">
-                <div className="p-2 rounded-lg bg-gold/15 h-fit flex-shrink-0">
-                  <Sparkles size={14} className="text-gold" />
+              <div className="group flex gap-4 rounded-2xl border border-gold/40 bg-gold/[0.07] p-4 shadow-[0_12px_28px_rgba(245,158,11,0.12)] transition-all duration-300 hover:border-gold/60 hover:bg-gold/[0.1] dark:border-gold/25 dark:bg-gold/[0.05]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gold/15 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-gold/20">
+                  <Target size={17} strokeWidth={2.2} />
                 </div>
-                <div>
-                  <h4 className="text-sm font-black text-gray-800 dark:text-white mb-0.5">3. Improve</h4>
+                <div className="min-w-0 pt-0.5">
+                  <div className="mb-1.5 flex items-center gap-2.5">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-gold/80">03</span>
+                    <h4 className="text-sm font-black text-gray-800 dark:text-white">3. Improve</h4>
+                  </div>
                   <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-medium">Get one weekly action plan based on your real trades.</p>
                 </div>
               </div>

@@ -4,11 +4,14 @@ export const userEmail = process.env.USER_QA_EMAIL || "keezimin@gmail.com";
 export const userPassword = process.env.USER_QA_PASSWORD || "Password123!";
 const authenticatedUrlPattern = /\/(dashboard|onboarding)/;
 
-export async function loginOnce(page: Page) {
+export async function loginOnce(page: Page, email?: string, password?: string) {
   await page.goto("/auth/login", { waitUntil: "domcontentloaded" });
 
   // If already logged in, skip
   if (authenticatedUrlPattern.test(page.url())) return;
+
+  const targetEmail = email || userEmail;
+  const targetPassword = password || userPassword;
 
   const emailInput = page.locator('input[name="email"]').first();
   if (!(await emailInput.isVisible({ timeout: 30000 }).catch(() => false))) {
@@ -16,12 +19,12 @@ export async function loginOnce(page: Page) {
     throw new Error("Login form not found and not on dashboard");
   }
 
-  await emailInput.fill(userEmail);
-  await expect(emailInput).toHaveValue(userEmail);
+  await emailInput.fill(targetEmail);
+  await expect(emailInput).toHaveValue(targetEmail);
 
   const passwordInput = page.locator('input[name="password"]').first();
-  await passwordInput.fill(userPassword);
-  await expect(passwordInput).toHaveValue(userPassword);
+  await passwordInput.fill(targetPassword);
+  await expect(passwordInput).toHaveValue(targetPassword);
   
   // Click login
   await page.getByRole("button", { name: /^login$/i }).click();
@@ -39,8 +42,8 @@ export async function loginOnce(page: Page) {
     
     // Reload page and re-attempt login
     await page.goto("/auth/login", { waitUntil: "domcontentloaded" });
-    await page.locator('input[name="email"]').first().fill(userEmail);
-    await page.locator('input[name="password"]').first().fill(userPassword);
+    await page.locator('input[name="email"]').first().fill(targetEmail);
+    await page.locator('input[name="password"]').first().fill(targetPassword);
     
     await Promise.all([
       page.waitForURL(authenticatedUrlPattern, { timeout: 60_000 }),
