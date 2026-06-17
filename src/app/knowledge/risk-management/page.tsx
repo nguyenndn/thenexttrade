@@ -100,7 +100,7 @@ export default async function RiskManagementPage() {
  });
 
  return (
- <div className="min-h-screen bg-[#F7F4EC] dark:bg-[#090805] text-gray-700 dark:text-gray-300 relative overflow-hidden transition-colors duration-300">
+ <div className="min-h-screen bg-[#F7F4EC] dark:bg-transparent text-gray-700 dark:text-gray-300 relative overflow-hidden transition-colors duration-300">
  {/* Ambient gold radial glow top */}
  <div className="absolute top-0 left-0 right-0 h-[600px] bg-gradient-to-b from-amber-500/[0.06] via-amber-500/[0.01] to-transparent pointer-events-none" />
 

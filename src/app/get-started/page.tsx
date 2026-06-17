@@ -20,7 +20,7 @@ export default async function GetStartedPage() {
 
  if (!user) {
  return (
- <main className="min-h-screen overflow-hidden bg-[#F7F4EC] dark:bg-[#090805] text-slate-950 dark:text-white relative">
+ <main className="min-h-screen overflow-hidden bg-[#F7F4EC] dark:bg-transparent text-slate-950 dark:text-white relative">
  <PublicHeader user={user} />
  <PublicGetStarted />
  <SiteFooter />
@@ -58,7 +58,7 @@ export default async function GetStartedPage() {
  };
 
  return (
- <main className="min-h-screen overflow-hidden bg-[#F7F4EC] dark:bg-[#090805] text-slate-950 dark:text-white relative">
+ <main className="min-h-screen overflow-hidden bg-[#F7F4EC] dark:bg-transparent text-slate-950 dark:text-white relative">
  <PublicHeader user={user} />
  <OnboardingChecklist progress={progress} />
  <SiteFooter />

@@ -1107,6 +1107,18 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
 - **TypeScript Compiler** (`npx tsc --noEmit`) -> **`0 errors`** ✅
 - **ESLint Linter** (`npm run lint`) -> **`0 warnings/errors`** ✅
 
+---
+
+## Phase 51: Antigravity IDE MCP Server Repair ✅
+
+### Key Achievements
+- **MCP Version Mismatch Resolution**:
+  - Identified that the IDE's internal `notebooks` and `visualization` MCP servers were failing to load due to a missing directory for version `0.4.0-universal` of the `googlecloudtools.datacloud` extension (`MODULE_NOT_FOUND` error on `mcp_proxy_bundle.js`).
+  - Located the active extension folder on disk under version `0.4.2-universal`.
+  - Created a directory junction mapping `googlecloudtools.datacloud-0.4.0-universal` directly to `googlecloudtools.datacloud-0.4.2-universal`.
+  - Verified that the target `mcp_proxy_bundle.js` resolves correctly through the junction, enabling both MCP servers to load without warnings upon IDE reload.
+
+
 
 
 

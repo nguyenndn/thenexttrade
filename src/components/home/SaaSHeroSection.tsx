@@ -16,7 +16,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
   };
 
   return (
-    <div className="pt-28 pb-8 bg-white dark:bg-[#0B0E14] relative overflow-hidden text-center">
+    <div className="pt-28 pb-8 bg-white dark:bg-transparent relative overflow-hidden text-center">
       {/* Grid Pattern Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
       <div className="absolute inset-0 noise-bg opacity-[0.02] dark:opacity-[0.04] pointer-events-none" />

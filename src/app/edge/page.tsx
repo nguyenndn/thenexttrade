@@ -14,8 +14,8 @@ export default async function EdgePublicPage() {
  const user = await getAuthUser();
  
  return (
- <main className="min-h-screen bg-[#F7F4EC] dark:bg-[#090805] flex flex-col relative overflow-hidden">
- <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(180,118,26,0.20)_0%,rgba(9,8,5,0.92)_42%,rgba(16,185,129,0.08)_100%)] pointer-events-none" />
+ <main className="min-h-screen bg-[#F7F4EC] dark:bg-transparent flex flex-col relative overflow-hidden">
+ <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.60)_0%,rgba(25,52,81,0.46)_48%,rgba(6,69,79,0.38)_100%)] pointer-events-none" />
  <PublicHeader user={user} />
  
  <div className="flex-1 pt-24 pb-10 sm:pb-16 relative z-10 px-4 sm:px-6 lg:px-8">

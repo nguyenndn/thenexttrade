@@ -34,7 +34,7 @@ function LoginSuccessOverlay({ name, redirectTo }: { name: string; redirectTo?: 
  }, [redirectTo]);
 
  return createPortal(
- <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center select-none bg-[#F7F4EC] dark:bg-[#0B0E14] transition-colors" style={{ margin: 0 }}>
+ <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center select-none bg-[#F7F4EC] dark:bg-[linear-gradient(135deg,#2b2344_0%,#193451_50%,#06454f_100%)] transition-colors" style={{ margin: 0 }}>
  {/* Light mode: warm amber radial glow */}
  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(217,154,38,0.12)_0%,rgba(217,154,38,0.04)_40%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(0,200,136,0.08)_0%,rgba(0,200,136,0.02)_40%,transparent_70%)] pointer-events-none" />
  {/* Secondary glow */}
@@ -163,7 +163,7 @@ export default function LoginPage() {
  onClick={() => switchMode("password")}
  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all ${
  mode === "password"
- ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-[#090805] dark:text-amber-200"
+ ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-white/[0.06] dark:text-amber-200"
  : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
  }`}
  >
@@ -175,7 +175,7 @@ export default function LoginPage() {
  onClick={() => switchMode("magic")}
  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all ${
  mode === "magic"
- ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-[#090805] dark:text-amber-200"
+ ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-white/[0.06] dark:text-amber-200"
  : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
  }`}
  >

@@ -62,7 +62,7 @@ export function HomeLearningHubSection({
   const featuredArticles = popularArticles.slice(0, 3);
 
   return (
-    <div className="relative border-t border-dashboard bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 dark:from-[#0B0E14] dark:via-[#0F1219] dark:to-[#0B0E14] overflow-hidden">
+    <div className="relative border-t border-dashboard bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 dark:from-transparent dark:via-transparent dark:to-transparent overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.2] pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
@@ -107,7 +107,7 @@ export function HomeLearningHubSection({
             <Link
               key={article.id}
               href={`/articles/${article.slug}`}
-              className="group relative bg-white dark:bg-[#1E2028] rounded-xl p-2 shadow-sm hover:shadow-lg transition-all duration-300 border border-dashboard hover:border-primary/30 flex flex-col"
+              className="group relative bg-white dark:bg-card rounded-xl p-2 shadow-sm hover:shadow-lg transition-all duration-300 border border-dashboard hover:border-primary/30 flex flex-col"
             >
               <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-gray-900">
                 {article.thumbnail ? (

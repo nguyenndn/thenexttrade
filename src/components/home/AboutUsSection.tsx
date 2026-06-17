@@ -45,7 +45,7 @@ const SITES = [
 
 export function AboutUsSection() {
  return (
- <div className="relative overflow-hidden border-t border-amber-200/40 dark:border-amber-500/10 bg-gradient-to-br from-amber-50/70 via-yellow-50/50 to-orange-50/40 dark:from-amber-950/30 dark:via-yellow-950/20 dark:to-gray-900">
+ <div className="relative overflow-hidden border-t border-amber-200/40 dark:border-amber-500/10 bg-gradient-to-br from-amber-50/70 via-yellow-50/50 to-orange-50/40 dark:from-amber-950/30 dark:via-yellow-950/20 dark:to-transparent">
  {/* Mesh gradient blobs */}
  <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-amber-400/8 dark:bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
  <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-yellow-400/6 dark:bg-yellow-500/8 rounded-full blur-[100px] pointer-events-none" />

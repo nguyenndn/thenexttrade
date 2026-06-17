@@ -62,7 +62,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
   ];
 
   return (
-    <div className="relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-dashboard">
+    <div className="relative overflow-hidden bg-white dark:bg-transparent border-t border-dashboard">
       {/* Grid Pattern Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
 
@@ -77,16 +77,16 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
           className="mb-10"
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           {cards.map((card, idx) => (
             <Link
               key={idx}
               href={card.href}
-              className={`group relative flex flex-col justify-between p-5 rounded-2xl border transition-all duration-305 ${card.bgClass} items-center text-center sm:items-start sm:text-left`}
+              className={`group relative flex min-h-[118px] flex-col justify-between rounded-2xl border p-4 text-left transition-all duration-300 sm:min-h-[150px] sm:p-5 ${card.bgClass}`}
             >
               {/* Recommended badge */}
               {'isRecommended' in card && card.isRecommended && (
-                <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-gold/10 border border-gold/20 text-[9px] font-black uppercase tracking-wider text-gold">
+                <div className="absolute right-3 top-3 rounded-full border border-gold/20 bg-gold/10 px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-gold sm:text-[9px]">
                   Recommended
                 </div>
               )}
@@ -96,8 +96,8 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
 
               <div className="relative z-10 w-full">
                 {/* Icon and Title Inline */}
-                <div className="flex items-center justify-center sm:justify-start gap-3 mb-3">
-                  <div className={`p-2.5 rounded-xl shrink-0 ${card.chipBg}`}>
+                <div className="mb-3 flex items-center gap-3 pr-20 sm:pr-0">
+                  <div className={`shrink-0 rounded-xl p-2.5 ${card.chipBg}`}>
                     <span className={`${card.color} block transition-transform duration-300 ${card.animClass}`}>{card.icon}</span>
                   </div>
                   <h3 className={`text-sm sm:text-base font-black text-gray-800 dark:text-white transition-colors leading-tight ${card.ctaColor}`}>
@@ -105,12 +105,12 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                   </h3>
                 </div>
 
-                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-medium mb-5">
+                <p className="mb-4 text-xs font-medium leading-relaxed text-gray-500 dark:text-gray-400 sm:mb-5">
                   {card.description}
                 </p>
               </div>
 
-              <div className={`relative z-10 flex items-center justify-center sm:justify-start gap-1.5 text-[10px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 transition-colors mt-auto ${card.ctaColor}`}>
+              <div className={`relative z-10 mt-auto flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-gray-500 transition-colors dark:text-gray-400 ${card.ctaColor}`}>
                 {card.ctaText} <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>

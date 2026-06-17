@@ -41,7 +41,7 @@ const VISUAL_TOOLS = [
 
 export function WebForexTools() {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14] border-t border-gray-200 dark:border-white/10">
+    <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-transparent dark:via-transparent dark:to-transparent border-t border-gray-200 dark:border-white/10">
       {/* Background dot pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--cyan-500))_1.2px,transparent_1.2px)] [background-size:40px_40px] opacity-[0.08] dark:opacity-[0.04] pointer-events-none" />
 
@@ -54,9 +54,7 @@ export function WebForexTools() {
             highlight="Calculators"
             description="Free pro calculators, live data, and visualizers. No signup required."
             icon={Wrench}
-            linkHref="/tools"
-            linkText={`View all ${ALL_TOOLS.length} tools`}
-            className="mb-10"
+            className="mb-5"
           />
 
           {/* Premium Tools Grid - 3 Columns */}
@@ -69,7 +67,7 @@ export function WebForexTools() {
                 <Link
                   key={tool.slug}
                   href={`/tools/${tool.slug}`}
-                  className="group relative flex flex-col p-2.5 rounded-2xl bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 border border-gray-200/80 dark:border-white/5 overflow-hidden h-full justify-between"
+                  className="group relative flex flex-col p-2.5 rounded-2xl bg-white dark:bg-card shadow-sm hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 border border-gray-200/80 dark:border-white/5 overflow-hidden h-full justify-between"
                 >
                   <div>
                     {/* Visual Preview Half */}
@@ -100,6 +98,16 @@ export function WebForexTools() {
                 </Link>
               );
             })}
+          </div>
+
+          <div className="mt-8 flex justify-center sm:mt-10">
+            <Link
+              href="/tools"
+              className="group inline-flex min-h-10 items-center justify-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-gold transition-colors duration-300 hover:text-amber-600 dark:hover:text-amber-300"
+            >
+              View all {ALL_TOOLS.length} tools
+              <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
           </div>
         </FadeIn>
       </section>

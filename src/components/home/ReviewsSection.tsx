@@ -109,7 +109,7 @@ export function ReviewsSection() {
  const visibleReviews = REVIEWS.slice(currentIndex, currentIndex + visibleCount);
 
  return (
- <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-[#0F1117]">
+ <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
  {/* Dot pattern bg — same as Quote section but Gold themed */}
  <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 

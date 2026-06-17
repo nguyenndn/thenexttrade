@@ -5,7 +5,7 @@ import { ArrowRight, MessageCircle, ShieldCheck, Sparkles, Zap } from "lucide-re
 
 export function NewsletterSection() {
   return (
-    <div className="relative overflow-hidden border-t border-dashboard bg-white dark:bg-[#0B0E14]">
+    <div className="relative overflow-hidden border-t border-dashboard bg-white dark:bg-transparent">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808010_1px,transparent_1px),linear-gradient(to_bottom,#80808010_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_65%_70%_at_50%_50%,#000_68%,transparent_100%)]" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent" />
 

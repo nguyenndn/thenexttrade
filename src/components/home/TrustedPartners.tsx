@@ -30,7 +30,7 @@ export function TrustedPartners() {
     .filter((item) => item.active !== false);
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14] border-t border-dashboard/60">
+    <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-transparent dark:via-transparent dark:to-transparent border-t border-dashboard/60">
       {/* Background pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,200,136,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,200,136,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:40px_40px]" />
 

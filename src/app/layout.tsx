@@ -81,7 +81,7 @@ export const viewport: Viewport = {
  viewportFit: 'cover',
  themeColor: [
  { media: '(prefers-color-scheme: light)', color: '#ffffff' },
- { media: '(prefers-color-scheme: dark)', color: '#0F1117' },
+ { media: '(prefers-color-scheme: dark)', color: '#2b2344' },
  ],
 };
 
@@ -126,7 +126,7 @@ export default function RootLayout({
  }
  `}} />
  </head>
- <body className={`${sourceSans.variable} ${lexend.variable} font-sans bg-white dark:bg-[#0F1117]`}>
+ <body className={`${sourceSans.variable} ${lexend.variable} font-sans bg-white dark:bg-transparent`}>
  <NextTopLoader
  color="hsl(var(--primary))"
  height={3}

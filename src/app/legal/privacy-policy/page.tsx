@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
  </div>
 
  <div className="max-w-4xl mx-auto">
- <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-700 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-500 prose-li:text-gray-600 dark:prose-li:text-gray-500 prose-strong:text-gray-700 dark:prose-strong:text-white max-w-none transition-colors duration-300">
+ <div className="bg-white/95 dark:bg-white/[0.055] border border-dashboard dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-700 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white max-w-none transition-colors duration-300 backdrop-blur-md">
 
 
  <h2>1. Information We Collect</h2>

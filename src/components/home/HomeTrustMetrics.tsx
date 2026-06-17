@@ -71,34 +71,42 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
   const gridColsClass = colMap[activeItems.length] || "md:grid-cols-5";
 
   return (
-    <div className="relative w-full overflow-hidden bg-white dark:bg-[#0B0E14]">
+    <div className="relative w-full overflow-hidden bg-white dark:bg-transparent">
       <section className="mx-auto max-w-6xl px-4 pt-2 pb-10 sm:px-6 sm:pb-12 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-gray-200/80 bg-white/80 shadow-[0_18px_60px_-40px_rgba(15,23,42,0.45)] dark:border-white/[0.07] dark:bg-white/[0.018]">
+        <div className="relative overflow-hidden rounded-3xl border border-gray-200/80 bg-white/80 p-2 shadow-[0_18px_60px_-40px_rgba(15,23,42,0.45)] dark:border-white/[0.07] dark:bg-white/[0.018] sm:p-0">
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.055),transparent_34%,rgba(16,185,129,0.045)_72%,transparent)]" />
           <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent" />
 
-          <div className={`relative z-10 grid grid-cols-1 divide-y divide-gray-200/70 sm:grid-cols-2 sm:divide-x sm:[&>*:nth-child(2n+1)]:border-l-0 ${gridColsClass} md:divide-y-0 md:divide-x dark:divide-white/[0.07]`}>
-            {activeItems.map((item, idx) => (
-              <div
-                key={idx}
-                className="group relative flex min-h-[86px] items-center justify-between gap-4 px-5 py-4 transition-colors duration-300 hover:bg-gray-50/70 dark:hover:bg-white/[0.025] sm:justify-start md:px-6"
-              >
-                <div className="min-w-0">
-                  <span className="block text-[10px] font-black uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500">
-                    {item.label}
-                  </span>
-                  <span className="mt-1.5 block text-xl font-black leading-none tracking-tight text-gray-900 dark:text-white">
-                    {typeof item.value === 'number' ? item.value.toLocaleString('en-US') : item.value}
-                  </span>
-                </div>
+          <div className={`relative z-10 grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-y-0 sm:divide-gray-200/70 sm:[&>*:nth-child(2n+1)]:border-l-0 ${gridColsClass} md:divide-x dark:sm:divide-white/[0.07]`}>
+            {activeItems.map((item, idx) => {
+              const isLastOddItem = activeItems.length % 2 === 1 && idx === activeItems.length - 1;
 
-                <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border ${item.border} ${item.bg} transition-transform duration-300`}>
-                  <span className={`${item.color} block transition-transform duration-300 group-hover:scale-110`}>
-                    {item.icon}
-                  </span>
+              return (
+                <div
+                  key={idx}
+                  className={`group relative flex min-h-[92px] flex-col justify-between gap-3 rounded-2xl border border-gray-200/70 bg-white/70 px-4 py-3 transition-colors duration-300 hover:bg-gray-50/80 dark:border-white/[0.07] dark:bg-white/[0.025] dark:hover:bg-white/[0.04] sm:min-h-[86px] sm:flex-row sm:items-center sm:rounded-none sm:border-0 sm:bg-transparent sm:px-5 sm:py-4 sm:text-left sm:hover:bg-gray-50/70 sm:dark:bg-transparent sm:dark:hover:bg-white/[0.025] sm:justify-start md:px-6 ${
+                    isLastOddItem
+                      ? "col-span-2 items-center text-center sm:col-span-1"
+                      : "items-start text-left"
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <span className="block text-[9px] font-black uppercase tracking-[0.14em] text-gray-400 dark:text-gray-500 sm:text-[10px] sm:tracking-[0.16em]">
+                      {item.label}
+                    </span>
+                    <span className="mt-1.5 block text-lg font-black leading-none tracking-tight text-gray-900 dark:text-white sm:text-xl">
+                      {typeof item.value === 'number' ? item.value.toLocaleString('en-US') : item.value}
+                    </span>
+                  </div>
+
+                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border ${item.border} ${item.bg} transition-transform duration-300 sm:h-11 sm:w-11 sm:rounded-2xl`}>
+                    <span className={`${item.color} block transition-transform duration-300 group-hover:scale-110`}>
+                      {item.icon}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

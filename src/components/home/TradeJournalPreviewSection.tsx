@@ -11,7 +11,7 @@ interface TradeJournalPreviewSectionProps {
 
 export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSectionProps) {
   return (
-    <div id="how-it-works" className="relative overflow-hidden bg-slate-50/50 dark:bg-[#0F1117] border-t border-gray-200 dark:border-white/10 scroll-mt-20">
+    <div id="how-it-works" className="relative overflow-hidden bg-slate-50/50 dark:bg-transparent border-t border-gray-200 dark:border-white/10 scroll-mt-20">
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.15] dark:opacity-[0.2]" />
       
       <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -165,7 +165,7 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
                       <path d="M0,80 Q30,60 60,75 T120,40 T180,60 T240,20 T300,10 L300,100 L0,100 Z" fill="url(#chartFill)" />
                       <path d="M0,80 Q30,60 60,75 T120,40 T180,60 T240,20 T300,10" fill="none" stroke="#10b981" strokeWidth="2.5" />
                     </svg>
-                    <div className="absolute top-3 right-4 flex items-center gap-1.5 p-1.5 rounded-lg bg-white dark:bg-[#0F1117]/80 border border-gray-200 dark:border-white/10 shadow-lg text-[9px] font-bold text-gray-700 dark:text-white select-none">
+                    <div className="absolute top-3 right-4 flex items-center gap-1.5 p-1.5 rounded-lg bg-white dark:bg-card/80 border border-gray-200 dark:border-white/10 shadow-lg text-[9px] font-bold text-gray-700 dark:text-white select-none">
                       <Bot size={11} className="text-gold" /> Auto Synced
                     </div>
                   </div>

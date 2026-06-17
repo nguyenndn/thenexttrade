@@ -79,11 +79,7 @@ export function MarketTickerSection({ initialData }: { initialData?: MarketItem[
  const displayData = [...tickerData, ...tickerData, ...tickerData];
 
  return (
- <div className="relative w-full overflow-hidden bg-white/50 dark:bg-[#0B0E14]/80 backdrop-blur-md border-y border-dashboard">
-
- {/* Gradient Fade Masks */}
- <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white dark:from-[#0B0E14] to-transparent z-10 pointer-events-none"></div>
- <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white dark:from-[#0B0E14] to-transparent z-10 pointer-events-none"></div>
+ <div className="relative w-full overflow-hidden bg-white/50 dark:bg-white/[0.02] backdrop-blur-md border-y border-dashboard [mask-image:linear-gradient(to_right,transparent,white_8%,white_92%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,white_8%,white_92%,transparent)]">
 
  <div className="flex py-3 pause-on-hover px-4">
  {/* We need a specific width for the marquee animation to work flawlessly, 

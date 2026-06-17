@@ -20,9 +20,9 @@
 }
 
 .dark {
-  --dashboard-bg: #000000;
-  /* Dark mode: black */
-  --tooltip-bg: rgba(30, 30, 30, 0.95);
+  --dashboard-bg: transparent;
+  /* Dark mode: transparent to reveal body gradient */
+  --tooltip-bg: rgba(18, 23, 42, 0.95);
   --tooltip-text: #f3f4f6;
   --tooltip-border: rgba(255, 255, 255, 0.1);
 }
@@ -34,6 +34,11 @@ body {
   padding-right: env(safe-area-inset-right);
   padding-bottom: env(safe-area-inset-bottom);
   line-height: 1.65;
+}
+
+.dark body {
+  background: linear-gradient(135deg, #2b2344 0%, #193451 50%, #06454f 100%) no-repeat fixed;
+  background-size: cover;
 }
 
 /* ── Lexend for headings (inspired by goclaw.sh) ── */
@@ -239,25 +244,25 @@ select:-webkit-autofill:focus {
   }
 
   .dark {
-    --background: 0 0% 3.9%;
+    --background: 227 38% 8%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --card: 227 38% 12%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
+    --popover: 227 38% 10%;
     --popover-foreground: 0 0% 98%;
     --primary: 161 100% 39%;
     /* #00C888 */
     --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
+    --secondary: 227 30% 18%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
+    --muted: 227 30% 16%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
+    --accent: 227 30% 18%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
+    --border: 227 30% 18%;
+    --input: 227 30% 18%;
     --ring: 0 0% 83.1%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
@@ -371,3 +376,122 @@ textarea,
 .lesson-footer-compact .lesson-footer p strong {
   font-weight: 600;
 }
+
+/* ===== System-wide Dark Mode Overrides ===== */
+.dark {
+  /* Set variables to correct navy shades matching the gradient */
+  --background: 227 38% 8%; /* Deeper navy #0c0f1b */
+  --card: 227 38% 12%;       /* Lighter navy #12172a */
+  --popover: 227 38% 10%;
+  --border: 227 30% 18%;
+  --input: 227 30% 18%;
+}
+
+/* Ensure the body gradient is applied fixed and cover in dark mode */
+.dark body {
+  background: linear-gradient(135deg, #2b2344 0%, #193451 50%, #06454f 100%) no-repeat fixed !important;
+  background-size: cover !important;
+}
+
+/* 1. Alternative section/dashboard backgrounds (#0B0E14) */
+.dark .dark\:bg-\[\#0B0E14\],
+.dark [class*="dark:bg-[#0B0E14]"] {
+  background-color: hsla(var(--background), 0.5) !important;
+}
+
+/* 2. Main body/layout overrides (#0F1117) */
+.dark .dark\:bg-\[\#0F1117\],
+.dark [class*="dark:bg-[#0F1117]"] {
+  background-color: transparent !important;
+}
+
+/* 3. Floating cards and panels (#1E2028 and #1A1D27) */
+.dark .dark\:bg-\[\#1E2028\],
+.dark [class*="dark:bg-[#1E2028]"],
+.dark .dark\:bg-\[\#1A1D27\],
+.dark [class*="dark:bg-[#1A1D27]"] {
+  background-color: hsla(var(--card), 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* 4. Form inputs, dropdowns, and select boxes (#151925) */
+.dark .dark\:bg-\[\#151925\],
+.dark [class*="dark:bg-[#151925]"] {
+  background-color: hsla(var(--card), 0.95) !important;
+}
+
+/* 5. Standard Tailwind gray/slate dark backgrounds override */
+.dark .dark\:bg-gray-900,
+.dark .dark\:bg-slate-900,
+.dark .dark\:bg-zinc-900,
+.dark .dark\:bg-neutral-900,
+.dark .dark\:bg-stone-900,
+.dark .dark\:bg-gray-950,
+.dark .dark\:bg-slate-950,
+.dark .dark\:bg-zinc-950,
+.dark .dark\:bg-neutral-950 {
+  background-color: hsla(var(--background), 0.7) !important;
+}
+
+.dark .dark\:bg-gray-800,
+.dark .dark\:bg-slate-800,
+.dark .dark\:bg-zinc-800,
+.dark .dark\:bg-neutral-800,
+.dark .dark\:bg-stone-800 {
+  background-color: hsla(var(--card), 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* 6. Text and icon contrast safety net */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #ffffff !important;
+}
+
+.dark .text-gray-900,
+.dark .text-slate-900,
+.dark .text-neutral-900,
+.dark .text-zinc-900,
+.dark .text-stone-900,
+.dark .dark\:text-gray-900,
+.dark .dark\:text-slate-900 {
+  color: #ffffff !important;
+}
+
+.dark .text-gray-800,
+.dark .text-slate-800,
+.dark .text-neutral-800,
+.dark .text-zinc-800,
+.dark .text-stone-800,
+.dark .dark\:text-gray-150,
+.dark .dark\:text-slate-150,
+.dark .dark\:text-white {
+  color: #f3f4f6 !important;
+}
+
+.dark .text-gray-700,
+.dark .text-slate-700,
+.dark .text-neutral-700,
+.dark .text-zinc-700,
+.dark .text-stone-700,
+.dark .dark\:text-gray-300,
+.dark .dark\:text-slate-300 {
+  color: #e5e7eb !important;
+}
+
+.dark .text-gray-600,
+.dark .text-slate-600,
+.dark .text-neutral-600,
+.dark .text-zinc-600,
+.dark .text-stone-600,
+.dark .dark\:text-gray-400,
+.dark .dark\:text-slate-400 {
+  color: #d1d5db !important;
+}
+

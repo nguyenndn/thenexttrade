@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function ForbiddenPage() {
  return (
- <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0B0E14] px-4">
+ <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-transparent px-4">
  <div className="text-center max-w-lg">
 
  {/* Animated 403 */}

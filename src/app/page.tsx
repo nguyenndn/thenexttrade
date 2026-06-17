@@ -42,7 +42,7 @@ export default async function Home() {
  const isLoggedIn = !!user;
 
  return (
- <main className="min-h-screen bg-white dark:bg-slate-900 overflow-hidden">
+ <main className="min-h-screen bg-white dark:bg-transparent overflow-hidden">
  <PublicHeader user={user} />
  <Suspense fallback={<HomeFeedSkeleton />}>
  <HomeFeed isLoggedIn={isLoggedIn} />
@@ -204,7 +204,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
       </FadeIn>
 
       {/* 9. Academy Learning Path Section */}
-      <div id="academy-preview" className="relative overflow-hidden bg-white dark:bg-[#0B0E14] border-t border-dashboard">
+      <div id="academy-preview" className="relative overflow-hidden bg-white dark:bg-transparent border-t border-dashboard">
         {/* Grid Pattern Background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent dark:from-gold/[0.03] dark:via-transparent dark:to-transparent"></div>
@@ -279,7 +279,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
 
       {/* 17. Daily Quote */}
       <FadeIn delay={0.2} direction="up">
-        <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-[#0F1117]">
+        <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
           {/* Background Effects */}
           <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
           <DynamicFirefly />

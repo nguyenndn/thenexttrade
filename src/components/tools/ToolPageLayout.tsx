@@ -21,7 +21,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://thenexttrade.com';
 
   return (
-    <ToolsPageShell maxWidth="max-w-6xl">
+    <ToolsPageShell maxWidth="max-w-6xl" variant="workspace">
       <ToolViewTracker slug={tool.slug} />
 
       {/* Breadcrumb Schema */}
@@ -76,7 +76,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
       }} />
 
       {/* ── Breadcrumb ── */}
-      <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.02] border border-gold/15 rounded-xl px-4 py-2.5 mb-8 w-fit shadow-sm relative z-10 backdrop-blur-sm">
+      <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/80 dark:bg-white/[0.035] border border-gold/20 rounded-xl px-4 py-2.5 mb-8 w-fit shadow-[0_10px_30px_-24px_rgba(146,64,14,0.7)] relative z-10 backdrop-blur-md">
         <Link href="/" className="text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold transition-colors shrink-0 flex items-center gap-1.5">
           <Home size={13} />
           <span>Home</span>
@@ -89,9 +89,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
       {/* ── Section 1: Hero (Option B: Split-Staggered HUD - Modern Financial Terminal) ── */}
       <div className="mb-12 relative group">
-        {/* Soft background glow */}
-        <div className="absolute -top-12 -left-12 w-64 h-64 bg-gold/[0.04] dark:bg-gold/[0.02] rounded-full blur-3xl pointer-events-none" />
-
+        <div className="absolute -inset-x-4 -top-6 h-px bg-gradient-to-r from-transparent via-gold/25 to-transparent pointer-events-none" />
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative z-10">
           {/* Column Left: Staggered Content */}
           <div className="md:col-span-7 lg:col-span-8 text-left space-y-4">
@@ -127,10 +125,9 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
           {/* Column Right: Glassmorphic Micro HUD Panel */}
           <div className="md:col-span-5 lg:col-span-4">
-            <div className="bg-white/80 dark:bg-white/[0.02] border border-gold/15 rounded-2xl p-5 shadow-lg relative backdrop-blur-md overflow-hidden group-hover:border-gold/35 transition-colors duration-300">
-              {/* Abstract digital line background */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gold/[0.04] dark:bg-gold/[0.02] rounded-full blur-2xl pointer-events-none" />
-
+            <div className="bg-white/90 dark:bg-white/[0.035] border border-gold/20 rounded-2xl p-5 shadow-[0_18px_48px_-34px_rgba(146,64,14,0.8)] relative backdrop-blur-md overflow-hidden group-hover:border-gold/40 transition-colors duration-300">
+              <div className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.045),transparent_42%,rgba(16,185,129,0.03))] pointer-events-none" />
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3.5">Tool Status</p>
               
               <div className="space-y-3">
@@ -159,13 +156,17 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
       {/* ── Section 2: Calculator Workbench ── */}
       <div className="mb-8">
-        <div className="bg-white/95 dark:bg-[#151925]/95 border border-gold/15 rounded-2xl p-6 md:p-8 shadow-lg backdrop-blur-md">
+        <div className="relative overflow-hidden bg-white/95 dark:bg-[#151925]/95 border border-gold/25 rounded-2xl p-6 md:p-8 shadow-[0_22px_70px_-42px_rgba(146,64,14,0.9)] backdrop-blur-md">
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gold via-amber-400 to-primary opacity-80" />
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(245,158,11,0.04),transparent_35%,rgba(16,185,129,0.035)_100%)] pointer-events-none" />
+          <div className="relative z-10">
           {children}
+          </div>
         </div>
       </div>
 
       {/* Task 7: CTA Strip */}
-      <div className="mb-16 bg-white/80 dark:bg-[#151925]/90 border border-gold/15 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-md backdrop-blur-md">
+      <div className="mb-16 bg-white/85 dark:bg-[#151925]/90 border border-gold/20 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_18px_54px_-42px_rgba(146,64,14,0.8)] backdrop-blur-md">
         <div className="text-center md:text-left space-y-1">
           <h3 className="text-lg font-bold text-gray-850 dark:text-white">
             Use this result in your trading workflow

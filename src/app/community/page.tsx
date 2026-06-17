@@ -198,7 +198,7 @@ export default async function CommunityPage() {
  }
 
  return (
- <div className="min-h-screen bg-slate-50 dark:bg-[#0F1117] text-gray-700 dark:text-white overflow-hidden relative">
+ <div className="min-h-screen bg-slate-50 dark:bg-transparent text-gray-700 dark:text-white overflow-hidden relative">
  {/* Background Glows */}
  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#2AABEE]/5 dark:bg-[#2AABEE]/8 rounded-full blur-[120px] pointer-events-none" />
  <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-primary/5 dark:bg-primary/8 rounded-full blur-[120px] pointer-events-none" />
@@ -311,7 +311,7 @@ export default async function CommunityPage() {
  {/* ═══════ 4. VIP UPGRADE ═══════ */}
  <section id="vip-section" className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto scroll-mt-16 md:scroll-mt-24">
  <ScrollReveal>
- <div className="rounded-2xl sm:rounded-3xl border border-amber-500/35 dark:border-amber-500/30 p-5 sm:p-6 md:p-8 relative overflow-hidden bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-[#0A0D16] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_50px_rgba(245,158,11,0.06)] backdrop-blur-md">
+ <div className="rounded-2xl sm:rounded-3xl border border-amber-500/35 dark:border-amber-500/30 p-5 sm:p-6 md:p-8 relative overflow-hidden bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-white/[0.04] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_50px_rgba(245,158,11,0.06)] backdrop-blur-md">
  {/* Futuristic Cyber-Grid Pattern */}
  <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(245,158,11,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.02)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
  
@@ -466,7 +466,7 @@ export default async function CommunityPage() {
  {/* ═══════ 8. BOTTOM CTA ═══════ */}
  <section className="px-4 sm:px-6 mb-6 sm:mb-10 max-w-4xl mx-auto">
  <ScrollReveal>
- <div className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center border border-amber-500/35 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-[#0A0D16] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_60px_rgba(245,158,11,0.06)] relative overflow-hidden backdrop-blur-md">
+ <div className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center border border-amber-500/35 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-white/[0.04] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_60px_rgba(245,158,11,0.06)] relative overflow-hidden backdrop-blur-md">
  {/* Futuristic Cyber-Grid Pattern */}
  <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(245,158,11,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.02)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
  

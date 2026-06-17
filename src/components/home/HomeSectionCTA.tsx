@@ -10,7 +10,7 @@ interface HomeSectionCTAProps {
 
 export function HomeSectionCTA({ isLoggedIn }: HomeSectionCTAProps) {
   return (
-    <div className="relative overflow-hidden bg-white dark:bg-[#0B0E14]">
+    <div className="relative overflow-hidden bg-white dark:bg-transparent">
       <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative p-5 sm:p-6 rounded-2xl border border-gold/20 dark:border-gold/15 bg-gradient-to-r from-gold/[0.03] to-amber-500/[0.01] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md shadow-sm overflow-hidden group hover:border-gold/40 transition-all duration-300">
           <div className="absolute top-1/2 -right-4 -translate-y-1/2 w-32 h-32 bg-gold/10 rounded-full blur-2xl pointer-events-none" />

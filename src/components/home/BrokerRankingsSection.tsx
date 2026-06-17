@@ -93,7 +93,7 @@ export function BrokerRankingsSection() {
   const activeItems = activeTab === 'brokers' ? brokers : cryptoExchanges;
 
   return (
-    <div className="relative overflow-hidden bg-slate-50/50 dark:bg-[#0B0E14] border-t border-dashboard">
+    <div className="relative overflow-hidden bg-slate-50/50 dark:bg-transparent border-t border-dashboard">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.15] pointer-events-none" />
       <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />

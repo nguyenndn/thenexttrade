@@ -101,7 +101,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
  return (
- <main className="min-h-screen bg-slate-50 dark:bg-[#0B0E14]">
+ <main className="min-h-screen bg-slate-50 dark:bg-transparent">
  {/* Wrapper for Content that needs Firefly Background */}
  <div className="relative overflow-hidden">
  {/* Background Effects */}

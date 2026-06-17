@@ -80,7 +80,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
  : null;
 
  return (
- <div className="relative flex min-h-[80vh] items-center justify-center overflow-hidden bg-white px-4 py-12 dark:bg-[#0F1117]">
+ <div className="relative flex min-h-[80vh] items-center justify-center overflow-hidden bg-white px-4 py-12 dark:bg-transparent">
  <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
  <div
@@ -91,7 +91,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
  style={{ transformStyle: "preserve-3d" }}
  >
  <div className="rounded-3xl bg-gradient-to-br from-amber-500 via-yellow-300 to-orange-600 p-[2px] shadow-2xl shadow-amber-900/20">
- <div className="relative overflow-hidden rounded-[22px] border border-amber-100/80 bg-white dark:bg-[#0B0E14]">
+ <div className="relative overflow-hidden rounded-[22px] border border-amber-100/80 bg-white dark:bg-card">
  <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(120deg,rgba(251,191,36,0.05),transparent_38%,rgba(255,255,255,0.18)_70%,transparent)] dark:bg-[linear-gradient(120deg,rgba(251,191,36,0.08),transparent_38%,rgba(255,255,255,0.04)_70%,transparent)]" />
 
  <div className="relative z-20 flex items-center justify-between px-6 pt-5">
@@ -107,7 +107,7 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
  <div className="relative z-20 px-6 pb-4 pt-5">
  <div className="flex items-center gap-4">
  <div className="shrink-0 rounded-full bg-gradient-to-br from-amber-500 via-yellow-300 to-orange-600 p-[2px] shadow-lg shadow-amber-900/15">
- <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-[2px] dark:bg-[#0B0E14]">
+ <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-[2px] dark:bg-card">
  {profile.image ? (
  <Image
  src={profile.image}

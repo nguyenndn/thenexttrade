@@ -184,9 +184,9 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  const progressPercent = ((step - 1) / 3) * 100;
 
  return (
- <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-[#090805] dark:text-white p-4 font-outfit relative overflow-hidden transition-colors duration-300">
+ <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-transparent dark:text-white p-4 font-outfit relative overflow-hidden transition-colors duration-300">
  {/* Background gradient overlay to match auth pages exactly */}
- <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(180,118,26,0.20)_0%,rgba(9,8,5,0.92)_42%,rgba(16,185,129,0.08)_100%)] pointer-events-none" />
+ <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.60)_0%,rgba(25,52,81,0.46)_48%,rgba(6,69,79,0.38)_100%)] pointer-events-none" />
 
  {/* Floating theme switcher top-right for convenience */}
  <div className="absolute top-6 right-6 z-20">
@@ -195,7 +195,7 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
 
  {/* Fullscreen premium loading overlay */}
  {isLoading && (
- <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F7F4EC]/80 dark:bg-[#090805]/85 backdrop-blur-md">
+ <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F7F4EC]/80 dark:bg-slate-950/85 backdrop-blur-md">
  <Loader2 size={40} className="animate-spin text-amber-500 mb-4" />
  <p className="text-slate-900 dark:text-amber-100 font-extrabold text-lg">Setting up your account...</p>
  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Please wait, this may take a moment.</p>

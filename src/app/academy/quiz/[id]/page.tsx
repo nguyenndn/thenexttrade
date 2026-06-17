@@ -103,7 +103,7 @@ export default function QuizRunnerPage() {
 
  if (results) {
  return (
- <div className="min-h-screen bg-gray-50 dark:bg-[#0B0E14] flex items-center justify-center p-4">
+ <div className="min-h-screen bg-gray-50 dark:bg-transparent flex items-center justify-center p-4">
  <div className="bg-white dark:bg-[#151925] rounded-xl p-8 max-w-md w-full text-center shadow-xl border border-dashboard space-y-6">
  <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto ${results.passed ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}>
  {results.passed ? <Trophy size={40} /> : <XCircle size={40} />}
@@ -145,7 +145,7 @@ export default function QuizRunnerPage() {
  const isSelected = !!answers[currentQ.id];
 
  return (
- <div className="min-h-screen bg-gray-50 dark:bg-[#0B0E14] flex flex-col">
+ <div className="min-h-screen bg-gray-50 dark:bg-transparent flex flex-col">
  <div className="bg-white dark:bg-[#151925] px-6 py-4 border-b border-dashboard flex items-center justify-between">
  <Link href="/academy" className="text-gray-600 hover:text-gray-700 dark:hover:text-white" aria-label="Go back to course map">
  <ArrowLeft />
