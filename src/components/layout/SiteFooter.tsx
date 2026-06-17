@@ -69,8 +69,8 @@ export function SiteFooter() {
  <li><Link href="/academy" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Academy</Link></li>
  <li><Link href="/knowledge" className="text-sm text-gray-600 hover:text-primary transition-colors">Knowledge Base</Link></li>
  <li><Link href="/knowledge?category=market-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Analysis</Link></li>
- <li><Link href="/knowledge?tag=technical-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Technical Analysis</Link></li>
- <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Psychology</Link></li>
+ <li><Link href="/knowledge?category=technical-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Technical Analysis</Link></li>
+ <li><Link href="/knowledge?category=trading-psychology" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Psychology</Link></li>
  </ul>
  </details>
  {/* Desktop View */}
@@ -80,8 +80,8 @@ export function SiteFooter() {
  <li><Link href="/academy" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Academy</Link></li>
  <li><Link href="/knowledge" className="text-sm text-gray-600 hover:text-primary transition-colors">Knowledge Base</Link></li>
  <li><Link href="/knowledge?category=market-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Market Analysis</Link></li>
- <li><Link href="/knowledge?tag=technical-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Technical Analysis</Link></li>
- <li><Link href="/knowledge?tag=psychology" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Psychology</Link></li>
+ <li><Link href="/knowledge?category=technical-analysis" className="text-sm text-gray-600 hover:text-primary transition-colors">Technical Analysis</Link></li>
+ <li><Link href="/knowledge?category=trading-psychology" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Psychology</Link></li>
  </ul>
  </div>
  </div>

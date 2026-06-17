@@ -62,7 +62,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
 
  return (
  <div className="bg-white dark:bg-transparent border-t border-dashboard">
- <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+ <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
  {/* Market Hours Widget */}

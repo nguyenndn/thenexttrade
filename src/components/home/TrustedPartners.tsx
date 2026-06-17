@@ -34,7 +34,7 @@ export function TrustedPartners() {
       {/* Background pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,200,136,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,200,136,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:40px_40px]" />
 
-      <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <HomeSectionHeading
           align="center"
           eyebrow="Trading Infrastructure"

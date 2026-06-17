@@ -91,7 +91,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                   }`}
                 >
                   <div className="min-w-0">
-                    <span className="block text-[9px] font-black uppercase tracking-[0.14em] text-gray-400 dark:text-gray-500 sm:text-[10px] sm:tracking-[0.16em]">
+                    <span className="block text-[9px] font-black uppercase tracking-[0.14em] text-gray-400 dark:text-gray-300 sm:text-[10px] sm:tracking-[0.16em]">
                       {item.label}
                     </span>
                     <span className="mt-1.5 block text-lg font-black leading-none tracking-tight text-gray-900 dark:text-white sm:text-xl">

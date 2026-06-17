@@ -53,7 +53,7 @@ export function AboutUsSection() {
  {/* Grid overlay */}
  <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(217,169,56,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(217,169,56,0.04)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,215,0,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,215,0,0.02)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
- <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+ <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
  {/* Brand Story — full width on tablet */}
  <div className="lg:col-span-1">

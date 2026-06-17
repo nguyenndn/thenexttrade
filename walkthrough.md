@@ -1119,12 +1119,39 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
   - Verified that the target `mcp_proxy_bundle.js` resolves correctly through the junction, enabling both MCP servers to load without warnings upon IDE reload.
 
 
+---
 
+## Phase 53: Homepage Final CTA Style Reversion & Quote Display Restoration ✅
 
+### Key Achievements
+- **Restored Original Final CTA Content & Styling**:
+  - Reverted the card layout inside [HomeSectionCTA.tsx](file:///c:/laragon/www/gsn-crm/src/components/home/HomeSectionCTA.tsx) to match the original layout shown in the user's reference screenshot (based on the previous `NewsletterSection` design).
+  - Keeps the eyebrow badge `"READY WHEN YOU ARE"` (with the `Sparkles` icon), the header `"Ready to build your trading edge?"`, and the description `"Create your free account, sync your first trades, and get your first review path."`.
+  - Configures the gold primary CTA (`Start Free Journal` / `Open Dashboard` depending on `isLoggedIn` state) and secondary CTA (`Join Telegram` button).
+  - Renders the trust bullets section (`Free account`, `Setup in minutes`, and `GoldScalperNinja community`) below the action buttons.
+- **Restored Daily Quote & Particle Backdrop Section**:
+  - Re-integrated the `<QuoteDisplay>` component at the very bottom of the homepage feed in [page.tsx](file:///c:/laragon/www/gsn-crm/src/app/page.tsx) right below the About Us block.
+  - Wrapped it inside an elegant `bg-slate-50/50 dark:bg-[#0F1117]` cardless section layered with dynamic firefly particles `<DynamicFirefly />` and a dotted background grid.
 
+### Verification Results
+- **TypeScript Compiler** (`npx tsc --noEmit`) -> **`0 errors`** ✅
+- **ESLint Linter** (`npm run lint`) -> **`0 errors`** ✅
+- **Playwright Visual Verification** -> Confirmed both light and dark mode render with perfect alignment. ✅
 
+---
 
+## Phase 54: Homepage Spacing Standardisation ✅
 
-
-
+### Key Achievements
+- **Standardised Homepage Vertical Spacing**:
+  - Replaced the taller padding classes (`py-8 sm:py-12`) with the compact, standardized padding classes (`py-6 sm:py-8`) across all main homepage feed sections and backup components in `src/components/home/`.
+  - Touched files:
+    - [page.tsx](file:///c:/laragon/www/gsn-crm/src/app/page.tsx): Updated the Daily Quote section wrapper to use `py-6 sm:py-8` instead of `py-8 sm:py-12`.
+    - [ToolsPreviewSection.tsx](file:///c:/laragon/www/gsn-crm/src/components/home/ToolsPreviewSection.tsx): Changed section padding to `py-6 sm:py-8`.
+    - [StartByGoalSection.tsx](file:///c:/laragon/www/gsn-crm/src/components/home/StartByGoalSection.tsx): Changed section padding to `py-6 sm:py-8`.
+    - [HomeLearningHubSection.tsx](file:///c:/laragon/www/gsn-crm/src/components/home/HomeLearningHubSection.tsx): Changed section padding to `py-6 sm:py-8`.
+    - [NewsletterSection.tsx](file:///c:/laragon/www/gsn-crm/src/components/home/NewsletterSection.tsx): Changed section padding to `py-6 sm:py-8`.
+- **Layout & Visual Verification**:
+  - Ran automated linter and TypeScript compiler sweeps with **`0 errors`**.
+  - Launched browser subagent to visually verify layout consistency, page alignment, and screen captures on the dev server.
 

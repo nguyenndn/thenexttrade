@@ -9,7 +9,7 @@ export function NewsletterSection() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808010_1px,transparent_1px),linear-gradient(to_bottom,#80808010_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_65%_70%_at_50%_50%,#000_68%,transparent_100%)]" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent" />
 
-      <section className="relative z-10 mx-auto max-w-[1440px] px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <section className="relative z-10 mx-auto max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <div className="mx-auto max-w-5xl overflow-hidden rounded-[28px] border border-gold/25 bg-gradient-to-br from-white via-gold/[0.04] to-amber-50/70 px-5 py-8 text-center shadow-[0_18px_55px_rgba(245,158,11,0.08)] dark:from-white/[0.04] dark:via-gold/[0.04] dark:to-white/[0.02] sm:px-8 sm:py-10">
           <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-gold">
             <Sparkles size={12} strokeWidth={2.7} />

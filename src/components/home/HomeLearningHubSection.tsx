@@ -72,7 +72,7 @@ export function HomeLearningHubSection({
       {/* Fireflies Effect */}
       <DynamicFirefly />
 
-      <section className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <section className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <HomeSectionHeading
           align="center"
           eyebrow="Learning Hub"

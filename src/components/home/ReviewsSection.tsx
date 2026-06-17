@@ -113,7 +113,7 @@ export function ReviewsSection() {
  {/* Dot pattern bg — same as Quote section but Gold themed */}
  <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
- <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+ <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
  <HomeSectionHeading
  align="center"
  eyebrow="Community proof"

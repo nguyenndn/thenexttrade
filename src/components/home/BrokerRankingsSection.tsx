@@ -98,14 +98,14 @@ export function BrokerRankingsSection() {
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.15] pointer-events-none" />
       <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         <HomeSectionHeading
           align="center"
           eyebrow="Compare and trade"
-          title="Recommended Trading Platforms"
+          title="Compare Trading Platforms"
           highlight="Platforms"
-          description="Compare CFD brokers and crypto exchanges by fit, fees, platform, and trading style."
+          description="Broker and exchange options for traders who need a place to execute."
           icon={Sparkles}
           className="mb-8"
         />

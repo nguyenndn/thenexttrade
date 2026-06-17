@@ -42,11 +42,12 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
 
         {/* Soft CTA & Secondary Link */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-8 w-full sm:w-auto animate-in fade-in duration-1000">
-          <Link href="#how-it-works" className="w-full sm:w-auto group">
+          <Link href={isLoggedIn ? "/dashboard" : "/auth/signup?source=hero&intent=track"} className="w-full sm:w-auto group">
             <Button
               className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
             >
-              See how it works <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
+              <span>{isLoggedIn ? "Open Dashboard" : "Start Free Journal"}</span>
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
             </Button>
           </Link>
           <Link
@@ -61,11 +62,11 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
         <div className="w-full max-w-xl mb-10 animate-in fade-in duration-1000">
           <button
             onClick={handleSearchClick}
-            className="w-full flex items-center gap-3 px-5 py-3.5 rounded-full border border-dashboard dark:border-gray-800 bg-white dark:bg-white/[0.01] text-gray-500 dark:text-gray-400 hover:border-gold/50 hover:bg-gold/[0.01] transition-all shadow-sm text-sm cursor-pointer"
+            className="w-full flex items-center gap-3 px-5 py-3.5 rounded-full border border-dashboard dark:border-gray-800 bg-white dark:bg-white/[0.01] text-gray-500 dark:text-gray-300 hover:border-gold/50 hover:bg-gold/[0.01] transition-all shadow-sm text-sm cursor-pointer"
           >
-            <Search size={18} className="text-gray-400 flex-shrink-0" />
+            <Search size={18} className="text-gray-400 dark:text-gray-300 flex-shrink-0" />
             <span className="flex-1 text-left font-medium">Search guides, tools, brokers, and academy lessons...</span>
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-dashboard bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-bold text-gray-600 dark:text-gray-300">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-dashboard bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-bold text-gray-600 dark:text-gray-200">
               Ctrl + K
             </kbd>
           </button>
@@ -73,11 +74,11 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
 
         {/* Feature badges */}
         <div className="flex flex-col items-center gap-4 animate-in fade-in duration-1000">
-          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-gray-550 dark:text-gray-400 font-bold">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-gray-550 dark:text-gray-200 font-bold">
             <span className="flex items-center gap-1.5"><ShieldCheck size={15} className="text-emerald-500" /> Free to start</span>
-            <span className="text-gray-350 dark:text-gray-750 hidden sm:inline">•</span>
+            <span className="text-gray-350 dark:text-white/30 hidden sm:inline">•</span>
             <span className="flex items-center gap-1.5"><Activity size={15} className="text-gold" /> Auto MT5 sync</span>
-            <span className="text-gray-350 dark:text-gray-750 hidden sm:inline">•</span>
+            <span className="text-gray-350 dark:text-white/30 hidden sm:inline">•</span>
             <span className="flex items-center gap-1.5"><ClipboardList size={15} className="text-blue-500" /> Weekly coach reports</span>
           </div>
 

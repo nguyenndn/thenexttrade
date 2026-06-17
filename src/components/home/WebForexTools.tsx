@@ -5,37 +5,22 @@ import { ALL_TOOLS } from "@/config/tools-data";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
 // Import custom preview mockups
-import { MarketHoursMock } from "./tools-previews/MarketHoursMock";
 import { LotSizeMock } from "./tools-previews/LotSizeMock";
-import { FibonacciMock } from "./tools-previews/FibonacciMock";
-import { MarginMock } from "./tools-previews/MarginMock";
-import { CorrelationMock } from "./tools-previews/CorrelationMock";
-import { LeverageMock } from "./tools-previews/LeverageMock";
+import { RiskRewardMock } from "./tools-previews/RiskRewardMock";
+import { PipValueMock } from "./tools-previews/PipValueMock";
 
 const VISUAL_TOOLS = [
-  {
-    slug: "market-hours",
-    Mock: MarketHoursMock,
-  },
   {
     slug: "position-size-calculator",
     Mock: LotSizeMock,
   },
   {
-    slug: "fibonacci-calculator",
-    Mock: FibonacciMock,
+    slug: "risk-reward-calculator",
+    Mock: RiskRewardMock,
   },
   {
-    slug: "margin-calculator",
-    Mock: MarginMock,
-  },
-  {
-    slug: "correlation-matrix",
-    Mock: CorrelationMock,
-  },
-  {
-    slug: "leverage-calculator",
-    Mock: LeverageMock,
+    slug: "pip-value-calculator",
+    Mock: PipValueMock,
   }
 ];
 
@@ -45,7 +30,7 @@ export function WebForexTools() {
       {/* Background dot pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--cyan-500))_1.2px,transparent_1.2px)] [background-size:40px_40px] opacity-[0.08] dark:opacity-[0.04] pointer-events-none" />
 
-      <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <FadeIn delay={0.1} direction="up">
           <HomeSectionHeading
             align="center"
