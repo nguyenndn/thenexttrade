@@ -16,14 +16,19 @@ export function DesktopNav() {
  <Link
  key={item.name}
  href={item.href}
- className="relative py-1 text-base nav-menu-text text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white transition-colors group"
+ aria-current={isActive ? "page" : undefined}
+ className={[
+ "relative py-1.5 text-base nav-menu-text transition-colors group",
+ isActive
+ ? "text-gray-950 dark:text-white"
+ : "text-gray-700 hover:text-amber-600 dark:text-gray-300 dark:hover:text-amber-300",
+ ].join(" ")}
  >
  {item.name}
- {/* Hover underline — slides in from center */}
  <span
  className={[
- "absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2px] bg-primary rounded-full transition-all duration-300 ease-out",
- isActive ? "w-full" : "w-0 group-hover:w-full",
+ "absolute -bottom-1 left-0 h-[2px] w-full origin-center rounded-full bg-amber-500 transition-all duration-300 ease-out",
+ isActive ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100",
  ].join(" ")}
  />
  </Link>

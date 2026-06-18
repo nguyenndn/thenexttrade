@@ -492,3 +492,22 @@
 - [x] Run typecheck (`npx tsc --noEmit`) and lint (`npm run lint`) to verify 0 errors
 - [x] Visually verify the homepage styling and spacing using browser subagent
 
+## Phase 55: About Us Section Upgrade
+- [x] Refactor AboutUsSection.tsx background grid, mesh spots, and dark tech styling
+- [x] Refactor card elements inside AboutUsSection to premium dark glassmorphism
+- [x] Polish colors, text readability, and active button states
+- [x] Run typecheck (`npx tsc --noEmit`) and lint (`npm run lint`) to verify 0 errors
+- [x] Run vitest suite to ensure no regression
+- [x] Visually verify the changes on the homepage using browser subagent
+
+## Phase 56: Heading Styling Updates
+- [x] Update heading text and color highlight inside `TradeJournalPreviewSection.tsx`
+- [x] Run typecheck (`npx tsc --noEmit`) and lint (`npm run lint`) to verify 0 errors
+- [x] Run vitest suite to ensure no regression
+- [x] Visually verify the changes on the homepage using browser subagent
+
+## Phase 57: Preview Mockup Spacing & Alignment Adjustments
+- [x] Shift right column preview mockup further right on desktop layouts in `TradeJournalPreviewSection.tsx` using responsive left padding (`lg:pl-12 xl:pl-20`)
+- [x] Center 3-step cards, CTA buttons, and text heading on all screens (mobile, tablet, and desktop viewports) horizontally, keeping the card content (icons on left, text on right) left-aligned for premium readability
+- [x] Run typecheck (`npx tsc --noEmit`) and lint (`npm run lint`) to verify 0 errors
+- [x] Run vitest suite to ensure no regression (46/46 tests passed)

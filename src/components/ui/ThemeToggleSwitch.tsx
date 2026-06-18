@@ -26,7 +26,7 @@ export function ThemeToggleSwitch() {
  aria-label="Toggle theme"
  className={`
  relative w-9 h-9 p-0 flex items-center justify-center rounded-full transition-all duration-300
- focus:outline-none focus:ring-2 focus:ring-[#00C888]/50
+ focus:outline-none focus:ring-2 focus:ring-amber-500/40
  ${isDark 
  ? 'bg-slate-800/80 border-2 border-slate-700 text-blue-400 hover:bg-slate-700/80 hover:text-blue-400' 
  : 'bg-white border-2 border-dashboard text-amber-500 hover:bg-gray-50 hover:text-amber-500'

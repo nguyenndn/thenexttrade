@@ -1155,3 +1155,47 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
   - Ran automated linter and TypeScript compiler sweeps with **`0 errors`**.
   - Launched browser subagent to visually verify layout consistency, page alignment, and screen captures on the dev server.
 
+---
+
+## Phase 55: About Us Section Upgrade ✅
+
+### Key Achievements
+- **Rebuilt AboutUsSection with Deep-Tech Canvas**:
+  - Replaced the soft gradient with a unified deep tech background (`bg-[#0B0D13] dark:bg-[#07090E]`) that renders as a consistent dark panel in both light and dark modes, creating a strong visual anchor.
+  - Added a grid overlay using amber/gold lines (`bg-[linear-gradient(rgba(245,158,11,0.025)_1px,transparent_1px)...] [background-size:48px_48px]`).
+  - Integrated dual glowing mesh spots (Amber/Gold on left, Sky Blue on right) matching the branding of the community block and final CTA.
+- **Glassmorphic Cards Upgrade**:
+  - Converted Team and Sites list items into premium dark glassmorphic cards (`bg-[#131722]/60 border-amber-500/15 backdrop-blur-sm`).
+  - Integrated dynamic hover transitions: custom border highlighting (`hover:border-amber-400`), solid background shifts (`hover:bg-[#181D2B]/80`), and light golden shadow glows (`hover:shadow-amber-500/[0.03]`).
+  - Updated the ring offset to `#0B0D13` to blend cleanly.
+- **Contrast & Legibility Enhancements**:
+  - Switched headers to pure white (`text-white`).
+  - Shifted body text to high-contrast light-gray (`text-gray-300`).
+  - Colored the italic subheading statement to standard warm gold (`text-amber-100/90`).
+  - Polished button outline borders (`border-amber-500/40`) and hover states for perfect legibility.
+
+---
+
+## Phase 56: Heading Styling Updates ✅
+
+### Key Achievements
+- **Adjusted Heading Wrapping**:
+  - Added `titleClassName="lg:whitespace-nowrap"` to the main heading block of `TradeJournalPreviewSection.tsx`, preventing the phrase "Three steps to your trading edge" from wrapping into multiple lines on desktop/large screens, showing it on exactly one line as requested.
+- **Enhanced Color Highlight**:
+  - Changed `highlight="edge"` to `highlight="trading edge"` in the `HomeSectionHeading` props of `TradeJournalPreviewSection.tsx`, coloring the complete "trading edge" phrase in premium Gold instead of just the word "edge".
+
+---
+
+## Phase 57: Preview Mockup Spacing & Alignment Adjustments ✅
+
+### Key Achievements
+- **Shifted Preview Mockup to the Right**:
+  - Replaced the simple left-padding class `lg:pl-6` with `lg:pl-12 xl:pl-20` on the right column container in [TradeJournalPreviewSection.tsx](file:///c:/laragon/www/gsn-crm/src/components/home/TradeJournalPreviewSection.tsx).
+  - This increases visual spacing (breathing room) between the left content list and the dashboard illustration preview mockup on large screens, satisfying the user's styling feedback.
+- **Centered Left Column Content on All Viewports**:
+  - Configured left column wrapper container with `items-center text-center` to center heading text, 3-step cards, and CTA buttons on all screens (mobile, tablet, and desktop viewports).
+  - Centered the steps container and CTA container using `mx-auto` margins, achieving unified centered alignment relative to the section heading.
+  - Retained the horizontal flex card design with left-aligned internal text and icons on the left inside the cards to preserve legibility.
+- **Verification & Styling Integration**:
+  - Checked TypeScript types and lint checks (TypeScript `0 errors`, ESLint `0 errors` warnings only).
+  - Successfully ran full Vitest test suite (46/46 passed) with zero regressions.

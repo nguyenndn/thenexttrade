@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { menuItems } from "@/config/navigation";
 import { ChevronDown, LogIn, UserPlus, User as UserIcon, LayoutDashboard, Settings, LogOut, Compass } from "lucide-react";
@@ -31,6 +32,7 @@ function useDashboardUrl(): string {
 export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProps) {
  const { theme } = useTheme();
  const isDark = theme === "dark";
+ const pathname = usePathname();
  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
  const dashboardUrl = useDashboardUrl();
 
@@ -47,16 +49,32 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
 
  {/* Nav Links */}
  <nav className="p-4 space-y-2">
- {menuItems.map((item) => (
+ {menuItems.map((item) => {
+ const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+
+ return (
  <Link
  key={item.name}
  href={item.href}
  onClick={onClose}
- className={`block px-4 py-3 rounded-lg nav-menu-text transition-colors ${isDark ? 'text-white hover:bg-slate-800 hover:text-teal-400' : 'text-gray-700 hover:bg-gray-50 hover:text-teal-600'}`}
+ aria-current={isActive ? "page" : undefined}
+ className={[
+ "relative block px-4 py-3 rounded-lg nav-menu-text transition-colors",
+ isActive
+ ? isDark ? "bg-amber-400/10 text-amber-300" : "bg-amber-50 text-amber-700"
+ : isDark ? "text-white hover:bg-amber-400/10 hover:text-amber-300" : "text-gray-700 hover:bg-amber-50 hover:text-amber-700",
+ ].join(" ")}
  >
  {item.name}
+ <span
+ className={[
+ "absolute bottom-1.5 left-4 right-4 h-[2px] rounded-full bg-amber-500 transition-opacity",
+ isActive ? "opacity-100" : "opacity-0",
+ ].join(" ")}
+ />
  </Link>
- ))}
+ );
+ })}
  </nav>
 
  {/* Bottom section: user info OR auth buttons */}
@@ -127,7 +145,7 @@ export function MobileNavigation({ isOpen, onClose, user }: MobileNavigationProp
  Login
  </Link>
  <Link href="/auth/signup" onClick={onClose}
- className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-primary to-[#00A570] text-white hover:opacity-90 transition-opacity">
+ className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-sm shadow-amber-500/20">
  <UserPlus size={16} />
  Sign Up
  </Link>

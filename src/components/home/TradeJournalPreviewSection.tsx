@@ -16,29 +16,30 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
       
       <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Two-Column Layout: Steps + Preview */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
           {/* Left Column: Steps + CTA */}
-          <div className="lg:col-span-5 flex flex-col justify-center">
+          <div className="lg:col-span-5 flex flex-col justify-center items-center text-center">
             <HomeSectionHeading
-              align="left"
+              align="center"
               eyebrow="3 steps -> 1 weekly action"
               title="Three steps to your trading edge"
-              highlight="edge"
+              highlight="trading edge"
               description="Sync your MT5 trades, spot the pattern, and get one clear action for your next session."
               icon={Sparkles}
-              className="mb-6"
+              titleClassName="lg:whitespace-nowrap"
+              className="mb-6 w-full"
             />
 
             {/* Steps */}
-            <div className="space-y-3 mb-6 max-w-md">
+            <div className="space-y-3 mb-6 max-w-md w-full mx-auto">
               {/* Step 1: Connect — Calm */}
-              <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04]">
+              <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] text-left">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gray-100 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-white/10">
                   <PlugZap size={17} strokeWidth={2.2} />
                 </div>
-                <div className="min-w-0 pt-0.5">
-                  <div className="mb-1.5 flex items-center gap-2.5">
+                <div className="w-full min-w-0 pt-0.5">
+                  <div className="mb-1.5 flex items-center justify-start gap-2.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">01</span>
                     <h4 className="text-sm font-black text-gray-800 dark:text-white">1. Connect</h4>
                   </div>
@@ -47,12 +48,12 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
               </div>
 
               {/* Step 2: Analyze — Calm */}
-              <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04]">
+              <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] text-left">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gray-100 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-white/10">
                   <BarChart3 size={17} strokeWidth={2.2} />
                 </div>
-                <div className="min-w-0 pt-0.5">
-                  <div className="mb-1.5 flex items-center gap-2.5">
+                <div className="w-full min-w-0 pt-0.5">
+                  <div className="mb-1.5 flex items-center justify-start gap-2.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">02</span>
                     <h4 className="text-sm font-black text-gray-800 dark:text-white">2. Analyze</h4>
                   </div>
@@ -61,12 +62,12 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
               </div>
 
               {/* Step 3: Improve — ACTIVE/HIGHLIGHTED */}
-              <div className="group flex gap-4 rounded-2xl border border-gold/40 bg-gold/[0.07] p-4 shadow-[0_12px_28px_rgba(245,158,11,0.12)] transition-all duration-300 hover:border-gold/60 hover:bg-gold/[0.1] dark:border-gold/25 dark:bg-gold/[0.05]">
+              <div className="group flex gap-4 rounded-2xl border border-gold/40 bg-gold/[0.07] p-4 shadow-[0_12px_28px_rgba(245,158,11,0.12)] transition-all duration-300 hover:border-gold/60 hover:bg-gold/[0.1] dark:border-gold/25 dark:bg-gold/[0.05] text-left">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gold/15 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-gold/20">
                   <Target size={17} strokeWidth={2.2} />
                 </div>
-                <div className="min-w-0 pt-0.5">
-                  <div className="mb-1.5 flex items-center gap-2.5">
+                <div className="w-full min-w-0 pt-0.5">
+                  <div className="mb-1.5 flex items-center justify-start gap-2.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-gold/80">03</span>
                     <h4 className="text-sm font-black text-gray-800 dark:text-white">3. Improve</h4>
                   </div>
@@ -76,7 +77,7 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
             </div>
 
             {/* CTAs — Normalized sizing */}
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md w-full">
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md w-full mx-auto">
               <Link href={isLoggedIn ? "/dashboard" : "/auth/signup?source=home_product_preview"} className="w-full sm:flex-1 group">
                 <Button 
                   className="w-full min-h-12 px-7 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
@@ -106,7 +107,7 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
           </div>
 
           {/* Right Column: Light Premium Dashboard Preview */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 lg:pl-12 xl:pl-20">
             <div className="relative p-3 sm:p-4 rounded-3xl border border-gold/20 dark:border-gold/10 bg-white/90 dark:bg-[#111318] shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:shadow-[0_24px_70px_rgba(0,0,0,0.4)] overflow-hidden group">
               {/* Subtle decorative glows */}
               <div className="absolute -top-10 -left-10 w-40 h-40 bg-gold/10 dark:bg-gold/5 rounded-full blur-2xl pointer-events-none" />

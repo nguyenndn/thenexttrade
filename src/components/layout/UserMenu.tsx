@@ -85,13 +85,13 @@ export function UserMenu({ user, profile, variant = "default", isLoading = false
  <div className="flex items-center gap-3">
  <Link
  href="/auth/login"
- className="text-sm font-semibold whitespace-nowrap px-4 py-2 rounded-xl text-gray-800 hover:text-primary dark:text-gray-300 dark:hover:text-white transition-colors"
+ className="text-sm font-semibold whitespace-nowrap px-4 py-2 rounded-xl text-gray-800 hover:text-amber-600 dark:text-gray-300 dark:hover:text-amber-300 transition-colors"
  >
  Login
  </Link>
  <Link
  href="/auth/signup"
- className="text-sm font-bold whitespace-nowrap px-6 py-2 rounded-xl bg-gradient-to-r from-primary to-[#00A570] text-white hover:opacity-90 transition-opacity shadow-sm"
+ className="text-sm font-bold whitespace-nowrap px-6 py-2 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-sm shadow-amber-500/20"
  >
  Sign Up Free
  </Link>
@@ -105,7 +105,7 @@ export function UserMenu({ user, profile, variant = "default", isLoading = false
  variant="outline"
  size="sm"
  onClick={() => setIsOpen(!isOpen)}
- className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#00C888]/10 dark:bg-slate-800 border-none sm:border-solid border-[#00C888]/20 dark:border-slate-700 hover:bg-[#00C888]/20 dark:hover:bg-slate-700 transition-all group shadow-sm !h-auto"
+ className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-amber-500/10 dark:bg-slate-800 border-none sm:border-solid border-amber-500/20 dark:border-amber-400/20 hover:bg-amber-500/15 dark:hover:bg-amber-400/10 transition-all group shadow-sm !h-auto"
  aria-label="User menu"
  >
  {/* Avatar Circle */}
@@ -128,7 +128,7 @@ export function UserMenu({ user, profile, variant = "default", isLoading = false
  {/* Gear Icon */}
  <Settings
  size={20}
- className="text-[#00C888] dark:text-[#00C888] group-hover:rotate-90 transition-transform duration-500"
+ className="text-amber-500 dark:text-amber-300 group-hover:rotate-90 transition-transform duration-500"
  />
  </Button>
 

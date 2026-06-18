@@ -127,7 +127,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
  variant="ghost"
  size="icon"
  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
- className={`lg:hidden p-2 rounded-lg ${isDark ? 'text-white hover:bg-slate-800' : 'text-gray-700 hover:bg-gray-100'}`}
+ className={`lg:hidden p-2 rounded-lg ${isDark ? 'text-white hover:bg-amber-400/10 hover:text-amber-300' : 'text-gray-700 hover:bg-amber-50 hover:text-amber-600'}`}
  aria-label="Toggle menu"
  >
  {isMobileMenuOpen ? (
