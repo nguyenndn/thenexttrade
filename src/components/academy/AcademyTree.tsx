@@ -306,13 +306,13 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
  checkMobile();
  window.addEventListener("resize", checkMobile);
 
- const count = window.innerWidth < 768 ? 30 : 100;
+ const count = window.innerWidth < 768 ? 8 : 12;
  setFireflies(Array.from({ length: count }).map((_, i) => ({
  id: i,
  top: `${Math.random() * 100}%`,
  left: `${Math.random() * 100}%`,
- duration: Math.random() * 5 + 3,
- delay: Math.random() * 3,
+ duration: Math.random() * 6 + 4,
+ delay: Math.random() * 5,
  })));
 
  return () => window.removeEventListener("resize", checkMobile);
@@ -320,10 +320,23 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
 
  return (
  <>
- <div className="relative min-h-[600px] w-full py-16 px-4 overflow-hidden bg-gray-50 dark:bg-[#0B0E14] transition-colors duration-300">
+ <div className="relative min-h-[600px] w-full py-16 px-4 overflow-hidden bg-[#fbfaf6] dark:bg-[#0B0E14] transition-colors duration-300">
 
- {/* Dot Grid */}
- <div className="absolute inset-0 z-0 pointer-events-none opacity-30 dark:opacity-15 bg-[radial-gradient(#94a3b8_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
+ {/* Paper Grid (light mode) */}
+ <div className="absolute inset-0 z-0 pointer-events-none opacity-70 bg-[linear-gradient(to_right,rgba(15,23,42,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.035)_1px,transparent_1px)] [background-size:48px_48px] dark:opacity-0" />
+
+ {/* Soft dot overlay (reduced from original) */}
+ <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.18] bg-[radial-gradient(rgba(0,200,136,0.55)_1px,transparent_1px)] [background-size:32px_32px] dark:opacity-[0.12] dark:bg-[radial-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] dark:[background-size:24px_24px]" />
+
+ {/* Learning Spine — central vertical line */}
+ <div className="absolute left-1/2 top-0 z-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-amber-200/80 to-transparent dark:via-white/10" />
+
+ {/* Topographic curriculum path SVG (behind nodes) */}
+ <svg className="absolute left-1/2 top-[10%] -translate-x-1/2 w-[800px] h-[80%] max-w-none opacity-[0.07] dark:opacity-[0.03] pointer-events-none" viewBox="0 0 800 600" fill="none" aria-hidden="true">
+   <path d="M400 0 C380 80 420 160 400 240 C380 320 420 400 400 480 C380 560 400 600 400 600" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6 4" />
+   <path d="M380 0 C340 100 460 200 380 300 C300 400 460 500 380 600" stroke="#10b981" strokeWidth="1" strokeDasharray="4 6" />
+   <path d="M420 0 C460 100 340 200 420 300 C500 400 340 500 420 600" stroke="#10b981" strokeWidth="1" strokeDasharray="4 6" />
+ </svg>
 
  {/* Gradient Orbs (dark mode only) */}
  <div className="absolute inset-0 opacity-0 dark:opacity-50 z-0 pointer-events-none">
@@ -331,14 +344,19 @@ export function AcademyTree({ levels, basePath, isGuest = false, completedLesson
  <div className="absolute bottom-[20%] right-[15%] w-[350px] h-[350px] bg-primary/15 rounded-full blur-[120px]" />
  </div>
 
- {/* Fireflies */}
+ {/* Fireflies (reduced — premium, not noisy) */}
  <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
  {fireflies.map((f) => (
  <motion.div
  key={f.id}
- className="absolute w-1 h-1 bg-primary rounded-full shadow-[0_0_6px_hsl(var(--primary))]"
- style={{ top: f.top, left: f.left }}
- animate={{ y: [0, -25, 0], opacity: [0, 0.7, 0], scale: [0, 1, 0] }}
+ className="absolute w-0.5 h-0.5 rounded-full"
+ style={{
+   top: f.top,
+   left: f.left,
+   backgroundColor: f.id % 3 === 0 ? '#F59E0B' : 'hsl(var(--primary))',
+   boxShadow: f.id % 3 === 0 ? '0 0 4px #F59E0B' : '0 0 4px hsl(var(--primary))',
+ }}
+ animate={{ y: [0, -20, 0], opacity: [0, 0.35, 0], scale: [0, 1, 0] }}
  transition={{ duration: f.duration, repeat: Infinity, delay: f.delay, ease: "easeInOut" }}
  />
  ))}

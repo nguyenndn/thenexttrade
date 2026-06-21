@@ -125,7 +125,7 @@ export function SiteFooter() {
  </summary>
  <ul className="space-y-3 px-2 pb-4">
  <li><Link href="/brokers" className="text-sm text-gray-600 hover:text-primary transition-colors">Trusted Brokers</Link></li>
- <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
+ <li><Link href="/trading-systems" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
  <li><Link href="/edge" className="text-sm text-gray-600 hover:text-primary transition-colors">About Edge Gamification</Link></li>
  <li><Link href="/about" className="text-sm text-gray-600 hover:text-primary transition-colors">About Us</Link></li>
  <li><Link href="/contact" className="text-sm text-gray-600 hover:text-primary transition-colors">Contact Us</Link></li>
@@ -136,7 +136,7 @@ export function SiteFooter() {
  <h4 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider mb-6">Resources</h4>
  <ul className="space-y-3">
  <li><Link href="/brokers" className="text-sm text-gray-600 hover:text-primary transition-colors">Trusted Brokers</Link></li>
- <li><Link href="/dashboard/trading-systems" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
+ <li><Link href="/trading-systems" className="text-sm text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
  <li><Link href="/edge" className="text-sm text-gray-600 hover:text-primary transition-colors">About Edge Gamification</Link></li>
  <li><Link href="/about" className="text-sm text-gray-600 hover:text-primary transition-colors">About Us</Link></li>
  <li><Link href="/contact" className="text-sm text-gray-600 hover:text-primary transition-colors">Contact Us</Link></li>
@@ -148,13 +148,13 @@ export function SiteFooter() {
  </div>
 
  {/* Risk Warning - Enhanced */}
- <div className="py-4 px-5 my-4 rounded-xl bg-orange-50/50 dark:bg-orange-500/5 border border-orange-500/20 dark:border-orange-500/20">
- <div className="flex items-start gap-4">
- <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
- <AlertTriangle size={16} className="text-orange-600 dark:text-orange-500" strokeWidth={2.5} />
+ <div className="py-2.5 px-4 my-2 rounded-xl bg-orange-50/50 dark:bg-orange-500/5 border border-orange-500/20 dark:border-orange-500/20">
+ <div className="flex items-start gap-3">
+ <div className="w-7 h-7 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+ <AlertTriangle size={14} className="text-orange-600 dark:text-orange-500" strokeWidth={2.5} />
  </div>
  <div>
- <h5 className="font-bold text-orange-600 dark:text-orange-400 mb-1.5 text-sm uppercase tracking-wider">Risk Warning & Disclaimer</h5>
+ <h5 className="font-bold text-orange-600 dark:text-orange-400 mb-0.5 text-sm uppercase tracking-wider">Risk Warning & Disclaimer</h5>
  <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-500">
  Trading forex, cryptocurrencies, and CFDs carries a <strong className="text-orange-600 dark:text-orange-400">high level of risk</strong> and may not be suitable for all investors. You may lose more than your initial investment. Only trade with money you can afford to lose. Past performance is not indicative of future results. Please ensure you fully understand the risks involved and seek independent advice if necessary.
  </p>

@@ -26,6 +26,7 @@ const HomeTrustMetrics = dynamic(() => import("@/components/home/HomeTrustMetric
 const TradeJournalPreviewSection = dynamic(() => import("@/components/home/TradeJournalPreviewSection").then(m => ({ default: m.TradeJournalPreviewSection })), { loading: () => <div className="h-96" /> });
 const SpreadsheetComparisonSection = dynamic(() => import("@/components/home/SpreadsheetComparisonSection").then(m => ({ default: m.SpreadsheetComparisonSection })), { loading: () => <div className="h-96" /> });
 const BrokerRankingsSection = dynamic(() => import("@/components/home/BrokerRankingsSection").then(m => ({ default: m.BrokerRankingsSection })), { loading: () => <div className="h-96" /> });
+const MT5TeaserCTA = dynamic(() => import("@/components/home/MT5TeaserCTA").then(m => ({ default: m.MT5TeaserCTA })), { loading: () => <div className="h-24" /> });
 const HomeTrustDisclaimer = dynamic(() => import("@/components/home/HomeTrustDisclaimer").then(m => ({ default: m.HomeTrustDisclaimer })), { loading: () => null });
 const HomeSectionCTA = dynamic(() => import("@/components/home/HomeSectionCTA").then(m => ({ default: m.HomeSectionCTA })), { loading: () => <div className="h-[350px]" /> });
 const ReviewsSection = dynamic(() => import("@/components/home/ReviewsSection").then(m => ({ default: m.ReviewsSection })), { loading: () => <div className="h-96" /> });
@@ -148,6 +149,11 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
       {/* 8b. Reviews Section */}
       <FadeIn delay={0.1} direction="up">
         <ReviewsSection />
+      </FadeIn>
+
+      {/* 8c. MT5 Trading Systems Teaser CTA */}
+      <FadeIn delay={0.1} direction="up">
+        <MT5TeaserCTA />
       </FadeIn>
 
       {/* 9. Final conversion CTA */}

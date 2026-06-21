@@ -23,6 +23,10 @@ const HOMEPAGE_FAQ = [
     question: "Do I need trading experience to start?",
     answer: "No. Our Academy is structured for all skill levels. It starts from the absolute basics (first steps, understanding pips, spreads) and progresses to advanced risk modeling and automated systems. No prior trading experience is required.",
   },
+  {
+    question: "Is the MT5 toolkit free?",
+    answer: "The toolkit is free to unlock with an eligible partner account. The download is not a public free-for-all because eligibility depends on your connected broker account path. Your funds always stay in your own broker account.",
+  },
 ];
 
 export function HomeFAQSection() {

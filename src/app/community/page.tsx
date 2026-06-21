@@ -19,7 +19,6 @@ import {
  TrendingUp,
  ArrowRight,
  ChevronRight,
- Copy,
  GraduationCap,
  Trophy,
  Shield,
@@ -47,7 +46,8 @@ export const metadata: Metadata = {
  "gold scalping",
  "price action trading",
  "telegram trading community",
- "copy trading",
+ "GoldScalperNinja EA",
+ "MT5 expert advisor",
  "VIP trading signals",
  ],
 };
@@ -89,11 +89,11 @@ const freeFeatures = [
  border: "border-amber-200/60 dark:border-gold/15",
  },
  {
- icon: Copy,
- title: "Copy Trading Available",
+ icon: Bot,
+ title: "EA GoldScalperNinja",
  description:
- "Follow professional strategies with automated copy trading. Connect your MT5 account and let verified strategies work for you.",
- highlights: ["Auto-copy to MT5", "Ultra-low latency", "Full fund control"],
+ "Use the GoldScalperNinja EA to support your MT5 workflow with trade management, clearer execution, and a more disciplined setup.",
+ highlights: ["MT5 Expert Advisor", "Trade management tools", "Built for XAUUSD workflows"],
  color: "text-emerald-600 dark:text-primary",
  bg: "bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-primary/15 dark:to-teal-500/5",
  border: "border-emerald-200/60 dark:border-primary/15",
@@ -121,10 +121,10 @@ const platformLinks = [
  bg: "bg-amber-500/10 dark:bg-gold/15",
  },
  {
- title: "Copy Trading",
- description: "Auto-copy professional strategies to your MT5 account with ultra-low latency.",
- icon: Copy,
- href: "/dashboard/copy-trading",
+ title: "Trading System",
+ description: "Download EA GoldScalperNinja, indicators, and setup guides for your MT5 workflow.",
+ icon: Bot,
+ href: "/dashboard/trading-systems",
  color: "text-emerald-600 dark:text-primary",
  bg: "bg-emerald-500/10 dark:bg-primary/15",
  },
@@ -229,25 +229,28 @@ export default async function CommunityPage() {
  No fluff, no fake promises. Just honest trading, every day.
  </p>
 
- {/* Stats inline */}
- <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 pt-2">
+ {/* Community proof strip */}
+ <div className="px-2 pt-2 sm:px-0">
+ <div className="mx-auto max-w-4xl rounded-[1.75rem] border border-amber-200/80 bg-white/85 p-2.5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] ring-1 ring-white/70 backdrop-blur-xl dark:border-gold/15 dark:bg-white/[0.04] dark:ring-white/[0.04]">
+ <div className="grid grid-cols-2 gap-1.5 lg:grid-cols-4">
  {[
  { value: "12,000+", label: "Traders", icon: Users },
- { value: "3–7/day", label: "VIP Signals", icon: TrendingUp },
+ { value: "3-7/day", label: "VIP Signals", icon: TrendingUp },
  { value: "24/7", label: "Live Updates", icon: Clock },
  { value: "Free", label: "To Join", icon: Sparkles },
  ].map((stat) => (
- <div key={stat.label} className="flex items-center gap-2 sm:gap-2.5">
- <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white dark:bg-white/5 border border-dashboard flex items-center justify-center shadow-sm">
- <stat.icon size={16} className="text-gold sm:hidden" />
- <stat.icon size={18} className="text-gold hidden sm:block" />
+ <div key={stat.label} className="group flex items-center gap-3 rounded-[1.25rem] px-3 py-3.5 text-left transition-colors hover:bg-amber-50/80 dark:hover:bg-white/[0.04] sm:gap-3.5 sm:px-4 sm:py-4">
+ <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-amber-200/80 bg-gradient-to-br from-white to-amber-50 text-gold shadow-[0_8px_22px_rgba(245,158,11,0.12)] transition-transform group-hover:scale-105 dark:border-gold/20 dark:from-white/[0.08] dark:to-gold/[0.06] sm:h-12 sm:w-12">
+ <stat.icon size={18} strokeWidth={2.2} />
  </div>
- <div className="text-left">
- <div className="text-base sm:text-lg font-black text-gray-800 dark:text-white leading-none">{stat.value}</div>
- <div className="text-[9px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-wider">{stat.label}</div>
+ <div className="min-w-0">
+ <div className="text-lg font-black leading-none tracking-tight text-gray-900 dark:text-white sm:text-xl">{stat.value}</div>
+ <div className="mt-1 text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sm:text-[10px]">{stat.label}</div>
  </div>
  </div>
  ))}
+ </div>
+ </div>
  </div>
 
  {/* CTA */}

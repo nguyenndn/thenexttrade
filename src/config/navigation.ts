@@ -54,6 +54,11 @@ export const menuItems = [
  type: "link" as const,
  },
  {
+ name: "Trading Systems",
+ href: "/trading-systems",
+ type: "link" as const,
+ },
+ {
  name: "Tools",
  href: "/tools",
  type: "link" as const,

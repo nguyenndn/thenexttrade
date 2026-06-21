@@ -88,7 +88,7 @@ export function WebForexTools() {
           <div className="mt-8 flex justify-center sm:mt-10">
             <Link
               href="/tools"
-              className="group inline-flex min-h-10 items-center justify-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-gold transition-colors duration-300 hover:text-amber-600 dark:hover:text-amber-300"
+              className="group inline-flex items-center justify-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-gold transition-colors duration-300 hover:text-amber-600 dark:hover:text-amber-300"
             >
               View all {ALL_TOOLS.length} tools
               <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-1" />

@@ -374,7 +374,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
  </div>
 
  {/* AI Image Disclaimer */}
- <div className="mt-6 flex items-start gap-2.5 px-4 py-3 rounded-lg bg-amber-50 dark:bg-amber-500/[0.06] border border-amber-200 dark:border-amber-500/15">
+ <div className="mt-6 px-4 py-3 rounded-lg bg-amber-50 dark:bg-amber-500/[0.06] border border-amber-200 dark:border-amber-500/15 text-center">
  <span className="text-amber-600 dark:text-amber-400/80 text-sm leading-relaxed italic">
  Disclaimer: Educational illustrations are AI-generated and do not represent real market data.
  </span>
