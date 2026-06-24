@@ -141,6 +141,11 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
         <BrokerRankingsSection />
       </FadeIn>
 
+      {/* 7b. MT5 Trading Systems Teaser CTA */}
+      <FadeIn delay={0.1} direction="up">
+        <MT5TeaserCTA isLoggedIn={isLoggedIn} />
+      </FadeIn>
+
       {/* 8. Short FAQ Accordion */}
       <FadeIn delay={0.1} direction="up">
         <HomeFAQSection />
@@ -149,11 +154,6 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
       {/* 8b. Reviews Section */}
       <FadeIn delay={0.1} direction="up">
         <ReviewsSection />
-      </FadeIn>
-
-      {/* 8c. MT5 Trading Systems Teaser CTA */}
-      <FadeIn delay={0.1} direction="up">
-        <MT5TeaserCTA />
       </FadeIn>
 
       {/* 9. Final conversion CTA */}

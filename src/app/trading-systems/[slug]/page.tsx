@@ -98,7 +98,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Dynamic Performance & Risk Playground */}
+      {/* Toolkit Feature Showcase */}
       <div className="mb-8">
         <TradingSystemsSimulator initialSlug={system.slug} />
       </div>

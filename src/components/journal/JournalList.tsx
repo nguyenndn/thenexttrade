@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { utcTime, cn } from "@/lib/utils";
 import { TradePlanList } from "./TradePlanList";
+import { isTradePlansEnabled } from "@/lib/feature-flags";
 import JournalStats from "@/components/journal/JournalStats";
 import { Modal } from "@/components/ui/Modal";
 import { StrategyCell } from "@/components/journal/cells/StrategyCell";
@@ -155,6 +156,13 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  useEffect(() => {
   setTradePlans(initialTradePlans);
  }, [initialTradePlans]);
+
+ // Fallback active tab if trade plans are disabled
+ useEffect(() => {
+  if (!isTradePlansEnabled() && (activeSubTab === "plans" || activeSubTab === "reviews")) {
+   setActiveSubTab("trades");
+  }
+ }, [activeSubTab]);
 
   const strategies = initialStrategies || [];
   const [isLoading, setIsLoading] = useState(false);
@@ -363,10 +371,10 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
   <div className="flex border-b border-dashboard mt-6 mb-4 gap-6 text-sm font-black">
    {([
     { id: "trades", label: "Trades" },
-    { id: "plans", label: "Trade Plans" },
+    isTradePlansEnabled() && { id: "plans", label: "Trade Plans" },
     { id: "open", label: "Open Positions" },
-    { id: "reviews", label: "Plan Reviews" },
-   ] as const).map((tab) => {
+    isTradePlansEnabled() && { id: "reviews", label: "Plan Reviews" },
+   ].filter(Boolean) as { id: "trades" | "plans" | "open" | "reviews"; label: string }[]).map((tab) => {
     const isActive = activeSubTab === tab.id;
     return (
      <button

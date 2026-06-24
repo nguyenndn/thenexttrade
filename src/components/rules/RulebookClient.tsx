@@ -122,20 +122,34 @@ export function RulebookClient({
       </PageHeader>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} tabsId="rules-tabs">
-        <TabsList>
-          <TabsTrigger value="rulebook">
-            <Shield size={14} />
-            Rulebook
-          </TabsTrigger>
-          <TabsTrigger value="goals">
-            <Award size={14} />
-            Behavior Goals
-          </TabsTrigger>
-          <TabsTrigger value="compliance">
-            <ClipboardCheck size={14} />
-            Compliance Analytics
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto scrollbar-hide flex">
+          <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
+            <TabsTrigger 
+              value="rulebook"
+              activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+              activeTextClassName="!text-white"
+            >
+              <Shield size={14} />
+              Rulebook
+            </TabsTrigger>
+            <TabsTrigger 
+              value="goals"
+              activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+              activeTextClassName="!text-white"
+            >
+              <Award size={14} />
+              Behavior Goals
+            </TabsTrigger>
+            <TabsTrigger 
+              value="compliance"
+              activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+              activeTextClassName="!text-white"
+            >
+              <ClipboardCheck size={14} />
+              Compliance Analytics
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* --- RULEBOOK TAB --- */}
         <TabsContent value="rulebook" className="space-y-6">
