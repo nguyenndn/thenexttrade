@@ -70,7 +70,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
         <HomeSectionHeading
           align="center"
           eyebrow="Choose your path"
-          title="What do you want to improve first?"
+          title="What do you want to improve today?"
           highlight="improve"
           description="Now that you know the system, pick the next step that fits your current goal."
           icon={Compass}
@@ -82,7 +82,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             <Link
               key={idx}
               href={card.href}
-              className={`group relative flex min-h-[118px] flex-col justify-between rounded-2xl border p-4 text-left transition-all duration-300 sm:min-h-[150px] sm:p-5 ${card.bgClass}`}
+              className={`group relative flex min-h-[118px] flex-col justify-between rounded-2xl border border-t-[3px] border-t-gold dark:border-t-gold/90 p-4 text-left transition-all duration-300 sm:min-h-[150px] sm:p-5 ${card.bgClass}`}
             >
               {/* Recommended badge */}
               {'isRecommended' in card && card.isRecommended && (

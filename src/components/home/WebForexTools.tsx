@@ -26,9 +26,9 @@ const VISUAL_TOOLS = [
 
 export function WebForexTools() {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-50/50 dark:from-transparent dark:via-transparent dark:to-transparent border-t border-gray-200 dark:border-white/10">
-      {/* Background dot pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--cyan-500))_1.2px,transparent_1.2px)] [background-size:40px_40px] opacity-[0.08] dark:opacity-[0.04] pointer-events-none" />
+    <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
+      {/* Dot pattern bg — same as Quote/Reviews section but Gold themed */}
+      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
 
       <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <FadeIn delay={0.1} direction="up">
@@ -39,7 +39,7 @@ export function WebForexTools() {
             highlight="Calculators"
             description="Free pro calculators, live data, and visualizers. No signup required."
             icon={Wrench}
-            className="mb-5"
+            className="mb-8"
           />
 
           {/* Premium Tools Grid - 3 Columns */}
@@ -85,6 +85,7 @@ export function WebForexTools() {
             })}
           </div>
 
+          {/* Centered Link - unified for all devices */}
           <div className="mt-8 flex justify-center sm:mt-10">
             <Link
               href="/tools"

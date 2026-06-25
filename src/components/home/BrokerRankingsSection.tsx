@@ -95,7 +95,7 @@ export function BrokerRankingsSection() {
   return (
     <div className="relative overflow-hidden bg-slate-50/50 dark:bg-transparent border-t border-dashboard">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.15] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
       <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -141,7 +141,7 @@ export function BrokerRankingsSection() {
           {activeItems.map((item, idx) => (
             <div 
               key={item.name}
-              className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 p-5 sm:p-6 rounded-2xl bg-white/80 dark:bg-white/[0.02] border border-amber-200/50 dark:border-amber-500/10 hover:border-gold/50 dark:hover:border-gold/30 hover:shadow-lg transition-all duration-300 group"
+              className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 p-5 sm:p-6 rounded-2xl bg-white/80 dark:bg-white/[0.02] border border-amber-300 dark:border-gold/25 hover:border-gold dark:hover:border-gold/60 hover:shadow-lg hover:shadow-gold/5 transition-all duration-300 group"
             >
               {/* Badge for #1 Rated */}
               {idx === 0 && (

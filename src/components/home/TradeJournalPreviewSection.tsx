@@ -12,7 +12,7 @@ interface TradeJournalPreviewSectionProps {
 export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSectionProps) {
   return (
     <div id="how-it-works" className="relative overflow-hidden bg-slate-50/50 dark:bg-transparent border-t border-gray-200 dark:border-white/10 scroll-mt-20">
-      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.15] dark:opacity-[0.2]" />
+      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
       
       <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Two-Column Layout: Steps + Preview */}

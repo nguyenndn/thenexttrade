@@ -25,7 +25,10 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
     : "/auth/signup?next=/dashboard/accounts";
 
   return (
-    <div className="relative py-12 sm:py-16 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 z-10 border-t border-dashboard bg-slate-50/30 dark:bg-transparent">
+    <div className="relative w-full overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
+      {/* Dot pattern bg — same as other sections but Gold themed - now truly full width */}
+      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
+      
       {/* Inject self-contained premium animations */}
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes border-flow-teaser-new {
@@ -63,39 +66,40 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
         }
       `}} />
 
-      {/* Main Container Card */}
-      <div className="relative max-w-5xl mx-auto rounded-3xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]/65 p-6 sm:p-8 md:p-10 shadow-lg dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:border-gold/30 dark:hover:border-gold/20 hover:shadow-xl hover:shadow-gold/[0.01] transition-all duration-500 overflow-hidden group/card">
-        
-        {/* Responsive flowing laser border */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-3xl">
-          <defs>
-            <linearGradient id="laser-grad-teaser-new" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.1" />
-              <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.75" />
-              <stop offset="100%" stopColor="#10b981" stopOpacity="0.15" />
-            </linearGradient>
-          </defs>
-          <rect
-            x="0.5"
-            y="0.5"
-            width="calc(100% - 1px)"
-            height="calc(100% - 1px)"
-            rx="23"
-            fill="none"
-            stroke="url(#laser-grad-teaser-new)"
-            strokeWidth="1.5"
-            className="animate-flow-teaser-new"
-          />
-        </svg>
+      <section className="py-12 sm:py-16 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Main Container Card */}
+        <div className="relative max-w-6xl lg:max-w-7xl mx-auto rounded-3xl border border-amber-200/50 dark:border-white/10 bg-slate-50/90 dark:bg-[#0c0f16]/80 backdrop-blur-md p-6 sm:p-8 md:p-10 shadow-lg dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-gold/30 dark:hover:border-gold/20 hover:shadow-xl hover:shadow-gold/[0.01] transition-all duration-500 overflow-hidden group/card">
+          
+          {/* Responsive flowing laser border */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-3xl">
+            <defs>
+              <linearGradient id="laser-grad-teaser-new" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.1" />
+                <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.75" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0.15" />
+              </linearGradient>
+            </defs>
+            <rect
+              x="0.5"
+              y="0.5"
+              width="calc(100% - 1px)"
+              height="calc(100% - 1px)"
+              rx="23"
+              fill="none"
+              stroke="url(#laser-grad-teaser-new)"
+              strokeWidth="1.5"
+              className="animate-flow-teaser-new"
+            />
+          </svg>
 
-        {/* Technical Dotted Blueprint Matrix Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.03] dark:opacity-[0.02] pointer-events-none rounded-3xl" />
-        
-        {/* Soft decorative glow blobs */}
-        <div className="absolute -top-12 -right-12 w-64 h-64 bg-gradient-to-br from-gold/10 to-transparent dark:from-gold/5 dark:to-transparent rounded-full blur-3xl pointer-events-none group-hover/card:scale-110 transition-transform duration-700" />
-        <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-gradient-to-br from-emerald-500/10 to-transparent dark:from-emerald-500/5 dark:to-transparent rounded-full blur-2xl pointer-events-none" />
+          {/* Technical Square Blueprint Grid Background (highly robotic) */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(245,158,11,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.02)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none rounded-3xl" />
+          
+          {/* Glowing Tech Mesh Backdrop (Sky Blue & Amber Gold) */}
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-sky-400/[0.08] dark:bg-sky-500/[0.06] rounded-full blur-[80px] pointer-events-none group-hover/card:scale-110 transition-transform duration-700" />
+          <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-amber-400/[0.1] dark:bg-amber-500/[0.06] rounded-full blur-[80px] pointer-events-none" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center relative z-10">
           
           {/* Left Column: Product Promise, Trust, CTAs */}
           <div className="space-y-6">
@@ -137,7 +141,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                 href="/trading-systems" 
                 className={buttonVariants({
                   variant: "primary",
-                  className: "relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold shadow-md shadow-amber-500/20 px-6 py-3 min-h-11 rounded-xl flex items-center justify-center gap-2 premium-btn-shine border-none transition-all duration-300"
+                  className: "relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold shadow-md shadow-amber-500/20 px-6 py-3 min-h-11 rounded-xl flex items-center justify-center gap-2 animate-btn-shine border-none transition-all duration-300"
                 })}
               >
                 <span className="relative z-10 flex items-center gap-1.5 text-xs uppercase tracking-wider">
@@ -272,6 +276,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
         </div>
 
       </div>
+      </section>
     </div>
   );
 }

@@ -31,7 +31,7 @@ export function HomeSectionCTA({ isLoggedIn }: HomeSectionCTAProps) {
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href={isLoggedIn ? "/dashboard" : "/auth/signup?source=home_final_cta&intent=track"}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gold px-7 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(245,158,11,0.24)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-500 hover:shadow-[0_18px_38px_rgba(245,158,11,0.34)] active:translate-y-0"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gold px-7 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(245,158,11,0.24)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-500 hover:shadow-[0_18px_38px_rgba(245,158,11,0.34)] active:translate-y-0 animate-btn-shine"
             >
               <span>{isLoggedIn ? "Open Dashboard" : "Start Free Journal"}</span>
               <Zap size={16} className="text-yellow-200" />

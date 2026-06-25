@@ -27,10 +27,10 @@ const TradeJournalPreviewSection = dynamic(() => import("@/components/home/Trade
 const SpreadsheetComparisonSection = dynamic(() => import("@/components/home/SpreadsheetComparisonSection").then(m => ({ default: m.SpreadsheetComparisonSection })), { loading: () => <div className="h-96" /> });
 const BrokerRankingsSection = dynamic(() => import("@/components/home/BrokerRankingsSection").then(m => ({ default: m.BrokerRankingsSection })), { loading: () => <div className="h-96" /> });
 const MT5TeaserCTA = dynamic(() => import("@/components/home/MT5TeaserCTA").then(m => ({ default: m.MT5TeaserCTA })), { loading: () => <div className="h-24" /> });
-const HomeTrustDisclaimer = dynamic(() => import("@/components/home/HomeTrustDisclaimer").then(m => ({ default: m.HomeTrustDisclaimer })), { loading: () => null });
 const HomeSectionCTA = dynamic(() => import("@/components/home/HomeSectionCTA").then(m => ({ default: m.HomeSectionCTA })), { loading: () => <div className="h-[350px]" /> });
 const ReviewsSection = dynamic(() => import("@/components/home/ReviewsSection").then(m => ({ default: m.ReviewsSection })), { loading: () => <div className="h-96" /> });
 const QuoteDisplay = dynamic(() => import("@/components/shared/QuoteDisplay"), { loading: () => null });
+const StartByGoalSection = dynamic(() => import("@/components/home/StartByGoalSection").then(m => ({ default: m.StartByGoalSection })), { loading: () => <div className="h-96" /> });
 
 export default async function Home() {
   const user = await getAuthUser();
@@ -82,6 +82,11 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
         <HomeTrustMetrics metrics={trustMetrics} />
       </FadeIn>
 
+      {/* 2b. Choose Your Path (Goal Router) */}
+      <FadeIn delay={0.1} direction="up">
+        <StartByGoalSection isLoggedIn={isLoggedIn} />
+      </FadeIn>
+
       {/* 3. Product Proof & Workflow */}
       <FadeIn delay={0.1} direction="up">
         <TradeJournalPreviewSection isLoggedIn={isLoggedIn} />
@@ -118,7 +123,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
             <div className="flex justify-center mt-6">
               <Link href="/academy">
                 <Button
-                  className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-emerald-600 text-white font-extrabold shadow-[0_4px_12px_rgba(0,200,136,0.2)] dark:shadow-[0_4px_12px_rgba(0,200,136,0.1)] hover:shadow-[0_4px_20px_rgba(0,200,136,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 min-h-11 px-8 py-3 text-sm group"
+                  className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-emerald-600 text-white font-extrabold shadow-[0_4px_12px_rgba(0,200,136,0.2)] dark:shadow-[0_4px_12px_rgba(0,200,136,0.1)] hover:shadow-[0_4px_20px_rgba(0,200,136,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 min-h-11 px-8 py-3 text-sm group animate-btn-shine"
                 >
                   <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <span className="flex items-center gap-2 relative z-10">
@@ -146,14 +151,14 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
         <MT5TeaserCTA isLoggedIn={isLoggedIn} />
       </FadeIn>
 
-      {/* 8. Short FAQ Accordion */}
-      <FadeIn delay={0.1} direction="up">
-        <HomeFAQSection />
-      </FadeIn>
-
-      {/* 8b. Reviews Section */}
+      {/* 8. Reviews Section */}
       <FadeIn delay={0.1} direction="up">
         <ReviewsSection />
+      </FadeIn>
+
+      {/* 8b. Short FAQ Accordion */}
+      <FadeIn delay={0.1} direction="up">
+        <HomeFAQSection />
       </FadeIn>
 
       {/* 9. Final conversion CTA */}
@@ -168,20 +173,15 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
 
       {/* 11. Daily Quote */}
       <FadeIn delay={0.2} direction="up">
-        <div className="relative overflow-hidden border-t border-dashboard bg-slate-50/50 dark:bg-[#0F1117] py-6 sm:py-8">
+        <div className="relative overflow-hidden border-t border-dashboard bg-slate-50/50 dark:bg-[#0F1117] py-2 sm:py-3">
           {/* Background Effects */}
-          <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
           <DynamicFirefly />
 
           <section className="max-w-4xl mx-auto px-4 text-center relative z-10">
             <QuoteDisplay isDark={true} />
           </section>
         </div>
-      </FadeIn>
-
-      {/* 12. Home Trust Disclaimer (Required risk disclaimer) */}
-      <FadeIn delay={0.1} direction="up">
-        <HomeTrustDisclaimer />
       </FadeIn>
     </>
   );

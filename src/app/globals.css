@@ -209,6 +209,42 @@ select:-webkit-autofill:focus {
   animation: marquee 30s linear infinite;
 }
 
+/* Premium CTA Button Shimmer/Shine Sweep Effect */
+@keyframes btn-shine-sweep {
+  0% {
+    left: -150%;
+  }
+  25%, 100% {
+    left: 200%;
+  }
+}
+
+.animate-btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-btn-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 80px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 80%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  left: -150%;
+  animation: btn-shine-sweep 4.5s infinite ease-in-out;
+  pointer-events: none;
+}
+
+
 
 
 @layer base {

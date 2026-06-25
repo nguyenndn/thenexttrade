@@ -63,11 +63,11 @@ export function HomeSectionHeading({
         {eyebrow && (
           <div
             className={[
-              "mb-3 inline-flex items-center gap-2 rounded-full border border-gold/25 bg-gold/[0.07] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-gold shadow-sm shadow-gold/[0.04]",
+              "mb-2.5 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.25em] text-amber-600 dark:text-gold/90 select-none",
               isCenter ? "justify-center" : "",
             ].join(" ")}
           >
-            {Icon && <Icon size={12} strokeWidth={2.6} />}
+            {Icon && <Icon size={11} strokeWidth={2.8} className="opacity-80" />}
             <span>{eyebrow}</span>
           </div>
         )}

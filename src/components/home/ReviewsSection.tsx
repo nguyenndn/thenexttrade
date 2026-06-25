@@ -109,114 +109,143 @@ export function ReviewsSection() {
  const visibleReviews = REVIEWS.slice(currentIndex, currentIndex + visibleCount);
 
  return (
- <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
- {/* Dot pattern bg — same as Quote section but Gold themed */}
- <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
+    <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
+      {/* Dot pattern bg — same as Quote section but Gold themed */}
+      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
- <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
- <HomeSectionHeading
- align="center"
- eyebrow="Community proof"
- title="What Traders Say"
- highlight="Traders"
- description="Real reviews from our community."
- icon={Star}
- className="mb-12"
- />
+      <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <HomeSectionHeading
+          align="center"
+          eyebrow="Community love"
+          title="What Our Traders Say"
+          highlight="Traders"
+          description="Join 32,000+ traders who trust TheNextTrade for their forex success."
+          icon={Star}
+          className="mb-12"
+        />
 
- {/* Cards */}
- <div
- className="relative"
- onMouseEnter={() => setIsAutoPlaying(false)}
- onMouseLeave={() => setIsAutoPlaying(true)}
- >
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {visibleReviews.map((review, idx) => (
- <div
- key={`${currentIndex}-${idx}`}
- className={`relative p-6 rounded-2xl border transition-all duration-500 animate-in fade-in slide-in-from-right-4 ${
- isDark
- ? "bg-white/[0.03] border-amber-500/15 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/[0.02]"
- : "bg-white border-amber-200/70 shadow-sm hover:border-emerald-500/30 hover:shadow-md hover:shadow-emerald-500/[0.02]"
- }`}
- >
- {/* Quote icon (Gold themed) */}
- <Quote
- size={28}
- className="text-gold/20 absolute top-4 right-4"
- />
+        {/* Cards */}
+        <div
+          className="relative"
+          onMouseEnter={() => setIsAutoPlaying(false)}
+          onMouseLeave={() => setIsAutoPlaying(true)}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-center">
+            {visibleReviews.map((review, idx) => {
+              // Determine if this card is the prominent middle card on desktop
+              const isMiddle = visibleCount === 3 && idx === 1;
+              const isSide = visibleCount === 3 && (idx === 0 || idx === 2);
 
- {/* Header */}
- <div className="flex items-center gap-3 mb-4">
- <div
- className={`w-10 h-10 rounded-full ${review.color} flex items-center justify-center text-white text-sm font-bold`}
- >
- {review.initials}
- </div>
- <div>
- <p className="text-gray-700 dark:text-white font-bold text-sm">
- {review.name}
- </p>
- <p className="text-gray-600 dark:text-gray-300 text-xs">{review.role}</p>
- </div>
- </div>
+              let cardClasses = "";
+              if (isMiddle) {
+                cardClasses = isDark
+                  ? "bg-white/[0.06] border-gold/40 shadow-[0_15px_40px_rgba(245,158,11,0.1)] scale-103 lg:scale-105 z-20 relative ring-1 ring-gold/10"
+                  : "bg-white border-amber-400 shadow-[0_15px_40px_rgba(245,158,11,0.06)] scale-103 lg:scale-105 z-20 relative ring-1 ring-amber-300/30";
+              } else if (isSide) {
+                cardClasses = "scale-95 opacity-40 dark:opacity-30 blur-[1.5px] pointer-events-none z-10 relative";
+              } else {
+                // Standard layout for mobile/tablet where active card is highlighted
+                cardClasses = isDark
+                  ? "bg-white/[0.03] border-amber-500/15 shadow-sm z-10 relative hover:border-gold/30 hover:shadow-md transition-all duration-300"
+                  : "bg-white border-amber-200/70 shadow-sm z-10 relative hover:border-gold/30 hover:shadow-md transition-all duration-300";
+              }
 
- {/* Text */}
- <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-4">
- &ldquo;{review.text}&rdquo;
- </p>
+              return (
+                <div
+                  key={`${currentIndex}-${idx}`}
+                  className={`relative p-5 rounded-2xl border transition-all duration-500 animate-in fade-in slide-in-from-right-4 flex flex-col justify-between h-full ${cardClasses}`}
+                >
+                  {/* Top Row: Rating and faint Quote icon */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: review.rating }).map((_, i) => (
+                        <Star
+                          key={i}
+                          size={14}
+                          className="text-yellow-450 fill-yellow-450 dark:text-gold dark:fill-gold"
+                        />
+                      ))}
+                    </div>
+                    <Quote size={24} className="text-gold/10 dark:text-gold/5 shrink-0" />
+                  </div>
 
- {/* Stars */}
- <div className="flex gap-0.5">
- {Array.from({ length: review.rating }).map((_, i) => (
- <Star
- key={i}
- size={14}
- className="text-yellow-400 fill-yellow-400"
- />
- ))}
- </div>
- </div>
- ))}
- </div>
+                  {/* Middle: Testimonial Text */}
+                  <p className="text-gray-705 dark:text-gray-200 text-[13px] font-semibold leading-relaxed mb-4 min-h-[60px] italic">
+                    &ldquo;{review.text}&rdquo;
+                  </p>
 
- {/* Navigation */}
- <div className="flex items-center justify-center gap-4 mt-8">
- <Button
- variant="ghost"
- size="icon"
- onClick={prev}
- className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-dashboard text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white"
- >
- <ChevronLeft size={18} />
- </Button>
+                  {/* Bottom Row: User Profile & Verified Badge */}
+                  <div className="flex items-center justify-between border-t border-dashboard/80 dark:border-white/5 pt-3 mt-auto">
+                    {/* User Profile */}
+                    <div className="flex items-center gap-2.5">
+                      <div className="relative shrink-0">
+                        <div className={`w-9 h-9 rounded-full ${review.color} flex items-center justify-center text-white text-xs font-black`}>
+                          {review.initials}
+                        </div>
+                        {/* Gold Checkmark Badge */}
+                        <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-500 dark:bg-gold rounded-full flex items-center justify-center text-white border-2 border-white dark:border-[#1E2028] scale-90 shadow-sm">
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                          </svg>
+                        </span>
+                      </div>
+                      <div className="min-w-0 text-left">
+                        <p className="text-gray-800 dark:text-white font-black text-sm leading-tight truncate">
+                          {review.name}
+                        </p>
+                        <p className="text-gray-500 dark:text-gray-450 text-[10px] font-bold uppercase tracking-wider mt-0.5">
+                          Member
+                        </p>
+                      </div>
+                    </div>
 
- {/* Dots (Gold themed active capsule) */}
- <div className="flex gap-2">
- {Array.from({ length: maxIndex + 1 }).map((_, i) => (
- <button
- key={i}
- onClick={() => setCurrentIndex(i)}
- className={`w-2 h-2 rounded-full transition-all duration-300 ${
- i === currentIndex
- ? "bg-gold w-6"
- : "bg-gray-300 dark:bg-white/20 hover:bg-gray-400 dark:hover:bg-white/40"
- }`}
- />
- ))}
- </div>
+                    {/* Verified Badge */}
+                    <div className="px-2.5 py-0.5 rounded-full border border-amber-500/20 dark:border-gold/20 bg-amber-500/5 dark:bg-gold/5 text-[9px] font-black uppercase tracking-wider text-amber-600 dark:text-gold shrink-0">
+                      Verified
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
- <Button
- variant="ghost"
- size="icon"
- onClick={next}
- className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-dashboard text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white"
- >
- <ChevronRight size={18} />
- </Button>
- </div>
- </div>
- </section>
- </div>
+          {/* Navigation */}
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={prev}
+              className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-dashboard text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white"
+            >
+              <ChevronLeft size={18} />
+            </Button>
+
+            {/* Dots (Gold themed active capsule) */}
+            <div className="flex gap-2">
+              {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentIndex(i)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    i === currentIndex
+                      ? "bg-gold w-6"
+                      : "bg-gray-300 dark:bg-white/20 hover:bg-gray-400 dark:hover:bg-white/40"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={next}
+              className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-dashboard text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white"
+            >
+              <ChevronRight size={18} />
+            </Button>
+          </div>
+        </div>
+      </section>
+    </div>
  );
 }

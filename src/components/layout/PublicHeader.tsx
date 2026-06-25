@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { AuthUser } from "@/lib/auth-types";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import { Search } from "lucide-react";
 
 import { DesktopNav } from "@/components/layout/DesktopNav";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
@@ -30,6 +31,12 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
  const [isAuthLoaded, setIsAuthLoaded] = useState(initialUser !== undefined);
  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
  const [isScrolled, setIsScrolled] = useState(false);
+
+ const handleSearchClick = () => {
+   document.dispatchEvent(
+     new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true })
+   );
+ };
 
  useEffect(() => {
  setIsMounted(true);
@@ -116,6 +123,22 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
 
  {/* Theme Toggle */}
  <ThemeToggleSwitch />
+
+  {/* Search Trigger Button (Symmetrical to Theme Switcher) */}
+  <button
+    onClick={handleSearchClick}
+    aria-label="Search website (Ctrl+K)"
+    className={`
+      relative w-9 h-9 p-0 flex items-center justify-center rounded-full transition-all duration-300
+      focus:outline-none focus:ring-2 focus:ring-amber-500/40 cursor-pointer
+      ${isDark 
+        ? 'bg-slate-800/80 border-2 border-slate-700 text-gold hover:bg-slate-700/80 hover:text-amber-300 hover:border-gold/50' 
+        : 'bg-white border-2 border-dashboard text-gold hover:bg-gray-50 hover:text-amber-600 hover:border-gold/50'
+      }
+    `}
+  >
+    <Search className="w-[18px] h-[18px]" strokeWidth={2.5} />
+  </button>
 
  {/* Login / User Menu — hidden on mobile/tablet, shown on lg+ */}
  <div className="hidden lg:flex items-center">
