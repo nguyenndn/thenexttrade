@@ -15,7 +15,7 @@ const sourceSans = Source_Sans_3({
  display: 'swap',
  preload: true,
  adjustFontFallback: true,
- weight: ["400", "600"]
+ weight: ["400", "500", "600", "700"]
 });
 const lexend = Lexend({
  subsets: ["latin"],

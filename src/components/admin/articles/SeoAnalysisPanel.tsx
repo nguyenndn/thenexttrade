@@ -41,12 +41,13 @@ function extractKeyphrase(title: string): string {
 }
 
 export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, metaDescription, content, thumbnail, onAiGenerate, autoKeyphrase = false, onAutoKeyphraseChange }: SeoProps) {
- const [previewMode, setPreviewMode] = useState<'mobile' | 'desktop'>('mobile');
- const [activeTab, setActiveTab] = useState<'seo' | 'readability' | 'social'>('seo');
- const [socialPlatform, setSocialPlatform] = useState<'facebook' | 'twitter'>('facebook');
+  const [previewMode, setPreviewMode] = useState<'mobile' | 'desktop'>('mobile');
+  const [activeTab, setActiveTab] = useState<'seo' | 'readability' | 'social' | 'aiSeo'>('seo');
+  const [socialPlatform, setSocialPlatform] = useState<'facebook' | 'twitter'>('facebook');
 
- const [seoAnalysis, setSeoAnalysis] = useState<{ label: string; status: 'good' | 'bad' | 'warning' }[]>([]);
- const [readabilityAnalysis, setReadabilityAnalysis] = useState<{ label: string; status: 'good' | 'bad' | 'warning' }[]>([]);
+  const [seoAnalysis, setSeoAnalysis] = useState<{ label: string; status: 'good' | 'bad' | 'warning' }[]>([]);
+  const [readabilityAnalysis, setReadabilityAnalysis] = useState<{ label: string; status: 'good' | 'bad' | 'warning' }[]>([]);
+  const [aiSeoAnalysis, setAiSeoAnalysis] = useState<{ label: string; status: 'good' | 'bad' | 'warning' }[]>([]);
 
  // Auto-keyphrase: extract from title when auto mode is ON
  useEffect(() => {
@@ -156,9 +157,115 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
  checks.push({ label: `Passive voice: Found ${passiveCount} instances (try to use active voice).`, status: 'warning' });
  }
 
- setReadabilityAnalysis(checks);
+  setReadabilityAnalysis(checks);
 
- }, [content, activeTab]);
+  }, [content, activeTab]);
+
+  // --- AI-SEO / AEO / GEO Analysis Logic ---
+  useEffect(() => {
+    const textContent = content ? content.replace(/<[^>]*>?/gm, '').trim() : '';
+    const checks: { label: string; status: 'good' | 'bad' | 'warning' }[] = [];
+
+    // 1. Direct Answer Block (Optimal word count: 40-60 words in first paragraph)
+    const paragraphs = content
+      ? content.split(/<\/p>/i)
+          .map(p => p.replace(/<[^>]*>?/gm, '').trim())
+          .filter(p => p.length > 10)
+      : [];
+    const firstPara = paragraphs[0] || "";
+    const firstParaWords = firstPara.split(/\s+/).filter(Boolean).length;
+
+    if (firstParaWords >= 40 && firstParaWords <= 65) {
+      checks.push({
+        label: `Direct Answer Block: Good! First paragraph has ${firstParaWords} words (optimal: 40-60 words for snippet extraction).`,
+        status: 'good'
+      });
+    } else if (firstParaWords > 0 && firstParaWords < 40) {
+      checks.push({
+        label: `Direct Answer Block: First paragraph has only ${firstParaWords} words. Consider expanding to 40-60 words to capture AI Overview placements.`,
+        status: 'warning'
+      });
+    } else if (firstParaWords > 65) {
+      checks.push({
+        label: `Direct Answer Block: First paragraph has ${firstParaWords} words. Consider shortening to 40-60 words for a more concise lead-in sentence.`,
+        status: 'warning'
+      });
+    } else {
+      checks.push({
+        label: "Direct Answer Block: No content paragraph detected. Add a clear introduction paragraph at the start.",
+        status: 'bad'
+      });
+    }
+
+    // 2. FAQ Structure (H2 "FAQ" and H3 questions)
+    const hasFaqH2 = content ? /<h2[^>]*>(?:[^<]*\s+)?FAQ(?:[^<]*)<\/h2>/i.test(content) : false;
+    if (hasFaqH2) {
+      const faqIndex = content.search(/<h2[^>]*>(?:[^<]*\s+)?FAQ(?:[^<]*)<\/h2>/i);
+      const faqContent = content.substring(faqIndex);
+      const h3Count = (faqContent.match(/<h3[^>]*>/gi) || []).length;
+      if (h3Count >= 2) {
+        checks.push({
+          label: `FAQ Structure: Excellent! Detected "FAQ" heading with ${h3Count} questions. This automatically generates a FAQPage JSON-LD Schema.`,
+          status: 'good'
+        });
+      } else {
+        checks.push({
+          label: `FAQ Structure: Found "FAQ" heading but only ${h3Count} question(s) (recommended: 2+). Add more questions to build a rich Q&A section.`,
+          status: 'warning'
+        });
+      }
+    } else {
+      checks.push({
+        label: 'FAQ Structure: No "FAQ" H2 heading found. Add an "FAQ" section at the bottom using H3 headings for questions to trigger automatic FAQPage Schema.',
+        status: 'warning'
+      });
+    }
+
+    // 3. Outbound Citations (credibility signals)
+    const hasOutboundLink = content ? /<a[^+]+href=["'](https?:\/\/(?!thenexttrade\.com|localhost|example\.com)[^"']+)["'][^>]*>/i.test(content) : false;
+    if (hasOutboundLink) {
+      checks.push({
+        label: "Outbound Citations: External citations detected. Linking to authoritative sources builds high trust for GEO algorithms.",
+        status: 'good'
+      });
+    } else {
+      checks.push({
+        label: "Outbound Citations: No external links detected. Consider linking to verified external sources to boost LLM citation probability.",
+        status: 'warning'
+      });
+    }
+
+    // 4. Data Density (Numerical stats)
+    const numbers = textContent.match(/\b\d+(?:\.\d+)?%?\b/g) || [];
+    const uniqueNumbers = new Set(numbers);
+    if (uniqueNumbers.size >= 3) {
+      checks.push({
+        label: `Data Density: Good! Found ${uniqueNumbers.size} distinct numerical statistics/metrics. AI engines highly favor data-rich content.`,
+        status: 'good'
+      });
+    } else {
+      checks.push({
+        label: `Data Density: Only ${uniqueNumbers.size} numerical statistic(s) found. Try adding concrete backtest data, percentages, or metrics to increase GEO citations.`,
+        status: 'warning'
+      });
+    }
+
+    // 5. Heading Structure
+    const h2Count = content ? (content.match(/<h2[^>]*>/gi) || []).length : 0;
+    if (h2Count >= 3) {
+      checks.push({
+        label: `Heading Structure: Detected ${h2Count} H2 headings, creating clear semantic sections optimal for AI step extraction.`,
+        status: 'good'
+      });
+    } else {
+      checks.push({
+        label: `Heading Structure: Only ${h2Count} H2 heading(s) found (recommended: 3+). Break content into clear sub-sections to help AI parse key concepts.`,
+        status: 'warning'
+      });
+    }
+
+    setAiSeoAnalysis(checks);
+  }, [content]);
 
 
  return (
@@ -169,29 +276,36 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
  Yoast SEO (Pro)
  </h3>
  {/* Tabs */}
- <div className="flex bg-gray-100 dark:bg-white/5 rounded-lg p-1 gap-1">
- <Button
- variant="ghost"
- onClick={() => setActiveTab('seo')}
- className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
- >
- SEO
- </Button>
- <Button
- variant="ghost"
- onClick={() => setActiveTab('readability')}
- className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'readability' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
- >
- Readability
- </Button>
- <Button
- variant="ghost"
- onClick={() => setActiveTab('social')}
- className={`px-3 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'social' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
- >
- Social
- </Button>
- </div>
+  <div className="flex bg-gray-100 dark:bg-white/5 rounded-lg p-1 gap-1">
+  <Button
+  variant="ghost"
+  onClick={() => setActiveTab('seo')}
+  className={`px-3.5 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
+  >
+  SEO
+  </Button>
+  <Button
+  variant="ghost"
+  onClick={() => setActiveTab('readability')}
+  className={`px-3.5 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'readability' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
+  >
+  Readability
+  </Button>
+  <Button
+  variant="ghost"
+  onClick={() => setActiveTab('aiSeo')}
+  className={`px-3.5 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'aiSeo' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
+  >
+  AI-SEO
+  </Button>
+  <Button
+  variant="ghost"
+  onClick={() => setActiveTab('social')}
+  className={`px-3.5 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === 'social' ? 'bg-white text-primary shadow-sm hover:bg-white hover:text-primary' : 'text-gray-600 hover:bg-gray-200'}`}
+  >
+  Social
+  </Button>
+  </div>
  </div>
 
  {/* --- SEO TAB --- */}
@@ -317,6 +431,34 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
  </div>
  </div>
  )}
+
+  {/* --- AI-SEO TAB --- */}
+  {activeTab === 'aiSeo' && (
+  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+  <div>
+  <h4 className="text-sm font-bold text-gray-700 dark:text-white mb-3">AI-SEO (AEO & GEO) Analysis</h4>
+  <div className="space-y-3">
+  {aiSeoAnalysis.map((item, idx) => (
+  <div key={idx} className="flex items-start gap-2.5 text-sm border-b border-dashboard/30 pb-3 last:border-0 last:pb-0">
+  <div className={`mt-1.5 w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.status === 'good' ? 'bg-green-500' :
+  item.status === 'warning' ? 'bg-orange-500' : 'bg-red-500'
+  }`} />
+  <span className="text-gray-600 dark:text-gray-300 leading-relaxed font-semibold">{item.label}</span>
+  </div>
+  ))}
+  </div>
+  <div className="mt-6 p-4 rounded-xl bg-purple-500/[0.05] border border-purple-500/10 dark:border-purple-500/20">
+  <h5 className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5 mb-1.5">
+  <Sparkles size={12} />
+  <span>What is AI-SEO?</span>
+  </h5>
+  <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed font-semibold">
+  AI-SEO optimizes your articles to be extracted as featured answers in **Google AI Overviews (AEO)** and cited as authoritative sources in **ChatGPT, Claude, and Perplexity Search (GEO)**. Keep answers direct, use comparison tables, and cite concrete statistics.
+  </p>
+  </div>
+  </div>
+  </div>
+  )}
 
  {/* --- SOCIAL TAB --- */}
  {activeTab === 'social' && (

@@ -117,7 +117,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
               
               {/* Description */}
               <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 font-semibold leading-relaxed">
-                Unlock EA GoldScalperNinja, Trade Manager panels, and MT5 setup tools when your account qualifies through the partner path.
+                Unlock EA GoldScalperNinja, Trade Manager panels, and MT5 Expert Advisors when your account qualifies through the partner path.
               </p>
             </div>
 

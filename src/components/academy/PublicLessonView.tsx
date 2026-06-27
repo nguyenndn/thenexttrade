@@ -46,6 +46,7 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
  provider: { "@type": "Organization", name: "TheNextTrade" },
  },
  isAccessibleForFree: true,
+ citation: lesson.sourceUrls || []
  }}
  />
 
@@ -96,6 +97,38 @@ export function PublicLessonView({ lesson, level, courseLessons, nextLesson, pre
  className="prose prose-lg dark:prose-invert max-w-none mb-12 prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-img:shadow-lg prose-img:mx-auto prose-code:text-primary prose-code:bg-primary/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 [&_figure]:text-center [&_figure]:my-8 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3"
  dangerouslySetInnerHTML={{ __html: lesson.content }}
  />
+ {/* References & Sources */}
+ {lesson.sourceUrls && lesson.sourceUrls.length > 0 && (
+ <div className="mt-8 p-6 bg-slate-50 dark:bg-white/[0.015] border border-dashboard rounded-2xl mb-12">
+ <h4 className="text-xs font-bold text-gray-800 dark:text-white flex items-center gap-2 mb-4 uppercase tracking-wider">
+ <BookOpen size={14} className="text-primary" />
+ <span>References & Sources</span>
+ </h4>
+ <ul className="space-y-3">
+ {lesson.sourceUrls.map((url: string, index: number) => {
+ let domain = url;
+ try {
+ domain = new URL(url).hostname;
+ } catch (e) {}
+ return (
+ <li key={index} className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+ <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+ <span className="font-semibold text-gray-500">[{index + 1}]</span>
+ <a
+ href={url}
+ target="_blank"
+ rel="noopener noreferrer"
+ className="text-primary hover:underline font-bold truncate transition-colors"
+ >
+ {domain}
+ </a>
+ <span className="text-gray-400 dark:text-gray-600 truncate max-w-[200px] sm:max-w-[400px] hidden sm:inline">({url})</span>
+ </li>
+ );
+ })}
+ </ul>
+ </div>
+ )}
  {isPremiumLocked && (
  <div className="absolute flex items-end justify-center pb-8 bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-white via-white/90 dark:from-[#0B0E14] dark:via-[#0B0E14]/90 to-transparent pointer-events-none" />
  )}

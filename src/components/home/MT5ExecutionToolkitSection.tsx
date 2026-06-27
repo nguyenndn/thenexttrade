@@ -38,11 +38,11 @@ const PRODUCTS = [
     accentRing: "ring-blue-500/15 dark:ring-blue-400/15",
   },
   {
-    icon: Wrench,
-    title: "Partner EA Toolkit",
-    slug: "partner-ea-toolkit",
+    icon: Bot,
+    title: "GSN Phoenix Grid",
+    slug: "gsn-phoenix-grid",
     description:
-      "Additional MT5 tools and setup resources for traders who qualify through the partner account path.",
+      "Advanced grid and hedge recovery system built for experienced traders.",
     accentRing: "ring-emerald-500/15 dark:ring-emerald-400/15",
   },
 ] as const;
@@ -50,7 +50,7 @@ const PRODUCTS = [
 const UNLOCK_STEPS = [
   { icon: UserCheck, label: "Use eligible account" },
   { icon: ShieldCheck, label: "Submit unlock request" },
-  { icon: Download, label: "Download EA tools" },
+  { icon: Download, label: "Download EAs" },
   { icon: Monitor, label: "Install on MT5" },
 ] as const;
 
@@ -81,10 +81,10 @@ export function MT5ExecutionToolkitSection({
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             <HomeSectionHeading
               align="left"
-              eyebrow="MT5 Execution Toolkit"
-              title="Unlock the GoldScalperNinja MT5 Toolkit"
+              eyebrow="MT5 Expert Advisors"
+              title="Unlock GoldScalperNinja MT5 Expert Advisors"
               highlight="GoldScalperNinja"
-              description="Use your eligible partner account to unlock MT5 Expert Advisors, Trade Manager tools, setup guides, and community support built for cleaner execution and better risk control."
+              description="Use your eligible partner account to unlock MT5 Expert Advisors, Trade Manager panels, setup guides, and community support built for cleaner execution and better risk control."
               icon={Zap}
               className="mb-6 w-full [&>div]:items-center [&>div]:text-center lg:[&>div]:items-start lg:[&>div]:text-left"
             />
@@ -149,12 +149,12 @@ export function MT5ExecutionToolkitSection({
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
                   <span className="text-[9px] font-black uppercase tracking-[0.15em] text-gold">
-                    MT5 Toolkit
+                    MT5 Expert Advisors
                   </span>
                 </div>
                 <div className="ml-auto px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/50 dark:border-emerald-500/15">
                   <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                    3 Tools Available
+                    3 EAs Available
                   </span>
                 </div>
               </div>

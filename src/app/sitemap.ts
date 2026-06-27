@@ -1,3 +1,4 @@
+export const revalidate = 86400; // Cache sitemap statically for 24 hours
 
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';

@@ -103,7 +103,7 @@ export function TradingSystemsParamsTable({ parameters }: TradingSystemsParamsTa
                     <td className="py-3 px-3 font-mono text-gray-800 dark:text-gray-200 select-all">
                       {param.defaultValue}
                     </td>
-                    <td className="py-3 text-[11px] text-gray-500 dark:text-gray-400 font-medium leading-snug text-right max-w-[160px] truncate-2-lines">
+                    <td className="py-3 text-xs text-gray-500 dark:text-gray-400 font-medium leading-snug text-right max-w-[160px] truncate-2-lines">
                       {param.description}
                     </td>
                   </tr>

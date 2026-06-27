@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { SafeImage } from "@/components/ui/SafeImage";
 
-import { MessageSquare, Calendar, Clock, Home, ChevronRight, ThumbsUp, Flame } from "lucide-react";
+import { MessageSquare, Calendar, Clock, Home, ChevronRight, ThumbsUp, Flame, BookOpen } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { CommentsFetcher } from "@/components/comments/CommentsFetcher";
@@ -198,7 +198,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
  author: {
  name: article.author.name || "TheNextTrade Team",
  url: `${process.env.NEXT_PUBLIC_APP_URL}/author/${article.author.id}`
- }
+ },
+ citation: article.sourceUrls || []
  }}
  />
  {article.schemaType === "HOWTO" && (() => {
@@ -372,6 +373,39 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
  dangerouslySetInnerHTML={{ __html: processedContent }}
  />
  </div>
+
+ {/* References & Sources */}
+ {article.sourceUrls && article.sourceUrls.length > 0 && (
+ <div className="mt-8 p-6 bg-slate-50 dark:bg-white/[0.015] border border-dashboard rounded-2xl">
+ <h4 className="text-xs font-bold text-gray-800 dark:text-white flex items-center gap-2 mb-4 uppercase tracking-wider">
+ <BookOpen size={14} className="text-primary" />
+ <span>References & Sources</span>
+ </h4>
+ <ul className="space-y-3">
+ {article.sourceUrls.map((url: string, index: number) => {
+ let domain = url;
+ try {
+ domain = new URL(url).hostname;
+ } catch (e) {}
+ return (
+ <li key={index} className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+ <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+ <span className="font-semibold text-gray-500">[{index + 1}]</span>
+ <a
+ href={url}
+ target="_blank"
+ rel="noopener noreferrer"
+ className="text-primary hover:underline font-bold truncate transition-colors"
+ >
+ {domain}
+ </a>
+ <span className="text-gray-400 dark:text-gray-600 truncate max-w-[200px] sm:max-w-[400px] hidden sm:inline">({url})</span>
+ </li>
+ );
+ })}
+ </ul>
+ </div>
+ )}
 
  {/* AI Image Disclaimer */}
  <div className="mt-6 px-4 py-3 rounded-lg bg-amber-50 dark:bg-amber-500/[0.06] border border-amber-200 dark:border-amber-500/15 text-center">
