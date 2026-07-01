@@ -72,7 +72,7 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
     title: "EA GoldScalperNinja",
     version: "v3.0",
     description: "Automated MT5 Expert Advisor with D1 Trend Master filters and Smart Sequence Pruning.",
-    longDescription: "EA GoldScalperNinja is a professional algorithmic trading system built for the XAUUSD (Gold) market. Moving away from rigid martingale strategies, it uses a dynamic grid combined with an intelligent rolling recovery system. By utilizing the proprietary Daily (D1) Trend Master module, it calculates a daily Control Zone based on candle body-to-wick weights and ATR to align trades with institutional flows, while its Smart Sequence Pruning automatically uses winning trades to trim the oldest negative positions to actively minimize drawdowns.",
+    longDescription: "EA GoldScalperNinja is a professional-grade automated trading system engineered specifically for the volatile XAUUSD (Gold) market. Replacing rigid martingale strategies, the EA combines a dynamic grid engine with a revolutionary Smart Sequence Pruning (rolling recovery) system. When the market trends against the grid, the EA uses realized scalp profits from newly opened trades to systematically trim and close the oldest, deepest drawdown positions in the background, minimizing account exposure without requiring a full market reversal. The core directional filter is the proprietary Trend Master module, which operates on the Daily (D1) timeframe to project a dynamic Control Zone based on candle body-to-wick weight calculations and N-day Average ATR. Trend Master locks the EA into Uptrend or Downtrend bias to restrict counter-trend entries, or sideways range mode for dual-directional hedging. The EA is equipped with a complete safety stack, including a news filter integrated with the MQL5 Economic Calendar, daily profit/loss limits, and a defensive Safe Close protocol that cuts trades at minor losses during hostile market states. Furthermore, it features a unique remote control system, allowing traders to turn the bot ON or OFF directly from the MT5 mobile app using pending limit orders.",
     type: "AUTO_TRADE",
     platform: "MT5",
     icon: Bot,
@@ -182,9 +182,9 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
   {
     slug: "trade-manager",
     title: "Trade Manager",
-    version: "v1.3",
-    description: "Premium overlay panel for manual execution, multi-timeframe trend matrix, and semi-auto DCA grids.",
-    longDescription: "Trade Manager is a premium utility overlay for MetaTrader 5 designed to convert manual trading into a precise, high-speed operation. It features 1-click execution with dynamic risk calculations, auto-breakeven, and multi-stage Take Profit targets. It also integrates an indicator matrix dashboard with multi-timeframe trend scoring and a Semi-Auto DCA Grid engine that can adopt manual mobile trades and execute virtual trailing take profits.",
+    version: "v1.4",
+    description: "Premium overlay panel for manual execution, multi-timeframe trend matrix, semi-auto DCA grids, and direct trade journal sync.",
+    longDescription: "Trade Manager is a premium utility overlay for MetaTrader 5 designed to convert manual trading into a precise, high-speed operation. It features 1-click execution with dynamic risk calculations, auto-breakeven, and multi-stage Take Profit targets. It also integrates an indicator matrix dashboard with multi-timeframe trend scoring and a Semi-Auto DCA Grid engine that adopts manual mobile trades and executes virtual trailing take profits. In the latest v1.3 release, Trade Manager features a built-in SYNC tab that connects directly to your TheNextTrade account. By pasting your Sync API Key, every order you open, modify, or close is instantly recorded in your trading journal asynchronously with zero desktop helper apps. With keyboard hotkeys and localized slippage protection, Trade Manager ensures institutional-grade speed and precision on every execution.",
     type: "MANUAL_ASSIST",
     platform: "MT5",
     icon: SlidersHorizontal,
@@ -196,13 +196,14 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
       { label: "Panel Mode", value: "Manual chart overlay" },
       { label: "Order Tools", value: "SL, TP, BE, partial close" },
       { label: "Trend Context", value: "Multi-timeframe matrix" },
-      { label: "Mobile Workflow", value: "Adopts Magic 0 mobile trades" },
+      { label: "Journal Sync", value: "Built-in API (SYNC tab)" },
     ],
     accentRing: "ring-blue-500/15 dark:ring-blue-400/15",
     bullets: [
       "1-Click dynamic risk execution",
       "Multi-timeframe Trend Matrix (6x7)",
       "Semi-Auto DCA Grid with trailing TP",
+      "Direct trading journal Sync (API Key)",
       "Mobile trade adoption (Magic 0)"
     ],
     parameters: [
@@ -212,15 +213,18 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
       { name: "Max Risk (%)", defaultValue: "1.0", description: "Blocks new positions if the current account risk percentage exceeds this limit." },
       { name: "TP1 / TP2 / TP3", defaultValue: "50 / 100 / 200", description: "Take profit targets in pips with custom position counts to scale out." },
       { name: "EnableSATrailingTP", defaultValue: "false", description: "Enables virtual trailing take profit for the Semi-Auto grid." },
-      { name: "SATrailingDistancePips", defaultValue: "5.0", description: "Trailing distance in pips used to trail the grid's average take profit." }
+      { name: "SATrailingDistancePips", defaultValue: "5.0", description: "Trailing distance in pips used to trail the grid's average take profit." },
+      { name: "Sync API Key", defaultValue: "None", description: "Your unique API key generated from the Sync Settings page on your dashboard to pair MT5 with your trading journal." }
     ],
     logic: [
       "Dynamic lot sizing automatically calculates the position volume based on stop-loss pips and account risk percent.",
       "Trend Tab calculates trend scoring using weighted indicators (EMA Sonic R, ADX, RSI, MACD, S&R, Volume Divergences).",
       "Mobile Trade Adoption automatically detects, attaches stop levels to, and DCA-grids manual trades placed via mobile apps.",
+      "Built-in Sync Module uses asynchronous HTTP requests to forward trading heartbeats and execution details directly to the dashboard.",
       "Auto Broker Pip Size Detection normalizes all calculations for Gold (3 digits) and Forex (5 digits) decimal pricing."
     ],
     faqs: [
+      { question: "How does the built-in SYNC tab work?", answer: "The SYNC tab lets you paste your Sync API Key directly inside MT5. When connected, the EA whitelists our secure API gateway using WebRequests and automatically logs every transaction directly to your web dashboard journal in real time." },
       { question: "How does the Mobile Trade Adoption work?", answer: "When MOBILE DCA is ON, the EA on your VPS monitors the account for manual trades opened on the symbol from your phone (Magic 0). It immediately adopts the trade, adjusts SL/TP, and opens grid orders if price moves adversely." },
       { question: "What indicators are used in the Trend matrix?", answer: "It scans 7 timeframes (M1 to D1) for 6 key indicators: EMA crossover (Sonic R 34/89), ADX trend filter (>25), RSI momentum, MACD crossover, S&R levels, and volume-confirmed breakout signals." },
       { question: "What is Virtual Trailing Take Profit?", answer: "When enabled, the EA hides your take profit lines from the broker. Once price hits the average target, it trails the profit level dynamically and closes the grid locally on a price retracement." }
@@ -280,9 +284,9 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
   {
     slug: "gsn-phoenix-grid",
     title: "GSN Phoenix Grid",
-    version: "v4.0",
+    version: "v1.0",
     description: "5-Layer modular adverse DCA grid with Profit Bank harvesting and Macro-Trend filters.",
-    longDescription: "GSN Phoenix Grid is a highly advanced, dual-direction grid system built on the philosophy of Adaptive Survival. It operates on a strict 5-Layer Modular Architecture. Using the innovative Phoenix Profit Bank, it harvests profit from Level 3 martingale layers during sideways oscillations to systematically trim the oldest, high-drawdown Level 1 and 2 positions. It includes a protective auto-hedge recovery system and a Multi-Layered Protection System (MLPS) to withstand extreme macro-economic news spikes.",
+    longDescription: "GSN Phoenix Grid is an advanced, professional-grade Expert Advisor built for the volatile XAUUSD (Gold) market, designed under the philosophy of Adaptive Survival and structured on a strict 5-Layer Modular Architecture. Unlike static grid systems, Phoenix Grid dynamically transitions its spacing and multipliers across three adaptive levels based on individual basket drawdown (Level 1 range harvesting, Level 2 warning, and Level 3 survival modes). At its core, the proprietary Phoenix Profit Bank module harvests realized scalp profits from Level 3 martingale layers during local oscillations to systematically peel off and trim the oldest, high-drawdown Level 1 and 2 positions, pulling the basket's average take-profit target closer to the current market price without requiring a full retracement. To withstand extreme macroeconomic news events and trend continuations, the Multi-Layered Protection System (MLPS) combines H1 macro-trend confluence filters, M5 price spike detectors that dynamically stretch grid spacing, and Dow Theory swing breakout indicators. During vertical market surges, an intelligent Auto-Hedge module locks floating drawdown delta-neutral, executing an isolated trend-following recovery grid to safely exit the entire cycle with a small net profit.",
     type: "AUTO_TRADE",
     platform: "MT5",
     icon: Bot,

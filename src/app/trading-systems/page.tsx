@@ -18,6 +18,7 @@ import { TradingSystemsTabbedGuide } from "@/components/trading-systems/TradingS
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/Button";
+import { TRADING_SYSTEMS_DATA } from "@/config/trading-systems-data";
 
 export const metadata: Metadata = {
   title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
@@ -46,13 +47,13 @@ const TOOL_CARDS = [
   },
   {
     slug: "trade-manager",
-    title: "Trade Manager",
+    title: "GSN Trade Manager",
     label: "Manual Control",
-    positioning: "An MT5 execution panel for faster entries, SL, TP, break-even, partial close, and semi-auto trade management.",
+    positioning: "An MT5 execution panel with built-in trading journal sync, faster entries, SL, TP, break-even, and semi-auto DCA grids.",
     bullets: [
       "SL, TP, BE, and partial-close controls",
-      "Multi-timeframe trend dashboard",
-      "Auto S&R and trade context",
+      "Built-in trade journal sync (direct API)",
+      "Multi-timeframe trend scoring matrix",
       "Semi-auto DCA with mobile trade adoption",
     ],
     ctaLabel: "Unlock Trade Manager",
@@ -99,9 +100,20 @@ export default async function TradingSystemsIndexPage() {
         card.slug.toLowerCase().replace(/[^a-z0-9]/g, ""),
     );
 
+    const configMatch = TRADING_SYSTEMS_DATA.find(
+      (s) =>
+        s.slug.toLowerCase().replace(/[^a-z0-9]/g, "") ===
+        card.slug.toLowerCase().replace(/[^a-z0-9]/g, ""),
+    );
+
+    let rawVersion = dbMatch?.version || configMatch?.version || "1.0.0";
+    if (rawVersion.startsWith("v")) {
+      rawVersion = rawVersion.substring(1);
+    }
+
     return {
       ...card,
-      version: dbMatch?.version || "1.0.0",
+      version: rawVersion,
     };
   });
 
@@ -169,7 +181,7 @@ export default async function TradingSystemsIndexPage() {
         {/* Hero Right Column: MT5 Toolkit Preview Console */}
         <div className="rounded-[2.5rem] border border-gold/15 bg-white/60 p-5 shadow-xl shadow-gold/[0.03] dark:border-white/5 dark:bg-[#111318]/45 relative">
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-gold/5 rounded-full blur-[50px] pointer-events-none"></div>
-          
+
           <div className="rounded-[2rem] border border-gray-200/60 bg-gray-50/70 p-5 dark:border-white/5 dark:bg-[#151822]/80 space-y-5 backdrop-blur-md relative z-10">
             {/* Header of Console */}
             <div className="flex items-center justify-between border-b border-dashed border-gray-200 pb-3.5 dark:border-white/5">
@@ -263,9 +275,8 @@ export default async function TradingSystemsIndexPage() {
                 style={hasGlow ? {
                   '--glow-color': system.colorRgb
                 } as React.CSSProperties : undefined}
-                className={`flex h-full flex-col rounded-[2rem] border bg-gradient-to-br p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 ${
-                  system.accentClass
-                } hover:shadow-[0_15px_40px_rgba(var(--glow-color,197,160,89),0.08)] dark:bg-[#111318]/45 relative overflow-hidden`}
+                className={`flex h-full flex-col rounded-[2rem] border bg-gradient-to-br p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 ${system.accentClass
+                  } hover:shadow-[0_15px_40px_rgba(var(--glow-color,197,160,89),0.08)] dark:bg-[#111318]/45 relative overflow-hidden`}
               >
                 {/* Visual Glow Ornament inside Card */}
                 <div className="absolute -top-12 -right-12 w-24 h-24 bg-gradient-to-br from-gold/10 to-transparent rounded-full blur-2xl pointer-events-none"></div>

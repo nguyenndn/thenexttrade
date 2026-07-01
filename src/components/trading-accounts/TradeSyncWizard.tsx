@@ -59,7 +59,7 @@ interface SyncStatus {
 
 export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOpenAddAccount }: TradeSyncWizardProps) {
  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
- const [syncMethod, setSyncMethod] = useState<SyncMethod>(defaultMethod || "TNT_CONNECT");
+ const [syncMethod, setSyncMethod] = useState<SyncMethod>(defaultMethod === "TNT_CONNECT" ? "EA_SYNC" : (defaultMethod || "EA_SYNC"));
  const isMobile = useIsMobileSyncDevice();
  const [linkSent, setLinkSent] = useState(false);
  
@@ -267,100 +267,74 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
  <div className="text-center max-w-md mx-auto mb-2">
  <p className="text-sm font-bold text-gray-700 dark:text-gray-200">Choose your connection style</p>
  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
- TNT Connect works in the background (recommended), while EA Sync attaches directly to a chart in MT5.
+ Choose how you want to log and track your trading performance.
  </p>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- {/* Option 1: TNT Connect (Recommended) */}
- <div 
- onClick={() => setSyncMethod("TNT_CONNECT")}
- className={cn(
- "relative rounded-xl border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
- syncMethod === "TNT_CONNECT"
- ? "border-amber-500 bg-amber-500/[0.03] dark:bg-amber-500/[0.05] shadow-lg shadow-amber-500/5"
- : "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
- )}
- >
- <span className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest rounded-md">
- Recommended
- </span>
- <div>
- <div className="flex items-center gap-2 mb-2">
- <Monitor size={18} className="text-amber-500 shrink-0" />
- <h3 className="text-sm font-bold text-gray-800 dark:text-white">TNT Connect App</h3>
- </div>
- <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
- A lightweight Windows app that runs in your system tray, auto-detects MT5, syncs trades, and updates automatically.
- </p>
- </div>
- <div className="pt-4 mt-auto">
- <a
- href="/downloads/TheNextTradeConnect-1.0.2.exe"
- download
- onClick={(e) => e.stopPropagation()}
- className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-colors shadow-sm shadow-amber-500/20"
- >
- <Download size={13} />
- Download App (.exe)
- </a>
- </div>
- </div>
+		{/* Option 1: MT5 Auto-Sync (Recommended) */}
+		<div 
+			onClick={() => setSyncMethod("EA_SYNC")}
+			className={cn(
+				"relative rounded-xl border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
+				syncMethod === "EA_SYNC"
+					? "border-amber-500 bg-amber-500/[0.03] dark:bg-amber-500/[0.05] shadow-lg shadow-amber-500/5"
+					: "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
+			)}
+		>
+			<span className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest rounded-md">
+				Recommended
+			</span>
+			<div>
+				<div className="flex items-center gap-2 mb-2">
+					<Cable size={18} className="text-amber-500 shrink-0" />
+					<h3 className="text-sm font-bold text-gray-800 dark:text-white">MT5 Auto-Sync</h3>
+				</div>
+				<p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+					Automatically sync your MT5 trades using the Sync tab in EA Trade Manager or the standalone lightweight TradeSync EA.
+				</p>
+			</div>
+			<div className="pt-4 mt-auto">
+				<a
+					href="/downloads/TheNextTrade_TradeSync.ex5"
+					download
+					onClick={(e) => e.stopPropagation()}
+					className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-colors shadow-sm shadow-amber-500/20"
+				>
+					<Download size={13} />
+					Download EA (.ex5)
+				</a>
+			</div>
+		</div>
 
- {/* Option 2: EA Sync (Advanced) */}
- <div 
- onClick={() => setSyncMethod("EA_SYNC")}
- className={cn(
- "relative rounded-xl border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
- syncMethod === "EA_SYNC"
- ? "border-cyan-500 bg-cyan-500/[0.03] dark:bg-cyan-500/[0.05] shadow-lg shadow-cyan-500/5"
- : "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
- )}
- >
- <span className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-cyan-500 text-white text-[9px] font-black uppercase tracking-widest rounded-md">
- Advanced
- </span>
- <div>
- <div className="flex items-center gap-2 mb-2">
- <Cable size={18} className="text-cyan-500 shrink-0" />
- <h3 className="text-sm font-bold text-gray-800 dark:text-white">EA Sync Package</h3>
- </div>
- <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
- An Expert Advisor (.ex5) placed directly on an MT5 chart. Ideal for users running custom VPS environments or non-Windows devices.
- </p>
- </div>
- <div className="pt-4 mt-auto">
- <a
- href="/downloads/TheNextTrade_TradeSync.ex5"
- download
- onClick={(e) => e.stopPropagation()}
- className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white font-bold text-xs transition-colors shadow-sm shadow-cyan-500/20"
- >
- <Download size={13} />
- Download EA (.ex5)
- </a>
- </div>
- </div>
- </div>
-
- {/* Manual Journal Option */}
- <div 
- onClick={() => setSyncMethod("MANUAL")}
- className={cn(
- "rounded-xl border p-4 cursor-pointer transition-all duration-200 flex items-center gap-4",
- syncMethod === "MANUAL"
- ? "border-gray-400 bg-gray-50 dark:bg-white/[0.03] dark:border-white/20"
- : "border-dashboard/60 hover:border-gray-300 dark:hover:border-white/10"
- )}
- >
- <PenLine size={16} className="text-gray-400 shrink-0" />
- <div>
- <p className="text-xs font-bold text-gray-600 dark:text-gray-300">Manual Journal</p>
- <p className="text-[10px] text-gray-400 dark:text-gray-500">No MT5? Log trades manually in Journal. You can set up sync later.</p>
- </div>
- </div>
- </div>
- )}
+		{/* Option 2: Manual Journal */}
+		<div 
+			onClick={() => setSyncMethod("MANUAL")}
+			className={cn(
+				"relative rounded-xl border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
+				syncMethod === "MANUAL"
+					? "border-primary bg-primary/[0.02] dark:bg-primary/[0.04] shadow-lg shadow-primary/5"
+					: "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
+			)}
+		>
+			<div>
+				<div className="flex items-center gap-2 mb-2">
+					<PenLine size={18} className="text-gray-400 shrink-0" />
+					<h3 className="text-sm font-bold text-gray-800 dark:text-white">Manual Journal</h3>
+				</div>
+				<p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+					No MT5 connection? Track and analyze your trades by logging them manually. You can set up auto-sync later anytime.
+				</p>
+			</div>
+			<div className="pt-4 mt-auto">
+				<span className="text-xs text-gray-400 dark:text-gray-500 font-bold group-hover:text-primary transition-colors">
+					Select Option
+				</span>
+			</div>
+		</div>
+	</div>
+	</div>
+)}
 
  {/* ═══════════════════════════════════════════════════════════════
  STEP 2: API KEY & ACCOUNT MATCHING
@@ -588,69 +562,48 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
  )}
 
  <div className="rounded-xl border border-dashboard bg-amber-500/[0.02] p-4 text-xs space-y-3">
- <h3 className="font-bold text-gray-800 dark:text-white flex items-center gap-2">
- <CheckCircle2 className="w-4 h-4 text-amber-500" />
- {syncMethod === "TNT_CONNECT" 
- ? "TNT Connect Setup"
- : "Configure MT5 allowed URLs (Crucial Step)"}
- </h3>
+		<h3 className="font-bold text-gray-800 dark:text-white flex items-center gap-2">
+			<CheckCircle2 className="w-4 h-4 text-amber-500" />
+			Configure MT5 allowed URLs (Crucial Step)
+		</h3>
 
- {syncMethod === "TNT_CONNECT" ? (
- <div className="space-y-2">
- <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
- After installing TNT Connect:
- </p>
- <ol className="space-y-1.5 text-gray-600 dark:text-gray-300">
- <li className="flex gap-2"><span className="text-amber-500 font-bold">1.</span> Open TNT Connect from your system tray</li>
- <li className="flex gap-2"><span className="text-amber-500 font-bold">2.</span> Paste your Sync API Key in the settings</li>
- <li className="flex gap-2"><span className="text-amber-500 font-bold">3.</span> TNT Connect auto-detects MT5 and starts syncing</li>
- </ol>
- </div>
- ) : (
- <>
- <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
- For security and stability, MetaTrader 5 blocks external network requests by default. You must whitelist our secure API gateway:
- </p>
- 
- <div className="space-y-2 p-3 bg-gray-50 dark:bg-black/30 rounded-lg border border-dashboard">
- <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide">Path inside MetaTrader 5:</p>
- <p className="font-bold text-gray-700 dark:text-gray-300">Tools &gt; Options &gt; Expert Advisors</p>
- 
- <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">1. Check the box:</p>
- <p className="text-gray-700 dark:text-gray-300">☑ Allow WebRequest for listed URL:</p>
- 
- <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">2. Add this URL:</p>
- <div className="flex gap-2 items-center">
- <code className="flex-1 bg-white dark:bg-black/40 p-2 rounded border border-dashboard font-mono text-[11px] text-primary break-all">
- {syncServerUrl || "https://thenexttrade.com"}
- </code>
- </div>
- </div>
- </>
- )}
- </div>
-
- {/* Confirmation Checkbox */}
- <label className="flex items-start gap-3 p-4 rounded-xl border border-primary/20 bg-primary/[0.02] cursor-pointer group hover:bg-primary/[0.04] transition-colors">
- <input
- type="checkbox"
- checked={isConfirmed}
- onChange={(e) => setIsConfirmed(e.target.checked)}
- className="w-4 h-4 mt-0.5 rounded border-gray-300 text-primary focus:ring-primary shrink-0"
- />
- <div>
- <p className="text-xs font-bold text-gray-800 dark:text-white">
- {syncMethod === "TNT_CONNECT" 
- ? "I have installed TNT Connect and pasted my API key"
- : "I have configured MT5 correctly"}
- </p>
- <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
- {syncMethod === "TNT_CONNECT"
- ? "TNT Connect is running and connected to my dashboard."
- : "I have added the secure URL to WebRequest list and pasted my Sync API Key into settings."}
- </p>
- </div>
- </label>
+		<p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+			For security and stability, MetaTrader 5 blocks external network requests by default. You must whitelist our secure API gateway:
+		</p>
+		
+		<div className="space-y-2 p-3 bg-gray-50 dark:bg-black/30 rounded-lg border border-dashboard">
+			<p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide">Path inside MetaTrader 5:</p>
+			<p className="font-bold text-gray-700 dark:text-gray-300">Tools &gt; Options &gt; Expert Advisors</p>
+			
+			<p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">1. Check the box:</p>
+			<p className="text-gray-700 dark:text-gray-300">☑ Allow WebRequest for listed URL:</p>
+			
+			<p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">2. Add this URL:</p>
+			<div className="flex gap-2 items-center">
+				<code className="flex-1 bg-white dark:bg-black/40 p-2 rounded border border-dashboard font-mono text-[11px] text-primary break-all">
+					{syncServerUrl || "https://thenexttrade.com"}
+				</code>
+			</div>
+		</div>
+	</div>
+	
+{/* Confirmation Checkbox */}
+	<label className="flex items-start gap-3 p-4 rounded-xl border border-primary/20 bg-primary/[0.02] cursor-pointer group hover:bg-primary/[0.04] transition-colors">
+		<input
+			type="checkbox"
+			checked={isConfirmed}
+			onChange={(e) => setIsConfirmed(e.target.checked)}
+			className="w-4 h-4 mt-0.5 rounded border-gray-300 text-primary focus:ring-primary shrink-0"
+		/>
+		<div>
+			<p className="text-xs font-bold text-gray-800 dark:text-white">
+				I have configured MT5 correctly
+			</p>
+			<p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+				I have added the secure URL to WebRequest list and pasted my Sync API Key into my EA settings.
+			</p>
+		</div>
+	</label>
  </div>
  )}
 

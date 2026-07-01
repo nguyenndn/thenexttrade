@@ -70,7 +70,7 @@ export default function TNTConnectClient() {
  };
 
  const revokeKey = async () => {
- if (!confirm("Are you sure? This will disconnect all TNT Connect apps.")) return;
+ if (!confirm("Are you sure? This will disconnect all active sync connections.")) return;
  setIsRevoking(true);
  try {
  const res = await fetch("/api/sync/api-key", { method: "DELETE" });
@@ -105,16 +105,16 @@ export default function TNTConnectClient() {
  }
 
  const FEATURES = [
- { icon: Zap, label: "Auto Sync", desc: "Trades synced every 10s", color: "text-emerald-500", bg: "bg-emerald-500/10" },
- { icon: MonitorSmartphone, label: "Background Mode", desc: "MT5 runs silently", color: "text-cyan-500", bg: "bg-cyan-500/10" },
- { icon: Shield, label: "One API Key", desc: "EA + App, one key", color: "text-violet-500", bg: "bg-violet-500/10" },
+ { icon: Zap, label: "Auto Sync", desc: "Trades synced directly from MT5", color: "text-emerald-500", bg: "bg-emerald-500/10" },
+ { icon: MonitorSmartphone, label: "EA Integrated", desc: "Runs directly on your charts", color: "text-cyan-500", bg: "bg-cyan-500/10" },
+ { icon: Shield, label: "Unified Key", desc: "One key works for all accounts", color: "text-violet-500", bg: "bg-violet-500/10" },
  ];
 
  const STEPS = [
  { step: "1", text: "Generate your Sync API Key above", done: keyData.hasKey },
- { step: "2", text: "Download TNT Connect for Windows", done: false },
- { step: "3", text: "Run the app \u2192 Right-click tray icon \u2192 Settings \u2192 Paste API Key", done: false },
- { step: "4", text: "Done! Your MT5 trades will sync automatically", done: false },
+ { step: "2", text: "Configure WebRequest in MetaTrader 5 (Tools > Options > Expert Advisors)", done: false },
+ { step: "3", text: "Drag EA Trade Manager (or standalone Sync EA) onto your XAUUSD chart", done: false },
+ { step: "4", text: "Open the SYNC tab on the EA panel, paste your key, and click Connect", done: false },
  ];
 
  return (
@@ -136,7 +136,7 @@ export default function TNTConnectClient() {
  <div className="min-w-0">
  <h2 className="text-lg font-black tracking-tight text-gray-800 dark:text-white">Sync API Key</h2>
  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
- Use this key for TNT Connect and EA Sync. One key works for all your trading accounts.
+ Use this key inside your EA Trade Manager to sync trades automatically. One key works for all your trading accounts.
  </p>
  </div>
  </div>
@@ -178,7 +178,7 @@ export default function TNTConnectClient() {
  </div>
  <p className="text-sm font-bold text-gray-700 dark:text-white mb-1">No API Key Generated</p>
  <p className="text-xs text-gray-400 dark:text-gray-500 mb-6 max-w-sm mx-auto leading-relaxed">
- Generate your Sync API Key to connect TNT Connect or EA Sync.
+ Generate your Sync API Key to connect your EA Trade Manager.
  One key works for all your trading accounts.
  </p>
  <Button
@@ -228,7 +228,7 @@ export default function TNTConnectClient() {
  <div>
  <p className="text-sm font-bold text-amber-700 dark:text-amber-400">Save your API key now!</p>
  <p className="text-xs mt-0.5 text-amber-600/70 dark:text-amber-400/60">
- This is the only time the full key will be shown. Copy it and paste into your TNT Connect app or EA settings.
+ This is the only time the full key will be shown. Copy it and paste into your EA Trade Manager or Standalone Sync EA settings.
  </p>
  </div>
  </div>
@@ -301,17 +301,26 @@ export default function TNTConnectClient() {
  </ol>
 
  {/* Download button */}
- <div className="mt-6 pt-4 border-t border-dashboard">
+ <div className="mt-6 pt-4 border-t border-dashboard space-y-3">
+ <div className="flex flex-wrap gap-3">
  <a
- href="/downloads/TheNextTradeConnect-1.0.2.exe"
- download
+ href="/dashboard/trading-systems"
  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-colors shadow-sm shadow-primary/20"
  >
  <Download size={15} />
- Download TNT Connect for Windows
+ Go to Trading Systems to get Trade Manager
  </a>
- <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2">
- Requires Windows 10/11 · MetaTrader 5 installed · ~50MB
+ <a
+ href="/downloads/TheNextTrade_TradeSync.ex5"
+ download
+ className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-dashboard hover:bg-gray-50 dark:hover:bg-white/[0.02] text-gray-700 dark:text-gray-300 font-bold text-xs transition-colors"
+ >
+ <Download size={13} />
+ Download Standalone Sync EA (.ex5)
+ </a>
+ </div>
+ <p className="text-[10px] text-gray-400 dark:text-gray-500">
+ Requires MetaTrader 5 installed · Runs on Windows or VPS environments
  </p>
  </div>
  </div>

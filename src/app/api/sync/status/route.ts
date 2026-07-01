@@ -40,7 +40,10 @@ export async function GET() {
 
  const hasApiKey = accounts.some((a) => !!a.apiKey);
  const tntAccounts = accounts.filter((a) => normalizeSyncSource(a.syncSource) === "TNT_CONNECT");
- const eaAccounts = accounts.filter((a) => normalizeSyncSource(a.syncSource) === "EA_SYNC");
+ const eaAccounts = accounts.filter((a) => {
+    const src = normalizeSyncSource(a.syncSource);
+    return src === "EA_SYNC" || src === "TNT_CONNECT";
+  });
 
  const lastHeartbeat = accounts
  .flatMap((a) => [a.lastHeartbeat, a.appLastHeartbeat])

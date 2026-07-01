@@ -88,7 +88,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
           </div>
 
           {/* Tab buttons */}
-          <TabsList className="bg-gray-50/75 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl p-1 gap-1 self-start lg:self-center shrink-0">
+          <TabsList className="flex flex-col w-full sm:flex-row sm:w-fit bg-gray-50/75 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl p-1 gap-1 self-start lg:self-center shrink-0">
             {[
               { id: "specs", label: "Specifications", icon: Cpu },
               { id: "logic", label: "Operational Logic", icon: Shield },
@@ -99,7 +99,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border border-transparent hover:border-gray-200/50 dark:hover:border-white/10 shrink-0"
+                  className="w-full sm:w-auto justify-center px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border border-transparent hover:border-gray-200/50 dark:hover:border-white/10 shrink-0"
                   activeIndicatorClassName="!bg-gold shadow-md border-0"
                   activeTextClassName="!text-white"
                 >

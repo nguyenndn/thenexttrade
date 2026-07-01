@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Flame, Settings, Users, Lock, MessageSquare, Globe, Unplug } from "lucide-react";
+import { Flame, Settings, Users, Lock, MessageSquare, Globe, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useSystemConfig } from "@/lib/dashboard-context";
@@ -19,7 +19,7 @@ const baseNavItems: NavItem[] = [
  { title: "Account", href: "/dashboard/settings", icon: Settings, exact: true },
  { title: "Public Profile", href: "/dashboard/settings/profile", icon: Globe },
  { title: "Security", href: "/dashboard/settings/security", icon: Lock },
- { title: "TNT Connect", href: "/dashboard/settings/tnt-connect", icon: Unplug },
+ { title: "Sync Settings", href: "/dashboard/settings/tnt-connect", icon: RefreshCw },
  { title: "Login Streak", href: "/dashboard/settings/streak", icon: Flame },
  { title: "Referrals", href: "/dashboard/settings/referrals", icon: Users },
 ];
