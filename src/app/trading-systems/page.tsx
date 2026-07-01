@@ -118,7 +118,7 @@ export default async function TradingSystemsIndexPage() {
   });
 
   return (
-    <TradingSystemsPageShell maxWidth="max-w-6xl">
+    <TradingSystemsPageShell maxWidth="max-w-7xl">
       {/* Block 1: Hero Section */}
       <section className="mb-10 grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] pt-4">
         <div className="space-y-6 text-left">

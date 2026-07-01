@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { Building2, Server, Star, ChevronRight, ExternalLink, Sparkles, Bitcoin } from "lucide-react";
+import { Building2, Star, ChevronRight, ExternalLink, Sparkles, Bitcoin } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { ReviewBadge } from "./ReviewModal";
 import partnersData from "@/config/partners.json";
@@ -17,7 +17,6 @@ const BADGE_STYLES: Record<string, string> = {
 const CATEGORIES = [
  { key: "brokers", label: "CFD Brokers", icon: Building2, data: partnersData.brokers, cta: "Open Account", depositLabel: "Min Deposit" },
  { key: "cryptoExchanges", label: "Crypto", icon: Bitcoin, data: partnersData.cryptoExchanges, cta: "Start Trading", depositLabel: "Min Deposit" },
- { key: "vps", label: "VPS Hosting", icon: Server, data: partnersData.vps, cta: "Get VPS", depositLabel: "Price" },
 ];
 
 function StarRating({ rating }: { rating: number }) {

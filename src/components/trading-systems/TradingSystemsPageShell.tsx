@@ -15,7 +15,7 @@ export function TradingSystemsPageShell({
   children,
   className = "",
   mainClassName = "",
-  maxWidth = "max-w-6xl"
+  maxWidth = "max-w-7xl"
 }: TradingSystemsPageShellProps) {
   return (
     <div className={`min-h-screen flex flex-col bg-[#f8faf9] dark:bg-transparent text-gray-700 dark:text-white relative isolate overflow-hidden ${className}`}>

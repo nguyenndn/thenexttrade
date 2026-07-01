@@ -42,8 +42,6 @@ export function TrustedPartners() {
           highlight="VPS"
           description="Highly reliable virtual private servers to run your trading EAs 24/7 with ultra-low latency."
           icon={Server}
-          linkHref="/brokers?tab=vps"
-          linkText="Compare VPS Hosting"
           className="mb-10"
         />
 
