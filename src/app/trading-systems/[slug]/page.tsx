@@ -102,7 +102,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             <h1 className="text-2xl md:text-4xl font-black font-heading text-gray-800 dark:text-white leading-tight">
               {system.title}
             </h1>
-            <p 
+            <div 
               className="mt-2 text-sm md:text-base text-gray-550 dark:text-gray-400 leading-relaxed font-medium"
               dangerouslySetInnerHTML={{ __html: system.longDescription }}
             />
