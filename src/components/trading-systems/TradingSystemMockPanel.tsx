@@ -158,7 +158,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
     ] as const;
 
     return (
-      <div className="mx-auto w-full lg:w-[500px] border-2 border-[#f7b500] bg-[#101722] p-1.5 text-left font-mono text-[10px] text-slate-250 shadow-2xl shadow-slate-950/20 lg:mx-0">
+      <div className="mx-auto w-full lg:w-[550px] border-2 border-[#f7b500] bg-[#101722] p-1.5 text-left font-mono text-[10px] text-slate-250 shadow-2xl shadow-slate-950/20 lg:mx-0">
         {/* Terminal Header */}
         <div className="mb-2 flex items-center justify-between gap-2 bg-[#0b111d] px-2.5 py-1.5">
           <span className="whitespace-nowrap text-[10px] font-black uppercase tracking-wide text-[#ffd21f] sm:text-[11px]">
@@ -182,11 +182,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
               <div
                 key={tab.label}
                 onClick={() => setActiveMockTab(tab.label)}
-                className={`border px-1 py-1.5 flex items-center justify-center gap-1.5 text-center text-[8px] sm:text-[9px] font-black uppercase tracking-wide cursor-pointer select-none transition-colors ${
-                  isActive
-                    ? "border-[#f7b500] bg-slate-800 text-[#ffd21f] shadow-[inset_0_-2px_0_#f7b500]"
-                    : "border-slate-650 bg-[#1e293b]/70 hover:bg-[#1e293b]/90 text-white"
-                }`}
+                className={`border px-1 py-1.5 flex items-center justify-center gap-1.5 text-center text-[8px] sm:text-[9px] font-black uppercase tracking-wide cursor-pointer select-none transition-colors ${isActive
+                  ? "border-[#f7b500] bg-slate-800 text-[#ffd21f] shadow-[inset_0_-2px_0_#f7b500]"
+                  : "border-slate-650 bg-[#1e293b]/70 hover:bg-[#1e293b]/90 text-white"
+                  }`}
               >
                 <Icon size={10} className={isActive ? "text-[#ffd21f]" : "text-slate-450"} />
                 <span>{tab.label}</span>
@@ -249,7 +248,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                 ].map((button) => (
                   <div
                     key={button.label}
-                    className={`${button.className} flex min-h-7 items-center justify-center px-2 py-1 text-center text-[9px] font-black uppercase text-white sm:text-[10px] whitespace-nowrap transition-colors cursor-pointer select-none`}
+                    className={`${button.className} flex min-h-7 items-center justify-center px-2 py-1 text-center text-[9px] font-black uppercase text-white sm:text-[10px] whitespace-nowrap transition-colors cursor-pointer select-none rounded-sm`}
                   >
                     {button.label}
                   </div>
@@ -279,11 +278,18 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
               </div>
             </div>
 
-            <div className="mt-3 grid grid-cols-[1fr_1.1fr_1.1fr_1.1fr] items-center gap-1.5">
-              <div className="font-black uppercase text-white text-[9px]">Take Profit %</div>
-              <div className="border-l border-slate-600 pl-2 font-black text-white">50</div>
-              <div className="bg-green-700 hover:bg-green-800 cursor-pointer px-2 py-2 text-center text-[9.5px] font-black text-white select-none">TP BUY</div>
-              <div className="bg-red-600 hover:bg-red-750 cursor-pointer px-2 py-2 text-center text-[9.5px] font-black text-white select-none">TP SELL</div>
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-white font-black text-[9px] uppercase whitespace-nowrap shrink-0">
+                <span>Take Profit %</span>
+                <span className="text-slate-600 font-normal">|</span>
+                <span className="text-white">50</span>
+              </div>
+              <div className="grid grid-cols-4 gap-1 w-full pl-2">
+                <div className="bg-emerald-600 hover:bg-emerald-700 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-sm">TP BUY</div>
+                <div className="bg-red-600 hover:bg-red-700 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-sm">TP SELL</div>
+                <div className="bg-amber-500 hover:bg-amber-600 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-sm">SL -&gt; BE</div>
+                <div className="bg-rose-500 hover:bg-rose-600 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-sm">CLOSE ALL</div>
+              </div>
             </div>
 
             <div className="mt-1 grid grid-cols-4 gap-px bg-[#172333] text-center text-[9.5px]">
@@ -298,14 +304,13 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
         {activeMockTab === "S&D ZONE" && (
           <div className="animate-in fade-in duration-200">
             {/* S&D Header Toolbar */}
-            <div className="mb-2.5 flex items-center justify-between border-b border-slate-800 pb-2 gap-1 flex-wrap">
+            <div className="mb-2.5 flex items-center justify-evenly border-b border-slate-800 pb-2 gap-2 flex-wrap">
               <div className="flex gap-3">
                 <div className="flex items-center gap-1 text-[8.5px] font-black text-rose-500 uppercase">
                   <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
                   <span>4 RESISTANCE</span>
                 </div>
-                <div className="flex items-center gap-1 text-[8.5px] font-black text-emerald-450 uppercase">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-450" />
+                <div className="flex items-center text-[8.5px] font-black text-white uppercase">
                   <span>4 SUPPORT</span>
                 </div>
               </div>
@@ -316,11 +321,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                   <div
                     key={tf}
                     onClick={() => setSelectedSdTf(tf)}
-                    className={`cursor-pointer border px-1.5 py-0.5 text-[8px] font-black transition-colors ${
-                      selectedSdTf === tf
-                        ? "border-[#ffd21f] text-[#ffd21f] bg-slate-800"
-                        : "border-slate-700 text-slate-400 hover:text-white"
-                    }`}
+                    className={`cursor-pointer border px-1.5 py-0.5 text-[9.5px] font-black transition-colors rounded-sm ${selectedSdTf === tf
+                      ? "border-[#ffd21f] text-[#ffd21f] bg-slate-800"
+                      : "border-slate-700 text-slate-400 hover:text-white"
+                      }`}
                   >
                     {tf}
                   </div>
@@ -328,7 +332,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
               </div>
 
               {/* Zones Toggle Status */}
-              <div className="border border-emerald-500 px-1.5 py-0.5 text-[8.5px] font-black text-emerald-400 uppercase bg-emerald-950/20 select-none">
+              <div className="border border-emerald-500 px-1.5 py-0.5 text-[9.5px] font-black text-emerald-400 uppercase bg-emerald-950/20 select-none rounded-sm">
                 Zones ON
               </div>
             </div>
@@ -336,49 +340,49 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
             {/* S&D Zones Table */}
             <div className="space-y-1.5">
               {[
-                { type: "S-OB", range: "4208.19 - 4214.14", status: "PROVEN", statusColor: "border-emerald-500 text-emerald-400 bg-emerald-950/10", typeColor: "bg-red-950/50 text-rose-300 border-red-500/25" },
-                { type: "S-OB", range: "4183.78 - 4194.60", status: "VERIFIED", statusColor: "border-blue-500 text-blue-400 bg-blue-950/10", typeColor: "bg-red-950/50 text-rose-300 border-red-500/25" },
-                { type: "S-OB", range: "4126.52 - 4140.37", status: "PROVEN", statusColor: "border-emerald-500 text-emerald-400 bg-emerald-950/10", typeColor: "bg-red-950/50 text-rose-300 border-red-500/25" },
+                { type: "S-OB", range: "4208.19 - 4214.14", status: "PROVEN", statusColor: "border-emerald-500 text-emerald-400 bg-emerald-950/10", typeColor: "bg-red-950/30 text-rose-400 border-red-500" },
+                { type: "S-OB", range: "4183.78 - 4194.60", status: "VERIFIED", statusColor: "border-blue-500 text-blue-400 bg-blue-950/10", typeColor: "bg-red-950/30 text-rose-400 border-red-500" },
+                { type: "S-OB", range: "4126.52 - 4140.37", status: "PROVEN", statusColor: "border-emerald-500 text-emerald-400 bg-emerald-950/10", typeColor: "bg-red-950/30 text-rose-400 border-red-500" },
               ].map((row, idx) => (
                 <div key={idx} className="grid grid-cols-[80px_1fr_90px] items-center gap-2 border border-slate-800 bg-[#0d1420]/80 p-1 px-2.5">
-                  <div className={`border text-center text-[8px] font-black py-0.5 rounded-sm ${row.typeColor}`}>{row.type}</div>
-                  <div className="text-center font-black text-white text-[11px] tracking-wide">{row.range}</div>
-                  <div className={`border text-center text-[8px] font-black py-0.5 rounded-sm uppercase ${row.statusColor}`}>{row.status}</div>
+                  <div className={`border text-center text-[9.5px] font-black py-0.5 rounded-sm ${row.typeColor}`}>{row.type}</div>
+                  <div className="text-center font-black text-white text-[10px] tracking-wide">{row.range}</div>
+                  <div className={`border text-center text-[9.5px] font-black py-0.5 rounded-sm uppercase ${row.statusColor}`}>{row.status}</div>
                 </div>
               ))}
 
               {/* Current Price Separator */}
               <div className="relative my-2.5 flex items-center justify-center">
                 <div className="absolute left-0 right-0 h-px bg-cyan-600/30" />
-                <span className="relative z-10 bg-[#101722] px-3 text-[9px] font-black text-cyan-400 uppercase tracking-widest">
+                <span className="relative z-10 bg-[#101722] px-3 text-[9.5px] font-black text-cyan-400 uppercase tracking-widest">
                   PRICE NOW: 4090.86
                 </span>
               </div>
 
               {[
-                { type: "RBS", range: "4083.69 - 4097.54", status: "UNTESTED", statusColor: "border-amber-500 text-[#ffd21f] bg-amber-950/10", typeColor: "bg-emerald-950/50 text-emerald-300 border-emerald-550/25" },
-                { type: "RBS", range: "4061.88 - 4075.73", status: "UNTESTED", statusColor: "border-amber-500 text-[#ffd21f] bg-amber-950/10", typeColor: "bg-emerald-950/50 text-emerald-300 border-emerald-550/25" },
-                { type: "SUPPORT", range: "3960.12 - 3973.97", status: "PROVEN", statusColor: "border-emerald-500 text-emerald-400 bg-emerald-950/10", typeColor: "bg-emerald-950/50 text-emerald-300 border-emerald-550/25" },
+                { type: "RBS", range: "4083.69 - 4097.54", status: "UNTESTED", statusColor: "border-amber-500 text-[#ffd21f] bg-amber-950/10", typeColor: "bg-emerald-950/30 text-emerald-400 border-emerald-500" },
+                { type: "RBS", range: "4061.88 - 4075.73", status: "UNTESTED", statusColor: "border-amber-500 text-[#ffd21f] bg-amber-950/10", typeColor: "bg-emerald-950/30 text-emerald-400 border-emerald-500" },
+                { type: "SUPPORT", range: "3960.12 - 3973.97", status: "PROVEN", statusColor: "border-emerald-500 text-emerald-400 bg-emerald-950/10", typeColor: "bg-emerald-950/30 text-emerald-400 border-emerald-500" },
               ].map((row, idx) => (
                 <div key={idx} className="grid grid-cols-[80px_1fr_90px] items-center gap-2 border border-slate-800 bg-[#0d1420]/80 p-1 px-2.5">
-                  <div className={`border text-center text-[8px] font-black py-0.5 rounded-sm ${row.typeColor}`}>{row.type}</div>
-                  <div className="text-center font-black text-white text-[11px] tracking-wide">{row.range}</div>
-                  <div className={`border text-center text-[8px] font-black py-0.5 rounded-sm uppercase ${row.statusColor}`}>{row.status}</div>
+                  <div className={`border text-center text-[9.5px] font-black py-0.5 rounded-sm ${row.typeColor}`}>{row.type}</div>
+                  <div className="text-center font-black text-white text-[10px] tracking-wide">{row.range}</div>
+                  <div className={`border text-center text-[9.5px] font-black py-0.5 rounded-sm uppercase ${row.statusColor}`}>{row.status}</div>
                 </div>
               ))}
             </div>
 
             {/* Custom Indicators Manager */}
             <div className="mt-3.5 border-t border-slate-800 pt-3">
-              <div className="mb-2 text-center text-[8.5px] font-black uppercase text-slate-455 tracking-wider">
+              <div className="mb-2 text-center text-[9.5px] font-black uppercase text-white tracking-wider">
                 CUSTOM INDICATORS MANAGER
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {[1, 2, 3].map((num) => (
-                  <div key={num} className="flex items-center gap-1.5 border border-slate-800 bg-[#0b111d] p-1 px-2 justify-between">
-                    <span className="font-black text-slate-400 text-[8px] uppercase">IND {num}:</span>
-                    <span className="w-12 h-3.5 bg-slate-900 border border-slate-850 inline-block" />
-                    <span className="cursor-pointer border border-slate-750 bg-slate-800 hover:bg-slate-700 px-1 py-0.5 text-[7.5px] font-black text-slate-400 rounded-sm select-none">OFF</span>
+                  <div key={num} className="flex items-center gap-1 border border-slate-800 bg-[#0b111d] p-1 px-1.5 justify-between">
+                    <span className="font-black text-slate-450 text-[9px] uppercase whitespace-nowrap">IND {num}:</span>
+                    <span className="w-20 h-5 bg-slate-900 border border-slate-500 rounded-sm" />
+                    <span className="w-10 h-5 flex items-center justify-center cursor-pointer border border-slate-500 bg-slate-800 hover:bg-slate-700 text-[9px] font-black text-slate-300 rounded-sm select-none">OFF</span>
                   </div>
                 ))}
               </div>
@@ -389,57 +393,63 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
         {activeMockTab === "TREND" && (
           <div className="space-y-3.5 animate-in fade-in duration-200">
             {/* Header Parameters */}
-            <div className="grid grid-cols-[1.5fr_1.5fr_1fr] gap-2 border-b border-slate-800 pb-2">
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="font-black text-slate-450 text-[9px]">CURRENT BIAS</span>
-                  <span className="font-black text-emerald-450 text-[9px] uppercase">▲ BULLISH</span>
+            <div className="grid grid-cols-[1.1fr_1.3fr_1.1fr_auto] gap-2 border-b border-slate-800 pb-2 items-center">
+              <div className="space-y-0.5 text-center">
+                <span className="font-black text-white text-[8.5px] block">CURRENT BIAS</span>
+                <span className="font-black text-rose-500 text-[8.5px] uppercase">▼ BEARISH</span>
+              </div>
+              <div className="space-y-0.5 border-l border-slate-800 pl-2 text-center">
+                <span className="font-black text-white text-[8.5px] block">TIMEFRAMES</span>
+                <div className="font-bold text-white text-[8px] whitespace-nowrap">
+                  1 UP · 3 DOWN · 3 RANGE
                 </div>
-                <div className="font-bold text-slate-500 text-[8px]">3 UP · 1 DOWN · 3 RANGE</div>
               </div>
-              <div className="space-y-0.5 border-l border-slate-800 pl-3">
-                <span className="font-black text-slate-450 text-[9px] block">DAILY TREND</span>
-                <span className="font-black text-rose-500 text-[9px] uppercase">▼ SELL</span>
+              <div className="space-y-0.5 border-l border-slate-800 pl-2 text-center">
+                <span className="font-black text-white text-[8.5px] block">DAILY TREND</span>
+                <span className="font-black text-rose-500 text-[8.5px] uppercase">▼ SELL</span>
               </div>
-              <div className="flex items-center justify-end">
-                <div className="h-8 w-8 rounded-full border-2 border-emerald-500 flex flex-col items-center justify-center leading-none text-emerald-400">
+              <div className="flex items-center justify-center pl-2">
+                <div className="h-8 w-8 rounded-full border-2 border-rose-500 flex flex-col items-center justify-center leading-none text-white bg-rose-950/10">
                   <span className="text-[10px] font-black">3</span>
-                  <span className="text-[6px] font-bold text-slate-500 uppercase">of 7</span>
+                  <span className="text-[6px] font-bold text-white uppercase">of 7</span>
                 </div>
               </div>
             </div>
 
             {/* Timeframe Timeline Bar */}
-            <div className="space-y-1">
-              <div className="flex justify-between text-[7.5px] font-black text-slate-500 px-0.5">
+            <div className="!mt-0">
+              <div className="flex justify-between text-[7.5px] font-black text-white px-0.5">
                 <span>M1</span>
                 <span>D1</span>
               </div>
-              <div className="flex h-1.5 w-full gap-px rounded-full overflow-hidden bg-slate-800">
-                <div className="h-full w-[28.5%] bg-blue-500" />
-                <div className="h-full w-[14.2%] bg-emerald-500" />
-                <div className="h-full w-[28.5%] bg-blue-500" />
-                <div className="h-full w-[28.8%] bg-rose-500" />
+              <div className="grid grid-cols-7 gap-1 h-1.5 w-full">
+                <div className="h-full bg-rose-500 rounded-sm" /> {/* M1 */}
+                <div className="h-full bg-rose-500 rounded-sm" /> {/* M5 */}
+                <div className="h-full bg-blue-500 rounded-sm" /> {/* M15 */}
+                <div className="h-full bg-blue-500 rounded-sm" /> {/* M30 */}
+                <div className="h-full bg-emerald-500 rounded-sm" /> {/* H1 */}
+                <div className="h-full bg-blue-500 rounded-sm" /> {/* H4 */}
+                <div className="h-full bg-rose-500 rounded-sm" /> {/* D1 */}
               </div>
             </div>
 
             {/* Action Power Buttons */}
             <div className="grid grid-cols-3 gap-2 text-center text-[8.5px] font-black select-none">
-              <div className="border border-emerald-500 py-1 text-emerald-400 bg-emerald-950/10 uppercase">
-                CHART: BUY
+              <div className="border border-rose-500 py-1 text-rose-500 bg-[#260a0c] uppercase rounded-sm">
+                CHART: SELL
               </div>
-              <div className="border border-emerald-500 py-1 text-emerald-400 bg-emerald-950/10 uppercase">
-                BUY PWR: 63%
+              <div className="border border-emerald-500 py-1 text-emerald-400 bg-[#072212] uppercase rounded-sm">
+                BUY PWR: 41%
               </div>
-              <div className="border border-rose-500 py-1 text-rose-400 bg-rose-950/10 uppercase">
-                SELL PWR: 37%
+              <div className="border border-rose-500 py-1 text-rose-500 bg-[#260a0c] uppercase rounded-sm">
+                SELL PWR: 59%
               </div>
             </div>
 
             {/* Confluence Matrix Table */}
             <div className="border border-slate-800 rounded-sm overflow-hidden">
               {/* Table Header */}
-              <div className="grid grid-cols-8 bg-[#0b111d] text-center font-black text-slate-450 text-[8px] border-b border-slate-800 py-1">
+              <div className="grid grid-cols-8 bg-[#0b111d] text-center font-black text-white text-[8px] border-b border-slate-800 py-1">
                 <span>TF</span>
                 <span>M1</span>
                 <span>M5</span>
@@ -452,21 +462,21 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
 
               {/* Table Rows */}
               {[
-                { label: "Sonic R", cells: ["BUY", "BUY", "BUY", "BUY", "SELL", "SELL", "SELL"] },
-                { label: "Structure", cells: ["SELL", "WAIT", "BUY", "BUY", "BUY", "SELL", "SELL"] },
-                { label: "SuperTrend", cells: ["SELL", "SELL", "BUY", "BUY", "BUY", "BUY", "SELL"] },
-                { label: "MACD", cells: ["WAIT", "WAIT", "BUY", "BUY", "BUY", "WAIT", "SELL"] },
+                { label: "Sonic R", cells: ["SELL", "BUY", "BUY", "BUY", "BUY", "SELL", "SELL"] },
+                { label: "Structure", cells: ["WAIT", "BUY", "BUY", "BUY", "BUY", "BUY", "SELL"] },
+                { label: "SuperTrend", cells: ["SELL", "SELL", "SELL", "SELL", "SELL", "SELL", "SELL"] },
+                { label: "MACD", cells: ["BUY", "SELL", "WAIT", "BUY", "WAIT", "WAIT", "SELL"] },
                 { label: "ADR%", cells: ["MID", "MID", "MID", "MID", "MID", "MID", "MID"] },
-                { label: "VOL-MOM", cells: ["WAIT", "WAIT", "WAIT", "SELL", "BUY", "WAIT", "WAIT"] },
+                { label: "VOL-MOM", cells: ["WAIT", "WAIT", "BUY", "WAIT", "WAIT", "WAIT", "WAIT"] },
               ].map((row, idx) => (
-                <div key={idx} className="grid grid-cols-8 text-center items-center py-1 font-bold text-[8.5px] border-b border-slate-850 last:border-b-0 bg-[#0d1420]/30">
+                <div key={idx} className="grid grid-cols-8 text-center items-center py-1 font-bold text-[8.5px] border-slate-850 last:border-b-0 bg-[#0d1420]/30">
                   <span className="text-left pl-2 font-black text-white uppercase text-[8px]">{row.label}</span>
                   {row.cells.map((cell, cIdx) => {
                     const cellStyles = {
-                      BUY: "bg-emerald-950/40 text-emerald-400 border border-emerald-500/25",
-                      SELL: "bg-rose-950/40 text-rose-400 border border-rose-500/25",
-                      WAIT: "bg-slate-900/80 text-slate-500 border border-slate-850",
-                      MID: "bg-slate-900/80 text-slate-400 border border-slate-850",
+                      BUY: "bg-[#072212] text-emerald-400 border border-emerald-500/30",
+                      SELL: "bg-[#260a0c] text-rose-500 border border-rose-500/30",
+                      WAIT: "bg-slate-900/80 text-white border border-slate-700",
+                      MID: "bg-slate-900/80 text-white border border-slate-700",
                     }[cell] || "text-slate-400";
                     return (
                       <div key={cIdx} className="px-0.5">
@@ -485,22 +495,22 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
         {activeMockTab === "SEMI AUTO" && (
           <div className="grid grid-cols-2 gap-3 divide-x divide-slate-850 animate-in fade-in duration-200">
             {/* DCA / Martingale Settings (Left Column) */}
-            <div className="space-y-2">
-              <div className="text-center font-black text-[#ffd21f] text-[9.5px] uppercase tracking-wider mb-2 border-b border-slate-850 pb-1">
+            <div className="space-y-1.5">
+              <div className="text-center font-black text-white text-[9.5px] uppercase tracking-wider mb-2.5">
                 DCA / MARTINGALE SETTINGS
               </div>
 
               {[
-                { label: "Starting Lot", val: "0.01", color: "text-emerald-400" },
-                { label: "Multiplier", val: "1.50", color: "text-emerald-400" },
-                { label: "Max Trades", val: "10", color: "text-emerald-400" },
-                { label: "DCA Step (Pips)", val: "30", color: "text-emerald-400" },
-                { label: "Target TP (Pips)", val: "30", color: "text-emerald-400" },
-                { label: "Target SL (Pips)", val: "100", color: "text-emerald-400" },
+                { label: "Starting Lot", val: "0.01", color: "text-emerald-455" },
+                { label: "Multiplier", val: "1.50", color: "text-emerald-455" },
+                { label: "Max Trades", val: "10", color: "text-emerald-455" },
+                { label: "DCA Step (Pips)", val: "30", color: "text-emerald-455" },
+                { label: "Target TP (Pips)", val: "30", color: "text-emerald-455" },
+                { label: "Target SL (Pips)", val: "100", color: "text-emerald-455" },
               ].map((setting) => (
-                <div key={setting.label} className="grid grid-cols-[1fr_50px] items-center gap-2">
-                  <span className="font-bold text-white text-[8.5px] uppercase">{setting.label}</span>
-                  <div className="border border-slate-700 bg-slate-900 px-2 py-0.5 text-right font-black text-[9px] rounded-sm">
+                <div key={setting.label} className="bg-[#0d1420]/30 px-2 py-1 flex items-center justify-between rounded-sm">
+                  <span className="font-bold text-white text-[9.5px]">{setting.label}</span>
+                  <div className="border border-slate-700 bg-slate-950/50 w-24 py-1 text-center font-black text-[9.5px] rounded-sm">
                     <span className={setting.color}>{setting.val}</span>
                   </div>
                 </div>
@@ -536,13 +546,13 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
 
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-1 pt-1">
-                <div className="bg-blue-600 hover:bg-blue-700 text-center py-1 text-[8.5px] font-black text-white uppercase cursor-pointer select-none">
+                <div className="bg-blue-600 hover:bg-blue-700 text-center py-1 text-[8.5px] font-black text-white uppercase cursor-pointer select-none rounded-sm">
                   DCA BUY ↑
                 </div>
-                <div className="bg-rose-600 hover:bg-rose-700 text-center py-1 text-[8.5px] font-black text-white uppercase cursor-pointer select-none">
+                <div className="bg-rose-600 hover:bg-rose-700 text-center py-1 text-[8.5px] font-black text-white uppercase cursor-pointer select-none rounded-sm">
                   DCA SELL ↓
                 </div>
-                <div className="col-span-2 bg-orange-600 hover:bg-orange-750 text-center py-1.5 text-[8.5px] font-black text-white uppercase cursor-pointer select-none">
+                <div className="col-span-2 bg-orange-600 hover:bg-orange-750 text-center py-1.5 text-[8.5px] font-black text-white uppercase cursor-pointer select-none rounded-sm">
                   CLOSE ALL DCA
                 </div>
               </div>
@@ -608,11 +618,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className={`border text-center text-[8px] font-black py-0.5 cursor-pointer select-none rounded-sm transition-colors ${
-                      item.isRed
-                        ? "border-red-900 bg-red-950/20 text-rose-400 hover:bg-red-900/30"
-                        : "border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700"
-                    }`}
+                    className={`border text-center text-[8px] font-black py-0.5 cursor-pointer select-none rounded-sm transition-colors ${item.isRed
+                      ? "border-red-900 bg-red-950/20 text-rose-400 hover:bg-red-900/30"
+                      : "border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700"
+                      }`}
                   >
                     {item.label}
                   </div>
@@ -707,11 +716,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
               <div
                 key={label}
                 onClick={() => setActiveStrategy(label)}
-                className={`min-h-7 px-1.5 py-1 flex items-center justify-center text-center text-[10.5px] font-black uppercase cursor-pointer select-none transition-colors ${
-                  isActive
-                    ? "bg-[#ffde17] text-[#111827] font-extrabold"
-                    : "bg-[#151b24] text-white hover:bg-[#1a202b]"
-                }`}
+                className={`min-h-7 px-1.5 py-1 flex items-center justify-center text-center text-[10.5px] font-black uppercase cursor-pointer select-none transition-colors ${isActive
+                  ? "bg-[#ffde17] text-[#111827] font-extrabold"
+                  : "bg-[#151b24] text-white hover:bg-[#1a202b]"
+                  }`}
               >
                 {label}
               </div>
@@ -792,34 +800,30 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
           </div>
           <div
             onClick={() => setEaOn(!eaOn)}
-            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${
-              eaOn ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-slate-800 text-slate-500 border border-slate-700"
-            }`}
+            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${eaOn ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-slate-800 text-slate-500 border border-slate-700"
+              }`}
           >
             EA: {eaOn ? "ON" : "OFF"}
           </div>
           <div className="col-span-2 grid grid-cols-3 gap-1">
             <div
               onClick={() => setBuyOn(!buyOn)}
-              className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${
-                buyOn ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-slate-800 text-slate-500 border border-slate-700"
-              }`}
+              className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${buyOn ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-slate-800 text-slate-500 border border-slate-700"
+                }`}
             >
               BUY: {buyOn ? "ON" : "OFF"}
             </div>
             <div
               onClick={() => setSellOn(!sellOn)}
-              className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${
-                sellOn ? "bg-red-500 text-white hover:bg-red-650" : "bg-slate-800 text-slate-500 border border-slate-700"
-              }`}
+              className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${sellOn ? "bg-red-500 text-white hover:bg-red-650" : "bg-slate-800 text-slate-500 border border-slate-700"
+                }`}
             >
               SELL: {sellOn ? "ON" : "OFF"}
             </div>
             <div
               onClick={() => setHedgeOn(!hedgeOn)}
-              className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${
-                hedgeOn ? "bg-cyan-600 text-white hover:bg-cyan-700" : "bg-slate-800 text-slate-500 border border-slate-700"
-              }`}
+              className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${hedgeOn ? "bg-cyan-600 text-white hover:bg-cyan-700" : "bg-slate-800 text-slate-500 border border-slate-700"
+                }`}
             >
               HEDGE: {hedgeOn ? "ON" : "OFF"}
             </div>
@@ -829,9 +833,8 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
           </div>
           <div
             onClick={() => setLastRoundOn(!lastRoundOn)}
-            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${
-              lastRoundOn ? "bg-[#ffde17] text-[#111827]" : "bg-slate-600 text-white hover:bg-slate-700"
-            }`}
+            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none ${lastRoundOn ? "bg-[#ffde17] text-[#111827]" : "bg-slate-600 text-white hover:bg-slate-700"
+              }`}
           >
             Last Round: {lastRoundOn ? "ON" : "OFF"}
           </div>
