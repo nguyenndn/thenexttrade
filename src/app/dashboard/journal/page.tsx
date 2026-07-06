@@ -4,7 +4,7 @@ import { getJournalEntries, getUserTags } from "@/actions/journal";
 import { getStrategies } from "@/actions/strategies";
 import { getTradePlans } from "@/actions/trade-plans";
 import { redirect } from "next/navigation";
-import { format } from "date-fns";
+import { format, startOfMonth } from "date-fns";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
@@ -45,23 +45,25 @@ export default async function JournalPage({
  let dateFrom = typeof resolvedParams.from === "string" ? resolvedParams.from : undefined;
  let dateTo = typeof resolvedParams.to === "string" ? resolvedParams.to : undefined;
 
- // Auto-inject Today's date if missing
- if (tradingDataState.hasTradeData && (!dateFrom || !dateTo)) {
- const todayStr = format(new Date(), 'yyyy-MM-dd');
- dateFrom = dateFrom || todayStr;
- dateTo = dateTo || todayStr;
+  // Auto-inject default date range (Start of Month to Today) if missing
+  if (tradingDataState.hasTradeData && (!dateFrom || !dateTo)) {
+    const now = new Date();
+    const startMonthStr = format(startOfMonth(now), 'yyyy-MM-dd');
+    const todayStr = format(now, 'yyyy-MM-dd');
+    dateFrom = dateFrom || startMonthStr;
+    dateTo = dateTo || todayStr;
 
- const newParams = new URLSearchParams();
- Object.entries(resolvedParams).forEach(([key, val]) => {
- if (val !== undefined && key !== 'from' && key !== 'to') {
- newParams.append(key, String(val));
- }
- });
- newParams.append('from', dateFrom);
- newParams.append('to', dateTo);
+    const newParams = new URLSearchParams();
+    Object.entries(resolvedParams).forEach(([key, val]) => {
+      if (val !== undefined && key !== 'from' && key !== 'to') {
+        newParams.append(key, String(val));
+      }
+    });
+    newParams.append('from', dateFrom);
+    newParams.append('to', dateTo);
 
- redirect(`/dashboard/journal?${newParams.toString()}`);
- }
+    redirect(`/dashboard/journal?${newParams.toString()}`);
+  }
 
  const sortBy = typeof resolvedParams.sort === "string" ? resolvedParams.sort : undefined;
  const sortOrder = typeof resolvedParams.dir === "string" && (resolvedParams.dir === "asc" || resolvedParams.dir === "desc") ? resolvedParams.dir : undefined;

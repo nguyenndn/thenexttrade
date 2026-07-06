@@ -325,6 +325,7 @@ model JournalEntry {
   swap              Float?            @default(0)
   sync_source       String            @default("MANUAL") @db.VarChar(20)
   synced_at         DateTime?
+  magic_number      Int?
   tags              String[]          @default([])
   trading_session   String?           @db.VarChar(20)
   trading_accounts  trading_accounts? @relation(fields: [accountId], references: [id])

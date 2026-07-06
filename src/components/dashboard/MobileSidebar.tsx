@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { dashboardMenuItems, adminMenuItems } from "@/config/navigation";
 import { signout } from "@/app/auth/actions";
 
-// Section label mapping — matches desktop Sidebar.tsx exactly
+// Section label mapping - matches desktop Sidebar.tsx exactly
 const userSectionNames: Record<string, string> = {
  "Dashboard": "OPERATIONS",
  "Trading Journal": "EXECUTION",
@@ -83,9 +83,9 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
  </Button>
  </div>
 
- {/* ── Nav Items (scrollable) ── */}
+ {/* -- Nav Items (scrollable) -- */}
  <div className="flex-1 overflow-y-auto py-3 px-3">
- {/* Longest prefix match — only one item active */}
+ {/* Longest prefix match - only one item active */}
  {(() => {
  // Map child tab routes to parent menu items
  const childRouteMap: Record<string, string> = {

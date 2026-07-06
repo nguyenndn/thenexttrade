@@ -22,7 +22,7 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
  };
 
  return (
- <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-cyan-500 overflow-hidden h-auto xl:h-[400px] flex flex-col">
+ <div className="flex flex-col h-full w-full border-t-4 border-t-pink-500 overflow-hidden">
  {/* Header */}
  <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between shrink-0">
  <div className="flex items-center gap-2.5">
@@ -44,7 +44,7 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
  <div className="col-span-4 text-right">P&L</div>
  </div>
 
- {/* List — scrollable when >5 rows */}
+ {/* List - scrollable when >5 rows */}
  <div className="flex-1 overflow-y-auto min-h-0">
  {data.length === 0 ? (
  <div className="h-full flex flex-col items-center justify-center p-8 text-center text-gray-600 dark:text-gray-300 font-medium">

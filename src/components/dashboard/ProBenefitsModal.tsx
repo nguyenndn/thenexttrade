@@ -39,7 +39,7 @@ const BENEFITS: { category: string; items: Benefit[] }[] = [
  icon: Brain,
  title: "AI Trading Intelligence",
  description:
- "Personalized AI insights surfaced daily — identify patterns, strengths, and blindspots in your trading.",
+ "Personalized AI insights surfaced daily - identify patterns, strengths, and blindspots in your trading.",
  highlight: true,
  },
  {
@@ -57,13 +57,13 @@ const BENEFITS: { category: string; items: Benefit[] }[] = [
  icon: Zap,
  title: "EA Toolkit (Advanced Config)",
  description:
- "Unlock advanced parameters for GoldScalperNinja and partner EAs — fine-tune risk, filters, and strategy modes.",
+ "Unlock advanced parameters for GoldScalperNinja and partner EAs - fine-tune risk, filters, and strategy modes.",
  },
  {
  icon: BookOpen,
  title: "Full Academy Access",
  description:
- "Unlock all Level 2 and Level 3 Academy lessons — advanced risk management, advanced strategy, and live market walkthroughs.",
+ "Unlock all Level 2 and Level 3 Academy lessons - advanced risk management, advanced strategy, and live market walkthroughs.",
  },
  {
  icon: Shield,
@@ -80,7 +80,7 @@ const BENEFITS: { category: string; items: Benefit[] }[] = [
  icon: Headphones,
  title: "Priority Support",
  description:
- "Skip the queue — Pro members get responses within 4 hours via Telegram or email.",
+ "Skip the queue - Pro members get responses within 4 hours via Telegram or email.",
  },
  {
  icon: Crown,
@@ -131,7 +131,7 @@ export function ProBenefitsModal({ isOpen, onClose, isPro = false }: ProBenefits
  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
  {isPro
  ? "All features included in your active plan"
- : "100% free — apply as a VIP trader to unlock"}
+ : "100% free - apply as a VIP trader to unlock"}
  </p>
  </div>
  </div>
@@ -190,7 +190,7 @@ export function ProBenefitsModal({ isOpen, onClose, isPro = false }: ProBenefits
  ))}
  </div>
 
- {/* Footer CTA — only for Free Plan */}
+ {/* Footer CTA - only for Free Plan */}
  {!isPro && (
  <div className="sticky bottom-0 border-t border-dashboard dark:border-white/8 bg-white dark:bg-[#13151f] px-5 py-4">
  <Link
@@ -202,7 +202,7 @@ export function ProBenefitsModal({ isOpen, onClose, isPro = false }: ProBenefits
  <ArrowRight className="h-3.5 w-3.5" />
  </Link>
  <p className="mt-2 text-center text-[11px] text-gray-400 dark:text-gray-500">
- No payment required — free for verified IB clients
+ No payment required - free for verified IB clients
  </p>
  </div>
  )}

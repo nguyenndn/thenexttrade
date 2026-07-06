@@ -57,38 +57,38 @@ export async function computeTraderSignals(
  actionHref: "/dashboard/accounts"
  });
  } else {
- // 2. ACCOUNT_NEVER_SYNCED
- const allSyncedCount = accounts.filter(a => a.lastSync).length;
- if (allSyncedCount === 0 && trades.length === 0) {
- signals.push({
- signalType: "ACCOUNT_NEVER_SYNCED",
- severity: "HIGH",
- title: "Set up trade synchronization",
- summary: "Your account is connected but has never synced trades. Setup TNT Connect or EA to automatically track your edge.",
- actionLabel: "Set Up Sync",
- actionHref: "/dashboard/accounts"
- });
- }
- 
- // 3. SYNC_STALE
- const sortedSyncs = accounts
- .filter(a => a.lastSync)
- .map(a => a.lastSync as Date)
- .sort((a, b) => b.getTime() - a.getTime());
- if (sortedSyncs.length > 0) {
- const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
- const now = Date.now();
- if (now - sortedSyncs[0].getTime() > threeDaysInMs) {
- signals.push({
- signalType: "SYNC_STALE",
- severity: "MEDIUM",
- title: "Sync is disconnected or stale",
- summary: "Your account hasn't successfully synchronized trades in over 3 days. Check your EA or TNT Connect setup to keep analytics current.",
- actionLabel: "Troubleshoot Sync",
- actionHref: "/dashboard/accounts"
- });
- }
- }
+  // 2. ACCOUNT_NEVER_SYNCED
+  const allSyncedCount = accounts.filter(a => a.lastSync).length;
+  if (allSyncedCount === 0 && trades.length === 0) {
+    signals.push({
+      signalType: "ACCOUNT_NEVER_SYNCED",
+      severity: "HIGH",
+      title: "Set up trade synchronization",
+      summary: "Your account is connected but has never synced trades. Setup Trade Manager EA to automatically track your edge.",
+      actionLabel: "Set Up Sync",
+      actionHref: "/dashboard/accounts"
+    });
+  }
+  
+  // 3. SYNC_STALE
+  const sortedSyncs = accounts
+    .filter(a => a.lastSync)
+    .map(a => a.lastSync as Date)
+    .sort((a, b) => b.getTime() - a.getTime());
+  if (sortedSyncs.length > 0) {
+    const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    if (now - sortedSyncs[0].getTime() > threeDaysInMs) {
+      signals.push({
+        signalType: "SYNC_STALE",
+        severity: "MEDIUM",
+        title: "Sync is disconnected or stale",
+        summary: "Your account hasn't successfully synchronized trades in over 3 days. Check your Trade Manager EA setup to keep analytics current.",
+        actionLabel: "Troubleshoot Sync",
+        actionHref: "/dashboard/accounts"
+      });
+    }
+  }
  }
  
  // 4. NO_FIRST_TRADE

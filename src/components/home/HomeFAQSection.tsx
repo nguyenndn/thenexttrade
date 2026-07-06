@@ -9,7 +9,7 @@ import Link from "next/link";
 const HOMEPAGE_FAQ = [
   {
     question: "What is TheNextTrade?",
-    answer: "TheNextTrade is an advanced, premium trading analytics and education platform. We offer a progressive Academy, automated MetaTrader 5 (MT5) integration (via TNT Connect and GSN EA), a behavioral Trading Journal, daily discipline missions, and deep analytics to help you find and refine your trading edge.",
+    answer: "TheNextTrade is an advanced, premium trading analytics and education platform. We offer a progressive Academy, automated MetaTrader 5 (MT5) integration (via Trade Manager EA), a behavioral Trading Journal, daily discipline missions, and deep analytics to help you find and refine your trading edge.",
   },
   {
     question: "Is TheNextTrade free to start?",
@@ -17,7 +17,7 @@ const HOMEPAGE_FAQ = [
   },
   {
     question: "How do I sync MT5 trades?",
-    answer: "We offer two seamless sync methods: TNT Connect (our recommended desktop system tray app for Windows that syncs selected periods) and EA Sync (a continuous MetaTrader 5 Expert Advisor dropped onto a chart, ideal for VPS workflows). We also support a Manual Journal if you prefer logging trades yourself.",
+    answer: "We offer automated MetaTrader 5 (MT5) synchronization via our Trade Manager Expert Advisor, which runs directly on your chart or VPS to log trades in real time. We also support a Manual Journal if you prefer logging trades yourself.",
   },
   {
     question: "Do I need trading experience to start?",
@@ -52,7 +52,6 @@ export function HomeFAQSection() {
         <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <HomeSectionHeading
             align="center"
-            eyebrow="Before you start"
             title="Frequently Asked Questions"
             highlight="Questions"
             description="Quick answers to common platform and trading questions."

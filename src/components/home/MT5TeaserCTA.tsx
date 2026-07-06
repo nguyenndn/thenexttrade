@@ -26,7 +26,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
 
   return (
     <div className="relative w-full overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
-      {/* Dot pattern bg — same as other sections but Gold themed - now truly full width */}
+      {/* Dot pattern bg - same as other sections but Gold themed - now truly full width */}
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
       
       {/* Inject self-contained premium animations */}
@@ -96,7 +96,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(245,158,11,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.02)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none rounded-3xl" />
           
           {/* Glowing Tech Mesh Backdrop (Sky Blue & Amber Gold) */}
-          <div className="absolute -top-20 -right-20 w-80 h-80 bg-sky-400/[0.08] dark:bg-sky-500/[0.06] rounded-full blur-[80px] pointer-events-none group-hover/card:scale-110 transition-transform duration-700" />
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-gold/[0.08] dark:bg-gold/[0.06] rounded-full blur-[80px] pointer-events-none group-hover/card:scale-110 transition-transform duration-700" />
           <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-amber-400/[0.1] dark:bg-amber-500/[0.06] rounded-full blur-[80px] pointer-events-none" />
 
           <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center relative z-10">

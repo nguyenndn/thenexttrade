@@ -280,8 +280,8 @@ export function BiasProfileWidget() {
  </div>
 
  {/* Radar Chart */}
- <div className="flex-1 min-h-0 w-full my-2 h-[200px] flex items-center justify-center">
- <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
+ <div className="flex-1 min-h-0 w-full my-2 flex items-center justify-center">
+ <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={100}>
  <RadarChart cx="50%" cy="50%" outerRadius="72%" data={biasData}>
  <PolarGrid stroke="rgba(156, 163, 175, 0.15)" strokeDasharray="3 3" />
  <PolarAngleAxis 

@@ -22,24 +22,24 @@ interface FirstDataReminderBannerProps {
 // ---------------------------------------------------------------------------
 
 const CTA_CONFIG: Record<
- SyncMethod,
- { label: string; href: string; icon: React.ReactNode }
+  SyncMethod,
+  { label: string; href: string; icon: React.ReactNode }
 > = {
- TNT_CONNECT: {
- label: "Open TNT Connect Setup",
- href: "/dashboard/accounts?setup=sync&method=tnt&source=first-data-reminder",
- icon: <Monitor size={13} className="shrink-0" />,
- },
- EA_SYNC: {
- label: "Open EA Setup",
- href: "/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder",
- icon: <Zap size={13} className="shrink-0" />,
- },
- MANUAL: {
- label: "Log First Trade",
- href: "/dashboard/journal?action=log-trade&source=first-data-reminder",
- icon: <PenLine size={13} className="shrink-0" />,
- },
+  TNT_CONNECT: {
+    label: "Open Trade Manager Setup",
+    href: "/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder",
+    icon: <Zap size={13} className="shrink-0" />,
+  },
+  EA_SYNC: {
+    label: "Open Trade Manager Setup",
+    href: "/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder",
+    icon: <Zap size={13} className="shrink-0" />,
+  },
+  MANUAL: {
+    label: "Log First Trade",
+    href: "/dashboard/journal?action=log-trade&source=first-data-reminder",
+    icon: <PenLine size={13} className="shrink-0" />,
+  },
 };
 
 // ---------------------------------------------------------------------------

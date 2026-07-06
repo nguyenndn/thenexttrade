@@ -38,10 +38,16 @@ interface DashboardCoachNudgeProps {
  sourceSignalType?: string;
  };
  learningRecommendations: LearningRecommendation[];
+ open?: boolean;
+ onOpenChange?: (open: boolean) => void;
+ hideTrigger?: boolean;
 }
 
-export function DashboardCoachNudge({ nextBestAction, learningRecommendations }: DashboardCoachNudgeProps) {
- const [isOpen, setIsOpen] = useState(false);
+export function DashboardCoachNudge({ nextBestAction, learningRecommendations, open, onOpenChange, hideTrigger }: DashboardCoachNudgeProps) {
+ const [internalIsOpen, setInternalIsOpen] = useState(false);
+
+ const isOpen = open !== undefined ? open : internalIsOpen;
+ const setIsOpen = onOpenChange !== undefined ? onOpenChange : setInternalIsOpen;
 
  const isWeakness = [
  "LOSS_STREAK",
@@ -76,6 +82,7 @@ export function DashboardCoachNudge({ nextBestAction, learningRecommendations }:
  return (
  <Dialog open={isOpen} onOpenChange={setIsOpen}>
  {/* Compact Top-Level One-Line Bar */}
+ {!hideTrigger && (
  <DialogTrigger asChild>
  <button className="w-full text-left relative overflow-hidden rounded-xl border border-amber-500/20 dark:border-gold/15 bg-gradient-to-r from-amber-500/[0.04] to-yellow-500/[0.02] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4 shadow-sm hover:border-amber-500/35 hover:shadow-md transition-all duration-300 group cursor-pointer">
  {/* Glowing highlight animation */}
@@ -99,6 +106,7 @@ export function DashboardCoachNudge({ nextBestAction, learningRecommendations }:
  </div>
  </button>
  </DialogTrigger>
+ )}
 
  {/* Modal Detail Plan Container */}
  <DialogContent className="max-w-xl border-amber-500/20 bg-white dark:bg-[#0F1116] p-6 rounded-2xl shadow-2xl whitespace-normal" style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>

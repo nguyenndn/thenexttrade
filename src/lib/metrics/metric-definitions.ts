@@ -167,6 +167,77 @@ export const METRIC_DEFINITIONS = {
  "Current month data updates as new trades close.",
  ],
  },
+ streak: {
+ id: "streak",
+ label: "Streak",
+ shortDescription: "Consecutive trading days with at least one closed trade.",
+ formula: "Number of consecutive days with closed trades.",
+ includedData: "All closed trades across connected accounts.",
+ edgeCases: [
+ "Weekend days are skipped so they do not break the streak.",
+ "Requires at least one closed trade per active trading day.",
+ ],
+ },
+ totalTrades: {
+ id: "totalTrades",
+ label: "Total Trades",
+ shortDescription: "Total number of closed trades executed in the period.",
+ formula: "Count of all closed trades in the selected account and date range.",
+ includedData: "Closed trades in the selected period. Open trades are excluded.",
+ edgeCases: [
+ "Includes winning, losing, and break-even trades.",
+ ],
+ },
+ avgRR: {
+ id: "avgRR",
+ label: "Avg R:R",
+ shortDescription: "Average Risk to Reward ratio on closed trades.",
+ formula: "Avg Win / Avg Loss",
+ includedData: "All closed trades in the selected period.",
+ edgeCases: [
+ "If there are no losses, shows '--' or is unbounded.",
+ ],
+ },
+ expectancy: {
+ id: "expectancy",
+ label: "Expectancy",
+ shortDescription: "Expected net profit per trade executed.",
+ formula: "Net P&L / Total Trades",
+ includedData: "All closed trades in the selected period.",
+ edgeCases: [
+ "A positive expectancy means you win money on average per trade over time.",
+ ],
+ },
+ fees: {
+ id: "fees",
+ label: "Broker Fees",
+ shortDescription: "Sum of commission and swap charges.",
+ formula: "Commission + Swap",
+ includedData: "All closed trades in the selected period.",
+ edgeCases: [
+ "Broker fees are deducted directly from your trade P&L.",
+ ],
+ },
+ maxWin: {
+ id: "maxWin",
+ label: "Max Win",
+ shortDescription: "Your single largest winning trade in the selected period.",
+ formula: "Maximum profit of a single closed trade.",
+ includedData: "Closed trades in the selected period.",
+ edgeCases: [
+ "Shows $0 if no profitable trades exist.",
+ ],
+ },
+ maxLoss: {
+ id: "maxLoss",
+ label: "Max Loss",
+ shortDescription: "Your single largest losing trade in the selected period.",
+ formula: "Maximum loss (negative value) of a single closed trade.",
+ includedData: "Closed trades in the selected period.",
+ edgeCases: [
+ "Shows $0 if no losing trades exist.",
+ ],
+ },
 } as const satisfies Record<string, MetricDefinition>;
 
 export type MetricId = keyof typeof METRIC_DEFINITIONS;

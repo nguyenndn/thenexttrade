@@ -18,7 +18,7 @@ interface DailyWinRateChartProps {
 export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWinRateChartProps) {
  if (!data || data.length === 0) {
  return (
- <div className={`w-full flex items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300`} style={{ height }}>
+ <div className="flex flex-col w-full h-full border-t-4 border-t-emerald-500 overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
  No data available
  </div>
  );
@@ -74,29 +74,30 @@ export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWi
  const tickInterval = data.length > 60 ? 6 : data.length > 30 ? 3 : data.length > 14 ? 1 : 0;
 
  return (
- <ChartContainer height={height} minHeight={250}>
+ <div className="flex flex-col h-full w-full border-t-4 border-t-emerald-500 overflow-hidden p-4">
+ <ChartContainer height="100%" minHeight={100} className="w-full h-full flex-1">
  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
  <BarChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
  <defs>
  <linearGradient id="winGradient" x1="0" y1="0" x2="0" y2="1">
- <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
- <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+ <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+ <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
  </linearGradient>
  <linearGradient id="winGradientDim" x1="0" y1="0" x2="0" y2="1">
- <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
- <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.15} />
+ <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
+ <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.15} />
  </linearGradient>
  <linearGradient id="lossGradient" x1="0" y1="0" x2="0" y2="1">
- <stop offset="0%" stopColor="#F59E0B" stopOpacity={1} />
- <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.6} />
+ <stop offset="5%" stopColor="#F59E0B" stopOpacity={1} />
+ <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.6} />
  </linearGradient>
  <linearGradient id="lossGradientDim" x1="0" y1="0" x2="0" y2="1">
- <stop offset="0%" stopColor="#F59E0B" stopOpacity={0.35} />
- <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.15} />
+ <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.35} />
+ <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.15} />
  </linearGradient>
  <linearGradient id="zeroGradient" x1="0" y1="0" x2="0" y2="1">
- <stop offset="0%" stopColor="#D1D5DB" stopOpacity={0.5} />
- <stop offset="100%" stopColor="#D1D5DB" stopOpacity={0.2} />
+ <stop offset="5%" stopColor="#D1D5DB" stopOpacity={0.5} />
+ <stop offset="95%" stopColor="#D1D5DB" stopOpacity={0.2} />
  </linearGradient>
  </defs>
  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(156,163,175,0.15)" />
@@ -140,5 +141,6 @@ export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWi
  </BarChart>
  </ResponsiveContainer>
  </ChartContainer>
+ </div>
  );
 }

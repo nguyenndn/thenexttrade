@@ -218,7 +218,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
  <div className="p-6 sm:p-8">
  <DialogHeader className="mb-5 flex flex-row items-center justify-between space-y-0 pb-0">
  <DialogTitle className="text-lg font-black text-gray-700 dark:text-white tracking-tight mx-auto uppercase">
- IB Transfer — {brokerName}
+ IB Transfer - {brokerName}
  </DialogTitle>
  </DialogHeader>
 
@@ -732,7 +732,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
  </Button>
  </DialogFooter>
 
- {/* Divider + Register CTA — outside DialogFooter to avoid justify-end */}
+ {/* Divider + Register CTA - outside DialogFooter to avoid justify-end */}
  <div className="relative w-full py-2">
  <div className="absolute inset-0 flex items-center">
  <div className="w-full border-t border-dashboard" />

@@ -53,7 +53,7 @@ const steps: StepDef[] = [
  {
  id: "account",
  title: "Connect an MT5 account",
- description: "Add the account number that TNT Connect or EA Sync will match against.",
+ description: "Add the account number that Trade Manager EA will match against.",
  href: "/dashboard/accounts?action=add",
  cta: "Add account",
  icon: MonitorDown,

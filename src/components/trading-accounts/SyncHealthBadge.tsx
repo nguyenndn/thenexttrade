@@ -70,10 +70,10 @@ const STATUS_CONFIG: Record<SyncHealthStatus, {
 };
 
 const SOURCE_LABELS: Record<string, string> = {
- TNT_CONNECT: "TNT Connect",
- EA: "EA Sync",
- MANUAL: "Manual",
- UNKNOWN: "Unknown",
+  TNT_CONNECT: "Trade Manager",
+  EA: "Trade Manager",
+  MANUAL: "Manual",
+  UNKNOWN: "Unknown",
 };
 
 function timeAgo(dateStr: string | null): string {

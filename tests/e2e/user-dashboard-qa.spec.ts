@@ -346,7 +346,7 @@ async function routeSmoke(page: Page, viewport: ViewportName) {
         "/dashboard/settings/referrals",
         "/dashboard/settings/security",
         "/dashboard/settings/streak",
-        "/dashboard/settings/tnt-connect",
+        "/dashboard/settings/sync-settings",
         "/dashboard/settings/feedback",
     ].filter(Boolean) as string[];
 
@@ -564,11 +564,10 @@ async function settingsFlow(page: Page, viewport: ViewportName) {
     });
 
     await recordStep(viewport, "Settings", "TNT Connect key buttons", async () => {
-        await gotoHealthy(page, "/dashboard/settings/tnt-connect");
-        await expect(page.getByRole("button", { name: /generate api key|regenerate|download tnt connect/i }).first()).toBeVisible();
-        await page.getByRole("button", { name: /download tnt connect/i }).click();
-        await expect(page.locator("body")).toContainText(/Download will be available soon/i, { timeout: 6_000 });
-        return "TNT Connect screen and non-mutating download action rendered.";
+        await gotoHealthy(page, "/dashboard/settings/sync-settings");
+        await expect(page.getByRole("button", { name: /generate api key|regenerate/i }).first()).toBeVisible();
+        await expect(page.getByRole("link", { name: /Download Trade Manager EA/i })).toBeVisible();
+        return "Sync settings screen and download actions rendered.";
     });
 }
 

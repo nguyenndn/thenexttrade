@@ -17,7 +17,7 @@ interface WelcomeHeroProps {
 const goalMessages: Record<string, { title: string; subtitle: string }> = {
  track: {
  title: "Let's start tracking your trades.",
- subtitle: "Connect your MT5 account and your dashboard will automatically organize every trade — entries, exits, and results.",
+ subtitle: "Connect your MT5 account and your dashboard will automatically organize every trade - entries, exits, and results.",
  },
  mistakes: {
  title: "Let's find what's costing you money.",
@@ -25,7 +25,7 @@ const goalMessages: Record<string, { title: string; subtitle: string }> = {
  },
  discipline: {
  title: "Let's build your trading discipline.",
- subtitle: "Start with Academy lessons and connect your account — your dashboard will track consistency and risk management.",
+ subtitle: "Start with Academy lessons and connect your account - your dashboard will track consistency and risk management.",
  },
  pro: {
  title: "Let's unlock your Pro toolkit.",
@@ -134,7 +134,7 @@ export function WelcomeHero({ userName, activationState, tradingGoal }: WelcomeH
  </div>
  </div>
 
- {/* Secondary Action Cards — show 2 relevant next actions */}
+ {/* Secondary Action Cards - show 2 relevant next actions */}
  {secondarySteps.length > 0 && (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
  {secondarySteps.map((step) => (
@@ -174,7 +174,7 @@ export function WelcomeHero({ userName, activationState, tradingGoal }: WelcomeH
  </div>
  )}
 
- {/* Ghost Chart Preview — show what the dashboard will look like */}
+ {/* Ghost Chart Preview - show what the dashboard will look like */}
  <div className="relative rounded-2xl border border-dashboard bg-white dark:bg-[#0B0E14] overflow-hidden">
  {/* Blurred mock chart (SVG) */}
  <div className="relative h-36 md:h-48 overflow-hidden">

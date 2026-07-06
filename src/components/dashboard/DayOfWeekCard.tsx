@@ -38,7 +38,7 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
  const hasTrades = allDays.some(d => d.tradeCount > 0);
 
  return (
- <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-violet-500 h-auto xl:h-[400px] flex flex-col overflow-hidden">
+ <div className="flex flex-col h-full w-full border-t-4 border-t-violet-500 overflow-hidden">
  {/* Header */}
  <div className="px-5 pt-5 pb-3 shrink-0">
  <div className="flex items-center justify-between">
@@ -66,7 +66,7 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
  </div>
  </div>
 
- {/* Day rows — exactly 5 rows fill remaining space */}
+ {/* Day rows - exactly 5 rows fill remaining space */}
  <div className="flex-1 flex flex-col px-5 pb-5 min-h-0">
  {!hasTrades ? (
  <div className="flex items-center justify-center flex-1">
@@ -106,11 +106,11 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
  <span className={`text-xs font-black min-w-[65px] text-right ${
  d.pnl >= 0 ? "text-primary" : "text-red-500"
  }`}>
- {d.tradeCount === 0 ? "—" : `${d.pnl >= 0 ? "+" : ""}${d.pnl.toFixed(0)}`}
+ {d.tradeCount === 0 ? "--" : `${d.pnl >= 0 ? "+" : ""}${d.pnl.toFixed(0)}`}
  </span>
 
  <span className="text-[11px] text-gray-500 font-semibold min-w-[70px] text-right shrink-0">
- {d.tradeCount > 0 ? `${d.tradeCount}t · ${d.winRate.toFixed(0)}%` : "—"}
+ {d.tradeCount > 0 ? `${d.tradeCount}t · ${d.winRate.toFixed(0)}%` : "--"}
  </span>
  </div>
  );

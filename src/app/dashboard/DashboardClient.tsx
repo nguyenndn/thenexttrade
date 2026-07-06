@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
 import { GreetingHeader } from "@/components/dashboard/GreetingHeader";
-import { DashboardHero } from "@/components/dashboard/DashboardHero";
+import { DashboardManager } from "@/components/dashboard/grid/DashboardManager";
 import { InsightBanner } from "@/components/dashboard/InsightBanner";
 import { MobileProStatusBanner } from "@/components/dashboard/MobileProStatusBanner";
 import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
@@ -95,6 +95,7 @@ export default function DashboardClient(data: DashboardPageData) {
  tradingGoal,
  weeklyReviewEligibility,
  suppress,
+ initialDashboards,
  } = data;
  const { theme } = useTheme();
  const isDark = theme === "dark";
@@ -173,6 +174,59 @@ export default function DashboardClient(data: DashboardPageData) {
  await markFirstInsightViewedAction();
  };
 
+  const [isCoachNudgeOpen, setIsCoachNudgeOpen] = useState(false);
+
+  // Push custom dynamic notifications to the global NotificationBell
+  useEffect(() => {
+    import("@/hooks/useNotifications").then(({ localNotificationStore }) => {
+      // Coach Nudge
+      if (nextBestAction && !shouldSuppressCoachNudge && !suppress?.coachNudge) {
+        const isWeakness = [
+          "LOSS_STREAK", "SL_CLUSTER", "REVENGE_SIZE_UP", "LOW_PLAN_COMPLIANCE",
+          "BE_HEAVY", "WEAK_SYMBOL", "WEAK_SESSION", "RECURRING_MISTAKE"
+        ].includes(nextBestAction.id);
+        
+        localNotificationStore.add({
+          id: "coach-nudge",
+          title: isWeakness ? `Leak Alert: ${nextBestAction.title}` : nextBestAction.title,
+          message: "View Action Plan",
+          isRead: false,
+          type: "FEATURE_UPDATE",
+          createdAt: new Date().toISOString(),
+          onClick: () => setIsCoachNudgeOpen(true)
+        });
+      } else {
+        localNotificationStore.remove("coach-nudge");
+      }
+
+      // Report Nudge
+      if (!reportNudgeDismissed && !suppress?.reportNudge && weeklyReviewEligibility?.ready) {
+        localNotificationStore.add({
+          id: "weekly-review-nudge",
+          title: weeklyReviewEligibility.isFirstWeeklyReview ? "Your first review is ready" : "Your weekly review is ready",
+          message: "Generate your latest review to update your action plan.",
+          isRead: false,
+          type: "WEEKLY_REPORT",
+          createdAt: new Date().toISOString(),
+          link: "/dashboard/reports?type=weekly-review"
+        });
+      } else {
+        localNotificationStore.remove("weekly-review-nudge");
+      }
+    });
+
+    return () => {
+      import("@/hooks/useNotifications").then(({ localNotificationStore }) => {
+        localNotificationStore.remove("coach-nudge");
+        localNotificationStore.remove("weekly-review-nudge");
+      });
+    };
+  }, [
+    nextBestAction, shouldSuppressCoachNudge, suppress?.coachNudge, 
+    reportNudgeDismissed, suppress?.reportNudge, weeklyReviewEligibility?.ready, 
+    weeklyReviewEligibility?.isFirstWeeklyReview
+  ]);
+
  return (
  <div className="w-full relative min-h-screen">
  <JournalEntryModal
@@ -200,13 +254,16 @@ export default function DashboardClient(data: DashboardPageData) {
  {/* Mobile Pro Status Banner — suppress for brand-new users */}
  {!hasNoData && <MobileProStatusBanner />}
 
- {/* Coach & Next Action Engine Unified Nudge Bar */}
- {nextBestAction && !shouldSuppressCoachNudge && !suppress?.coachNudge && (
- <DashboardCoachNudge 
- nextBestAction={nextBestAction} 
- learningRecommendations={learningRecommendations || []} 
- />
- )}
+ {/* Headless Coach Nudge Dialog state provider */}
+  {nextBestAction && !shouldSuppressCoachNudge && !suppress?.coachNudge && (
+  <DashboardCoachNudge 
+  nextBestAction={nextBestAction} 
+  learningRecommendations={learningRecommendations || []} 
+  open={isCoachNudgeOpen}
+  onOpenChange={setIsCoachNudgeOpen}
+  hideTrigger={true}
+  />
+  )}
 
  {/* First Session Onboarding Wizard & Launcher */}
  {firstSessionState && !firstSessionState.isCompleted && (
@@ -244,247 +301,17 @@ export default function DashboardClient(data: DashboardPageData) {
  {/* AI Insight Banner */}
  {insight && !suppress?.positiveInsight && <InsightBanner insight={insight} score={intelligenceScore} />}
 
- {/* Report Nudge Card */}
- {!reportNudgeDismissed && !suppress?.reportNudge && weeklyReviewEligibility?.ready && (
- <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl border transition-all bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200/60 dark:border-emerald-500/15">
- <div className="p-1.5 bg-emerald-100 dark:bg-emerald-500/15 rounded-lg shrink-0">
- <PieChartIcon size={14} className="text-emerald-600 dark:text-emerald-400" />
- </div>
- <div className="flex-1 min-w-0 truncate">
- <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">
- {weeklyReviewEligibility.isFirstWeeklyReview ? "Your first review is ready" : "Your weekly review is ready"}
- </span>
- <span className="text-sm text-gray-600 dark:text-gray-500 ml-2 hidden sm:inline">
- — {weeklyReviewEligibility.isFirstWeeklyReview 
- ? "We found enough synced trades to build your first Weekly Review. Generate it to see one strength, one leak, and one next action." 
- : "You have new trade data since your last review. Generate the latest review to update your action plan."}
- </span>
- </div>
- <a href="/dashboard/reports?type=weekly-review" className="shrink-0 bg-primary hover:bg-primary/90 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors text-center">
- {weeklyReviewEligibility.isFirstWeeklyReview ? "Generate First Review" : "Generate Review"} →
- </a>
- <button
- onClick={handleDismissReportNudge}
- className="p-1 rounded-md shrink-0 transition-colors text-emerald-400 hover:text-emerald-600 hover:bg-emerald-100 dark:text-emerald-500 dark:hover:text-emerald-300 dark:hover:bg-emerald-500/15"
- aria-label="Dismiss"
- >
- <X size={14} />
- </button>
- </div>
- )}
+ 
 
- {/* Hero Stats Bar (4 columns) */}
- <DashboardHero 
- totalBalance={dashboardData.totalBalance} 
- periodPnL={dashboardData.periodPnL} 
- winRate={dashboardData.winRate} 
- tradeScore={tradeScore}
- isDark={isDark} 
- />
-
-
- {/* === Dashboard Grid: 12-col layout matching reference === */}
- <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
-
- {/* --- ROW 1: Period Growth (8) + Quick Stats & Distribution Sidebar (4) --- */}
- <div id="onborda-chart" className="xl:col-span-8 min-w-0">
- <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-primary h-auto xl:h-[420px] overflow-hidden">
- <div className="flex items-center justify-between mb-6">
- <div className="flex items-center gap-3">
- <div className="p-2 bg-primary/10 rounded-lg text-primary">
- <TrendingUp size={20} />
- </div>
- <div>
- <h3 className="font-bold text-gray-700 dark:text-white text-sm">Period Growth</h3>
- <p className="text-xs text-gray-600 dark:text-gray-400">Cumulative Net Profit</p>
- </div>
- </div>
- <div className="text-right">
- <p className="text-xs text-gray-600 dark:text-gray-400">Net Profit</p>
- <p className={`text-sm font-bold ${(chartData[chartData.length - 1]?.balance || 0) >= 0 ? "text-primary" : "text-red-500"}`}>
- {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', signDisplay: 'always' }).format(chartData[chartData.length - 1]?.balance || 0)}
- </p>
- </div>
- </div>
- <BalanceGrowthChart data={chartData} />
- </div>
- </div>
- <div id="onborda-quickstats" className="xl:col-span-4 min-w-0">
- <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-teal-500 h-auto xl:h-[420px] flex flex-col divide-y divide-dashboard overflow-hidden">
- {/* Header */}
- <div className="px-5 pt-5 pb-3">
- <div className="flex items-center gap-3">
- <div className="p-2 bg-teal-500/10 rounded-lg text-teal-500">
- <Gauge size={20} />
- </div>
- <div>
- <div className="flex items-center gap-1.5">
- <h3 className="font-bold text-gray-700 dark:text-white text-sm">Quick Stats</h3>
- <HelpTooltip content="A compact view of your trade efficiency for the selected account and date range." />
- </div>
- <p className="text-xs text-gray-500">Key Metrics & Distribution</p>
- </div>
- </div>
- </div>
-
- {/* Quick Stats */}
- <div className="px-5 py-4">
- <div className="flex divide-x divide-dashboard">
- <div className="text-center flex-1 px-2">
- <p className="text-2xl font-black text-blue-500">
- {!isFinite(dashboardData.profitFactor) ? "∞" : dashboardData.profitFactor.toFixed(2)}
- </p>
- <div className="mt-0.5 flex items-center justify-center gap-1">
- <p className="text-[11px] text-gray-500 font-semibold">Profit Factor</p>
- <MetricHelp metricId="profitFactor" compact />
- </div>
- </div>
- <div className="text-center flex-1 px-2">
- <p className="text-2xl font-black text-primary">${dashboardData.avgWin.toFixed(0)}</p>
- <div className="mt-0.5 flex items-center justify-center gap-1">
- <p className="text-[11px] text-gray-500 font-semibold">Avg Win</p>
- <MetricHelp metricId="avgWin" compact />
- </div>
- </div>
- <div className="text-center flex-1 px-2">
- <p className="text-2xl font-black text-red-500">${dashboardData.avgLoss.toFixed(0)}</p>
- <div className="mt-0.5 flex items-center justify-center gap-1">
- <p className="text-[11px] text-gray-500 font-semibold">Avg Loss</p>
- <MetricHelp metricId="avgLoss" compact />
- </div>
- </div>
- </div>
- </div>
-
- <div className="px-5 py-4 flex-1 min-h-0 flex flex-col">
- <div className="flex items-center justify-between mb-3">
- <div className="flex items-center gap-2">
- <PieChartIcon size={14} className="text-blue-500" />
- <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Profit by Symbol</h4>
- <HelpTooltip content="Net profit grouped by symbol for the selected account and date range." />
- </div>
- <span className={`text-xs font-black ${symbolPerformance.reduce((s, d) => s + d.value, 0) >= 0 ? 'text-primary' : 'text-red-500'}`}>
- ${Math.abs(symbolPerformance.reduce((s, d) => s + d.value, 0)).toFixed(0)}
- </span>
- </div>
- <div className="space-y-2.5 overflow-y-auto flex-1 min-h-0">
- {symbolPerformance.length === 0 ? (
- <p className="text-xs text-gray-400 text-center py-2">No data</p>
- ) : (
- symbolPerformance.map((item, i) => {
- const maxAbs = Math.max(...symbolPerformance.map(d => Math.abs(d.value)), 1);
- const pct = (Math.abs(item.value) / maxAbs) * 100;
- const colors = ['hsl(var(--primary))', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899', '#EF4444'];
- return (
- <div key={item.name} className="flex items-center gap-2.5">
- <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: colors[i % colors.length] }} />
- <span className="text-xs font-bold text-gray-700 dark:text-gray-200 w-16 truncate">{item.name}</span>
- <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
- <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: colors[i % colors.length] }} />
- </div>
- <span className={`text-xs font-black min-w-[55px] text-right ${item.value >= 0 ? 'text-primary' : 'text-red-500'}`}>
- {item.value >= 0 ? '+' : ''}{item.value.toFixed(0)}
- </span>
- </div>
- );
- })
- )}
- </div>
- </div>
-
- <div className="px-5 py-4 flex-1 min-h-0 flex flex-col">
- <div className="flex items-center justify-between mb-3">
- <div className="flex items-center gap-2">
- <Layers size={14} className="text-orange-500" />
- <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Lot by Symbol</h4>
- <HelpTooltip content="Total lot size grouped by symbol. This helps show where your exposure is concentrated." />
- </div>
- <span className="text-xs font-black text-gray-700 dark:text-gray-200">
- {lotDistribution.reduce((s, d) => s + d.value, 0).toFixed(2)} lots
- </span>
- </div>
- <div className="space-y-2.5 overflow-y-auto flex-1 min-h-0">
- {lotDistribution.length === 0 ? (
- <p className="text-xs text-gray-400 text-center py-2">No data</p>
- ) : (
- lotDistribution.filter(d => d.value > 0).map((item, i) => {
- const totalLots = lotDistribution.reduce((s, d) => s + d.value, 0);
- const pct = totalLots > 0 ? (item.value / totalLots) * 100 : 0;
- const colors = ['hsl(var(--primary))', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899', '#EF4444'];
- return (
- <div key={item.name} className="flex items-center gap-2.5">
- <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: colors[i % colors.length] }} />
- <span className="text-xs font-bold text-gray-700 dark:text-gray-200 w-16 truncate">{item.name}</span>
- <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
- <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: colors[i % colors.length] }} />
- </div>
- <span className="text-xs font-black text-gray-600 dark:text-gray-300 min-w-[55px] text-right">
- {item.value.toFixed(2)}
- </span>
- </div>
- );
- })
- )}
- </div>
- </div>
- </div>
- </div>
-
- {/* --- ROW 2: Daily Win Rate (12) — Full Width --- */}
- <div className="xl:col-span-12 min-w-0">
- <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-green-500 h-full">
- <div className="flex items-center justify-between mb-6">
- <div className="flex items-center gap-3">
- <div className="p-2 bg-green-500/10 rounded-lg text-green-500">
- <Trophy size={20} />
- </div>
- <div>
- <h3 className="font-bold text-gray-700 dark:text-white text-sm">Daily Win Rate</h3>
- <p className="text-xs text-gray-600">Last 7 Days • Selected period highlighted</p>
- </div>
- </div>
- </div>
- <DailyWinRateChart data={dailyWinRates} height={250} selectedDates={selectedDates} />
- </div>
- </div>
-
- {/* --- ROW 3: Trading Sessions (5) + Day of Week (7) --- */}
- <div className="xl:col-span-5 min-w-0">
- <TradingSessionsCard data={sessionPerformance} />
- </div>
- <div className="xl:col-span-7 min-w-0">
- <DayOfWeekCard data={dayOfWeekPerformance} />
- </div>
-
- {/* --- ROW 4: Recent Trades (5) + Symbol Performance (7) --- */}
- <div className="xl:col-span-5 min-w-0">
- <RecentTradesMini trades={recentTrades} />
- </div>
- <div className="xl:col-span-7 min-w-0">
- <SymbolPerformanceList data={symbolAnalytics} />
- </div>
-
- {/* --- ROW 5: Top Trades (5) + Monthly Analytics (7) --- */}
- <div className="xl:col-span-5 min-w-0">
- <TopTradesList bestTrades={bestTrades} worstTrades={worstTrades} />
- </div>
- <div className="xl:col-span-7 min-w-0">
- <div className="bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-purple-500 overflow-hidden h-full">
- <div className="flex items-center gap-3 mb-6">
- <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
- <CalendarRange size={20} />
- </div>
- <div>
- <h3 className="font-bold text-gray-700 dark:text-white text-sm">Monthly Analytics</h3>
- <p className="text-xs text-gray-600 dark:text-gray-300">Net Profit by Month</p>
- </div>
- </div>
- <MonthlyAnalyticsChart data={monthlyAnalytics} />
- </div>
- </div>
- </div>
- </>
- )}
+   <DashboardManager
+    initialDashboards={initialDashboards}
+    data={data}
+    onTradeClick={handleTradeClick}
+    onAddTrade={handleAddTrade}
+    currentAccountId={currentAccountId}
+  />
+  </>
+  )}
  </div>
  </div>
  );

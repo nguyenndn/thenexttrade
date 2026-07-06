@@ -38,25 +38,25 @@ export async function getActivationState(userId: string): Promise<ActivationStat
  let connectCtaHref: string;
 
  switch (syncMethod) {
- case "EA_SYNC":
- connectTitle = "Set up EA Sync";
- connectDescription = "Attach the EA to your MT5 chart to start auto-syncing trades.";
- connectCtaLabel = "Set Up EA Sync";
- connectCtaHref = "/dashboard/accounts?setup=sync&method=ea";
- break;
- case "MANUAL":
- connectTitle = "Add your first account";
- connectDescription = "Add an account to organize your manual trade entries.";
- connectCtaLabel = "Add Account";
- connectCtaHref = "/dashboard/accounts?action=add";
- break;
- default: // TNT_CONNECT
- connectTitle = "Set up TNT Connect";
- connectDescription = "Install the app to auto-sync trades from MT5 to your dashboard.";
- connectCtaLabel = "Set Up TNT Connect";
- connectCtaHref = "/dashboard/accounts?setup=sync&method=tnt";
- break;
- }
+    case "EA_SYNC":
+      connectTitle = "Set up Trade Manager";
+      connectDescription = "Attach Trade Manager EA to your MT5 chart to start auto-syncing trades.";
+      connectCtaLabel = "Set Up Trade Manager";
+      connectCtaHref = "/dashboard/accounts?setup=sync&method=ea";
+      break;
+    case "MANUAL":
+      connectTitle = "Add your first account";
+      connectDescription = "Add an account to organize your manual trade entries.";
+      connectCtaLabel = "Add Account";
+      connectCtaHref = "/dashboard/accounts?action=add";
+      break;
+    default: // TNT_CONNECT/EA fallback
+      connectTitle = "Set up Trade Manager";
+      connectDescription = "Install Trade Manager EA to auto-sync trades from MT5 to your dashboard.";
+      connectCtaLabel = "Set Up Trade Manager";
+      connectCtaHref = "/dashboard/accounts?setup=sync&method=ea";
+      break;
+  }
 
  // Build log trade step CTA based on sync preference
  const logTradeTitle = syncMethod === "MANUAL"

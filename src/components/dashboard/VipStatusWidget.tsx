@@ -158,7 +158,7 @@ export function VipStatusWidget() {
  );
  }
 
- // Hide entire widget for users with no trading accounts —
+ // Hide entire widget for users with no trading accounts -
  // "Check Pro Eligibility" is confusing before account setup
  if (proAccess.accounts.length === 0) {
  return null;

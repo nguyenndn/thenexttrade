@@ -7,6 +7,7 @@ import { getUserTradingDataState } from "@/lib/trading-data-state";
 import DashboardClient from "./DashboardClient";
 import { TradingAlertBanner } from "@/components/dashboard/TradingAlertBanner";
 import { resolveAccountAndDates, getEmptyDashboardData, getFullDashboardData } from "./dashboard-data.server";
+import { getUserDashboards } from "@/actions/dashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -39,22 +40,28 @@ async function DashboardLoader({ searchParams }: { searchParams: { [key: string]
  const globalTradeCount = tradingDataState.tradeCount;
 
  if (globalTradeCount === 0) {
- const data = await getEmptyDashboardData(user.id, params.accountId, params.fromParam, params.toParam);
+ const [data, initialDashboards] = await Promise.all([
+ getEmptyDashboardData(user.id, params.accountId, params.fromParam, params.toParam),
+ getUserDashboards()
+ ]);
  return (
  <>
  <TradingAlertBanner />
- <DashboardClient {...data} />
+ <DashboardClient {...data} initialDashboards={initialDashboards} />
  </>
  );
  }
 
  // 3. Full dashboard data fetch
- const data = await getFullDashboardData(user.id, params, globalTradeCount);
+ const [data, initialDashboards] = await Promise.all([
+ getFullDashboardData(user.id, params, globalTradeCount),
+ getUserDashboards()
+ ]);
 
  return (
  <>
  <TradingAlertBanner />
- <DashboardClient {...data} />
+ <DashboardClient {...data} initialDashboards={initialDashboards} />
  </>
  );
 }

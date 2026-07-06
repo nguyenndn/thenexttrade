@@ -22,12 +22,12 @@ export function LearningPathTimeline() {
  return (
  <div ref={ref} className="grid grid-cols-1 md:flex md:flex-wrap md:justify-center lg:grid lg:grid-cols-5 gap-6 mb-16 relative">
  
- {/* Desktop Animated Line — vertically centered through cards */}
+ {/* Desktop Animated Line - vertically centered through cards */}
  <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 left-[10%] right-[10%] h-[3px] z-0">
  {/* Background track */}
  <div className="absolute inset-0 bg-gray-200 dark:bg-white/10 rounded-full" />
  
- {/* Animated fill — "water flow" effect */}
+ {/* Animated fill - "water flow" effect */}
  <motion.div
  className="absolute inset-0 rounded-full"
  style={{

@@ -19,7 +19,7 @@ const baseNavItems: NavItem[] = [
  { title: "Account", href: "/dashboard/settings", icon: Settings, exact: true },
  { title: "Public Profile", href: "/dashboard/settings/profile", icon: Globe },
  { title: "Security", href: "/dashboard/settings/security", icon: Lock },
- { title: "Sync Settings", href: "/dashboard/settings/tnt-connect", icon: RefreshCw },
+ { title: "Sync Settings", href: "/dashboard/settings/sync-settings", icon: RefreshCw },
  { title: "Login Streak", href: "/dashboard/settings/streak", icon: Flame },
  { title: "Referrals", href: "/dashboard/settings/referrals", icon: Users },
 ];

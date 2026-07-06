@@ -690,22 +690,20 @@ Purpose:
 - Accessing `/dashboard/funded-challenge` will now yield a **404 Not Found** page.
 - References to `feature_funded_challenge` system setting have been deprecated and removed.
 
-### `/dashboard/settings/tnt-connect`
+### `/dashboard/settings/sync-settings`
 
 Purpose:
 
-- Help users install and configure TNT Connect.
+- Help users configure MT5 Trade Manager EA integration.
 
 Expected behavior:
 
-- Shows current TNT Connect release.
-- Download link points to the versioned installer.
 - Explains API key and connection state.
 
 Code paths:
 
-- `src/app/dashboard/settings/tnt-connect/page.tsx`
-- `src/app/dashboard/settings/tnt-connect/TNTConnectClient.tsx`
+- `src/app/dashboard/settings/sync-settings/page.tsx`
+- `src/app/dashboard/settings/sync-settings/TNTConnectClient.tsx`
 - `src/app/api/app/version/route.ts`
 - `public/downloads/app-release.json`
 
@@ -1062,7 +1060,7 @@ Key routes:
 - `/dashboard/settings/referrals`
 - `/dashboard/settings/feedback`
 - `/dashboard/settings/streak`
-- `/dashboard/settings/tnt-connect`
+- `/dashboard/settings/sync-settings`
 
 Code paths:
 

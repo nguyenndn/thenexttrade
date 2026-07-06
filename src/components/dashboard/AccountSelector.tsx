@@ -184,7 +184,7 @@ export function AccountSelector({ currentAccountId, className }: AccountSelector
  role="combobox"
  aria-expanded={open}
  className={cn(
- "flex items-center h-auto gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
+ "flex items-center h-10 gap-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
  className
  )}
  >

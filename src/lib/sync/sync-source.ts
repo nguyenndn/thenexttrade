@@ -22,9 +22,8 @@ export function normalizeSyncSource(value: string | null | undefined): Canonical
 export function getSyncSourceLabel(source: CanonicalSyncSource): string {
   switch (source) {
     case "TNT_CONNECT":
-      return "TNT Connect";
     case "EA_SYNC":
-      return "EA Sync";
+      return "Trade Manager";
     case "MANUAL":
       return "Manual Entry";
     default:

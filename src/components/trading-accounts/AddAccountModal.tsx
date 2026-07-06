@@ -125,26 +125,15 @@ export function AddAccountModal({
 
  const brokerInfo = selectedBroker ? BROKER_INFO[selectedBroker] : null;
  const effectiveSetupMethod = setupSyncMethod === "EA_SYNC" ? "EA_SYNC" : "TNT_CONNECT";
- const setupInstructions =
- effectiveSetupMethod === "EA_SYNC"
- ? {
- description: "Connect your MT5 account with EA Sync",
- steps: [
- <>Download the <strong className="text-gray-700 dark:text-white">TheNextTrade Sync EA</strong> for {platform}.</>,
- <>Copy the file to your <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-white/10 rounded text-gray-800 dark:text-gray-200 font-mono text-xs">MQL{platform === "MT5" ? "5" : "4"}/Experts</code> folder.</>,
- <>Restart {platform} and attach EA to any chart.</>,
- <>Paste the API Key above into EA settings input.</>,
- ],
- }
- : {
- description: "Connect your MT5 account with TNT Connect",
- steps: [
- <>Download and open <strong className="text-gray-700 dark:text-white">TNT Connect</strong> for Windows.</>,
- <>Paste the API Key above into TNT Connect settings.</>,
- <>Keep {platform} open and logged in to the same account number.</>,
- <>Click Sync in TNT Connect. Your dashboard will match the registered MT5 account automatically.</>,
- ],
- };
+ const setupInstructions = {
+    description: `Connect your ${platform} account with Trade Manager EA`,
+    steps: [
+      <>Download the <strong className="text-gray-700 dark:text-white">Trade Manager EA (.ex5)</strong> for MT5.</>,
+      <>In MT5, open the Data Folder, navigate to <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-white/10 rounded text-gray-800 dark:text-gray-200 font-mono text-xs">MQL5/Experts</code>, and drop the file there.</>,
+      <>Restart MT5 and attach Trade Manager EA to any chart (e.g. XAUUSD).</>,
+      <>Go to the <strong className="text-gray-700 dark:text-white">SYNC</strong> tab on the EA panel, paste your API Key, and click Connect.</>,
+    ],
+  };
 
  if (!isOpen) return null;
 
@@ -449,7 +438,7 @@ export function AddAccountModal({
  placeholder="e.g. 2001140658"
  value={freeAccountNumber}
  onChange={(e) => setFreeAccountNumber(e.target.value.replace(/\D/g, ''))}
- helperText="Find this in MT5 → Navigator → Accounts. Required for TNT Connect sync."
+ helperText="Find this in MT5 → Navigator → Accounts. Required for Trade Manager sync."
  />
 
  <div>
@@ -500,19 +489,9 @@ export function AddAccountModal({
  {/* 3. FREE ACCOUNT SETUP — method-specific success handoff */}
  {step === "free-setup" && createdAccount && (() => {
  const isManual = setupSyncMethod === "MANUAL";
- const successTitle = isManual
- ? "Account created"
- : effectiveSetupMethod === "EA_SYNC"
- ? "EA Sync is ready"
- : "TNT Connect is ready";
- const successDesc = isManual
- ? "You can now start logging trades manually."
- : setupInstructions.description;
- const primaryCtaLabel = isManual
- ? "Log First Trade"
- : effectiveSetupMethod === "EA_SYNC"
- ? "Continue to EA Setup"
- : "Continue to TNT Connect Setup";
+ const successTitle = isManual ? "Account created" : "Trade Manager is ready";
+ const successDesc = isManual ? "You can now start logging trades manually." : setupInstructions.description;
+ const primaryCtaLabel = isManual ? "Log First Trade" : "Continue to Trade Manager Setup";
 
  return (
  <>
@@ -538,9 +517,9 @@ export function AddAccountModal({
  </Button>
  </div>
  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
- {isManual
- ? "Save this key — you can use it later to set up auto-sync with TNT Connect or EA."
- : "This key works for both TNT Connect and EA Sync. Save it now — you can find it later in Settings → TNT Connect."}
+  {isManual
+  ? "Save this key — you can use it later to set up auto-sync with Trade Manager."
+  : "Save this key now — you can find it later in Settings → Sync Settings."}
  </p>
  </div>
 
@@ -856,7 +835,7 @@ export function AddAccountModal({
  {copied ? <Check size={18} /> : <Copy size={18} />}
  </Button>
  </div>
- <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">This key works for both TNT Connect and EA Sync. Save it now — you can find it later in Settings → TNT Connect.</p>
+ <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Save this key now — you can find it later in Settings → Sync Settings.</p>
  </div>
  </div>
  )}

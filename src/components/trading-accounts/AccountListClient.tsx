@@ -176,13 +176,29 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  }
  }, [searchParams, activeModal.type, mainAccountId, initialAccounts, preferredSyncMethod]);
 
- return (
+  // Calculate summary stats
+  const totalBalance = initialAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+  const totalEquity = initialAccounts.reduce((sum, acc) => sum + (acc.equity || 0), 0);
+  const totalConnected = initialAccounts.length;
+  const activeSyncs = initialAccounts.filter(acc => acc.isConnected && acc.status === "ACTIVE").length;
+
+  const formatCurrency = (val: number | null | undefined) => {
+    if (val === null || val === undefined) return "$0.00";
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(val);
+  };
+
+  return (
  <div className="space-y-4">
  {/* Page Header */}
- <PageHeader
- title="Account Hub"
- description="Connect Free MT5 accounts to track and sync trades, or open an eligible Partner Pro account to unlock EA access, VIP tools, and premium trading intelligence."
- >
+  <PageHeader
+    title="Account Hub"
+    description="Connect and manage MT5 accounts, sync trades, and unlock Pro benefits."
+  >
  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
  <Button
  variant="outline"
@@ -192,45 +208,45 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  });
  }}
  disabled={isPending}
- className="flex items-center justify-center gap-2 border-gray-300 dark:border-white/15 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/15 font-extrabold flex-1 sm:flex-none"
+ className="flex items-center justify-center gap-2 border-gray-300 dark:border-white/15 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/15 font-bold flex-1 sm:flex-none h-10 min-w-[125px] px-4 rounded-xl text-[13px]"
  >
- <RefreshCw size={16} className={isPending ? "animate-spin text-primary" : ""} />
+ <RefreshCw size={15} className={isPending ? "animate-spin text-primary" : ""} />
  Refresh
  </Button>
  <Button
  id="onborda-trade-sync-setup"
  variant="outline"
  onClick={() => setActiveModal({ type: "SYNC_SETUP" })}
- className="flex items-center justify-center gap-2 border-cyan-400 dark:border-cyan-500/40 bg-cyan-100 dark:bg-cyan-500/15 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-500/25 font-extrabold flex-1 sm:flex-none"
+ className="flex items-center justify-center gap-2 border-cyan-400 dark:border-cyan-500/40 bg-cyan-100 dark:bg-cyan-500/15 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-500/25 font-bold flex-1 sm:flex-none h-10 min-w-[125px] px-4 rounded-xl text-[13px]"
  >
- <Cable size={16} />
+ <Cable size={15} />
  Set up Trade Sync
  </Button>
   {isSyncHealthCenterEnabled() && (
     <Button
       variant="outline"
       onClick={() => setActiveModal({ type: "SYNC_HEALTH" })}
-      className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 font-extrabold flex-1 sm:flex-none"
+      className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 font-bold flex-1 sm:flex-none h-10 min-w-[125px] px-4 rounded-xl text-[13px]"
     >
-      <Activity size={16} />
+      <Activity size={15} />
       Sync Health Center
     </Button>
   )}
  <Button
  variant="outline"
  onClick={() => setActiveModal({ type: "FREE_VS_PRO" })}
- className="flex items-center justify-center gap-2 border-emerald-400 dark:border-emerald-500/40 bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-500/25 font-extrabold flex-1 sm:flex-none"
+ className="flex items-center justify-center gap-2 border-emerald-400 dark:border-emerald-500/40 bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-500/25 font-bold flex-1 sm:flex-none h-10 min-w-[125px] px-4 rounded-xl text-[13px]"
  >
- <Crown size={16} />
+ <Crown size={15} />
  Free vs Pro
  </Button>
  <Button
  id="onborda-add-account"
  variant="primary"
  onClick={() => setActiveModal({ type: "ADD" })}
- className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
+ className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25 h-10 min-w-[125px] px-4 rounded-xl text-[13px] font-bold"
  >
- <Plus size={18} />
+ <Plus size={16} />
  Add Account
  </Button>
  </div>
@@ -337,61 +353,176 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  `}</style>
  </div>
  ) : (
- <div id="onborda-account-grid" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
- {initialAccounts.map((account) => (
- <div key={account.id} className="min-w-0 h-full">
- <AccountCard
- account={account}
- isMain={account.id === mainAccountId}
- onSetMain={async (id) => {
- setMainAccountId(id); // optimistic
- const result = await setMainAccount(id);
- if (result.error) {
- setMainAccountId(mainAccountId); // rollback
- toast.error(result.error);
- } else {
- toast.success("Main account updated");
- // Update cookie so next nav link uses new main account
- document.cookie = `last_account_id=${id};path=/;max-age=31536000;samesite=lax`;
- // Immediately refresh sidebar Pro badge
- proAccess.refetch();
- }
- }}
- onUpdate={() => {
- startTransition(() => {
- router.refresh();
- });
- }}
- onDelete={(id) => setActiveModal({ type: "DELETE", accountId: id })}
- onSettings={(acc) => setActiveModal({ type: "SETTINGS", account: acc })}
- onUnlockPro={(acc) =>
- setActiveModal({ type: "ADD", initialMode: "upgrade-pro", sourceAccount: acc })
- }
- preferredSyncMethod={preferredSyncMethod}
- onOpenSyncSetup={(method) => {
- setDefaultSyncMethod(method);
- setActiveModal({ type: "SYNC_SETUP" });
- }}
- />
- </div>
- ))}
- </div>
- )}
+    <div className="flex flex-col lg:flex-row gap-6 w-full items-stretch mt-6">
+      {/* Left Column: Accounts and summary stats (72%) */}
+      <div className="flex-1 lg:max-w-[72%] space-y-6">
+        
+        {/* KPI Stats Summary Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Card 1: Total Balance */}
+          <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-4 shadow-sm flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+              <Wallet className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[11px] font-bold text-gray-455 dark:text-slate-500 uppercase tracking-wider block">Total Balance</span>
+              <span className="text-lg font-black text-gray-900 dark:text-white block truncate">{formatCurrency(totalBalance)}</span>
+            </div>
+          </div>
 
- {/* Pagination */}
- {meta && (
- <div className="mt-8">
- <PaginationControl
- currentPage={meta.page}
- totalPages={meta.totalPages}
- pageSize={meta.limit}
- totalItems={meta.total}
- onPageChange={(p) => router.push(`/dashboard/accounts?page=${p}&limit=${meta.limit}`)}
- onPageSizeChange={(l) => router.push(`/dashboard/accounts?page=1&limit=${l}`)}
- itemName="accounts"
- />
- </div>
- )}
+          {/* Card 2: Total Equity */}
+          <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-4 shadow-sm flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
+              <Activity className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[11px] font-bold text-gray-455 dark:text-slate-500 uppercase tracking-wider block">Total Equity</span>
+              <span className="text-lg font-black text-gray-900 dark:text-white block truncate">{formatCurrency(totalEquity)}</span>
+            </div>
+          </div>
+
+          {/* Card 3: Active Synchronization */}
+          <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-4 shadow-sm flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+              <Cable className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[11px] font-bold text-gray-455 dark:text-slate-500 uppercase tracking-wider block">Sync Status</span>
+              <span className="text-lg font-black text-gray-900 dark:text-white block truncate">
+                {activeSyncs} / {totalConnected} Connected
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Account Grid */}
+        <div id="onborda-account-grid" className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          {initialAccounts.map((account) => (
+            <div key={account.id} className="min-w-0 h-full">
+              <AccountCard
+                account={account}
+                isMain={account.id === mainAccountId}
+                onSetMain={async (id) => {
+                  setMainAccountId(id); // optimistic
+                  const result = await setMainAccount(id);
+                  if (result.error) {
+                    setMainAccountId(mainAccountId); // rollback
+                    toast.error(result.error);
+                  } else {
+                    toast.success("Main account updated");
+                    // Update cookie so next nav link uses new main account
+                    document.cookie = `last_account_id=${id};path=/;max-age=31536000;samesite=lax`;
+                    // Immediately refresh sidebar Pro badge
+                    proAccess.refetch();
+                  }
+                }}
+                onUpdate={() => {
+                  startTransition(() => {
+                    router.refresh();
+                  });
+                }}
+                onDelete={(id) => setActiveModal({ type: "DELETE", accountId: id })}
+                onSettings={(acc) => setActiveModal({ type: "SETTINGS", account: acc })}
+                onUnlockPro={(acc) =>
+                  setActiveModal({ type: "ADD", initialMode: "upgrade-pro", sourceAccount: acc })
+                }
+                preferredSyncMethod={preferredSyncMethod}
+                onOpenSyncSetup={(method) => {
+                  setDefaultSyncMethod(method);
+                  setActiveModal({ type: "SYNC_SETUP" });
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        {meta && (
+          <div className="mt-8">
+            <PaginationControl
+              currentPage={meta.page}
+              totalPages={meta.totalPages}
+              pageSize={meta.limit}
+              totalItems={meta.total}
+              onPageChange={(p) => router.push(`/dashboard/accounts?page=${p}&limit=${meta.limit}`)}
+              onPageSizeChange={(l) => router.push(`/dashboard/accounts?page=1&limit=${l}`)}
+              itemName="accounts"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Right Column: Connection Guide & Pro Status Sidebar (28%) */}
+      <div className="w-full lg:w-[28%] shrink-0 space-y-6 flex flex-col justify-start">
+        
+        {/* Card 1: Connection Guide */}
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-5 shadow-sm space-y-4">
+          <div className="flex items-center gap-2 pb-1 border-b border-dashboard dark:border-gray-800">
+            <Cable className="w-5 h-5 text-cyan-500" />
+            <h4 className="text-sm font-black text-gray-900 dark:text-white">Connection Guide</h4>
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+            Synchronize your MT5 accounts using our unified MT5 trade management overlay:
+          </p>
+          <div className="space-y-3">
+            <div className="p-3.5 rounded-xl bg-cyan-500/5 border border-cyan-500/10 space-y-2">
+              <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 block">Trade Manager (Expert Advisor)</span>
+              <span className="text-[11px] text-gray-500 dark:text-gray-400 leading-normal block">
+                Our unified MT5 overlay. Handles execution, trend matrix, and real-time trade synchronization directly from your MT5 terminal.
+              </span>
+              <div className="pt-1 flex flex-col gap-2">
+                <Link 
+                  href="/trading-systems/trade-manager" 
+                  className="text-[11px] font-black text-cyan-600 dark:text-cyan-400 hover:underline inline-flex items-center gap-1"
+                >
+                  View Trade Manager Details &rarr;
+                </Link>
+                <a 
+                  href="/downloads/TheNextTrade_TradeSync.ex5" 
+                  download 
+                  className="text-[11px] font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:underline inline-flex items-center gap-1"
+                >
+                  Download Trade Manager EA (.ex5) &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 2: Partner Pro Access */}
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-5 shadow-sm space-y-4">
+          <div className="flex items-center gap-2 pb-1 border-b border-dashboard dark:border-gray-800">
+            <Crown className="w-5 h-5 text-amber-500" />
+            <h4 className="text-sm font-black text-gray-900 dark:text-white">Partner Pro Access</h4>
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+            Open an account with our supported brokers to unlock EA downloads, VIP tools, and premium features:
+          </p>
+          <div className="space-y-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+            <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-white/5">
+              <span>EA downloads</span>
+              <span className="text-emerald-600 dark:text-emerald-400">Included</span>
+            </div>
+            <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-white/5">
+              <span>AI Coach & Intelligence</span>
+              <span className="text-emerald-600 dark:text-emerald-400">Included</span>
+            </div>
+            <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-white/5">
+              <span>Edge Leak Detector</span>
+              <span className="text-emerald-600 dark:text-emerald-400">Included</span>
+            </div>
+          </div>
+          <Button 
+            onClick={() => setActiveModal({ type: "FREE_VS_PRO" })}
+            variant="outline"
+            className="w-full h-9 rounded-xl text-xs font-bold border-amber-500/30 text-amber-600 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/10 transition-all"
+          >
+            Compare Plans & Benefits
+          </Button>
+        </div>
+
+      </div>
+    </div>)}
 
  {/* Settings Modal */}
  {activeModal.type === "SETTINGS" && (
@@ -490,8 +621,7 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  {[
  { name: "Account tracking", free: "Included", pro: "Included", url: "/dashboard/accounts", label: "/dashboard/accounts" },
  { name: "Trade sync", free: "Included", pro: "Included", url: "/dashboard/accounts", label: "/dashboard/accounts" },
- { name: "EA Sync download", free: "Included", pro: "Included", url: "/downloads/TheNextTrade_TradeSync.ex5", label: "Download EA Sync" },
- { name: "TNT Connect download", free: "Included", pro: "Included", url: "/downloads/TheNextTradeConnect.exe", label: "Download TNT Connect" },
+ { name: "Trade Manager EA download", free: "Included", pro: "Included", url: "/trading-systems/trade-manager", label: "Trade Manager Page" },
  { name: "EA downloads", free: "Locked", pro: "Included", url: "/dashboard/trading-systems", label: "/dashboard/trading-systems" },
  { name: "Indicator downloads", free: "Locked", pro: "Included", url: "/dashboard/trading-systems", label: "/dashboard/trading-systems" },
  { name: "AI Coach / Risk Assessment", free: "Locked", pro: "Included", url: "/dashboard/intelligence", label: "/dashboard/intelligence" },

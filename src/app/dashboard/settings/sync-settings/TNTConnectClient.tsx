@@ -113,7 +113,7 @@ export default function TNTConnectClient() {
  const STEPS = [
  { step: "1", text: "Generate your Sync API Key above", done: keyData.hasKey },
  { step: "2", text: "Configure WebRequest in MetaTrader 5 (Tools > Options > Expert Advisors)", done: false },
- { step: "3", text: "Drag EA Trade Manager (or standalone Sync EA) onto your XAUUSD chart", done: false },
+ { step: "3", text: "Drag Trade Manager EA onto your chart (e.g. XAUUSD)", done: false },
  { step: "4", text: "Open the SYNC tab on the EA panel, paste your key, and click Connect", done: false },
  ];
 
@@ -136,7 +136,7 @@ export default function TNTConnectClient() {
  <div className="min-w-0">
  <h2 className="text-lg font-black tracking-tight text-gray-800 dark:text-white">Sync API Key</h2>
  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
- Use this key inside your EA Trade Manager to sync trades automatically. One key works for all your trading accounts.
+ Use this key inside Trade Manager EA to sync trades automatically. One key works for all your trading accounts.
  </p>
  </div>
  </div>
@@ -178,7 +178,7 @@ export default function TNTConnectClient() {
  </div>
  <p className="text-sm font-bold text-gray-700 dark:text-white mb-1">No API Key Generated</p>
  <p className="text-xs text-gray-400 dark:text-gray-500 mb-6 max-w-sm mx-auto leading-relaxed">
- Generate your Sync API Key to connect your EA Trade Manager.
+ Generate your Sync API Key to connect your Trade Manager EA.
  One key works for all your trading accounts.
  </p>
  <Button
@@ -228,7 +228,7 @@ export default function TNTConnectClient() {
  <div>
  <p className="text-sm font-bold text-amber-700 dark:text-amber-400">Save your API key now!</p>
  <p className="text-xs mt-0.5 text-amber-600/70 dark:text-amber-400/60">
- This is the only time the full key will be shown. Copy it and paste into your EA Trade Manager or Standalone Sync EA settings.
+ This is the only time the full key will be shown. Copy it and paste into your Trade Manager EA settings under the SYNC tab.
  </p>
  </div>
  </div>
@@ -316,7 +316,7 @@ export default function TNTConnectClient() {
  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-dashboard hover:bg-gray-50 dark:hover:bg-white/[0.02] text-gray-700 dark:text-gray-300 font-bold text-xs transition-colors"
  >
  <Download size={13} />
- Download Standalone Sync EA (.ex5)
+ Download Trade Manager EA (.ex5)
  </a>
  </div>
  <p className="text-[10px] text-gray-400 dark:text-gray-500">

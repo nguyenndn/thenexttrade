@@ -32,7 +32,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
  };
 
  return (
- <div className="flex flex-col h-full bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-cyan-500 overflow-hidden">
+ <div className="flex flex-col h-full w-full border-t-4 border-t-cyan-500 overflow-hidden">
  {/* Container Header */}
  <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
  <div className="flex items-center gap-2.5">

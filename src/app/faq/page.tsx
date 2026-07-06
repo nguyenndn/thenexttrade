@@ -70,15 +70,11 @@ const FAQ_GROUPS = [
     items: [
       {
         question: "How do I sync MT5 trades?",
-        answer: "We offer two seamless sync methods: TNT Connect (our recommended desktop system tray app for Windows that syncs selected periods) and EA Sync (a continuous MetaTrader 5 Expert Advisor dropped onto a chart, ideal for VPS workflows). We also support a Manual Journal if you prefer logging trades yourself.",
+        answer: "We offer automated MT5 trade synchronization via the Trade Manager Expert Advisor, which runs directly in your MT5 terminal on a chart or VPS. We also support a Manual Journal if you prefer logging trades yourself.",
       },
       {
-        question: "What is TNT Connect?",
-        answer: "TNT Connect is a lightweight desktop app for Windows that runs in your system tray. It securely extracts and uploads your MT5 history to your journal on-demand or at scheduled intervals.",
-      },
-      {
-        question: "What is EA Sync?",
-        answer: "EA Sync is a specialized Expert Advisor (EA) for MetaTrader 5. You simply drop it onto any chart in your terminal, and it continuously streams your execution data to your journal, keeping your dashboard updated automatically.",
+        question: "What is Trade Manager?",
+        answer: "Trade Manager is a unified MetaTrader 5 Expert Advisor (EA). It handles background order execution, matrix panels, and real-time trade synchronization to keep your journal dashboard updated automatically.",
       },
     ],
   },

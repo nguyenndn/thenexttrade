@@ -66,7 +66,7 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  const [isLoading, setIsLoading] = useState(false);
  const [error, setError] = useState<string | null>(null);
  const [tradingGoal, setTradingGoal] = useState<string | null>(null);
- const [syncMethod, setSyncMethod] = useState<SyncMethod>("TNT_CONNECT");
+ const [syncMethod, setSyncMethod] = useState<SyncMethod>("EA_SYNC");
  const isMobile = useIsMobileSyncDevice();
  const [linkSent, setLinkSent] = useState(false);
 
@@ -159,9 +159,7 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  trackEvent("onboarding_completed", { syncMethod });
 
  // Redirect based on sync method
- if (syncMethod === "TNT_CONNECT") {
- router.push("/dashboard/accounts?setup=sync&method=tnt");
- } else if (syncMethod === "EA_SYNC") {
+ if (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") {
  router.push("/dashboard/accounts?setup=sync&method=ea");
  } else {
  router.push("/dashboard/journal?action=log-trade");
@@ -436,28 +434,7 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  </div>
 
  <div className="space-y-4 mb-6">
- {/* TNT Connect */}
- <button
- type="button"
- onClick={() => setSyncMethod("TNT_CONNECT")}
- className={cn(
- "w-full rounded-xl border-2 p-4 text-left transition-all duration-200 relative block",
- syncMethod === "TNT_CONNECT"
- ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10"
- : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
- )}
- >
- <span className="absolute -top-2 left-3 px-2 py-0.5 bg-amber-500 text-white text-[8px] font-black uppercase tracking-widest rounded-md">Recommended</span>
- <div className="flex items-center gap-3">
- <Monitor size={20} className="text-amber-500 shrink-0" />
- <div>
- <p className="text-sm font-black text-slate-800 dark:text-white">TNT Connect App</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">Auto-sync trades from MT5 via system tray app</p>
- </div>
- </div>
- </button>
-
- {/* EA Sync */}
+ {/* Trade Manager EA */}
  <button
  type="button"
  onClick={() => setSyncMethod("EA_SYNC")}
@@ -468,12 +445,12 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
  )}
  >
- <span className="absolute -top-2 left-3 px-2 py-0.5 bg-amber-700 dark:bg-amber-600 text-white text-[8px] font-black uppercase tracking-widest rounded-md">Advanced</span>
+ <span className="absolute -top-2 left-3 px-2 py-0.5 bg-amber-500 text-white text-[8px] font-black uppercase tracking-widest rounded-md">Recommended</span>
  <div className="flex items-center gap-3">
- <Cable size={20} className="text-amber-600 dark:text-amber-400 shrink-0" />
+ <Zap size={20} className="text-amber-500 shrink-0" />
  <div>
- <p className="text-sm font-black text-slate-800 dark:text-white">EA Sync Package</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">Expert Advisor attached to an MT5 chart</p>
+ <p className="text-sm font-black text-slate-800 dark:text-white">Trade Manager EA</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">Auto-sync trades from MT5 via unified Expert Advisor</p>
  </div>
  </div>
  </button>
@@ -506,7 +483,7 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  <div>
  <p className="text-xs font-black text-slate-800 dark:text-amber-300 uppercase tracking-wider">Desktop/VPS Required for Auto-Sync</p>
  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed font-semibold">
- MetaTrader 5 auto-syncing requires running our local helper app, which only runs on a <strong>Windows Desktop or VPS</strong>. It cannot be set up directly from a phone browser.
+ MetaTrader 5 auto-syncing requires installing our Trade Manager EA, which only runs on a <strong>Windows Desktop or VPS</strong>. It cannot be set up directly from a phone browser.
  </p>
  </div>
  </div>
@@ -615,14 +592,14 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  <>
  {syncMethod === "TNT_CONNECT" && (
  <>
- <Monitor size={16} />
- Set Up TNT Connect
+ <Cable size={16} />
+ Set Up Trade Manager
  </>
  )}
  {syncMethod === "EA_SYNC" && (
  <>
  <Cable size={16} />
- Set Up EA Sync
+ Set Up Trade Manager
  </>
  )}
  {syncMethod === "MANUAL" && (

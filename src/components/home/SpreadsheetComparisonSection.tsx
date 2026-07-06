@@ -12,7 +12,7 @@ interface SpreadsheetComparisonSectionProps {
 const comparisonRows = [
   {
     spreadsheet: "Manual entry becomes inconsistent",
-    tnt: "MT5 sync via TNT Connect or EA, all accounts in one workspace",
+    tnt: "MT5 sync via Trade Manager EA, all accounts in one workspace",
   },
   {
     spreadsheet: "P&L is the only metric",
@@ -40,7 +40,7 @@ const essenceCards = [
   {
     icon: PlugZap,
     label: "Auto Sync",
-    copy: "Bring MT5 history in with TNT Connect or EA Sync.",
+    copy: "Bring MT5 history in with Trade Manager EA.",
   },
   {
     icon: Brain,
@@ -68,7 +68,6 @@ export function SpreadsheetComparisonSection({ isLoggedIn }: SpreadsheetComparis
         {/* Section Header */}
         <HomeSectionHeading
           align="center"
-          eyebrow="From notes to insight"
           title="A spreadsheet records trades. TheNextTrade turns them into decisions."
           highlight="decisions"
           description="Sync from MT5, see the patterns behind your results, then get one weekly coach action plus the lesson or article that helps you fix it."

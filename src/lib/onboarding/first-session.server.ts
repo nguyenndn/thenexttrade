@@ -240,12 +240,12 @@ function computeCtaForStep(
  nextLabel: "Add Account",
  };
 
- case "CHOOSE_SYNC_METHOD":
- // Defaults to TNT, but the wizard will show all options
- return {
- nextHref: `/dashboard/accounts?setup=sync&method=tnt&source=first-session`,
- nextLabel: "Set up TNT Connect",
- };
+  case "CHOOSE_SYNC_METHOD":
+    // Defaults to Trade Manager
+    return {
+      nextHref: `/dashboard/accounts?setup=sync&method=ea&source=first-session`,
+      nextLabel: "Set up Trade Manager",
+    };
 
  case "BRING_FIRST_DATA":
  switch (method) {

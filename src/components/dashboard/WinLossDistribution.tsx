@@ -32,7 +32,7 @@ export function WinLossDistribution({ wins, losses, breakEvens, winRate }: WinLo
  <div className="flex flex-col h-full bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-emerald-500 p-5">
  <h3 className="font-bold text-gray-700 dark:text-white text-sm mb-6">Win/Loss Distribution</h3>
  
- <ChartContainer height="100%" minHeight={180} className="flex-1 relative">
+ <ChartContainer height="100%" minHeight={100} className="flex-1 relative">
  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
  <PieChart>
  <Pie

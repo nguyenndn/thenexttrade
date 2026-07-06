@@ -144,7 +144,7 @@ export function MobileBottomTabBar() {
  );
  })}
 
- {/* Feedback actions — only in More sheet for Users */}
+ {/* Feedback actions - only in More sheet for Users */}
  {activeSheet.label === "More" && !isAdmin && (
  <>
  <div className="mx-4 my-2 h-px bg-gray-100 dark:bg-white/10" />

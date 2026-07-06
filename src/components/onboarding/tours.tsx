@@ -131,9 +131,9 @@ export const accountsTour: { tour: string; steps: Step[] } = {
  icon: <>⚡</>,
  title: "Set up Trade Sync",
  content: (
- <p>
- Click <strong>Set up Trade Sync</strong> to choose your sync method: <strong>TNT Connect</strong> (recommended) or <strong>EA Sync</strong> (advanced).
- </p>
+  <p>
+    Click <strong>Set up Trade Sync</strong> to configure auto-syncing with the <strong>Trade Manager</strong> Expert Advisor.
+  </p>
  ),
  selector: "#onborda-trade-sync-setup",
  side: "bottom",

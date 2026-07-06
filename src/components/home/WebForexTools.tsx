@@ -27,14 +27,13 @@ const VISUAL_TOOLS = [
 export function WebForexTools() {
   return (
     <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
-      {/* Dot pattern bg — same as Quote/Reviews section but Gold themed */}
+      {/* Dot pattern bg - same as Quote/Reviews section but Gold themed */}
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
 
       <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <FadeIn delay={0.1} direction="up">
           <HomeSectionHeading
             align="center"
-            eyebrow="Free tools"
             title="Trading Calculators"
             highlight="Calculators"
             description="Free pro calculators, live data, and visualizers. No signup required."

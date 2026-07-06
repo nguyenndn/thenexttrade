@@ -91,7 +91,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                 </div>
               )}
 
-              {/* Subtle inner gradient — matches TrustMetrics style */}
+              {/* Subtle inner gradient - matches TrustMetrics style */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
 
               <div className="relative z-10 w-full">

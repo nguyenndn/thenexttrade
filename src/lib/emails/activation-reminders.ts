@@ -87,11 +87,11 @@ export function buildActivationEmailHtml(
  </p>
  `;
  } else if (type === "MOBILE_SYNC_FALLBACK") {
- const setupName = preferredSyncMethod === "EA_SYNC" ? "EA Sync" : "TNT Connect";
+ const setupName = "Trade Manager EA";
  bodyHtml = `
  <p>Hi ${userName},</p>
  <p>You recently tried to set up <strong>${setupName}</strong> from a mobile device.</p>
- <p>Because MetaTrader 5 auto-syncing requires installing our local helper app, setup must be completed on a <strong>Windows Desktop or VPS</strong>.</p>
+ <p>Because MetaTrader 5 auto-syncing requires installing our Trade Manager EA on MetaTrader 5, setup must be completed on a <strong>Windows Desktop or VPS</strong>.</p>
  <p>Open this setup link on your desktop browser to finish the installation:</p>
  <p style="text-align: center; margin: 24px 0;">
  <a href="${link}" style="${btnStyles}">Finish Desktop Setup</a>
@@ -153,12 +153,12 @@ It's been a few days since you joined, and you are missing out on the core featu
 Get Started Now: ${link}
  `;
  } else if (type === "MOBILE_SYNC_FALLBACK") {
- const setupName = preferredSyncMethod === "EA_SYNC" ? "EA Sync" : "TNT Connect";
+ const setupName = "Trade Manager EA";
  return `
 Hi ${userName},
 
 You recently tried to set up ${setupName} from a mobile device.
-Because MetaTrader 5 auto-syncing requires installing our local helper app, setup must be completed on a Windows Desktop or VPS.
+Because MetaTrader 5 auto-syncing requires installing the Trade Manager EA on MetaTrader 5, setup must be completed on a Windows Desktop or VPS.
 
 Finish Desktop Setup: ${link}
 

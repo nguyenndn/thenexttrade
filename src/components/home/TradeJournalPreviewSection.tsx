@@ -19,10 +19,9 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
           {/* Left Column: Steps + CTA */}
-          <div className="lg:col-span-5 flex flex-col justify-center items-center text-center">
+          <div className="lg:col-span-5 flex flex-col justify-center items-start text-left">
             <HomeSectionHeading
-              align="center"
-              eyebrow="3 steps -> 1 weekly action"
+              align="left"
               title="Three steps to your trading edge"
               highlight="trading edge"
               description="Sync your MT5 trades, spot the pattern, and get one clear action for your next session."
@@ -32,8 +31,8 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
             />
 
             {/* Steps */}
-            <div className="space-y-3 mb-6 max-w-md w-full mx-auto">
-              {/* Step 1: Connect — Calm */}
+            <div className="space-y-3 mb-6 w-full mx-auto lg:mx-0">
+              {/* Step 1: Connect - Calm */}
               <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] text-left">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gray-100 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-white/10">
                   <PlugZap size={17} strokeWidth={2.2} />
@@ -43,11 +42,11 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
                     <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">01</span>
                     <h4 className="text-sm font-black text-gray-800 dark:text-white">1. Connect</h4>
                   </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-medium">Bring in MT5 trades with TNT Connect or EA Sync.</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-medium">Bring in MT5 trades with Trade Manager EA.</p>
                 </div>
               </div>
 
-              {/* Step 2: Analyze — Calm */}
+              {/* Step 2: Analyze - Calm */}
               <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] text-left">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gray-100 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-white/10">
                   <BarChart3 size={17} strokeWidth={2.2} />
@@ -61,7 +60,7 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
                 </div>
               </div>
 
-              {/* Step 3: Improve — ACTIVE/HIGHLIGHTED */}
+              {/* Step 3: Improve - ACTIVE/HIGHLIGHTED */}
               <div className="group flex gap-4 rounded-2xl border border-gold/40 bg-gold/[0.07] p-4 shadow-[0_12px_28px_rgba(245,158,11,0.12)] transition-all duration-300 hover:border-gold/60 hover:bg-gold/[0.1] dark:border-gold/25 dark:bg-gold/[0.05] text-left">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gold/15 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-gold/20">
                   <Target size={17} strokeWidth={2.2} />
@@ -76,8 +75,8 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
               </div>
             </div>
 
-            {/* CTAs — Normalized sizing */}
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md w-full mx-auto">
+            {/* CTAs - Normalized sizing */}
+            <div className="flex flex-col sm:flex-row gap-3 w-full mx-auto lg:mx-0">
               <Link href={isLoggedIn ? "/dashboard" : "/auth/signup?source=home_product_preview"} className="w-full sm:flex-1 group">
                 <Button 
                   className="w-full min-h-12 px-7 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
@@ -111,7 +110,7 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
             <div className="relative p-3 sm:p-4 rounded-3xl border border-gold/20 dark:border-gold/10 bg-white/90 dark:bg-[#111318] shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:shadow-[0_24px_70px_rgba(0,0,0,0.4)] overflow-hidden group">
               {/* Subtle decorative glows */}
               <div className="absolute -top-10 -left-10 w-40 h-40 bg-gold/10 dark:bg-gold/5 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
 
               {/* Fake App Window Bar */}
               <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-white/5 mb-4">
@@ -172,7 +171,7 @@ export function TradeJournalPreviewSection({ isLoggedIn }: TradeJournalPreviewSe
                   </div>
                 </div>
 
-                {/* Weekly Coach Action Card — FOCAL POINT */}
+                {/* Weekly Coach Action Card - FOCAL POINT */}
                 <div className="p-4 rounded-2xl bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/30 dark:border-gold/20 shadow-[0_14px_34px_rgba(245,158,11,0.12)]">
                   <div className="flex items-center gap-1.5 mb-3">
                     <Bot size={12} className="text-gold" />

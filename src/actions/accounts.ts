@@ -283,3 +283,19 @@ export async function revealApiKey(id: string) {
  return { error: "Failed to reveal key" };
  }
 }
+
+export async function requestAccountSync(accountId: string, range: "TODAY" | "3D" | "1W" | "1M" = "3D") {
+  const user = await getAuthUser();
+  if (!user) return { error: "Unauthorized" };
+
+  try {
+    await prisma.tradingAccount.update({
+      where: { id: accountId, userId: user.id },
+      data: { resyncRequest: range }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Sync request error:", error);
+    return { error: "Failed to request sync" };
+  }
+}

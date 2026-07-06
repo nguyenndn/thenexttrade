@@ -38,7 +38,7 @@ const stageConfig: Record<string, { stage: string; action: string; badgeColor: s
  },
  ACCOUNT_NEVER_SYNCED: {
  stage: "Account Exists (No Sync)",
- action: "Send TNT Connect / EA setup instructions.",
+ action: "Send Trade Manager EA setup instructions.",
  badgeColor: "bg-amber-500/10 text-amber-500 border-amber-500/20"
  },
  SYNC_STALE: {

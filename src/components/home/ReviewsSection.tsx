@@ -27,7 +27,7 @@ const REVIEWS: Review[] = [
  {
  name: "Sophia L.",
  role: "Swing Trader",
- text: "The Market Hours tool alone is worth it. I used to miss London opens — now I plan my week around sessions. Plus the EA tools are incredibly well-built.",
+ text: "The Market Hours tool alone is worth it. I used to miss London opens - now I plan my week around sessions. Plus the EA tools are incredibly well-built.",
  rating: 5,
  initials: "SL",
  color: "bg-blue-500",
@@ -110,7 +110,7 @@ export function ReviewsSection() {
 
  return (
     <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
-      {/* Dot pattern bg — same as Quote section but Gold themed */}
+      {/* Dot pattern bg - same as Quote section but Gold themed */}
       <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
       <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

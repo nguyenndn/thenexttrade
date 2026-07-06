@@ -29,12 +29,12 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
  };
 
  const formatDate = (date: Date | string | null) => {
- if (!date) return "—";
+ if (!date) return "--";
  return utcTime(date, "MMM dd, HH:mm");
  };
 
  return (
- <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow overflow-hidden h-auto xl:h-[400px] flex flex-col border-t-4 border-t-indigo-500">
+ <div className="flex flex-col h-full w-full border-t-4 border-t-fuchsia-500 overflow-hidden">
  {/* Header */}
  <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
  <div className="flex items-center gap-2.5">
@@ -93,7 +93,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
  ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'
  : 'bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400'
  }`}>
- {trade.type || '—'}
+ {trade.type || 'N/A'}
  </span>
  </div>
  <div className={`col-span-3 text-right font-bold text-sm ${

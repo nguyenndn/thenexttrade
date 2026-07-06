@@ -70,7 +70,7 @@ export function MT5ExecutionToolkitSection({
 
   return (
     <div className="relative overflow-hidden bg-white dark:bg-transparent border-t border-gray-200 dark:border-white/10">
-      {/* Subtle grid background — consistent with other homepage sections */}
+      {/* Subtle grid background - consistent with other homepage sections */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
       {/* Warm radial tint */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent dark:from-gold/[0.03] dark:via-transparent dark:to-transparent" />

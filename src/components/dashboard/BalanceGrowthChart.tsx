@@ -21,11 +21,11 @@ interface BalanceGrowthChartProps {
 
 export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
  if (!data || data.length === 0) {
- return (
- <div className="h-[300px] md:h-full min-h-[300px] w-full flex items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
- No data available
- </div>
- );
+  return (
+  <div className="flex flex-col h-full w-full border-t-4 border-t-sky-500 overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
+  No data available
+  </div>
+  );
  }
 
  // Calculate duration and domain
@@ -68,7 +68,8 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
  });
 
  return (
- <ChartContainer height={250} minHeight={220} className="sm:h-[calc(100%-48px)] w-full pb-6">
+ <div className="flex flex-col h-full w-full border-t-4 border-t-sky-500 overflow-hidden p-4">
+ <ChartContainer height="100%" minHeight={100} className="w-full pb-6 flex-1">
  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
  <AreaChart
  data={chartData}
@@ -128,5 +129,6 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
  </AreaChart>
  </ResponsiveContainer>
  </ChartContainer>
+ </div>
  );
 }

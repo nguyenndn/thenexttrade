@@ -37,13 +37,13 @@ function getSyncMethodLabel(account: any): { label: string; variant: "tnt" | "ea
  const source = normalizeSyncSource(account.syncSource);
 
  // Primary: use the explicit sync source field
- if (source === "TNT_CONNECT") return { label: "Synced via TNT Connect", variant: "tnt" };
- if (source === "EA_SYNC") return { label: "Synced via EA Sync", variant: "ea" };
+ if (source === "TNT_CONNECT") return { label: "Synced via Trade Manager", variant: "tnt" };
+ if (source === "EA_SYNC") return { label: "Synced via Trade Manager", variant: "ea" };
  if (source === "MANUAL") return { label: "Manual Entry", variant: "paused" };
 
  // Fallback: infer from presence of EA version or app heartbeat
- if (account.eaVersion) return { label: "Synced via EA Sync", variant: "ea" };
- if (account.appLastHeartbeat) return { label: "Synced via TNT Connect", variant: "tnt" };
+ if (account.eaVersion) return { label: "Synced via Trade Manager", variant: "ea" };
+ if (account.appLastHeartbeat) return { label: "Synced via Trade Manager", variant: "tnt" };
 
  // No sync data at all
  if (!account.lastHeartbeat && !account.appLastHeartbeat) return { label: "Not connected", variant: "none" };

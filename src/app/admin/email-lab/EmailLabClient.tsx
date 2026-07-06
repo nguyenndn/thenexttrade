@@ -124,22 +124,22 @@ export function EmailLabClient({ defaultRecipient, allowCustomRecipient }: Email
  status: "active",
  statusLabel: "Active SMTP"
  },
- {
- id: "mobile_sync_fallback_tnt",
- title: "Sync Fallback: TNT Connect",
- description: "Email with a setup link prompting the user to complete their TNT Connect client install on a desktop PC.",
- sourceFile: "src/lib/emails/activation-reminders.ts",
- status: "active",
- statusLabel: "Active SMTP"
- },
- {
- id: "mobile_sync_fallback_ea",
- title: "Sync Fallback: EA Sync",
- description: "Email with a setup link prompting the user to complete their EA Sync local helper install on a desktop PC.",
- sourceFile: "src/lib/emails/activation-reminders.ts",
- status: "active",
- statusLabel: "Active SMTP"
- },
+  {
+    id: "mobile_sync_fallback_tnt",
+    title: "Sync Fallback: Trade Manager",
+    description: "Email with a setup link prompting the user to complete their Trade Manager EA installation.",
+    sourceFile: "src/lib/emails/activation-reminders.ts",
+    status: "active",
+    statusLabel: "Active SMTP"
+  },
+  {
+    id: "mobile_sync_fallback_ea",
+    title: "Sync Fallback: Trade Manager (Alt)",
+    description: "Email with a setup link prompting the user to complete their Trade Manager EA installation.",
+    sourceFile: "src/lib/emails/activation-reminders.ts",
+    status: "active",
+    statusLabel: "Active SMTP"
+  },
  {
  id: "welcome_d0_preview",
  title: "Welcome D0 Onboarding",

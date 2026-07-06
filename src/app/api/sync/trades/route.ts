@@ -191,6 +191,7 @@ export async function POST(request: NextRequest) {
  swap: trade.swap || 0,
  stopLoss: trade.sl || null,
  takeProfit: trade.tp || null,
+ magicNumber: trade.magic !== undefined ? Number(trade.magic) : null,
  updatedAt: new Date(),
  },
  });
@@ -228,6 +229,7 @@ export async function POST(request: NextRequest) {
  syncedAt: new Date(),
  entryReason: "Synced from TNT Connect",
  notes: trade.comment || null,
+ magicNumber: trade.magic !== undefined ? Number(trade.magic) : null,
  },
  });
  imported++;

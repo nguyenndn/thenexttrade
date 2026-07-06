@@ -32,7 +32,7 @@ const pageGuides: Record<string, PageGuide> = {
  description: "Connect and manage your MT5 trading accounts.",
  tips: [
  "Click 'Add Account' to connect a new MT5 account",
- "Download EA Sync to auto-send trades in real-time",
+ "Download Trade Manager EA to auto-send trades in real-time",
  "Each card shows account status, balance & heartbeat",
  ],
  },

@@ -387,22 +387,11 @@ function StepChooseSyncMethod({
  badgeClass: string;
  }[] = [
  {
- method: "TNT_CONNECT",
- label: "TNT Connect",
+ method: "EA_SYNC",
+ label: "Trade Manager EA",
  badge: "Recommended",
  description:
- "Best for Windows MT5 users. Sync selected periods from the desktop app.",
- href: "/dashboard/accounts?setup=sync&method=tnt&source=first-session",
- icon: <Monitor size={20} className="text-primary" />,
- badgeClass:
- "bg-primary/10 text-primary border-primary/20",
- },
- {
- method: "EA_SYNC",
- label: "EA Sync",
- badge: "Advanced",
- description:
- "Best for VPS or continuous chart-based sync.",
+ "Unified MT5 Expert Advisor. Handles execution, trend matrix, and real-time trade synchronization directly from MT5 chart or VPS.",
  href: "/dashboard/accounts?setup=sync&method=ea&source=first-session",
  icon: <Zap size={20} className="text-amber-500" />,
  badgeClass:
@@ -484,18 +473,18 @@ function StepBringFirstData({
  { title: string; description: string; cta: string; href: string; icon: React.ReactNode }
  > = {
  TNT_CONNECT: {
- title: "Sync your first trades",
+ title: "Verify Trade Manager EA Sync",
  description:
- "Open TNT Connect, paste your Sync API Key, then sync Today or Last Week.",
+ "Attach Trade Manager EA to MT5, paste your Sync API Key under the SYNC tab, and confirm the heartbeat.",
  cta: "Open Sync Setup",
- href: "/dashboard/accounts?setup=sync&method=tnt&source=first-session",
- icon: <Monitor size={20} className="text-primary" />,
+ href: "/dashboard/accounts?setup=sync&method=ea&source=first-session",
+ icon: <Zap size={20} className="text-amber-500" />,
  },
  EA_SYNC: {
- title: "Verify EA Sync",
+ title: "Verify Trade Manager EA Sync",
  description:
- "Attach the EA to MT5, paste your Sync API Key, and confirm the heartbeat.",
- cta: "Open EA Setup",
+ "Attach Trade Manager EA to MT5, paste your Sync API Key under the SYNC tab, and confirm the heartbeat.",
+ cta: "Open Sync Setup",
  href: "/dashboard/accounts?setup=sync&method=ea&source=first-session",
  icon: <Zap size={20} className="text-amber-500" />,
  },
@@ -545,7 +534,7 @@ function StepBringFirstData({
  />
  <p className="text-[11px] text-gray-500 dark:text-gray-400">
  {method === "MANUAL"
- ? "Manual journal is fine for starting. You can set up TNT Connect or EA Sync later from Account Hub."
+ ? "Manual journal is fine for starting. You can set up Trade Manager EA auto-sync later from Account Hub."
  : "Your account is connected, but there is no trade data yet. Sync history or log one trade manually."}
  </p>
  </div>
@@ -624,7 +613,7 @@ function StepMobileSyncFallback({
  linkSent,
  isPending,
 }: StepMobileSyncFallbackProps) {
- const setupName = method === "EA_SYNC" ? "EA Sync" : "TNT Connect";
+ const setupName = "Trade Manager";
  return (
  <div className="space-y-4">
  <div className="p-4 bg-gradient-to-br from-amber-500/[0.05] to-red-500/[0.02] border border-amber-500/15 rounded-xl space-y-3">

@@ -9,8 +9,8 @@ interface ProfitDistributionChartProps {
  value: number;
  }[];
  height?: number | string;
- innerRadius?: number;
- outerRadius?: number;
+ innerRadius?: number | string;
+ outerRadius?: number | string;
 }
 
 const COLORS = [
@@ -22,10 +22,10 @@ const COLORS = [
  '#EF4444',
 ];
 
-export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, outerRadius = 80 }: ProfitDistributionChartProps) {
+export function ProfitDistributionChart({ data, height = "100%", innerRadius = "60%", outerRadius = "80%" }: ProfitDistributionChartProps) {
  if (!data || data.length === 0) {
  return (
- <div className={`w-full flex items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300`} style={{ height }}>
+ <div className={`flex flex-col w-full h-full border-t-4 border-t-rose-500 overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300`}>
  No data available
  </div>
  );
@@ -38,7 +38,8 @@ export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, 
  const totalProfit = validData.reduce((sum, d) => sum + d.value, 0);
 
  return (
- <ChartContainer height={height} minHeight={200}>
+ <div className="flex flex-col h-full w-full border-t-4 border-t-rose-500 overflow-hidden p-4">
+ <ChartContainer height="100%" minHeight={100} className="w-full h-full flex-1">
  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
  <PieChart key={JSON.stringify(validData)}>
  <defs>
@@ -98,5 +99,6 @@ export function ProfitDistributionChart({ data, height = 300, innerRadius = 60, 
  </PieChart>
  </ResponsiveContainer>
  </ChartContainer>
+ </div>
  );
 }

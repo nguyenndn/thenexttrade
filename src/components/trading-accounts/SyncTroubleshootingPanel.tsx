@@ -11,55 +11,28 @@ interface HelpTopic {
  answer: string[];
 }
 
-const TNT_HELP: HelpTopic[] = [
+const TRADE_MANAGER_HELP: HelpTopic[] = [
  {
  question: "API key invalid or 400 error",
  answer: [
  "Check that the copied key has no leading or trailing spaces.",
- "Regenerate the key from Settings → TNT Connect only if necessary.",
+ "Regenerate the key from Settings → Sync Settings only if necessary.",
  "Make sure the account belongs to the currently logged-in user.",
  ],
  },
  {
- question: "TNT Connect cannot detect MT5",
- answer: [
- "MT5 must be open and logged in.",
- "The account number in MT5 must match the account registered in TheNextTrade.",
- "Try restarting TNT Connect.",
- ],
- },
- {
- question: "Sync completed but dashboard has no data",
- answer: [
- "Check the selected date range on the dashboard — try \"Last Week.\"",
- "Run sync again with a broader date range.",
- "Refresh the dashboard page.",
- ],
- },
-];
-
-const EA_HELP: HelpTopic[] = [
- {
- question: "API key invalid or 400 error",
- answer: [
- "Check that the copied key has no leading or trailing spaces.",
- "Regenerate the key from Settings → TNT Connect only if necessary.",
- "Make sure the account belongs to the currently logged-in user.",
- ],
- },
- {
- question: "EA cannot connect to server",
+ question: "Trade Manager EA cannot connect to server",
  answer: [
  "Confirm the WebRequest URL is added in MT5 → Tools → Options → Expert Advisors.",
  "The correct URL is: https://api.thenexttrade.com",
- "Confirm the EA is attached to a chart and \"Auto Trading\" is enabled.",
+ "Confirm the EA is attached to a chart and \"Algo Trading\" (or \"Auto Trading\") is enabled at the top toolbar.",
  ],
  },
  {
  question: "EA attached but no trades syncing",
  answer: [
- "Confirm the API key is entered correctly in the EA input field.",
- "Check the Experts tab in MT5 for any error messages.",
+ "Confirm the API key is entered correctly in the Trade Manager EA input field under the SYNC tab.",
+ "Check the Experts tab in MT5 terminal toolbox for any error messages.",
  "Make sure you have closed trades in the account — only closed trades are synced.",
  ],
  },
@@ -81,14 +54,14 @@ export function SyncTroubleshootingPanel({ method, className = "" }: SyncTrouble
  const [isOpen, setIsOpen] = useState(false);
  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
- const topics = method === "EA_SYNC" ? EA_HELP : TNT_HELP;
- const methodLabel = method === "EA_SYNC" ? "EA Sync" : "TNT Connect";
+ const topics = TRADE_MANAGER_HELP;
+ const methodLabel = "Trade Manager";
 
  const handleToggle = () => {
  const newState = !isOpen;
  setIsOpen(newState);
  if (newState) {
- trackEvent("sync_help_opened", { method: method === "EA_SYNC" ? "ea" : "tnt" });
+ trackEvent("sync_help_opened", { method: "trade_manager" });
  }
  };
 

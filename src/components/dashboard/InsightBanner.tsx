@@ -73,7 +73,7 @@ export function InsightBanner({ insight, score }: InsightBannerProps) {
  {insight.title}
  </span>
  <span className="text-sm text-gray-600 dark:text-gray-500 ml-2 hidden sm:inline">
- — {insight.description}
+ - {insight.description}
  </span>
  </div>
  {score !== null && score !== undefined && (

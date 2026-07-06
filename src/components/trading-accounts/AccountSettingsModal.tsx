@@ -220,7 +220,7 @@ export function AccountSettingsModal({
  <p className="text-sm font-bold text-gray-700 dark:text-white">Unified Sync API Key</p>
  <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mt-0.5">
  One API key works for all your accounts. Manage your Sync API Key in{" "}
- <a href="/dashboard/settings/tnt-connect" className="text-primary hover:underline font-semibold">
+ <a href="/dashboard/settings/sync-settings" className="text-primary hover:underline font-semibold">
  Settings
  </a>.
  </p>

@@ -23,7 +23,7 @@ This is the product map a new developer should read before fixing bugs or adding
 | Free vs Pro comparison | Explain access limits clearly | Active modal | `/dashboard/accounts` |
 | Partner Pro request | Upgrade eligible accounts | Active with eligibility rules | `/dashboard/accounts` |
 | EA Sync | MT5 chart-based sync | Active | `/dashboard/accounts`, `/api/ea/*` |
-| TNT Connect | Desktop MT5 sync by selected period | Active, current release `1.0.2` | `/dashboard/accounts`, `/dashboard/settings/tnt-connect` |
+| TNT Connect | Desktop MT5 sync by selected period | Active, current release `1.0.2` | `/dashboard/accounts`, `/dashboard/settings/sync-settings` |
 | Trading journal | Manual/imported trade review | Active | `/dashboard/journal` |
 | Performance analytics | User trading insights | Active | `/dashboard/analytics`, `/dashboard/reports` |
 | Mistake tracking | Behavioral review | Active | `/dashboard/mistakes` |

@@ -527,7 +527,7 @@ async function settingsMicroControls(page: Page) {
     });
 
     await recordStep("desktop", "Settings", "TNT API key generate, copy, regenerate, revoke, download placeholder", async () => {
-        await gotoHealthy(page, "/dashboard/settings/tnt-connect");
+        await gotoHealthy(page, "/dashboard/settings/sync-settings");
         const generate = page.getByRole("button", { name: /generate api key|regenerate/i }).first();
         await generate.click();
         await expect(page.locator("body")).toContainText(/Save your API key now|Your Sync API Key/i, { timeout: 12_000 });
@@ -549,8 +549,7 @@ async function settingsMicroControls(page: Page) {
         }, { timeout: 12_000 }).toBeNull();
         await page.reload({ waitUntil: "domcontentloaded" });
         await expect(page.locator("body")).toContainText(/No API Key Generated/i, { timeout: 12_000 });
-        await page.getByRole("button", { name: /download tnt connect/i }).click();
-        await expect(page.locator("body")).toContainText(/Download will be available soon/i, { timeout: 8_000 });
+        await expect(page.getByRole("link", { name: /Download Trade Manager EA/i })).toBeVisible();
     });
 
     await recordStep("mobile", "Settings", "Referrals copy button renders and responds", async () => {

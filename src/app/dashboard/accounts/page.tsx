@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
  title: "Trading Accounts | TheNextTrade",
- description: "Manage your trading accounts and EA sync",
+ description: "Manage your trading accounts and Trade Manager EA sync",
 };
 
 import { redirect } from "next/navigation";

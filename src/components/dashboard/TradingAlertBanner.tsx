@@ -32,7 +32,7 @@ export async function TradingAlertBanner() {
 
  if (!account) return null;
 
- // No rules configured — skip
+ // No rules configured - skip
  const hasRules = account.maxDailyLoss || account.maxDailyTrades || account.cooldownAfterLosses;
  if (!hasRules) return null;
 

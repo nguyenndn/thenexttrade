@@ -99,11 +99,11 @@ export function Header({
  </div>
  )}
 
- {/* Theme Toggle — visible on all sizes, next to avatar */}
+ {/* Theme Toggle - visible on all sizes, next to avatar */}
  <ThemeToggleSwitch />
 
 
- {/* Notification Bell — visible on all sizes, next to avatar */}
+ {/* Notification Bell - visible on all sizes, next to avatar */}
  <div key="notification-bell">
  {bell ? bell : <NotificationBell />}
  </div>

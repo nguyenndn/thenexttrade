@@ -67,7 +67,7 @@ const PILLAR_SECTIONS = [
  },
  {
  title: "Understanding Drawdown & Automated Sync",
- content: "Drawdown represents the peak-to-trough drop in your account balance during a trading period. A 50% drawdown requires a massive 100% gain just to recover and break even. Professional traders prioritize keeping maximum drawdown below 15-20%. Instead of manual spreadsheet tracking, Breek uses TNT Connect (our secure Windows agent) and EA Sync to track your live MT5 account statistics in real-time, mapping your Drawdown, Sharpe Ratio, and Profit Factor on a clean visual dashboard.",
+ content: "Drawdown represents the peak-to-trough drop in your account balance during a trading period. A 50% drawdown requires a massive 100% gain just to recover and break even. Professional traders prioritize keeping maximum drawdown below 15-20%. Instead of manual spreadsheet tracking, Breek uses Trade Manager EA to track your live MT5 account statistics in real-time, mapping your Drawdown, Sharpe Ratio, and Profit Factor on a clean visual dashboard.",
  },
  {
  title: "Risk-Reward Ratio & Professional Win Rate",

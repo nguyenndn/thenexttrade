@@ -68,7 +68,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
 
  if (!data || data.length === 0) {
  return (
- <div className="h-[300px] w-full flex items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
+ <div className="flex flex-col w-full h-full border-t-4 border-t-blue-500 overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
  No data available
  </div>
  );
@@ -91,8 +91,8 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
  };
 
  return (
- <div className="h-full flex flex-col">
- <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
+ <div className="flex flex-col h-full w-full border-t-4 border-t-blue-500 overflow-hidden p-4">
+ <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide shrink-0">
  {years.map(year => (
  <Button
  variant="ghost"
@@ -110,7 +110,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
  ))}
  </div>
 
- <ChartContainer height="100%" minHeight={250} className="flex-1">
+ <ChartContainer height="100%" minHeight={100} className="w-full h-full flex-1">
  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
  <BarChart
  data={chartData}

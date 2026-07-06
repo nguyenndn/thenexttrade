@@ -102,7 +102,6 @@ export function BrokerRankingsSection() {
         
         <HomeSectionHeading
           align="center"
-          eyebrow="Compare and trade"
           title="Compare Trading Platforms"
           highlight="Platforms"
           description="Broker and exchange options for traders who need a place to execute."

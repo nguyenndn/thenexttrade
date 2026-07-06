@@ -17,10 +17,11 @@ import {
  getSessionPerformance,
  getDayOfWeekPerformance,
  getIntradayPerformance,
+ type AdvancedFilters,
 } from "@/lib/analytics-queries";
 import { getIntelligenceData } from "@/lib/smart-analytics";
 import { getActivationState } from "@/lib/activation/activation.server";
-import { format, subDays } from "date-fns";
+import { format, subDays, startOfMonth } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { measurePerformance } from "@/lib/performance/timing";
 import { getNextBestAction } from "@/lib/coach/next-action.server";
@@ -37,18 +38,23 @@ import type { WeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligib
 // ─── Types ──────────────────────────────────────────────────────────────
 
 export interface DashboardData {
- totalBalance: number;
- winRate: number;
- winRateChange: number;
- streak: number;
- todayPnL: number;
- periodPnL: number;
- profitFactor: number;
- avgWin: number;
- avgLoss: number;
- winCount: number;
- lossCount: number;
- breakEvenCount: number;
+  totalBalance: number;
+  winRate: number;
+  winRateChange: number;
+  streak: number;
+  todayPnL: number;
+  periodPnL: number;
+  profitFactor: number;
+  avgWin: number;
+  avgLoss: number;
+  winCount: number;
+  lossCount: number;
+  breakEvenCount: number;
+  commission: number;
+  swap: number;
+  maxWin: number;
+  maxLoss: number;
+  totalTrades: number;
 }
 
 export interface DashboardPageData {
@@ -58,6 +64,7 @@ export interface DashboardPageData {
  chartData: { date: string; balance: number }[];
  recentTrades: any[];
  symbolPerformance: { name: string; value: number }[];
+ initialDashboards: { id: string; name: string; layout: any; isDefault: boolean }[];
  currentAccountId?: string;
  monthlyAnalytics: { date: string; value: number }[];
  dailyWinRates: { date: string; winRate: number; trades: number; wins: number }[];
@@ -78,6 +85,7 @@ export interface DashboardPageData {
  firstSessionState?: FirstSessionComputedState;
  tradingGoal?: string | null;
  weeklyReviewEligibility?: WeeklyReviewEligibility;
+ dailyPerformance: { date: string; value: number; winRate: number; tradeCount: number; winCount: number; lossCount: number }[];
  suppress?: {
  activationChecklist?: boolean;
  reportNudge?: boolean;
@@ -97,6 +105,7 @@ export interface ResolvedParams {
  accountTimezone?: string;
  startDate: Date;
  endDate: Date;
+ filters?: AdvancedFilters;
 }
 
 /**
@@ -159,10 +168,12 @@ export async function resolveAccountAndDates(
 
  // Resolve date params if missing
  if (!fromParam || !toParam) {
- const todayStr = format(new Date(), "yyyy-MM-dd");
- fromParam = fromParam || todayStr;
- toParam = toParam || todayStr;
- needsRedirect = true;
+    const now = new Date();
+    const startMonthStr = format(startOfMonth(now), "yyyy-MM-dd");
+    const todayStr = format(now, "yyyy-MM-dd");
+    fromParam = fromParam || startMonthStr;
+    toParam = toParam || todayStr;
+    needsRedirect = true;
  }
 
  // Single consolidated redirect
@@ -196,6 +207,24 @@ export async function resolveAccountAndDates(
  const startDate = parseLocalStartOfDay(fromParam, accountTimezone);
  const endDate = parseLocalEndOfDay(toParam, accountTimezone);
 
+ // Parse Advanced Filters
+ const direction = typeof searchParams?.direction === "string" ? searchParams.direction as "BUY" | "SELL" : undefined;
+ const source = typeof searchParams?.source === "string" ? searchParams.source as "MANUAL" | "AUTO" : undefined;
+ const comment = typeof searchParams?.comment === "string" ? searchParams.comment : undefined;
+ const magicRaw = typeof searchParams?.magicNumber === "string" ? parseInt(searchParams.magicNumber, 10) : undefined;
+ const magicNumber = magicRaw !== undefined && !isNaN(magicRaw) ? magicRaw : undefined;
+ const symbol = typeof searchParams?.symbol === "string" ? searchParams.symbol : undefined;
+ const result = typeof searchParams?.result === "string" ? searchParams.result as "WIN" | "LOSS" | "BREAK_EVEN" : undefined;
+
+ const filters = (direction || source || comment || magicNumber !== undefined || symbol || result) ? {
+   direction,
+   source,
+   comment,
+   magicNumber,
+   symbol,
+   result,
+ } : undefined;
+
  return {
  accountId,
  fromParam: fromParam!,
@@ -204,6 +233,7 @@ export async function resolveAccountAndDates(
  accountTimezone,
  startDate: startDate!,
  endDate: endDate!,
+ filters,
  };
 }
 
@@ -215,7 +245,7 @@ export async function getEmptyDashboardData(
  fromParam: string,
  toParam: string
 ): Promise<DashboardPageData> {
- const [userData, activationState, firstSessionState, weeklyReviewEligibility] = await Promise.all([
+ const [userData, activationState, firstSessionState, weeklyReviewEligibility, initialDashboards] = await Promise.all([
  prisma.user.findUnique({
  where: { id: userId },
  select: { streak: true, name: true, settings: true },
@@ -223,6 +253,16 @@ export async function getEmptyDashboardData(
  getActivationState(userId),
  getFirstSessionState(userId),
  getWeeklyReviewEligibility({ userId, accountId: accountId || undefined }),
+ prisma.userDashboard.findMany({
+    where: { userId },
+    orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+    select: {
+      id: true,
+      name: true,
+      layout: true,
+      isDefault: true,
+    }
+  }),
  ]);
 
  const settings = (userData?.settings as Record<string, any>) || {};
@@ -231,6 +271,7 @@ export async function getEmptyDashboardData(
  return {
  userName: userData?.name || "Trader",
  hasGlobalTrades: false,
+ initialDashboards,
  dashboardData: {
  totalBalance: 0,
  winRate: 0,
@@ -244,6 +285,11 @@ export async function getEmptyDashboardData(
  winCount: 0,
  lossCount: 0,
  breakEvenCount: 0,
+ commission: 0,
+ swap: 0,
+ maxWin: 0,
+ maxLoss: 0,
+ totalTrades: 0,
  },
  chartData: [],
  recentTrades: [],
@@ -269,6 +315,7 @@ export async function getEmptyDashboardData(
  firstSessionState,
  tradingGoal,
  weeklyReviewEligibility,
+ dailyPerformance: [],
  suppress: {
  activationChecklist: false,
  reportNudge: true,
@@ -285,54 +332,92 @@ export async function getFullDashboardData(
  params: ResolvedParams,
  globalTradeCount: number
 ): Promise<DashboardPageData> {
- const { accountId, fromParam, toParam, accountFilter, accountTimezone, startDate, endDate } = params;
+ const { accountId, fromParam, toParam, accountFilter, accountTimezone, startDate, endDate, filters } = params;
+
+ // Build Prisma filters for JournalEntry findMany
+ const prismaFilters: any = {};
+ if (filters) {
+   if (filters.direction) prismaFilters.type = filters.direction;
+   if (filters.source) {
+     if (filters.source === "MANUAL") {
+       prismaFilters.OR = [
+         { syncSource: "MANUAL" },
+         { AND: [ { syncSource: "APP" }, { OR: [ { magicNumber: 0 }, { magicNumber: null } ] } ] }
+       ];
+     } else if (filters.source === "AUTO") {
+       prismaFilters.syncSource = "APP";
+       prismaFilters.magicNumber = { gt: 0 };
+     }
+   }
+   if (filters.comment) prismaFilters.notes = { contains: filters.comment, mode: "insensitive" };
+   if (filters.magicNumber !== undefined) prismaFilters.magicNumber = filters.magicNumber;
+   if (filters.symbol) prismaFilters.symbol = { contains: filters.symbol, mode: "insensitive" };
+   if (filters.result) prismaFilters.result = filters.result;
+ }
 
  // Parallel data fetch
  const [
- userData,
- accounts,
- recentTrades,
- dashboardStats,
- dailyPerformance,
- symbolStats,
- topTrades,
- lotDistribution,
- sessionPerformance,
- dayOfWeekPerformance,
- intelligenceData,
- dailyWinRateLast7,
- activationState,
- latestReport,
+  userData,
+  accounts,
+  recentTrades,
+  dashboardStats,
+  dailyPerformance,
+  symbolStats,
+  topTrades,
+  lotDistribution,
+  sessionPerformance,
+  dayOfWeekPerformance,
+  intelligenceData,
+  dailyWinRateLast7,
+  activationState,
+  latestReport,
+  userDashboards,
  ] = await measurePerformance("dashboard_data_fetch", "db", () =>
  Promise.all([
- prisma.user.findUnique({
- where: { id: userId },
- select: { streak: true, name: true, settings: true },
- }),
- prisma.tradingAccount.findMany({
- where: accountFilter,
- select: { balance: true },
- }),
- prisma.journalEntry.findMany({
- where: { userId, status: "CLOSED", entryDate: { gte: startDate, lte: endDate }, ...(accountId ? { accountId } : {}) },
- orderBy: { entryDate: "desc" },
- take: 10,
- }),
- getCachedDashboardStats(userId, accountId, startDate.toISOString(), endDate.toISOString()),
- getDailyPerformance(userId, accountId, startDate, endDate),
- getSymbolPerformance(userId, accountId, startDate, endDate),
- getTopTrades(userId, accountId, startDate, endDate),
- getLotDistribution(userId, accountId, startDate, endDate),
- getSessionPerformance(userId, accountId, startDate, endDate),
- getDayOfWeekPerformance(userId, accountId, startDate, endDate, accountTimezone),
- getIntelligenceData(userId, accountId, startDate, endDate, accountTimezone).catch(() => null),
- getDailyPerformance(userId, accountId, subDays(new Date(), 6), new Date(), accountTimezone),
- getActivationState(userId),
+  prisma.user.findUnique({
+  where: { id: userId },
+  select: { streak: true, name: true, settings: true },
+  }),
+  prisma.tradingAccount.findMany({
+  where: accountFilter,
+  select: { balance: true },
+  }),
+  prisma.journalEntry.findMany({
+  where: { 
+    userId, 
+    status: "CLOSED", 
+    entryDate: { gte: startDate, lte: endDate }, 
+    ...(accountId ? { accountId } : {}),
+    ...prismaFilters
+  },
+  orderBy: { entryDate: "desc" },
+  take: 10,
+  }),
+  getCachedDashboardStats(userId, accountId, startDate.toISOString(), endDate.toISOString(), filters ? JSON.stringify(filters) : undefined),
+  getDailyPerformance(userId, accountId, startDate, endDate, undefined, filters),
+  getSymbolPerformance(userId, accountId, startDate, endDate, filters),
+  getTopTrades(userId, accountId, startDate, endDate, filters),
+  getLotDistribution(userId, accountId, startDate, endDate, filters),
+  getSessionPerformance(userId, accountId, startDate, endDate, filters),
+  getDayOfWeekPerformance(userId, accountId, startDate, endDate, accountTimezone, filters),
+  getIntelligenceData(userId, accountId, startDate, endDate, accountTimezone).catch(() => null),
+  getDailyPerformance(userId, accountId, subDays(new Date(), 6), new Date(), accountTimezone, filters),
+  getActivationState(userId),
  prisma.tradingReport.findFirst({
  where: { userId },
  orderBy: { createdAt: "desc" },
  select: { createdAt: true },
  }),
+ prisma.userDashboard.findMany({
+    where: { userId },
+    orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+    select: {
+      id: true,
+      name: true,
+      layout: true,
+      isDefault: true,
+    }
+  }),
  ])
  );
 
@@ -379,6 +464,11 @@ export async function getFullDashboardData(
  winCount: stats.winCount,
  lossCount: stats.lossCount,
  breakEvenCount: Math.max(0, stats.totalTrades - stats.winCount - stats.lossCount),
+ commission: stats.commission,
+ swap: stats.swap,
+ maxWin: stats.maxWin,
+ maxLoss: stats.maxLoss,
+ totalTrades: stats.totalTrades,
  };
 
  // Extract trading goal for content personalization
@@ -440,6 +530,7 @@ export async function getFullDashboardData(
  return {
  userName: userData?.name || "Trader",
  hasGlobalTrades: globalTradeCount > 0,
+ initialDashboards: userDashboards,
  dashboardData,
  chartData,
  recentTrades,
@@ -467,6 +558,7 @@ export async function getFullDashboardData(
  tradingGoal,
  weeklyReviewEligibility,
  suppress,
+ dailyPerformance,
  };
 }
 

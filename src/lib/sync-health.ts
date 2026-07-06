@@ -129,8 +129,8 @@ export function computeSyncHealth(input: SyncHealthInput): SyncHealth {
  status: "disconnected",
  label: "Not Connected",
  description: source === "TNT_CONNECT"
- ? "Open TNT Connect to link your MT5 account."
- : "Install the EA on your MT5 chart to start syncing.",
+ ? "Open Trade Manager EA to link your MT5 account."
+ : "Install Trade Manager EA on your MT5 chart to start syncing.",
  primaryAction: {
  label: "Setup Sync",
  action: "open_sync_setup",
@@ -146,8 +146,8 @@ export function computeSyncHealth(input: SyncHealthInput): SyncHealth {
  status: "disconnected",
  label: "Disconnected",
  description: source === "TNT_CONNECT"
- ? "TNT Connect hasn't sent a signal. Please reopen the app."
- : "EA hasn't sent a heartbeat. Check if MT5 is running.",
+ ? "Trade Manager EA hasn't sent a signal. Please check if MT5 is running."
+ : "Trade Manager EA hasn't sent a heartbeat. Check if MT5 is running.",
  primaryAction: {
  label: "Reconnect",
  action: "reconnect",

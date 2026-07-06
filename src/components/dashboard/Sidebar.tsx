@@ -68,7 +68,7 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
 
  return (
  <div className="mb-1 relative">
- {/* Active indicator bar — flush against sidebar left edge */}
+ {/* Active indicator bar - flush against sidebar left edge */}
  {isActiveStyle && (
  <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-primary" />
  )}
@@ -226,7 +226,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
  return (
  <aside id="onborda-sidebar" className={cn(
  "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-dashboard h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30",
- isCollapsed ? "w-20" : "w-[280px]",
+ isCollapsed ? "w-20" : "w-[230px]",
  className
  )}>
  {/* Navigation Items */}
@@ -266,7 +266,7 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
  })}
  </div>
 
- {/* VIP Pro Status Widget — only show in user dashboard, not admin */}
+ {/* VIP Pro Status Widget - only show in user dashboard, not admin */}
  {!isCollapsed && !isAdmin && (
  <div className="px-4 pb-2">
  <VipStatusWidget />

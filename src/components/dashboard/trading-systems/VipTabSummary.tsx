@@ -14,7 +14,7 @@ const PRO_BENEFITS = [
  "Advanced Intelligence features & trade analysis",
  "VIP Telegram community access",
  "Priority support & VIP trading resources",
- "Account-scoped entitlements — control per broker account",
+ "Account-scoped entitlements - control per broker account",
 ];
 
 export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
@@ -75,7 +75,7 @@ export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
  <Crown size={24} className="text-white" />
  </div>
  <div>
- <h3 className="text-xl font-bold text-gray-800 dark:text-white">Unlock Partner Pro — Free</h3>
+ <h3 className="text-xl font-bold text-gray-800 dark:text-white">Unlock Partner Pro - Free</h3>
  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
  Open a trading account under our IB to apply for free Pro access with EA downloads, VIP tools, and advanced trading intelligence. Partner Pro access depends on supported broker and account eligibility.
  </p>

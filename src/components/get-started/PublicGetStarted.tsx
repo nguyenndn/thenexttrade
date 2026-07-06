@@ -26,8 +26,8 @@ const launchSteps = [
  },
  {
  label: "Bring trades in",
- title: "Sync with TNT Connect or EA Sync",
- description: "Use the guided setup to choose the sync method that fits your MT5 workflow.",
+ title: "Sync with Trade Manager EA",
+ description: "Use Trade Manager Expert Advisor to synchronize your MT5 terminal with your dashboard.",
  icon: Download,
  },
  {
@@ -151,9 +151,9 @@ export function PublicGetStarted() {
 
  <div className="rounded-lg border border-gold/30 bg-gradient-to-br from-amber-500/[0.06] to-gold/[0.03] dark:from-gold/[0.04] dark:to-transparent dark:bg-[#0E1118] p-6 text-slate-950 dark:text-white shadow-xl shadow-gold/5 dark:shadow-black/20">
  <div className="text-xs font-black uppercase tracking-[0.18em] text-gold">Recommended path</div>
- <h2 className="mt-3 text-3xl font-black text-slate-950 dark:text-white">TNT Connect first.</h2>
+ <h2 className="mt-3 text-3xl font-black text-slate-950 dark:text-white">Trade Manager EA.</h2>
  <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-amber-50/80">
- For most Windows MT5 users, TNT Connect is the easiest way to test the product. EA Sync remains available for advanced MT5 and VPS workflows.
+ Trade Manager Expert Advisor is the easiest way to connect your MT5 terminal. It syncs trades in real time and runs directly on your chart or VPS.
  </p>
  <div className="mt-6 space-y-3">
  {["Create account", "Add MT5 account number", "Generate Sync API key", "Sync first period"].map((item) => (

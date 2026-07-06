@@ -67,6 +67,7 @@ model User {
   tradingRules             TradingRule[]
   ruleChecks               TradeRuleCheck[]
   traderGoals              TraderGoal[]
+  dashboards               UserDashboard[]
 
   @@index([createdAt])
   @@index([email])
@@ -299,6 +300,7 @@ model JournalEntry {
   swap             Float?          @default(0)
   syncSource       String          @default("MANUAL") @map("sync_source") @db.VarChar(20)
   syncedAt         DateTime?       @map("synced_at")
+  magicNumber      Int?            @map("magic_number")
   shareDescription String?         @map("share_description")
   shareMode        String?         @default("full") @map("share_mode")
   tags             String[]        @default([])
@@ -1475,4 +1477,19 @@ model TraderGoal {
   @@index([userId, status])
   @@index([userId, period, startsAt])
   @@map("trader_goals")
+}
+
+model UserDashboard {
+  id        String   @id @default(cuid())
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  isDefault Boolean  @default(false)
+  layout    Json     
+  
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([userId])
+  @@map("user_dashboards")
 }
