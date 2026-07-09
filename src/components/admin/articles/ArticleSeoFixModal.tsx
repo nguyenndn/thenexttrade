@@ -184,18 +184,17 @@ export function ArticleSeoFixModal({
  </div>
  </div>
 
- {/* Footer */}
  <div className="flex items-center justify-between px-6 py-4 border-t border-dashboard bg-gray-50 dark:bg-[#151925] rounded-b-2xl shrink-0">
- <Button variant="outline" onClick={onRegenerate} disabled={isApplying} className="gap-2">
+ <Button variant="outline" size="smd" onClick={onRegenerate} disabled={isApplying} className="gap-2 font-bold">
  <WandSparkles size={14} />
  Regenerate
  </Button>
  
  <div className="flex items-center gap-3">
- <Button variant="outline" onClick={onClose} disabled={isApplying}>
+ <Button variant="outline" size="smd" onClick={onClose} disabled={isApplying} className="font-bold">
  Cancel
  </Button>
- <Button variant="primary" onClick={handleApply} disabled={!isValid || isApplying} className="gap-2">
+ <Button variant="primary" size="smd" onClick={handleApply} disabled={!isValid || isApplying} className="gap-2 font-bold">
  {isApplying ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
  Apply Fix
  </Button>

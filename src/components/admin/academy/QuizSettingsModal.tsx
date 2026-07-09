@@ -76,17 +76,20 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
  <div className="flex justify-end gap-3 pt-4">
  <Button
  variant="ghost"
+ size="smd"
  onClick={onClose}
- className="px-6 py-3 h-auto rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+ className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
  >
  Cancel
  </Button>
  <Button
+ variant="primary"
+ size="smd"
  onClick={handleSave}
  disabled={isLoading}
- className="px-6 py-3 h-auto rounded-xl font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2 disabled:opacity-50"
+ className="font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2 disabled:opacity-50"
  >
- {isLoading && <Loader2 className="animate-spin" size={18} />}
+ {isLoading && <Loader2 className="animate-spin" size={14} />}
  Save Changes
  </Button>
  </div>

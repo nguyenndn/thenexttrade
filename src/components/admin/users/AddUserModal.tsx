@@ -264,29 +264,31 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
  <Button
  type="button"
  variant="outline"
+ size="smd"
  onClick={handleClose}
  disabled={isLoading}
- className="rounded-xl"
+ className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white"
  >
  Cancel
  </Button>
  <Button
  type="submit"
  variant="primary"
+ size="smd"
  disabled={isLoading}
- className="rounded-xl min-w-[140px]"
+ className="min-w-[120px] font-bold"
  >
  {isLoading ? (
  <>
  <Loader2
- size={16}
- className="animate-spin mr-2"
+ size={14}
+ className="animate-spin mr-1.5"
  />
  Creating...
  </>
  ) : (
  <>
- <UserPlus size={16} className="mr-2" />
+ <UserPlus size={14} className="mr-1.5" />
  Create User
  </>
  )}

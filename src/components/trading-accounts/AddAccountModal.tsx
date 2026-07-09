@@ -371,9 +371,10 @@ export function AddAccountModal({
  <div className="flex justify-end pt-2">
  <Button
  variant="primary"
+ size="smd"
  onClick={handleUpgradeSubmit}
  disabled={isPending || !telegramId || !turnstileToken}
- className="bg-amber-500 hover:bg-amber-600 border-none gap-2 h-11 px-6 font-bold"
+ className="bg-amber-500 hover:bg-amber-600 border-none gap-2 px-6 font-bold"
  >
  {isPending ? (
  <><Loader2 size={16} className="animate-spin" /> Submitting...</>
@@ -471,9 +472,10 @@ export function AddAccountModal({
  <div className="flex gap-3 pt-2">
  <Button
  variant="primary"
+ size="smd"
  onClick={handleCreateFree}
  disabled={isPending}
- className="flex-1 h-12 font-bold shadow-lg shadow-primary/20"
+ className="flex-1 font-bold shadow-lg shadow-primary/20"
  >
  {isPending ? (
  <><Loader2 size={20} className="animate-spin mr-2" /> Creating...</>
@@ -549,6 +551,7 @@ export function AddAccountModal({
  <div className="flex flex-col gap-2">
  <Button
  variant="primary"
+ size="smd"
  onClick={() => {
  trackEvent("add_account_success_next_clicked", {
  method: isManual ? "manual" : effectiveSetupMethod === "EA_SYNC" ? "ea" : "tnt",
@@ -564,18 +567,19 @@ export function AddAccountModal({
  onSuccess(createdAccount);
  }
  }}
- className="w-full h-12 font-bold shadow-lg shadow-primary/20 gap-2"
+ className="w-full font-bold shadow-lg shadow-primary/20 gap-2"
  >
  {primaryCtaLabel}
  <ArrowRight size={16} />
  </Button>
  <Button
  variant="outline"
+ size="smd"
  onClick={() => {
  handleClose();
  onSuccess(createdAccount);
  }}
- className="w-full h-10 text-sm"
+ className="w-full font-bold"
  >
  Skip for now
  </Button>
@@ -590,7 +594,7 @@ export function AddAccountModal({
  <>
  {renderHeader("Select Partner Broker", "Step 1 of 4: Choose your broker")}
  <div className="p-6 space-y-4">
- <div className="p-3 mb-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs text-amber-700 dark:text-amber-400 flex gap-2">
+ <div className="p-3 mb-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs text-amber-700 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 flex gap-2">
  <AlertCircle size={14} className="shrink-0 mt-0.5" />
  <p>Partner Pro access depends on supported broker and account eligibility. If your account is not eligible, your request may be rejected after review.</p>
  </div>
@@ -694,7 +698,7 @@ export function AddAccountModal({
 
  {accountStatus && (
  <div className="flex justify-end pt-4">
- <Button variant="primary" onClick={() => setStep("pro-details")} className="gap-2">Continue <ArrowRight size={16}/></Button>
+ <Button variant="primary" size="smd" onClick={() => setStep("pro-details")} className="gap-2 font-bold">Continue <ArrowRight size={16}/></Button>
  </div>
  )}
  </div>
@@ -732,6 +736,7 @@ export function AddAccountModal({
  <div className="flex justify-end pt-4">
  <Button 
  variant="primary" 
+ size="smd"
  onClick={() => {
  if (!accountNumber || !balance || !telegramId || (brokerInfo.requiresFullName && !fullName) || (brokerInfo.requiresCountry && !country)) {
  setError("Please fill in all required fields");
@@ -740,7 +745,7 @@ export function AddAccountModal({
  setError(null);
  setStep("pro-review");
  }} 
- className="gap-2"
+ className="gap-2 font-bold"
  >
  Review <ArrowRight size={16}/>
  </Button>
@@ -776,7 +781,7 @@ export function AddAccountModal({
  <TurnstileWidget onVerify={setTurnstileToken} className="flex justify-center" />
 
  <div className="flex justify-end gap-3">
- <Button variant="primary" onClick={() => setShowConfirm(true)} disabled={isPending || !turnstileToken} className="bg-amber-500 hover:bg-amber-600 text-white gap-2">
+ <Button variant="primary" size="smd" onClick={() => setShowConfirm(true)} disabled={isPending || !turnstileToken} className="bg-amber-500 hover:bg-amber-600 text-white gap-2 font-bold">
  <Check size={16} /> Submit Request
  </Button>
  </div>
@@ -793,8 +798,8 @@ export function AddAccountModal({
  I confirm that this account is registered under the correct IB and all information is accurate.
  </p>
  <div className="flex justify-end gap-2 pt-2">
- <Button variant="outline" onClick={() => setShowConfirm(false)} disabled={isPending}>Cancel</Button>
- <Button variant="primary" onClick={handleProSubmit} disabled={isPending} className="bg-amber-500 hover:bg-amber-600 border-none text-white gap-2">
+ <Button variant="outline" size="smd" onClick={() => setShowConfirm(false)} disabled={isPending} className="font-bold">Cancel</Button>
+ <Button variant="primary" size="smd" onClick={handleProSubmit} disabled={isPending} className="bg-amber-500 hover:bg-amber-600 border-none text-white gap-2 font-bold">
  {isPending ? <><Loader2 size={16} className="animate-spin" /> Submitting...</> : "Confirm"}
  </Button>
  </div>
@@ -841,7 +846,7 @@ export function AddAccountModal({
  )}
 
  <div className="pt-4">
- <Button variant="primary" onClick={() => { handleClose(); onSuccess(createdAccount); }} className="w-full h-12 font-bold">
+ <Button variant="primary" size="smd" onClick={() => { handleClose(); onSuccess(createdAccount); }} className="w-full font-bold">
  Back to Dashboard
  </Button>
  </div>

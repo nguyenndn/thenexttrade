@@ -70,7 +70,7 @@ export function JournalTableFilters({
  {/* Type Filter */}
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="outline" size="md" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
+ <Button variant="outline" size="sm" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
  Type: <span className="text-primary">{filterType === "ALL" ? "All" : filterType}</span>
  <ChevronDown size={14} />
  </Button>
@@ -88,7 +88,7 @@ export function JournalTableFilters({
  {userTags.length > 0 && (
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="outline" size="md" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
+ <Button variant="outline" size="sm" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
  Tag: <span className="text-primary">{filterTag === "ALL" ? "All" : filterTag}</span>
  <ChevronDown size={14} />
  </Button>
@@ -109,7 +109,7 @@ export function JournalTableFilters({
  {/* Result Filter */}
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="outline" size="md" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
+ <Button variant="outline" size="sm" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
  Result: <span className={filterResult === "WIN" ? "text-primary" : filterResult === "LOSS" ? "text-red-500" : "text-primary"}>{filterResult === "ALL" ? "All" : filterResult === "BREAK_EVEN" ? "BE" : filterResult}</span>
  <ChevronDown size={14} />
  </Button>
@@ -127,7 +127,7 @@ export function JournalTableFilters({
  {strategies.length > 0 && (
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="outline" size="md" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
+ <Button variant="outline" size="sm" className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300">
  Strategy: <span className="text-primary truncate max-w-[80px]">{filterStrategy || "All"}</span>
  <ChevronDown size={14} />
  </Button>
@@ -151,7 +151,7 @@ export function JournalTableFilters({
  <div className="flex items-center gap-3 w-full md:w-auto ml-auto">
  <DropdownMenu open={isColumnMenuOpen} onOpenChange={setIsColumnMenuOpen}>
  <DropdownMenuTrigger asChild>
- <Button variant="outline" size="md" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+ <Button variant="outline" size="smd" className="flex items-center gap-2 font-medium text-gray-700 dark:text-gray-300">
  <Settings2 size={16} />
  Columns
  </Button>
@@ -176,7 +176,7 @@ export function JournalTableFilters({
  variant="primary"
  onClick={onLogTrade}
  className="shrink-0 whitespace-nowrap shadow-sm"
- size="md"
+ size="smd"
  >
  <Plus size={16} strokeWidth={2.5} />
  Log Trade

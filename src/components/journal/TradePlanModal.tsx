@@ -210,13 +210,12 @@ export function TradePlanModal({ onSuccess, onCancel, initialData }: TradePlanMo
                 key={type}
                 type="button"
                 onClick={() => setFormData((p) => ({ ...p, type: type as any }))}
-                className={`flex-1 h-full text-xs font-black rounded-lg transition-all ${
-                  formData.type === type
-                    ? type === "BUY"
-                      ? "bg-blue-500 text-white shadow-lg shadow-blue-500/20"
-                      : "bg-red-500 text-white shadow-lg shadow-red-500/20"
-                    : "bg-transparent text-gray-500 hover:bg-white dark:hover:bg-white/5"
-                }`}
+                className={`flex-1 h-full text-xs font-black rounded-lg transition-all ${formData.type === type
+                  ? type === "BUY"
+                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/20"
+                    : "bg-red-500 text-white shadow-lg shadow-red-500/20"
+                  : "bg-transparent text-gray-500 hover:bg-white dark:hover:bg-white/5"
+                  }`}
               >
                 {type}
               </Button>
@@ -302,11 +301,10 @@ export function TradePlanModal({ onSuccess, onCancel, initialData }: TradePlanMo
                   key={lvl}
                   type="button"
                   onClick={() => setFormData((prev) => ({ ...prev, confidenceLevel: lvl }))}
-                  className={`flex-1 py-2 rounded-lg font-bold text-xs transition-all border ${
-                    formData.confidenceLevel === lvl
-                      ? "bg-purple-500 text-white border-purple-500 shadow-md shadow-purple-500/10"
-                      : "bg-white dark:bg-black/20 text-gray-500 border-dashboard"
-                  }`}
+                  className={`flex-1 py-2 rounded-lg font-bold text-xs transition-all border ${formData.confidenceLevel === lvl
+                    ? "bg-purple-500 text-white border-purple-500 shadow-md shadow-purple-500/10"
+                    : "bg-white dark:bg-black/20 text-gray-500 border-dashboard"
+                    }`}
                 >
                   {lvl}
                 </button>
@@ -372,17 +370,15 @@ export function TradePlanModal({ onSuccess, onCancel, initialData }: TradePlanMo
                   key={rule.id}
                   type="button"
                   onClick={() => handleRuleToggle(rule.id)}
-                  className={`flex items-center gap-2.5 p-3 rounded-xl border text-left transition-all ${
-                    isChecked
-                      ? "bg-primary/5 border-primary text-gray-800 dark:text-white"
-                      : "bg-white dark:bg-black/10 border-dashboard text-gray-500 hover:border-gray-400"
-                  }`}
+                  className={`flex items-center gap-2.5 p-3 rounded-xl border text-left transition-all ${isChecked
+                    ? "bg-primary/5 border-primary text-gray-800 dark:text-white"
+                    : "bg-white dark:bg-black/10 border-dashboard text-gray-500 hover:border-gray-400"
+                    }`}
                 >
-                  <div className={`w-4 h-4 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${
-                    isChecked
-                      ? "bg-primary border-primary text-white"
-                      : "border-gray-300 dark:border-white/10"
-                  }`}>
+                  <div className={`w-4 h-4 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${isChecked
+                    ? "bg-primary border-primary text-white"
+                    : "border-gray-300 dark:border-white/10"
+                    }`}>
                     {isChecked && <Check size={12} strokeWidth={3} />}
                   </div>
                   <div className="min-w-0">
@@ -404,15 +400,22 @@ export function TradePlanModal({ onSuccess, onCancel, initialData }: TradePlanMo
           type="button"
           onClick={onCancel}
           variant="outline"
-          className="rounded-xl font-bold text-gray-500"
+          size="smd"
+          className="font-bold text-gray-500"
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting} className="rounded-xl">
+        <Button
+          type="submit"
+          variant="primary"
+          size="smd"
+          disabled={isSubmitting}
+          className="font-bold"
+        >
           {isSubmitting ? (
-            <Loader2 size={16} className="animate-spin" />
+            <Loader2 size={14} className="animate-spin mr-1.5" />
           ) : (
-            <Save size={16} />
+            <Save size={14} className="mr-1.5" />
           )}
           <span>Save Trade Plan</span>
         </Button>

@@ -130,21 +130,25 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
  </div>
 
  <div className="flex justify-end gap-3 pt-2">
- <Button
- type="button"
- variant="outline"
- onClick={onClose}
- className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold rounded-xl px-6"
- >Cancel
- </Button>
- <Button
- type="submit"
- isLoading={isSubmitting}
- className="bg-primary hover:bg-[#00C888] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold"
- >
- {tag ? "Save Changes" : "Create Tag"}
- </Button>
- </div>
+  <Button
+  type="button"
+  variant="outline"
+  size="smd"
+  onClick={onClose}
+  className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold px-6"
+  >
+  Cancel
+  </Button>
+  <Button
+  type="submit"
+  variant="primary"
+  size="smd"
+  isLoading={isSubmitting}
+  className="shadow-lg shadow-primary/30 px-6 font-bold"
+  >
+  {tag ? "Save Changes" : "Create Tag"}
+  </Button>
+  </div>
  </form>
  </Modal>
  );

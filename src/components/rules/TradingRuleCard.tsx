@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useTransition, useEffect } from "react";
 import { Edit, Trash2, Shield, AlertTriangle, Play, HelpCircle } from "lucide-react";
-import { useState, useTransition } from "react";
 import { updateTradingRule, deleteTradingRule } from "@/actions/rulebook";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface TradingRuleCardProps {
   rule: any;
@@ -15,21 +17,42 @@ interface TradingRuleCardProps {
 export function TradingRuleCard({ rule, onUpdate, onEdit }: TradingRuleCardProps) {
   const [isPending, startTransition] = useTransition();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [localActive, setLocalActive] = useState(rule.isActive);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const handleToggleActive = () => {
-    startTransition(async () => {
-      const res = await updateTradingRule(rule.id, { isActive: !rule.isActive });
+  useEffect(() => {
+    setLocalActive(rule.isActive);
+  }, [rule.isActive]);
+
+  const handleToggleActive = async (checked: boolean) => {
+    if (isUpdating || isDeleting) return;
+    setIsUpdating(true);
+    setLocalActive(checked);
+
+    try {
+      const res = await updateTradingRule(rule.id, { isActive: checked });
       if (res.success) {
-        toast.success(`Rule ${rule.isActive ? "deactivated" : "activated"}!`);
+        toast.success(`Rule ${checked ? "activated" : "deactivated"}!`);
         onUpdate();
       } else {
+        setLocalActive(rule.isActive);
         toast.error("Failed to update rule status.");
       }
-    });
+    } catch (error) {
+      setLocalActive(rule.isActive);
+      toast.error("An error occurred while updating status.");
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleDelete = () => {
-    if (!confirm("Are you sure you want to delete this trading rule?")) return;
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    setIsConfirmOpen(false);
     setIsDeleting(true);
     startTransition(async () => {
       const res = await deleteTradingRule(rule.id);
@@ -70,7 +93,7 @@ export function TradingRuleCard({ rule, onUpdate, onEdit }: TradingRuleCardProps
   return (
     <div
       className={`relative flex flex-col justify-between p-5 rounded-2xl border transition-all duration-300 ${
-        rule.isActive
+        localActive
           ? "bg-white dark:bg-[#151925] border-dashboard/80 dark:border-white/[0.08] hover:shadow-md"
           : "bg-gray-50/50 dark:bg-white/[0.02] border-dashboard/80 dark:border-white/[0.04] opacity-60"
       }`}
@@ -89,20 +112,11 @@ export function TradingRuleCard({ rule, onUpdate, onEdit }: TradingRuleCardProps
           </div>
 
           {/* Toggle Switch */}
-          <button
-            type="button"
-            onClick={handleToggleActive}
-            disabled={isPending || isDeleting}
-            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${
-              rule.isActive ? "bg-primary" : "bg-gray-200 dark:bg-white/10"
-            }`}
-          >
-            <span
-              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-                rule.isActive ? "translate-x-4.5" : "translate-x-0.5"
-              }`}
-            />
-          </button>
+          <Switch
+            checked={localActive}
+            onCheckedChange={handleToggleActive}
+            disabled={isUpdating || isDeleting}
+          />
         </div>
 
         {/* Content */}
@@ -160,6 +174,17 @@ export function TradingRuleCard({ rule, onUpdate, onEdit }: TradingRuleCardProps
           <Trash2 size={12} />
         </Button>
       </div>
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title="Delete Trading Rule"
+        description="Are you sure you want to delete this trading rule?"
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+        onCancel={() => setIsConfirmOpen(false)}
+        variant="danger"
+      />
     </div>
   );
 }

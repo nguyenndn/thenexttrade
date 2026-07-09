@@ -616,7 +616,7 @@ export function DashboardManager({ data, initialDashboards, onTradeClick, onAddT
       />
 
       {/* Grid Area */}
-      <div className={cn("min-h-[500px] transition-[background-color,border-color] duration-200", isEditable && "bg-gray-50 dark:bg-gray-800/30 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 p-0")}>
+      <div className={cn("min-h-[500px] transition-[background-color,border-color] duration-200 -mx-2", isEditable && "bg-gray-50 dark:bg-gray-800/30 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 p-0")}>
         {layout.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[300px] text-gray-500">
             <LayoutDashboard className="w-12 h-12 mb-4 text-gray-300 dark:text-gray-700" />

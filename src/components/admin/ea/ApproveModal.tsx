@@ -100,14 +100,16 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
  </div>
 
  <DialogFooter className="gap-2 sm:gap-0">
- <Button variant="outline" type="button" onClick={onClose} disabled={isSubmitting}>Cancel
+ <Button variant="outline" size="smd" type="button" onClick={onClose} disabled={isSubmitting} className="font-bold">Cancel
  </Button>
  <Button
  type="submit"
- className="bg-primary hover:bg-[#00B078] text-white"
+ variant="primary"
+ size="smd"
+ className="bg-primary hover:bg-[#00B078] text-white font-bold"
  disabled={isSubmitting}
  >
- {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+ {isSubmitting && <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />}
  Confirm Approve
  </Button>
  </DialogFooter>

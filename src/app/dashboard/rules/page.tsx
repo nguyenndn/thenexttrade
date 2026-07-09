@@ -36,7 +36,7 @@ export default async function RulesPage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <RulebookClient
         initialRules={rules}
         initialGoals={goals}

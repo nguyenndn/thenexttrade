@@ -198,6 +198,7 @@ export function StrategyManager({ initialStrategies, meta, initialPerformance = 
  >
  <Button
  variant="primary"
+ size="smd"
  onClick={() => setShowModal(true)}
  className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
  >
@@ -240,7 +241,8 @@ export function StrategyManager({ initialStrategies, meta, initialPerformance = 
  <DropdownMenuTrigger asChild>
  <Button
  variant="outline"
- className="flex items-center gap-2 rounded-xl border border-dashboard bg-white dark:bg-[#151925] px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300"
+ size="smd"
+ className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#151925] text-gray-700 dark:text-gray-300"
  >
  <ArrowUpDown size={16} className="text-gray-500" />
  <span>{currentSortLabel}</span>

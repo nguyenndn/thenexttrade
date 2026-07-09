@@ -627,6 +627,7 @@ export default function Loading() {
         </div>
     )
 }
+```
 
 ## 14. Tabs Component (Page & Section Level)
 
@@ -635,10 +636,10 @@ Tiêu chuẩn thiết kế cho Tabs điều hướng sử dụng `@/components/u
 ### Structure & Layout
 ```tsx
 <div className="overflow-x-auto scrollbar-hide flex">
-  <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
+  <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 shrink-0">
     <TabsTrigger 
       value="tab1"
-      className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+      className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
       activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
       activeTextClassName="!text-white"
     >
@@ -650,9 +651,8 @@ Tiêu chuẩn thiết kế cho Tabs điều hướng sử dụng `@/components/u
 
 ### CSS Specifications (Strict Rules)
 - **Container Wrapper**: BẮT BUỘC có `overflow-x-auto scrollbar-hide flex` để scroll mượt trên màn hình nhỏ.
-- **TabsList**: Sử dụng nền nhẹ và viền bo góc `bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0`.
-- **TabsTrigger (Mặc định)**: Class cho text, padding, và bo góc `px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10`.
+- **TabsList**: Sử dụng nền nhẹ và viền bo góc `bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 shrink-0`.
+- **TabsTrigger (Mặc định)**: Class cho text, padding, và bo góc `px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10`.
 - **TabsTrigger (Active)**: BẮT BUỘC phải truyền thủ công 2 override props sau để có hiệu ứng gradient chuẩn:
   - `activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"`
   - `activeTextClassName="!text-white"`
-```

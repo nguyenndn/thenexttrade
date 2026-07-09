@@ -170,14 +170,14 @@ export function StrategyModal({ strategy, onClose, onSave }: StrategyModalProps)
  </div>
  </div>
 
- <div className="flex justify-end gap-3 pt-2">
- <Button type="button" variant="outline" onClick={onClose}>
- Cancel
- </Button>
- <Button type="submit" variant="primary" isLoading={isLoading}>
- {isLoading ? "Saving..." : "Save Strategy"}
- </Button>
- </div>
+  <div className="flex justify-end gap-3 pt-2">
+  <Button type="button" variant="outline" size="smd" onClick={onClose} className="font-bold">
+  Cancel
+  </Button>
+  <Button type="submit" variant="primary" size="smd" isLoading={isLoading} className="font-bold">
+  Save Strategy
+  </Button>
+  </div>
  </form>
  </div>
  </div>

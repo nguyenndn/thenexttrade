@@ -1,10 +1,11 @@
 "use client";
 
 import { CheckCircle2, Trash2, XCircle } from "lucide-react";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { updateTraderGoalStatus, deleteTraderGoal, updateTraderGoalProgress } from "@/actions/rulebook";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface GoalCardProps {
   goal: any;
@@ -13,6 +14,7 @@ interface GoalCardProps {
 
 export function GoalCard({ goal, onUpdate }: GoalCardProps) {
   const [isPending, startTransition] = useTransition();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleUpdateStatus = (status: "COMPLETED" | "CANCELLED" | "ACTIVE") => {
     startTransition(async () => {
@@ -27,7 +29,11 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
   };
 
   const handleDelete = () => {
-    if (!confirm("Are you sure you want to delete this goal?")) return;
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    setIsConfirmOpen(false);
     startTransition(async () => {
       const res = await deleteTraderGoal(goal.id);
       if (res.success) {
@@ -196,6 +202,17 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
           </Button>
         </div>
       </div>
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title="Delete Goal"
+        description="Are you sure you want to delete this goal?"
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+        onCancel={() => setIsConfirmOpen(false)}
+        variant="danger"
+      />
     </div>
   );
 }

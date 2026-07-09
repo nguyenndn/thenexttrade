@@ -369,17 +369,19 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
  <Button
  type="button"
  variant="outline"
+ size="smd"
  onClick={() => setView("verify_ib")}
- className="flex-1"
+ className="flex-1 font-bold"
  >
- <ArrowLeft size={20} />
+ <ArrowLeft size={16} className="mr-1.5" />
  <span>Back</span>
  </Button>
  <Button
  type="button"
  variant="primary"
+ size="smd"
  onClick={() => setOpen(false)}
- className="flex-1 whitespace-nowrap"
+ className="flex-1 whitespace-nowrap font-bold"
  >
  <span>I&apos;ll transfer first</span>
  </Button>
@@ -449,21 +451,23 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
  <Button
  type="button"
  variant="outline"
+ size="smd"
  onClick={() => setView("instructions")}
  disabled={isSubmitting}
- className="flex-1"
+ className="flex-1 font-bold"
  >
- <XCircle size={20} />
+ <XCircle size={16} className="mr-1.5" />
  <span>No</span>
  </Button>
  <Button
  type="button"
  variant="primary"
+ size="smd"
  onClick={() => setView("verify_balance")}
  disabled={isSubmitting}
- className="flex-1"
+ className="flex-1 font-bold"
  >
- <CheckCircle size={20} />
+ <CheckCircle size={16} className="mr-1.5" />
  <span>Yes</span>
  </Button>
  </div>
@@ -538,24 +542,26 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
  <Button
  type="button"
  variant="outline"
+ size="smd"
  onClick={() => setView("insufficient_balance")}
  disabled={isSubmitting}
- className="flex-1 whitespace-nowrap px-2"
+ className="flex-1 whitespace-nowrap px-2 font-bold"
  >
- <XCircle size={18} />
+ <XCircle size={16} className="mr-1.5" />
  <span>Why do I need $200?</span>
  </Button>
  <Button
  type="button"
  variant="primary"
+ size="smd"
  onClick={handleConfirmSubmit}
  disabled={isSubmitting}
- className="flex-1 whitespace-nowrap px-2"
+ className="flex-1 whitespace-nowrap px-2 font-bold"
  >
  {isSubmitting ? (
- <Loader2 size={18} className="animate-spin" />
+ <Loader2 size={16} className="animate-spin mr-1.5" />
  ) : (
- <CheckCircle size={18} />
+ <CheckCircle size={16} className="mr-1.5" />
  )}
  <span>Yes or more</span>
  </Button>
@@ -614,19 +620,21 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
  <Button
  type="button"
  variant="outline"
+ size="smd"
  onClick={() => setView("verify_balance")}
  disabled={isSubmitting}
- className="flex-1"
+ className="flex-1 font-bold"
  >
- <ArrowLeft size={18} />
+ <ArrowLeft size={16} className="mr-1.5" />
  <span>Back</span>
  </Button>
  <Button
  type="button"
  variant="primary"
+ size="smd"
  onClick={() => setOpen(false)}
  disabled={isSubmitting}
- className="flex-1"
+ className="flex-1 font-bold"
  >
  <span>I'll deposit first</span>
  </Button>
@@ -718,15 +726,17 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
  <Button
  type="button"
  variant="outline"
+ size="smd"
  onClick={() => setOpen(false)}
- className="flex-1"
+ className="flex-1 font-bold"
  >
  Cancel
  </Button>
  <Button
  type="submit"
  variant="primary"
- className="flex-1 bg-primary hover:bg-[#00B078] text-white"
+ size="smd"
+ className="flex-1 bg-primary hover:bg-[#00B078] text-white font-bold"
  >
  Next Step
  </Button>

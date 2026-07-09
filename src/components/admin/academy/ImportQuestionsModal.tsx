@@ -157,8 +157,9 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
  </div>
  <Button
  variant="ghost"
+ size="smd"
  onClick={() => setStep("quiz-select")}
- className="px-4 py-2 h-auto rounded-xl text-sm font-bold text-primary hover:bg-primary/10 transition-all"
+ className="font-bold text-primary hover:bg-primary/10 transition-all"
  >
  Change Quiz
  </Button>
@@ -212,23 +213,26 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
  )}
  </div>
 
- <div className="p-6 border-t border-dashboard bg-gray-50 dark:bg-white/5 flex justify-end gap-3">
- <Button
- variant="ghost"
- onClick={() => setStep("quiz-select")}
- className="px-6 py-3 h-auto rounded-xl font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
- >
- Back
- </Button>
- <Button
- onClick={handleImport}
- disabled={selectedQuestionIds.size === 0 || isLoading}
- className="px-6 py-3 h-auto rounded-xl font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
- >
- {isLoading && <Loader2 className="animate-spin" size={20} />}
- <span>Import {selectedQuestionIds.size} Questions</span>
- </Button>
- </div>
+  <div className="p-6 border-t border-dashboard bg-gray-50 dark:bg-white/5 flex justify-end gap-3">
+  <Button
+  variant="ghost"
+  size="smd"
+  onClick={() => setStep("quiz-select")}
+  className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+  >
+  Back
+  </Button>
+  <Button
+  variant="primary"
+  size="smd"
+  onClick={handleImport}
+  disabled={selectedQuestionIds.size === 0 || isLoading}
+  className="font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+  {isLoading && <Loader2 className="animate-spin" size={14} />}
+  <span>Import {selectedQuestionIds.size} Questions</span>
+  </Button>
+  </div>
  </div>
  )}
  </div>

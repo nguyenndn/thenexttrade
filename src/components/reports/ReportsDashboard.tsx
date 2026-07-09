@@ -350,7 +350,7 @@ export function ReportsDashboard() {
  Add at least one trade for this week, then generate your weekly review to find your strongest setup and biggest leak.
  </p>
  <Link href="/dashboard/journal?action=log-trade">
- <Button variant="primary" className="mt-2 text-xs px-4 py-1.5 h-auto">
+ <Button variant="primary" size="smd" className="mt-2">
  <PenLine size={13} className="mr-1" /> Log Trade
  </Button>
  </Link>
@@ -371,7 +371,7 @@ export function ReportsDashboard() {
  </p>
  </div>
  <Link href="/dashboard/missions">
- <Button variant="primary" className="text-xs px-4 py-2 h-auto">
+ <Button variant="primary" size="smd">
  Claim Edge
  </Button>
  </Link>

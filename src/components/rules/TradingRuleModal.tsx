@@ -230,13 +230,20 @@ export function TradingRuleModal({
             <Button
               type="button"
               variant="outline"
+              size="smd"
               onClick={onClose}
               disabled={isPending}
-              className="h-10 border-gray-300 dark:border-white/10 font-bold"
+              className="border-gray-300 dark:border-white/10 font-bold"
             >
               Cancel
             </Button>
-            <Button type="submit" variant="primary" disabled={isPending} className="h-10 font-bold">
+            <Button
+              type="submit"
+              variant="primary"
+              size="smd"
+              disabled={isPending}
+              className="font-bold"
+            >
               {isPending && <Loader2 size={14} className="animate-spin mr-1.5" />}
               {ruleToEdit ? "Save Changes" : "Create Rule"}
             </Button>

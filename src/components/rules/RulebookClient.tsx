@@ -32,7 +32,7 @@ export function RulebookClient({
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [ruleToEdit, setRuleToEdit] = useState<any>(null);
-  
+
   const [complianceStats, setComplianceStats] = useState<any[]>([]);
   const [loadingStats, setLoadingStats] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -89,7 +89,7 @@ export function RulebookClient({
     : initialRules.filter((r) => r.category === selectedCategory);
 
   return (
-    <div className="space-y-6">
+    <>
       <PageHeader
         title="Trading Rulebook & Behavior Goals"
         description="Establish clear risk parameters, entry filters, and habit targets to build professional consistency."
@@ -98,6 +98,7 @@ export function RulebookClient({
           {activeTab === "rulebook" && (
             <Button
               variant="primary"
+              size="smd"
               onClick={() => {
                 setRuleToEdit(null);
                 setIsRuleModalOpen(true);
@@ -111,6 +112,7 @@ export function RulebookClient({
           {activeTab === "goals" && (
             <Button
               variant="primary"
+              size="smd"
               onClick={() => setIsGoalModalOpen(true)}
               className="flex items-center gap-1.5 shadow-md"
             >
@@ -123,29 +125,32 @@ export function RulebookClient({
 
       <Tabs value={activeTab} onValueChange={setActiveTab} tabsId="rules-tabs">
         <div className="overflow-x-auto scrollbar-hide flex">
-          <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
-            <TabsTrigger 
+          <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] border border-dashboard rounded-xl p-1 gap-1 shrink-0">
+            <TabsTrigger
               value="rulebook"
-              activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+              className="rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap flex-1 text-center lg:flex-none border-transparent hover:border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0 !-inset-[1px]"
               activeTextClassName="!text-white"
             >
-              <Shield size={14} />
+              <Shield size={14} className="sm:w-4 sm:h-4" />
               Rulebook
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="goals"
-              activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+              className="rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap flex-1 text-center lg:flex-none border-transparent hover:border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0 !-inset-[1px]"
               activeTextClassName="!text-white"
             >
-              <Award size={14} />
+              <Award size={14} className="sm:w-4 sm:h-4" />
               Behavior Goals
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="compliance"
-              activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+              className="rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap flex-1 text-center lg:flex-none border-transparent hover:border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0 !-inset-[1px]"
               activeTextClassName="!text-white"
             >
-              <ClipboardCheck size={14} />
+              <ClipboardCheck size={14} className="sm:w-4 sm:h-4" />
               Compliance Analytics
             </TabsTrigger>
           </TabsList>
@@ -160,11 +165,10 @@ export function RulebookClient({
                 key={cat.value}
                 type="button"
                 onClick={() => setSelectedCategory(cat.value)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                  selectedCategory === cat.value
-                    ? "bg-primary/10 border-primary text-primary"
-                    : "bg-white dark:bg-[#151925] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-400"
-                }`}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${selectedCategory === cat.value
+                  ? "bg-primary/10 border-primary text-primary"
+                  : "bg-white dark:bg-[#151925] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-400"
+                  }`}
               >
                 {cat.label}
               </button>
@@ -185,6 +189,7 @@ export function RulebookClient({
               <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
                 <Button
                   variant="outline"
+                  size="smd"
                   onClick={handleAddStarterRules}
                   disabled={isPending}
                   className="flex items-center gap-1.5 border-indigo-200 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-bold"
@@ -194,6 +199,7 @@ export function RulebookClient({
                 </Button>
                 <Button
                   variant="primary"
+                  size="smd"
                   onClick={() => {
                     setRuleToEdit(null);
                     setIsRuleModalOpen(true);
@@ -234,6 +240,7 @@ export function RulebookClient({
               <div className="mt-6">
                 <Button
                   variant="primary"
+                  size="smd"
                   onClick={() => setIsGoalModalOpen(true)}
                   className="font-bold"
                 >
@@ -371,6 +378,6 @@ export function RulebookClient({
         onClose={() => setIsGoalModalOpen(false)}
         onSuccess={() => router.refresh()}
       />
-    </div>
+    </>
   );
 }

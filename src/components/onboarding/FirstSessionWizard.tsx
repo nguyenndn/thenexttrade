@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
  Dialog,
  DialogContent,
@@ -155,8 +156,9 @@ export function FirstSessionWizard({
  const res = await sendDesktopSetupLinkAction(mobileFallbackMethod);
  if (res.success) {
  setLinkSent(true);
+ toast.success("Setup link sent to your email!");
  } else {
- alert(res.error || "Failed to send email");
+ toast.error(res.error || "Failed to send email");
  }
  });
  };

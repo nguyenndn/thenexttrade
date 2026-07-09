@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Gift, Check, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 import { claimMission } from "@/actions/edge-missions";
 import { refreshClaimableCount } from "@/hooks/useClaimableCount";
 import { trackEvent } from "@/lib/track";
@@ -17,10 +18,10 @@ interface MissionCardProps {
 }
 
 const CATEGORY_COLORS = {
- DAILY: "from-sky-500/10 to-cyan-500/10 border-sky-500/20",
- ONBOARDING: "from-emerald-500/10 to-teal-500/10 border-emerald-500/20",
- WEEKLY: "from-amber-500/10 to-orange-500/10 border-amber-500/20",
- MASTERY: "from-purple-500/10 to-indigo-500/10 border-purple-500/20",
+  DAILY: "from-white via-sky-50/20 to-cyan-50/10 border-sky-200/60 dark:from-[#1E2028] dark:via-sky-950/5 dark:to-[#151925] dark:border-sky-500/20",
+  ONBOARDING: "from-white via-emerald-50/20 to-teal-50/10 border-emerald-200/60 dark:from-[#1E2028] dark:via-emerald-950/5 dark:to-[#151925] dark:border-emerald-500/20",
+  WEEKLY: "from-white via-amber-50/20 to-orange-50/10 border-amber-200/60 dark:from-[#1E2028] dark:via-amber-950/5 dark:to-[#151925] dark:border-amber-500/20",
+  MASTERY: "from-white via-purple-50/20 to-indigo-50/10 border-purple-200/60 dark:from-[#1E2028] dark:via-purple-950/5 dark:to-[#151925] dark:border-purple-500/20",
 };
 
 const CATEGORY_LABELS = {
@@ -64,14 +65,16 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
 
  const categoryColor = CATEGORY_COLORS[mission.def.category] || CATEGORY_COLORS.ONBOARDING;
 
- return (
- <div
- className={`relative rounded-2xl border bg-gradient-to-br p-4 transition-all duration-300 ${
- claimed
- ? "border-dashboard/50 opacity-60"
- : categoryColor
- } ${canClaim ? "ring-2 ring-gold/30 shadow-lg shadow-gold/10" : ""}`}
- >
+  return (
+  <div
+  className={cn(
+  "relative rounded-2xl border bg-gradient-to-br p-5 transition-all duration-300 hover:shadow-md",
+  claimed
+  ? "bg-white dark:bg-[#151925] border-dashboard/50 opacity-60"
+  : categoryColor,
+  canClaim && "ring-2 ring-gold/30 shadow-lg shadow-gold/10"
+  )}
+  >
  {/* Header */}
  <div className="flex items-start gap-3 mb-3">
  <div

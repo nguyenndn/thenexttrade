@@ -18,12 +18,14 @@ import {
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export default function TNTConnectClient() {
  const [isLoading, setIsLoading] = useState(true);
  const [isGenerating, setIsGenerating] = useState(false);
  const [isRevoking, setIsRevoking] = useState(false);
  const [copied, setCopied] = useState(false);
+ const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
  const [keyData, setKeyData] = useState<{
  hasKey: boolean;
@@ -69,22 +71,26 @@ export default function TNTConnectClient() {
  }
  };
 
- const revokeKey = async () => {
- if (!confirm("Are you sure? This will disconnect all active sync connections.")) return;
- setIsRevoking(true);
- try {
- const res = await fetch("/api/sync/api-key", { method: "DELETE" });
- if (!res.ok) throw new Error();
- setKeyData({ hasKey: false, key: null, fullKey: null, createdAt: null });
- setShowFullKey(false);
- setGeneratedKey(null);
- toast.success("Sync API key revoked");
- } catch {
- toast.error("Failed to revoke key");
- } finally {
- setIsRevoking(false);
- }
- };
+  const handleRevokeClick = () => {
+    setIsConfirmOpen(true);
+  };
+
+  const confirmRevoke = async () => {
+    setIsConfirmOpen(false);
+    setIsRevoking(true);
+    try {
+      const res = await fetch("/api/sync/api-key", { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      setKeyData({ hasKey: false, key: null, fullKey: null, createdAt: null });
+      setShowFullKey(false);
+      setGeneratedKey(null);
+      toast.success("Sync API key revoked");
+    } catch {
+      toast.error("Failed to revoke key");
+    } finally {
+      setIsRevoking(false);
+    }
+  };
 
  const copyKey = () => {
  const keyToCopy = generatedKey || keyData.fullKey;
@@ -255,7 +261,7 @@ export default function TNTConnectClient() {
  Regenerate
  </Button>
  <Button
- onClick={revokeKey}
+ onClick={handleRevokeClick}
  variant="outline"
  disabled={isRevoking}
  className="px-5 h-10 font-bold text-sm text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 dark:border-red-500/20 dark:hover:bg-red-500/10 dark:hover:border-red-500/40"
@@ -325,6 +331,18 @@ export default function TNTConnectClient() {
  </div>
  </div>
  </div>
- </div>
+
+  {/* Confirm Dialog */}
+  <ConfirmDialog
+    isOpen={isConfirmOpen}
+    title="Revoke API Key"
+    description="Are you sure? This will disconnect all active sync connections."
+    confirmText="Revoke"
+    cancelText="Cancel"
+    onConfirm={confirmRevoke}
+    onCancel={() => setIsConfirmOpen(false)}
+    variant="danger"
+  />
+  </div>
  );
 }

@@ -202,13 +202,14 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
  <Button
  variant="outline"
+ size="smd"
  onClick={() => {
  startTransition(() => {
  router.refresh();
  });
  }}
  disabled={isPending}
- className="flex items-center justify-center gap-2 border-gray-300 dark:border-white/15 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/15 font-bold flex-1 sm:flex-none h-10 min-w-[125px] px-4 rounded-xl text-[13px]"
+ className="flex items-center justify-center gap-2 border-gray-300 dark:border-white/15 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/15 flex-1 sm:flex-none"
  >
  <RefreshCw size={15} className={isPending ? "animate-spin text-primary" : ""} />
  Refresh
@@ -216,8 +217,9 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
  <Button
  id="onborda-trade-sync-setup"
  variant="outline"
+ size="smd"
  onClick={() => setActiveModal({ type: "SYNC_SETUP" })}
- className="flex items-center justify-center gap-2 border-cyan-400 dark:border-cyan-500/40 bg-cyan-100 dark:bg-cyan-500/15 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-500/25 font-bold flex-1 sm:flex-none h-10 min-w-[125px] px-4 rounded-xl text-[13px]"
+ className="flex items-center justify-center gap-2 border-cyan-400 dark:border-cyan-500/40 bg-cyan-100 dark:bg-cyan-500/15 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-500/25 flex-1 sm:flex-none"
  >
  <Cable size={15} />
  Set up Trade Sync
@@ -225,8 +227,9 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
   {isSyncHealthCenterEnabled() && (
     <Button
       variant="outline"
+      size="smd"
       onClick={() => setActiveModal({ type: "SYNC_HEALTH" })}
-      className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 font-bold flex-1 sm:flex-none h-10 min-w-[125px] px-4 rounded-xl text-[13px]"
+      className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 flex-1 sm:flex-none"
     >
       <Activity size={15} />
       Sync Health Center
@@ -234,18 +237,20 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
   )}
  <Button
  variant="outline"
+ size="smd"
  onClick={() => setActiveModal({ type: "FREE_VS_PRO" })}
- className="flex items-center justify-center gap-2 border-emerald-400 dark:border-emerald-500/40 bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-500/25 font-bold flex-1 sm:flex-none h-10 min-w-[125px] px-4 rounded-xl text-[13px]"
+ className="flex items-center justify-center gap-2 border-emerald-400 dark:border-emerald-500/40 bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-500/25 flex-1 sm:flex-none"
  >
  <Crown size={15} />
  Free vs Pro
  </Button>
- <Button
- id="onborda-add-account"
- variant="primary"
- onClick={() => setActiveModal({ type: "ADD" })}
- className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25 h-10 min-w-[125px] px-4 rounded-xl text-[13px] font-bold"
- >
+  <Button
+  id="onborda-add-account"
+  variant="primary"
+  size="smd"
+  onClick={() => setActiveModal({ type: "ADD" })}
+  className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25 flex-1 sm:flex-none"
+  >
  <Plus size={16} />
  Add Account
  </Button>

@@ -101,15 +101,19 @@ export function CreateModuleModal({ isOpen, onClose, levelId, onSuccess }: Creat
  <Button
  type="button"
  variant="outline"
+ size="smd"
  onClick={onClose}
  disabled={isLoading}
- className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold rounded-xl px-6"
- >Cancel
+ className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold"
+ >
+ Cancel
  </Button>
  <Button
  type="submit"
+ variant="primary"
+ size="smd"
  isLoading={isLoading}
- className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold transition-all"
+ className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 font-bold transition-all"
  >
  Create Module
  </Button>

@@ -83,16 +83,25 @@ export function EditLevelModal({ isOpen, onClose, level }: EditLevelModalProps) 
  </div>
 
  <div className="flex justify-end gap-3 mt-8">
- <Button variant="outline" onClick={onClose} disabled={isLoading} className="text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5">Cancel
- </Button>
- <Button
- onClick={handleSave}
- isLoading={isLoading}
- className="bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl px-6"
- >
- Save Change
- </Button>
- </div>
+  <Button
+  variant="outline"
+  size="smd"
+  onClick={onClose}
+  disabled={isLoading}
+  className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
+  >
+  Cancel
+  </Button>
+  <Button
+  variant="primary"
+  size="smd"
+  onClick={handleSave}
+  isLoading={isLoading}
+  className="bg-primary hover:bg-[#00a872] text-white font-bold px-6"
+  >
+  Save Changes
+  </Button>
+  </div>
  </DialogContent>
  </Dialog>
  );

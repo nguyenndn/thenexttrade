@@ -33,6 +33,7 @@ import {
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
+import { toast } from "sonner";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/track";
@@ -499,9 +500,9 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  const res = await sendDesktopSetupLinkAction(syncMethod);
  if (res.success) {
  setLinkSent(true);
- alert("Setup link sent to your email!");
+ toast.success("Setup link sent to your email!");
  } else {
- alert(res.error || "Failed to send email");
+ toast.error(res.error || "Failed to send email");
  }
  } finally {
  setIsLoading(false);

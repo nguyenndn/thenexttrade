@@ -140,15 +140,15 @@ export function BulkImagePromptModal({ articleIds, open, onClose }: BulkImagePro
  <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-dashboard">
  {phase === "loaded" && prompts.length > 0 && (
  <>
- <Button variant="outline" onClick={copyAll} className="gap-1.5">
+ <Button variant="outline" size="smd" onClick={copyAll} className="gap-1.5 font-bold">
  <Copy size={14} /> Copy All
  </Button>
- <Button variant="outline" onClick={downloadJson} className="gap-1.5">
+ <Button variant="outline" size="smd" onClick={downloadJson} className="gap-1.5 font-bold">
  <Download size={14} /> Download JSON
  </Button>
  </>
  )}
- <Button variant="outline" onClick={onClose}>
+ <Button variant="outline" size="smd" onClick={onClose} className="font-bold">
  Close
  </Button>
  </div>

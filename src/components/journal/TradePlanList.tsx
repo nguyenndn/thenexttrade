@@ -51,8 +51,9 @@ export function TradePlanList({ plans, onRefresh, onLogTrade, onViewActual }: Tr
 
         {/* Add Plan Action */}
         <Button
+          size="smd"
           onClick={() => setIsCreateOpen(true)}
-          className="rounded-xl flex items-center gap-2 font-bold w-full sm:w-auto h-11"
+          className="flex items-center gap-2 w-full sm:w-auto"
         >
           <Plus size={16} />
           Create Trade Plan

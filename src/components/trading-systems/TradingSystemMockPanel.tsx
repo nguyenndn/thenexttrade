@@ -167,8 +167,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
 
     return (
       <div
-        style={{ zoom: 1.1 }}
-        className="mx-auto w-full lg:w-[550px] border-2 border-[#f7b500] bg-[#0f1522] p-1.5 text-left font-mono text-[10px] text-slate-200 shadow-2xl shadow-slate-955/20 lg:mx-0"
+        className="mx-auto w-full lg:w-[550px] [zoom:0.85] sm:[zoom:1.0] lg:[zoom:1.1] border-2 border-[#f7b500] bg-[#0f1522] p-1.5 text-left font-mono text-[10px] text-slate-200 shadow-2xl shadow-slate-955/20 lg:mx-0"
       >
         {/* Terminal Header */}
         <div className="mb-2 flex items-center justify-between gap-2 bg-[#0b111d] px-2.5 py-1.5 border-b border-slate-800">
@@ -246,7 +245,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                   ))}
                 </div>
 
-                 <div className="grid grid-cols-2 gap-1.5">
+                <div className="grid grid-cols-2 gap-1.5">
                   {[
                     { label: "GET BUY", className: "bg-blue-600 hover:bg-blue-700" },
                     { label: "GET SELL", className: "bg-rose-900 hover:bg-rose-950" },
@@ -673,8 +672,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
   if (slug === "gsn-phoenix-grid") {
     return (
       <div
-        style={{ zoom: 1.2 }}
-        className="mx-auto w-full lg:w-[385px] border-2 border-[#f7b500] bg-[#10141b] p-1 text-left font-mono text-[9px] text-white shadow-2xl shadow-gold/10 lg:mx-0"
+        className="mx-auto w-full lg:w-[385px] [zoom:0.9] sm:[zoom:1.1] lg:[zoom:1.2] border-2 border-[#f7b500] bg-[#10141b] p-1 text-left font-mono text-[9px] text-white shadow-2xl shadow-gold/10 lg:mx-0"
       >
         <div className="border-b-2 border-[#f7b500] bg-[#10141b] py-1 text-center text-[17px] font-black leading-none text-[#ffe100]">
           GSN PHOENIX GRID

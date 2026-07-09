@@ -94,20 +94,20 @@ export function MissionsClient({ initialMissions, userXp }: MissionsClientProps)
  <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight mb-4">Explore Missions</h2>
  <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as CategoryFilter)} tabsId="edge-missions">
  <div className="overflow-x-auto scrollbar-hide flex mb-6">
- <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
- {CATEGORY_TABS.map((tab) => (
- <TabsTrigger
- key={tab.key}
- value={tab.key}
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- <tab.icon size={15} />
- <span>{tab.label}</span>
- </TabsTrigger>
- ))}
- </TabsList>
+  <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-dashboard h-auto overflow-x-auto scrollbar-hide flex gap-1 shrink-0">
+  {CATEGORY_TABS.map((tab) => (
+  <TabsTrigger
+  key={tab.key}
+  value={tab.key}
+  className="px-3 sm:px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10 gap-1.5 sm:gap-2"
+  activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-transparent"
+  activeTextClassName="!text-white"
+  >
+  <tab.icon size={14} className="sm:w-4 sm:h-4" />
+  <span>{tab.label}</span>
+  </TabsTrigger>
+  ))}
+  </TabsList>
  </div>
 
  {/* Mission Grid */}

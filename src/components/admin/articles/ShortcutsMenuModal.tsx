@@ -131,7 +131,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
  <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">No Shortcuts Found</p>
  <p className="text-sm text-gray-500 mb-4 max-w-sm">Create reusable content snippets to insert instantly into your articles.</p>
  <Link href="/admin/articles/shortcuts" target="_blank">
- <Button variant="outline" size="sm" className="bg-white border-blue-200 text-blue-600 hover:bg-blue-50">Create First Shortcut</Button>
+  <Button variant="outline" size="smd" className="bg-white border-blue-200 text-blue-600 hover:bg-blue-50">Create First Shortcut</Button>
  </Link>
  </div>
  )}

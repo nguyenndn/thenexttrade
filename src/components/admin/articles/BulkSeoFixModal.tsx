@@ -295,20 +295,20 @@ export function BulkSeoFixModal({ articleIds, open, onClose, onApplied }: BulkSe
  )}
  </div>
 
- {/* Footer */}
  <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-dashboard">
  {phase === "review" && (
  <Button
  variant="primary"
+ size="smd"
  onClick={applySelected}
  disabled={applying || selected.size === 0}
- className="gap-2"
+ className="gap-2 font-bold"
  >
- {applying && <Loader2 size={16} className="animate-spin" />}
+ {applying && <Loader2 size={14} className="animate-spin mr-1" />}
  Apply {selected.size} Selected
  </Button>
  )}
- <Button variant="outline" onClick={onClose}>
+ <Button variant="outline" size="smd" onClick={onClose} className="font-bold">
  {phase === "done" || phase === "undone" ? "Close" : "Cancel"}
  </Button>
  </div>

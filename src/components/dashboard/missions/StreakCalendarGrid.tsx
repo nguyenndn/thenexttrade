@@ -68,7 +68,7 @@ export function StreakCalendarGrid() {
  const totalTradeDays = trades.length;
 
  return (
- <div className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-6 shadow-sm">
+ <div className="rounded-2xl border border-dashboard bg-white dark:bg-[#151925] p-6 shadow-sm hover:shadow-md hover:border-primary/10 transition-all duration-300">
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
  <div>
  <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">

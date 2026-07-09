@@ -183,6 +183,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
  <Button
  type="button"
  variant="outline"
+ size="smd"
  onClick={() => append({ text: "", isCorrect: false })}
  className="w-full border border-dashed border-gray-300 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
  >
@@ -195,15 +196,19 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
  <Button
  type="button"
  variant="outline"
+ size="smd"
  onClick={onClose}
  disabled={isLoading}
- className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold rounded-xl px-6"
- >Cancel
+ className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold px-6"
+ >
+ Cancel
  </Button>
  <Button
  type="submit"
+ variant="primary"
+ size="smd"
  isLoading={isLoading}
- className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold"
+ className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 font-bold px-6"
  >
  Save Question
  </Button>

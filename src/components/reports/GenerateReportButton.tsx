@@ -75,6 +75,7 @@ export function GenerateReportButton({ type, accountId, className, onResult }: G
  return (
  <Button
  variant="primary"
+ size="smd"
  onClick={handleGenerate}
  disabled={isPending}
  className={`shadow-lg shadow-primary/30 ${className || ""}`}

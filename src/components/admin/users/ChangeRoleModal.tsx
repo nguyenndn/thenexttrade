@@ -134,20 +134,22 @@ export function ChangeRoleModal({
  <div className="flex justify-end gap-3 mt-6">
  <Button
  variant="outline"
+ size="smd"
  onClick={onClose}
  disabled={isLoading}
- className="rounded-xl"
+ className="font-bold"
  >
  Cancel
  </Button>
  <Button
  variant="primary"
+ size="smd"
  onClick={handleSave}
  disabled={isLoading || selectedRole === currentRole}
- className="rounded-xl min-w-[100px]"
+ className="min-w-[100px] font-bold"
  >
  {isLoading ? (
- <Loader2 size={16} className="animate-spin" />
+ <Loader2 size={14} className="animate-spin" />
  ) : (
  "Save"
  )}

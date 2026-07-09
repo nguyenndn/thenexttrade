@@ -234,6 +234,7 @@ export function AccountSettingsModal({
  <div className="px-6 py-4 border-t border-dashboard flex flex-col sm:flex-row gap-3 bg-white dark:bg-[#151925] shrink-0 justify-between items-center w-full">
  <Button
  variant="destructive"
+ size="smd"
  onClick={onDelete}
  className="w-full sm:w-auto px-4 group"
  title="Delete this account"
@@ -245,6 +246,7 @@ export function AccountSettingsModal({
  <div className="flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto">
  <Button
  variant="outline"
+ size="smd"
  onClick={onClose}
  className="w-full sm:w-auto px-6 font-bold"
  >
@@ -252,13 +254,14 @@ export function AccountSettingsModal({
  </Button>
  <Button
  variant="primary"
+ size="smd"
  onClick={handleSave}
  disabled={isSaving}
  className="w-full sm:w-auto px-6 font-bold shadow-lg shadow-primary/25"
  >
  {isSaving ? (
  <>
- <RefreshCw size={18} className="animate-spin mr-2" />
+ <RefreshCw size={16} className="animate-spin mr-1.5" />
  Saving...
  </>
  ) : (

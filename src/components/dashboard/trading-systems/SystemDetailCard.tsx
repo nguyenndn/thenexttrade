@@ -6,6 +6,7 @@ import { Lock, Download, Shield, Info, BarChart2, Bot, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/track";
+import { toast } from "sonner";
 import { EAProduct } from "@prisma/client";
 import { InstallationWizard } from "./InstallationWizard";
 
@@ -29,11 +30,11 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
 
  if (!res.ok || !json.success) {
  const msg = json.error?.message || json.error || "Download failed";
- alert(msg);
+ toast.error(msg);
  return;
  }
 
- // Silent download � fetch as blob, trigger via hidden link
+ // Silent download  fetch as blob, trigger via hidden link
  const fileRes = await fetch(json.data.url);
  const blob = await fileRes.blob();
  const blobUrl = URL.createObjectURL(blob);
@@ -57,7 +58,7 @@ export function SystemDetailCard({ product, isLocked }: { product: EAProduct, is
  // Show installation guide after download
  setTimeout(() => setIsGuideModalOpen(true), 1000);
  } catch {
- alert("An error occurred while downloading. Please try again.");
+ toast.error("An error occurred while downloading. Please try again.");
  } finally {
  setDownloading(false);
  }

@@ -118,18 +118,20 @@ export function ConfirmDialog({
  <Button
  variant="ghost"
  type="button"
+ size="smd"
  onClick={onCancel}
  disabled={isLoading}
- className="px-5 py-2.5 rounded-xl font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
+ className="font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
  >
  {cancelText}
  </Button>
  <Button
  type="button"
+ size="smd"
  onClick={onConfirm}
  disabled={isLoading}
  className={cn(
- "px-5 py-2.5 rounded-xl font-bold text-white shadow-sm transition-all flex items-center justify-center gap-2 border-none",
+ "font-bold text-white shadow-sm transition-all flex items-center justify-center gap-2 border-none",
  currentVariant.buttonPrefix,
  isLoading && "opacity-70 cursor-not-allowed"
  )}

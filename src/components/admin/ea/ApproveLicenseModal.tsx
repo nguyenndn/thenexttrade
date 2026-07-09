@@ -123,9 +123,11 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
 
  <div className="flex justify-end gap-3">
  <Button
+ variant="primary"
+ size="smd"
  onClick={handleApprove}
  disabled={isLoading}
- className="rounded-xl font-bold border-none disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed dark:disabled:bg-gray-800 dark:disabled:text-gray-600"
+ className="font-bold border-none disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed dark:disabled:bg-gray-800 dark:disabled:text-gray-600"
  >
  {isLoading ? "Approving..." : "Confirm Approval"}
  </Button>

@@ -218,7 +218,7 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
  <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
  Our team will review your application and contact you via Telegram within 24 hours to complete the setup.
  </p>
- <Button onClick={onClose} className="bg-primary hover:bg-primary/90 text-white font-bold px-6 rounded-xl">
+ <Button onClick={onClose} size="smd" variant="primary" className="font-bold px-6">
  Done
  </Button>
  </div>
@@ -257,8 +257,10 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
 
  <Button
  onClick={() => setStep(2)}
+ variant="primary"
+ size="smd"
  disabled={!formData.fullName || !formData.email || !formData.telegramHandle || !formData.tradingCapital}
- className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-xl disabled:opacity-50"
+ className="w-full font-bold"
  >
  Next — MT5 Details
  </Button>
@@ -432,18 +434,20 @@ export function CopyTradingRegistrationModal({ isOpen, onClose }: Props) {
  </label>
 
  <div className="flex gap-3">
- <Button variant="outline" onClick={() => setStep(1)} className="flex-1 font-bold py-3 rounded-xl">
+ <Button variant="outline" size="smd" onClick={() => setStep(1)} className="flex-1 font-bold">
  Back
  </Button>
  <Button
  onClick={handleSubmit}
+ variant="primary"
+ size="smd"
  disabled={!canSubmit || isSubmitting}
- className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
+ className="flex-1 font-bold flex items-center justify-center gap-2"
  >
  {isSubmitting ? (
- <><Loader2 size={16} className="animate-spin" /> Submitting...</>
+ <><Loader2 size={14} className="animate-spin" /> Submitting...</>
  ) : (
- <><Send size={16} /> Submit Registration</>
+ <><Send size={14} /> Submit Registration</>
  )}
  </Button>
  </div>

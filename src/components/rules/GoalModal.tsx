@@ -1,6 +1,4 @@
-"use client";
-
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -12,6 +10,13 @@ import {
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { createTraderGoal } from "@/actions/rulebook";
 import { toast } from "sonner";
 import { useTransition } from "react";
@@ -38,6 +43,7 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors },
   } = useForm<GoalFormValues>({
@@ -95,31 +101,47 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
               <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
                 Goal Type
               </label>
-              <select
-                {...register("type")}
-                className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none"
-              >
-                <option value="JOURNAL_COUNT">Journal Trade Count</option>
-                <option value="REVIEW_LOSSES">Review Every Loss</option>
-                <option value="CHECK_RULES">Verify Trade Rules</option>
-                <option value="STOP_AFTER_LOSSES">Stop After Loss Limit</option>
-                <option value="STUDY">Study Lessons</option>
-                <option value="CUSTOM">Custom Habits</option>
-              </select>
+              <Controller
+                control={control}
+                name="type"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-full h-10 px-3 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none">
+                      <SelectValue placeholder="Select Goal Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="JOURNAL_COUNT">Journal Trade Count</SelectItem>
+                      <SelectItem value="REVIEW_LOSSES">Review Every Loss</SelectItem>
+                      <SelectItem value="CHECK_RULES">Verify Trade Rules</SelectItem>
+                      <SelectItem value="STOP_AFTER_LOSSES">Stop After Loss Limit</SelectItem>
+                      <SelectItem value="STUDY">Study Lessons</SelectItem>
+                      <SelectItem value="CUSTOM">Custom Habits</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
 
             <div>
               <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
                 Goal Period
               </label>
-              <select
-                {...register("period")}
-                className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none"
-              >
-                <option value="DAILY">Daily</option>
-                <option value="WEEKLY">Weekly</option>
-                <option value="MONTHLY">Monthly</option>
-              </select>
+              <Controller
+                control={control}
+                name="period"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-full h-10 px-3 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none">
+                      <SelectValue placeholder="Select Goal Period" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="DAILY">Daily</SelectItem>
+                      <SelectItem value="WEEKLY">Weekly</SelectItem>
+                      <SelectItem value="MONTHLY">Monthly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
           </div>
 
@@ -141,13 +163,20 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
             <Button
               type="button"
               variant="outline"
+              size="smd"
               onClick={onClose}
               disabled={isPending}
-              className="h-10 border-gray-300 dark:border-white/10 font-bold"
+              className="border-gray-300 dark:border-white/10 font-bold"
             >
               Cancel
             </Button>
-            <Button type="submit" variant="primary" disabled={isPending} className="h-10 font-bold">
+            <Button
+              type="submit"
+              variant="primary"
+              size="smd"
+              disabled={isPending}
+              className="font-bold"
+            >
               {isPending && <Loader2 size={14} className="animate-spin mr-1.5" />}
               Create Goal
             </Button>
