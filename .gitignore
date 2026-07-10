@@ -65,3 +65,6 @@ apps/tnt-connect/build/
 apps/tnt-connect/dist/
 apps/tnt-connect/*.pyc
 public/downloads/TheNextTradeConnect.exe
+
+# local gstack reports
+.gstack/

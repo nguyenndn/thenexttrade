@@ -79,30 +79,17 @@ export async function GET(
  // This depends on how upload was implemented (Task 3.11 - not implemented yet).
  // I I'll assume it stores the relative path "productId/mt4/filename.ex4" or similar.
 
- // 3. Generate Download URL
- // Try public URL first (if bucket is public), fallback to signed URL
- let downloadUrl: string;
+  // 3. Generate Download URL via time-limited signed URL
+  const { data: signedUrlData, error: signError } = await supabase
+  .storage
+  .from("ea-products")
+  .createSignedUrl(filePath, 60 * 5); // 5 minutes expiration
 
- const { data: publicUrlData } = supabase
- .storage
- .from("ea-products")
- .getPublicUrl(filePath);
-
- if (publicUrlData?.publicUrl) {
- downloadUrl = publicUrlData.publicUrl;
- } else {
- // Fallback: signed URL for private buckets
- const { data: signedUrlData, error: signError } = await supabase
- .storage
- .from("ea-products")
- .createSignedUrl(filePath, 60 * 5);
-
- if (signError || !signedUrlData) {
- console.error("Storage Sign Error:", signError, filePath);
- return NextResponse.json(createErrorResponse(ErrorCode.FILE_NOT_AVAILABLE), { status: 500 });
- }
- downloadUrl = signedUrlData.signedUrl;
- }
+  if (signError || !signedUrlData) {
+  console.error("Storage Sign Error:", signError, filePath);
+  return NextResponse.json(createErrorResponse(ErrorCode.FILE_NOT_AVAILABLE), { status: 500 });
+  }
+  const downloadUrl = signedUrlData.signedUrl;
 
  // 4. Log Download
  await prisma.eADownload.create({

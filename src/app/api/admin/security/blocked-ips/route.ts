@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/api-auth";
+import { requireSuperAdmin } from "@/lib/api-auth";
 import { blockIP } from "@/lib/security-logger";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
  * List all blocked IPs.
  */
 export async function GET() {
- const auth = await requireAdmin();
+ const auth = await requireSuperAdmin();
  if (auth instanceof NextResponse) return auth;
 
  try {
@@ -34,7 +34,7 @@ export async function GET() {
  * Body: { ip: string, reason?: string, durationMinutes?: number }
  */
 export async function POST(request: NextRequest) {
- const auth = await requireAdmin();
+ const auth = await requireSuperAdmin();
  if (auth instanceof NextResponse) return auth;
 
  try {

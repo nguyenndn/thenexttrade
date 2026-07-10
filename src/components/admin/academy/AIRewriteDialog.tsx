@@ -6,6 +6,7 @@ import {
  Search, Globe, MessageCircle, Twitter, Shield, FileText,
  SearchCode, ExternalLink, Youtube,
 } from "lucide-react";
+import DOMPurify from "isomorphic-dompurify";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -743,7 +744,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  </span>
  <div
  className="mt-2 text-sm text-gray-700 dark:text-gray-300 prose dark:prose-invert prose-sm max-w-none"
- dangerouslySetInnerHTML={{ __html: result.content.substring(0, 2000) }}
+ dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(result.content.substring(0, 2000)) }}
  />
  </div>
  </div>

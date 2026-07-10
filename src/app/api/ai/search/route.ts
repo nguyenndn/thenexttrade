@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-auth";
 
 const SERPER_API_KEY = process.env.SERPER_API_KEY;
 
@@ -47,7 +48,10 @@ async function serperSearch(query: string): Promise<SearchResult[]> {
 }
 
 export async function POST(req: NextRequest) {
- if (!SERPER_API_KEY) {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
+  if (!SERPER_API_KEY) {
  return NextResponse.json(
  { error: "SERPER_API_KEY is not configured. Get a free key at serper.dev" },
  { status: 500 }

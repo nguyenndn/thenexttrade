@@ -13,19 +13,25 @@ import { normalizeCountryCode } from "@/lib/country-utils";
 // =============================================================================
 
 async function checkAdmin() {
- const supabase = await createClient();
- const {
- data: { user },
- } = await supabase.auth.getUser();
- if (!user) return { isAuthorized: false, user: null };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { isAuthorized: false, user: null };
 
- const profile = await prisma.profile.findUnique({
- where: { userId: user.id },
- select: { role: true },
- });
+  // Enforce MFA if user has enrolled 2FA
+  const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (aalError || (aal && aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2')) {
+    return { isAuthorized: false, user: null };
+  }
 
- if (profile?.role !== "ADMIN") return { isAuthorized: false, user };
- return { isAuthorized: true, user };
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+    select: { role: true },
+  });
+
+  if (profile?.role !== "ADMIN") return { isAuthorized: false, user };
+  return { isAuthorized: true, user };
 }
 
 function getSupabaseAdmin() {

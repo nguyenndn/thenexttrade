@@ -8,7 +8,7 @@ import { recordSession } from '@/lib/session'
 import { verifyTurnstile } from '@/lib/turnstile'
 import { logSecurityEvent, SECURITY_EVENT_TYPES } from '@/lib/security-logger'
 
-import { authSchema, signupSchema } from '@/lib/validations/auth'
+import { authSchema, signupSchema, passwordSchema } from '@/lib/validations/auth'
 import { headers } from 'next/headers'
 import { checkAuthRateLimit } from '@/lib/security/auth-rate-limit'
 import { AUTH_ERRORS } from '@/lib/security/auth-errors'
@@ -337,8 +337,9 @@ export async function updatePassword(formData: FormData) {
  return { error: 'Passwords do not match' }
  }
 
- if (password.length < 6) {
- return { error: 'Password must be at least 6 characters' }
+ const validated = passwordSchema.safeParse(password)
+ if (!validated.success) {
+   return { error: validated.error.issues[0].message }
  }
 
  const { error } = await supabase.auth.updateUser({

@@ -3,6 +3,7 @@ import { generateReportsForAllUsers } from "@/lib/services/report-generator.serv
 import { sendEmail, buildReportEmailHtml, buildNudgeEmailHtml } from "@/lib/services/email.service";
 import { prisma } from "@/lib/prisma";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
+import { requireCronSecret } from "@/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300; // 5 minutes max for batch processing
@@ -21,17 +22,8 @@ export const maxDuration = 300; // 5 minutes max for batch processing
  */
 export async function GET(request: Request) {
  // 1. Auth Check
- const authHeader = request.headers.get("authorization");
- const cronSecret = process.env.CRON_SECRET;
-
- if (!cronSecret) {
- console.error("CRON_SECRET not configured");
- return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
- }
-
- if (authHeader !== `Bearer ${cronSecret}`) {
- return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
- }
+ const cronAuth = requireCronSecret(request);
+ if (cronAuth instanceof NextResponse) return cronAuth;
 
  // 2. Determine what to generate
  const now = new Date();

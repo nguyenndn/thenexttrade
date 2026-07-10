@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { requireAdminAuth } from "@/lib/auth-cache";
 
 // ==========================================
 // EA BROKER ACTIONS
@@ -9,6 +10,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getEABrokers() {
  try {
+ await requireAdminAuth();
  const brokers = await prisma.eABroker.findMany({
  orderBy: { order: "asc" },
  });
@@ -43,6 +45,7 @@ export async function createEABroker(data: {
  order?: number;
 }) {
  try {
+ await requireAdminAuth();
  const broker = await prisma.eABroker.create({
  data: {
  name: data.name,
@@ -80,6 +83,7 @@ export async function updateEABroker(id: string, data: {
  order?: number;
 }) {
  try {
+ await requireAdminAuth();
  const updateData: any = { ...data };
  if (data.slug) updateData.slug = data.slug.toUpperCase();
 
@@ -103,6 +107,7 @@ export async function updateEABroker(id: string, data: {
 
 export async function deleteEABroker(id: string) {
  try {
+ await requireAdminAuth();
  await prisma.eABroker.delete({ where: { id } });
 
  revalidatePath("/admin/ea");

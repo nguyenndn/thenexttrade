@@ -1,16 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/api-auth";
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
 export async function POST(req: NextRequest) {
- const supabase = await createClient();
- const { data: { user } } = await supabase.auth.getUser();
-
- if (!user) {
- return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
- }
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
 
  if (!DEEPSEEK_API_KEY) {
  return NextResponse.json({ error: "DEEPSEEK_API_KEY is not configured" }, { status: 500 });

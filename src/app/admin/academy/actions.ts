@@ -2,9 +2,11 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { requireAdminAuth } from "@/lib/auth-cache";
 
 export async function deleteLevel(levelId: string) {
  try {
+ await requireAdminAuth();
  await prisma.level.delete({
  where: { id: levelId },
  });
@@ -18,6 +20,7 @@ export async function deleteLevel(levelId: string) {
 
 export async function updateLevel(levelId: string, data: { title: string; description?: string }) {
  try {
+ await requireAdminAuth();
  await prisma.level.update({
  where: { id: levelId },
  data,

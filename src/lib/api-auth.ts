@@ -50,39 +50,65 @@ export async function requireAuth(): Promise<AuthResult | NextResponse> {
  * Checks role from DB profile (matching admin layout pattern).
  */
 export async function requireAdmin(): Promise<AuthResult | NextResponse> {
- const supabase = await createClient();
- const { data: { user } } = await supabase.auth.getUser();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
- if (!user) {
- return NextResponse.json(
- { error: 'Unauthorized' },
- { status: 401 }
- );
- }
+  if (!user) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    );
+  }
 
- // Check role from DB profile (same as admin/layout.tsx)
- const { prisma } = await import('@/lib/prisma');
- const profile = await prisma.profile.findUnique({
- where: { userId: user.id },
- select: { role: true },
- });
+  // Enforce MFA if user has enrolled 2FA
+  const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (aalError || (aal && aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2')) {
+    return NextResponse.json(
+      { error: 'Forbidden — MFA verification required' },
+      { status: 403 }
+    );
+  }
 
- const role = profile?.role || 'USER';
+  // Check role from DB profile (same as admin/layout.tsx)
+  const { prisma } = await import('@/lib/prisma');
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+    select: { role: true },
+  });
 
- if (role !== 'ADMIN' && role !== 'EDITOR') {
- return NextResponse.json(
- { error: 'Forbidden — admin access required' },
- { status: 403 }
- );
- }
+  const role = profile?.role || 'USER';
 
- return {
- user: {
- id: user.id,
- email: user.email || '',
- role,
- },
- };
+  if (role !== 'ADMIN' && role !== 'EDITOR') {
+    return NextResponse.json(
+      { error: 'Forbidden — admin access required' },
+      { status: 403 }
+    );
+  }
+
+  return {
+    user: {
+      id: user.id,
+      email: user.email || '',
+      role,
+    },
+  };
+}
+
+/**
+ * Require super admin role (strictly ADMIN, no EDITOR).
+ */
+export async function requireSuperAdmin(): Promise<AuthResult | NextResponse> {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
+  if (auth.user.role !== 'ADMIN') {
+    return NextResponse.json(
+      { error: 'Forbidden — super admin access required' },
+      { status: 403 }
+    );
+  }
+
+  return auth;
 }
 
 /**

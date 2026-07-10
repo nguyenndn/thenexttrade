@@ -8,6 +8,7 @@ import { TradingSystemMockPanel } from "@/components/trading-systems/TradingSyst
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { ArrowLeft, Shield, HelpCircle, CheckCircle, Lock, UserPlus, KeyRound, Sparkles, Server, ChevronDown } from "lucide-react";
+import DOMPurify from "isomorphic-dompurify";
 import { Button } from "@/components/ui/Button";
 import type { Metadata } from "next";
 
@@ -103,8 +104,8 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
               {system.title}
             </h1>
             <div 
-              className="mt-2 text-sm md:text-base text-gray-550 dark:text-gray-400 leading-relaxed font-medium"
-              dangerouslySetInnerHTML={{ __html: system.longDescription }}
+              className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-black prose-a:text-primary prose-img:rounded-xl"
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(system.longDescription) }}
             />
           </div>
 

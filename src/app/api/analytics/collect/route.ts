@@ -8,11 +8,12 @@ export const dynamic = 'force-dynamic';
  * Protected by x-internal header check.
  */
 export async function POST(request: NextRequest) {
- // Only accept internal requests
- const internalHeader = request.headers.get('x-internal-analytics');
- if (internalHeader !== '1') {
- return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
- }
+  // Only accept internal requests verified by a secret (fallback to '1' if secret not configured)
+  const internalHeader = request.headers.get('x-internal-analytics');
+  const secret = process.env.ANALYTICS_SECRET || '1';
+  if (internalHeader !== secret) {
+  return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
 
  try {
  const body = await request.json();

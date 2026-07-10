@@ -8,6 +8,10 @@ export async function GET(request: Request) {
  return new NextResponse("Missing url parameter", { status: 400 });
  }
 
+ if (!url.startsWith('https://s3.tradingview.com/')) {
+ return new NextResponse("Forbidden - Only TradingView snapshot URLs are permitted", { status: 403 });
+ }
+
  try {
  const response = await fetch(url, {
  headers: {

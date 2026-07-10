@@ -204,11 +204,14 @@ function isCronRoute(pathname: string): boolean {
 }
 
 function validateCronSecret(request: NextRequest): boolean {
- const cronSecret = process.env.CRON_SECRET;
- if (!cronSecret) return true; // If not configured, allow (dev mode)
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    // Fail closed in production if secret is not configured
+    return process.env.NODE_ENV !== 'production';
+  }
 
- const authHeader = request.headers.get('authorization');
- return authHeader === `Bearer ${cronSecret}`;
+  const authHeader = request.headers.get('authorization');
+  return authHeader === `Bearer ${cronSecret}`;
 }
 
 // =============================================================================
@@ -364,7 +367,7 @@ export async function proxy(request: NextRequest) {
  method: 'POST',
  headers: {
  'Content-Type': 'application/json',
- 'x-internal-analytics': '1',
+ 'x-internal-analytics': process.env.ANALYTICS_SECRET || '1',
  },
  body: JSON.stringify({
  pathname,

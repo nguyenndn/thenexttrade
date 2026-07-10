@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { EAType, PlatformType } from "@prisma/client";
+import { requireAdminAuth } from "@/lib/auth-cache";
 
 
 // ==========================================
@@ -23,6 +24,7 @@ export async function createEAProduct(data: {
  isFree: boolean;
 }) {
  try {
+ await requireAdminAuth();
  let slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
  // Ensure slug is unique
@@ -61,6 +63,7 @@ export async function updateEAProduct(id: string, data: {
  slug?: string;
 }) {
  try {
+ await requireAdminAuth();
  const product = await prisma.eAProduct.update({
  where: { id },
  data,
@@ -76,6 +79,7 @@ export async function updateEAProduct(id: string, data: {
 
 export async function deleteEAProduct(id: string) {
  try {
+ await requireAdminAuth();
  await prisma.eAProduct.delete({
  where: { id },
  });
@@ -97,6 +101,7 @@ export async function approveLicense(id: string, adminId: string, data: {
  note?: string;
 }) {
  try {
+ await requireAdminAuth();
  const license = await prisma.eALicense.update({
  where: { id },
  data: {
@@ -121,6 +126,7 @@ export async function approveLicense(id: string, adminId: string, data: {
 
 export async function rejectLicense(id: string, adminId: string, reason: string) {
  try {
+ await requireAdminAuth();
  const license = await prisma.eALicense.update({
  where: { id },
  data: {
@@ -143,6 +149,7 @@ export async function rejectLicense(id: string, adminId: string, reason: string)
 
 export async function deleteLicense(id: string) {
  try {
+ await requireAdminAuth();
  await prisma.eALicense.delete({
  where: { id },
  });

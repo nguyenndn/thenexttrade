@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { getAuthUser } from "@/lib/auth-cache";
 
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { UserStatsClient } from "@/components/admin/users/UserStatsClient";
@@ -184,13 +186,25 @@ interface PageProps {
 }
 
 export default async function AdminUsersPage({ searchParams }: PageProps) {
- const params = await searchParams;
- const page = parseInt(params.page || "1");
- const query = params.q || "";
- const role = params.role || "";
- const country = normalizeCountryCode(params.country) || "";
- const limit = 20;
- const skip = (page - 1) * limit;
+  const user = await getAuthUser();
+  if (!user) redirect("/auth/login");
+  
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+    select: { role: true }
+  });
+
+  if (profile?.role !== "ADMIN") {
+    redirect("/dashboard");
+  }
+
+  const params = await searchParams;
+  const page = parseInt(params.page || "1");
+  const query = params.q || "";
+  const role = params.role || "";
+  const country = normalizeCountryCode(params.country) || "";
+  const limit = 20;
+  const skip = (page - 1) * limit;
 
  // Build where clause
  const where: Prisma.UserWhereInput = {};

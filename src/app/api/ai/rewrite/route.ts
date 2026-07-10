@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-auth";
 import { YoutubeTranscript } from "youtube-transcript";
 import { readFile } from "fs/promises";
 import path from "path";
@@ -378,33 +379,43 @@ Format: {"title": "...", "content": "<h2>...</h2><p>...</p>...", "metaDescriptio
 // ============================================================================
 
 export async function POST(req: NextRequest) {
- if (!DEEPSEEK_API_KEY) {
- return NextResponse.json(
- { error: "DEEPSEEK_API_KEY is not configured" },
- { status: 500 }
- );
- }
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
 
- try {
- const body = await req.json();
- const {
- url, // legacy: single URL
- urls, // new: array of URLs
- pastedContent,
- mode = "rewrite",
- tone = "", // new: tone selection
- snippets, // new: snippet fallbacks from search results
- focusKeyword, // SEO: focus keyphrase for articles
- } = body;
+  if (!DEEPSEEK_API_KEY) {
+  return NextResponse.json(
+  { error: "DEEPSEEK_API_KEY is not configured" },
+  { status: 500 }
+  );
+  }
 
- // Resolve URL list (support both legacy single URL and new multi-URL)
- const urlList: string[] = urls?.length
- ? urls.filter((u: string) => u?.trim())
- : url?.trim() ? [url.trim()] : [];
+  try {
+  const body = await req.json();
+  const {
+  url, // legacy: single URL
+  urls, // new: array of URLs
+  pastedContent,
+  mode = "rewrite",
+  tone = "", // new: tone selection
+  snippets, // new: snippet fallbacks from search results
+  focusKeyword, // SEO: focus keyphrase for articles
+  } = body;
 
- if (urlList.length === 0 && !pastedContent) {
- return NextResponse.json({ error: "URL(s) or content is required" }, { status: 400 });
- }
+  // Resolve URL list (support both legacy single URL and new multi-URL)
+  const urlList: string[] = urls?.length
+  ? urls.filter((u: string) => u?.trim())
+  : url?.trim() ? [url.trim()] : [];
+
+  const { isSafeUrl } = await import("@/lib/security/ssrf");
+  for (const u of urlList) {
+    if (!(await isSafeUrl(u))) {
+      return NextResponse.json({ error: `Forbidden - Invalid or unsafe URL: ${u}` }, { status: 400 });
+    }
+  }
+
+  if (urlList.length === 0 && !pastedContent) {
+  return NextResponse.json({ error: "URL(s) or content is required" }, { status: 400 });
+  }
 
  // 1. Get content
  let sourceContent: string;

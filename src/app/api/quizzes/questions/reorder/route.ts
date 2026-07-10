@@ -1,6 +1,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireAdminAuth } from "@/lib/auth-cache";
 import { z } from "zod";
 
 const questionReorderSchema = z.object({
@@ -12,6 +13,7 @@ const questionReorderSchema = z.object({
 
 export async function PUT(request: Request) {
  try {
+ await requireAdminAuth();
  const body = await request.json();
  const { items } = questionReorderSchema.parse(body);
 

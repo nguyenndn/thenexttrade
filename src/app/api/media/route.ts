@@ -1,12 +1,14 @@
-
 import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/lib/supabase/server";
 import { isR2Configured, uploadPublicAsset } from "@/lib/storage/object-storage";
+import { requireAdmin } from "@/lib/api-auth";
 
 export async function GET(request: Request) {
+ const auth = await requireAdmin();
+ if (auth instanceof NextResponse) return auth;
+
  const { searchParams } = new URL(request.url);
  const page = parseInt(searchParams.get("page") || "1");
  const limit = parseInt(searchParams.get("limit") || "20");
@@ -47,13 +49,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
- const supabase = await createClient();
- const { data: { user } } = await supabase.auth.getUser();
+ const auth = await requireAdmin();
+ if (auth instanceof NextResponse) return auth;
 
- // In a real app, restrict upload to authorized users
- if (!user) {
- return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
- }
+ const user = auth.user;
 
  try {
  const formData = await request.formData();

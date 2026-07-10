@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { SafeImage } from "@/components/ui/SafeImage";
+import DOMPurify from "isomorphic-dompurify";
 
 import { MessageSquare, Calendar, Clock, Home, ChevronRight, ThumbsUp, Flame, BookOpen } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
@@ -370,7 +371,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
  <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-dashboard p-6 sm:p-8 lg:p-10">
  <div
  className="article-content prose dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-headings:text-gray-700 dark:prose-headings:text-white prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-primary dark:prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-xl prose-img:shadow-md prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-pre:shadow-inner prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono"
- dangerouslySetInnerHTML={{ __html: processedContent }}
+ dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(processedContent) }}
  />
  </div>
 

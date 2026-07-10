@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/api-auth";
+import { requireSuperAdmin } from "@/lib/api-auth";
 import { unblockIP } from "@/lib/security-logger";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +13,7 @@ export async function DELETE(
  _request: NextRequest,
  { params }: { params: Promise<{ id: string }> }
 ) {
- const auth = await requireAdmin();
+ const auth = await requireSuperAdmin();
  if (auth instanceof NextResponse) return auth;
 
  const { id } = await params;

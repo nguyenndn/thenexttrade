@@ -58,3 +58,26 @@ export const getUserProfile = cache(async (userId: string) => {
  include: { profile: true }
  });
 });
+
+export const requireAdminAuth = cache(async () => {
+ const supabase = await createClient();
+ const { data: { user } } = await supabase.auth.getUser();
+ if (!user) throw new Error("Unauthorized");
+
+ // Enforce MFA (AAL2) if the user has 2FA enabled
+ const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+ if (aalError || (aal && aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2')) {
+   throw new Error("MFA Required");
+ }
+
+ const profile = await prisma.profile.findUnique({
+   where: { userId: user.id },
+   select: { role: true }
+ });
+
+ if (profile?.role !== "ADMIN" && profile?.role !== "EDITOR") {
+   throw new Error("Forbidden");
+ }
+
+ return user;
+});

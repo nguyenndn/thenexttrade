@@ -1,6 +1,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireAdminAuth } from "@/lib/auth-cache";
 
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
  const params = await props.params;
@@ -37,6 +38,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
 export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
  const params = await props.params;
  try {
+ await requireAdminAuth();
  await prisma.quiz.delete({
  where: { id: params.id }
  });

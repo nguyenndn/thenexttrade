@@ -18,6 +18,11 @@ async function checkAdmin() {
  return { isAuthorized: false, user: null };
  }
 
+ const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+ if (aalError || (aal && aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2')) {
+ return { isAuthorized: false, user: null };
+ }
+
  const profile = await prisma.profile.findUnique({
  where: { userId: user.id },
  select: { role: true },

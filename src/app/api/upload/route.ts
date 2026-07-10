@@ -19,28 +19,36 @@ export async function POST(request: Request) {
  return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
  }
 
- // 2. Validate File Size/Type (Basic)
- if (file.size > 5 * 1024 * 1024) { // 5MB limit
- return NextResponse.json({ error: "File too large (Max 5MB)" }, { status: 400 });
- }
+  // 2. Validate and process image via sharp
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const sharp = require('sharp');
+  let processedBuffer: Buffer;
+  try {
+    processedBuffer = await sharp(buffer)
+      .resize({ width: 250, height: 250, fit: 'cover' })
+      .webp({ quality: 85 })
+      .toBuffer();
+  } catch (err) {
+    return NextResponse.json({ error: "Invalid image format" }, { status: 400 });
+  }
 
- // 3. Upload to Supabase Storage
- const fileExt = file.name.split('.').pop();
- const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
- const filePath = `${user.id}/${fileName}`; // Organize in user's folder to pass RLS policy
+  // 3. Upload WebP to Supabase Storage
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.webp`;
+  const filePath = `${user.id}/${fileName}`; // Organize in user's folder to pass RLS policy
 
- const { data, error } = await supabase
- .storage
- .from('avatars') // Use the existing 'avatars' bucket to guarantee RLS rules work
- .upload(filePath, file, {
- cacheControl: '3600',
- upsert: false
- });
+  const { data, error } = await supabase
+  .storage
+  .from('avatars') // Use the existing 'avatars' bucket to guarantee RLS rules work
+  .upload(filePath, processedBuffer, {
+  cacheControl: '3600',
+  contentType: 'image/webp',
+  upsert: false
+  });
 
- if (error) {
- console.error("Supabase Storage Error:", error);
- return NextResponse.json({ error: "Upload to storage failed" }, { status: 500 });
- }
+  if (error) {
+  console.error("Supabase Storage Error:", error);
+  return NextResponse.json({ error: "Upload to storage failed" }, { status: 500 });
+  }
 
  // 4. Get Public URL
  const { data: { publicUrl } } = supabase

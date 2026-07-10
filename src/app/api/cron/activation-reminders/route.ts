@@ -4,6 +4,7 @@ import { getActivationReminderCandidates } from "@/lib/onboarding/activation-rem
 import { appendActivationReminderSend } from "@/lib/onboarding/activation-reminder-state";
 import { buildActivationEmailHtml, buildActivationEmailSubject } from "@/lib/emails/activation-reminders";
 import { sendEmail } from "@/lib/services/email.service";
+import { requireCronSecret } from "@/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -17,11 +18,10 @@ export const dynamic = "force-dynamic";
  * Auth: Bearer CRON_SECRET
  */
 export async function GET(request: NextRequest) {
- try {
- const authHeader = request.headers.get("authorization");
- if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
- return new NextResponse("Unauthorized", { status: 401 });
- }
+  const cronAuth = requireCronSecret(request);
+  if (cronAuth instanceof NextResponse) return cronAuth;
+
+  try {
 
  const candidates = await getActivationReminderCandidates();
  const nowStr = new Date().toISOString();

@@ -1,6 +1,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireAdminAuth } from "@/lib/auth-cache";
 import { z } from "zod";
 
 const quizSchema = z.object({
@@ -32,6 +33,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
  try {
+ await requireAdminAuth();
  const body = await request.json();
  const validatedData = quizSchema.parse(body);
 
