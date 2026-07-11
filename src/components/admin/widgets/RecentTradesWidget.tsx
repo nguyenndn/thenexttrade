@@ -29,7 +29,7 @@ const itemVariants = {
 
 export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
  return (
- <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
  <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
  <Clock className="w-5 h-5 text-blue-500" aria-hidden="true" />
  Recent Trading Activity

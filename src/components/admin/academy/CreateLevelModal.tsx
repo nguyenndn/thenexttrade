@@ -82,7 +82,7 @@ export function CreateLevelModal({ isOpen, onClose }: CreateLevelModalProps) {
  </label>
  <textarea
  {...register("description")}
- className="w-full rounded-xl border border-dashboard bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none font-medium"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none font-medium"
  placeholder="Describe what students will learn in this level..."
  />
  </div>

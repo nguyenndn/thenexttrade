@@ -137,7 +137,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
  key={quiz.id}
  variant="ghost"
  onClick={() => handleQuizSelect(quiz)}
- className="w-full flex items-center justify-between p-4 h-auto rounded-xl border border-dashboard hover:border-primary hover:bg-primary/5 transition-all group text-left"
+ className="w-full flex items-center justify-between p-4 h-auto rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary hover:bg-primary/5 transition-all group text-left"
  >
  <div className="flex flex-col items-start text-left">
  <h4 className="font-bold text-gray-700 dark:text-white text-base">{quiz.title}</h4>
@@ -181,7 +181,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
  "cursor-pointer p-5 rounded-xl border transition-all flex gap-4 text-left group",
  isSelected
  ? "border-primary bg-primary/5"
- : "border-dashboard hover:border-primary/50 hover:shadow-md"
+ : "border-gray-200 dark:border-white/10 hover:border-primary/50 hover:shadow-md"
  )}
  >
  <div className={cn(
@@ -213,7 +213,7 @@ export function ImportQuestionsModal({ isOpen, onClose, targetQuizId, onImportSu
  )}
  </div>
 
-  <div className="p-6 border-t border-dashboard bg-gray-50 dark:bg-white/5 flex justify-end gap-3">
+  <div className="p-6 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 flex justify-end gap-3">
   <Button
   variant="ghost"
   size="smd"

@@ -206,9 +206,9 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
  </AdminPageHeader>
 
  {/* Quiz Info */}
- <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-dashboard space-y-4">
+ <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 space-y-4">
  <input
- className="w-full text-3xl font-bold bg-transparent border-b border-dashboard pb-4 focus:outline-none focus:border-primary"
+ className="w-full text-3xl font-bold bg-transparent border-b border-gray-200 dark:border-white/10 pb-4 focus:outline-none focus:border-primary"
  placeholder="Quiz Title"
  value={title}
  onChange={e => setTitle(e.target.value)}
@@ -227,7 +227,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
  <div className="space-y-6">
  {questions.map((q, qIndex) => (
  <SortableItem key={q.id} id={q.id}>
- <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-dashboard relative group">
+ <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 relative group">
  <Button
  onClick={() => removeQuestion(qIndex)}
  variant="ghost"
@@ -239,7 +239,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
  <div className="flex gap-4 mb-6">
  <span className="font-bold text-gray-300 text-xl">#{qIndex + 1}</span>
  <input
- className="flex-1 text-lg font-medium bg-transparent border-b border-dashboard pb-2 focus:outline-none focus:border-primary"
+ className="flex-1 text-lg font-medium bg-transparent border-b border-gray-200 dark:border-white/10 pb-2 focus:outline-none focus:border-primary"
  placeholder="Question text..."
  value={q.text}
  onChange={e => updateQuestionText(qIndex, e.target.value)}
@@ -254,7 +254,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
  size="icon"
  aria-label={opt.isCorrect ? "Marked as correct" : "Mark as correct"}
  onClick={() => toggleCorrect(qIndex, oIndex)}
- className={`w-6 h-6 p-0 rounded-full border-2 flex items-center justify-center transition-colors hover:bg-transparent ${opt.isCorrect ? 'border-primary bg-primary text-white hover:text-white hover:bg-primary hover:border-primary' : 'border-dashboard'}`}
+ className={`w-6 h-6 p-0 rounded-full border-2 flex items-center justify-center transition-colors hover:bg-transparent ${opt.isCorrect ? 'border-primary bg-primary text-white hover:text-white hover:bg-primary hover:border-primary' : 'border-gray-200 dark:border-white/10'}`}
  >
  {opt.isCorrect && <CheckCircle size={14} />}
  </Button>
@@ -294,7 +294,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
  <Button
  onClick={addQuestion}
  variant="outline"
- className="w-full py-6 rounded-xl border-2 border-dashed border-dashboard text-gray-500 font-bold hover:border-primary hover:text-primary hover:bg-transparent"
+ className="w-full py-6 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-500 font-bold hover:border-primary hover:text-primary hover:bg-transparent"
  >
  <Plus size={20} /> Add Question
  </Button>

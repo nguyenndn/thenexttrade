@@ -252,7 +252,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
  </div>
 
  {/* Header */}
- <div className="flex flex-col gap-2 border-b border-dashboard pb-8">
+ <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-white/10 pb-8">
  <div className="flex justify-between items-center">
  <Button
  onClick={() => setIsModuleModalOpen(true)}
@@ -331,7 +331,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
  </DndContext>
 
  {modules.length === 0 && (
- <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-dashboard">
+ <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
  <p className="text-gray-600 mb-4">This course has no content yet.</p>
  <Button
  onClick={() => setIsModuleModalOpen(true)}

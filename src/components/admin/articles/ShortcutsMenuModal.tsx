@@ -55,10 +55,10 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
 
  return (
  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
- <div className="bg-white dark:bg-[#151925] w-full max-w-2xl rounded-2xl shadow-xl flex flex-col border border-dashboard max-h-[85vh]">
+ <div className="bg-white dark:bg-[#151925] w-full max-w-2xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[85vh]">
  
  {/* Header */}
- <div className="flex items-center justify-between p-4 border-b border-dashboard">
+ <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
  <div className="flex items-center gap-2">
  <div className="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-500/20 flex items-center justify-center text-yellow-600 dark:text-yellow-400">
  <Zap size={18} />
@@ -84,7 +84,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
  </div>
 
  {/* Search */}
- <div className="p-4 border-b border-dashboard bg-gray-50/50 dark:bg-black/20">
+ <div className="p-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-black/20">
  <PremiumInput
  icon={Search}
  placeholder="Search for content snippets..."
@@ -110,7 +110,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
  tabIndex={0}
  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect(`{{${shortcut.name}}}`, shortcut.name); }}
  onClick={() => onSelect(`{{${shortcut.name}}}`, shortcut.name)}
- className="flex flex-col items-start p-4 text-left border border-dashboard rounded-xl hover:border-blue-500/30 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all group focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer"
+ className="flex flex-col items-start p-4 text-left border border-gray-200 dark:border-white/10 rounded-xl hover:border-blue-500/30 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all group focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer"
  >
  <div className="flex items-center gap-2 w-full mb-1">
  <Zap size={14} className="text-yellow-500" />
@@ -126,7 +126,7 @@ export function ShortcutsMenuModal({ isOpen, onClose, onSelect }: ShortcutsMenuM
  ))}
  </div>
  ) : (
- <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-dashboard mt-4">
+ <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 mt-4">
  <Zap size={32} className="text-gray-300 dark:text-gray-600 mb-3" />
  <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">No Shortcuts Found</p>
  <p className="text-sm text-gray-500 mb-4 max-w-sm">Create reusable content snippets to insert instantly into your articles.</p>

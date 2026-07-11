@@ -161,7 +161,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
  )}
 
  {/* Toolbar: Search + Bulk Actions */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm">
  <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
  <div className="flex-1 w-full max-w-md">
  <PremiumInput
@@ -190,10 +190,10 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
  </div>
  </div>
 
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
- <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-dashboard text-xs uppercase text-gray-600 font-bold tracking-wider">
+ <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
  <tr>
  <th className="pl-6 pr-4 py-5 w-14">
  <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-500 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
@@ -205,7 +205,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
  <th className="px-6 py-5 text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {isLoading ? (
  <tr>
  <td colSpan={4} className="px-6 py-12 text-center">
@@ -250,7 +250,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
  <MoreHorizontal size={16} />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40 p-1.5 rounded-xl border-dashboard shadow-xl bg-white dark:bg-[#151925] z-[100]">
+ <DropdownMenuContent align="end" className="w-40 p-1.5 rounded-xl border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#151925] z-[100]">
  <DropdownMenuItem onClick={() => handleEdit(tag)} className="flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 transition-colors outline-none">
  <Edit2 size={14} className="text-gray-500" />
  <span>Edit</span>

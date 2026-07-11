@@ -105,8 +105,8 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
  return (
  <div className="flex flex-col h-full">
  {/* Toolbar Card */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
- <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashboard focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
+ <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
  <Search size={16} className="text-gray-500" aria-hidden="true" />
  <input
  type="text"
@@ -122,7 +122,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
  <Button
  variant="outline"
  size="md"
- className="h-[38px] flex items-center justify-between gap-2 bg-white dark:bg-[#1E2028] border border-dashboard text-gray-700 dark:text-gray-300 w-full md:w-48 group hover:bg-gray-50 dark:hover:bg-white/5"
+ className="h-[38px] flex items-center justify-between gap-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 w-full md:w-48 group hover:bg-gray-50 dark:hover:bg-white/5"
  >
  <span className="whitespace-nowrap flex items-center gap-1.5 font-medium">
  Status: <span className="text-primary font-bold">{filterStatus === "ALL" ? "All" : filterStatus}</span>
@@ -143,7 +143,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
  </div>
 
  {/* Data Table Card */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
  <div className="overflow-x-auto">
  <table className="w-full text-left text-sm">
  <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
@@ -156,7 +156,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
  <th className="px-6 py-4 text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {filteredLicenses.map((license) => (
  <tr key={license.id} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
  <td className="px-6 py-4 font-bold text-gray-700 dark:text-white font-mono group-hover:text-primary transition-colors">
@@ -164,7 +164,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
  </td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="p-1.5 bg-white dark:bg-white/5 rounded border border-dashboard">
+ <div className="p-1.5 bg-white dark:bg-white/5 rounded border border-gray-200 dark:border-white/10">
  <BrokerLogo broker={license.broker} size={24} />
  </div>
  <span className="text-gray-600 dark:text-gray-300 font-medium">{license.broker.replace("_", " ")}</span>
@@ -215,7 +215,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
  </table>
  </div>
  {/* Pagination Placeholder */}
- <div className="border-t border-dashboard py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-600 mt-auto">
+ <div className="border-t border-gray-200 dark:border-white/10 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-600 mt-auto">
  <span>Showing 1 - {filteredLicenses.length} of {filteredLicenses.length} accounts</span>
  <div className="flex items-center gap-2 opacity-50 pointer-events-none">
  <Button variant="outline" size="sm" className="h-8 text-xs">Previous</Button>

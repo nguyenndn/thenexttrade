@@ -57,7 +57,7 @@ export function RejectLicenseModal({ isOpen, onClose, license, adminId }: Reject
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md bg-white dark:bg-[#1E2028] border-dashboard">
+      <DialogContent className="max-w-md bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10">
         <DialogHeader>
           <DialogTitle className="text-red-500">Reject Request</DialogTitle>
         </DialogHeader>
@@ -96,7 +96,7 @@ export function RejectLicenseModal({ isOpen, onClose, license, adminId }: Reject
 
             {reason === "Other" && (
               <textarea
-                className="w-full min-h-[80px] px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm transition-all text-gray-700 dark:text-white placeholder:text-gray-500"
+                className="w-full min-h-[80px] px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm transition-all text-gray-700 dark:text-white placeholder:text-gray-500"
                 placeholder="Violation of terms regarding..."
                 value={customReason}
                 onChange={(e) => setCustomReason(e.target.value)}

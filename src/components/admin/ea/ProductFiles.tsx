@@ -43,7 +43,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
  <div className="space-y-2">
  <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Product Thumbnail</label>
  <div className="flex items-center gap-4">
- <div className="w-24 h-24 rounded-xl bg-gray-100 dark:bg-white/10 overflow-hidden border border-dashboard">
+ <div className="w-24 h-24 rounded-xl bg-gray-100 dark:bg-white/10 overflow-hidden border border-gray-200 dark:border-white/10">
  {product.thumbnail ? (
  <img src={product.thumbnail} className="w-full h-full object-cover" />
  ) : (
@@ -62,7 +62,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
  <Button
  variant="ghost"
  size="sm"
- className="border border-dashboard"
+ className="border border-gray-200 dark:border-white/10"
  onClick={() => document.getElementById("thumbnail-upload")?.click()}
  disabled={uploading}
  >
@@ -76,7 +76,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
 
  {/* Current Files Info */}
  <div className="grid grid-cols-1 gap-4">
- <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-dashboard">
+ <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
  <p className="font-bold text-gray-700 dark:text-gray-300 text-sm mb-1">MT5 File</p>
  <p className="text-xs text-gray-600 font-mono break-all">{product.fileMT5 || "Not uploaded"}</p>
  </div>

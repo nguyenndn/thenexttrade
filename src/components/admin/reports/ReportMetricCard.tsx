@@ -28,7 +28,7 @@ const toneBg = {
 export function ReportMetricCard({ label, value, helper, trendPercent, tone = "default", href }: ReportMetricCardProps) {
  const content = (
  <div className={cn(
- "rounded-xl border border-dashboard p-4 transition-all",
+ "rounded-xl border border-gray-200 dark:border-white/10 p-4 transition-all",
  toneBg[tone],
  href && "hover:border-primary/30 cursor-pointer"
  )}>

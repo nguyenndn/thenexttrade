@@ -203,7 +203,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
 
  {/* Stats Bar */}
  <div className="grid grid-cols-3 gap-4">
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard p-4 flex items-center gap-3">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
  <div className="w-10 h-10 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 flex items-center justify-center text-cyan-500">
  <Layers size={20} />
  </div>
@@ -212,7 +212,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
  <p className="text-xs text-gray-600">Modules</p>
  </div>
  </div>
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard p-4 flex items-center gap-3">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
  <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500">
  <FileText size={20} />
  </div>
@@ -221,7 +221,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
  <p className="text-xs text-gray-600">Lessons</p>
  </div>
  </div>
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard p-4 flex items-center gap-3">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
  <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-500">
  <Clock size={20} />
  </div>
@@ -235,7 +235,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
  {/* Modules Accordion */}
  <div className="space-y-4">
  {level.modules.length === 0 ? (
- <div className="text-center py-20 bg-white dark:bg-[#151925] rounded-xl border-2 border-dashed border-dashboard">
+ <div className="text-center py-20 bg-white dark:bg-[#151925] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
  <Layers size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
  <h3 className="text-lg font-bold text-gray-700 dark:text-white">No Modules Yet</h3>
  <p className="text-gray-600 text-sm mb-6">Start by creating your first module for this level.</p>
@@ -247,7 +247,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
  level.modules.map((module, mIndex) => (
  <div
  key={module.id}
- className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden"
+ className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden"
  >
  {/* Module Header */}
  <div
@@ -312,7 +312,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
 
  {/* Lessons List (collapsible) */}
  {expandedModules.has(module.id) && (
- <div className="border-t border-dashboard">
+ <div className="border-t border-gray-200 dark:border-white/10">
  {module.lessons.length === 0 ? (
  <div className="p-6 text-center">
  <p className="text-sm text-gray-500 mb-3">No lessons in this module yet</p>

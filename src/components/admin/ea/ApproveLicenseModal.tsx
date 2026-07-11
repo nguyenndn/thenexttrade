@@ -52,7 +52,7 @@ export function ApproveLicenseModal({ isOpen, onClose, license, adminId }: Appro
 
  return (
  <Dialog open={isOpen} onOpenChange={onClose}>
- <DialogContent className="max-w-md bg-white dark:bg-[#1E2028] border-dashboard">
+ <DialogContent className="max-w-md bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10">
  <DialogHeader>
  <DialogTitle>Approve Account</DialogTitle>
  </DialogHeader>

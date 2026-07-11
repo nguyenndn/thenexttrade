@@ -139,7 +139,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple: _a
  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
  <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 cursor-default">
  {/* Header */}
- <div className="flex items-center justify-between p-4 border-b border-dashboard">
+ <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
  <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
  <ImageIcon size={20} className="text-primary" /> Media Library
  </h3>
@@ -149,7 +149,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple: _a
  </div>
 
  {/* Tabs */}
- <div className="px-4 pt-4 flex gap-4 border-b border-dashboard text-sm font-bold">
+ <div className="px-4 pt-4 flex gap-4 border-b border-gray-200 dark:border-white/10 text-sm font-bold">
  <Button
  variant="ghost"
  onClick={() => setActiveTab('upload')}
@@ -171,7 +171,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple: _a
  <div className="flex-1 flex flex-col p-4 overflow-y-auto">
 
  {activeTab === 'upload' && (
- <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-dashboard rounded-xl m-4 bg-gray-50 dark:bg-black/20">
+ <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl m-4 bg-gray-50 dark:bg-black/20">
  <div className="text-center space-y-4">
  <div className="w-16 h-16 bg-gray-200 dark:bg-white/10 rounded-full flex items-center justify-center mx-auto text-gray-500">
  <Upload size={32} />
@@ -212,7 +212,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple: _a
  <div
  key={item.id}
  onClick={() => setSelectedMedia(item)}
- className={`group relative aspect-square bg-gray-100 dark:bg-white/5 rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${selectedMedia?.id === item.id ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-dashboard'}`}
+ className={`group relative aspect-square bg-gray-100 dark:bg-white/5 rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${selectedMedia?.id === item.id ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-200 dark:border-white/10'}`}
  >
  <img src={item.thumbnailUrl || item.url} alt={item.alt || ""} className="w-full h-full object-cover" />
  {selectedMedia?.id === item.id && (
@@ -231,10 +231,10 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple: _a
 
  {/* Sidebar Details (Only in Library mode and when selected) */}
  {activeTab === 'library' && selectedMedia && (
- <div className="w-[300px] bg-gray-50 dark:bg-[#0B0E14] border-l border-dashboard p-4 overflow-y-auto space-y-6">
+ <div className="w-[300px] bg-gray-50 dark:bg-[#0B0E14] border-l border-gray-200 dark:border-white/10 p-4 overflow-y-auto space-y-6">
  <div>
  <h4 className="font-bold text-gray-700 dark:text-white mb-2 text-sm uppercase">Item Details</h4>
- <div className="aspect-video bg-gray-100 dark:bg-white/5 rounded-lg overflow-hidden border border-dashboard mb-2">
+ <div className="aspect-video bg-gray-100 dark:bg-white/5 rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 mb-2">
  <img src={selectedMedia.url} className="w-full h-full object-contain" />
  </div>
  <div className="text-xs text-gray-600 space-y-1">
@@ -252,7 +252,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple: _a
  type="text"
  value={selectedMedia.alt || ""}
  onChange={(e) => handleUpdate('alt', e.target.value)}
- className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-dashboard text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
+ className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
  placeholder="Describe this image..."
  />
  <p className="text-[10px] text-gray-500 mt-1">Describe these images for better SEO and accessibility.</p>
@@ -263,13 +263,13 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect, allowMultiple: _a
  rows={3}
  value={selectedMedia.caption || ""}
  onChange={(e) => handleUpdate('caption', e.target.value)}
- className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-dashboard text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 resize-none"
+ className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 resize-none"
  placeholder="Add a caption for this image..."
  />
  </div>
  </div>
 
- <div className="pt-4 border-t border-dashboard flex flex-col gap-2">
+ <div className="pt-4 border-t border-gray-200 dark:border-white/10 flex flex-col gap-2">
  <Button
  onClick={() => onSelect(selectedMedia.url, selectedMedia)}
  className="w-full py-2.5 h-auto bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl text-sm transition-all"

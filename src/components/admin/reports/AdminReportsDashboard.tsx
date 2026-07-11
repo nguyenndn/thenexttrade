@@ -6,10 +6,10 @@ import { UserLifecyclePanel } from "./UserLifecyclePanel";
 import { UserQualityPanel } from "./UserQualityPanel";
 import { RevenueOpportunityPanel } from "./RevenueOpportunityPanel";
 import { FeatureAdoptionPanel } from "./FeatureAdoptionPanel";
-import { ContentRoiPanel } from "./ContentRoiPanel";
 import { FrictionPanel } from "./FrictionPanel";
 import { DataQualityPanel } from "./DataQualityPanel";
 import { AdminActivationInboxPanel } from "./AdminActivationInboxPanel";
+import { BusinessHealthPanel } from "./BusinessHealthPanel";
 
 interface Props { data: AdminReportsData }
 
@@ -19,7 +19,7 @@ export function AdminReportsDashboard({ data }: Props) {
  <NorthStarPanel data={data.northStar} />
 
  {/* Admin Activation Inbox */}
- <div className="border border-amber-900/10 bg-white/50 dark:bg-white/[0.01] rounded-2xl p-6 backdrop-blur-sm">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 group hover:shadow-md transition-shadow">
  <h3 className="text-lg font-black text-slate-800 dark:text-white">Admin Activation Inbox</h3>
  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 mb-4">
  Interactive real-time audit cockpit to track and nudge stuck traders at each onboarding and sync stage.
@@ -32,6 +32,8 @@ export function AdminReportsDashboard({ data }: Props) {
  <AlertsPanel data={data.alerts} />
  </div>
 
+ <BusinessHealthPanel data={data.businessHealth} />
+
  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
  <UserLifecyclePanel data={data.userLifecycle} />
  <UserQualityPanel data={data.userQuality} />
@@ -39,7 +41,6 @@ export function AdminReportsDashboard({ data }: Props) {
 
  <RevenueOpportunityPanel data={data.revenueOpportunity} />
  <FeatureAdoptionPanel data={data.featureAdoption} />
- <ContentRoiPanel data={data.contentRoi} />
 
  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
  <FrictionPanel data={data.friction} />

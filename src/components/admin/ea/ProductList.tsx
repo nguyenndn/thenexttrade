@@ -112,9 +112,9 @@ export function ProductList({ products }: ProductListProps) {
  return (
  <div className="flex flex-col h-full">
  {/* Toolbar Card */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
  {/* Search */}
- <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashboard focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
+ <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
  <Search size={16} className="text-gray-500" aria-hidden="true" />
  <input
  type="text"
@@ -132,7 +132,7 @@ export function ProductList({ products }: ProductListProps) {
  <Button
  variant="outline"
  size="md"
- className="h-[38px] flex items-center justify-between gap-2 bg-white dark:bg-[#1E2028] border border-dashboard text-gray-700 dark:text-gray-300 w-full md:w-48 group hover:bg-gray-50 dark:hover:bg-white/5"
+ className="h-[38px] flex items-center justify-between gap-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 w-full md:w-48 group hover:bg-gray-50 dark:hover:bg-white/5"
  >
  <span className="whitespace-nowrap flex items-center gap-1.5 font-medium">
  Type: <span className="text-primary font-bold">{filterType === "ALL" ? "All" : filterType.replace("_", " ")}</span>
@@ -151,7 +151,7 @@ export function ProductList({ products }: ProductListProps) {
  </div>
 
  {/* Content Section - Data Table Card */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
  {/* Empty State */}
  {sortedProducts.length === 0 ? (
  <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-xl">
@@ -171,30 +171,30 @@ export function ProductList({ products }: ProductListProps) {
  <table className="w-full text-left text-sm border-collapse">
  <thead className="bg-gray-50/50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider backdrop-blur-sm sticky top-0 z-10">
  <tr>
- <th className="px-8 py-4 border-b border-dashboard cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("name")}>
+ <th className="px-8 py-4 border-b border-gray-200 dark:border-white/10 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("name")}>
  <div className="flex items-center">Product <SortIcon field="name" /></div>
  </th>
- <th className="px-6 py-4 border-b border-dashboard cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("type")}>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("type")}>
  <div className="flex items-center">Type <SortIcon field="type" /></div>
  </th>
- <th className="px-6 py-4 border-b border-dashboard cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("version")}>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("version")}>
  <div className="flex items-center">Version <SortIcon field="version" /></div>
  </th>
- <th className="px-6 py-4 border-b border-dashboard cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("totalDownloads")}>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("totalDownloads")}>
  <div className="flex items-center">Downloads <SortIcon field="totalDownloads" /></div>
  </th>
- <th className="px-6 py-4 border-b border-dashboard cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("isActive")}>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 cursor-pointer hover:text-primary transition-colors group" onClick={() => handleSort("isActive")}>
  <div className="flex items-center">Status <SortIcon field="isActive" /></div>
  </th>
- <th className="px-6 py-4 border-b border-dashboard text-right w-24">Actions</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 text-right w-24">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {sortedProducts.map((product) => (
  <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors group">
  <td className="px-8 py-4">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-dashboard group-hover:shadow-md transition-all">
+ <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-gray-200 dark:border-white/10 group-hover:shadow-md transition-all">
  {product.thumbnail ? (
  <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
  ) : (
@@ -208,7 +208,7 @@ export function ProductList({ products }: ProductListProps) {
  </div>
  </td>
  <td className="px-6 py-4">
- <span className="bg-gray-100 dark:bg-white/10 px-2.5 py-1 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-widest border border-dashboard">
+ <span className="bg-gray-100 dark:bg-white/10 px-2.5 py-1 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-widest border border-gray-200 dark:border-white/10">
  {product.type.replace("_", " ")}
  </span>
  </td>
@@ -255,7 +255,7 @@ export function ProductList({ products }: ProductListProps) {
  </table>
  </div>
  {/* Pagination Placeholder */}
- <div className="border-t border-dashboard py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-600">
+ <div className="border-t border-gray-200 dark:border-white/10 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-600">
  <span>Showing 1 - {sortedProducts.length} of {sortedProducts.length} products</span>
  <div className="flex items-center gap-2 opacity-50 pointer-events-none">
  <Button variant="outline" size="sm" className="h-8 text-xs">Previous</Button>

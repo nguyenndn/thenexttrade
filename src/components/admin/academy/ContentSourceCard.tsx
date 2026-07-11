@@ -40,7 +40,7 @@ export function ContentSourceCard({ rawContent, tone, sourceUrls, onRewrite }: C
  };
 
  return (
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-4 space-y-3">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4 space-y-3">
  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider">
  🤖 AI Source Info
  </label>
@@ -88,7 +88,7 @@ export function ContentSourceCard({ rawContent, tone, sourceUrls, onRewrite }: C
  </button>
 
  {showRaw && (
- <div className="mt-2 max-h-48 overflow-y-auto p-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard text-[11px] text-gray-600 dark:text-gray-500 whitespace-pre-wrap font-mono">
+ <div className="mt-2 max-h-48 overflow-y-auto p-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 text-[11px] text-gray-600 dark:text-gray-500 whitespace-pre-wrap font-mono">
  {rawContent.substring(0, 3000)}
  {rawContent.length > 3000 && "\n\n... (truncated)"}
  </div>

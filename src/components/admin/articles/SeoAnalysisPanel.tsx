@@ -269,7 +269,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
 
 
  return (
- <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-dashboard shadow-sm space-y-6">
+ <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
  <div className="flex items-center justify-between">
  <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
  <Search size={20} className="text-primary" />
@@ -341,7 +341,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
  readOnly={autoKeyphrase}
  onChange={e => { if (!autoKeyphrase) setFocusKeyword(e.target.value); }}
  placeholder="forex trading"
- className={`w-full p-2 rounded-lg border border-dashboard text-sm focus:outline-none focus:border-primary ${
+ className={`w-full p-2 rounded-lg border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary ${
  autoKeyphrase
  ? 'bg-emerald-50/50 dark:bg-emerald-500/5 text-gray-500 dark:text-gray-400'
  : 'bg-gray-50 dark:bg-white/5'
@@ -352,16 +352,16 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
  )}
  </div>
  {/* Google Preview */}
- <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-dashboard">
+ <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-200 dark:border-white/10">
  <div className="flex items-center justify-between mb-3">
  <span className="text-xs font-bold text-gray-600 uppercase">Google Preview</span>
- <div className="flex bg-white dark:bg-white/5 rounded-lg p-1 border border-dashboard gap-1">
+ <div className="flex bg-white dark:bg-white/5 rounded-lg p-1 border border-gray-200 dark:border-white/10 gap-1">
  <Button variant="ghost" size="icon" onClick={() => setPreviewMode('mobile')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'mobile' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-500 hover:bg-gray-100'}`}><Smartphone size={14} /></Button>
  <Button variant="ghost" size="icon" onClick={() => setPreviewMode('desktop')} className={`p-1.5 h-auto w-auto rounded ${previewMode === 'desktop' ? 'bg-indigo-50 text-indigo-500 hover:bg-indigo-50' : 'text-gray-500 hover:bg-gray-100'}`}><Monitor size={14} /></Button>
  </div>
  </div>
 
- <div className={`bg-white p-4 rounded-lg shadow-sm border border-dashboard max-w-full overflow-hidden ${previewMode === 'mobile' ? 'max-w-[320px] mx-auto' : ''}`}>
+ <div className={`bg-white p-4 rounded-lg shadow-sm border border-gray-200 dark:border-white/10 max-w-full overflow-hidden ${previewMode === 'mobile' ? 'max-w-[320px] mx-auto' : ''}`}>
  <div className="flex items-center gap-1 text-[11px] text-[#202124] mb-1">
  <span className="w-4 h-4 rounded-full bg-gray-200 block"></span>
  <span className="line-clamp-1">example.com › articles › {slug || 'your-slug'}</span>
@@ -439,7 +439,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
   <h4 className="text-sm font-bold text-gray-700 dark:text-white mb-3">AI-SEO (AEO & GEO) Analysis</h4>
   <div className="space-y-3">
   {aiSeoAnalysis.map((item, idx) => (
-  <div key={idx} className="flex items-start gap-2.5 text-sm border-b border-dashboard/30 pb-3 last:border-0 last:pb-0">
+  <div key={idx} className="flex items-start gap-2.5 text-sm border-b border-gray-200 dark:border-white/10/30 pb-3 last:border-0 last:pb-0">
   <div className={`mt-1.5 w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.status === 'good' ? 'bg-green-500' :
   item.status === 'warning' ? 'bg-orange-500' : 'bg-red-500'
   }`} />
@@ -480,10 +480,10 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
  </Button>
  </div>
 
- <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-dashboard">
+ <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-200 dark:border-white/10">
  {socialPlatform === 'facebook' ? (
  // Mock Facebook Preview
- <div className="bg-white border border-dashboard rounded-lg overflow-hidden max-w-[400px] mx-auto">
+ <div className="bg-white border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden max-w-[400px] mx-auto">
  <div className="h-[200px] bg-gray-100 flex items-center justify-center relative">
  {thumbnail ? (
  <img src={thumbnail} className="w-full h-full object-cover" />
@@ -491,7 +491,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
  <span className="text-gray-500 text-xs">OG Image (1200x630)</span>
  )}
  </div>
- <div className="p-3 bg-[#f0f2f5] border-t border-dashboard">
+ <div className="p-3 bg-[#f0f2f5] border-t border-gray-200 dark:border-white/10">
  <div className="uppercase text-[10px] text-gray-600 mb-0.5">EXAMPLE.COM</div>
  <div className="font-bold text-sm text-[#050505] line-clamp-1">{title}</div>
  <div className="text-xs text-[#65676b] line-clamp-1">{metaDescription}</div>
@@ -499,7 +499,7 @@ export function SeoAnalysisPanel({ focusKeyword, setFocusKeyword, title, slug, m
  </div>
  ) : (
  // Mock Twitter Preview
- <div className="bg-white border border-dashboard rounded-xl overflow-hidden max-w-[400px] mx-auto">
+ <div className="bg-white border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden max-w-[400px] mx-auto">
  <div className="h-[200px] bg-gray-100 flex items-center justify-center relative">
  {thumbnail ? (
  <img src={thumbnail} className="w-full h-full object-cover" />

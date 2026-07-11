@@ -511,3 +511,23 @@
 - [x] Center 3-step cards, CTA buttons, and text heading on all screens (mobile, tablet, and desktop viewports) horizontally, keeping the card content (icons on left, text on right) left-aligned for premium readability
 - [x] Run typecheck (`npx tsc --noEmit`) and lint (`npm run lint`) to verify 0 errors
 - [x] Run vitest suite to ensure no regression (46/46 tests passed)
+
+## Phase 58: Sidebar Layout Hardening
+- [x] Add `shrink-0` to Sidebar container in `Sidebar.tsx` to prevent flexbox shrinking on wide content views (e.g. Admin pages with data tables)
+- [x] Verify type safety and static analysis (npx tsc --noEmit & npm run lint)
+
+## Phase 59: Journal Trade Badge and Tooltip Adjustments
+- [x] Set fixed width (`w-14 px-0`) on Buy/Sell trade badges in `TradeTypeBadge.tsx` to align sizes uniformly
+- [x] Style `Details` tooltip in `JournalList.tsx` to be gray (`bg-gray-700 dark:bg-gray-800 text-white`) with drop shadow (`shadow-md` and light border)
+- [x] Verify type safety and static analysis (npx tsc --noEmit & npm run lint)
+
+## Phase 60: User Management Layout & Spacing Standardization
+- [x] Remove conflicting margin-bottom (`mb-6`) from `AdminPageHeader` when rendered within `space-y-4` container in `admin/users/page.tsx`
+- [x] Standardize internal component gap inside `UserCharts.tsx` from `gap-8` to `gap-4` to match stats grid columns
+- [x] Rebuild `UserCharts` grid structure into a unified, compact 3-column row (User Signups Trend, Role Distribution, and Users by Country)
+- [x] Compress chart card paddings to `p-5` and height dimensions to `h-[220px]`
+- [x] Refactor the Country stats block into a scrollable `max-h-[220px]` vertical list to save screen space and eliminate wide horizontal gaps
+- [x] Verify typecheck compilation and run project linter (0 errors)
+
+
+

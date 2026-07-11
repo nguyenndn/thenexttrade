@@ -1199,3 +1199,23 @@ Implements the full spec from [user-facing-onboarding-kpi-sync-implementation-pl
 - **Verification & Styling Integration**:
   - Checked TypeScript types and lint checks (TypeScript `0 errors`, ESLint `0 errors` warnings only).
   - Successfully ran full Vitest test suite (46/46 passed) with zero regressions.
+
+---
+
+## Phase 58: Sidebar Layout Hardening ✅
+
+### Key Achievements
+- **Hardened Sidebar Width**: Added `shrink-0` to the `aside` container inside the [Sidebar.tsx](file:///c:/laragon/www/gsn-crm/src/components/dashboard/Sidebar.tsx) component.
+- **Fixed Width Discrepancies**: Under flexbox layout algorithms, when the main dashboard area contains wide elements (such as economic calendars, large data tables, or analytics charts), the flexbox engine is allowed to shrink child elements that don't have `shrink-0`. Adding `shrink-0` guarantees that both the Admin Sidebar and the User Dashboard Sidebar will strictly maintain their configured width (`w-[230px]` when expanded, or `w-20` when collapsed) and never get squished or rendered with different widths.
+- **Verification**: Verified TypeScript compilation (`npx tsc --noEmit` -> 0 errors) and ran project linter (0 errors).
+
+---
+
+## Phase 59: Journal Trade Badge and Tooltip Adjustments ✅
+
+### Key Achievements
+- **Uniform Trade Type Badges**: Added a fixed width (`w-14 px-0`) to the span container in [TradeTypeBadge.tsx](file:///c:/laragon/www/gsn-crm/src/components/ui/TradeTypeBadge.tsx). This ensures both `BUY` and `SELL` badges occupy the exact same horizontal size, making the table column look clean and uniform.
+- **Premium Details Tooltip Style**: Customized the `Details` hover tooltip for the Activity icon button inside the journal list table and mobile views (located in [JournalList.tsx](file:///c:/laragon/www/gsn-crm/src/components/journal/JournalList.tsx)). The background color is updated to a sleek dark gray (`bg-gray-700 dark:bg-gray-800`), the text is set to high contrast white (`text-white`), and a drop shadow (`shadow-md` and a thin border `border-gray-600/20`) was added to give it depth and premium polish.
+- **Verification**: Checked static typing (`npx tsc --noEmit`) and project linting with zero compiling issues.
+
+

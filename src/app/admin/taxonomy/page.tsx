@@ -28,29 +28,29 @@ export default function TaxonomyPage() {
  </Button>
  </AdminPageHeader>
 
- <Tabs value={activeTab} onValueChange={setActiveTab} tabsId="taxonomy">
- <div className="overflow-x-auto scrollbar-hide flex">
- <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
- <TabsTrigger
- value="categories"
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- <FolderTree size={15} />
- <span>Categories</span>
- </TabsTrigger>
- <TabsTrigger
- value="tags"
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- <Tag size={15} />
- <span>Tags</span>
- </TabsTrigger>
- </TabsList>
- </div>
+  <Tabs value={activeTab} onValueChange={setActiveTab} tabsId="taxonomy">
+    <div className="overflow-x-auto scrollbar-hide flex">
+      <TabsList className="shrink-0">
+        <TabsTrigger
+          value="categories"
+          className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+          activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+          activeTextClassName="!text-white"
+        >
+          <FolderTree size={15} />
+          <span>Categories</span>
+        </TabsTrigger>
+        <TabsTrigger
+          value="tags"
+          className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+          activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+          activeTextClassName="!text-white"
+        >
+          <Tag size={15} />
+          <span>Tags</span>
+        </TabsTrigger>
+      </TabsList>
+    </div>
 
  <TabsContent value="categories">
  <CategoryList hideHeader />

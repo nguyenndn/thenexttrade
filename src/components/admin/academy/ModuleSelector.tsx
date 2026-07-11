@@ -69,7 +69,7 @@ export function ModuleSelector({ modules, value, onChange, className }: ModuleSe
  onClick={() => setIsOpen(!isOpen)}
  className={cn(
  "w-full flex items-center justify-between gap-2 p-2.5 rounded-xl text-sm transition-all text-left",
- "bg-gray-50 dark:bg-white/5 border border-dashboard ",
+ "bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 ",
  "hover:border-gray-300 dark:hover:border-white/20",
  isOpen && "ring-2 ring-primary/20 border-primary",
  !selected && "text-gray-500"
@@ -91,9 +91,9 @@ export function ModuleSelector({ modules, value, onChange, className }: ModuleSe
 
  {/* Dropdown */}
  {isOpen && (
- <div className="absolute z-50 mt-1 w-full bg-white dark:bg-[#1a1e2e] border border-dashboard rounded-xl shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-100">
+ <div className="absolute z-50 mt-1 w-full bg-white dark:bg-[#1a1e2e] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-100">
  {/* Search */}
- <div className="p-2 border-b border-dashboard">
+ <div className="p-2 border-b border-gray-200 dark:border-white/10">
  <div className="relative">
  <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-500" />
  <input

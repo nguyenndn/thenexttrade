@@ -28,7 +28,7 @@ export function UserGrowthChart({ data = [] }: UserGrowthChartProps) {
 
  if (!data || data.length === 0) {
  return (
- <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm h-full flex flex-col">
+ <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
  <div className="flex items-center gap-2 mb-3">
  <Users size={16} className="text-gray-400" />
  <h3 className="text-sm font-bold text-gray-700 dark:text-white">User Growth</h3>
@@ -41,7 +41,7 @@ export function UserGrowthChart({ data = [] }: UserGrowthChartProps) {
  }
 
  return (
- <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm h-full flex flex-col">
+ <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
  {/* Header */}
  <div className="flex items-center justify-between mb-3">
  <div className="flex items-center gap-2">

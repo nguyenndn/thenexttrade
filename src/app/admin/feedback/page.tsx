@@ -136,7 +136,7 @@ export default function AdminFeedbackPage() {
  </div>
 
  {/* Unified Toolbar: Search + Filters */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm flex flex-col gap-4">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
  <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
  <div className="flex flex-1 gap-2 flex-col sm:flex-row w-full lg:max-w-xl">
  <div className="flex-1 w-full sm:max-w-md">
@@ -156,7 +156,7 @@ export default function AdminFeedbackPage() {
  <ChevronDown size={14} aria-hidden="true" />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-44 rounded-xl border-dashboard">
+ <DropdownMenuContent align="end" className="w-44 rounded-xl border-gray-200 dark:border-white/10">
  <DropdownMenuItem onClick={() => setFilterType("ALL")}>All Types</DropdownMenuItem>
  <DropdownMenuItem onClick={() => setFilterType("BUG")}>Bug Reports</DropdownMenuItem>
  <DropdownMenuItem onClick={() => setFilterType("FEATURE")}>Feature Requests</DropdownMenuItem>
@@ -171,7 +171,7 @@ export default function AdminFeedbackPage() {
  <ChevronDown size={14} aria-hidden="true" />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-44 rounded-xl border-dashboard">
+ <DropdownMenuContent align="end" className="w-44 rounded-xl border-gray-200 dark:border-white/10">
  <DropdownMenuItem onClick={() => setFilterStatus("ALL")}>All Status</DropdownMenuItem>
  <DropdownMenuItem onClick={() => setFilterStatus("OPEN")}>Open</DropdownMenuItem>
  <DropdownMenuItem onClick={() => setFilterStatus("IN_PROGRESS")}>In Progress</DropdownMenuItem>
@@ -200,7 +200,7 @@ export default function AdminFeedbackPage() {
 
  {/* Empty */}
  {!isLoading && !error && filtered.length === 0 && (
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm text-center py-20">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm text-center py-20">
  <MessageSquare size={48} className="mx-auto mb-4 text-gray-300" />
  <h3 className="text-base font-bold text-gray-700 dark:text-white">No feedback found</h3>
  <p className="text-sm text-gray-600 mt-1">
@@ -223,7 +223,7 @@ export default function AdminFeedbackPage() {
  <div
  key={fb.id}
  className={cn(
- "bg-white dark:bg-[#151925] rounded-xl border border-dashboard p-5 shadow-sm",
+ "bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm",
  "border-l-4",
  isBug ? "border-l-red-500" : "border-l-amber-500"
  )}
@@ -277,7 +277,7 @@ export default function AdminFeedbackPage() {
  <ChevronDown size={12} />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40 rounded-xl border-dashboard">
+ <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-200 dark:border-white/10">
  {statusOptions.map((opt) => (
  <DropdownMenuItem
  key={opt.value}

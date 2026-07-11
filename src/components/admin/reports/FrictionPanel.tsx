@@ -13,7 +13,7 @@ export function FrictionPanel({ data }: Props) {
  <div className="space-y-3">
  {data.items.map((item, i) => (
  <Link key={i} href={item.href} className="block">
- <div className="flex items-center gap-4 p-4 rounded-xl border border-dashboard hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+ <div className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
  <span className={cn("px-2 py-0.5 rounded-lg text-xs font-bold shrink-0", sev[item.severity])}>{item.severity}</span>
  <div className="flex-1 min-w-0">
  <p className="text-sm font-semibold text-gray-700 dark:text-white">{item.area}</p>

@@ -20,7 +20,7 @@ export function GeoPanel({ countries }: Props) {
  const total = countries.reduce((s, c) => s + c.views, 0);
 
  return (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center justify-between mb-4">
  <div className="flex items-center gap-2">
  <Globe className="w-4 h-4 text-indigo-500" />
@@ -47,7 +47,7 @@ export function GeoPanel({ countries }: Props) {
 
  {/* Map View */}
  {view === 'map' && countries.length > 0 && (
- <div className="mb-4 rounded-lg overflow-hidden border border-dashboard bg-gray-50 dark:bg-[#12141a]">
+ <div className="mb-4 rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#12141a]">
  <WorldMap countries={countries} />
  </div>
  )}

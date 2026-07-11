@@ -43,7 +43,7 @@ export function CopyTradingFeatureToggle() {
  };
 
  return (
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard p-6">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-6">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-4">
  <div className={`p-3 rounded-xl ${enabled ? "bg-emerald-500/10" : "bg-gray-100 dark:bg-white/5"}`}>

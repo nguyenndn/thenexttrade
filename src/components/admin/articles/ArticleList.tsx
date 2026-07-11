@@ -273,7 +273,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  return (
  <div className="space-y-6">
  {/* Unified Toolbar: Search + Filters + Pagination Info */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm flex flex-col gap-4">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
  <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
  <div className="flex flex-1 gap-2 flex-col sm:flex-row w-full lg:max-w-xl">
  <div className="flex-1 w-full sm:max-w-md">
@@ -293,7 +293,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  <ChevronDown size={14} aria-hidden="true" />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40 rounded-xl border-dashboard">
+ <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-200 dark:border-white/10">
  <DropdownMenuItem onClick={() => handleFilterStatus("")}>All Status</DropdownMenuItem>
  <DropdownMenuItem onClick={() => handleFilterStatus("DRAFT")}>Draft</DropdownMenuItem>
  <DropdownMenuItem onClick={() => handleFilterStatus("PUBLISHED")}>Published</DropdownMenuItem>
@@ -346,11 +346,11 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  </div>
 
  {/* Table */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-dashboard text-xs uppercase text-gray-600 font-bold tracking-wider">
+ <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
  <th className="pl-6 pr-4 py-5 w-14">
  <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-500 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
  {selectedIds.size === articles.length && articles.length > 0 ? <CheckSquare size={20} className="text-primary" aria-hidden="true" /> : <Square size={20} aria-hidden="true" />}
@@ -363,7 +363,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  <th className="px-6 py-5 text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {articles.map((article) => (
  <tr key={article.id} className={`group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors ${selectedIds.has(article.id) ? 'bg-primary/5' : ''}`}>
  <td className="pl-6 pr-4 py-5 w-14">
@@ -396,7 +396,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  <label className="text-xs font-bold text-gray-600">Status</label>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="outline" className="w-full h-[38px] p-2 rounded justify-between font-normal bg-white dark:bg-[#1E2028] border-dashboard text-gray-700 dark:text-white">
+ <Button variant="outline" className="w-full h-[38px] p-2 rounded justify-between font-normal bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white">
  {quickEditData?.status === "DRAFT" ? "Draft" : quickEditData?.status === "PUBLISHED" ? "Published" : quickEditData?.status === "PENDING" ? "Pending" : "Archived"}
  <ChevronDown size={14} className="opacity-50" />
  </Button>
@@ -434,7 +434,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  <td className="px-6 py-5">
  <div className="flex items-start gap-4">
  <div 
- className="w-16 h-10 rounded-lg bg-gray-100 dark:bg-white/10 overflow-hidden relative flex-shrink-0 border border-dashboard cursor-pointer group/img"
+ className="w-16 h-10 rounded-lg bg-gray-100 dark:bg-white/10 overflow-hidden relative flex-shrink-0 border border-gray-200 dark:border-white/10 cursor-pointer group/img"
  onClick={() => {
  if (article.thumbnail) setPreviewImage(article.thumbnail);
  }}
@@ -474,7 +474,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  ? 'bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20'
  : article.status === 'ARCHIVED'
  ? 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20'
- : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-500 border-dashboard '
+ : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-500 border-gray-200 dark:border-white/10 '
  }`}>
  {article.status}
  </span>
@@ -499,7 +499,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  </div>
 
  {/* Footer / Pagination */}
- <div className="px-6 py-4 border-t border-dashboard flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50/50 dark:bg-white/[0.02]">
+ <div className="px-6 py-4 border-t border-gray-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50/50 dark:bg-white/[0.02]">
  <div className="text-sm text-gray-600 dark:text-gray-400">
  Showing <span className="font-semibold text-gray-800 dark:text-white">{((pagination.currentPage - 1) * 20) + 1}</span>–<span className="font-semibold text-gray-800 dark:text-white">{Math.min(pagination.currentPage * 20, pagination.totalCount)}</span> of <span className="font-semibold text-primary">{pagination.totalCount.toLocaleString()}</span> articles
  </div>
@@ -509,7 +509,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  size="icon"
  onClick={() => handlePageChange(pagination.currentPage - 1)}
  disabled={pagination.currentPage <= 1}
- className="p-2 h-8 w-8 bg-white dark:bg-white/5 rounded-lg border border-dashboard hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="p-2 h-8 w-8 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  <ChevronLeft size={14} />
  </Button>
@@ -537,7 +537,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  className={`h-8 w-8 text-xs font-semibold rounded-lg ${
  p === currentPage
  ? 'shadow-sm'
- : 'bg-white dark:bg-white/5 border border-dashboard hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300'
+ : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300'
  }`}
  >
  {p}
@@ -550,7 +550,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
  size="icon"
  onClick={() => handlePageChange(pagination.currentPage + 1)}
  disabled={pagination.currentPage >= pagination.totalPages}
- className="p-2 h-8 w-8 bg-white dark:bg-white/5 rounded-lg border border-dashboard hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="p-2 h-8 w-8 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  <ChevronRight size={14} />
  </Button>
@@ -573,7 +573,7 @@ export const ArticleList = memo(function ArticleList({ initialArticles, paginati
 
  {/* Image Preview Modal */}
  <Dialog open={!!previewImage} onOpenChange={(open) => !open && setPreviewImage(null)}>
- <DialogContent className="max-w-4xl p-1 bg-white dark:bg-slate-900 border-dashboard dark:border-white/20 sm:rounded-xl shadow-2xl">
+ <DialogContent className="max-w-4xl p-1 bg-white dark:bg-slate-900 border-gray-200 dark:border-white/10 dark:border-white/20 sm:rounded-xl shadow-2xl">
  <DialogHeader className="sr-only">
  <DialogTitle>Image Preview</DialogTitle>
  </DialogHeader>

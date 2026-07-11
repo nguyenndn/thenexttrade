@@ -145,7 +145,7 @@ export default function ShortcutsManagerPage() {
  <div className="space-y-6">
  
  {/* Search Bar Toolbar Card */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm flex flex-col gap-4">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
  <div className="flex-1 w-full max-w-md">
  <PremiumInput
  icon={Search}
@@ -157,11 +157,11 @@ export default function ShortcutsManagerPage() {
  </div>
 
  {/* List Card */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm p-6 min-h-[400px]">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm p-6 min-h-[400px]">
  {isLoading ? (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
  {[1, 2, 3, 4, 5, 6].map((i) => (
- <div key={i} className="flex flex-col p-6 bg-white dark:bg-[#151925] border border-dashboard rounded-xl h-[160px] animate-pulse">
+ <div key={i} className="flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl h-[160px] animate-pulse">
  <div className="flex items-center gap-3 mb-4">
  <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10" />
  <div className="h-5 bg-gray-200 dark:bg-white/10 rounded-md w-1/2" />
@@ -170,7 +170,7 @@ export default function ShortcutsManagerPage() {
  <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-full" />
  <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-3/4" />
  </div>
- <div className="mt-auto pt-4 border-t border-dashboard flex justify-between">
+ <div className="mt-auto pt-4 border-t border-gray-200 dark:border-white/10 flex justify-between">
  <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-24" />
  <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-16" />
  </div>
@@ -180,7 +180,7 @@ export default function ShortcutsManagerPage() {
  ) : filteredShortcuts.length > 0 ? (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
  {filteredShortcuts.map((shortcut) => (
- <div key={shortcut.id} className="group relative flex flex-col p-6 bg-white dark:bg-[#151925] border border-dashboard rounded-xl hover:shadow-md transition-shadow cursor-pointer">
+ <div key={shortcut.id} className="group relative flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-md transition-shadow cursor-pointer">
  <div className="flex items-start justify-between mb-3">
  <div className="flex items-center gap-2">
  <Zap size={16} className="text-yellow-500" />
@@ -210,7 +210,7 @@ export default function ShortcutsManagerPage() {
  <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 min-h-[40px] mt-1">
  {shortcut.description || "No description provided."}
  </p>
- <div className="mt-4 pt-4 border-t border-dashboard text-xs text-gray-500 flex items-center justify-between">
+ <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 text-xs text-gray-500 flex items-center justify-between">
  <span>HTML Snippet</span>
  <span>{new Date(shortcut.createdAt).toLocaleDateString('en-US')}</span>
  </div>
@@ -218,8 +218,8 @@ export default function ShortcutsManagerPage() {
  ))}
  </div>
  ) : (
- <div className="flex flex-col items-center justify-center text-center p-12 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-dashboard my-10 max-w-lg mx-auto">
- <div className="w-16 h-16 bg-white dark:bg-[#151925] border border-dashboard rounded-full flex items-center justify-center mb-4 shadow-sm">
+ <div className="flex flex-col items-center justify-center text-center p-12 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 my-10 max-w-lg mx-auto">
+ <div className="w-16 h-16 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-full flex items-center justify-center mb-4 shadow-sm">
  <Zap size={28} className="text-yellow-500" />
  </div>
  <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">No Shortcuts Found</h3>
@@ -235,8 +235,8 @@ export default function ShortcutsManagerPage() {
  {isModalOpen && (
  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleCloseModal} aria-hidden="true" />
- <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-4xl rounded-xl shadow-xl flex flex-col border border-dashboard max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
- <div className="flex justify-between items-center p-6 border-b border-dashboard">
+ <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-4xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+ <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-white/10">
  <h2 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
  <Zap className="text-yellow-500" size={24} />
  <span>{editingId ? "Edit Shortcut" : "Create New Shortcut"}</span>
@@ -256,7 +256,7 @@ export default function ShortcutsManagerPage() {
  value={formData.name}
  onChange={e => setFormData({ ...formData, name: e.target.value })}
  placeholder="e.g. Promotional Banner"
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
  required
  />
  </div>
@@ -268,7 +268,7 @@ export default function ShortcutsManagerPage() {
  value={formData.description}
  onChange={e => setFormData({ ...formData, description: e.target.value })}
  placeholder="Brief description..."
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 resize-none h-24"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 resize-none h-24"
  />
  </div>
  </div>
@@ -280,7 +280,7 @@ export default function ShortcutsManagerPage() {
  <RichTextEditor
  content={formData.content}
  onChange={content => setFormData({ ...formData, content })}
- className="h-[300px] shadow-sm rounded-xl border border-dashboard"
+ className="h-[300px] shadow-sm rounded-xl border border-gray-200 dark:border-white/10"
  />
  </div>
  </div>
@@ -288,7 +288,7 @@ export default function ShortcutsManagerPage() {
  </form>
  </div>
 
- <div className="p-4 border-t border-dashboard bg-white dark:bg-[#151925] flex justify-end gap-3 z-20 relative">
+ <div className="p-4 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] flex justify-end gap-3 z-20 relative">
  <Button type="button" variant="outline" onClick={handleCloseModal} disabled={isSubmitting}>
  Cancel
  </Button>

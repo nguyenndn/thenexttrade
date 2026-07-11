@@ -124,7 +124,7 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
  </label>
  <textarea
  {...register("changelog")}
- className="w-full rounded-xl border border-dashboard bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[80px]"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[80px]"
  placeholder="What's new in this version?"
  />
  </div>
@@ -133,7 +133,7 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
  {(product.platform === "MT4" || product.platform === "BOTH") && (
  <div className="space-y-2">
  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">MT4 File (.ex4)</label>
- <div className="rounded-xl border border-dashboard bg-gray-50 dark:bg-[#151925] p-2">
+ <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2">
  <input
  type="file"
  accept=".ex4"
@@ -147,7 +147,7 @@ export function UploadVersionModal({ product, isOpen, onClose }: UploadVersionMo
  {(product.platform === "MT5" || product.platform === "BOTH") && (
  <div className="space-y-2">
  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">MT5 File (.ex5)</label>
- <div className="rounded-xl border border-dashboard bg-gray-50 dark:bg-[#151925] p-2">
+ <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2">
  <input
  type="file"
  accept=".ex5"

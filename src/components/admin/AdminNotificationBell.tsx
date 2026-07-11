@@ -100,8 +100,8 @@ export function AdminNotificationBell() {
  </Button>
  </PopoverTrigger>
 
- <PopoverContent className="w-96 p-0 rounded-xl bg-white dark:bg-[#1E2028] border-dashboard shadow-xl" align="end">
- <div className="p-4 border-b border-dashboard">
+ <PopoverContent className="w-96 p-0 rounded-xl bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 shadow-xl" align="end">
+ <div className="p-4 border-b border-gray-200 dark:border-white/10">
  <h3 className="font-bold text-gray-700 dark:text-white">Admin Alerts</h3>
  </div>
 
@@ -132,7 +132,7 @@ export function AdminNotificationBell() {
  {/* Pending Copy Trading Alert */}
  {stats.pendingCopyTrading > 0 && (
  <div
- className="p-4 bg-primary/5 dark:bg-primary/10 cursor-pointer hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors border-b border-dashboard"
+ className="p-4 bg-primary/5 dark:bg-primary/10 cursor-pointer hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors border-b border-gray-200 dark:border-white/10"
  onClick={() => {
  setIsOpen(false);
  router.push("/admin/copy-trading");
@@ -164,7 +164,7 @@ export function AdminNotificationBell() {
  <div
  key={n.id}
  className={cn(
- "p-4 border-b border-dashboard hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors",
+ "p-4 border-b border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors",
  !n.isRead && "bg-blue-50/50 dark:bg-blue-900/10"
  )}
  onClick={() => {
@@ -188,7 +188,7 @@ export function AdminNotificationBell() {
  )}
  </div>
 
- <div className="p-2 border-t border-dashboard flex gap-2 bg-gray-50/50 dark:bg-white/5">
+ <div className="p-2 border-t border-gray-200 dark:border-white/10 flex gap-2 bg-gray-50/50 dark:bg-white/5">
  <Button variant="ghost" className="flex-1 text-xs h-8 text-gray-600 dark:text-gray-300" onClick={() => {
  markAsViewed();
  setIsOpen(false);

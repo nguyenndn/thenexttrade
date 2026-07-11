@@ -56,14 +56,13 @@ async function getHeroStats() {
  const sevenDaysAgo = subDays(new Date(), 7);
  const thirtyDaysAgo = subDays(new Date(), 30);
 
- const [totalUsers, newUsers, activeUsers, sparkline, trend] =
+ const [totalUsers, newUsers, activeTraders, sparkline, trend] =
  await Promise.all([
  prisma.user.count(),
  prisma.user.count({
  where: { createdAt: { gte: sevenDaysAgo } },
  }),
- prisma.userProgress.findMany({
- where: { completedAt: { gte: thirtyDaysAgo } },
+ prisma.tradingAccount.findMany({
  distinct: ["userId"],
  select: { userId: true },
  }),
@@ -82,8 +81,8 @@ async function getHeroStats() {
  sparkline,
  trendPercent: null,
  },
- activeLearners: {
- value: activeUsers.length,
+ activeTraders: {
+ value: activeTraders.length,
  sparkline: sparkline.map((v) => Math.max(0, v - 1)),
  trendPercent: null,
  },
@@ -98,7 +97,7 @@ async function getHeroStats() {
  return {
  totalUsers: empty,
  newUsers: empty,
- activeLearners: empty,
+ activeTraders: empty,
  };
  }
 }
@@ -244,8 +243,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
  profile: { select: { role: true, country: true } },
  _count: {
  select: {
- quizAttempts: true,
- progress: true,
+ tradingAccounts: true,
  },
  },
  },
@@ -260,6 +258,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
  <AdminPageHeader
  title="Users Management"
  description="Manage registered members, analyze growth and activity."
+ className="mb-0"
  >
  <UserPageActions />
  </AdminPageHeader>
@@ -268,7 +267,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
  <UserStatsClient
  totalUsers={heroStats.totalUsers}
  newUsers={heroStats.newUsers}
- activeLearners={heroStats.activeLearners}
+ activeTraders={heroStats.activeTraders}
  />
 
  {/* Charts Row */}

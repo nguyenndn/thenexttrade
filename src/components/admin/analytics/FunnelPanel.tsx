@@ -12,20 +12,20 @@ interface Props {
 }
 
 const STAGES = [
- { key: 'visitors', label: 'All Visitors', desc: 'Total unique sessions', color: '#6366f1' },
- { key: 'interested', label: 'Interested', desc: 'Clicked CTA / Download', color: '#22d3ee' },
- { key: 'signedUp', label: 'Signed Up', desc: 'Completed registration', color: '#10b981' },
- { key: 'activated', label: 'Activated', desc: 'First trade sync', color: '#f59e0b' },
+ { key: 'visitors', label: 'Active Users', desc: 'Total active sessions', color: '#6366f1' },
+ { key: 'interested', label: 'Explored Leaderboard', desc: 'Viewed Leaderboard', color: '#22d3ee' },
+ { key: 'signedUp', label: 'Learned', desc: 'Completed a lesson/journal', color: '#10b981' },
+ { key: 'activated', label: 'Adopted EA', desc: 'Downloaded EA', color: '#f59e0b' },
 ] as const;
 
 export function FunnelPanel({ funnel }: Props) {
  const hasData = funnel && funnel.visitors > 0;
 
  return (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center gap-2 mb-4">
  <Filter className="w-4 h-4 text-indigo-500" />
- <h2 className="text-sm font-bold text-gray-900 dark:text-white">Conversion Funnel</h2>
+ <h2 className="text-sm font-bold text-gray-900 dark:text-white">Engagement Funnel</h2>
  </div>
 
  {hasData ? (

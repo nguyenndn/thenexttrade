@@ -19,7 +19,7 @@ interface Props {
 export function CampaignPanel({ campaigns, totalViews, loading }: Props) {
  if (loading) {
  return (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 animate-pulse">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 animate-pulse">
  <div className="h-4 bg-gray-200 dark:bg-white/5 rounded w-1/4 mb-4" />
  <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-10 bg-gray-200 dark:bg-white/5 rounded" />)}</div>
  </div>
@@ -28,7 +28,7 @@ export function CampaignPanel({ campaigns, totalViews, loading }: Props) {
 
  if (!campaigns.length) {
  return (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center gap-2 mb-4">
  <Megaphone className="w-4 h-4 text-amber-500" />
  <h2 className="text-sm font-bold text-gray-900 dark:text-white">Campaign Tracking</h2>
@@ -47,7 +47,7 @@ export function CampaignPanel({ campaigns, totalViews, loading }: Props) {
  const maxViews = campaigns[0]?.views ?? 1;
 
  return (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center justify-between mb-4">
  <div className="flex items-center gap-2">
  <Megaphone className="w-4 h-4 text-amber-500" />
@@ -60,7 +60,7 @@ export function CampaignPanel({ campaigns, totalViews, loading }: Props) {
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
  <thead>
- <tr className="text-[10px] text-gray-400 uppercase tracking-wider border-b border-dashboard">
+ <tr className="text-[10px] text-gray-400 uppercase tracking-wider border-b border-gray-200 dark:border-white/10">
  <th className="text-left pb-2 font-medium">Campaign</th>
  <th className="text-left pb-2 font-medium">Source</th>
  <th className="text-left pb-2 font-medium">Medium</th>

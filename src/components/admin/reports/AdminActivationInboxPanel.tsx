@@ -16,9 +16,16 @@ import {
  Send,
  UserCheck,
  EyeOff,
- CheckCircle2
+ CheckCircle2,
+ ChevronDown
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import { 
  getAdminActivationSignals, 
@@ -181,7 +188,7 @@ export function AdminActivationInboxPanel() {
  return (
  <div className="space-y-6">
  {/* Header controls */}
- <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-4 bg-slate-50 dark:bg-white/[0.02] border border-dashboard/80 rounded-2xl backdrop-blur-sm">
+ <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-4 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl backdrop-blur-sm">
  <div className="relative w-full sm:max-w-md">
  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={16} />
  <input
@@ -189,29 +196,55 @@ export function AdminActivationInboxPanel() {
  placeholder="Search trader username, name, or signal content..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full pl-10 pr-4 py-2 text-sm bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white"
+ className="w-full pl-10 pr-4 py-2 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white"
  />
  </div>
  
  <div className="flex gap-2 w-full sm:w-auto shrink-0 justify-end">
- <select
- value={selectedStage}
- onChange={(e) => setSelectedStage(e.target.value)}
- className="px-3.5 py-2 text-sm bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl focus:outline-none text-slate-800 dark:text-white"
- >
- <option value="ALL">All Stuck Stages</option>
- {uniqueSignalTypes.map(type => (
- <option key={type} value={type}>
- {stageConfig[type]?.stage || type}
- </option>
- ))}
- </select>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-[240px] justify-between rounded-xl px-3.5 py-2 text-sm bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 text-slate-800 dark:text-white font-normal hover:bg-slate-50 dark:hover:bg-white/[0.02]"
+                >
+                  <span className="truncate">
+                    {selectedStage === "ALL" 
+                      ? "All Stuck Stages" 
+                      : stageConfig[selectedStage]?.stage || selectedStage}
+                  </span>
+                  <ChevronDown size={16} className="ml-2 shrink-0 text-gray-500" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[240px] rounded-xl border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-[0_10px_40px_rgba(0,0,0,0.1)] p-1.5">
+                <DropdownMenuItem 
+                  onClick={() => setSelectedStage("ALL")}
+                  className={cn(
+                    "cursor-pointer rounded-lg text-sm py-2 px-3",
+                    selectedStage === "ALL" && "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 font-bold"
+                  )}
+                >
+                  All Stuck Stages
+                </DropdownMenuItem>
+                {uniqueSignalTypes.map(type => (
+                  <DropdownMenuItem
+                    key={type}
+                    onClick={() => setSelectedStage(type)}
+                    className={cn(
+                      "cursor-pointer rounded-lg text-sm py-2 px-3",
+                      selectedStage === type && "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 font-bold"
+                    )}
+                  >
+                    {stageConfig[type]?.stage || type}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
  <Button
  onClick={loadInbox}
  variant="outline"
  size="sm"
- className="rounded-xl shrink-0 p-2.5 h-auto text-slate-600 border-dashboard dark:text-gray-400"
+ className="rounded-xl shrink-0 p-2.5 h-auto text-slate-600 border-gray-200 dark:border-white/10 dark:text-gray-400"
  >
  <RefreshCw size={14} className={cn(isLoading && "animate-spin")} />
  </Button>
@@ -225,12 +258,12 @@ export function AdminActivationInboxPanel() {
  <p className="text-sm text-gray-500 dark:text-gray-400">Auditing stuck user signals...</p>
  </div>
  ) : error ? (
- <div className="p-6 text-center border border-red-500/10 bg-red-500/5 rounded-2xl">
+ <div className="p-6 text-center border border-red-500/10 bg-red-500/5 rounded-xl">
  <p className="text-sm text-red-500 font-bold">{error}</p>
  <Button onClick={loadInbox} className="mt-3 text-xs bg-red-500 hover:bg-red-600 text-white rounded-xl">Retry</Button>
  </div>
  ) : filteredSignals.length === 0 ? (
- <div className="text-center py-16 bg-white/70 dark:bg-white/[0.01] border border-dashboard/80 rounded-2xl">
+ <div className="text-center py-16 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm">
  <CheckCircle2 size={44} className="mx-auto text-emerald-500 mb-3 animate-pulse" />
  <h3 className="text-base font-black text-slate-800 dark:text-white">Inbox Completely Clear!</h3>
  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm mx-auto">
@@ -248,8 +281,8 @@ export function AdminActivationInboxPanel() {
  <div 
  key={sig.id}
  className={cn(
- "p-5 rounded-2xl border bg-white dark:bg-[#11131c]/90 relative overflow-hidden transition-all hover:shadow-lg hover:shadow-amber-500/[0.02]",
- sig.metadata.adminContactedAt ? "border-emerald-500/20 dark:border-emerald-500/10 opacity-80" : "border-amber-900/10 "
+ "p-5 rounded-xl border bg-white dark:bg-[#1E2028] shadow-sm relative overflow-hidden transition-shadow hover:shadow-md",
+ sig.metadata.adminContactedAt ? "border-emerald-500/20 dark:border-emerald-500/10 opacity-80" : "border-gray-200 dark:border-white/10"
  )}
  >
  {/* Active amber/gold corner accent */}
@@ -304,7 +337,7 @@ export function AdminActivationInboxPanel() {
  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">{sig.summary}</p>
  </div>
 
- <div className="flex items-center gap-4 text-[10px] text-gray-400 dark:text-gray-500 pt-1 border-t border-dashboard dark:border-white/[0.03]">
+ <div className="flex items-center gap-4 text-[10px] text-gray-400 dark:text-gray-500 pt-1 border-t border-gray-200 dark:border-white/10 dark:border-white/[0.03]">
  <span className="flex items-center gap-1"><Calendar size={11} /> First seen: {format(new Date(sig.firstSeenAt), "MMM d HH:mm")}</span>
  <span className="flex items-center gap-1"><Clock size={11} /> Last sync: {format(new Date(sig.lastSeenAt), "MMM d HH:mm")}</span>
  </div>
@@ -323,7 +356,7 @@ export function AdminActivationInboxPanel() {
  placeholder="Add notes for this user's activation (e.g. Sent discord link...)"
  value={activeNotes[sig.id] || ""}
  onChange={(e) => setActiveNotes(prev => ({ ...prev, [sig.id]: e.target.value }))}
- className="w-full text-[11px] p-2 bg-slate-50 dark:bg-[#07090f] border border-dashboard rounded-xl h-14 focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white resize-none"
+ className="w-full text-[11px] p-2 bg-slate-50 dark:bg-[#07090f] border border-gray-200 dark:border-white/10 rounded-xl h-14 focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white resize-none"
  />
  </div>
 
@@ -334,7 +367,7 @@ export function AdminActivationInboxPanel() {
  disabled={isPending || !!sig.metadata.adminContactedAt}
  variant="outline"
  size="sm"
- className="flex-1 rounded-xl text-[11px] font-bold bg-white dark:bg-transparent border-dashboard dark:text-gray-300 hover:border-emerald-500/30 hover:text-emerald-500 dark:hover:text-emerald-400 gap-1.5 h-8 shrink-0 shadow-sm"
+ className="flex-1 rounded-xl text-[11px] font-bold bg-white dark:bg-transparent border-gray-200 dark:border-white/10 dark:text-gray-300 hover:border-emerald-500/30 hover:text-emerald-500 dark:hover:text-emerald-400 gap-1.5 h-8 shrink-0 shadow-sm"
  >
  {sig.metadata.adminContactedAt ? (
  <UserCheck size={11} className="text-emerald-500 shrink-0" />
@@ -350,7 +383,7 @@ export function AdminActivationInboxPanel() {
  variant="outline"
  size="sm"
  className={cn(
- "rounded-xl text-[11px] font-bold h-8 px-3 shrink-0 shadow-sm transition-all border-dashboard gap-1 flex items-center justify-center",
+ "rounded-xl text-[11px] font-bold h-8 px-3 shrink-0 shadow-sm transition-all border-gray-200 dark:border-white/10 gap-1 flex items-center justify-center",
  activeNotes[sig.id] !== sig.metadata.adminNotes
  ? "bg-amber-500 hover:bg-amber-600 text-white border-transparent cursor-pointer"
  : "text-gray-400 dark:text-gray-600 cursor-not-allowed bg-slate-50/50 dark:bg-white/[0.01]"
@@ -365,7 +398,7 @@ export function AdminActivationInboxPanel() {
  disabled={isPending}
  variant="outline"
  size="sm"
- className="rounded-xl text-[11px] font-bold border-dashboard text-gray-500 hover:bg-rose-500/5 hover:border-rose-500/30 hover:text-rose-500 gap-1 h-8 px-2.5 shrink-0 shadow-sm"
+ className="rounded-xl text-[11px] font-bold border-gray-200 dark:border-white/10 text-gray-500 hover:bg-rose-500/5 hover:border-rose-500/30 hover:text-rose-500 gap-1 h-8 px-2.5 shrink-0 shadow-sm"
  title="Snooze for 7 days"
  >
  <EyeOff size={11} />

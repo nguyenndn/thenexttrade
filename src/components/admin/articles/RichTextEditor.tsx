@@ -118,18 +118,18 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  Table.configure({
  resizable: true,
  HTMLAttributes: {
- class: 'w-full border-collapse border border-dashboard dark:border-gray-700 my-4 rounded-lg overflow-hidden',
+ class: 'w-full border-collapse border border-gray-200 dark:border-white/10 dark:border-gray-700 my-4 rounded-lg overflow-hidden',
  },
  }),
  TableRow,
  TableHeader.configure({
  HTMLAttributes: {
- class: 'bg-gray-50 dark:bg-white/5 border border-dashboard dark:border-gray-700 p-2 font-bold text-left',
+ class: 'bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 dark:border-gray-700 p-2 font-bold text-left',
  },
  }),
  TableCell.configure({
  HTMLAttributes: {
- class: 'border border-dashboard dark:border-gray-700 p-2',
+ class: 'border border-gray-200 dark:border-white/10 dark:border-gray-700 p-2',
  },
  }),
  TaskList.configure({
@@ -278,23 +278,23 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  <div
  ref={editorContainerRef}
  className={`
- border border-dashboard dark:border-gray-800 rounded-xl overflow-hidden bg-white dark:bg-[#151925] flex flex-col shadow-sm
+ border border-gray-200 dark:border-white/10 dark:border-gray-800 rounded-xl overflow-hidden bg-white dark:bg-[#151925] flex flex-col shadow-sm
  ${isFullscreen ? 'fixed inset-0 z-50 rounded-none border-0' : ''}
  ${className}
  `}
  >
  {editable && (
- <div className={`flex flex-col border-b border-dashboard dark:border-gray-800 bg-gray-50/50 dark:bg-[#151925] ${isFullscreen ? 'sticky top-0 z-10' : 'sticky top-0 z-10'}`}>
+ <div className={`flex flex-col border-b border-gray-200 dark:border-white/10 dark:border-gray-800 bg-gray-50/50 dark:bg-[#151925] ${isFullscreen ? 'sticky top-0 z-10' : 'sticky top-0 z-10'}`}>
  {/* Main Toolbar */}
  <div className="flex flex-wrap items-center gap-1 p-2">
  {/* History */}
- <div className="flex items-center gap-0.5 pr-2 border-r border-dashboard mr-1">
+ <div className="flex items-center gap-0.5 pr-2 border-r border-gray-200 dark:border-white/10 mr-1">
  <ToolbarButton onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} icon={Undo} title="Undo" />
  <ToolbarButton onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} icon={Redo} title="Redo" />
  </div>
 
  {/* Text Style */}
- <div className="flex items-center gap-0.5 pr-2 border-r border-dashboard mr-1">
+ <div className="flex items-center gap-0.5 pr-2 border-r border-gray-200 dark:border-white/10 mr-1">
  <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} isActive={editor.isActive('heading', { level: 1 })} icon={Heading1} title="H1" />
  <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} isActive={editor.isActive('heading', { level: 2 })} icon={Heading2} title="H2" />
  <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} isActive={editor.isActive('heading', { level: 3 })} icon={Heading3} title="H3" />
@@ -315,7 +315,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  </div>
 
  {/* Formatting */}
- <div className="flex items-center gap-0.5 pr-2 border-r border-dashboard mr-1">
+ <div className="flex items-center gap-0.5 pr-2 border-r border-gray-200 dark:border-white/10 mr-1">
  <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} isActive={editor.isActive('bold')} icon={Bold} title="Bold" />
  <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} isActive={editor.isActive('italic')} icon={Italic} title="Italic" />
  <ToolbarButton onClick={() => editor.chain().focus().toggleUnderline().run()} isActive={editor.isActive('underline')} icon={UnderlineIcon} title="Underline" />
@@ -325,7 +325,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  </div>
 
  {/* Alignment */}
- <div className="flex items-center gap-0.5 pr-2 border-r border-dashboard mr-1">
+ <div className="flex items-center gap-0.5 pr-2 border-r border-gray-200 dark:border-white/10 mr-1">
  <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('left').run()} isActive={editor.isActive({ textAlign: 'left' })} icon={AlignLeft} title="Left" />
  <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('center').run()} isActive={editor.isActive({ textAlign: 'center' })} icon={AlignCenter} title="Center" />
  <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('right').run()} isActive={editor.isActive({ textAlign: 'right' })} icon={AlignRight} title="Right" />
@@ -333,14 +333,14 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  </div>
 
  {/* Lists */}
- <div className="flex items-center gap-0.5 pr-2 border-r border-dashboard mr-1">
+ <div className="flex items-center gap-0.5 pr-2 border-r border-gray-200 dark:border-white/10 mr-1">
  <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} isActive={editor.isActive('bulletList')} icon={List} title="Bullet List" />
  <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} isActive={editor.isActive('orderedList')} icon={ListOrdered} title="Ordered List" />
  <ToolbarButton onClick={() => editor.chain().focus().toggleTaskList().run()} isActive={editor.isActive('taskList')} icon={CheckSquare} title="Task List" />
  </div>
 
  {/* Insert */}
- <div className="flex items-center gap-0.5 pr-2 border-r border-dashboard mr-1">
+ <div className="flex items-center gap-0.5 pr-2 border-r border-gray-200 dark:border-white/10 mr-1">
  <ToolbarButton onClick={setLink} isActive={editor.isActive('link')} icon={LinkIcon} title="Link" />
  <ToolbarButton onClick={() => setIsMediaModalOpen(true)} icon={ImageIcon} title="Image" />
  <ToolbarButton onClick={addYoutube} icon={YoutubeIcon} title="Youtube" />
@@ -388,7 +388,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
 
  {/* Keyboard Shortcuts Panel */}
  {isShortcutsPanelOpen && (
- <div className="border-b border-dashboard dark:border-gray-800 bg-gray-50 dark:bg-[#0B0E14] p-4 animate-in slide-in-from-top-2 duration-200">
+ <div className="border-b border-gray-200 dark:border-white/10 dark:border-gray-800 bg-gray-50 dark:bg-[#0B0E14] p-4 animate-in slide-in-from-top-2 duration-200">
  <div className="flex items-center justify-between mb-3">
  <h4 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
  <Keyboard size={16} /> Keyboard Shortcuts
@@ -397,11 +397,11 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  </div>
  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
  {shortcuts.map((s) => (
- <div key={s.action} className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg bg-white dark:bg-white/5 border border-dashboard">
+ <div key={s.action} className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
  <span className="text-xs text-gray-600 dark:text-gray-500">{s.action}</span>
  <div className="flex items-center gap-0.5">
  {s.keys.map((key) => (
- <kbd key={key} className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 rounded border border-dashboard">
+ <kbd key={key} className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 rounded border border-gray-200 dark:border-white/10">
  {key}
  </kbd>
  ))}
@@ -444,7 +444,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  {/* Link URL Dialog */}
  {linkDialogOpen && (
  <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setLinkDialogOpen(false)}>
- <div className="bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl border border-dashboard p-6 w-full max-w-md mx-4 space-y-4" onClick={e => e.stopPropagation()}>
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4" onClick={e => e.stopPropagation()}>
  <h3 className="text-lg font-bold text-gray-700 dark:text-white">Insert Link</h3>
  <input
  ref={linkInputRef}
@@ -453,7 +453,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  onChange={e => setLinkUrl(e.target.value)}
  onKeyDown={e => { if (e.key === 'Enter') confirmLink(); if (e.key === 'Escape') setLinkDialogOpen(false); }}
  placeholder="https://example.com"
- className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+ className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
  />
  <div className="flex justify-end gap-2">
  <Button variant="outline" onClick={() => setLinkDialogOpen(false)}>Cancel</Button>
@@ -469,7 +469,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  {/* YouTube URL Dialog */}
  {youtubeDialogOpen && (
  <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setYoutubeDialogOpen(false)}>
- <div className="bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl border border-dashboard p-6 w-full max-w-md mx-4 space-y-4" onClick={e => e.stopPropagation()}>
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4" onClick={e => e.stopPropagation()}>
  <h3 className="text-lg font-bold text-gray-700 dark:text-white">Embed YouTube Video</h3>
  <input
  ref={youtubeInputRef}
@@ -478,7 +478,7 @@ export function RichTextEditor({ content, onChange, editable = true, className =
  onChange={e => setYoutubeUrl(e.target.value)}
  onKeyDown={e => { if (e.key === 'Enter') confirmYoutube(); if (e.key === 'Escape') setYoutubeDialogOpen(false); }}
  placeholder="https://www.youtube.com/watch?v=..."
- className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+ className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
  />
  <div className="flex justify-end gap-2">
  <Button variant="outline" onClick={() => setYoutubeDialogOpen(false)}>Cancel</Button>

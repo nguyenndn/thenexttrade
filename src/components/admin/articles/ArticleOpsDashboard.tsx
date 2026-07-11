@@ -43,7 +43,7 @@ function SummaryCard({ label, value, icon: Icon, color }: {
  label: string; value: number; icon: React.ElementType; color: string;
 }) {
  return (
- <div className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4">
+ <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4">
  <div className="flex items-center gap-3">
  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}>
  <Icon size={16} />
@@ -156,12 +156,12 @@ export function ArticleOpsDashboard({ initialRows, initialSummary }: ArticleOpsD
 
  {/* Filters */}
  <div className="overflow-x-auto scrollbar-hide flex">
- <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
+ <TabsList className="shrink-0">
  {FILTERS.map((f) => (
  <TabsTrigger
  key={f.value}
  value={f.value}
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+ className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
  activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
  activeTextClassName="!text-white"
  >
@@ -193,11 +193,11 @@ export function ArticleOpsDashboard({ initialRows, initialSummary }: ArticleOpsD
  )}
 
  {/* Table */}
- <div className="rounded-2xl border border-dashboard bg-white dark:bg-[#151925] overflow-hidden">
+ <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
  <thead>
- <tr className="border-b border-dashboard bg-gray-50 dark:bg-white/[0.02]">
+ <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.02]">
  <th className="px-3 py-3 w-10">
  <input
  type="checkbox"

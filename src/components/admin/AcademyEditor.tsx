@@ -91,9 +91,9 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
  return (
  <div className="grid gap-8">
  {levels.map((level) => (
- <div key={level.id} className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div key={level.id} className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  {/* Level Headers are static for now, or could be draggable if we add a wrapper */}
- <div className="p-4 bg-gray-50/50 dark:bg-white/[0.02] border-b border-dashboard flex items-center justify-between">
+ <div className="p-4 bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
  <div className="flex items-center gap-3">
  <span className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/20 text-[#2F80ED] flex items-center justify-center font-bold text-sm">
  {level.order}
@@ -112,7 +112,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
  <SortableContext items={level.modules.map(m => m.id)} strategy={verticalListSortingStrategy}>
  {level.modules.map(module => (
  <SortableItem key={module.id} id={module.id} className="mb-4">
- <div className="border border-dashboard rounded-xl p-4 bg-white dark:bg-transparent">
+ <div className="border border-gray-200 dark:border-white/10 rounded-xl p-4 bg-white dark:bg-transparent">
  <div className="flex items-center justify-between mb-3">
  <div className="flex items-center gap-2">
  <Folder size={18} className="text-gray-500" />
@@ -141,7 +141,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
  <SortableContext items={module.lessons.map(l => l.id)} strategy={verticalListSortingStrategy}>
  {module.lessons.map(lesson => (
  <SortableItem key={lesson.id} id={lesson.id} handle={true}>
- <div className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg group transition-colors border border-transparent hover:border-dashboard dark:hover:border-white/5">
+ <div className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg group transition-colors border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/5">
  <div className="flex items-center gap-3">
  <div className="p-1.5 bg-gray-100 dark:bg-white/10 rounded text-gray-600">
  {lesson.videoUrl ? <Video size={14} /> : <BookOpen size={14} />}

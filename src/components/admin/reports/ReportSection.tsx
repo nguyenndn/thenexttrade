@@ -11,7 +11,7 @@ interface ReportSectionProps {
 
 export function ReportSection({ title, description, children, actionHref, actionLabel }: ReportSectionProps) {
  return (
- <section className="rounded-2xl border border-dashboard bg-white dark:bg-[#151925] p-6 md:p-8">
+  <section className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 md:p-8 group hover:shadow-md transition-shadow">
  <div className="flex items-start justify-between gap-4 mb-4">
  <div>
  <h2 className="text-base font-bold text-gray-800 dark:text-white">{title}</h2>

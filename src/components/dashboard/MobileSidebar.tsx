@@ -1,12 +1,11 @@
-
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useFeatureFlags } from "@/lib/dashboard-context";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, LogOut } from "lucide-react";
+import { X, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
@@ -35,6 +34,89 @@ interface MobileSidebarProps {
  isOpen: boolean;
  onClose: () => void;
  items?: any[];
+}
+
+function MobileSidebarItem({ item, activeHref, onClose }: { item: any; activeHref: string | null; onClose: () => void }) {
+  const Icon = item.icon;
+  const hasSubItems = item.items && item.items.length > 0;
+  const [isExpanded, setIsExpanded] = useState(() => {
+    if (hasSubItems) {
+      return item.items.some((sub: any) => sub.href === activeHref);
+    }
+    return false;
+  });
+
+  const isActive = !hasSubItems && item.href === activeHref;
+  const isChildActive = hasSubItems && item.items.some((sub: any) => sub.href === activeHref);
+
+  return (
+    <div>
+      {hasSubItems ? (
+        <div>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className={cn(
+              "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm nav-menu-text transition-colors mb-0.5 text-left select-none relative",
+              isChildActive
+                ? "text-primary font-semibold"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5"
+            )}
+          >
+            {Icon && <Icon size={18} className={isChildActive ? "text-primary" : "text-gray-600 dark:text-gray-300"} />}
+            <span className="flex-1">{item.name}</span>
+            <ChevronDown
+              size={16}
+              className={cn(
+                "transition-transform duration-200 text-gray-400 shrink-0",
+                isExpanded ? "transform rotate-0" : "transform -rotate-90"
+              )}
+            />
+          </button>
+          {isExpanded && (
+            <div className="relative pl-3 pr-3 py-1 flex flex-col gap-1">
+              <div className="absolute left-[21px] top-0 bottom-4 w-px bg-gray-200 dark:bg-white/10" />
+              {item.items.map((sub: any) => {
+                const isSubActive = sub.href === activeHref;
+                return (
+                  <Link
+                    key={sub.name}
+                    href={sub.href}
+                    onClick={onClose}
+                    className={cn(
+                      "flex items-center gap-2 py-1.5 pl-1.5 pr-3 rounded-lg text-[13px] font-semibold transition-colors relative",
+                      isSubActive
+                        ? "text-primary bg-primary/5 dark:bg-primary/10"
+                        : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                    )}
+                  >
+                    <span className={cn(
+                      "w-1.5 h-1.5 rounded-full shrink-0 transition-colors",
+                      isSubActive ? "bg-primary" : "bg-gray-300 dark:bg-gray-700"
+                    )} />
+                    <span>{sub.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ) : (
+        <Link
+          href={item.href}
+          onClick={onClose}
+          className={cn(
+            "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm nav-menu-text transition-colors mb-0.5",
+            isActive
+              ? "bg-primary/10 text-primary dark:text-primary font-semibold"
+              : "text-gray-600 dark:text-gray-550 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
+          )}
+        >
+          {Icon && <Icon size={18} className={isActive ? "text-primary" : "text-gray-600 dark:text-gray-300"} />}
+          <span className="flex-1">{item.name}</span>
+        </Link>
+      )}
+    </div>
+  );
 }
 
 export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
@@ -102,11 +184,16 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
  if (item.href && item.href !== "#" && (effectivePath === item.href || effectivePath.startsWith(`${item.href}/`))) {
  if (item.href.length > bestMatch.length) bestMatch = item.href;
  }
+ if (item.items) {
+  item.items.forEach((sub: any) => {
+  if (sub.href && (effectivePath === sub.href || effectivePath.startsWith(`${sub.href}/`))) {
+  if (sub.href.length > bestMatch.length) bestMatch = sub.href;
+  }
+  });
+ }
  });
  return navItems.map((item: any, index: number) => {
  const sectionLabel = sectionNames[item.name];
- const Icon = item.icon;
- const isActive = item.href === bestMatch;
 
  return (
  <div key={item.name}>
@@ -120,24 +207,11 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
  )}
 
  {/* Nav Item */}
- <Link
- href={item.href}
- onClick={onClose}
- className={cn(
- "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm nav-menu-text transition-colors mb-0.5",
- isActive
- ? "bg-primary/10 text-primary dark:text-primary"
- : "text-gray-600 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
- )}
- >
- {Icon && (
- <Icon
- size={18}
- className={isActive ? "text-primary" : "text-gray-600 dark:text-gray-300"}
+ <MobileSidebarItem
+ item={item}
+ activeHref={bestMatch || null}
+ onClose={onClose}
  />
- )}
- <span className="flex-1">{item.name}</span>
- </Link>
  </div>
  );
  });

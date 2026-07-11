@@ -2,7 +2,7 @@ export default function Loading() {
  return (
  <div className="space-y-10 pb-10 animate-pulse">
  {/* Header Skeleton */}
- <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-dashboard pb-8">
+ <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-8">
  <div className="flex flex-col gap-2">
  <div className="flex items-center gap-3">
  <div className="w-1.5 h-8 bg-gray-200 dark:bg-white/10 rounded-full" />
@@ -14,9 +14,9 @@ export default function Loading() {
  </div>
 
  {/* Table Skeleton */}
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard overflow-hidden">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
  {/* Toolbar */}
- <div className="p-6 border-b border-dashboard flex gap-4">
+ <div className="p-6 border-b border-gray-200 dark:border-white/10 flex gap-4">
  <div className="h-10 flex-1 bg-gray-50 dark:bg-white/5 rounded-xl" />
  <div className="h-10 w-24 bg-gray-50 dark:bg-white/5 rounded-xl" />
  </div>
@@ -29,7 +29,7 @@ export default function Loading() {
  </div>
 
  {/* Table Rows */}
- <div className="divide-y divide-dashboard">
+ <div className="divide-y divide-gray-200 dark:divide-white/10">
  {[...Array(8)].map((_, i) => (
  <div key={i} className="px-6 py-4 flex gap-4 items-center">
  <div className="h-10 w-10 rounded-full bg-gray-100 dark:bg-white/5 shrink-0" />

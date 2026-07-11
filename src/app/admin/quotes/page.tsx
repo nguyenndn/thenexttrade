@@ -155,37 +155,37 @@ export default function AdminQuotesPage() {
  </Button>
  </AdminPageHeader>
 
- {/* Tabs */}
- <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabType)} tabsId="quotes">
- <div className="overflow-x-auto scrollbar-hide flex">
- <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
- <TabsTrigger
- value="DASHBOARD"
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- <LayoutDashboard size={15} />
- <span>Dashboard Quotes</span>
- </TabsTrigger>
- <TabsTrigger
- value="HOMEPAGE"
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- <Home size={15} />
- <span>Homepage Quotes</span>
- </TabsTrigger>
- </TabsList>
- </div>
- </Tabs>
+  {/* Tabs */}
+  <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabType)} tabsId="quotes">
+    <div className="overflow-x-auto scrollbar-hide flex">
+      <TabsList className="shrink-0">
+        <TabsTrigger
+          value="DASHBOARD"
+          className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+          activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+          activeTextClassName="!text-white"
+        >
+          <LayoutDashboard size={15} />
+          <span>Dashboard Quotes</span>
+        </TabsTrigger>
+        <TabsTrigger
+          value="HOMEPAGE"
+          className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+          activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+          activeTextClassName="!text-white"
+        >
+          <Home size={15} />
+          <span>Homepage Quotes</span>
+        </TabsTrigger>
+      </TabsList>
+    </div>
+  </Tabs>
 
  {/* Table */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
- <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-dashboard text-xs uppercase text-gray-600 font-bold tracking-wider">
+ <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
  <tr>
  <th className="px-6 py-5">Quote</th>
  <th className="px-6 py-5 w-40">Author</th>
@@ -193,7 +193,7 @@ export default function AdminQuotesPage() {
  <th className="px-6 py-5 text-right w-20">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {loading ? (
  <tr>
  <td colSpan={4} className="px-6 py-12 text-center">
@@ -256,7 +256,7 @@ export default function AdminQuotesPage() {
  <MoreHorizontal size={16} />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40 p-1.5 rounded-xl border-dashboard shadow-xl bg-white dark:bg-[#151925] z-[100]">
+ <DropdownMenuContent align="end" className="w-40 p-1.5 rounded-xl border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#151925] z-[100]">
  <DropdownMenuItem
  onClick={() => openEditModal(quote)}
  className="flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-white/10 focus:bg-gray-50 dark:focus:bg-white/10 text-gray-700 dark:text-gray-300 transition-colors outline-none"
@@ -304,7 +304,7 @@ export default function AdminQuotesPage() {
  <textarea
  value={formText}
  onChange={(e) => setFormText(e.target.value)}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
  placeholder="Enter the quote text..."
  />
  </div>
@@ -317,7 +317,7 @@ export default function AdminQuotesPage() {
  type="text"
  value={formAuthor}
  onChange={(e) => setFormAuthor(e.target.value)}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
  placeholder="e.g. Warren Buffett"
  />
  </div>

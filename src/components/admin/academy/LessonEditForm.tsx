@@ -157,7 +157,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
  {/* Editor */}
  <div className="lg:col-span-3 space-y-6">
- <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-dashboard shadow-sm space-y-4">
+ <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
  <input
  type="text"
  placeholder="Lesson Title"
@@ -201,7 +201,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
 
  {/* Sidebar */}
  <div className="lg:col-span-1 space-y-4">
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-4">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
  <div>
  <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">Module *</label>
  <ModuleSelector
@@ -213,7 +213,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
  </div>
 
  {/* Status */}
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-4 space-y-4">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4 space-y-4">
  <div>
  <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">Status</label>
  <div className="flex gap-2">
@@ -223,7 +223,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
  formData.status === "draft"
  ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-700 dark:text-amber-400"
- : "border-dashboard text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
+ : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
  }`}
  >
  <EyeOff size={13} /> Draft
@@ -234,7 +234,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
  formData.status === "published"
  ? "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
- : "border-dashboard text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
+ : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
  }`}
  >
  <Eye size={13} /> Published
@@ -244,7 +244,7 @@ export function LessonEditForm({ lesson, modules, backHref }: LessonEditFormProp
  </div>
 
  {/* Word Count & Reading Time */}
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-4">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2 text-gray-600">
  <BookOpen size={14} />

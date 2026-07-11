@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface AdminPageHeaderProps {
  title: string;
  description: string;
  backHref?: string;
  children?: React.ReactNode;
+ className?: string;
 }
 
-export function AdminPageHeader({ title, description, backHref, children }: AdminPageHeaderProps) {
+export function AdminPageHeader({ title, description, backHref, children, className }: AdminPageHeaderProps) {
  return (
- <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+ <div className={cn("flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6", className)}>
  <div className="flex items-center gap-4">
  {backHref && (
  <Link

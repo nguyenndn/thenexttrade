@@ -33,7 +33,7 @@ export function PendingAccountsList({ licenses }: PendingAccountsListProps) {
 
  if (licenses.length === 0) {
  return (
- <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard">
+ <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10">
  <CheckCircle size={48} className="mx-auto mb-4 text-green-500" />
  <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">No Pending Requests</h3>
  <p className="text-gray-600 dark:text-gray-300">All license requests have been processed.</p>

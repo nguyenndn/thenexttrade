@@ -24,7 +24,7 @@ export default async function EABrokersPage() {
  </AdminPageHeader>
 
  {/* Table */}
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
  <table className="w-full">
  <thead className="bg-gray-50 dark:bg-white/5 text-left">
  <tr>
@@ -36,7 +36,7 @@ export default async function EABrokersPage() {
  <th className="p-4 text-xs font-bold text-gray-500 uppercase text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {brokers?.map((broker: any) => (
  <tr key={broker.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
  <td className="p-4">
@@ -44,7 +44,7 @@ export default async function EABrokersPage() {
  </td>
  <td className="p-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-lg bg-white p-1 border border-dashboard flex items-center justify-center">
+ <div className="w-10 h-10 rounded-lg bg-white p-1 border border-gray-200 dark:border-white/10 flex items-center justify-center">
  <img src={broker.logo} alt={broker.name} className="max-w-full max-h-full object-contain" />
  </div>
  <div>

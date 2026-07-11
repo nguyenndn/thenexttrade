@@ -35,7 +35,7 @@ export function SortableQuestion({ question, onEdit, onDelete }: QuestionProps) 
  style={style}
  className={clsx(
  "bg-white dark:bg-[#1C212E] border rounded-xl p-4 shadow-sm transition-colors",
- isDragging ? "border-primary" : "border-dashboard "
+ isDragging ? "border-primary" : "border-gray-200 dark:border-white/10 "
  )}
  >
  <div className="flex items-start gap-4">
@@ -54,7 +54,7 @@ export function SortableQuestion({ question, onEdit, onDelete }: QuestionProps) 
  {question.text}
  </div>
 
- <div className="space-y-1 pl-4 border-l-2 border-dashboard">
+ <div className="space-y-1 pl-4 border-l-2 border-gray-200 dark:border-white/10">
  {question.options.map((opt: any) => (
  <div key={opt.id} className={clsx(
  "text-sm flex items-center gap-2",

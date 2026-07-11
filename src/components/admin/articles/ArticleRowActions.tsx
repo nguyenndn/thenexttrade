@@ -54,7 +54,7 @@ export function ArticleRowActions({ article }: { article: { id: string, slug: st
  <MoreHorizontal size={18} />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40 rounded-xl border-dashboard">
+ <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-200 dark:border-white/10">
  <DropdownMenuItem onClick={() => window.open(`/articles/${article.slug}`, '_blank')} className="font-medium cursor-pointer rounded-lg mx-1 my-1">
  <ArrowUpRight size={14} className="mr-2 text-gray-500" /> View
  </DropdownMenuItem>

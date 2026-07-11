@@ -74,7 +74,7 @@ export function ChangeRoleModal({
  className="absolute inset-0 bg-black/50 backdrop-blur-sm"
  onClick={onClose}
  />
- <div className="relative bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-2xl w-full max-w-md mx-4 p-6">
+ <div className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md mx-4 p-6">
  <div className="flex items-center gap-3 mb-6">
  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
  <ShieldCheck size={20} className="text-primary" />
@@ -98,7 +98,7 @@ export function ChangeRoleModal({
  className={`w-full flex items-start gap-3 p-4 rounded-xl border-2 transition-all text-left ${
  selectedRole === role.value
  ? "border-primary bg-primary/5 dark:bg-primary/5"
- : "border-dashboard hover:border-gray-300 dark:hover:border-white/20"
+ : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
  }`}
  >
  <div

@@ -124,7 +124,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
  <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Question Text</label>
  <textarea
  {...register("text")}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[80px] resize-none"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[80px] resize-none"
  placeholder="What is the maximum leverage in forex trading?"
  />
  {errors.text && <p className="text-red-500 text-xs">{errors.text.message}</p>}
@@ -157,7 +157,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
  <div className="flex-1">
  <input
  {...register(`options.${index}.text` as const)}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
  placeholder={`Option ${index + 1}`}
  />
  {errors.options?.[index]?.text && (
@@ -192,7 +192,7 @@ export function QuestionModal({ isOpen, onClose, quizId, question, onSaved }: Qu
  </Button>
  </div>
 
- <div className="flex justify-end gap-3 pt-4 border-t border-dashboard">
+ <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-white/10">
  <Button
  type="button"
  variant="outline"

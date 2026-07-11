@@ -34,7 +34,7 @@ function HealthCard({
  href?: string;
 }) {
  return (
- <div className="rounded-2xl border border-dashboard bg-white dark:bg-[#151925] p-5">
+ <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5">
  <div className="flex items-center justify-between mb-4">
  <div className="flex items-center gap-2.5">
  <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg">
@@ -86,9 +86,6 @@ function FunnelRow({ label, count, rate, total }: { label: string; count: number
 }
 
 export function ReleaseHealthDashboard({ data }: Props) {
- const articleStatus: "green" | "amber" | "red" =
- data.articleOps.missingFiles > 5 ? "red" : data.articleOps.missingFiles > 0 || data.articleOps.needsSeo > 5 ? "amber" : "green";
-
  const accountStatus: "green" | "amber" | "red" =
  data.accounts.staleSync > 5 ? "red" : data.accounts.staleSync > 0 ? "amber" : "green";
 
@@ -100,16 +97,6 @@ export function ReleaseHealthDashboard({ data }: Props) {
  : data.activation.newUsersLast7Days >= 5
  ? "red"
  : "green";
-
- const articleOpsCard = (
- <HealthCard title="Article Readiness" status={articleStatus} icon={FileText} href="/admin/articles/ops">
- <StatRow label="Total" value={data.articleOps.total} />
- <StatRow label="Ready (≥80)" value={data.articleOps.ready} />
- <StatRow label="Needs SEO" value={data.articleOps.needsSeo} warn={data.articleOps.needsSeo > 5} />
- <StatRow label="Needs Images" value={data.articleOps.needsImages} warn={data.articleOps.needsImages > 0} />
- <StatRow label="Missing Files" value={data.articleOps.missingFiles} warn={data.articleOps.missingFiles > 0} />
- </HealthCard>
- );
 
  const accountSyncCard = (
  <HealthCard title="Account Sync" status={accountStatus} icon={Activity} href="/admin/ea">
@@ -155,8 +142,6 @@ export function ReleaseHealthDashboard({ data }: Props) {
  <StatRow label="Generate Review" value={data.analytics.weeklyReviewGenerateClicksLast7Days} />
  <StatRow label="Review Success" value={data.analytics.weeklyReviewGenerateSuccessLast7Days} />
  <StatRow label="Review No Data" value={data.analytics.weeklyReviewNoDataBlocksLast7Days} warn={data.analytics.weeklyReviewNoDataBlocksLast7Days > 5} />
- <StatRow label="Bulk SEO Applied" value={data.analytics.articleOpsBulkSeoAppliedLast7Days} />
- <StatRow label="Image Prompts Export" value={data.analytics.articleOpsImagePromptExportsLast7Days} />
  </HealthCard>
  );
 
@@ -164,34 +149,34 @@ export function ReleaseHealthDashboard({ data }: Props) {
  <div className="space-y-6">
  <Tabs defaultValue="all" className="w-full">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
- <div className="overflow-x-auto scrollbar-hide flex">
- <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
- <TabsTrigger 
- value="all"
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- All Metrics
- </TabsTrigger>
- <TabsTrigger 
- value="activation"
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- Activation & Engagement
- </TabsTrigger>
- <TabsTrigger 
- value="ops"
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- System Ops
- </TabsTrigger>
- </TabsList>
- </div>
+      <div className="overflow-x-auto scrollbar-hide flex">
+        <TabsList className="shrink-0">
+          <TabsTrigger 
+            value="all"
+            className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+            activeTextClassName="!text-white"
+          >
+            All Metrics
+          </TabsTrigger>
+          <TabsTrigger 
+            value="activation"
+            className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+            activeTextClassName="!text-white"
+          >
+            Activation & Engagement
+          </TabsTrigger>
+          <TabsTrigger 
+            value="ops"
+            className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+            activeTextClassName="!text-white"
+          >
+            System Ops
+          </TabsTrigger>
+        </TabsList>
+      </div>
  <div className="text-sm font-medium text-gray-500 whitespace-nowrap">
  Last updated: {new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })}
  </div>
@@ -199,7 +184,6 @@ export function ReleaseHealthDashboard({ data }: Props) {
 
  <TabsContent value="all" className="mt-4">
  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
- {articleOpsCard}
  {accountSyncCard}
  {weeklyReviewsCard}
  {newUsersCard}
@@ -217,7 +201,6 @@ export function ReleaseHealthDashboard({ data }: Props) {
 
  <TabsContent value="ops" className="mt-4">
  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
- {articleOpsCard}
  {accountSyncCard}
  </div>
  </TabsContent>

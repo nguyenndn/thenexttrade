@@ -45,8 +45,7 @@ interface UserItem {
  createdAt: Date;
  profile: { role: string; country: string | null } | null;
  _count: {
- quizAttempts: number;
- progress: number;
+  tradingAccounts: number;
  };
 }
 
@@ -218,9 +217,9 @@ export function UserList({ initialUsers, pagination, countryOptions }: UserListP
 
  // ─── Render ────────────────────────────────────────────────────
  return (
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
  {/* Toolbar */}
- <div className="p-4 border-b border-dashboard">
+ <div className="p-4 border-b border-gray-200 dark:border-white/10">
  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
  {/* Search */}
  <div className="flex-1 w-full sm:max-w-xs">
@@ -341,7 +340,7 @@ export function UserList({ initialUsers, pagination, countryOptions }: UserListP
  <div className="overflow-x-auto">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-dashboard text-xs uppercase text-gray-500 font-bold tracking-wider">
+ <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-500 font-bold tracking-wider">
  <th className="px-4 py-4 w-12">
  <Button
  variant="ghost"
@@ -364,11 +363,11 @@ export function UserList({ initialUsers, pagination, countryOptions }: UserListP
  <th className="px-4 py-4">Role</th>
  <th className="px-4 py-4">Country</th>
  <th className="px-4 py-4">Joined</th>
- <th className="px-4 py-4">Activity</th>
+ <th className="px-4 py-4">Accounts</th>
  <th className="px-4 py-4 text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {initialUsers.map((user) => {
  const role = user.profile?.role || "USER";
  const isSelected = selectedIds.has(user.id);
@@ -407,7 +406,7 @@ export function UserList({ initialUsers, pagination, countryOptions }: UserListP
  {/* User Info */}
  <td className="px-4 py-4">
  <div className="flex items-center gap-3">
- <Avatar className="w-9 h-9 border border-dashboard">
+ <Avatar className="w-9 h-9 border border-gray-200 dark:border-white/10">
  <AvatarImage
  src={user.image || ""}
  alt={
@@ -475,23 +474,15 @@ export function UserList({ initialUsers, pagination, countryOptions }: UserListP
  </div>
  </td>
 
- {/* Activity */}
+ {/* Accounts */}
  <td className="px-4 py-4">
  <div className="flex gap-2">
- <div className="flex flex-col items-center min-w-[52px] px-2 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard">
+ <div className="flex flex-col items-center min-w-[52px] px-2 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
  <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold">
- Lessons
+ Linked
  </span>
  <span className="text-sm font-bold text-gray-700 dark:text-white">
- {user._count.progress}
- </span>
- </div>
- <div className="flex flex-col items-center min-w-[52px] px-2 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard">
- <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold">
- Quizzes
- </span>
- <span className="text-sm font-bold text-gray-700 dark:text-white">
- {user._count.quizAttempts}
+ {user._count.tradingAccounts}
  </span>
  </div>
  </div>
@@ -537,7 +528,7 @@ export function UserList({ initialUsers, pagination, countryOptions }: UserListP
 
  {/* Pagination */}
  {pagination.totalPages > 1 && (
- <div className="flex items-center justify-between px-6 py-4 border-t border-dashboard">
+ <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10">
  <p className="text-sm text-gray-500">
  Page {currentPage} of {pagination.totalPages}
  </p>

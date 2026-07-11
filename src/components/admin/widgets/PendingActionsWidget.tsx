@@ -12,7 +12,7 @@ interface PendingItem {
 
 export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
  return (
- <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
  <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
  <AlertTriangle className="w-5 h-5 text-amber-500" />
  Actions Required
@@ -69,7 +69,7 @@ export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
  </div>
 
  {items.length > 0 && (
- <div className="mt-4 pt-3 border-t border-dashboard">
+ <div className="mt-4 pt-3 border-t border-gray-200 dark:border-white/10">
  <Link 
  href="/admin/articles?status=pending" 
  className="text-sm text-amber-600 dark:text-amber-500 font-medium hover:underline flex items-center justify-center"

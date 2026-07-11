@@ -32,7 +32,7 @@ export default function AdminLoginPage() {
  };
 
  return (
- <div className="bg-white dark:bg-[#1E2028] p-8 rounded-2xl border border-dashboard shadow-2xl shadow-black/5 dark:shadow-black/20 transition-colors duration-300">
+ <div className="bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl shadow-black/5 dark:shadow-black/20 transition-colors duration-300">
  {/* Admin Badge */}
  <div className="flex justify-center mb-6">
  <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 dark:from-amber-500/5 dark:to-orange-500/5 border border-amber-200 dark:border-amber-500/20 rounded-full">
@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
  required
  autoComplete="email"
  startIcon={<Mail size={18} className="text-gray-400" />}
- className="bg-gray-50 dark:bg-[#0B0E14] border-dashboard text-gray-700 dark:text-white text-sm py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 h-12 transition-colors rounded-xl"
+ className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-sm py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 h-12 transition-colors rounded-xl"
  />
 
  <Input
@@ -90,7 +90,7 @@ export default function AdminLoginPage() {
  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
  </Button>
  }
- className="bg-gray-50 dark:bg-[#0B0E14] border-dashboard text-gray-700 dark:text-white text-sm py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 h-12 transition-colors rounded-xl"
+ className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-sm py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 h-12 transition-colors rounded-xl"
  />
 
  <TurnstileWidget
@@ -108,7 +108,7 @@ export default function AdminLoginPage() {
  </Button>
  </form>
 
- <div className="mt-6 pt-6 border-t border-dashboard text-center">
+ <div className="mt-6 pt-6 border-t border-gray-200 dark:border-white/10 text-center">
  <Link
  href="/auth/login"
  className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors font-medium"

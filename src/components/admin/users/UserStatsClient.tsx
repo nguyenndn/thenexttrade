@@ -12,13 +12,13 @@ interface HeroStat {
 interface UserStatsClientProps {
  totalUsers: HeroStat;
  newUsers: HeroStat;
- activeLearners: HeroStat;
+ activeTraders: HeroStat;
 }
 
 export function UserStatsClient({
  totalUsers,
  newUsers,
- activeLearners,
+ activeTraders,
 }: UserStatsClientProps) {
  return (
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -41,10 +41,10 @@ export function UserStatsClient({
  index={1}
  />
  <AnimatedStatCard
- title="Active Learners"
- value={activeLearners.value}
- sparklineData={activeLearners.sparkline}
- trendPercent={activeLearners.trendPercent}
+ title="Active Traders"
+ value={activeTraders.value}
+ sparklineData={activeTraders.sparkline}
+ trendPercent={activeTraders.trendPercent}
  icon={Zap}
  color="amber"
  index={2}

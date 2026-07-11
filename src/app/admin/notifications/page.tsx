@@ -35,7 +35,7 @@ export default async function AdminNotificationsPage() {
  </Link>
  </AdminPageHeader>
 
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
  {broadcasts.length === 0 ? (
  <div className="p-12 text-center text-gray-600">
  <Megaphone size={48} className="mx-auto mb-4 opacity-30" />
@@ -53,7 +53,7 @@ export default async function AdminNotificationsPage() {
  <th className="px-6 py-4">Created At</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {broadcasts.map((b) => (
  <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
  <td className="px-6 py-4">

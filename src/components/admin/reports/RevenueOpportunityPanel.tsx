@@ -16,7 +16,7 @@ export function RevenueOpportunityPanel({ data }: Props) {
  {data.opportunities.length > 0 ? (
  <div className="overflow-x-auto -mx-6 md:-mx-8">
  <table className="w-full text-xs">
- <thead><tr className="border-b border-dashboard">
+ <thead><tr className="border-b border-gray-200 dark:border-white/10">
  <th className="px-4 py-2 text-left font-bold text-gray-400 uppercase">User</th>
  <th className="px-4 py-2 text-left font-bold text-gray-400 uppercase">Broker</th>
  <th className="px-4 py-2 text-right font-bold text-gray-400 uppercase">Balance</th>

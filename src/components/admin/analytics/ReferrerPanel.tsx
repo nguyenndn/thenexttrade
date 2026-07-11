@@ -55,7 +55,7 @@ export function ReferrerPanel({ referrers }: Props) {
  }));
 
  return (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center gap-2 mb-4">
  <Share2 className="w-4 h-4 text-indigo-500" />
  <h2 className="text-sm font-bold text-gray-900 dark:text-white">Traffic Sources</h2>
@@ -112,7 +112,7 @@ export function ReferrerPanel({ referrers }: Props) {
  {/* Top Referrers table */}
  {topReferrers.length > 0 && (
  <>
- <div className="text-[10px] text-gray-400 uppercase tracking-wider pb-2 border-b border-dashboard mb-1">
+ <div className="text-[10px] text-gray-400 uppercase tracking-wider pb-2 border-b border-gray-200 dark:border-white/10 mb-1">
  Top Referrers
  </div>
  <div className="space-y-0.5 max-h-[200px] overflow-y-auto">

@@ -43,7 +43,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
 
  return (
  <Dialog open={isOpen} onOpenChange={onClose}>
- <DialogContent className="max-w-md bg-white dark:bg-[#151925] p-6 rounded-xl border border-dashboard">
+ <DialogContent className="max-w-md bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-200 dark:border-white/10">
  <DialogHeader className="mb-4">
  <DialogTitle className="text-xl font-bold">Edit Quiz Details</DialogTitle>
  </DialogHeader>
@@ -56,7 +56,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
  <input
  value={title}
  onChange={(e) => setTitle(e.target.value)}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold"
  placeholder="Forex Basics Final Exam"
  />
  </div>
@@ -68,7 +68,7 @@ export function QuizSettingsModal({ isOpen, onClose, quiz, onSaved }: QuizSettin
  <textarea
  value={description}
  onChange={(e) => setDescription(e.target.value)}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all h-24 resize-none"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all h-24 resize-none"
  placeholder="Brief description of this quiz..."
  />
  </div>

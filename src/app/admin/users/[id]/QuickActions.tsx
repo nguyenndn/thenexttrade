@@ -52,13 +52,13 @@ export function QuickActions({ userId, userEmail, userName, currentRole }: Quick
 
  return (
  <>
- <div className="border-t border-dashboard bg-gray-50/80 p-4 border-dashboard dark:bg-white/[0.03]">
+ <div className="border-t border-gray-200 dark:border-white/10 bg-gray-50/80 p-4 border-gray-200 dark:border-white/10 dark:bg-white/[0.03]">
  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
  <Button
  variant="ghost"
  size="sm"
  onClick={() => setShowRoleModal(true)}
- className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-dashboard bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-dashboard dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+ className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-gray-200 dark:border-white/10 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
  >
  <Pencil size={14} className="mr-1.5 shrink-0" />
  <span className="whitespace-nowrap">Edit Role</span>
@@ -67,7 +67,7 @@ export function QuickActions({ userId, userEmail, userName, currentRole }: Quick
  variant="ghost"
  size="sm"
  onClick={() => setShowResetConfirm(true)}
- className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-dashboard bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-dashboard dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+ className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-gray-200 dark:border-white/10 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
  >
  <KeyRound size={14} className="mr-1.5 shrink-0" />
  <span className="whitespace-nowrap">Reset Password</span>
@@ -76,7 +76,7 @@ export function QuickActions({ userId, userEmail, userName, currentRole }: Quick
  variant="ghost"
  size="sm"
  onClick={() => setShowNotifyModal(true)}
- className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-dashboard bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-dashboard dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+ className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-gray-200 dark:border-white/10 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
  >
  <Bell size={14} className="mr-1.5 shrink-0" />
  <span className="whitespace-nowrap">Notify</span>
@@ -109,8 +109,8 @@ export function QuickActions({ userId, userEmail, userName, currentRole }: Quick
  {/* Notify Modal */}
  {showNotifyModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowNotifyModal(false)}>
- <div className="bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md mx-4 border border-dashboard shadow-2xl" onClick={e => e.stopPropagation()}>
- <div className="flex items-center justify-between p-6 border-b border-dashboard">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-md mx-4 border border-gray-200 dark:border-white/10 shadow-2xl" onClick={e => e.stopPropagation()}>
+ <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
  <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
  <Bell size={18} className="text-primary" /> Send Notification
  </h3>
@@ -132,7 +132,7 @@ export function QuickActions({ userId, userEmail, userName, currentRole }: Quick
  value={notifyTitle}
  onChange={e => setNotifyTitle(e.target.value)}
  placeholder="Notification title..."
- className="w-full px-3 py-2.5 rounded-xl border border-dashboard bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+ className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
  />
  </div>
  <div>
@@ -142,7 +142,7 @@ export function QuickActions({ userId, userEmail, userName, currentRole }: Quick
  onChange={e => setNotifyMessage(e.target.value)}
  placeholder="Write your message..."
  rows={3}
- className="w-full px-3 py-2.5 rounded-xl border border-dashboard bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+ className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors resize-none"
  />
  </div>
  </div>

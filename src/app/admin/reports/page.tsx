@@ -41,7 +41,7 @@ export default async function AdminReportsPage({ searchParams }: Props) {
  description="System-wide reports for user quality, activation, revenue opportunities, content ROI, and operational health."
  >
  {/* Period switcher */}
- <div className="flex bg-gray-100 dark:bg-white/5 rounded-xl p-1 border border-dashboard">
+ <div className="flex bg-gray-100 dark:bg-white/5 rounded-xl p-1 border border-gray-200 dark:border-white/10">
  {PERIODS.map((p) => (
  <Link
  key={p.value}

@@ -57,30 +57,32 @@ export async function GET(request: NextRequest) {
  where: { createdAt: { gte: since } },
  }).then(r => r.length),
 
- // Funnel: Interested (clicked CTA)
+ // Funnel: Explored Leaderboard
+ prisma.pageView.groupBy({
+ by: ['sessionId'],
+ where: {
+ createdAt: { gte: since },
+ pathname: { startsWith: '/leaderboard' },
+ },
+ }).then(r => r.length),
+
+ // Funnel: Learned (Completed lesson or journal)
  prisma.analyticsEvent.groupBy({
  by: ['sessionId'],
  where: {
  createdAt: { gte: since },
- name: { in: ['click_open_account', 'click_download_ea'] },
+ name: { in: ['complete_lesson', 'journal_entry_created'] },
  },
  }).then(r => r.length),
 
- // Funnel: Signed up
- prisma.analyticsEvent.count({
+ // Funnel: Adopted EA (Downloaded EA)
+ prisma.analyticsEvent.groupBy({
+ by: ['sessionId'],
  where: {
  createdAt: { gte: since },
- name: 'signup_complete',
+ name: 'click_download_ea',
  },
- }),
-
- // Funnel: Activated (first trade sync)
- prisma.analyticsEvent.count({
- where: {
- createdAt: { gte: since },
- name: 'first_trade_sync',
- },
- }),
+ }).then(r => r.length),
  ]);
 
  return NextResponse.json({

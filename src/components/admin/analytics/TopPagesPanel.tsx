@@ -10,14 +10,14 @@ export function TopPagesPanel({ pages }: Props) {
  const maxViews = pages[0]?.views ?? 1;
 
  return (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center gap-2 mb-4">
  <FileText className="w-4 h-4 text-cyan-500" />
  <h2 className="text-sm font-bold text-gray-900 dark:text-white">Top Pages</h2>
  </div>
 
  {/* Table header */}
- <div className="flex items-center justify-between text-xs text-gray-400 uppercase tracking-wider pb-2 border-b border-dashboard mb-2">
+ <div className="flex items-center justify-between text-xs text-gray-400 uppercase tracking-wider pb-2 border-b border-gray-200 dark:border-white/10 mb-2">
  <span>Page</span>
  <span>Views</span>
  </div>

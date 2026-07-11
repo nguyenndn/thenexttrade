@@ -144,7 +144,7 @@ export default function AdminCommentsPage() {
  {/* Data Wrapper */}
  <div className="space-y-6">
  {/* 1. Toolbar Card */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm flex flex-col gap-4">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
  <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
  <div className="flex-1 w-full max-w-md">
  <PremiumInput
@@ -177,10 +177,10 @@ export default function AdminCommentsPage() {
  </div>
 
  {/* 2. Data Table Card */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
- <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-dashboard text-xs uppercase text-gray-600 font-bold tracking-wider">
+ <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
  <tr>
  <th className="pl-6 pr-4 py-5 w-14">
  <Button variant="ghost" onClick={toggleSelectAll} className="w-5 h-5 min-w-0 min-h-0 p-0 flex items-center justify-center text-gray-500 hover:text-gray-600 hover:bg-transparent" aria-label="Select All">
@@ -193,7 +193,7 @@ export default function AdminCommentsPage() {
  <th className="py-4 px-6 text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {isLoading ? (
  Array.from({ length: 5 }).map((_, i) => (
  <tr key={i} className="animate-pulse">

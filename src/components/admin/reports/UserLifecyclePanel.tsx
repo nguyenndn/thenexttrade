@@ -55,7 +55,7 @@ export function UserLifecyclePanel({ data }: UserLifecyclePanelProps) {
  <div className="overflow-x-auto">
  <table className="w-full text-xs">
  <thead>
- <tr className="border-b border-dashboard">
+ <tr className="border-b border-gray-200 dark:border-white/10">
  <th className="px-3 py-2 text-left font-bold text-gray-400 uppercase">From</th>
  <th className="px-3 py-2 text-left font-bold text-gray-400 uppercase">To</th>
  <th className="px-3 py-2 text-right font-bold text-gray-400 uppercase">Drop</th>

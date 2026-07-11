@@ -12,7 +12,6 @@ import { ReferrerPanel } from '@/components/admin/analytics/ReferrerPanel';
 import { FunnelPanel } from '@/components/admin/analytics/FunnelPanel';
 import { EventsPanel } from '@/components/admin/analytics/EventsPanel';
 import { RecentVisitorsPanel } from '@/components/admin/analytics/RecentVisitorsPanel';
-import { ContentAnalyticsPanel } from '@/components/admin/analytics/ContentAnalyticsPanel';
 import { CampaignPanel } from '@/components/admin/analytics/CampaignPanel';
 import { Button } from '@/components/ui/Button';
 import { exportCSV } from '@/lib/export-csv';
@@ -21,7 +20,6 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 
 const TABS = [
  { id: 'overview', label: 'Overview', icon: BarChart3 },
- { id: 'content', label: 'Content', icon: FileText },
  { id: 'audience', label: 'Audience', icon: Users },
  { id: 'events', label: 'Events', icon: MousePointerClick },
 ] as const;
@@ -34,30 +32,13 @@ const PERIODS = [
  { value: '90d', label: '90 Days' },
 ] as const;
 
-interface ContentData {
- content: Array<{
- pathname: string;
- slug: string;
- title: string;
- author: string;
- category: string;
- views: number;
- publishedAt: string | null;
- }>;
- authors: Array<{ name: string; views: number }>;
- categories: Array<{ name: string; views: number }>;
- totalArticleViews: number;
-}
-
 export default function AnalyticsDashboard() {
  const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('7d');
  const [tab, setTab] = useState<TabId>('overview');
  const [data, setData] = useState<AnalyticsData | null>(null);
  const [eventsData, setEventsData] = useState<EventsData | null>(null);
- const [contentData, setContentData] = useState<ContentData | null>(null);
  const [campaignData, setCampaignData] = useState<{ campaigns: Array<{ campaign: string; source: string; medium: string; views: number; uniqueVisitors: number }>; totalCampaignViews: number } | null>(null);
  const [loading, setLoading] = useState(true);
- const [contentLoading, setContentLoading] = useState(false);
  const [realTime, setRealTime] = useState(0);
 
  const fetchData = useCallback(async () => {
@@ -75,23 +56,7 @@ export default function AnalyticsDashboard() {
  finally { setLoading(false); }
  }, [period]);
 
- const fetchContentData = useCallback(async () => {
- setContentLoading(true);
- try {
- const res = await fetch(`/api/admin/analytics/content?period=${period}`);
- if (res.ok) { setContentData(await res.json()); }
- } catch { /* silent */ }
- finally { setContentLoading(false); }
- }, [period]);
-
  useEffect(() => { fetchData(); }, [fetchData]);
-
- // Fetch content data when the content tab is active or period changes.
- useEffect(() => {
- if (tab === 'content') {
- fetchContentData();
- }
- }, [tab, period, fetchContentData]);
 
  // Real-time polling every 30s
  useEffect(() => {
@@ -143,7 +108,7 @@ export default function AnalyticsDashboard() {
  </div>
  <div className="flex items-center gap-3">
  {/* Period pills */}
- <div className="flex bg-gray-100 dark:bg-white/5 rounded-xl p-1 border border-dashboard">
+ <div className="flex bg-gray-100 dark:bg-white/5 rounded-xl p-1 border border-gray-200 dark:border-white/10">
  {PERIODS.map(p => (
  <button key={p.value} onClick={() => setPeriod(p.value as typeof period)}
  className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
@@ -168,23 +133,23 @@ export default function AnalyticsDashboard() {
  </div>
  </div>
 
- {/* Tab Navigation */}
- <div className="overflow-x-auto scrollbar-hide flex">
- <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
- {TABS.map(t => (
- <TabsTrigger
- key={t.id}
- value={t.id}
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- <t.icon size={15} />
- <span>{t.label}</span>
- </TabsTrigger>
- ))}
- </TabsList>
- </div>
+  {/* Tab Navigation */}
+  <div className="overflow-x-auto scrollbar-hide flex">
+    <TabsList className="shrink-0">
+      {TABS.map(t => (
+        <TabsTrigger
+          key={t.id}
+          value={t.id}
+          className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+          activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+          activeTextClassName="!text-white"
+        >
+          <t.icon size={15} />
+          <span>{t.label}</span>
+        </TabsTrigger>
+      ))}
+    </TabsList>
+  </div>
 
  {/* Loading skeleton */}
  {loading && !data && <LoadingSkeleton />}
@@ -225,21 +190,6 @@ export default function AnalyticsDashboard() {
  </>
  )}
 
- {/* Content Tab */}
- {tab === 'content' && (
- <>
- {data && <AnalyticsSummary summary={data.summary} realTime={realTime} />}
- <h2 className="text-sm font-bold text-gray-700 dark:text-white">Content Performance</h2>
- <ContentAnalyticsPanel
- content={contentData?.content || []}
- authors={contentData?.authors || []}
- categories={contentData?.categories || []}
- totalArticleViews={contentData?.totalArticleViews || 0}
- loading={contentLoading}
- />
- </>
- )}
-
  {/* Audience Tab */}
  {tab === 'audience' && data && (
  <>
@@ -272,7 +222,7 @@ function LoadingSkeleton() {
  <div className="space-y-4">
  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
  {[1,2,3,4].map(i => (
- <div key={i} className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 animate-pulse">
+ <div key={i} className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 animate-pulse">
  <div className="flex items-center gap-3">
  <div className="w-9 h-9 shrink-0 rounded-xl bg-gray-200 dark:bg-white/5" />
  <div className="flex-1">

@@ -58,7 +58,7 @@ const activityStatusConfig: Record<string, { label: string; badgeClass: string; 
  },
  CONNECTED_NO_TRADES: {
  label: "No Trades",
- badgeClass: "bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-dashboard",
+ badgeClass: "bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10",
  icon: Clock,
  },
  AT_RISK: {
@@ -73,12 +73,12 @@ const activityStatusConfig: Record<string, { label: string; badgeClass: string; 
  },
  VERIFIED_INACTIVE: {
  label: "Inactive",
- badgeClass: "bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-500 border-dashboard",
+ badgeClass: "bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-500 border-gray-200 dark:border-white/10",
  icon: UserCheck,
  },
  SIGNED_UP: {
  label: "Signed Up",
- badgeClass: "bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-500 border-dashboard",
+ badgeClass: "bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-500 border-gray-200 dark:border-white/10",
  icon: UserCheck,
  },
 };
@@ -155,7 +155,7 @@ export function TraderMonitorClient({ traders: initialTraders }: { traders: Trad
  return (
  <div className="space-y-6 pb-10">
  {/* Header */}
- <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-dashboard pb-8">
+ <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 dark:border-white/10 pb-8">
  <div className="flex flex-col gap-2">
  <div className="flex items-center gap-3">
  <div className="w-1.5 h-8 bg-primary rounded-full" />
@@ -170,7 +170,7 @@ export function TraderMonitorClient({ traders: initialTraders }: { traders: Trad
  </div>
 
  {/* Toolbar */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm flex flex-wrap items-center gap-3">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-wrap items-center gap-3">
  {/* Status Filter */}
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -184,7 +184,7 @@ export function TraderMonitorClient({ traders: initialTraders }: { traders: Trad
  <ChevronDown size={14} />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="start" className="w-44 rounded-xl border-dashboard">
+ <DropdownMenuContent align="start" className="w-44 rounded-xl border-gray-200 dark:border-white/10">
  <DropdownMenuItem onClick={() => setStatusFilter("ALL")} className="font-medium cursor-pointer rounded-lg mx-1 my-0.5">
  All
  </DropdownMenuItem>
@@ -209,7 +209,7 @@ export function TraderMonitorClient({ traders: initialTraders }: { traders: Trad
  <ChevronDown size={14} />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="start" className="w-40 rounded-xl border-dashboard">
+ <DropdownMenuContent align="start" className="w-40 rounded-xl border-gray-200 dark:border-white/10">
  {brokers.map((b) => (
  <DropdownMenuItem key={b} onClick={() => setBrokerFilter(b)} className="font-medium cursor-pointer rounded-lg mx-1 my-0.5">
  {b === "ALL" ? "All Brokers" : b}
@@ -226,7 +226,7 @@ export function TraderMonitorClient({ traders: initialTraders }: { traders: Trad
  <ChevronDown size={14} />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="start" className="w-40 rounded-xl border-dashboard">
+ <DropdownMenuContent align="start" className="w-40 rounded-xl border-gray-200 dark:border-white/10">
  <DropdownMenuItem onClick={() => setSortBy("trades30d")} className="font-medium cursor-pointer rounded-lg mx-1 my-0.5">Trades 30d</DropdownMenuItem>
  <DropdownMenuItem onClick={() => setSortBy("lotVolume30d")} className="font-medium cursor-pointer rounded-lg mx-1 my-0.5">Lot Volume</DropdownMenuItem>
  <DropdownMenuItem onClick={() => setSortBy("lastTrade")} className="font-medium cursor-pointer rounded-lg mx-1 my-0.5">Last Trade</DropdownMenuItem>
@@ -249,7 +249,7 @@ export function TraderMonitorClient({ traders: initialTraders }: { traders: Trad
  </div>
 
  {/* Table */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  {filtered.length === 0 ? (
  <div className="text-center py-16">
  <AlertTriangle size={32} className="text-gray-300 dark:text-gray-600 mx-auto mb-3" />
@@ -259,7 +259,7 @@ export function TraderMonitorClient({ traders: initialTraders }: { traders: Trad
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-dashboard text-xs uppercase text-gray-600 dark:text-gray-400 font-bold tracking-wider">
+ <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 dark:text-gray-400 font-bold tracking-wider">
  <th className="px-6 py-4">User</th>
  <th className="px-6 py-4">Broker</th>
  <th className="px-6 py-4">Account</th>
@@ -272,7 +272,7 @@ export function TraderMonitorClient({ traders: initialTraders }: { traders: Trad
  <th className="px-6 py-4 text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {filtered.map((t) => {
  const status = activityStatusConfig[t.activityStatus] || activityStatusConfig.SIGNED_UP;
  const StatusIcon = status.icon;
@@ -331,7 +331,7 @@ export function TraderMonitorClient({ traders: initialTraders }: { traders: Trad
  <MoreHorizontal size={16} />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-48 rounded-xl border-dashboard">
+ <DropdownMenuContent align="end" className="w-48 rounded-xl border-gray-200 dark:border-white/10">
  <DropdownMenuItem
  onClick={() => setDeleteTarget(t)}
  className="font-medium cursor-pointer rounded-lg mx-1 my-0.5 text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"

@@ -121,7 +121,7 @@ export function CreateLessonModal({ isOpen, onClose, moduleId, onSuccess }: Crea
  <input
  {...register("title")}
  onChange={handleTitleChange}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
  placeholder="Introduction to Trading"
  />
  {errors.title && <p className="text-red-500 text-xs">{errors.title.message}</p>}
@@ -132,7 +132,7 @@ export function CreateLessonModal({ isOpen, onClose, moduleId, onSuccess }: Crea
  <input
  {...register("slug")}
  readOnly
- className="w-full rounded-xl border border-dashboard bg-gray-50 dark:bg-white/5 px-4 py-2.5 text-sm outline-none text-gray-600 dark:text-gray-300 cursor-not-allowed"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-2.5 text-sm outline-none text-gray-600 dark:text-gray-300 cursor-not-allowed"
  placeholder="auto-generated"
  />
  {errors.slug && <p className="text-red-500 text-xs">{errors.slug.message}</p>}
@@ -144,7 +144,7 @@ export function CreateLessonModal({ isOpen, onClose, moduleId, onSuccess }: Crea
  <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Video URL <span className="font-normal text-gray-500">(Optional)</span></label>
  <input
  {...register("videoUrl")}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
  placeholder="https://youtube.com/watch?v=..."
  />
  </div>
@@ -153,7 +153,7 @@ export function CreateLessonModal({ isOpen, onClose, moduleId, onSuccess }: Crea
  <input
  type="number"
  {...register("duration")}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
  placeholder="10"
  />
  </div>

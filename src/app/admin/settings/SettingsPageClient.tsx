@@ -51,14 +51,14 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
  <Tabs value={activeTab} onValueChange={setActiveTab} tabsId="admin-settings">
  {/* ── Horizontal Tab Nav ── */}
  <div className="mt-6 overflow-x-auto scrollbar-hide flex">
- <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
+ <TabsList className="shrink-0">
  {tabs.map((tab) => {
  const Icon = tab.icon;
  return (
  <TabsTrigger
  key={tab.key}
  value={tab.key}
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+ className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
  activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
  activeTextClassName="!text-white"
  >
@@ -76,7 +76,7 @@ export default function SettingsPageClient({ user, initialConfig }: SettingsPage
  {activeTab === "security" && <SecuritySettings />}
  {activeTab === "system" && <SystemSettings initialConfig={initialConfig} />}
  {activeTab === "notifications" && (
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm">
  <div className="text-center py-20 text-gray-500">
  <Bell size={48} className="mx-auto mb-4 opacity-50" />
  <p>Notification settings coming soon.</p>
@@ -130,7 +130,7 @@ function ProfileSettings({ user }: { user: any }) {
  return (
  <form action={handleSubmit} className="space-y-5">
  {/* ── Profile Picture Card with gradient hero ── */}
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
  {/* Gradient banner */}
  <div className="h-32 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent dark:from-primary/30 dark:via-primary/15 dark:to-transparent relative">
  <div className="absolute inset-0 opacity-30"
@@ -172,8 +172,8 @@ function ProfileSettings({ user }: { user: any }) {
  </div>
 
  {/* ── Personal Info Card ── */}
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
- <div className="px-6 py-4 border-b border-dashboard dark:border-white/8 flex items-center gap-2.5">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+ <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 dark:border-white/8 flex items-center gap-2.5">
  <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
  <User size={14} className="text-primary" />
  </div>
@@ -195,7 +195,7 @@ function ProfileSettings({ user }: { user: any }) {
  </div>
 
  {/* Save Button */}
- <div className="px-6 py-4 border-t border-dashboard dark:border-white/8 flex justify-end">
+ <div className="px-6 py-4 border-t border-gray-200 dark:border-white/10 dark:border-white/8 flex justify-end">
  <Button
  disabled={isPending}
  isLoading={isPending}
@@ -214,8 +214,8 @@ function ProfileSettings({ user }: { user: any }) {
  ───────────────────────────────────────────── */
 function SecuritySettings() {
  return (
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
- <div className="px-6 py-4 border-b border-dashboard dark:border-white/8 flex items-center gap-2.5">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+ <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 dark:border-white/8 flex items-center gap-2.5">
  <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
  <Lock size={14} className="text-primary" />
  </div>
@@ -233,7 +233,7 @@ function SecuritySettings() {
  Shared UI Components (defined outside to prevent re-mount on re-render)
  ───────────────────────────────────────────── */
 const ToggleRow = ({ label, desc, checked, onChange }: { label: string; desc: string; checked: boolean; onChange: () => void }) => (
- <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-dashboard">
+ <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
  <div>
  <h4 className="font-bold text-gray-700 dark:text-white text-sm">{label}</h4>
  <p className="text-xs text-gray-600">{desc}</p>
@@ -246,8 +246,8 @@ const ToggleRow = ({ label, desc, checked, onChange }: { label: string; desc: st
 );
 
 const SectionCard = ({ icon: Icon, title, children, className }: { icon: any; title: string; children: React.ReactNode; className?: string }) => (
- <div className={`bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden flex flex-col ${className || ''}`}>
- <div className="px-6 py-4 border-b border-dashboard dark:border-white/8 flex items-center gap-2.5">
+ <div className={`bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col ${className || ''}`}>
+ <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 dark:border-white/8 flex items-center gap-2.5">
  <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
  <Icon size={14} className="text-primary" />
  </div>
@@ -317,7 +317,7 @@ function SystemSettings({ initialConfig }: { initialConfig: SettingsPageClientPr
  onChange={(e) => setConfig((prev) => ({ ...prev, systemAnnouncement: e.target.value }))}
  placeholder="e.g. Scheduled maintenance tonight at 22:00 UTC"
  rows={2}
- className="w-full px-4 py-3 text-sm bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-gray-700 dark:text-white placeholder-gray-400 resize-none"
+ className="w-full px-4 py-3 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-gray-700 dark:text-white placeholder-gray-400 resize-none"
  />
  </div>
  </SectionCard>

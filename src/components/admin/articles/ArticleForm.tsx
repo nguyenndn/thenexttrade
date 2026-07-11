@@ -52,7 +52,7 @@ function FormSelect({ label, value, options, onChange, placeholder }: { label: s
  <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">{label}</label>
  <DropdownMenu className="w-full block">
  <DropdownMenuTrigger asChild>
- <Button variant="outline" className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border-dashboard px-3 py-2 h-auto text-left shadow-none rounded-lg focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all">
+ <Button variant="outline" className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 px-3 py-2 h-auto text-left shadow-none rounded-lg focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all">
  <span className={value ? "text-gray-700 dark:text-gray-100 truncate pr-2" : "text-gray-600 truncate pr-2"}>
  {options.find(o => o.value === value)?.label || placeholder}
  </span>
@@ -431,7 +431,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
  {/* Zenith Focus Editor - Left Column */}
  <div className="lg:col-span-3 space-y-6">
- <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-dashboard shadow-sm space-y-6">
+ <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
  <div className="space-y-2">
  <input
  type="text"
@@ -502,7 +502,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  />
 
  {/* SEO Settings */}
- <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-dashboard shadow-sm space-y-4">
+ <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
  <h3 className="font-bold text-gray-700 dark:text-white">SEO Settings</h3>
  <div className="grid grid-cols-1 gap-4">
  <div>
@@ -511,7 +511,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  type="text"
  value={formData.metaTitle}
  onChange={e => setFormData({ ...formData, metaTitle: e.target.value })}
- className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+ className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
  placeholder="SEO Title (defaults to article title)"
  />
  </div>
@@ -520,7 +520,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  <textarea
  value={formData.metaDescription}
  onChange={e => setFormData({ ...formData, metaDescription: e.target.value })}
- className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+ className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none"
  rows={3}
  placeholder="Brief description for search engines..."
  />
@@ -531,12 +531,12 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
 
  {/* Visible Settings Sidebar - Right Column */}
  <div className="lg:col-span-1 space-y-6">
- <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-5 space-y-6">
+ <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5 space-y-6">
  {/* Publish Settings */}
 
  {/* Publish Action */}
  <div className="space-y-4">
- <div className="flex justify-between items-center border-b border-dashboard pb-2">
+ <div className="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-2">
  <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">Publish Info</h3>
  <Button
  type="button"
@@ -644,7 +644,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  <input
  type="number"
  min={1}
- className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard text-sm focus:outline-none focus:border-primary"
+ className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
  value={formData.estimatedTime ?? ''}
  onChange={e => setFormData({ ...formData, estimatedTime: e.target.value ? parseInt(e.target.value) : null })}
  placeholder="e.g. 30"
@@ -656,7 +656,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">Publish Date</label>
  <input
  type="datetime-local"
- className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard text-sm focus:outline-none focus:border-primary"
+ className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
  value={formData.publishedAt}
  onChange={e => setFormData({ ...formData, publishedAt: e.target.value })}
  />
@@ -665,7 +665,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
 
  {/* Thumbnail */}
  <div className="space-y-4">
- <div className="border-b border-dashboard pb-2">
+ <div className="border-b border-gray-200 dark:border-white/10 pb-2">
  <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">Featured Image</h3>
  </div>
  {formData.thumbnail ? (
@@ -695,7 +695,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  ) : (
  <div
  onClick={() => setIsMediaLibraryOpen(true)}
- className="aspect-video rounded-xl border-2 border-dashed border-dashboard hover:border-primary bg-gray-50 dark:bg-black/20 flex flex-col items-center justify-center cursor-pointer transition-all group"
+ className="aspect-video rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-primary bg-gray-50 dark:bg-black/20 flex flex-col items-center justify-center cursor-pointer transition-all group"
  >
  <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-2 text-gray-500 group-hover:text-primary">
  <ImageIcon size={24} />
@@ -717,7 +717,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
 
  {/* Taxonomies */}
  <div className="space-y-4">
- <div className="border-b border-dashboard pb-2">
+ <div className="border-b border-gray-200 dark:border-white/10 pb-2">
  <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">Classification</h3>
  </div>
  <FormSelect
@@ -771,7 +771,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
 
  {/* Excerpt */}
  <div className="space-y-4">
- <div className="border-b border-dashboard pb-2 flex items-center justify-between">
+ <div className="border-b border-gray-200 dark:border-white/10 pb-2 flex items-center justify-between">
  <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">Excerpt</h3>
  <button
  type="button"
@@ -799,7 +799,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  </button>
  </div>
  <textarea
- className={`w-full p-3 rounded-xl border border-dashboard text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder-gray-400 ${
+ className={`w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder-gray-400 ${
  autoExcerpt
  ? 'bg-emerald-50/50 dark:bg-emerald-500/5 text-gray-500 dark:text-gray-400'
  : 'bg-gray-50 dark:bg-black/20'
@@ -818,7 +818,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  {/* Table of Contents */}
  {tocHeadings.length > 0 && (
  <div className="space-y-4">
- <div className="border-b border-dashboard pb-2">
+ <div className="border-b border-gray-200 dark:border-white/10 pb-2">
  <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider flex items-center gap-2">
  <ListTree size={14} /> Table of Contents
  </h3>
@@ -860,7 +860,7 @@ export function ArticleForm({ initialData, categories, isEditMode = false }: Art
  </div>
 
  {/* Footer Stats Bar */}
- <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#0B0E14] border-t border-dashboard p-2 flex gap-6 text-xs text-gray-600 dark:text-gray-300 justify-end px-8 z-40">
+ <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1E2028] border-t border-gray-200 dark:border-white/10 p-2 flex gap-6 text-xs text-gray-600 dark:text-gray-300 justify-end px-8 z-40">
  <span className="flex items-center gap-1"><FileText size={14} /> {wordCount} words</span>
  <span className="flex items-center gap-1"><Clock size={14} /> {readingTime} min read</span>
  <span className={`flex items-center gap-1 ${readingLevel.color}`}><BookOpen size={14} /> Level: {readingLevel.label} ({readingLevel.score})</span>

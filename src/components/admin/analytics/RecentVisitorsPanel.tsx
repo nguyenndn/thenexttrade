@@ -44,7 +44,7 @@ export function RecentVisitorsPanel() {
  }, []);
 
  return (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center justify-between mb-4">
  <div className="flex items-center gap-2">
  <Radio className="w-4 h-4 text-emerald-500" />
@@ -75,7 +75,7 @@ export function RecentVisitorsPanel() {
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
  <thead>
- <tr className="text-[10px] text-gray-400 uppercase tracking-wider border-b border-dashboard">
+ <tr className="text-[10px] text-gray-400 uppercase tracking-wider border-b border-gray-200 dark:border-white/10">
  <th className="text-left pb-2 font-medium w-6"></th>
  <th className="text-left pb-2 font-medium">Visitor</th>
  <th className="text-left pb-2 font-medium">Page</th>

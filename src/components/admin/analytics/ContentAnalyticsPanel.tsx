@@ -40,7 +40,7 @@ export function ContentAnalyticsPanel({ content, authors, categories, totalArtic
  return (
  <div className="space-y-4">
  {[1,2].map(i => (
- <div key={i} className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 animate-pulse">
+ <div key={i} className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 animate-pulse">
  <div className="h-4 bg-gray-200 dark:bg-white/5 rounded w-1/4 mb-4" />
  <div className="space-y-3">
  {[1,2,3].map(j => <div key={j} className="h-8 bg-gray-200 dark:bg-white/5 rounded" />)}
@@ -54,7 +54,7 @@ export function ContentAnalyticsPanel({ content, authors, categories, totalArtic
  return (
  <div className="space-y-4">
  {/* Summary stat */}
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center gap-3">
  <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-500/10">
  <Eye className="w-4 h-4 text-indigo-500" />
@@ -67,14 +67,14 @@ export function ContentAnalyticsPanel({ content, authors, categories, totalArtic
  </div>
 
  {/* Top Articles */}
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center gap-2 mb-4">
  <FileText className="w-4 h-4 text-indigo-500" />
  <h2 className="text-sm font-bold text-gray-900 dark:text-white">Top Articles</h2>
  <span className="text-xs text-gray-400 ml-auto">{content.length} articles</span>
  </div>
 
- <div className="flex items-center justify-between text-[10px] text-gray-400 uppercase tracking-wider pb-2 border-b border-dashboard mb-1">
+ <div className="flex items-center justify-between text-[10px] text-gray-400 uppercase tracking-wider pb-2 border-b border-gray-200 dark:border-white/10 mb-1">
  <span>Article</span>
  <span>Views</span>
  </div>
@@ -119,7 +119,7 @@ export function ContentAnalyticsPanel({ content, authors, categories, totalArtic
  {/* Author & Category side by side */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
  {/* Author Analytics */}
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center gap-2 mb-4">
  <User className="w-4 h-4 text-cyan-500" />
  <h2 className="text-sm font-bold text-gray-900 dark:text-white">Author Performance</h2>
@@ -142,7 +142,7 @@ export function ContentAnalyticsPanel({ content, authors, categories, totalArtic
  </div>
 
  {/* Category Analytics */}
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <div className="flex items-center gap-2 mb-4">
  <FolderOpen className="w-4 h-4 text-amber-500" />
  <h2 className="text-sm font-bold text-gray-900 dark:text-white">Category Performance</h2>

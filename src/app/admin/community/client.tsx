@@ -215,7 +215,7 @@ export function AdminVipRequestsClient({
  </div>
 
  {/* Toolbar */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm flex items-center gap-4">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex items-center gap-4">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <Button
@@ -234,7 +234,7 @@ export function AdminVipRequestsClient({
  </DropdownMenuTrigger>
  <DropdownMenuContent
  align="start"
- className="w-40 rounded-xl border-dashboard"
+ className="w-40 rounded-xl border-gray-200 dark:border-white/10"
  >
  <DropdownMenuItem onClick={() => setFilter("ALL")} className="font-medium cursor-pointer rounded-lg mx-1 my-0.5">
  All ({total})
@@ -267,7 +267,7 @@ export function AdminVipRequestsClient({
  </div>
 
  {/* Table */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  {filtered.length === 0 ? (
  <div className="text-center py-16">
  <AlertTriangle
@@ -282,7 +282,7 @@ export function AdminVipRequestsClient({
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-dashboard text-xs uppercase text-gray-600 dark:text-gray-400 font-bold tracking-wider">
+ <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 dark:text-gray-400 font-bold tracking-wider">
  <th className="px-6 py-4">User</th>
  <th className="px-6 py-4">Broker</th>
  <th className="px-6 py-4">Account</th>
@@ -293,7 +293,7 @@ export function AdminVipRequestsClient({
  <th className="px-6 py-4 text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {filtered.map((req) => (
  <tr
  key={req.id}
@@ -349,7 +349,7 @@ export function AdminVipRequestsClient({
  <MoreHorizontal size={18} />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40 rounded-xl border-dashboard bg-white dark:bg-[#0B0E14] shadow-lg">
+ <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-lg">
  <DropdownMenuItem onClick={() => setSelectedRequest(req)} className="font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none focus:bg-gray-100 dark:focus:bg-white/10">
  <Eye size={14} className="mr-2 text-gray-500" /> View Details
  </DropdownMenuItem>
@@ -386,8 +386,8 @@ export function AdminVipRequestsClient({
  {/* Detail Modal */}
  {selectedRequest && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
- <div className="bg-white dark:bg-[#1A1D27] rounded-2xl border border-dashboard shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto">
- <div className="flex items-center justify-between p-4 border-b border-dashboard">
+ <div className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto">
+ <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
  <h3 className="text-sm font-bold text-gray-800 dark:text-white">
  Request Details
  </h3>
@@ -533,8 +533,8 @@ export function AdminVipRequestsClient({
  {/* Reject Modal */}
  {rejectModalId && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
- <div className="bg-white dark:bg-[#1A1D27] rounded-2xl border border-dashboard shadow-2xl w-full max-w-sm">
- <div className="flex items-center justify-between p-4 border-b border-dashboard">
+ <div className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-sm">
+ <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
  <h3 className="text-sm font-bold text-red-600 dark:text-red-400">
  Reject Request
  </h3>
@@ -555,7 +555,7 @@ export function AdminVipRequestsClient({
  onChange={(e) => setRejectReason(e.target.value)}
  placeholder="Enter rejection reason..."
  rows={3}
- className="w-full px-3 py-2.5 text-sm rounded-xl border border-dashboard bg-white dark:bg-[#151925] text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-400 resize-none"
+ className="w-full px-3 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-400 resize-none"
  />
  <div className="flex items-center gap-2 justify-end">
  <Button

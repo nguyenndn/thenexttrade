@@ -31,8 +31,8 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
  <EditProductView product={product} />
 
  {/* Recent Downloads */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl p-6 space-y-4">
- <div className="flex items-center justify-between border-b border-dashboard pb-3">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
+ <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3">
  <h3 className="text-base font-bold text-gray-700 dark:text-white">
  Recent Downloads
  </h3>
@@ -42,7 +42,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
  </div>
 
  {product.downloads && product.downloads.length > 0 ? (
- <div className="divide-y divide-dashboard">
+ <div className="divide-y divide-gray-200 dark:divide-white/10">
  {product.downloads.map((dl: any) => (
  <div key={dl.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
  <div className="flex items-center gap-3 min-w-0">

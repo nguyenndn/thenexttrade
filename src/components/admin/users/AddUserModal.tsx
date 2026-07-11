@@ -92,7 +92,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
  className="absolute inset-0 bg-black/50 backdrop-blur-sm"
  onClick={handleClose}
  />
- <div className="relative bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-2xl w-full max-w-lg mx-4 p-6">
+ <div className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-lg mx-4 p-6">
  {/* Header */}
  <div className="flex items-center gap-3 mb-6">
  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -122,7 +122,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
  <input
  {...register("name")}
  placeholder="John Doe"
- className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-dashboard rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+ className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
  />
  </div>
  {errors.name && (
@@ -146,7 +146,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
  {...register("email")}
  type="email"
  placeholder="user@example.com"
- className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-dashboard rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+ className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
  />
  </div>
  {errors.email && (
@@ -171,7 +171,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
  {...register("password")}
  type="password"
  placeholder="••••••"
- className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-dashboard rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+ className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
  />
  </div>
  {errors.password && (
@@ -193,7 +193,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
  {...register("confirmPassword")}
  type="password"
  placeholder="••••••"
- className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-dashboard rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+ className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
  />
  </div>
  {errors.confirmPassword && (
@@ -215,7 +215,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
  name="role"
  render={({ field }) => (
  <Select onValueChange={field.onChange} defaultValue={field.value}>
- <SelectTrigger className="w-full h-11 px-4 bg-gray-50 dark:bg-[#0B0E14] border border-dashboard rounded-xl text-sm text-gray-700 dark:text-white focus:outline-none focus:border-primary/50 transition-colors">
+ <SelectTrigger className="w-full h-11 px-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white focus:outline-none focus:border-primary/50 transition-colors">
  <SelectValue placeholder="Select a role" />
  </SelectTrigger>
  <SelectContent>
@@ -260,7 +260,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
  </div>
 
  {/* Actions */}
- <div className="flex justify-end gap-3 pt-4 border-t border-dashboard">
+ <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-white/10">
  <Button
  type="button"
  variant="outline"

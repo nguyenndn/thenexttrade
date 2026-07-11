@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import { TradingAnomaliesPanel } from '@/components/admin/security/TradingAnomaliesPanel';
 
 // Types
 interface SecuritySummary {
@@ -134,7 +135,7 @@ export default function SecurityDashboard() {
  </div>
  </div>
  <div className="flex items-center gap-3">
- <div className="flex bg-gray-100 dark:bg-white/5 rounded-xl p-1 border border-dashboard">
+ <div className="flex bg-gray-100 dark:bg-white/5 rounded-xl p-1 border border-gray-200 dark:border-white/10">
  {PERIODS.map(p => (
  <button key={p.value} onClick={() => setPeriod(p.value as typeof period)}
  className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
@@ -157,7 +158,7 @@ export default function SecurityDashboard() {
  { label: 'Bots Blocked', value: summary.botBlocked, icon: Bot, color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-500/15' },
  { label: 'Login Failed', value: summary.loginFailed, icon: KeyRound, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-100 dark:bg-orange-500/15' },
  ].map(card => (
- <div key={card.label} className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+ <div key={card.label} className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
  <div className="flex items-center gap-3">
  <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${card.bg} ${card.color}`}>
  <card.icon size={16} aria-hidden="true" />
@@ -176,7 +177,7 @@ export default function SecurityDashboard() {
 
  {/* Mini Trend Chart */}
  {trend.length > 0 && (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
  <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Events Over Time</p>
  <div className="flex items-end gap-1 h-20">
  {trend.map((t, i) => (
@@ -192,32 +193,32 @@ export default function SecurityDashboard() {
  </div>
  )}
 
- {/* Tab Navigation */}
- <div className="overflow-x-auto scrollbar-hide flex">
- <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
- {[
- { id: 'events' as const, label: 'All Events' },
- { id: 'blocked' as const, label: `Blocked IPs (${blockedIPs.length})` },
- ].map(t => (
- <TabsTrigger
- key={t.id}
- value={t.id}
- className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- {t.label}
- </TabsTrigger>
- ))}
- </TabsList>
- </div>
+  {/* Tab Navigation */}
+  <div className="overflow-x-auto scrollbar-hide flex">
+    <TabsList className="shrink-0">
+      {[
+        { id: 'events' as const, label: 'All Events' },
+        { id: 'blocked' as const, label: `Blocked IPs (${blockedIPs.length})` },
+      ].map(t => (
+        <TabsTrigger
+          key={t.id}
+          value={t.id}
+          className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+          activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+          activeTextClassName="!text-white"
+        >
+          {t.label}
+        </TabsTrigger>
+      ))}
+    </TabsList>
+  </div>
 
  {/* Events Tab */}
  {tab === 'events' && (
  <div className="space-y-4">
  {/* Toolbar Card */}
- <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-4 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
- <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashboard focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+ <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
  <Search size={16} className="text-gray-500" />
  <input type="text" placeholder="Search IP..." value={ipSearch} onChange={e => setIpSearch(e.target.value)}
  className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500" />
@@ -246,19 +247,19 @@ export default function SecurityDashboard() {
  </div>
 
  {/* Data Table Card */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
  <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
  <tr>
- <th className="px-6 py-4 border-b border-dashboard">Type</th>
- <th className="px-6 py-4 border-b border-dashboard">IP</th>
- <th className="px-6 py-4 border-b border-dashboard hidden md:table-cell">Path</th>
- <th className="px-6 py-4 border-b border-dashboard hidden lg:table-cell">Detail</th>
- <th className="px-6 py-4 border-b border-dashboard text-right">Time</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10">Type</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10">IP</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 hidden md:table-cell">Path</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 hidden lg:table-cell">Detail</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 text-right">Time</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {events.length === 0 ? (
  <tr><td colSpan={5} className="py-12 text-center text-gray-400">No security events found</td></tr>
  ) : events.map(ev => (
@@ -278,7 +279,7 @@ export default function SecurityDashboard() {
  </table>
  </div>
  {pagination && pagination.totalPages > 1 && (
- <div className="flex items-center justify-between px-6 py-4 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.02]">
+ <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
  <p className="text-xs font-bold text-gray-500">{pagination.total} events total</p>
  <div className="flex items-center gap-1">
  <Button variant="outline" size="icon" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} aria-label="Previous page" className="rounded-xl">
@@ -298,26 +299,26 @@ export default function SecurityDashboard() {
  {/* Blocked IPs Tab */}
  {tab === 'blocked' && (
  <div className="space-y-4">
- <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-4 shadow-sm flex items-center justify-between">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex items-center justify-between">
  <p className="text-sm font-bold text-gray-700 dark:text-white">Blocked IPs ({blockedIPs.length})</p>
  <Button variant="primary" onClick={() => { setShowBlockModal(true); setBlockForm({ ip: '', reason: '', duration: '' }); }}
  className="bg-red-600 hover:bg-red-700 shadow-lg shadow-red-600/20">
  <Ban size={14} /> Block IP
  </Button>
  </div>
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
  <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
  <tr>
- <th className="px-6 py-4 border-b border-dashboard">IP Address</th>
- <th className="px-6 py-4 border-b border-dashboard">Reason</th>
- <th className="px-6 py-4 border-b border-dashboard hidden md:table-cell">Expires</th>
- <th className="px-6 py-4 border-b border-dashboard hidden md:table-cell">Blocked At</th>
- <th className="px-6 py-4 border-b border-dashboard text-right">Action</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10">IP Address</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10">Reason</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 hidden md:table-cell">Expires</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 hidden md:table-cell">Blocked At</th>
+ <th className="px-6 py-4 border-b border-gray-200 dark:border-white/10 text-right">Action</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {blockedIPs.length === 0 ? (
  <tr><td colSpan={5} className="py-12 text-center text-gray-400">No blocked IPs</td></tr>
  ) : blockedIPs.map(ip => (
@@ -341,9 +342,12 @@ export default function SecurityDashboard() {
  </div>
  )}
 
+ {/* Threat & Anomalies Panels */}
+ {tab === 'events' && (
+ <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
  {/* Top Threat IPs */}
- {topIPs.length > 0 && tab === 'events' && (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
+ {topIPs.length > 0 && (
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
  <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Top Threat IPs</p>
  <div className="space-y-3">
  {topIPs.slice(0, 5).map((t, i) => (
@@ -356,6 +360,11 @@ export default function SecurityDashboard() {
  </div>
  ))}
  </div>
+ </div>
+ )}
+
+ {/* Trading Anomalies */}
+ <TradingAnomaliesPanel events={events} />
  </div>
  )}
 
@@ -373,17 +382,17 @@ export default function SecurityDashboard() {
  <div className="group">
  <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">IP Address <span className="text-red-500">*</span></label>
  <input type="text" placeholder="e.g. 192.168.1.1" value={blockForm.ip} onChange={e => setBlockForm(f => ({ ...f, ip: e.target.value }))}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500" />
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500" />
  </div>
  <div className="group">
  <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Reason <span className="font-normal text-gray-500">(Optional)</span></label>
  <input type="text" placeholder="e.g. Brute force attempt" value={blockForm.reason} onChange={e => setBlockForm(f => ({ ...f, reason: e.target.value }))}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500" />
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500" />
  </div>
  <div className="group">
  <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Duration (minutes) <span className="font-normal text-gray-500">(Empty = permanent)</span></label>
  <input type="number" placeholder="e.g. 1440 (24h)" value={blockForm.duration} onChange={e => setBlockForm(f => ({ ...f, duration: e.target.value }))}
- className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500" />
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500" />
  </div>
  </div>
  <div className="flex items-center justify-end gap-3 pt-2">

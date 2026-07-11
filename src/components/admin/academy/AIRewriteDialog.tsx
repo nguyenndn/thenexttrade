@@ -328,11 +328,11 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  {isOpen && (
  <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={close}>
  <div
- className="bg-white dark:bg-[#1a1e2e] rounded-2xl shadow-2xl border border-dashboard w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200 flex flex-col"
+ className="bg-white dark:bg-[#1a1e2e] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200 flex flex-col"
  onClick={e => e.stopPropagation()}
  >
  {/* Header */}
- <div className="flex items-center justify-between p-5 border-b border-dashboard shrink-0">
+ <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-white/10 shrink-0">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
  <Sparkles size={20} className="text-white" />
@@ -405,7 +405,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  onKeyDown={e => { if (e.key === "Enter") handleSearch(); }}
  placeholder="https://www.babypips.com/learn/forex/what-is-forex"
  disabled={isLoading}
- className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-dashboard text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
+ className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
  />
  <Button
  type="button"
@@ -498,7 +498,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  placeholder="Copy the article content from BabyPips and paste it here..."
  disabled={isLoading}
  rows={5}
- className="w-full p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-dashboard text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50 resize-y"
+ className="w-full p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50 resize-y"
  />
  </div>
  )}
@@ -522,7 +522,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  onKeyDown={e => { if (e.key === "Enter") handleSearch(); }}
  placeholder="e.g. What is a Pip, Fibonacci Retracement, Risk Management"
  disabled={isLoading}
- className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-dashboard text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
+ className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
  />
  <Button
  type="button"
@@ -624,7 +624,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  "flex flex-col items-center gap-0.5 px-2 py-2 rounded-lg text-xs font-medium transition-all border",
  tone === t.id
  ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800"
- : "bg-gray-50 dark:bg-white/5 border-dashboard text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
+ : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
  )}
  >
  <span className="text-base">{t.icon}</span>
@@ -646,7 +646,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all border",
  mode === "summary"
  ? "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 ring-1 ring-blue-200 dark:ring-blue-800"
- : "bg-gray-50 dark:bg-white/5 border-dashboard text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
+ : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
  )}
  >
  <FileText size={15} />
@@ -660,7 +660,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all border",
  mode === "rewrite"
  ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800"
- : "bg-gray-50 dark:bg-white/5 border-dashboard text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
+ : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
  )}
  >
  <RefreshCw size={15} />
@@ -726,7 +726,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  )}
  </div>
 
- <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashboard">
+ <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10">
  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Title</span>
  <p className="text-base font-bold text-gray-700 dark:text-white mt-1">{result.title}</p>
  </div>
@@ -738,7 +738,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  </div>
  )}
 
- <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashboard max-h-48 overflow-y-auto">
+ <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 max-h-48 overflow-y-auto">
  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1">
  <Eye size={10} /> Content Preview
  </span>
@@ -752,7 +752,7 @@ function AIRewriteDialogInner({ onApply, lessonTitle, focusKeyword }, ref) {
  </div>
 
  {/* Footer */}
- <div className="flex items-center justify-between p-5 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.02] shrink-0">
+ <div className="flex items-center justify-between p-5 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] shrink-0">
  <p className="text-[11px] text-gray-500">
  DeepSeek + FireCrawl + Serper · {TONES.find(t => t.id === tone)?.icon} {TONES.find(t => t.id === tone)?.label}
  </p>

@@ -27,8 +27,8 @@ export default async function ReleaseHealthPage() {
  return (
  <div className="space-y-4 pb-10">
  <AdminPageHeader
- title="Release Health"
- description="Quick health check — is the product ready to ship?"
+ title="Platform Health"
+ description="Quick health check — is the platform operating normally?"
  />
  <ReleaseHealthDashboard data={data} />
  </div>

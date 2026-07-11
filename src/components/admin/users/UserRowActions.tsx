@@ -69,7 +69,7 @@ export function UserRowActions({ user }: UserRowActionsProps) {
  </DropdownMenuTrigger>
  <DropdownMenuContent
  align="end"
- className="w-44 rounded-xl border-dashboard"
+ className="w-44 rounded-xl border-gray-200 dark:border-white/10"
  >
  <DropdownMenuItem
  onClick={() => router.push(`/admin/users/${user.id}`)}

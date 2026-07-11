@@ -122,8 +122,8 @@ export default function EASettingsPage() {
  </AdminPageHeader>
 
  {/* General Settings */}
- <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-dashboard shadow-sm">
- <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-dashboard pb-4 mb-6">
+ <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+ <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
  <ShieldAlert className="text-red-500" size={20} />
  General Configuration
  </h2>
@@ -166,8 +166,8 @@ export default function EASettingsPage() {
  </div>
 
  {/* Email Notifications */}
- <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-dashboard shadow-sm">
- <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-dashboard pb-4 mb-6">
+ <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+ <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
  <Bell className="text-blue-500" size={20} />
  Email Notifications
  </h2>
@@ -188,7 +188,7 @@ export default function EASettingsPage() {
  <p className="text-xs text-gray-600 mt-2">Where to send new pending request alerts.</p>
  </div>
 
- <div className="flex items-center justify-between pt-4 border-t border-dashboard">
+ <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-white/10">
  <div>
  <h3 className="font-bold text-gray-700 dark:text-white">Send Welcome Emails</h3>
  <p className="text-sm text-gray-600">Notify users automatically when approved.</p>
@@ -208,8 +208,8 @@ export default function EASettingsPage() {
  </div>
 
  {/* Telegram Webhook */}
- <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-dashboard shadow-sm mb-10">
- <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-dashboard pb-4 mb-6">
+ <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm mb-10">
+ <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
  <MessageCircle className="text-sky-500" size={20} />
  Telegram Webhook
  </h2>
@@ -233,7 +233,7 @@ export default function EASettingsPage() {
  </div>
 
  {isTelegramEnabled && (
- <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-dashboard animate-in slide-in-from-top-2">
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-200 dark:border-white/10 animate-in slide-in-from-top-2">
  <div>
  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
  Bot Token

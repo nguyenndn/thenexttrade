@@ -23,7 +23,7 @@ export function StatCard({ title, value, change, icon: Icon, trend, color = "blu
  };
 
  return (
- <div className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+ <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
  <div className="flex items-center gap-3">
  <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${colorStyles[color] || colorStyles.blue}`}>
  <Icon size={16} aria-hidden="true" />

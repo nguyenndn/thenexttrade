@@ -82,7 +82,7 @@ export default function CreateBroadcastPage() {
  </p>
  </div>
 
- <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-dashboard shadow-sm">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm">
  <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
  <div className="space-y-2">
  <PremiumInput
@@ -98,7 +98,7 @@ export default function CreateBroadcastPage() {
  <textarea
  {...register("message")}
  rows={4}
- className="w-full rounded-xl border border-dashboard bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+ className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
  placeholder="We will be performing scheduled maintenance on..."
  />
  {errors.message && <p className="text-xs text-red-500">Required</p>}
@@ -111,7 +111,7 @@ export default function CreateBroadcastPage() {
  <DropdownMenuTrigger asChild>
  <Button
  variant="outline"
- className="w-full justify-between rounded-xl border-dashboard bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
+ className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
  >
  <span>{typeValue.toLowerCase()}</span>
  <ChevronDown size={14} className="opacity-50" />
@@ -132,7 +132,7 @@ export default function CreateBroadcastPage() {
  <DropdownMenuTrigger asChild>
  <Button
  variant="outline"
- className="w-full justify-between rounded-xl border-dashboard bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
+ className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
  >
  <span>{priorityValue.toLowerCase()}</span>
  <ChevronDown size={14} className="opacity-50" />

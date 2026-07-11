@@ -131,7 +131,7 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
  { label: "Approved Accounts", value: stats.approvedCount.toString(), icon: Wifi, color: "text-primary", bg: "bg-primary/10" },
  { label: "Total Capital", value: `$${stats.totalCapital.toLocaleString()}`, icon: DollarSign, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-100 dark:bg-emerald-500/15" },
  ].map((stat) => (
- <div key={stat.label} className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+ <div key={stat.label} className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
  <div className="flex items-center gap-3">
  <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color}`}>
  <stat.icon size={16} aria-hidden="true" />
@@ -148,7 +148,7 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
  </div>
 
  {/* Toolbar */}
- <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm flex flex-col gap-4">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
  <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
  <div className="flex flex-1 gap-2 flex-col sm:flex-row w-full lg:max-w-xl">
  <div className="flex-1 w-full sm:max-w-md">
@@ -166,7 +166,7 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
  <ChevronDown size={14} aria-hidden="true" />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40 rounded-xl border-dashboard">
+ <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-200 dark:border-white/10">
  <DropdownMenuItem onClick={() => handleFilterStatus("")}>All Status</DropdownMenuItem>
  <DropdownMenuItem onClick={() => handleFilterStatus("PENDING")}>Pending</DropdownMenuItem>
  <DropdownMenuItem onClick={() => handleFilterStatus("APPROVED")}>Approved</DropdownMenuItem>
@@ -178,11 +178,11 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
  </div>
 
  {/* Table */}
- <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl overflow-hidden shadow-sm">
+ <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-dashboard text-xs uppercase text-gray-600 font-bold tracking-wider">
+ <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
  <th className="px-6 py-5">User</th>
  <th className="px-6 py-5">Telegram</th>
  <th className="px-6 py-5">Broker / MT5</th>
@@ -192,7 +192,7 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
  <th className="px-6 py-5 text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-dashboard">
+ <tbody className="divide-y divide-gray-200 dark:divide-white/10">
  {initialRegistrations.length === 0 && (
  <tr>
  <td colSpan={7} className="px-6 py-16 text-center text-sm text-gray-500">
@@ -259,7 +259,7 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
  </div>
 
  {/* Footer / Pagination */}
- <div className="p-4 border-t border-dashboard flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+ <div className="p-4 border-t border-gray-200 dark:border-white/10 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
  <div className="text-xs text-gray-600">
  Page {pagination.currentPage} of {pagination.totalPages} ({pagination.total} total)
  </div>
@@ -269,7 +269,7 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
  size="icon"
  onClick={() => handlePageChange(pagination.currentPage - 1)}
  disabled={pagination.currentPage <= 1}
- className="p-2 h-auto w-auto bg-white dark:bg-white/5 rounded-lg border border-dashboard hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50"
+ className="p-2 h-auto w-auto bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50"
  >
  <ChevronLeft size={16} />
  </Button>
@@ -278,7 +278,7 @@ export function CopyTradingAdminClient({ initialRegistrations, pagination, pendi
  size="icon"
  onClick={() => handlePageChange(pagination.currentPage + 1)}
  disabled={pagination.currentPage >= pagination.totalPages}
- className="p-2 h-auto w-auto bg-white dark:bg-white/5 rounded-lg border border-dashboard hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50"
+ className="p-2 h-auto w-auto bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50"
  >
  <ChevronRight size={16} />
  </Button>

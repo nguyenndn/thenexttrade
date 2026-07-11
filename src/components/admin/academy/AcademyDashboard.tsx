@@ -85,7 +85,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
  {initialLevels.map((level) => (
  <div
  key={level.id}
- className="group bg-white dark:bg-[#151925] border border-dashboard rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+ className="group bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
  >
  <div className="flex justify-between items-start mb-4">
  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-500/10 dark:to-cyan-500/20 flex items-center justify-center">
@@ -127,7 +127,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
  {level.description || "No description provided."}
  </p>
 
- <div className="flex items-center justify-between pt-4 border-t border-dashboard">
+ <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-white/10">
  <div className="flex items-center gap-2 text-sm text-gray-600">
  <Layers size={16} />
  <span>{level._count?.modules || level.modules?.length || 0} Modules</span>
@@ -147,7 +147,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
  <Button
  variant="outline"
  onClick={() => setIsCreateModalOpen(true)}
- className="flex flex-col items-center justify-center gap-4 h-[250px] w-full border-2 border-dashed border-dashboard rounded-xl hover:border-primary hover:bg-primary/5 transition-all group p-0 bg-transparent hover:text-primary"
+ className="flex flex-col items-center justify-center gap-4 h-[250px] w-full border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl hover:border-primary hover:bg-primary/5 transition-all group p-0 bg-transparent hover:text-primary"
  >
  <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
  <Plus size={32} className="text-gray-500 group-hover:text-primary" />

@@ -11,7 +11,7 @@ export function DataQualityPanel({ data }: Props) {
  return (
  <ReportSection title="Data Quality">
  <div className="flex items-center gap-4 mb-5">
- <div className="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center">
+ <div className="w-16 h-16 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center">
  <span className={cn("text-2xl font-black tabular-nums", scoreColor)}>{data.healthScore}</span>
  </div>
  <div>
@@ -22,7 +22,7 @@ export function DataQualityPanel({ data }: Props) {
  {data.issues.length > 0 ? (
  <div className="overflow-x-auto -mx-6 md:-mx-8">
  <table className="w-full text-xs">
- <thead><tr className="border-b border-dashboard">
+ <thead><tr className="border-b border-gray-200 dark:border-white/10">
  <th className="px-4 py-2 text-left font-bold text-gray-400 uppercase">Group</th>
  <th className="px-4 py-2 text-left font-bold text-gray-400 uppercase">Issue</th>
  <th className="px-4 py-2 text-right font-bold text-gray-400 uppercase">Count</th>

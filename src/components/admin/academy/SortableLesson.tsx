@@ -35,7 +35,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
  style={style}
  className={clsx(
  "flex items-center justify-between p-3 bg-white dark:bg-[#1C212E] border rounded-lg shadow-sm hover:border-primary/50 transition-colors",
- isDragging ? "border-primary" : "border-dashboard "
+ isDragging ? "border-primary" : "border-gray-200 dark:border-white/10 "
  )}
  >
  <div className="flex items-center gap-3">

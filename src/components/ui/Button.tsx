@@ -1,6 +1,9 @@
+"use client";
+
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { ButtonSizeContext } from '@/components/providers/AdminButtonSizeProvider';
 
 export interface ButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -41,12 +44,17 @@ export const buttonVariants = ({
     return cn(baseStyles, variants[variant || 'primary'], sizes[size || 'md'], className);
 };
 
+
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant = 'primary', size = 'md', isLoading, children, ...props }, ref) => {
+    ({ className, variant = 'primary', size, isLoading, children, ...props }, ref) => {
+        const contextSize = React.useContext(ButtonSizeContext);
+        const activeSize = (size === undefined || size === 'md' || size === 'sm') && contextSize ? contextSize : (size || 'md');
+
         return (
             <button
                 ref={ref}
-                className={buttonVariants({ variant, size, className })}
+                className={buttonVariants({ variant, size: activeSize, className })}
                 disabled={isLoading || props.disabled}
                 {...props}
             >

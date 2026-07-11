@@ -32,7 +32,7 @@ function CopyButton({ text }: { text: string }) {
 
 function PromptBlock({ label, prompt, path }: { label: string; prompt: string; path: string }) {
  return (
- <div className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 space-y-3">
+ <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 space-y-3">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2">
  <ImageIcon size={14} className="text-gold" />
@@ -55,9 +55,9 @@ export function ArticleImagePromptModal({ prompts, onClose }: ArticleImagePrompt
  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
  {/* Modal */}
- <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl">
+ <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl">
  {/* Header */}
- <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-dashboard bg-white dark:bg-[#1E2028]">
+ <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
  <div className="flex items-center gap-3">
  <div className="w-9 h-9 rounded-xl bg-gold/10 flex items-center justify-center">
  <Sparkles size={18} className="text-gold" />

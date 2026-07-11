@@ -129,7 +129,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
  </Button>
 
  <Dialog open={open} onOpenChange={setOpen}>
- <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border border-dashboard max-w-md">
+ <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border border-gray-200 dark:border-white/10 max-w-md">
  <DialogHeader>
  <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
  Edit Broker
@@ -189,7 +189,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
  </div>
 
  {/* Active Toggle */}
- <div className="flex items-center justify-between py-3 px-4 rounded-xl border border-dashboard bg-gray-50 dark:bg-white/5">
+ <div className="flex items-center justify-between py-3 px-4 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
  <div className="flex items-center gap-2">
  <Power size={16} className={isActive ? "text-green-500" : "text-gray-500"} />
  <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
@@ -205,7 +205,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
  </div>
 
  {/* Actions */}
- <div className="flex items-center gap-2 mt-4 pt-4 border-t border-dashboard">
+ <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-white/10">
  <Button
  type="button"
  variant="ghost"

@@ -543,7 +543,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  <Activity size={14} className="transition-all duration-300 group-hover/detail:scale-110 group-hover/detail:text-primary" />
  </Button>
  </TooltipTrigger>
- <TooltipContent side="bottom" className="font-bold">
+ <TooltipContent side="bottom" className="bg-gray-700 dark:bg-gray-800 text-white border border-gray-600/20 shadow-md font-bold">
  Details
  </TooltipContent>
  </Tooltip>
@@ -641,7 +641,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  <Activity size={14} className="transition-all duration-300 hover:scale-110 hover:text-primary" />
  </Button>
  </TooltipTrigger>
- <TooltipContent side="bottom" className="font-bold">
+ <TooltipContent side="bottom" className="bg-gray-700 dark:bg-gray-800 text-white border border-gray-600/20 shadow-md font-bold">
  Details
  </TooltipContent>
  </Tooltip>

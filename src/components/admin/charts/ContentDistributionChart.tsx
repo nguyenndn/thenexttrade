@@ -29,7 +29,7 @@ const COLORS = [
 export function ContentDistributionChart({ data = [] }: ContentDistributionChartProps) {
  if (!data || data.length === 0) {
  return (
- <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm h-full flex items-center justify-center">
+ <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex items-center justify-center">
  <p className="text-gray-500 text-sm">No content data available</p>
  </div>
  );
@@ -43,7 +43,7 @@ export function ContentDistributionChart({ data = [] }: ContentDistributionChart
  const total = chartData.reduce((sum, item) => sum + item.value, 0);
 
  return (
- <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm h-full flex flex-col">
+ <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
  <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-3">Content Distribution</h3>
 
  {/* Chart + Legend side by side */}

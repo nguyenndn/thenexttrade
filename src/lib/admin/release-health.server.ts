@@ -1,6 +1,5 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import { getArticleOpsData } from "@/lib/articles/article-readiness.server";
 
 function pct(part: number, total: number) {
  if (total <= 0) return 0;
@@ -8,13 +7,6 @@ function pct(part: number, total: number) {
 }
 
 export type ReleaseHealthData = {
- articleOps: {
- total: number;
- ready: number;
- needsSeo: number;
- needsImages: number;
- missingFiles: number;
- };
  accounts: {
  total: number;
  connected: number;
@@ -44,18 +36,12 @@ export type ReleaseHealthData = {
  weeklyReviewGenerateClicksLast7Days: number;
  weeklyReviewGenerateSuccessLast7Days: number;
  weeklyReviewNoDataBlocksLast7Days: number;
- articleOpsBulkSeoAppliedLast7Days: number;
- articleOpsImagePromptExportsLast7Days: number;
  };
 };
 
 export async function getReleaseHealthData(): Promise<ReleaseHealthData> {
  const sevenDaysAgo = new Date();
  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
- // Article Ops
- const articleOpsData = await getArticleOpsData("all");
- const articleOps = articleOpsData.summary;
 
  // Accounts
  const [totalAccounts, staleSync, neverSynced] = await Promise.all([
@@ -114,7 +100,7 @@ export async function getReleaseHealthData(): Promise<ReleaseHealthData> {
  ]);
  }
 
- // Analytics events (8 counts)
+ // Analytics events (6 counts)
  const eventCounts = await Promise.all([
  prisma.analyticsEvent.count({ where: { name: "activation_cta_clicked", createdAt: { gte: sevenDaysAgo } } }),
  prisma.analyticsEvent.count({ where: { name: "empty_state_cta_clicked", createdAt: { gte: sevenDaysAgo } } }),
@@ -122,18 +108,9 @@ export async function getReleaseHealthData(): Promise<ReleaseHealthData> {
  prisma.analyticsEvent.count({ where: { name: "weekly_review_generate_clicked", createdAt: { gte: sevenDaysAgo } } }),
  prisma.analyticsEvent.count({ where: { name: "weekly_review_generate_succeeded", createdAt: { gte: sevenDaysAgo } } }),
  prisma.analyticsEvent.count({ where: { name: "weekly_review_generate_blocked_no_data", createdAt: { gte: sevenDaysAgo } } }),
- prisma.analyticsEvent.count({ where: { name: "article_ops_bulk_seo_applied", createdAt: { gte: sevenDaysAgo } } }),
- prisma.analyticsEvent.count({ where: { name: "article_ops_bulk_image_prompts_exported", createdAt: { gte: sevenDaysAgo } } }),
  ]);
 
  return {
- articleOps: {
- total: articleOps.total,
- ready: articleOps.ready,
- needsSeo: articleOps.needsSeo,
- needsImages: articleOps.needsImages,
- missingFiles: articleOps.missingFiles,
- },
  accounts: {
  total: totalAccounts,
  connected: totalAccounts - neverSynced,
@@ -163,8 +140,6 @@ export async function getReleaseHealthData(): Promise<ReleaseHealthData> {
  weeklyReviewGenerateClicksLast7Days: eventCounts[3],
  weeklyReviewGenerateSuccessLast7Days: eventCounts[4],
  weeklyReviewNoDataBlocksLast7Days: eventCounts[5],
- articleOpsBulkSeoAppliedLast7Days: eventCounts[6],
- articleOpsImagePromptExportsLast7Days: eventCounts[7],
  },
  };
 }

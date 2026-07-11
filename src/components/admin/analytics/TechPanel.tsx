@@ -19,7 +19,7 @@ export function TechPanel({ devices, browsers }: Props) {
  const totalDevices = devices.reduce((s, d) => s + d.count, 0) || 1;
 
  return (
- <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
  <h2 className="text-sm font-bold text-gray-900 dark:text-white mb-4">Technology</h2>
 
  {/* Devices */}
@@ -31,7 +31,7 @@ export function TechPanel({ devices, browsers }: Props) {
  const Icon = cfg.icon;
  const pct = Math.round((d.count / totalDevices) * 100);
  return (
- <div key={d.device} className="text-center p-3 rounded-xl bg-gray-50 dark:bg-white/3 border border-dashboard">
+ <div key={d.device} className="text-center p-3 rounded-xl bg-gray-50 dark:bg-white/3 border border-gray-200 dark:border-white/10">
  <Icon className="w-5 h-5 mx-auto mb-1.5" style={{ color: cfg.color }} />
  <p className="text-xl font-bold text-gray-900 dark:text-white">{pct}%</p>
  <p className="text-xs text-gray-500 capitalize">{d.device}</p>

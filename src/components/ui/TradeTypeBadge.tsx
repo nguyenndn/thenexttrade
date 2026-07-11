@@ -10,7 +10,7 @@ export const TradeTypeBadge = ({ type, className = "" }: TradeTypeBadgeProps) =>
 
  return (
  <span className={`
- inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider
+ inline-flex items-center justify-center w-14 px-0 py-1 rounded-lg text-xs font-bold uppercase tracking-wider
  ${isBuy
  ? 'bg-primary/10 text-[#00C888] dark:text-[#00C888] border border-primary/20'
  : 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20'

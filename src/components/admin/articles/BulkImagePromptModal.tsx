@@ -64,9 +64,9 @@ export function BulkImagePromptModal({ articleIds, open, onClose }: BulkImagePro
 
  return (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
- <div className="bg-white dark:bg-[#0B0E14] rounded-2xl border border-dashboard w-full max-w-4xl max-h-[85vh] flex flex-col shadow-xl">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 w-full max-w-4xl max-h-[85vh] flex flex-col shadow-xl">
  {/* Header */}
- <div className="flex items-center justify-between px-6 py-4 border-b border-dashboard">
+ <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10">
  <h2 className="text-lg font-bold text-gray-800 dark:text-white">
  Bulk Image Prompts — {articleIds.length} articles
  </h2>
@@ -99,7 +99,7 @@ export function BulkImagePromptModal({ articleIds, open, onClose }: BulkImagePro
  {prompts.map((p) => (
  <div
  key={p.articleId}
- className="rounded-xl border border-dashboard p-4"
+ className="rounded-xl border border-gray-200 dark:border-white/10 p-4"
  >
  <p className="text-sm font-bold text-gray-800 dark:text-white mb-2 truncate">
  {p.title}
@@ -137,7 +137,7 @@ export function BulkImagePromptModal({ articleIds, open, onClose }: BulkImagePro
  </div>
 
  {/* Footer */}
- <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-dashboard">
+ <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-white/10">
  {phase === "loaded" && prompts.length > 0 && (
  <>
  <Button variant="outline" size="smd" onClick={copyAll} className="gap-1.5 font-bold">

@@ -223,7 +223,7 @@ export function EmailLabClient({ defaultRecipient, allowCustomRecipient }: Email
  return (
  <div className="space-y-6">
  {/* Header section with brand accent */}
- <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-dashboard pb-6">
+ <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-6">
  <div className="flex flex-col gap-2">
  <div className="flex items-center gap-3">
  <div className="w-1.5 h-8 bg-primary rounded-full"></div>
@@ -247,7 +247,7 @@ export function EmailLabClient({ defaultRecipient, allowCustomRecipient }: Email
  </div>
 
  {/* Recipient controller Card */}
- <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-6 shadow-sm">
+ <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm">
  <h3 className="text-base font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
  <Mail size={18} className="text-primary" />
  Recipient Configuration
@@ -278,7 +278,7 @@ export function EmailLabClient({ defaultRecipient, allowCustomRecipient }: Email
 
  {/* Group 1: SMTP and System Generated Emails */}
  <div className="space-y-4">
- <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-dashboard pb-2">
+ <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-white/10 pb-2">
  App-Owned Transactional Templates (SMTP)
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -287,7 +287,7 @@ export function EmailLabClient({ defaultRecipient, allowCustomRecipient }: Email
  const res = results[template.id];
  
  return (
- <div key={template.id} className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+ <div key={template.id} className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
  <div className="space-y-3">
  <div className="flex justify-between items-start gap-2">
  <h4 className="text-base font-bold text-gray-700 dark:text-white leading-tight">{template.title}</h4>
@@ -299,7 +299,7 @@ export function EmailLabClient({ defaultRecipient, allowCustomRecipient }: Email
  </div>
  </div>
  
- <div className="mt-4 pt-4 border-t border-dashboard space-y-3">
+ <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 space-y-3">
  <Button
  variant="primary"
  className="w-full text-sm font-bold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2"
@@ -332,7 +332,7 @@ export function EmailLabClient({ defaultRecipient, allowCustomRecipient }: Email
 
  {/* Group 2: Supabase Auth Emails */}
  <div className="space-y-4 pt-4">
- <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-dashboard pb-2">
+ <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-white/10 pb-2">
  Supabase Authentication Flows (Auth Hook)
  </h2>
  <div className="bg-sky-500/[0.02] border border-sky-500/15 rounded-xl p-5 flex items-start gap-3.5">
@@ -345,7 +345,7 @@ export function EmailLabClient({ defaultRecipient, allowCustomRecipient }: Email
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
  {supabaseTemplates.map((template) => {
  return (
- <div key={template.id} className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-6 shadow-sm flex flex-col justify-between">
+ <div key={template.id} className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm flex flex-col justify-between">
  <div className="space-y-3">
  <div className="flex justify-between items-start gap-2">
  <h4 className="text-base font-bold text-gray-700 dark:text-white leading-tight">{template.title}</h4>
@@ -357,7 +357,7 @@ export function EmailLabClient({ defaultRecipient, allowCustomRecipient }: Email
  </div>
  </div>
  
- <div className="mt-4 pt-4 border-t border-dashboard space-y-2.5">
+ <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 space-y-2.5">
  {template.id === "admin_reset" ? (
  <div className="bg-amber-500/5 border border-amber-500/10 p-2.5 rounded text-xs text-amber-600 dark:text-amber-500/90 leading-normal font-medium">
  <p className="font-bold">⚠️ Integration Gap Detected</p>

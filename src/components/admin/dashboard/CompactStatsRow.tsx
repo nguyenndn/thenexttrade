@@ -34,7 +34,7 @@ export function CompactStatsRow({ stats }: { stats: CompactStat[] }) {
  animate={{ opacity: 1, y: 0 }}
  transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
  whileHover={{ y: -2, transition: { duration: 0.2 } }}
- className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
+ className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
  >
  <div className="flex items-center gap-3">
  <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${BG_COLORS[stat.color] || "bg-gray-100 dark:bg-gray-800"} ${ICON_COLORS[stat.color] || "text-gray-500"}`}>

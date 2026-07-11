@@ -47,7 +47,7 @@ export function AnalyticsSummary({ summary, realTime }: Props) {
  const Icon = card.icon;
  return (
  <div key={card.label}
- className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+ className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
  <div className="flex items-center gap-3">
  <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-br ${card.gradient}`}>
  <Icon size={16} aria-hidden="true" className={`text-white ${card.pulse ? 'animate-pulse' : ''}`} />

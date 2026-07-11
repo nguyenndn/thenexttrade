@@ -91,7 +91,7 @@ function AdminSearchContent() {
  </div>
  ) : (hasSearched && query) ? (
  <>
- <h2 className="text-sm font-bold text-gray-600 mb-4 border-b pb-2 border-dashboard">
+ <h2 className="text-sm font-bold text-gray-600 mb-4 border-b pb-2 border-gray-200 dark:border-white/10">
  Results for &quot;{query}&quot;
  </h2>
 
@@ -101,7 +101,7 @@ function AdminSearchContent() {
  <Link
  key={`${result.type}-${result.id}`}
  href={result.slug}
- className="flex bg-white dark:bg-[#151925] p-4 rounded-xl border border-dashboard hover:border-primary dark:hover:border-primary hover:shadow-md transition-all group shadow-sm"
+ className="flex bg-white dark:bg-[#151925] p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary hover:shadow-md transition-all group shadow-sm"
  >
  <div className={`p-3 rounded-lg shrink-0 mr-4 h-fit ${result.type === 'article'
  ? 'bg-blue-50 text-blue-500 dark:bg-blue-500/10'
@@ -140,7 +140,7 @@ function AdminSearchContent() {
  ))}
  </div>
  ) : (
- <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm">
+ <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
  <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
  <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">No results found</h3>
  </div>

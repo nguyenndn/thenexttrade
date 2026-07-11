@@ -61,9 +61,9 @@ export function ArticleSeoFixModal({
  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
  {/* Modal */}
- <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl flex flex-col">
+ <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl flex flex-col">
  {/* Header */}
- <div className="flex items-center justify-between px-6 py-4 border-b border-dashboard bg-white dark:bg-[#1E2028] sticky top-0 z-10 shrink-0">
+ <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] sticky top-0 z-10 shrink-0">
  <div className="flex items-center gap-3">
  <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
  <WandSparkles size={18} className="text-blue-500" />
@@ -109,7 +109,7 @@ export function ArticleSeoFixModal({
  type="text"
  value={formData.metaTitle}
  onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
- className="w-full bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+ className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
  placeholder="Enter meta title..."
  />
  </div>
@@ -126,7 +126,7 @@ export function ArticleSeoFixModal({
  value={formData.metaDescription}
  onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
  rows={3}
- className="w-full bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
+ className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
  placeholder="Enter meta description..."
  />
  </div>
@@ -142,7 +142,7 @@ export function ArticleSeoFixModal({
  type="text"
  value={formData.focusKeyword}
  onChange={(e) => setFormData({ ...formData, focusKeyword: e.target.value })}
- className="w-full bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+ className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
  placeholder="focus keyword"
  />
  </div>
@@ -153,7 +153,7 @@ export function ArticleSeoFixModal({
  <select
  value={formData.schemaType}
  onChange={(e) => setFormData({ ...formData, schemaType: e.target.value as any })}
- className="w-full bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none"
+ className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none"
  >
  <option value="ARTICLE">Article</option>
  <option value="HOWTO">How-To</option>
@@ -177,14 +177,14 @@ export function ArticleSeoFixModal({
  value={formData.excerpt}
  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
  rows={3}
- className="w-full bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
+ className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
  placeholder="Enter a brief excerpt..."
  />
  </div>
  </div>
  </div>
 
- <div className="flex items-center justify-between px-6 py-4 border-t border-dashboard bg-gray-50 dark:bg-[#151925] rounded-b-2xl shrink-0">
+ <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] rounded-b-2xl shrink-0">
  <Button variant="outline" size="smd" onClick={onRegenerate} disabled={isApplying} className="gap-2 font-bold">
  <WandSparkles size={14} />
  Regenerate
