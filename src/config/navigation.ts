@@ -35,6 +35,7 @@ import {
   Target,
   HeartPulse,
   FileBarChart,
+  Database,
 } from "lucide-react";
 
 export const menuItems = [
@@ -164,7 +165,17 @@ export const adminMenuItems = [
   // --- (No label — first item) ---
   { name: "Overview", href: "/admin", icon: LayoutDashboard },
 
-  // --- MONITORING ---
+  // --- MONITORING & AI ---
+  {
+    name: "AI Gateway",
+    href: "/admin/ai",
+    icon: Bot,
+  },
+  {
+    name: "MT5 Imports",
+    href: "/admin/mt5",
+    icon: Database,
+  },
   {
     name: "Monitoring",
     href: "#",
@@ -270,6 +281,8 @@ export const adminMenuGroups = [
     icon: LayoutDashboard,
     items: [
       { name: "Overview", href: "/admin", icon: LayoutDashboard },
+      { name: "MT5 Imports", href: "/admin/mt5", icon: Database },
+      { name: "AI Gateway", href: "/admin/ai", icon: Bot },
       { name: "Release Health", href: "/admin/release-health", icon: HeartPulse },
       { name: "Reports", href: "/admin/reports", icon: FileBarChart },
       { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },

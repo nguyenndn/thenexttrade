@@ -70,8 +70,9 @@ const STATUS_CONFIG: Record<SyncHealthStatus, {
 };
 
 const SOURCE_LABELS: Record<string, string> = {
-  TNT_CONNECT: "Trade Manager",
+  EA_SYNC: "Trade Manager",
   EA: "Trade Manager",
+  WINDOWS_IMPORT: "VPS Cloud Sync",
   MANUAL: "Manual",
   UNKNOWN: "Unknown",
 };

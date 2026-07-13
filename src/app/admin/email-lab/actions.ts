@@ -130,8 +130,8 @@ export async function sendEmailLabTest(input: {
  html = buildActivationEmailHtml(
  "NO_FIRST_DATA_24H",
  "Email Lab Trader",
- "TNT_CONNECT",
- getSampleActivationLink("NO_FIRST_DATA_24H", "TNT_CONNECT")
+ "EA_SYNC",
+ getSampleActivationLink("NO_FIRST_DATA_24H", "EA_SYNC")
  );
  break;
 
@@ -150,8 +150,8 @@ export async function sendEmailLabTest(input: {
  html = buildActivationEmailHtml(
  "MOBILE_SYNC_FALLBACK",
  "Email Lab Trader",
- "TNT_CONNECT",
- getSampleActivationLink("MOBILE_SYNC_FALLBACK", "TNT_CONNECT")
+ "EA_SYNC",
+ getSampleActivationLink("MOBILE_SYNC_FALLBACK", "EA_SYNC")
  );
  break;
 

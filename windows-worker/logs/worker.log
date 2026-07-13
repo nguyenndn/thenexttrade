@@ -1,0 +1,19 @@
+2026-07-12 20:15:58,302 INFO Worker enrollment completed for local-test-01
+2026-07-12 21:29:27,279 INFO Worker enrollment completed for local-test-01
+2026-07-12 21:30:29,252 INFO Worker local-test-01 started
+2026-07-12 22:17:30,111 ERROR Job imp_9083227e7415abb6 failed [MT5_PYTHON_PACKAGE_MISSING]: MetaTrader5 Python package is missing
+2026-07-12 22:21:33,123 INFO Worker local-test-01 started
+2026-07-12 22:22:53,190 ERROR Job imp_de5a3ab2e54bb93e failed [MT5_CONNECT_FAILED]: MT5 initialize failed: (-10001, 'IPC send failed')
+2026-07-12 22:29:19,435 ERROR Worker loop error: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2026-07-12 23:22:32,880 INFO Worker local-test-01 started
+2026-07-12 23:22:54,330 ERROR Worker loop error: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2026-07-12 23:23:10,584 INFO Job imp_e786d50206ad2bce claimed; controlled terminal=C:\Program Files\MetaTrader 5\terminal64.exe
+2026-07-12 23:23:12,412 INFO Job imp_e786d50206ad2bce initializing MT5 in portable mode
+2026-07-12 23:24:18,796 ERROR Job imp_e786d50206ad2bce failed [MT5_CONNECT_FAILED]: MT5 initialize failed: (-10005, 'IPC timeout')
+2026-07-12 23:32:10,998 INFO Worker local-test-01 started
+2026-07-12 23:32:41,977 INFO Worker local-test-01 started
+2026-07-12 23:39:33,247 INFO Worker local-test-01 started
+2026-07-12 23:39:50,256 INFO Worker local-test-01 started
+2026-07-12 23:39:55,065 INFO Worker local-test-01 started
+2026-07-12 23:40:24,977 INFO Worker local-test-01 started
+2026-07-12 23:40:56,091 INFO Worker local-test-01 started

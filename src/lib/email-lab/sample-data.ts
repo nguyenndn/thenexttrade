@@ -87,7 +87,7 @@ export function getSampleReportEmailData(type: "WEEKLY" | "MONTHLY"): ReportEmai
 
 export function getSampleActivationLink(
  type: ActivationReminderType,
- method: "TNT_CONNECT" | "EA_SYNC" | "MANUAL"
+ method: "EA_SYNC" | "MANUAL"
 ): string {
  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
  

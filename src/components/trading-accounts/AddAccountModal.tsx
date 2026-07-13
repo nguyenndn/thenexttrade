@@ -19,7 +19,7 @@ interface AddAccountModalProps {
  onClose: () => void;
  onSuccess: (account: any) => void;
  initialMode?: "chooser" | "free" | "pro" | "upgrade-pro";
- setupSyncMethod?: "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
+ setupSyncMethod?: "EA_SYNC" | "MANUAL";
  sourceAccount?: {
  id: string;
  name: string;
@@ -51,7 +51,7 @@ export function AddAccountModal({
  onClose,
  onSuccess,
  initialMode = "chooser",
- setupSyncMethod = "TNT_CONNECT",
+ setupSyncMethod = "EA_SYNC",
  sourceAccount,
  userEmail = "",
  userName = "",
@@ -102,6 +102,9 @@ export function AddAccountModal({
  const [color, setColor] = useState("hsl(var(--primary))");
  const [createdAccount, setCreatedAccount] = useState<any>(null);
  const [copied, setCopied] = useState(false);
+ const [broker, setBroker] = useState("");
+ const [server, setServer] = useState("");
+ const [investorPassword, setInvestorPassword] = useState("");
 
  // --- Partner Pro State ---
  const [selectedBroker, setSelectedBroker] = useState<SupportedBroker | null>(null);
@@ -124,7 +127,7 @@ export function AddAccountModal({
  }, [isOpen]);
 
  const brokerInfo = selectedBroker ? BROKER_INFO[selectedBroker] : null;
- const effectiveSetupMethod = setupSyncMethod === "EA_SYNC" ? "EA_SYNC" : "TNT_CONNECT";
+ const effectiveSetupMethod = setupSyncMethod;
  const setupInstructions = {
     description: `Connect your ${platform} account with Trade Manager EA`,
     steps: [
@@ -143,34 +146,76 @@ export function AddAccountModal({
 
  // --- Free Account Actions ---
  async function handleCreateFree() {
- if (!name) {
- toast.error("Please enter an account name");
- return;
- }
+    if (!name) {
+      toast.error("Please enter an account name");
+      return;
+    }
+    if (!freeAccountNumber) {
+      toast.error("Please enter your MT5 Account Number");
+      return;
+    }
+		if (server && investorPassword) {
+			startTransition(async () => {
+				try {
+					const res = await fetch("/api/v1/mt5-accounts", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							label: name,
+							login: freeAccountNumber,
+							broker_name: broker || "MetaQuotes",
+							server,
+							investor_password: investorPassword,
+						}),
+					});
 
- startTransition(async () => {
- try {
- const result = await createTradingAccount({
- platform,
- name,
- accountNumber: freeAccountNumber || undefined,
- color,
- balance: 0,
- currency: "USD",
- });
+					const data = await res.json();
+					if (!res.ok) {
+						throw new Error(data.error || "Failed to connect account");
+					}
 
- if (result.error) throw new Error(result.error);
+					setCreatedAccount({
+						id: data.id,
+						name,
+						platform: "MT5",
+						isImport: true,
+						apiKey: data.apiKey || "",
+					});
+					setStep("free-setup");
+					toast.success("Account connected successfully!");
+				} catch (error: any) {
+					toast.error(error.message || "Failed to create account");
+				}
+			});
+			return;
+		}
 
- if (result.account) {
- setCreatedAccount(result.account);
- setStep("free-setup");
- toast.success("Account created successfully!");
- }
- } catch (error: any) {
- toast.error(error.message || "Failed to create account");
- }
- });
- }
+		// Fallback to manual EA creation
+		startTransition(async () => {
+			const result = await createTradingAccount({
+				name,
+				accountNumber: freeAccountNumber,
+				broker: broker || "MetaQuotes",
+				balance: 0,
+				currency: "USD",
+				platform: "MT5",
+				color,
+			});
+			if (result.error) {
+				toast.error(result.error);
+			} else {
+				setCreatedAccount({
+					id: result.account?.id,
+					name,
+					platform: "MT5",
+					isImport: false,
+					apiKey: result.account?.apiKey || "",
+				});
+				setStep("free-setup");
+				toast.success("Account connected successfully!");
+			}
+		});
+  }
 
  // --- Partner Pro Actions ---
  function handleSelectBroker(broker: SupportedBroker) {
@@ -434,13 +479,47 @@ export function AddAccountModal({
  onChange={(e) => setName(e.target.value)}
  />
 
- <PremiumInput
- label="MT5 Account Number"
- placeholder="e.g. 2001140658"
- value={freeAccountNumber}
- onChange={(e) => setFreeAccountNumber(e.target.value.replace(/\D/g, ''))}
- helperText="Find this in MT5 → Navigator → Accounts. Required for Trade Manager sync."
- />
+  <PremiumInput
+  label="MT5 Account Number"
+  placeholder="e.g. 2001140658"
+  value={freeAccountNumber}
+  onChange={(e) => setFreeAccountNumber(e.target.value.replace(/\D/g, ''))}
+  helperText="Find this in MT5 → Navigator → Accounts. Required for Trade Manager sync."
+  />
+
+  <PremiumInput
+  label="Broker Name"
+  placeholder="e.g. IC Markets, Exness"
+  value={broker}
+  onChange={(e) => setBroker(e.target.value)}
+  />
+
+							<PremiumInput
+								label="MT5 Server (optional)"
+								placeholder="e.g. ICMarketsSC-Demo"
+								value={server}
+								onChange={(e) => setServer(e.target.value)}
+								helperText="Find this in MT5 → Navigator → Accounts or connection email."
+							/>
+
+							<PremiumInput
+								label="Investor Password (optional)"
+								type="password"
+								placeholder="Enter investor read-only password"
+								value={investorPassword}
+								onChange={(e) => setInvestorPassword(e.target.value)}
+                                helperText="Provide server and password to enable background history import. Leave blank for EA Sync only."
+							/>
+
+  <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20">
+    <AlertCircle size={18} className="text-amber-500 shrink-0 mt-0.5" />
+    <div>
+      <p className="text-xs font-bold text-amber-700 dark:text-amber-400">Investor Password Rule</p>
+      <p className="text-[11px] mt-0.5 text-amber-600/70 dark:text-amber-400/60">
+        Please input only your read-only **Investor Password**. Never provide your master trading password.
+      </p>
+    </div>
+  </div>
 
  <div>
  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
@@ -489,7 +568,61 @@ export function AddAccountModal({
  )}
 
  {/* 3. FREE ACCOUNT SETUP — method-specific success handoff */}
- {step === "free-setup" && createdAccount && (() => {
+  {step === "free-setup" && createdAccount && (() => {
+    if (createdAccount.isImport) {
+      return (
+        <>
+          {renderHeader("MT5 Import Configured", "Your account has been connected via secure background worker", false)}
+          <div className="p-6 space-y-6">
+            <div className="flex items-start gap-3.5 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+              <Check size={20} className="shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-bold">Successfully Connected!</p>
+                <p className="text-xs mt-0.5 text-gray-500 dark:text-gray-400">
+                  Your MT5 credentials are saved securely.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-semibold text-gray-700 dark:text-white border-b border-dashboard pb-2">
+                What's Next?
+              </h3>
+              <ol className="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+                <li className="flex gap-3 items-start">
+                  <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+                  <span className="break-words">Close this wizard to view your new account in the list.</span>
+                </li>
+                <li className="flex gap-3 items-start">
+                  <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+                  <span className="break-words">Click the green <strong>Sync</strong> button on the account block to queue the import job.</span>
+                </li>
+                <li className="flex gap-3 items-start">
+                  <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+                  <span className="break-words">A progress indicator will appear dynamically at the bottom-right of your screen.</span>
+                </li>
+              </ol>
+            </div>
+
+            <div className="flex flex-col gap-2 pt-2">
+              <Button
+                variant="primary"
+                size="smd"
+                onClick={() => {
+                  handleClose();
+                  onSuccess(createdAccount);
+                }}
+                className="w-full font-bold shadow-lg shadow-primary/20 gap-2"
+              >
+                Go to Accounts list
+                <ArrowRight size={16} />
+              </Button>
+            </div>
+          </div>
+        </>
+      );
+    }
+
  const isManual = setupSyncMethod === "MANUAL";
  const successTitle = isManual ? "Account created" : "Trade Manager is ready";
  const successDesc = isManual ? "You can now start logging trades manually." : setupInstructions.description;
@@ -544,7 +677,7 @@ export function AddAccountModal({
 
  {/* Troubleshooting help — only for TNT/EA */}
  {!isManual && (
- <SyncTroubleshootingPanel method={effectiveSetupMethod as "TNT_CONNECT" | "EA_SYNC"} />
+  <SyncTroubleshootingPanel method={effectiveSetupMethod as "EA_SYNC"} />
  )}
 
  {/* Primary CTA — method-aware */}
@@ -554,7 +687,7 @@ export function AddAccountModal({
  size="smd"
  onClick={() => {
  trackEvent("add_account_success_next_clicked", {
- method: isManual ? "manual" : effectiveSetupMethod === "EA_SYNC" ? "ea" : "tnt",
+  method: isManual ? "manual" : "ea",
  });
  if (isManual) {
  // Route to journal

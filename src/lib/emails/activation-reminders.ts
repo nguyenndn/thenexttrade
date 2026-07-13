@@ -31,7 +31,7 @@ export function buildActivationEmailSubject(type: ActivationReminderType): strin
 export function buildActivationEmailHtml(
  type: ActivationReminderType,
  name: string | null,
- preferredSyncMethod: "TNT_CONNECT" | "EA_SYNC" | "MANUAL",
+ preferredSyncMethod: "EA_SYNC" | "MANUAL",
  link: string
 ): string {
  const userName = name || "Trader";
@@ -113,7 +113,7 @@ export function buildActivationEmailHtml(
 export function buildActivationEmailText(
  type: ActivationReminderType,
  name: string | null,
- preferredSyncMethod: "TNT_CONNECT" | "EA_SYNC" | "MANUAL",
+ preferredSyncMethod: "EA_SYNC" | "MANUAL",
  link: string
 ): string {
  const userName = name || "Trader";

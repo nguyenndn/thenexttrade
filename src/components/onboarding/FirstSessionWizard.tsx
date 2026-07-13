@@ -67,7 +67,7 @@ export function FirstSessionWizard({
  const router = useRouter();
  const hasTrackedRef = useRef(false);
  const isMobile = useIsMobileSyncDevice();
- const [mobileFallbackMethod, setMobileFallbackMethod] = useState<"TNT_CONNECT" | "EA_SYNC" | null>(null);
+ const [mobileFallbackMethod, setMobileFallbackMethod] = useState<"EA_SYNC" | null>(null);
  const [linkSent, setLinkSent] = useState(false);
  const [isPending, startTransition] = useTransition();
 
@@ -93,7 +93,7 @@ export function FirstSessionWizard({
  // If user opens the wizard at BRING_FIRST_DATA and has a sync method on mobile, auto-show fallback
  useEffect(() => {
  if (open && isMobile && state.currentStep === "BRING_FIRST_DATA" && !mobileFallbackMethod) {
- if (state.preferredSyncMethod === "TNT_CONNECT" || state.preferredSyncMethod === "EA_SYNC") {
+ if (state.preferredSyncMethod === "EA_SYNC") {
  setMobileFallbackMethod(state.preferredSyncMethod);
  recordMobileSyncFallbackViewedAction(state.preferredSyncMethod);
  }
@@ -137,7 +137,7 @@ export function FirstSessionWizard({
  trackEvent("first_session_sync_method_selected", { method });
  await saveFirstSessionSyncMethodAction(method);
 
- if (isMobile && (method === "TNT_CONNECT" || method === "EA_SYNC")) {
+ if (isMobile && method === "EA_SYNC") {
  await recordMobileSyncFallbackViewedAction(method);
  setMobileFallbackMethod(method);
  } else {
@@ -177,7 +177,7 @@ export function FirstSessionWizard({
  if (!mobileFallbackMethod) return;
  startTransition(async () => {
  await recordMobileSyncContinueAnywayAction(mobileFallbackMethod);
- const pathMethod = mobileFallbackMethod === "EA_SYNC" ? "ea" : "tnt";
+ const pathMethod = "ea";
  const href = `/dashboard/accounts?setup=sync&method=${pathMethod}&source=first-session`;
  onOpenChange(false);
  router.push(href);
@@ -474,14 +474,6 @@ function StepBringFirstData({
  SyncMethod,
  { title: string; description: string; cta: string; href: string; icon: React.ReactNode }
  > = {
- TNT_CONNECT: {
- title: "Verify Trade Manager EA Sync",
- description:
- "Attach Trade Manager EA to MT5, paste your Sync API Key under the SYNC tab, and confirm the heartbeat.",
- cta: "Open Sync Setup",
- href: "/dashboard/accounts?setup=sync&method=ea&source=first-session",
- icon: <Zap size={20} className="text-amber-500" />,
- },
  EA_SYNC: {
  title: "Verify Trade Manager EA Sync",
  description:
@@ -491,11 +483,11 @@ function StepBringFirstData({
  icon: <Zap size={20} className="text-amber-500" />,
  },
  MANUAL: {
- title: "Log your first trade",
+ title: "Log Your First Trade",
  description:
- "One trade is enough to unlock the first useful dashboard and review flow.",
- cta: "Log First Trade",
- href: "/dashboard/journal?action=log-trade&source=first-session",
+ "Manually log a trade or bulk upload a CSV from your broker to start seeing insights.",
+ cta: "Open Journal",
+ href: "/dashboard/journal?action=log-trade&source=first-session-wizard",
  icon: <PenLine size={20} className="text-gray-500" />,
  },
  };
@@ -599,7 +591,7 @@ function StepReviewDashboard({
 // ---------------------------------------------------------------------------
 
 interface StepMobileSyncFallbackProps {
- method: "TNT_CONNECT" | "EA_SYNC";
+ method: "EA_SYNC";
  onSendLink: () => void;
  onLogManually: () => void;
  onContinueAnyway: () => void;

@@ -10,7 +10,7 @@ interface SyncHealthAccountRowProps {
     accountNumber: string | null;
     broker: string | null;
     name: string;
-    source: "TNT_CONNECT" | "EA_SYNC" | "MANUAL" | "UNKNOWN";
+    source: "EA_SYNC" | "MANUAL" | "UNKNOWN";
     health: {
       status: string;
       label: string;
@@ -87,7 +87,7 @@ export function SyncHealthAccountRow({ account, onActionTrigger }: SyncHealthAcc
                 </span>
               )}
               <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider bg-white/40 dark:bg-black/10 px-1.5 py-0.5 rounded text-gray-500 dark:text-gray-400">
-                {account.source === "TNT_CONNECT" ? <Monitor size={9} /> : <Cable size={9} />}
+                <Cable size={9} />
                 {sourceLabel}
               </span>
             </div>

@@ -39,8 +39,7 @@ export default async function TradingAccountsPage({
  const onboarding = (settings.onboarding as Record<string, unknown>) || {};
  const preferredSyncMethod =
  onboarding.preferredSyncMethod === "EA_SYNC" ||
- onboarding.preferredSyncMethod === "MANUAL" ||
- onboarding.preferredSyncMethod === "TNT_CONNECT"
+ onboarding.preferredSyncMethod === "MANUAL"
  ? onboarding.preferredSyncMethod
  : undefined;
 

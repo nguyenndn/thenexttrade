@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { RemoteSyncButton } from "./RemoteSyncButton";
+import { OnDemandSyncButton } from "./OnDemandSyncButton";
 import {
  DropdownMenu,
  DropdownMenuContent,
@@ -31,24 +32,23 @@ import { normalizeSyncSource } from "@/lib/sync/sync-source";
 // Compute the sync method label for each account.
 // Uses syncSource as the primary source of truth (set by the API on each sync).
 // lastHeartbeat is shared by both EA and TNT Connect, so it's not reliable for differentiation.
-function getSyncMethodLabel(account: any): { label: string; variant: "tnt" | "ea" | "paused" | "none" } {
+function getSyncMethodLabel(account: any): { label: string; variant: "tnt" | "ea" | "paused" | "none" | "vps" } {
  if (account.autoSync === false) return { label: "Sync paused", variant: "paused" };
 
  const source = normalizeSyncSource(account.syncSource);
 
  // Primary: use the explicit sync source field
- if (source === "TNT_CONNECT") return { label: "Synced via Trade Manager", variant: "tnt" };
  if (source === "EA_SYNC") return { label: "Synced via Trade Manager", variant: "ea" };
+ if (source === "WINDOWS_IMPORT") return { label: "VPS Cloud Sync", variant: "vps" };
  if (source === "MANUAL") return { label: "Manual Entry", variant: "paused" };
 
  // Fallback: infer from presence of EA version or app heartbeat
  if (account.eaVersion) return { label: "Synced via Trade Manager", variant: "ea" };
- if (account.appLastHeartbeat) return { label: "Synced via Trade Manager", variant: "tnt" };
 
  // No sync data at all
  if (!account.lastHeartbeat && !account.appLastHeartbeat) return { label: "Not connected", variant: "none" };
 
- return { label: "Connected", variant: "tnt" };
+ return { label: "Connected", variant: "ea" };
 }
 
 interface AccountCardProps {
@@ -261,6 +261,8 @@ export function AccountCard({
  ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200/80 dark:border-amber-500/20 text-amber-600 dark:text-amber-400"
  : syncMethod.variant === "paused"
  ? "bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200/80 dark:border-yellow-500/20 text-yellow-600 dark:text-yellow-400"
+ : syncMethod.variant === "vps"
+ ? "bg-blue-50 dark:bg-blue-500/10 border-blue-200/80 dark:border-blue-500/20 text-blue-600 dark:text-blue-400"
  : "bg-white dark:bg-white/5 border-dashboard/80 text-gray-500 dark:text-gray-400"
  }`}>
  {syncMethod.variant === "tnt" ? <Monitor size={11} className="shrink-0" /> : <Cable size={11} className="shrink-0" />}
@@ -332,12 +334,14 @@ export function AccountCard({
  <span>Log first trade</span>
  <ArrowRight size={10} className="transition-transform group-hover/link:translate-x-0.5" />
  </Link>
+ ) : syncMethod.variant === "vps" ? (
+ <OnDemandSyncButton tradingAccountId={account.id} accountName={account.name} variant="first-sync" />
  ) : (
  <Button
  variant="ghost"
  onClick={() => {
  trackEvent("account_card_sync_first_trades_clicked", {
- method: preferredSyncMethod || "TNT_CONNECT",
+ method: preferredSyncMethod || "EA_SYNC",
  accountId: account.id,
  source: "account-card",
  });
@@ -408,12 +412,20 @@ export function AccountCard({
  <span>Dashboard</span>
  </Link>
 
+ {syncMethod.variant === "vps" ? (
+ <OnDemandSyncButton
+ tradingAccountId={account.id}
+ accountName={account.name}
+ variant="premium"
+ />
+ ) : (
  <RemoteSyncButton
  tradingAccountId={account.id}
  accountName={account.name}
  isConnected={account.isConnected}
  variant="premium"
  />
+ )}
  </>
  )}
  </div>

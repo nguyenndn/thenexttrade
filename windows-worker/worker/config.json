@@ -1,0 +1,12 @@
+{
+  "backendBaseUrl": "http://localhost:3000/api",
+  "workerId": "local-test-01",
+  "pollSeconds": 5,
+  "batchSize": 500,
+  "initializeTimeoutMs": 180000,
+  "loginTimeoutMs": 60000,
+  "paths": {
+	"terminal": "C:\\GSN\\mt5\\terminal\\terminal64.exe",
+	"logs": "C:\\GSN\\logs"
+  }
+}

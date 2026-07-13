@@ -16,7 +16,7 @@ import {
 } from "@/lib/emails/activation-reminders";
 
 export interface MobileSyncFallbackState {
- method: "TNT_CONNECT" | "EA_SYNC";
+ method: "EA_SYNC";
  firstSeenAt: string;
  lastSeenAt: string;
  desktopLinkSentAt?: string;
@@ -29,7 +29,7 @@ export interface MobileSyncFallbackState {
  */
 async function updateMobileSyncFallback(
  userId: string,
- method: "TNT_CONNECT" | "EA_SYNC",
+ method: "EA_SYNC",
  patch: Partial<MobileSyncFallbackState>
 ): Promise<void> {
  const freshUser = await prisma.user.findUnique({
@@ -186,7 +186,7 @@ export async function markFirstInsightViewedAction() {
 /**
  * Record that a mobile fallback warning has been viewed.
  */
-export async function recordMobileSyncFallbackViewedAction(method: "TNT_CONNECT" | "EA_SYNC") {
+export async function recordMobileSyncFallbackViewedAction(method: "EA_SYNC") {
  const user = await getAuthUser();
  if (!user) return { error: "Unauthorized" };
 
@@ -207,7 +207,7 @@ export async function recordMobileSyncFallbackViewedAction(method: "TNT_CONNECT"
 /**
  * Send the desktop setup link to the user's email and track action.
  */
-export async function sendDesktopSetupLinkAction(method: "TNT_CONNECT" | "EA_SYNC") {
+export async function sendDesktopSetupLinkAction(method: "EA_SYNC") {
  const user = await getAuthUser();
  if (!user) return { error: "Unauthorized" };
 
@@ -222,7 +222,7 @@ export async function sendDesktopSetupLinkAction(method: "TNT_CONNECT" | "EA_SYN
  const link = `${baseUrl}/dashboard/accounts?setup=sync&method=${pathMethod}&source=desktop-link`;
 
  const subject = buildActivationEmailSubject("MOBILE_SYNC_FALLBACK");
- const html = buildActivationEmailHtml("MOBILE_SYNC_FALLBACK", freshUser.name, method === "EA_SYNC" ? "EA_SYNC" : "TNT_CONNECT", link);
+ const html = buildActivationEmailHtml("MOBILE_SYNC_FALLBACK", freshUser.name, method, link);
 
  const emailSent = await sendEmail({
  to: freshUser.email,
@@ -254,7 +254,7 @@ export async function sendDesktopSetupLinkAction(method: "TNT_CONNECT" | "EA_SYN
 /**
  * Record that a mobile user chose the manual fallback flow.
  */
-export async function recordMobileSyncManualFallbackAction(method: "TNT_CONNECT" | "EA_SYNC") {
+export async function recordMobileSyncManualFallbackAction(method: "EA_SYNC") {
  const user = await getAuthUser();
  if (!user) return { error: "Unauthorized" };
 
@@ -278,7 +278,7 @@ export async function recordMobileSyncManualFallbackAction(method: "TNT_CONNECT"
 /**
  * Record that a mobile user clicked "Continue Anyway".
  */
-export async function recordMobileSyncContinueAnywayAction(method: "TNT_CONNECT" | "EA_SYNC") {
+export async function recordMobileSyncContinueAnywayAction(method: "EA_SYNC") {
  const user = await getAuthUser();
  if (!user) return { error: "Unauthorized" };
 

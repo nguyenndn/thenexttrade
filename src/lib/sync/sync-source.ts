@@ -1,36 +1,37 @@
 export type CanonicalSyncSource =
-  | "TNT_CONNECT"
   | "EA_SYNC"
   | "MANUAL"
+  | "WINDOWS_IMPORT"
   | "UNKNOWN";
 
 export function normalizeSyncSource(value: string | null | undefined): CanonicalSyncSource {
   if (!value) return "UNKNOWN";
   const val = value.toUpperCase().trim();
-  if (val === "APP" || val === "TNT" || val === "TNT_CONNECT") {
-    return "TNT_CONNECT";
-  }
   if (val === "EA" || val === "EA_SYNC" || val === "EA_HISTORY") {
     return "EA_SYNC";
   }
   if (val === "MANUAL") {
     return "MANUAL";
   }
+  if (val === "WINDOWS_IMPORT" || val === "VPS_SYNC" || val === "VPS") {
+    return "WINDOWS_IMPORT";
+  }
   return "UNKNOWN";
 }
 
 export function getSyncSourceLabel(source: CanonicalSyncSource): string {
   switch (source) {
-    case "TNT_CONNECT":
     case "EA_SYNC":
       return "Trade Manager";
     case "MANUAL":
       return "Manual Entry";
+    case "WINDOWS_IMPORT":
+      return "VPS Cloud Sync";
     default:
       return "Unknown";
   }
 }
 
 export function isAutoSyncSource(source: CanonicalSyncSource): boolean {
-  return source === "TNT_CONNECT" || source === "EA_SYNC";
+  return source === "EA_SYNC" || source === "WINDOWS_IMPORT";
 }

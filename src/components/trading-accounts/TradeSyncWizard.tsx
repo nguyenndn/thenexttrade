@@ -37,7 +37,7 @@ interface TradingAccount {
  accountNumber: string | null;
 }
 
-type SyncMethod = "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
+type SyncMethod = "EA_SYNC" | "MANUAL";
 
 interface TradeSyncWizardProps {
  isOpen: boolean;
@@ -50,7 +50,6 @@ interface TradeSyncWizardProps {
 interface SyncStatus {
  hasApiKey: boolean;
  accountsCount: number;
- tntConnectedAccounts: number;
  eaConnectedAccounts: number;
  lastHeartbeatAt: string | null;
  lastSyncAt: string | null;
@@ -59,7 +58,7 @@ interface SyncStatus {
 
 export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOpenAddAccount }: TradeSyncWizardProps) {
  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
- const [syncMethod, setSyncMethod] = useState<SyncMethod>(defaultMethod === "TNT_CONNECT" ? "EA_SYNC" : (defaultMethod || "EA_SYNC"));
+ const [syncMethod, setSyncMethod] = useState<SyncMethod>(defaultMethod || "EA_SYNC");
  const isMobile = useIsMobileSyncDevice();
  const [linkSent, setLinkSent] = useState(false);
  
@@ -94,7 +93,7 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
 
  // Track mobile sync warning viewed in accounts setup steps
  useEffect(() => {
- if (isOpen && isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") && (step === 2 || step === 3)) {
+ if (isOpen && isMobile && syncMethod === "EA_SYNC" && (step === 2 || step === 3)) {
  import("@/actions/first-session-onboarding").then(m => {
  m.recordMobileSyncFallbackViewedAction(syncMethod);
  });
@@ -272,7 +271,7 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-		{/* Option 1: MT5 Auto-Sync (Recommended) */}
+		{/* Option: MT5 Auto-Sync (Recommended) */}
 		<div 
 			onClick={() => setSyncMethod("EA_SYNC")}
 			className={cn(
@@ -307,7 +306,7 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
 			</div>
 		</div>
 
-		{/* Option 2: Manual Journal */}
+		{/* Option: Manual Journal */}
 		<div 
 			onClick={() => setSyncMethod("MANUAL")}
 			className={cn(
@@ -333,6 +332,22 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
 			</div>
 		</div>
 	</div>
+        <div className="flex justify-end pt-4 gap-3">
+          <Button variant="outline" onClick={onClose} className="rounded-xl h-11 px-6">Cancel</Button>
+          <Button 
+            className="rounded-xl h-11 px-6 bg-primary text-white shadow-md shadow-primary/20 hover:bg-primary/90 gap-2"
+            onClick={() => {
+              if (syncMethod === "MANUAL") {
+                onClose();
+                onOpenAddAccount?.("MANUAL");
+              } else {
+                setStep(2);
+              }
+            }}
+          >
+            Continue <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
 	</div>
 )}
 
@@ -341,7 +356,7 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
  ═══════════════════════════════════════════════════════════════ */}
  {step === 2 && (
  <div className="space-y-4">
- {isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") && (
+ {isMobile && syncMethod === "EA_SYNC" && (
  <div className="p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
  <div className="flex gap-2.5 items-start">
  <span className="text-lg">💻</span>
@@ -505,7 +520,7 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
  ═══════════════════════════════════════════════════════════════ */}
  {step === 3 && (
  <div className="space-y-4">
- {isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") && (
+ {isMobile && syncMethod === "EA_SYNC" && (
  <div className="p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
  <div className="flex gap-2.5 items-start">
  <span className="text-lg">💻</span>
@@ -686,7 +701,7 @@ export function TradeSyncWizard({ isOpen, onClose, accounts, defaultMethod, onOp
  </p>
  </div>
 
- <SyncTroubleshootingPanel method={syncMethod as "TNT_CONNECT" | "EA_SYNC"} />
+ <SyncTroubleshootingPanel method={syncMethod as "EA_SYNC"} />
  </div>
  )}
  </div>

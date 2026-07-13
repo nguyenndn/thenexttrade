@@ -7,11 +7,15 @@ import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAccountsProEligibility } from "@/lib/pro-eligibility";
+import { encryptPassword } from "@/lib/crypto";
 
 const accountSchema = z.object({
- name: z.string().min(1).max(50),
- broker: z.string().optional(),
- accountNumber: z.string().max(20).optional(),
+  name: z.string().min(1).max(50),
+  broker: z.string().optional(),
+  accountNumber: z.string().max(20).optional(),
+  server: z.string().optional(),
+  investorPassword: z.string().optional(),
+
  balance: z.number().min(0),
  currency: z.string().length(3),
  platform: z.string().optional(),
@@ -230,7 +234,9 @@ export async function updateTradingAccount(id: string, data: z.infer<typeof acco
  if (!validation.success) return { error: "Invalid data" };
 
  try {
- if (data.isDefault) {
+ const { investorPassword, ...accountData } = validation.data;
+
+    if (data.isDefault) {
  await prisma.tradingAccount.updateMany({
  where: { userId: user.id, isDefault: true, id: { not: id } },
  data: { isDefault: false }
@@ -239,8 +245,24 @@ export async function updateTradingAccount(id: string, data: z.infer<typeof acco
 
  await prisma.tradingAccount.update({
  where: { id, userId: user.id },
- data: validation.data
+ data: accountData
  });
+
+    if (investorPassword) {
+      const encrypted = encryptPassword(investorPassword);
+      await prisma.tradingAccountCredential.upsert({
+        where: { accountId: id },
+        create: {
+          accountId: id,
+          encryptedPassword: encrypted,
+          keyVersion: "v1",
+        },
+        update: {
+          encryptedPassword: encrypted,
+          keyVersion: "v1",
+        },
+      });
+    }
 
  revalidatePath("/dashboard/accounts");
  return { success: true };

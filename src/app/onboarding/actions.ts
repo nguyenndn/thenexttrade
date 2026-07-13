@@ -132,7 +132,7 @@ export async function saveTradingGoalStep(goal: string) {
 // STEP 3: SYNC PREFERENCE
 // ============================================================================
 
-export async function saveSyncPreferenceStep(method: "TNT_CONNECT" | "EA_SYNC" | "MANUAL") {
+export async function saveSyncPreferenceStep(method: "EA_SYNC" | "MANUAL") {
  const supabase = await createClient();
  const { data: { user } } = await supabase.auth.getUser();
  if (!user) return { error: "Unauthorized" };

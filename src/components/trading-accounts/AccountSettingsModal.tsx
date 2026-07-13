@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Check, RefreshCw, Trash2, Shield } from "lucide-react";
+import { X, Check, RefreshCw, Trash2, Shield, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
@@ -48,6 +48,9 @@ export function AccountSettingsModal({
 }: AccountSettingsModalProps) {
  const [name, setName] = useState(account.name);
  const [color, setColor] = useState(account.color || "hsl(var(--primary))");
+	const [broker, setBroker] = useState(account.broker || "");
+	const [server, setServer] = useState(account.server || "");
+	const [investorPassword, setInvestorPassword] = useState("");
 
  const [isSaving, setIsSaving] = useState(false);
 
@@ -66,6 +69,9 @@ export function AccountSettingsModal({
  const result = await updateTradingAccount(account.id, {
  name,
  color,
+					broker: broker || undefined,
+					server: server || undefined,
+					investorPassword: investorPassword || undefined,
  balance: account.balance,
  currency: account.currency,
  });
@@ -158,10 +164,55 @@ export function AccountSettingsModal({
  </Button>
  ))}
  </div>
- </div>
- </div>
+					</div>
+				</div>
 
- {/* Trading Rules (Soft Nudge) */}
+				{/* MT5 Configuration */}
+				<div className="space-y-4">
+					<h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+						<span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+						MT5 Configuration
+					</h3>
+					
+					<div className="space-y-3">
+						<div className="grid grid-cols-2 gap-3">
+							<PremiumInput
+								label="Broker"
+								value={broker}
+								onChange={(e) => setBroker(e.target.value)}
+								placeholder="e.g. IC Markets"
+							/>
+							<PremiumInput
+								label="Server"
+								value={server}
+								onChange={(e) => setServer(e.target.value)}
+								placeholder="e.g. ICMarketsSC-Demo"
+							/>
+						</div>
+						<PremiumInput
+							label="Update Investor Password (optional)"
+							type="password"
+							value={investorPassword}
+							onChange={(e) => setInvestorPassword(e.target.value)}
+							placeholder="••••••••"
+							helperText="Leave blank to keep your current password."
+						/>
+						
+						{investorPassword && (
+							<div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20">
+								<AlertCircle size={18} className="text-amber-500 shrink-0 mt-0.5" />
+								<div>
+									<p className="text-xs font-bold text-amber-700 dark:text-amber-400">Investor Password Notice</p>
+									<p className="text-[11px] mt-0.5 text-amber-600/70 dark:text-amber-400/60">
+										This updates the password for background syncing. Please ensure it matches your MT5 Investor Password exactly.
+									</p>
+								</div>
+							</div>
+						)}
+					</div>
+				</div>
+
+				{/* Trading Rules (Soft Nudge) */}
  <div className="space-y-4">
  <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
  <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>

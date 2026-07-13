@@ -51,7 +51,7 @@ export default function SearchClient() {
 
  // Helper to highlight text
  const HighlightText = ({ text, highlight }: { text: string, highlight: string }) => {
- if (!highlight || !highlight.trim()) {
+ if (!highlight || !highlight.trim() || !text) {
  return <span>{text}</span>;
  }
  // Escape special regex chars
@@ -62,8 +62,8 @@ export default function SearchClient() {
  return (
  <span>
  {parts.map((part, i) =>
- regex.test(part) ? (
- <span key={i} className="bg-yellow-300 dark:bg-yellow-600/50 text-gray-700 dark:text-white px-0.5 rounded">{part}</span>
+ part.toLowerCase() === highlight.toLowerCase() ? (
+ <span key={i} className="bg-yellow-200 dark:bg-yellow-500/30 text-gray-900 dark:text-yellow-100 px-1 rounded-sm font-medium">{part}</span>
  ) : (
  <span key={i}>{part}</span>
  )
@@ -94,7 +94,7 @@ export default function SearchClient() {
  <Link
  key={`${result.type}-${result.id}`}
  href={result.slug}
- className="block bg-white dark:bg-[#151925] p-5 rounded-xl border border-dashboard hover:border-primary dark:hover:border-primary transition-colors group shadow-sm"
+ className="block bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary transition-shadow group shadow-sm hover:shadow-md"
  >
  <div className="flex items-start gap-4">
  <div className={`p-3 rounded-xl shrink-0 ${result.type === 'article'
@@ -127,7 +127,7 @@ export default function SearchClient() {
  ))}
  </div>
  ) : (
- <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-dashboard">
+ <div className="text-center py-12 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10">
  <AlertCircle className="mx-auto text-gray-300 mb-4" size={48} />
  <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">No results found</h3>
  <p className="text-gray-600">Try adjusting your search terms or check for typos.</p>

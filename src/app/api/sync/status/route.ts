@@ -33,16 +33,15 @@ export async function GET() {
  prisma.journalEntry.count({
  where: {
  userId: user.id,
- syncSource: { in: ["MT5_SYNC", "TNT_CONNECT", "EA", "APP", "EA_SYNC", "EA_HISTORY", "TNT"] },
+ syncSource: { in: ["MT5_SYNC", "EA", "APP", "EA_SYNC", "EA_HISTORY", "TNT"] },
  },
  }),
  ]);
 
  const hasApiKey = accounts.some((a) => !!a.apiKey);
- const tntAccounts = accounts.filter((a) => normalizeSyncSource(a.syncSource) === "TNT_CONNECT");
  const eaAccounts = accounts.filter((a) => {
     const src = normalizeSyncSource(a.syncSource);
-    return src === "EA_SYNC" || src === "TNT_CONNECT";
+    return src === "EA_SYNC";
   });
 
  const lastHeartbeat = accounts
@@ -58,7 +57,6 @@ export async function GET() {
  return NextResponse.json({
  hasApiKey,
  accountsCount: accounts.length,
- tntConnectedAccounts: tntAccounts.length,
  eaConnectedAccounts: eaAccounts.length,
  lastHeartbeatAt: lastHeartbeat,
  lastSyncAt: lastSync,

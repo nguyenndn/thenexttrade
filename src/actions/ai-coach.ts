@@ -184,7 +184,7 @@ Example JSON output format:
  "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
  },
  body: JSON.stringify({
- model: "deepseek-v4-flash",
+ model: "deepseek-chat",
  messages: [
  { role: "system", content: "You are a JSON-only API. You must return valid JSON." },
  { role: "user", content: systemPrompt }
@@ -202,8 +202,15 @@ Example JSON output format:
  }
 
  const aiData = await res.json();
- const content = aiData.choices[0]?.message?.content;
+
+ if (aiData.error) {
+ console.error("DeepSeek API Payload Error:", aiData.error);
+ throw new Error(`DeepSeek API Payload Error: ${aiData.error.message || JSON.stringify(aiData.error)}`);
+ }
+
+ const content = aiData.choices?.[0]?.message?.content;
  if (!content) {
+ console.error("DeepSeek Missing Content. Full Response:", JSON.stringify(aiData, null, 2));
  throw new Error("No content returned from DeepSeek");
  }
 
