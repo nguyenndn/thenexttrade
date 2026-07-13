@@ -37,7 +37,6 @@ function getSyncMethodLabel(account: any): { label: string; variant: "tnt" | "ea
  const source = normalizeSyncSource(account.syncSource);
 
  // Primary: use the explicit sync source field
- if (source === "TNT_CONNECT") return { label: "Synced via Trade Manager", variant: "tnt" };
  if (source === "EA_SYNC") return { label: "Synced via Trade Manager", variant: "ea" };
  if (source === "MANUAL") return { label: "Manual Entry", variant: "paused" };
 
