@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, HelpCircle, AlertTriangle } from "lucide-react";
 import { trackEvent } from "@/lib/track";
 
-type SyncMethod = "TNT_CONNECT" | "EA_SYNC";
+type SyncMethod = "EA_SYNC";
 
 interface HelpTopic {
  question: string;

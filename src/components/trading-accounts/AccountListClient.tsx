@@ -75,13 +75,12 @@ interface AccountListClientProps {
  preferredSyncMethod?: SyncMethod;
 }
 
-type SyncMethod = "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
+type SyncMethod = "EA_SYNC" | "MANUAL";
 
 const getSyncMethodFromQuery = (method: string | null, preferredSyncMethod?: SyncMethod): SyncMethod => {
- if (method === "ea") return "EA_SYNC";
- if (method === "manual") return "MANUAL";
- if (method === "tnt") return "TNT_CONNECT";
- return preferredSyncMethod ?? "TNT_CONNECT";
+	if (method === "ea") return "EA_SYNC";
+	if (method === "manual") return "MANUAL";
+	return preferredSyncMethod ?? "EA_SYNC";
 };
 
 export function AccountListClient({ initialAccounts, meta, userEmail, userName, userTelegramId, userCountry, mainAccountId: initialMainId, preferredSyncMethod }: AccountListClientProps) {

@@ -6,7 +6,7 @@ export interface ReminderCandidate {
  email: string | null;
  name: string | null;
  type: "NO_ACCOUNT_24H" | "NO_FIRST_DATA_24H" | "STILL_NO_FIRST_VALUE_72H" | "MOBILE_SYNC_FALLBACK";
- preferredSyncMethod: "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
+ preferredSyncMethod: "EA_SYNC" | "MANUAL";
  channels: Array<"in_app" | "email">;
 }
 
@@ -47,7 +47,7 @@ export async function getActivationReminderCandidates(): Promise<ReminderCandida
  const onboarding = (settings.onboarding as Record<string, any>) || {};
  const activationReminders = (onboarding.activationReminders as Record<string, any>) || {};
  const mobileSyncFallback = (onboarding.mobileSyncFallback as Record<string, any>) || {};
- const preferredSyncMethod = onboarding.preferredSyncMethod || "TNT_CONNECT";
+ const preferredSyncMethod = onboarding.preferredSyncMethod || "EA_SYNC";
 
  // 1. Check if user already reached first value
  const hasAccounts = user.tradingAccounts.length > 0;

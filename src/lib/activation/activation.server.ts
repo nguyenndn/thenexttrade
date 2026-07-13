@@ -12,7 +12,7 @@ export async function getActivationState(userId: string): Promise<ActivationStat
  });
  const settings = (user?.settings as Record<string, unknown>) || {};
  const onboarding = (settings.onboarding as { preferredSyncMethod?: string }) || {};
- const syncMethod = onboarding.preferredSyncMethod || "TNT_CONNECT";
+ const syncMethod = onboarding.preferredSyncMethod || "EA_SYNC";
 
  const [
  tradingDataState,
@@ -50,7 +50,7 @@ export async function getActivationState(userId: string): Promise<ActivationStat
       connectCtaLabel = "Add Account";
       connectCtaHref = "/dashboard/accounts?action=add";
       break;
-    default: // TNT_CONNECT/EA fallback
+    default: // EA fallback
       connectTitle = "Set up Trade Manager";
       connectDescription = "Install Trade Manager EA to auto-sync trades from MT5 to your dashboard.";
       connectCtaLabel = "Set Up Trade Manager";

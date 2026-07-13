@@ -544,7 +544,7 @@ export function AddAccountModal({
 
  {/* Troubleshooting help — only for TNT/EA */}
  {!isManual && (
- <SyncTroubleshootingPanel method={effectiveSetupMethod as "TNT_CONNECT" | "EA_SYNC"} />
+ <SyncTroubleshootingPanel method={effectiveSetupMethod as "EA_SYNC"} />
  )}
 
  {/* Primary CTA — method-aware */}
@@ -554,7 +554,7 @@ export function AddAccountModal({
  size="smd"
  onClick={() => {
  trackEvent("add_account_success_next_clicked", {
- method: isManual ? "manual" : effectiveSetupMethod === "EA_SYNC" ? "ea" : "tnt",
+ method: isManual ? "manual" : "ea",
  });
  if (isManual) {
  // Route to journal

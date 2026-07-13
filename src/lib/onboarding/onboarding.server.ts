@@ -9,7 +9,7 @@ export interface OnboardingState {
  /** Trading goal chosen in step 2 */
  tradingGoal?: string;
  /** Preferred sync method chosen in step 3 */
- preferredSyncMethod?: "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
+ preferredSyncMethod?: "EA_SYNC" | "MANUAL";
  /** When onboarding was completed */
  completedAt?: string;
  /** When onboarding was skipped */

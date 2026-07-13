@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon, Eye, EyeOff } from 'lucide-react';
 
 export interface PremiumInputProps
  extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -12,6 +12,9 @@ export interface PremiumInputProps
 
 const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
  ({ className, type, error, label, id, icon: Icon, helperText, ...props }, ref) => {
+ const [showPassword, setShowPassword] = useState(false);
+ const inputType = type === 'password' ? (showPassword ? 'text' : 'password') : type;
+
  return (
  <div className="w-full space-y-2">
  {label && (
@@ -33,7 +36,7 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
  )}
  <input
  id={id}
- type={type}
+ type={inputType}
  aria-invalid={!!error}
  aria-describedby={error ? `${id}-error` : undefined}
  className={cn(
@@ -41,12 +44,26 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
  "placeholder:text-gray-500 dark:placeholder:text-gray-600 placeholder:font-normal",
  "text-gray-700 dark:text-white font-medium",
  Icon ? "pl-9" : "",
+ type === 'password' ? "pr-10" : "",
  error ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50" : "",
  className
  )}
  ref={ref}
  {...props}
  />
+ {type === 'password' && (
+ <button
+ type="button"
+ onClick={(e) => {
+ e.preventDefault();
+ e.stopPropagation();
+ setShowPassword(!showPassword);
+ }}
+ className="absolute z-10 inset-y-0 right-0 px-3 flex items-center cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+ >
+ {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+ </button>
+ )}
  </div>
  {error && (
  <p

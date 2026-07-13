@@ -25,11 +25,6 @@ const CTA_CONFIG: Record<
   SyncMethod,
   { label: string; href: string; icon: React.ReactNode }
 > = {
-  TNT_CONNECT: {
-    label: "Open Trade Manager Setup",
-    href: "/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder",
-    icon: <Zap size={13} className="shrink-0" />,
-  },
   EA_SYNC: {
     label: "Open Trade Manager Setup",
     href: "/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder",

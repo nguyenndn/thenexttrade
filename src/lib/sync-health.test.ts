@@ -20,7 +20,7 @@ describe("computeSyncHealth", () => {
     const recentDate = new Date(Date.now() - 1000 * 60 * 60).toISOString(); // 1 hour ago
     const res = computeSyncHealth({
       status: "APPROVED",
-      syncSource: "TNT_CONNECT",
+      syncSource: "EA_SYNC",
       lastHeartbeat: recentDate,
       appLastHeartbeat: null,
       lastSync: null,
@@ -34,7 +34,7 @@ describe("computeSyncHealth", () => {
   it("should categorize connected accounts without trades and no heartbeat as disconnected (setup sync)", () => {
     const res = computeSyncHealth({
       status: "APPROVED",
-      syncSource: "TNT_CONNECT",
+      syncSource: "EA_SYNC",
       lastHeartbeat: null,
       appLastHeartbeat: null,
       lastSync: null,
@@ -78,7 +78,7 @@ describe("computeSyncHealth", () => {
     const recentDate = new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(); // 2 hours ago
     const res = computeSyncHealth({
       status: "APPROVED",
-      syncSource: "TNT_CONNECT",
+      syncSource: "EA_SYNC",
       lastHeartbeat: recentDate,
       appLastHeartbeat: null,
       lastSync: recentDate,
@@ -93,7 +93,7 @@ describe("computeSyncHealth", () => {
     const recentDate = new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(); // 2 hours ago
     const res = computeSyncHealth({
       status: "APPROVED",
-      syncSource: "TNT_CONNECT",
+      syncSource: "EA_SYNC",
       lastHeartbeat: recentDate,
       appLastHeartbeat: null,
       lastSync: recentDate,

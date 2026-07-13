@@ -40,7 +40,7 @@ import { trackEvent } from "@/lib/track";
 import { useIsMobileSyncDevice } from "@/lib/device";
 import { sendDesktopSetupLinkAction } from "@/actions/first-session-onboarding";
 
-type SyncMethod = "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
+type SyncMethod = "EA_SYNC" | "MANUAL";
 
 const TRADING_GOALS = [
  { id: "track", label: "Track my trades", description: "Keep an organized record of all my entries and exits", icon: BarChart3 },
@@ -80,7 +80,7 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
 
  // Track mobile sync warning viewed
  useEffect(() => {
- if (step === 3 && isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC")) {
+ if (step === 3 && isMobile && syncMethod === "EA_SYNC") {
  import("@/actions/first-session-onboarding").then(m => {
  m.recordMobileSyncFallbackViewedAction(syncMethod);
  });
@@ -160,7 +160,7 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  trackEvent("onboarding_completed", { syncMethod });
 
  // Redirect based on sync method
- if (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") {
+ if (syncMethod === "EA_SYNC") {
  router.push("/dashboard/accounts?setup=sync&method=ea");
  } else {
  router.push("/dashboard/journal?action=log-trade");
@@ -477,7 +477,7 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  </button>
  </div>
 
- {isMobile && (syncMethod === "TNT_CONNECT" || syncMethod === "EA_SYNC") && (
+ {isMobile && syncMethod === "EA_SYNC" && (
  <div className="mb-6 p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3 animate-in slide-in-from-top duration-300">
  <div className="flex gap-2.5 items-start">
  <span className="text-lg">💻</span>
@@ -591,12 +591,6 @@ export default function OnboardingClient({ initialData }: OnboardingClientProps)
  <Loader2 size={18} className="animate-spin" />
  ) : (
  <>
- {syncMethod === "TNT_CONNECT" && (
- <>
- <Cable size={16} />
- Set Up Trade Manager
- </>
- )}
  {syncMethod === "EA_SYNC" && (
  <>
  <Cable size={16} />

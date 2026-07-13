@@ -13,7 +13,7 @@ export type FirstSessionStep =
  | "BRING_FIRST_DATA"
  | "REVIEW_DASHBOARD";
 
-export type SyncMethod = "TNT_CONNECT" | "EA_SYNC" | "MANUAL";
+export type SyncMethod = "EA_SYNC" | "MANUAL";
 
 export type FirstSessionWizardState = {
  currentStep?: FirstSessionStep;
@@ -122,7 +122,7 @@ export async function getFirstSessionState(
  const preferredSyncMethod: SyncMethod =
  firstSession.selectedSyncMethod ||
  onboarding.preferredSyncMethod ||
- "TNT_CONNECT";
+ "EA_SYNC";
 
  // Determine current step
  let currentStep: FirstSessionStep;
@@ -258,11 +258,6 @@ function computeCtaForStep(
  return {
  nextHref: "/dashboard/journal?action=log-trade&source=first-session",
  nextLabel: "Log First Trade",
- };
- default: // TNT_CONNECT
- return {
- nextHref: "/dashboard/accounts?setup=sync&method=tnt&source=first-session",
- nextLabel: "Open Sync Setup",
  };
  }
 

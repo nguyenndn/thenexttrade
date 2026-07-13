@@ -16,20 +16,72 @@ import { dashboardMenuItems, adminMenuItems } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
+// Helper to highlight matched text
+function HighlightMatch({ text, query }: { text: string; query: string }) {
+  if (!query) return <>{text}</>;
+  
+  const searchTerms = query.trim().split(/\s+/).filter(Boolean);
+  if (searchTerms.length === 0) return <>{text}</>;
+
+  // Build a regex that matches any of the search terms
+  // Escape special characters in terms
+  const escapedTerms = searchTerms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const regex = new RegExp(`(${escapedTerms.join('|')})`, 'gi');
+  
+  const parts = text.split(regex);
+  
+  return (
+    <>
+      {parts.map((part, i) => {
+        const isMatch = searchTerms.some(t => part.toLowerCase() === t.toLowerCase());
+        return isMatch ? (
+          <span key={i} className="bg-brand-500/20 text-brand-700 dark:text-brand-400 font-semibold px-0.5 rounded-sm">
+            {part}
+          </span>
+        ) : (
+          <span key={i}>{part}</span>
+        );
+      })}
+    </>
+  );
+}
+
 // Flatten navigation items for search
 function flattenNavItems(menuList: any[]) {
- const items: { name: string; href: string; category: string; icon?: any }[] = [];
+ const items: { name: string; href: string; category: string; icon?: any; keywords?: string }[] = [];
  const seen = new Set<string>();
  for (const group of menuList) {
  if (group.href && group.href !== "#" && !seen.has(group.href)) {
+ // Explicitly exclude copy trading from search
+ if (group.name === "Copy Trading") continue;
+
+ if (!group.featureFlag) {
  seen.add(group.href);
- items.push({ name: group.name, href: group.href, category: "Pages", icon: group.icon });
+ items.push({ 
+ name: group.name, 
+ href: group.href, 
+ category: "Pages", 
+ icon: group.icon,
+ keywords: group.keywords || "" 
+ });
+ }
  }
  if ('items' in group && Array.isArray((group as any).items)) {
  for (const sub of (group as any).items) {
  if (!seen.has(sub.href)) {
+ // Explicitly exclude copy trading from search
+ if (sub.name === "Copy Trading") continue;
+
+ if (!sub.featureFlag) {
  seen.add(sub.href);
- items.push({ name: sub.name, href: sub.href, category: group.name, icon: group.icon });
+ items.push({ 
+ name: sub.name, 
+ href: sub.href, 
+ category: group.name, 
+ icon: group.icon,
+ keywords: sub.keywords || "" 
+ });
+ }
  }
  }
  }
@@ -79,6 +131,16 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
  }
  }, [searchQuery, searchRoute, router]);
 
+ const customFilter = useCallback((value: string, search: string) => {
+ if (!search) return 1;
+ const searchTerms = search.toLowerCase().split(/\s+/);
+ const val = value.toLowerCase();
+ 
+ // Order-independent: check if every word in search query exists in the value string
+ const isMatch = searchTerms.every((term) => val.includes(term));
+ return isMatch ? 1 : 0;
+ }, []);
+
  if (!open) return null;
 
  return (
@@ -91,7 +153,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
 
  {/* Modal */}
  <div className="absolute left-1/2 top-[30%] -translate-x-1/2 w-full max-w-[640px] px-4">
- <Command className="rounded-xl border border-dashboard dark:border-gray-800 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden" shouldFilter={true}>
+ <Command className="rounded-xl border border-dashboard dark:border-gray-800 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden" shouldFilter={true} filter={customFilter}>
  {/* Search Input */}
  <div className="relative border-b border-dashboard dark:border-gray-800 px-4">
  <CommandInput
@@ -168,7 +230,7 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
  return (
  <CommandItem
  key={item.href}
- value={`${item.name} ${item.category}`}
+ value={`${item.name} ${item.category} ${item.keywords || ""}`}
  onSelect={() => handleSelect(item.href)}
  className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-gray-700 dark:text-gray-300 aria-selected:bg-gray-50 dark:aria-selected:bg-white/5"
  >
@@ -176,8 +238,12 @@ export function CommandPalette({ searchRoute = "/dashboard/search", showPages = 
  <Icon size={16} className="text-gray-600 dark:text-gray-300" />
  </div>
  <div className="flex-1 min-w-0">
- <p className="text-sm font-semibold text-gray-700 dark:text-white truncate">{item.name}</p>
- <p className="text-xs text-gray-600 dark:text-gray-300 truncate">{item.category}</p>
+ <p className="text-sm font-semibold text-gray-700 dark:text-white truncate">
+ <HighlightMatch text={item.name} query={searchQuery} />
+ </p>
+ <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
+ <HighlightMatch text={item.category} query={searchQuery} />
+ </p>
  </div>
  <span className="text-[10px] font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded">
  Pages

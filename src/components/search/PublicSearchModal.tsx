@@ -74,7 +74,7 @@ export function PublicSearchModal() {
  transition={{ type: "spring", damping: 25, stiffness: 400 }}
  className="fixed inset-0 flex items-center justify-center px-4 z-[9999] pointer-events-none"
  >
- <div className="flex items-center bg-white dark:bg-[#1E2028] rounded-full border border-dashboard dark:border-gray-700 shadow-2xl px-5 py-2 gap-3 w-full max-w-xl pointer-events-auto">
+ <div className="flex items-center bg-white dark:bg-[#1E2028] rounded-full border border-gray-200 dark:border-white/10 shadow-2xl px-5 py-2 gap-3 w-full max-w-xl pointer-events-auto">
  <Search size={20} className="text-gray-500 flex-shrink-0" />
  <input
  ref={inputRef}
@@ -114,7 +114,7 @@ export function PublicSearchTrigger({ className }: { className?: string }) {
  >
  <Search size={16} />
  <span className="hidden sm:inline">Search...</span>
- <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-dashboard bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
+ <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
  <span className="text-[10px] text-primary">Ctrl + K </span>
  </kbd>
  </button>
