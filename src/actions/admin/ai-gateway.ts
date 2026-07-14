@@ -4,6 +4,23 @@ import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { encrypt, decrypt } from "@/lib/encryption";
 import { revalidatePath } from "next/cache";
+import { getAdapter } from "@/lib/ai-gateway/provider-registry";
+import { statusAfterSuccessfulCredentialTest } from "@/lib/ai-gateway/credential-lifecycle";
+
+async function requireAiGatewayAdmin() {
+  const user = await getAuthUser();
+  if (!user) throw new Error("Unauthorized");
+
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+    select: { role: true }
+  });
+
+  if (!profile || !["ADMIN", "EDITOR"].includes(profile.role)) {
+    throw new Error("Forbidden");
+  }
+  return user;
+}
 
 async function logAudit(action: string, entityType: string, entityId?: string, details?: any) {
   const user = await getAuthUser();
@@ -21,10 +38,9 @@ async function logAudit(action: string, entityType: string, entityId?: string, d
 }
 
 export async function getAiProviders() {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
   
-  let providers = await prisma.aiProvider.findMany({
+  return prisma.aiProvider.findMany({
     include: {
       credentials: {
         select: {
@@ -44,73 +60,10 @@ export async function getAiProviders() {
     },
     orderBy: { createdAt: "asc" }
   });
-
-  const defaults = [
-    { providerEnum: 1, providerCode: "anthropic", displayName: "Anthropic (Claude)", defaultModelId: "claude-3-5-sonnet-latest", baseUrl: "https://api.anthropic.com/v1/messages" },
-    { providerEnum: 2, providerCode: "openai", displayName: "OpenAI (GPT)", defaultModelId: "gpt-4o", baseUrl: "https://api.openai.com/v1/chat/completions" },
-    { providerEnum: 3, providerCode: "google", displayName: "Google (Gemini)", defaultModelId: "gemini-1.5-pro", baseUrl: "generativelanguage.googleapis.com" },
-    { providerEnum: 4, providerCode: "deepseek", displayName: "DeepSeek", defaultModelId: "deepseek-chat", baseUrl: "https://api.deepseek.com/v1/chat/completions" },
-    { providerEnum: 5, providerCode: "xai", displayName: "xAI (Grok)", defaultModelId: "grok-beta", baseUrl: "https://api.x.ai/v1/chat/completions" },
-  ];
-
-  // Auto-sync / Seed defaults
-  let needsRefetch = false;
-  for (const d of defaults) {
-    const existing = await prisma.aiProvider.findUnique({
-      where: { providerCode: d.providerCode }
-    });
-
-    if (!existing) {
-      await prisma.aiProvider.create({
-        data: {
-          providerEnum: d.providerEnum,
-          providerCode: d.providerCode,
-          displayName: d.displayName,
-          defaultModelId: d.defaultModelId,
-          baseUrl: d.baseUrl,
-          enabled: true,
-          healthStatus: "HEALTHY",
-        }
-      });
-      needsRefetch = true;
-    } else if (!existing.baseUrl) {
-      await prisma.aiProvider.update({
-        where: { id: existing.id },
-        data: { baseUrl: d.baseUrl }
-      });
-      needsRefetch = true;
-    }
-  }
-
-  if (needsRefetch) {
-    providers = await prisma.aiProvider.findMany({
-      include: {
-        credentials: {
-          select: {
-            id: true,
-            alias: true,
-            lastFour: true,
-            status: true,
-            testedAt: true,
-            activatedAt: true,
-            revokedAt: true,
-            createdAt: true,
-            createdBy: true,
-          },
-          orderBy: { createdAt: "desc" },
-        },
-        models: true,
-      },
-      orderBy: { createdAt: "asc" }
-    });
-  }
-
-  return providers;
 }
 
 export async function createAiProvider(data: { providerCode: string; displayName: string; providerEnum: number; baseUrl?: string }) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
   const provider = await prisma.aiProvider.create({
     data: {
@@ -127,8 +80,7 @@ export async function createAiProvider(data: { providerCode: string; displayName
 }
 
 export async function updateAiProvider(id: string, data: { baseUrl?: string; defaultModelId?: string; timeoutMs?: number }) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
   const provider = await prisma.aiProvider.update({
     where: { id },
@@ -145,8 +97,7 @@ export async function updateAiProvider(id: string, data: { baseUrl?: string; def
 }
 
 export async function toggleAiProvider(id: string, enabled: boolean) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
   await prisma.aiProvider.update({
     where: { id },
@@ -157,8 +108,11 @@ export async function toggleAiProvider(id: string, enabled: boolean) {
 }
 
 export async function addAiCredential(providerId: string, alias: string, secretKey: string) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  const user = await requireAiGatewayAdmin();
+
+  if (!secretKey || secretKey.trim() === "") {
+    throw new Error("Secret key cannot be empty");
+  }
 
   const encryptedSecret = encrypt(secretKey);
   const lastFour = secretKey.length >= 4 ? secretKey.slice(-4) : "***";
@@ -169,7 +123,7 @@ export async function addAiCredential(providerId: string, alias: string, secretK
       alias,
       encryptedSecret,
       lastFour,
-      status: "ACTIVE", // Defaulting to ACTIVE
+      status: "DRAFT",
       createdBy: user.id,
     }
   });
@@ -180,8 +134,7 @@ export async function addAiCredential(providerId: string, alias: string, secretK
 }
 
 export async function revokeAiCredential(credentialId: string) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
   await prisma.aiProviderCredential.update({
     where: { id: credentialId },
@@ -197,33 +150,95 @@ export async function revokeAiCredential(credentialId: string) {
 }
 
 export async function testAiCredential(id: string) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
-  // In a real scenario, this would decrypt the key and make a lightweight request (e.g. models list)
-  // For now, we mock the success.
-  await prisma.aiProviderCredential.update({
+  const cred = await prisma.aiProviderCredential.findUnique({
     where: { id },
-    data: {
-      testedAt: new Date(),
-    }
+    include: { provider: true }
   });
 
-  await logAudit("TEST_API_KEY", "AiProviderCredential", id);
-  revalidatePath("/admin/ai/providers");
-  return { success: true };
+  if (!cred) throw new Error("Credential not found");
+
+  try {
+    let secret: string;
+    try {
+      secret = decrypt(cred.encryptedSecret);
+      if (!secret) throw new Error("Decrypted secret is empty");
+    } catch (err: any) {
+      throw new Error("Failed to decrypt secret: " + err.message);
+    }
+
+    const adapter = getAdapter(cred.provider.providerCode);
+    if (!adapter?.testCredential) {
+      throw new Error(`Credential test is not implemented for ${cred.provider.providerCode}`);
+    }
+    const res = await adapter.testCredential({
+      baseUrl: cred.provider.baseUrl || "",
+      decryptedSecret: secret,
+      timeoutMs: 10000,
+      modelId: cred.provider.defaultModelId || ""
+    });
+    if (!res.ok) {
+      throw new Error(res.message || "Credential test failed");
+    }
+
+    await prisma.aiProvider.update({
+      where: { id: cred.providerId },
+      data: { healthStatus: "HEALTHY", healthCheckedAt: new Date() }
+    });
+    
+    await prisma.aiProviderCredential.update({
+      where: { id },
+      data: {
+        testedAt: new Date(),
+        status: statusAfterSuccessfulCredentialTest(cred.status, cred.activatedAt)
+      }
+    });
+
+    await logAudit("TEST_API_KEY", "AiProviderCredential", id, { status: "SUCCESS" });
+    revalidatePath("/admin/ai/providers");
+    return { success: true };
+  } catch {
+    await prisma.aiProviderCredential.update({
+      where: { id },
+      data: { status: "INVALID" }
+    });
+    await logAudit("TEST_API_KEY", "AiProviderCredential", id, { status: "FAILED" });
+    await prisma.aiProvider.update({
+      where: { id: cred.providerId },
+      data: { healthStatus: "DEGRADED", healthCheckedAt: new Date() }
+    });
+    throw new Error("Failed to test credential");
+  }
 }
 
 export async function activateAiCredential(id: string) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
-  await prisma.aiProviderCredential.update({
-    where: { id },
-    data: {
-      status: "ACTIVE",
-      activatedAt: new Date(),
-    }
+  const cred = await prisma.aiProviderCredential.findUnique({ where: { id } });
+  if (!cred) throw new Error("Credential not found");
+  if (cred.status !== "TESTED") {
+    throw new Error("Credential must be TESTED before activation.");
+  }
+
+  const activatedAt = new Date();
+  await prisma.$transaction(async (tx) => {
+    await tx.aiProviderCredential.updateMany({
+      where: {
+        providerId: cred.providerId,
+        status: "ACTIVE",
+        id: { not: id }
+      },
+      data: { status: "REVOKED", revokedAt: activatedAt }
+    });
+    await tx.aiProviderCredential.update({
+      where: { id },
+      data: {
+        status: "ACTIVE",
+        activatedAt,
+        revokedAt: null,
+      }
+    });
   });
 
   await logAudit("ACTIVATE_API_KEY", "AiProviderCredential", id);
@@ -232,18 +247,20 @@ export async function activateAiCredential(id: string) {
 }
 
 export async function rotateAiCredential(providerId: string, oldCredId: string, newAlias: string, newSecret: string) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  const user = await requireAiGatewayAdmin();
 
-  // Revoke old
-  if (oldCredId) {
-    await prisma.aiProviderCredential.update({
-      where: { id: oldCredId },
-      data: { status: "REVOKED", revokedAt: new Date() }
-    });
+  if (!newSecret || newSecret.trim() === "") {
+    throw new Error("Secret key cannot be empty");
   }
 
-  // Add new
+  if (oldCredId) {
+    const oldCredential = await prisma.aiProviderCredential.findUnique({ where: { id: oldCredId } });
+    if (!oldCredential || oldCredential.providerId !== providerId) {
+      throw new Error("Existing credential does not belong to this provider");
+    }
+  }
+
+  // Keep the old key active until the new DRAFT key is tested and activated.
   const encryptedSecret = encrypt(newSecret);
   const lastFour = newSecret.length >= 4 ? newSecret.slice(-4) : "***";
 
@@ -253,20 +270,18 @@ export async function rotateAiCredential(providerId: string, oldCredId: string, 
       alias: newAlias,
       encryptedSecret,
       lastFour,
-      status: "ACTIVE",
-      activatedAt: new Date(),
+      status: "DRAFT",
       createdBy: user.id,
     }
   });
 
-  await logAudit("ROTATE_API_KEY", "AiProvider", providerId, { oldCredId, newCredId: cred.id });
+  await logAudit("PREPARE_API_KEY_ROTATION", "AiProvider", providerId, { oldCredId, newCredId: cred.id });
   revalidatePath("/admin/ai/providers");
   return { success: true, id: cred.id };
 }
 
 export async function getAiRoutingPolicies() {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
   return prisma.aiRoutingPolicy.findMany({
     orderBy: { createdAt: "desc" }
@@ -274,17 +289,73 @@ export async function getAiRoutingPolicies() {
 }
 
 export async function createAiRoutingPolicy(data: { name: string; mode: string; primaryModelId?: string; fallbackConfigJson?: any; timeoutMs?: number; maxAttempts?: number }) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  const user = await requireAiGatewayAdmin();
+
+  const name = data.name?.trim();
+  if (!name) throw new Error("Policy name is required");
+  if (data.mode !== "FIXED" && data.mode !== "AUTO_FAILOVER") {
+    throw new Error("Routing mode must be FIXED or AUTO_FAILOVER");
+  }
+  if (!data.primaryModelId) {
+    throw new Error("Primary model is required");
+  }
+
+  // Validate Primary Model
+  const primaryModel = await prisma.aiModel.findUnique({
+    where: { id: data.primaryModelId },
+    include: { provider: true }
+  });
+  if (!primaryModel || !primaryModel.enabled) {
+    throw new Error("Primary model must exist and be enabled");
+  }
+  if (!primaryModel.provider.enabled) {
+    throw new Error("Primary model's provider must be enabled");
+  }
+
+  // Validate Fallback Config
+  const fallbacks = data.mode === "AUTO_FAILOVER" && Array.isArray(data.fallbackConfigJson)
+    ? data.fallbackConfigJson as string[]
+    : [];
+  if (fallbacks.length > 0) {
+    const uniqueFallbacks = new Set(fallbacks);
+    if (uniqueFallbacks.size !== fallbacks.length) {
+      throw new Error("Fallback models must be unique");
+    }
+    if (data.primaryModelId && uniqueFallbacks.has(data.primaryModelId)) {
+      throw new Error("Fallback models cannot include the primary model");
+    }
+    for (const fbId of fallbacks) {
+      const fbModel = await prisma.aiModel.findUnique({
+        where: { id: fbId },
+        include: { provider: true }
+      });
+      if (!fbModel || !fbModel.enabled) {
+         throw new Error(`Fallback model ${fbId} must exist and be enabled`);
+      }
+      if (!fbModel.provider.enabled) {
+        throw new Error(`Fallback model ${fbId} belongs to a disabled provider`);
+      }
+    }
+  }
+
+  const timeoutMs = data.timeoutMs ?? 30000;
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 1000 || timeoutMs > 120000) {
+    throw new Error("Timeout must be between 1000 and 120000 milliseconds");
+  }
+  const availableAttempts = 1 + fallbacks.length;
+  const maxAttempts = data.maxAttempts ?? availableAttempts;
+  if (!Number.isInteger(maxAttempts) || maxAttempts < 1 || maxAttempts > availableAttempts) {
+    throw new Error(`Max attempts must be between 1 and ${availableAttempts}`);
+  }
 
   const policy = await prisma.aiRoutingPolicy.create({
     data: {
-      name: data.name,
+      name,
       mode: data.mode,
       primaryModelId: data.primaryModelId,
-      fallbackConfigJson: data.fallbackConfigJson || [],
-      timeoutMs: data.timeoutMs || 30000,
-      maxAttempts: data.maxAttempts || 3,
+      fallbackConfigJson: fallbacks,
+      timeoutMs,
+      maxAttempts,
       createdBy: user.id,
       publishedAt: new Date(),
     }
@@ -296,8 +367,7 @@ export async function createAiRoutingPolicy(data: { name: string; mode: string; 
 }
 
 export async function getAiRequests(limit = 50) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
   return prisma.aiRequest.findMany({
     take: limit,
@@ -315,8 +385,7 @@ export async function getAiRequests(limit = 50) {
 }
 
 export async function getAiGatewayStats() {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -368,8 +437,7 @@ export async function getAiGatewayStats() {
 }
 
 export async function getAdminAuditLogs(limit = 50) {
-  const user = await getAuthUser();
-  if (!user) throw new Error("Unauthorized");
+  await requireAiGatewayAdmin();
 
   return prisma.adminAuditLog.findMany({
     take: limit,
@@ -383,5 +451,28 @@ export async function getAdminAuditLogs(limit = 50) {
         }
       }
     }
+  });
+}
+
+export async function getAiModels() {
+  await requireAiGatewayAdmin();
+
+  return prisma.aiModel.findMany({
+    where: {
+      enabled: true,
+      provider: { enabled: true }
+    },
+    include: {
+      provider: {
+        select: {
+          providerCode: true,
+          displayName: true
+        }
+      }
+    },
+    orderBy: [
+      { provider: { displayName: "asc" } },
+      { displayName: "asc" }
+    ]
   });
 }

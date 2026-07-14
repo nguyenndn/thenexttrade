@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button-variants";
 import {
  ArrowRight,
  BarChart3,
@@ -18,48 +20,48 @@ import {
 const GOLD = "#EAB308";
 
 const launchSteps = [
- {
- label: "Create workspace",
- title: "Sign up and set your trading identity",
- description: "Create a free account, choose your username, and keep your profile lightweight.",
- icon: ShieldCheck,
- },
- {
- label: "Bring trades in",
- title: "Sync with Trade Manager EA",
- description: "Use Trade Manager Expert Advisor to synchronize your MT5 terminal with your dashboard.",
- icon: Download,
- },
- {
- label: "Review the data",
- title: "Understand what actually happened",
- description: "See win rate, P&L, profit factor, score, symbols, sessions, and trading behavior.",
- icon: BarChart3,
- },
- {
- label: "Improve daily",
- title: "Turn the review into one next action",
- description: "Use missions, daily check-ins, and weekly reviews to keep improvement practical.",
- icon: NotebookPen,
- },
+  {
+    label: "Create workspace",
+    title: "Initialize Your Free Account",
+    description: "Create your secure workspace in seconds, select your username, and keep your profile lightweight.",
+    icon: ShieldCheck,
+  },
+  {
+    label: "Bring trades in",
+    title: "Link Trade Manager EA",
+    description: "Deploy our lightweight Expert Advisor on your MT5 terminal to sync execution history in real-time.",
+    icon: Download,
+  },
+  {
+    label: "Review the data",
+    title: "Extract Your Real Performance",
+    description: "Uncover patterns in your win rate, drawdown, sessions, and behavior without manual calculations.",
+    icon: BarChart3,
+  },
+  {
+    label: "Improve daily",
+    title: "Gamify Your Trading Discipline",
+    description: "Turn metrics into habits. Use missions, rule checklists, and bias tracking to eliminate costly errors.",
+    icon: NotebookPen,
+  },
 ];
 
 const valueCards = [
- {
- title: "No spreadsheet cleanup",
- description: "Sync trades and focus on the review instead of copying rows manually.",
- icon: LineChart,
- },
- {
- title: "Metrics you can explain",
- description: "Every important KPI should be clear enough for a trader to trust.",
- icon: CircleHelp,
- },
- {
- title: "Edge instead of noise",
- description: "The goal is not more dashboards. It is one better decision before the next trade.",
- icon: Target,
- },
+  {
+    title: "100% Automated Sync",
+    description: "Forget tedious Excel sheets. The moment you close a position on MT5, it is instantly analyzed.",
+    icon: LineChart,
+  },
+  {
+    title: "Psychology & Bias Logs",
+    description: "Track your emotions. Detect revenge trading, FOMO, and loss aversion patterns automatically.",
+    icon: CircleHelp,
+  },
+  {
+    title: "Edge instead of noise",
+    description: "We don't just show charts. We help you make one better decision before your next setup.",
+    icon: Target,
+  },
 ];
 
 export function PublicGetStarted() {
@@ -77,25 +79,19 @@ export function PublicGetStarted() {
  </div>
 
  <h1 className="text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
- Build your trading workspace before your next setup.
+ Your Trading Edge, Fully Automated.
  </h1>
 
  <p className="mx-auto mt-5 max-w-2xl text-base font-medium leading-8 text-slate-700 dark:text-slate-300 sm:text-lg">
- The fastest path is simple: create the account, sync your trades, review the numbers, then improve one behavior at a time.
+ Connect your MT5 terminal in 60 seconds. Stop wasting time on manual spreadsheets, and start tracking your real execution edge.
  </p>
 
  <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
- <Link
- href="/auth/signup"
- className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-gold to-amber-500 text-white font-black px-8 py-3 text-sm shadow-xl shadow-gold/10 hover:from-amber-500 hover:to-amber-600 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
- >
- Start Free
- <ArrowRight size={17} />
+ <Link href="/auth/register" className={cn(buttonVariants({ variant: "primary", size: "smd" }), "w-full rounded-lg bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none")}>
+ Open Free Workspace
+ <ArrowRight size={16} className="ml-1" />
  </Link>
- <Link
- href="/auth/login"
- className="inline-flex min-h-12 items-center justify-center rounded-full border border-gold/15 bg-white px-8 py-3 text-sm font-black text-slate-950 shadow-sm transition hover:border-gold/45 hover:bg-gold/5 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
- >
+ <Link href="/auth/login" className={cn(buttonVariants({ variant: "outline", size: "smd" }), "w-full rounded-lg border-dashboard hover:border-gold hover:bg-gold/5 dark:hover:bg-white/10")}>
  I already have an account
  </Link>
  </div>
@@ -153,10 +149,10 @@ export function PublicGetStarted() {
  <div className="text-xs font-black uppercase tracking-[0.18em] text-gold">Recommended path</div>
  <h2 className="mt-3 text-3xl font-black text-slate-950 dark:text-white">Trade Manager EA.</h2>
  <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-amber-50/80">
- Trade Manager Expert Advisor is the easiest way to connect your MT5 terminal. It syncs trades in real time and runs directly on your chart or VPS.
+ The easiest, safest way to link MetaTrader 5. It runs quietly on your chart or VPS, pushing closed positions to your secure dashboard in real time.
  </p>
  <div className="mt-6 space-y-3">
- {["Create account", "Add MT5 account number", "Generate Sync API key", "Sync first period"].map((item) => (
+ {["Create secure account", "Add MT5 account number", "Generate Sync API key", "Deploy the EA & sync instantly"].map((item) => (
  <div key={item} className="flex items-center gap-3 text-sm font-bold text-slate-800 dark:text-white">
  <CheckCircle2 size={17} style={{ color: GOLD }} />
  {item}
@@ -164,10 +160,10 @@ export function PublicGetStarted() {
  ))}
  </div>
  <Link
- href="/auth/signup"
+ href="/auth/register"
  className="mt-7 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-gold to-amber-500 text-white font-black px-5 py-3 text-sm transition-all duration-300 hover:from-amber-500 hover:to-amber-600 hover:scale-[1.01]"
  >
- Set up my workspace
+ Start Workspace Setup
  <ArrowRight size={16} />
  </Link>
  </div>

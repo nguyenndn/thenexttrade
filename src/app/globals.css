@@ -11,6 +11,9 @@
   --tooltip-bg: rgba(255, 255, 255, 0.95);
   --tooltip-text: #111827;
   --tooltip-border: rgba(0, 0, 0, 0.05);
+  --text-secondary: #6B7280; /* gray-500 */
+  --border-color: #E5E7EB; /* gray-200 */
+  --hover-bg: rgba(0, 0, 0, 0.05);
 
   /* ===== Navigation Menu Font Weight =====
      Controls font-weight for all navigation/menu items site-wide.
@@ -25,6 +28,9 @@
   --tooltip-bg: rgba(18, 23, 42, 0.95);
   --tooltip-text: #f3f4f6;
   --tooltip-border: rgba(255, 255, 255, 0.1);
+  --text-secondary: #9CA3AF; /* gray-400 */
+  --border-color: rgba(255, 255, 255, 0.08);
+  --hover-bg: rgba(255, 255, 255, 0.05);
 }
 
 body {
@@ -361,6 +367,10 @@ textarea,
 .recharts-surface,
 .recharts-responsive-container {
   outline: none !important;
+}
+
+.recharts-cartesian-axis-tick-value {
+  fill: var(--text-secondary) !important;
 }
 
 /* Keep rich article tables readable on small screens without widening the page. */

@@ -43,7 +43,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
  </div>
  <div>
  <h3 className="font-bold text-gray-700 dark:text-white text-sm">Recent Trades</h3>
- <p className="text-xs text-gray-500">Latest closed positions</p>
+ <p className="text-xs text-gray-500 dark:text-gray-400">Latest closed positions</p>
  </div>
  </div>
  <Link
@@ -62,16 +62,16 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
  <p className="text-sm">No data available</p>
  </div>
  ) : (
- <div className="divide-y divide-gray-50 flex-1 flex flex-col overflow-hidden">
+ <div className="divide-y divide-gray-50 dark:divide-white/5 flex-1 flex flex-col overflow-hidden">
  {/* Table header */}
- <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 dark:bg-white/[0.02]">
+ <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-white/[0.02]">
  <div className="col-span-4">Symbol</div>
  <div className="col-span-2 text-center">Type</div>
  <div className="col-span-3 text-right">P&L</div>
  <div className="col-span-3 text-right">Date</div>
  </div>
  {/* Rows */}
- <div className="flex-1 overflow-hidden divide-y divide-gray-50">
+ <div className="flex-1 overflow-hidden divide-y divide-gray-50 dark:divide-white/5">
  {displayTrades.map((trade) => (
  <div
  key={trade.id}
@@ -82,7 +82,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
  {trade.symbol}
  </span>
  {trade.lotSize && (
- <span className="text-[10px] text-gray-500 font-medium">
+ <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
  {Number(trade.lotSize).toFixed(2)}
  </span>
  )}
@@ -101,7 +101,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
  }`}>
  {formatCurrency(trade.pnl || 0)}
  </div>
- <div className="col-span-3 text-right text-xs text-gray-500 font-medium">
+ <div className="col-span-3 text-right text-xs text-gray-500 dark:text-gray-400 font-medium">
  {formatDate(trade.exitDate)}
  </div>
  </div>

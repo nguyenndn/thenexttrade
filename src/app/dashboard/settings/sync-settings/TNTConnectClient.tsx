@@ -190,6 +190,7 @@ export default function TNTConnectClient() {
  <Button
  onClick={generateKey}
  variant="primary"
+ size="smd"
  disabled={isGenerating}
  className="shadow-lg shadow-primary/20"
  >
@@ -254,8 +255,9 @@ export default function TNTConnectClient() {
  <Button
  onClick={generateKey}
  variant="outline"
+ size="smd"
  disabled={isGenerating}
- className="px-5 h-10 font-bold text-sm border-dashboard hover:border-primary/40 hover:text-primary dark:hover:text-primary"
+ className="font-bold border-dashboard hover:border-primary/40 hover:text-primary dark:hover:text-primary"
  >
  {isGenerating ? <Loader2 size={16} className="animate-spin mr-2" /> : <RefreshCw size={16} className="mr-2" />}
  Regenerate
@@ -263,8 +265,9 @@ export default function TNTConnectClient() {
  <Button
  onClick={handleRevokeClick}
  variant="outline"
+ size="smd"
  disabled={isRevoking}
- className="px-5 h-10 font-bold text-sm text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 dark:border-red-500/20 dark:hover:bg-red-500/10 dark:hover:border-red-500/40"
+ className="font-bold text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 dark:border-red-500/20 dark:hover:bg-red-500/10 dark:hover:border-red-500/40"
  >
  {isRevoking ? <Loader2 size={16} className="animate-spin mr-2" /> : <Trash2 size={16} className="mr-2" />}
  Revoke Key

@@ -1,7 +1,9 @@
 "use client";
 
-import { Crown, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { Crown, ArrowRight, CheckCircle2, Loader2, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { useProAccess } from "@/components/pro/ProProvider";
 import type { VipRequest } from "@prisma/client";
 
@@ -42,10 +44,11 @@ export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
  </div>
  </div>
  <Link
- href="/dashboard/accounts"
- className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-primary/20"
+ href="/dashboard/account-hub"
+ className={cn(buttonVariants({ variant: "primary", size: "smd" }), "bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none shadow-lg shadow-gold/20 hover:scale-105 transition-all duration-300 w-full sm:w-auto")}
  >
- Go to Account Hub <ArrowRight className="h-4 w-4" />
+ Go to Account Hub
+ <ExternalLink size={16} className="ml-2" />
  </Link>
  </div>
  );

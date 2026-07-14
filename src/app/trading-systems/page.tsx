@@ -17,7 +17,7 @@ import { TradingSystemsPageShell } from "@/components/trading-systems/TradingSys
 import { TradingSystemsTabbedGuide } from "@/components/trading-systems/TradingSystemsTabbedGuide";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import { buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { TRADING_SYSTEMS_DATA } from "@/config/trading-systems-data";
 
 export const metadata: Metadata = {

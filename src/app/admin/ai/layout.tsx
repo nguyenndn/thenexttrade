@@ -41,12 +41,17 @@ export default function AiGatewayLayout({ children }: { children: React.ReactNod
         )}
       </AdminPageHeader>
 
-      {/* Tabs */}
-      <TabBar tabs={tabs} />
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div className="overflow-x-auto scrollbar-hide flex">
+            <TabBar tabs={tabs} className="shrink-0" />
+          </div>
+        </div>
 
-      {/* Content */}
-      <div className="pt-2">
-        {children}
+        {/* Content */}
+        <div className="mt-4">
+          {children}
+        </div>
       </div>
     </div>
   );

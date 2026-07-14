@@ -222,7 +222,7 @@ export default function SettingsClient() {
 
  {/* Save Footer */}
  <div className="px-6 py-4 border-t border-dashboard flex justify-end">
- <Button type="submit" variant="primary" disabled={isSaving}>
+ <Button type="submit" variant="primary" size="smd" disabled={isSaving}>
  {isSaving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
  Save Changes
  </Button>

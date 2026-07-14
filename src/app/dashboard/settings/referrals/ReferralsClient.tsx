@@ -107,6 +107,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
  </div>
  <Button
  type="button"
+ size="smd"
  onClick={handleCopy}
  className="flex items-center gap-2 rounded-l-none rounded-r-xl border-none bg-[#2F80ED] px-5 font-bold text-white transition-all hover:bg-[#2563EB] active:scale-95"
  >

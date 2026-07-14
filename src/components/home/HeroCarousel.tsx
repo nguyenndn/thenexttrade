@@ -102,7 +102,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
  alt={article.title}
  fill
  sizes="100vw"
- className={`object-cover object-center transition-transform duration-[8000ms] ease-out ${
+ className={`object-cover object-center transition-transform duration-8000 ease-out ${
  isActive ? "scale-100" : "scale-110"
  }`}
  style={{ opacity: 0.55 }}

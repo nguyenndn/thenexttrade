@@ -228,7 +228,7 @@ export function AccountListClient({ initialAccounts, meta, userEmail, userName, 
       variant="outline"
       size="smd"
       onClick={() => setActiveModal({ type: "SYNC_HEALTH" })}
-      className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 flex-1 sm:flex-none"
+      className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 flex-1 sm:flex-none"
     >
       <Activity size={15} />
       Sync Health Center

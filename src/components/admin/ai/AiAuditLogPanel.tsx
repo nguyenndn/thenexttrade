@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { History, User, Activity } from "lucide-react";
+import { History, Activity } from "lucide-react";
 
 export function AiAuditLogPanel({ logs }: { logs: any[] }) {
   return (

@@ -427,6 +427,7 @@ export default function ProfileClient({
             <Button
               type="button"
               variant="primary"
+              size="smd"
               onClick={handleSave}
               disabled={isPending || !hasChanges}
             >
@@ -523,6 +524,7 @@ export default function ProfileClient({
             <Button
               type="button"
               variant="primary"
+              size="smd"
               onClick={handleSave}
               disabled={isPending || !hasChanges}
             >

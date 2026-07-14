@@ -1,300 +1,213 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getUserProAccess } from "@/lib/pro-access";
+import { executeAiGateway, GatewayExecutionResult } from "@/lib/ai-gateway/provider-router";
+import { validateTradingSafety, buildWaitFallback } from "@/lib/ai-gateway/safety-validator";
+import { buildSystemPrompt, PROMPT_VERSION } from "@/lib/ai-gateway/prompt-builder";
+import { API_RESPONSE_SCHEMA_VERSION } from "@/lib/ai-gateway/result-schema";
+import { getUserQuotaUsage, reserveAiRequest } from "@/lib/ai-gateway/quota-service";
 
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
-
-// Rate limits
-const PRO_LIMIT = 100;
-const FREE_LIMIT = 10;
-
-// Safety validator
-function validateTradingSafety(result: any, snapshot: any) {
-  const currentPrice = snapshot?.price?.current ?? snapshot?.price?.bid ?? 0;
-  
-  if (!["BUY", "SELL", "WAIT"].includes(result.action)) {
-    return { ok: false, reason: "Invalid action." };
-  }
-
-  if (["BUY STOP", "SELL STOP", "STOP", "BREAKOUT STOP"].includes(result.reference_order_type)) {
-    return { ok: false, reason: "Stop orders are disabled." };
-  }
-
-  if (result.reference_action === "SELL" && result.reference_entry > 0 && result.reference_entry < currentPrice) {
-    return { ok: false, reason: "SELL reference entry below current price is stop-style." };
-  }
-
-  if (result.reference_action === "BUY" && result.reference_entry > 0 && result.reference_entry > currentPrice) {
-    return { ok: false, reason: "BUY reference entry above current price is stop-style." };
-  }
-
-  if (result.reference_action === "BUY") {
-    if (result.reference_sl > 0 && !(result.reference_sl < result.reference_entry)) return { ok: false, reason: "Invalid BUY SL." };
-    if (result.reference_tp1 > 0 && !(result.reference_tp1 > result.reference_entry)) return { ok: false, reason: "Invalid BUY TP1." };
-  }
-
-  if (result.reference_action === "SELL") {
-    if (result.reference_sl > 0 && !(result.reference_sl > result.reference_entry)) return { ok: false, reason: "Invalid SELL SL." };
-    if (result.reference_tp1 > 0 && !(result.reference_tp1 < result.reference_entry)) return { ok: false, reason: "Invalid SELL TP1." };
-  }
-
-  return { ok: true };
-}
-
-function buildWaitFallback(reason: string, requestId?: string) {
+function usagePayload(quota: Awaited<ReturnType<typeof getUserQuotaUsage>>) {
   return {
-    ok: true,
-    provider_hidden: true,
-    request_id: requestId || "srv_fallback",
-    action: "WAIT",
-    confidence: 0,
-    market_analysis: "Safety validation failed. Analysis rejected.",
-    short_term_trend: "N/A",
-    price_forecast: "N/A",
-    reason: reason,
-    invalidation: "N/A",
-    risk_note: "Setup was rejected by server guard.",
-    entry: 0,
-    sl: 0,
-    tp1: 0,
-    tp2: 0,
-    tp3: 0,
-    rr: 0,
-    reference_action: "WAIT",
-    reference_order_type: "WAIT",
-    reference_trigger: reason,
-    reference_entry: 0,
-    reference_sl: 0,
-    reference_tp1: 0,
-    reference_tp2: 0,
-    reference_tp3: 0,
-    reference_rr: 0,
-    server_validation: {
-      schema_valid: true,
-      safety_valid: false,
-      fallback_used: true,
-      model_provider: "hidden",
-      model_alias: "gsn-safety-guard"
-    }
+    plan: quota.isPro ? "pro" : "free",
+    daily_limit: quota.dailyLimit,
+    used_today: quota.usedToday,
+    remaining_today: quota.remainingToday,
   };
 }
 
 export async function POST(request: NextRequest) {
+  let activeRequestId: string | undefined;
   try {
     const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json({ ok: false, error_code: "INVALID_LICENSE", message: "Missing or invalid token" }, { status: 401 });
     }
-    
-    const token = authHeader.replace("Bearer ", "").trim();
-    
-    // Auth using syncApiKey
+
+    const token = authHeader.slice("Bearer ".length).trim();
     const user = await prisma.user.findUnique({
       where: { syncApiKey: token },
-      select: { id: true, email: true }
+      select: { id: true },
     });
-
     if (!user) {
       return NextResponse.json({ ok: false, error_code: "INVALID_LICENSE", message: "License key is invalid or expired." }, { status: 401 });
     }
 
     const body = await request.json();
     const snapshot = body.snapshot;
-
-    if (!snapshot || !snapshot.symbol) {
+    if (!snapshot?.symbol) {
       return NextResponse.json({ ok: false, error_code: "SNAPSHOT_INVALID", message: "Invalid snapshot data." }, { status: 400 });
     }
 
-    // Quota check
-    const proAccess = await getUserProAccess(user.id);
-    const dailyLimit = proAccess.isPro ? PRO_LIMIT : FREE_LIMIT;
-    
-    const startOfDay = new Date();
-    startOfDay.setUTCHours(0,0,0,0);
-
-    const usedToday = await prisma.analyticsEvent.count({
-      where: {
-        userId: user.id,
-        name: "AI_ANALYZE",
-        createdAt: { gte: startOfDay }
-      }
+    const clientRequestId = body.analysis?.request_id || `srv_${Date.now()}`;
+    const reservation = await reserveAiRequest({
+      requestId: clientRequestId,
+      userId: user.id,
+      symbol: snapshot.symbol,
+      timeframe: snapshot.chart_timeframe || snapshot.timeframe,
+      analysisMode: body.analysis?.mode === "AUTO" ? "AUTO" : "MANUAL",
+      promptVersion: PROMPT_VERSION,
     });
 
-    if (usedToday >= dailyLimit) {
+    if (reservation.status === "DUPLICATE") {
+      return NextResponse.json({ ok: false, error_code: "DUPLICATE_REQUEST", message: "Request ID already processed." }, { status: 409 });
+    }
+    if (reservation.status === "QUOTA_EXCEEDED") {
       return NextResponse.json({
         ok: false,
         error_code: "QUOTA_EXCEEDED",
         message: "Daily AI analysis quota exceeded.",
-        usage: { plan: proAccess.isPro ? "pro" : "free", daily_limit: dailyLimit, used_today: usedToday, remaining_today: 0 }
+        usage: {
+          plan: reservation.quota.isPro ? "pro" : "free",
+          daily_limit: reservation.quota.dailyLimit,
+          used_today: reservation.quota.usedToday,
+          remaining_today: reservation.quota.remainingToday,
+        },
       }, { status: 429 });
     }
 
-    // Call DeepSeek
-    const systemPrompt = `You are an elite, no-nonsense GoldScalperNinja AI Analyst for MT5.
-You must analyze the provided trading snapshot and output a JSON response matching the EXACT schema required.
-CRITICAL RULES:
-1. Advisory only, no auto execution.
-2. Use the snapshot data provided.
-3. No stop order, no stop-style entry. SELL must be at or above current price, BUY must be at or below current price.
-4. If uncertain or conflicting timeframes, return WAIT.
-5. Use TP1 for primary RR calculation.
-6. XAUUSD can sweep highs/lows, avoid poor SL placement.
-
-Input Snapshot:
-${JSON.stringify(snapshot, null, 2)}
-
-You must return a raw JSON object with the following keys exactly:
-{
-  "action": "BUY" | "SELL" | "WAIT",
-  "confidence": number (0-100),
-  "market_analysis": "Blunt 2-3 sentence overview",
-  "short_term_trend": "Trend alignment across timeframes",
-  "price_forecast": "Forecast near current price",
-  "reason": "Why taking or rejecting this setup",
-  "invalidation": "What breaks this bias",
-  "risk_note": "Any risk warnings",
-  "entry": 0,
-  "sl": 0,
-  "tp1": 0,
-  "tp2": 0,
-  "tp3": 0,
-  "rr": 0,
-  "reference_action": "BUY" | "SELL" | "WAIT",
-  "reference_order_type": "BUY" | "SELL" | "BUY LIMIT" | "SELL LIMIT" | "WAIT",
-  "reference_trigger": "What must happen before entry",
-  "reference_entry": 0,
-  "reference_sl": 0,
-  "reference_tp1": 0,
-  "reference_tp2": 0,
-  "reference_tp3": 0,
-  "reference_rr": 0
-}
-NEVER output markdown backticks. Return ONLY the JSON object.
-`;
-
-    if (!DEEPSEEK_API_KEY) {
-      return NextResponse.json({ ok: false, error_code: "SERVER_ERROR", message: "API key not configured." }, { status: 500 });
-    }
-
-    const res = await fetch("https://api.deepseek.com/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "deepseek-chat",
-        messages: [
-          { role: "system", content: "You are a JSON-only API. You must return valid JSON." },
-          { role: "user", content: systemPrompt }
-        ],
-        response_format: { type: "json_object" },
-        temperature: 0.2,
-        max_tokens: 800
-      }),
-    });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error("DeepSeek Analyze Error:", errText);
-      return NextResponse.json({ ok: false, error_code: "MODEL_PROVIDER_ERROR", message: "AI provider failed." }, { status: 502 });
-    }
-
-    const aiData = await res.json();
-    if (aiData.error) {
-      console.error("DeepSeek Payload Error:", aiData.error);
-      return NextResponse.json({ ok: false, error_code: "MODEL_PROVIDER_ERROR", message: "AI provider returned an error." }, { status: 502 });
-    }
-
-    let parsedResult;
+    const aiRequest = reservation.aiRequest;
+    activeRequestId = aiRequest.id;
+    const gatewayStart = Date.now();
+    let gatewayResult: GatewayExecutionResult;
     try {
-      let content = aiData.choices?.[0]?.message?.content || "{}";
-      if (content.startsWith("\`\`\`")) {
-         const firstNewline = content.indexOf("\n");
-         if (firstNewline !== -1) content = content.substring(firstNewline + 1);
-         if (content.endsWith("\`\`\`")) content = content.substring(0, content.length - 3);
-         content = content.trim();
-      }
-      if (content.startsWith("json")) {
-         content = content.substring(4).trim();
-      }
-      parsedResult = JSON.parse(content);
-    } catch (err) {
-      return NextResponse.json({ ok: false, error_code: "MODEL_RESPONSE_INVALID", message: "Failed to parse AI output." }, { status: 500 });
+      gatewayResult = await executeAiGateway({
+        requestId: clientRequestId,
+        snapshot,
+        systemPrompt: buildSystemPrompt(),
+      });
+    } catch {
+      gatewayResult = { ok: false, attempts: [], error_code: "SERVER_ERROR", message: "Gateway execution failed unexpectedly." };
+    }
+    const totalLatencyMs = Date.now() - gatewayStart;
+
+    let totalInputTokens = 0;
+    let totalOutputTokens = 0;
+    if (gatewayResult.attempts.length > 0) {
+      await prisma.aiRequestAttempt.createMany({
+        data: gatewayResult.attempts.map((attempt, index) => {
+          totalInputTokens += attempt.inputTokens || 0;
+          totalOutputTokens += attempt.outputTokens || 0;
+          return {
+            aiRequestId: aiRequest.id,
+            attemptNumber: index + 1,
+            providerId: attempt.providerId,
+            modelId: attempt.modelId,
+            credentialId: attempt.credentialId,
+            status: attempt.error_code ? "FAILED" : "SUCCESS",
+            latencyMs: attempt.latencyMs,
+            httpStatus: attempt.httpStatus,
+            inputTokens: attempt.inputTokens,
+            outputTokens: attempt.outputTokens,
+            errorCode: attempt.error_code,
+            errorMessageRedacted: attempt.errorMessageRedacted,
+            providerRequestId: attempt.providerRequestId,
+            finishReason: attempt.finishReason,
+            completedAt: attempt.completedAt,
+          };
+        }),
+      });
     }
 
-    // Recalculate RR based on TP1
-    const refEntry = parsedResult.reference_entry || 0;
-    const refSl = parsedResult.reference_sl || 0;
-    const refTp1 = parsedResult.reference_tp1 || 0;
-    let computedRr = 0;
-    
-    if (parsedResult.reference_action === "BUY" && refEntry > 0 && refSl < refEntry && refTp1 > refEntry) {
-      const risk = refEntry - refSl;
-      const reward = refTp1 - refEntry;
-      if (risk > 0) computedRr = parseFloat((reward / risk).toFixed(2));
-    } else if (parsedResult.reference_action === "SELL" && refEntry > 0 && refSl > refEntry && refTp1 < refEntry) {
-      const risk = refSl - refEntry;
-      const reward = refEntry - refTp1;
-      if (risk > 0) computedRr = parseFloat((reward / risk).toFixed(2));
+    if (!gatewayResult.ok || !gatewayResult.normalizedResult) {
+      await prisma.aiRequest.update({
+        where: { id: aiRequest.id },
+        data: {
+          status: "FAILED",
+          totalLatencyMs,
+          inputTokens: totalInputTokens,
+          outputTokens: totalOutputTokens,
+          errorCode: gatewayResult.error_code || "SERVER_ERROR",
+          routingPolicyId: gatewayResult.policyId,
+          routingPolicyVersion: gatewayResult.policyVersion,
+          completedAt: new Date(),
+        },
+      });
+      activeRequestId = undefined;
+      const quota = await getUserQuotaUsage(user.id);
+      return NextResponse.json({
+        ok: false,
+        error_code: gatewayResult.error_code || "SERVER_ERROR",
+        message: gatewayResult.message || "Provider failed",
+        usage: usagePayload(quota),
+      }, { status: 502 });
     }
-    parsedResult.reference_rr = computedRr;
-    parsedResult.rr = computedRr; // sync main rr
+
+    const parsedResult = gatewayResult.normalizedResult;
+    if (parsedResult.action === "BUY" && parsedResult.entry > parsedResult.sl) {
+      parsedResult.rr = Number(((parsedResult.tp1 - parsedResult.entry) / (parsedResult.entry - parsedResult.sl)).toFixed(2));
+    } else if (parsedResult.action === "SELL" && parsedResult.sl > parsedResult.entry) {
+      parsedResult.rr = Number(((parsedResult.entry - parsedResult.tp1) / (parsedResult.sl - parsedResult.entry)).toFixed(2));
+    } else parsedResult.rr = 0;
+
+    if (parsedResult.reference_action === "BUY" && parsedResult.reference_entry > parsedResult.reference_sl) {
+      parsedResult.reference_rr = Number(((parsedResult.reference_tp1 - parsedResult.reference_entry) / (parsedResult.reference_entry - parsedResult.reference_sl)).toFixed(2));
+    } else if (parsedResult.reference_action === "SELL" && parsedResult.reference_sl > parsedResult.reference_entry) {
+      parsedResult.reference_rr = Number(((parsedResult.reference_entry - parsedResult.reference_tp1) / (parsedResult.reference_sl - parsedResult.reference_entry)).toFixed(2));
+    } else parsedResult.reference_rr = 0;
 
     const safety = validateTradingSafety(parsedResult, snapshot);
     if (!safety.ok) {
-      const fallback = buildWaitFallback(safety.reason || "Validation failed", body.analysis?.request_id);
-      
-      // Still log usage even if rejected, but as a rejected request
-      await prisma.analyticsEvent.create({
+      await prisma.aiRequest.update({
+        where: { id: aiRequest.id },
         data: {
-          userId: user.id,
-          sessionId: `ea-api-${user.id}`,
-          name: "AI_ANALYZE",
-          data: { status: "rejected", reason: safety.reason }
-        }
+          status: "REJECTED",
+          totalLatencyMs,
+          inputTokens: totalInputTokens,
+          outputTokens: totalOutputTokens,
+          action: "WAIT",
+          errorCode: "SAFETY_REJECTED",
+          safetyResultJson: { status: "REJECTED", reason: safety.reason },
+          completedAt: new Date(),
+        },
       });
-      
+      activeRequestId = undefined;
+      const quota = await getUserQuotaUsage(user.id);
       return NextResponse.json({
-         ...fallback,
-         usage: { plan: proAccess.isPro ? "pro" : "free", daily_limit: dailyLimit, used_today: usedToday + 1, remaining_today: Math.max(0, dailyLimit - usedToday - 1) }
+        ...buildWaitFallback(safety.reason || "Validation failed", clientRequestId),
+        schema_version: API_RESPONSE_SCHEMA_VERSION,
+        usage: usagePayload(quota),
       });
     }
 
-    // Log usage
-    await prisma.analyticsEvent.create({
+    await prisma.aiRequest.update({
+      where: { id: aiRequest.id },
       data: {
-        userId: user.id,
-        sessionId: `ea-api-${user.id}`,
-        name: "AI_ANALYZE",
-        data: { status: "success", action: parsedResult.action }
-      }
+        status: "COMPLETED",
+        totalLatencyMs,
+        inputTokens: totalInputTokens,
+        outputTokens: totalOutputTokens,
+        action: parsedResult.action,
+        normalizedResponseJson: parsedResult,
+        safetyResultJson: { status: "PASSED" },
+        routingPolicyId: gatewayResult.policyId,
+        routingPolicyVersion: gatewayResult.policyVersion,
+        completedAt: new Date(),
+      },
     });
-
-    const responsePayload = {
+    activeRequestId = undefined;
+    const quota = await getUserQuotaUsage(user.id);
+    return NextResponse.json({
       ok: true,
       provider_hidden: true,
-      request_id: body.analysis?.request_id || "srv_" + Date.now(),
+      request_id: clientRequestId,
+      schema_version: API_RESPONSE_SCHEMA_VERSION,
       ...parsedResult,
       server_validation: {
         schema_valid: true,
         safety_valid: true,
-        fallback_used: false,
+        fallback_used: gatewayResult.attempts.filter((attempt) => (attempt.latencyMs || 0) > 0).length > 1,
         model_provider: "hidden",
-        model_alias: "gsn-pa-scalper-v1"
+        model_alias: "gsn-pa-scalper-v1",
       },
-      usage: {
-        plan: proAccess.isPro ? "pro" : "free",
-        daily_limit: dailyLimit,
-        used_today: usedToday + 1,
-        remaining_today: Math.max(0, dailyLimit - usedToday - 1)
-      }
-    };
-
-    return NextResponse.json(responsePayload);
-
-  } catch (error: any) {
-    console.error("AI Gateway Analyze Error:", error);
+      usage: usagePayload(quota),
+    });
+  } catch {
+    if (activeRequestId) {
+      await prisma.aiRequest.updateMany({
+        where: { id: activeRequestId, status: { in: ["RECEIVED", "ROUTING", "CALLING_PROVIDER"] } },
+        data: { status: "FAILED", errorCode: "SERVER_ERROR", completedAt: new Date() },
+      }).catch(() => undefined);
+    }
     return NextResponse.json({ ok: false, error_code: "SERVER_ERROR", message: "Internal server error" }, { status: 500 });
   }
 }

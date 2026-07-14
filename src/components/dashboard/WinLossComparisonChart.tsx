@@ -27,19 +27,19 @@ export function WinLossComparisonChart({ avgWin, avgLoss }: WinLossComparisonCha
   return (
     <div className="flex flex-col h-full justify-between border-t-4 border-t-red-500 overflow-hidden p-4 pb-2">
       <ChartContainer height="100%" minHeight={100} className="w-full h-full flex-1">
-        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <BarChart data={chartData} margin={{ top: 15, right: 15, left: -20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" className="dark:stroke-white/5" />
             <XAxis 
               dataKey="name" 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: '#9CA3AF', fontSize: 11, fontWeight: 600 }} 
+              tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontWeight: 600 }} 
             />
             <YAxis 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: '#9CA3AF', fontSize: 11 }}
+              tick={{ fill: 'var(--text-secondary)', fontSize: 11 }}
               tickFormatter={(v) => `$${v}`}
             />
             <Tooltip

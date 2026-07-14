@@ -70,7 +70,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
  return (
  <div className="flex flex-col h-full w-full border-t-4 border-t-sky-500 overflow-hidden p-4">
  <ChartContainer height="100%" minHeight={100} className="w-full pb-6 flex-1">
- <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+ <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
  <AreaChart
  data={chartData}
  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
@@ -90,14 +90,14 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
  tickFormatter={(time) => format(new Date(time), isShortDuration ? "HH:mm" : "MMM dd")}
  axisLine={false}
  tickLine={false}
- tick={{ fill: '#9CA3AF', fontSize: 12 }}
+ tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
  tickMargin={10}
  minTickGap={30}
  />
  <YAxis
  axisLine={false}
  tickLine={false}
- tick={{ fill: '#9CA3AF', fontSize: 12 }}
+ tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
  tickFormatter={(value) => `$${value}`}
  domain={['auto', 'auto']}
  />

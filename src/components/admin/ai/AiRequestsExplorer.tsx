@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Filter, Clock, Activity, AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
 import { format } from "date-fns";
 
 export function AiRequestsExplorer({ requests }: { requests: any[] }) {

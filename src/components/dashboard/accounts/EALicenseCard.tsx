@@ -71,8 +71,8 @@ export function EALicenseCard({ license, onRemove, isRemoving }: EALicenseCardPr
  )}
 
  {/* Bottom Info */}
- <div className="flex items-center justify-between pt-2 border-t border-gray-50">
- <span className="text-[11px] text-gray-500 font-medium">{formattedDate}</span>
+ <div className="flex items-center justify-between pt-2 border-t border-gray-50 dark:border-white/5">
+ <span className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">{formattedDate}</span>
  <div className="flex items-center gap-1.5">
  {isApproved ? (
  <CheckCircle2 size={13} className="text-emerald-500" strokeWidth={2.5} />

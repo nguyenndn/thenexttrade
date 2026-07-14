@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Plus, Power, Cpu, Settings } from "lucide-react";
+import { Power, Cpu, Settings } from "lucide-react";
 import { 
   createAiProvider, 
   toggleAiProvider, 
@@ -42,7 +42,7 @@ export function AiProvidersPanel({ initialProviders }: { initialProviders: any[]
       toast.success("Provider added successfully");
       setIsAddingProvider(false);
       window.location.reload();
-    } catch (e) {
+    } catch {
       toast.error("Failed to add provider");
     }
   };
@@ -52,7 +52,7 @@ export function AiProvidersPanel({ initialProviders }: { initialProviders: any[]
       await toggleAiProvider(id, !enabled);
       setProviders(providers.map(p => p.id === id ? { ...p, enabled: !enabled } : p));
       toast.success("Provider status updated");
-    } catch (e) {
+    } catch {
       toast.error("Failed to update status");
     }
   };
@@ -73,7 +73,7 @@ export function AiProvidersPanel({ initialProviders }: { initialProviders: any[]
       toast.success("Provider configuration updated");
       setEditingProviderId(null);
       window.location.reload();
-    } catch (e) {
+    } catch {
       toast.error("Failed to update provider");
     }
   };
@@ -83,7 +83,7 @@ export function AiProvidersPanel({ initialProviders }: { initialProviders: any[]
       await testAiCredential(credentialId);
       toast.success("API Key tested successfully");
       window.location.reload();
-    } catch (e) {
+    } catch {
       toast.error("API Key test failed");
     }
   };

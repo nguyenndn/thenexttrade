@@ -3,7 +3,7 @@ import { Wrench, CheckCircle2, Compass, ArrowRight } from "lucide-react";
 import { ALL_TOOLS } from "@/config/tools-data";
 import { ToolsGrid } from "@/components/tools/ToolsGrid";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Suspense } from "react";
 
 import type { Metadata } from "next";

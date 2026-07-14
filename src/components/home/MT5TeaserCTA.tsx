@@ -12,7 +12,7 @@ import {
   HelpCircle,
   Cpu
 } from "lucide-react";
-import { buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 interface MT5TeaserCTAProps {
   isLoggedIn?: boolean;

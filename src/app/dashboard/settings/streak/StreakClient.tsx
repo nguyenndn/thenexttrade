@@ -124,10 +124,11 @@ export default function StreakClient() {
  </div>
 
  <Button
+ size="smd"
  onClick={handleCheckIn}
  disabled={isCheckedInToday || isCheckingIn}
  className={cn(
- "h-12 px-8 rounded-xl font-bold transition-all flex items-center gap-2 text-base w-auto",
+ "rounded-xl font-bold transition-all flex items-center gap-2 w-auto",
  isCheckedInToday
  ? "bg-primary/10 text-primary cursor-not-allowed border border-primary/20"
  : "text-white shadow-lg shadow-primary/20 active:scale-95"

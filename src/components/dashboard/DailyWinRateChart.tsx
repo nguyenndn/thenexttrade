@@ -76,7 +76,7 @@ export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWi
  return (
  <div className="flex flex-col h-full w-full border-t-4 border-t-emerald-500 overflow-hidden p-4">
  <ChartContainer height="100%" minHeight={100} className="w-full h-full flex-1">
- <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+ <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
  <BarChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
  <defs>
  <linearGradient id="winGradient" x1="0" y1="0" x2="0" y2="1">
@@ -107,7 +107,7 @@ export function DailyWinRateChart({ data, height = 300, selectedDates }: DailyWi
  tickFormatter={(value) => format(new Date(value), "MMM dd")}
  axisLine={false}
  tickLine={false}
- tick={{ fontSize: 10, fill: "#9CA3AF" }}
+ tick={{ fontSize: 10, fill: "var(--text-secondary)" }}
  interval={tickInterval}
  minTickGap={20}
  />

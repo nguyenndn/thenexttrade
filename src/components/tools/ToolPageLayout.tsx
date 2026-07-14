@@ -6,7 +6,7 @@ import { ToolViewTracker } from "./ToolViewTracker";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { getSimilarTools } from "@/config/tools-data";
-import { buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 import { HelpCircle, BookOpen, CheckCircle, Lightbulb, Home, ChevronRight } from "lucide-react";
 import type { ToolData } from "@/config/tools-data";

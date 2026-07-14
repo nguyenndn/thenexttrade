@@ -59,7 +59,7 @@ function SuccessTransitionContent() {
  <div className="w-56 animate-in fade-in duration-500 delay-400 fill-mode-both">
  <div className="h-1 bg-white/[0.08] rounded-full overflow-hidden relative">
  <div
- className="h-full rounded-full bg-gradient-to-r from-primary via-emerald-400 to-primary shadow-[0_0_16px_rgba(0,200,136,0.55),0_0_4px_rgba(0,200,136,0.8)] transition-all duration-[2000ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+ className="h-full rounded-full bg-gradient-to-r from-primary via-emerald-400 to-primary shadow-[0_0_16px_rgba(0,200,136,0.55),0_0_4px_rgba(0,200,136,0.8)] transition-all duration-2000 ease-login"
  style={{ width: `${progress}%` }}
  />
  </div>

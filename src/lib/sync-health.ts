@@ -12,6 +12,7 @@ const STALE_HEARTBEAT_HOURS = 6;
 
 export type SyncHealthStatus =
  | "healthy"
+ | "syncing"
  | "no_trades_yet"
  | "stale"
  | "disconnected"
@@ -183,7 +184,22 @@ export function computeSyncHealth(input: SyncHealthInput): SyncHealth {
  }
  }
 
- // 4. Healthy
+ // 4. Syncing
+ if (input.status === "SYNCING") {
+ return {
+ ...base,
+ status: "syncing",
+ label: "Syncing History...",
+ description: "Downloading historical trades from MT5...",
+ primaryAction: {
+ label: "Dashboard",
+ action: "view_dashboard",
+ href: "/dashboard",
+ },
+ };
+ }
+
+ // 5. Healthy
  return {
  ...base,
  status: "healthy",

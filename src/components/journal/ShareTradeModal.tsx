@@ -103,7 +103,7 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
 
   if (!entry) return null;
 
-  const shareUrl = `http://localhost:3000/share/${entry.id}`; // Localhost for testing
+  const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/share/${entry.id}` : "";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shareUrl);

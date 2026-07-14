@@ -66,7 +66,7 @@ export function SyncHealthAccountRow({ account, onActionTrigger }: SyncHealthAcc
     }
   };
 
-  const sourceLabel = getSyncSourceLabel(account.source);
+  const sourceLabel = getSyncSourceLabel(account.source as any);
 
   return (
     <div className={`p-4 rounded-xl border transition-all ${getStatusBgColor(account.health.status)}`}>

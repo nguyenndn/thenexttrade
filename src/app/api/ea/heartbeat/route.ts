@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
  currency, // ACCOUNT_CURRENCY
  leverage, // ACCOUNT_LEVERAGE
  gmtOffset, // GMT offset in seconds (TimeCurrent - TimeGMT)
+ isSyncing, // Background sync state
  } = body;
 
  // Unified auth — supports both user sync key and legacy account key
@@ -109,7 +110,7 @@ export async function POST(request: NextRequest) {
  where: { id: account.id },
  data: {
  lastHeartbeat: new Date(),
- status: "CONNECTED",
+ status: isSyncing ? "SYNCING" : "CONNECTED",
  eaVersion,
 
  // Auto-collected from EA

@@ -91,7 +91,7 @@ export function MobileBottomTabBar() {
  {/* Bottom Sheet Panel */}
  <div
  className={cn(
- "fixed bottom-[64px] left-0 right-0 z-40 lg:hidden transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
+ "fixed bottom-[64px] left-0 right-0 z-40 lg:hidden transition-transform duration-300 ease-tabbar",
  activeSheet ? "translate-y-0" : "translate-y-full"
  )}
  >

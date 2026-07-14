@@ -3,7 +3,7 @@ import { Target, Shield, TrendingUp, Users, Globe2, ChevronRight, Send, Mail } f
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import Link from 'next/link';
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/button-variants';
 import { AboutTimeline } from '@/components/home/AboutTimeline';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 

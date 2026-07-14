@@ -93,7 +93,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
  return (
  <header
  id="site-header"
- className="fixed inset-x-0 z-[60] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
+ className="fixed inset-x-0 z-[60] transition-all duration-500 ease-header"
  style={{
  top: 'var(--banner-h, 0px)',
  paddingTop: isScrolled ? "12px" : "0px"
@@ -102,7 +102,7 @@ export function PublicHeader({ user: initialUser, profile }: PublicHeaderProps) 
  {/* Full-width bar — bg + rounded here */}
  <div
  className={[
- "h-16 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
+ "h-16 transition-all duration-500 ease-header",
  isScrolled
  ? "mx-4 sm:mx-6 lg:mx-16 xl:mx-40 2xl:mx-60 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white dark:bg-card/90 border-dashboard/50 "
  : "mx-0 rounded-none border-b border-dashboard bg-white dark:bg-card",

@@ -123,6 +123,7 @@ export function SiteFooter() {
                   </span>
                 </summary>
                 <ul className="space-y-3 px-2 pb-4">
+                  <li><Link href="/get-started" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Get Started</Link></li>
                   <li><Link href="/brokers" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Trusted Brokers</Link></li>
                   <li><Link href="/trading-systems" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
                   <li><Link href="/edge" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">About Edge Gamification</Link></li>
@@ -134,6 +135,7 @@ export function SiteFooter() {
               <div className="hidden sm:block">
                 <h4 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider mb-6">Resources</h4>
                 <ul className="space-y-3">
+                  <li><Link href="/get-started" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Get Started</Link></li>
                   <li><Link href="/brokers" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Trusted Brokers</Link></li>
                   <li><Link href="/trading-systems" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Trading Systems</Link></li>
                   <li><Link href="/edge" className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">About Edge Gamification</Link></li>

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button-variants";
 import type { LucideIcon } from "lucide-react";
 import {
  ArrowRight,
@@ -146,20 +148,14 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
  </div>
 
  {nextStep ? (
- <Link
- href={nextStep.href}
- className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-gold to-amber-500 text-white font-black px-5 py-3 text-sm shadow-xl shadow-gold/10 hover:from-amber-500 hover:to-amber-600 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
- >
+ <Link href={nextStep.href} className={cn(buttonVariants({ variant: "primary", size: "smd" }), "mt-6 w-full rounded-lg bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none")}>
  {nextStep.cta}
- <ArrowRight size={16} />
+ <ArrowRight size={16} className="ml-1" />
  </Link>
  ) : (
- <Link
- href="/dashboard"
- className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-gold to-amber-500 text-white font-black px-5 py-3 text-sm shadow-xl shadow-gold/10 hover:from-amber-500 hover:to-amber-600 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
- >
+ <Link href="/dashboard" className={cn(buttonVariants({ variant: "primary", size: "smd" }), "mt-6 w-full rounded-lg bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none")}>
  Go to dashboard
- <ArrowRight size={16} />
+ <ArrowRight size={16} className="ml-1" />
  </Link>
  )}
  </section>
@@ -173,11 +169,8 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
  </div>
  <p className="mt-1 text-xs text-slate-500 dark:text-slate-300">Complete these in order. The first unfinished step is the one that matters most.</p>
  </div>
- <Link
- href="/dashboard/settings"
- className="hidden min-h-10 items-center gap-2 rounded-lg border border-dashboard px-4 text-xs font-black text-slate-700 transition hover:border-gold hover:bg-gold/5 dark:text-slate-200 dark:hover:bg-white/10 sm:inline-flex"
- >
- <Settings size={14} />
+ <Link href="/dashboard/settings" className={cn(buttonVariants({ variant: "outline", size: "smd" }), "hidden sm:inline-flex border-dashboard hover:border-gold hover:bg-gold/5 dark:hover:bg-white/10")}>
+ <Settings size={14} className="mr-1" />
  Settings
  </Link>
  </div>
@@ -224,7 +217,7 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
  {done ? (
  <Circle size={18} className="fill-gold text-gold" />
  ) : (
- <Link href={step.href} className="inline-flex min-h-9 items-center rounded-lg border border-dashboard px-3 text-xs font-black text-slate-700 transition hover:border-gold hover:bg-gold/5 dark:text-slate-200 dark:hover:bg-white/10">
+ <Link href={step.href} className={cn(buttonVariants({ variant: "outline", size: "smd" }), "border-dashboard hover:border-gold hover:bg-gold/5 dark:hover:bg-white/10")}>
  {step.cta}
  </Link>
  )}
@@ -232,9 +225,9 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
  </div>
 
  {!done && (
- <Link href={step.href} className="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-gold/20 bg-gold/5 text-xs font-black text-gold transition hover:bg-gold/10 dark:border-gold/20 dark:bg-gold/10 dark:text-gold sm:hidden">
+ <Link href={step.href} className={cn(buttonVariants({ variant: "outline", size: "smd" }), "mt-4 w-full sm:hidden border-gold/20 bg-gold/5 text-gold hover:bg-gold/10 dark:border-gold/20 dark:bg-gold/10 dark:text-gold")}>
  {step.cta}
- <ArrowRight size={14} />
+ <ArrowRight size={14} className="ml-1" />
  </Link>
  )}
  </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { WifiOff, AlertCircle, Clock, CheckCircle2, HelpCircle, Radio } from "lucide-react";
+import { WifiOff, AlertCircle, Clock, CheckCircle2, HelpCircle, Radio, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SyncHealth, SyncHealthStatus } from "@/lib/sync-health";
 import { Button } from "@/components/ui/Button";
@@ -24,6 +24,13 @@ const STATUS_CONFIG: Record<SyncHealthStatus, {
  bgColor: "bg-emerald-50 dark:bg-emerald-500/10",
  borderColor: "border-emerald-100 dark:border-emerald-500/20",
  dotColor: "bg-emerald-500",
+ },
+ syncing: {
+ icon: RefreshCw,
+ color: "text-blue-500",
+ bgColor: "bg-blue-50 dark:bg-blue-500/10",
+ borderColor: "border-blue-100 dark:border-blue-500/20",
+ dotColor: "bg-blue-500",
  },
  no_trades_yet: {
  icon: Radio,
@@ -99,7 +106,7 @@ export function SyncHealthBadge({ health, compact = false }: SyncHealthBadgeProp
  config.bgColor, config.borderColor, config.color
  )}>
  <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", config.dotColor,
- health.status === "healthy" && "animate-pulse"
+ (health.status === "healthy" || health.status === "syncing") && "animate-pulse"
  )} />
  {health.label}
  </div>
@@ -115,11 +122,12 @@ export function SyncHealthBadge({ health, compact = false }: SyncHealthBadgeProp
  <div className={cn(
  "flex items-center justify-center w-8 h-8 rounded-lg shrink-0",
  health.status === "healthy" ? "bg-emerald-500/20" :
+ health.status === "syncing" ? "bg-blue-500/20" :
  health.status === "disconnected" ? "bg-red-500/20" :
  health.status === "stale" ? "bg-amber-500/20" :
  "bg-gray-500/10"
  )}>
- <Icon size={16} className={config.color} />
+ <Icon size={16} className={cn(config.color, health.status === "syncing" && "animate-spin")} />
  </div>
 
  {/* Info */}

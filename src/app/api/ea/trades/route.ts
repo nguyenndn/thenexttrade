@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { parseEATrade } from "@/lib/ea/utils";
 import { rateLimit } from "@/lib/rate-limit";
 import { resolveSyncAuth } from "@/lib/sync-auth";
+import zlib from "zlib";
 
 const limiter = rateLimit({
  uniqueTokenPerInterval: 500, // Max 500 unique API keys per interval
@@ -19,9 +20,33 @@ export async function POST(request: NextRequest) {
  return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
  }
 
- // Parse request body
- const body = await request.json();
- const { trades, eaVersion, clientTime, accountNumber } = body;
+  // Check for custom ZIP encoding from EA
+  const payloadEncoding = request.headers.get("X-Payload-Encoding");
+  let body;
+
+  if (payloadEncoding === "zip") {
+      const arrayBuffer = await request.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      try {
+          // MQL5 CryptEncode(CRYPT_ARCH_ZIP) usually uses raw deflate or zlib
+          // zlib.unzipSync handles both gzip and zlib wrapper formats. 
+          // If it's raw deflate (no header), inflateRawSync is needed. We try unzipSync first.
+          try {
+              const decompressed = zlib.unzipSync(buffer);
+              body = JSON.parse(decompressed.toString("utf-8"));
+          } catch (e) {
+              const decompressed = zlib.inflateRawSync(buffer);
+              body = JSON.parse(decompressed.toString("utf-8"));
+          }
+      } catch (err) {
+          console.error("Failed to decompress ZIP payload:", err);
+          return NextResponse.json({ error: "Invalid ZIP payload" }, { status: 400 });
+      }
+  } else {
+      body = await request.json();
+  }
+
+  const { trades, eaVersion, clientTime, accountNumber } = body;
 
  if (!accountNumber) {
  return NextResponse.json({ error: "Missing accountNumber from EA payload" }, { status: 400 });

@@ -3,7 +3,7 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import Link from "next/link";
 import { FeedbackCarousel } from "@/components/community/FeedbackCarousel";

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AcademyTree } from "@/components/academy/AcademyTree";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 import { getAuthUser } from "@/lib/auth-cache";
 import { redirect } from "next/navigation";
@@ -169,12 +169,12 @@ export default async function UserAcademyDashboard() {
  description="Your professional trading journey tracker."
  >
  <div className="flex items-center gap-3 text-sm font-bold w-full sm:w-auto">
- <div className="flex items-center justify-center gap-1.5 text-primary bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 px-3 py-1.5 rounded-full flex-1 sm:flex-none">
- <GraduationCap size={14} />
+ <div className="flex items-center justify-center gap-1.5 text-amber-600 dark:text-amber-400 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border border-amber-500/30 dark:border-amber-400/20 shadow-[0_0_15px_rgba(245,158,11,0.1)] px-4 py-1.5 rounded-full flex-1 sm:flex-none transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+ <GraduationCap size={15} className="text-amber-500" />
  <span>{Math.round(overallProgress)}% Complete</span>
  </div>
- <div className="flex items-center justify-center gap-1.5 text-primary bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 px-3 py-1.5 rounded-full flex-1 sm:flex-none">
- <BookOpen size={14} />
+ <div className="flex items-center justify-center gap-1.5 text-amber-600 dark:text-amber-400 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border border-amber-500/30 dark:border-amber-400/20 shadow-[0_0_15px_rgba(245,158,11,0.1)] px-4 py-1.5 rounded-full flex-1 sm:flex-none transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+ <BookOpen size={15} className="text-amber-500" />
  <span>{completedLessons}/{totalLessons} Lessons</span>
  </div>
  </div>

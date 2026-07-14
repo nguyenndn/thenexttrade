@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions | TheNextTrade",

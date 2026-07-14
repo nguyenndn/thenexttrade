@@ -201,30 +201,30 @@ export function VipStatusWidget() {
  {/* Top accent line */}
  <div className="h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
 
- <div className="px-4 py-4 space-y-3">
+ <div className="p-3 space-y-3">
  {/* Header Row */}
- <div className="flex items-center gap-3">
- <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/15 to-orange-400/10 dark:from-amber-400/20 dark:to-orange-400/10 ring-1 ring-amber-300/30 dark:ring-amber-500/20">
- <Crown className="h-5 w-5 text-amber-500 dark:text-amber-400" />
+ <div className="flex items-center gap-2.5">
+ <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/15 to-orange-400/10 dark:from-amber-400/20 dark:to-orange-400/10 ring-1 ring-amber-300/30 dark:ring-amber-500/20">
+ <Crown className="h-4 w-4 text-amber-500 dark:text-amber-400" />
  </div>
 
  <div className="flex-1 min-w-0">
- <div className="flex items-center gap-2">
- <span className="text-sm font-black tracking-tight text-gray-900 dark:text-white">Free Plan</span>
- <span className="rounded-md bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
+ <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+ <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">Free Plan</span>
+ <span className="rounded-md bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
  Current
  </span>
  </div>
- <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">Upgrade to unlock Pro features</p>
+ <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">Upgrade to unlock Pro features</p>
  </div>
  </div>
 
  {hasPendingRequest ? (
- <div className="flex items-center gap-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-3 py-2.5">
- <Timer className="h-4 w-4 text-amber-500 shrink-0" />
- <div>
- <p className="text-[11px] font-bold text-amber-700 dark:text-amber-400">VIP Request Submitted</p>
- <p className="text-[10px] text-amber-600/70 dark:text-amber-400/60">
+ <div className="flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-2.5 py-2">
+ <Timer className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+ <div className="min-w-0">
+ <p className="text-[10px] font-bold text-amber-700 dark:text-amber-400 truncate">VIP Request Submitted</p>
+ <p className="text-[9px] text-amber-600/70 dark:text-amber-400/60 truncate">
  {new Date(vipRequest!.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · Awaiting review
  </p>
  </div>
@@ -233,7 +233,7 @@ export function VipStatusWidget() {
  <div className="space-y-2">
  <button
  onClick={() => setShowBenefits(true)}
- className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
+ className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
  >
  View Pro benefits
  <ChevronRight className="h-3 w-3" />
@@ -241,10 +241,10 @@ export function VipStatusWidget() {
 
  <Link
  href={ctaHref}
- className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"
+ className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"
  >
- Check Pro Eligibility
- <ArrowRight className="h-3 w-3" />
+ <span className="truncate">Check Pro Eligibility</span>
+ <ArrowRight className="h-3 w-3 shrink-0" />
  </Link>
  </div>
  )}
@@ -279,34 +279,34 @@ export function VipStatusWidget() {
  {/* Top accent line */}
  <div className="h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
 
- <div className="flex items-center gap-3.5 px-4 py-4">
+ <div className="flex items-center gap-2.5 p-3">
  {/* Icon */}
  <div className="relative shrink-0">
- <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/15 to-teal-500/10 dark:from-emerald-400/20 dark:to-teal-400/10 ring-1 ring-emerald-300/40 dark:ring-emerald-500/25 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:shadow-emerald-500/15">
- <Crown className="h-5 w-5 text-emerald-600 dark:text-emerald-400 transition-transform duration-300 group-hover:scale-110" />
+ <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/15 to-teal-500/10 dark:from-emerald-400/20 dark:to-teal-400/10 ring-1 ring-emerald-300/40 dark:ring-emerald-500/25 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:shadow-emerald-500/15">
+ <Crown className="h-4 w-4 text-emerald-600 dark:text-emerald-400 transition-transform duration-300 group-hover:scale-110" />
  </div>
  {/* Active pulse dot */}
- <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+ <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
- <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 ring-2 ring-white dark:ring-[#141721]" />
+ <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-[#141721]" />
  </span>
  </div>
 
  {/* Text Content */}
  <div className="flex-1 min-w-0">
- <div className="flex items-center gap-2">
- <span className="text-sm font-black tracking-tight text-gray-900 dark:text-white">
+ <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+ <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
  Pro Active
  </span>
- <span className="rounded-md bg-emerald-500/10 dark:bg-emerald-500/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20 dark:ring-emerald-500/25">
+ <span className="rounded-md bg-emerald-500/10 dark:bg-emerald-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20 dark:ring-emerald-500/25">
  PRO
  </span>
  </div>
 
  {/* CTA */}
- <div className="flex items-center gap-1 mt-1 text-[11px] font-semibold text-emerald-600/70 dark:text-emerald-400/60 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
- View your benefits
- <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5" />
+ <div className="flex items-center gap-1 mt-0.5 text-[10px] font-semibold text-emerald-600/70 dark:text-emerald-400/60 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
+ <span className="truncate">View your benefits</span>
+ <ChevronRight className="h-2.5 w-2.5 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5" />
  </div>
  </div>
  </div>
@@ -345,31 +345,31 @@ export function VipStatusWidget() {
  {/* Top accent line */}
  <div className={`h-px bg-gradient-to-r from-transparent ${accentLine[status] || accentLine.EXPIRED} to-transparent`} />
 
- <div className="px-4 py-4 space-y-3">
+ <div className="p-3 space-y-3">
  {/* Header Row */}
- <div className="flex items-center gap-3">
- <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${cfg.iconBg} ring-1 ring-black/5 dark:ring-white/10`}>
- <StatusIcon className={`h-5 w-5 ${cfg.iconColor}`} />
+ <div className="flex items-center gap-2.5">
+ <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${cfg.iconBg} ring-1 ring-black/5 dark:ring-white/10`}>
+ <StatusIcon className={`h-4 w-4 ${cfg.iconColor}`} />
  </div>
 
  <div className="flex-1 min-w-0">
- <div className="flex items-center gap-2">
- <span className={`text-sm font-black tracking-tight ${cfg.labelColor}`}>{cfg.label}</span>
+ <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+ <span className={`text-[13px] font-black tracking-tight whitespace-nowrap ${cfg.labelColor}`}>{cfg.label}</span>
  {isPro && (
- <span className={`rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] ring-1 ring-current/15 ${cfg.badgeClass}`}>
+ <span className={`rounded-md px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] ring-1 ring-current/15 ${cfg.badgeClass}`}>
  Pro
  </span>
  )}
  </div>
- <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">{cfg.description}</p>
+ <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">{cfg.description}</p>
  </div>
  </div>
 
  {/* Grace expiry */}
  {status === "GRACE" && expiresAt && (
- <div className="flex items-center gap-2 rounded-xl bg-violet-50 dark:bg-violet-500/10 border border-violet-200/60 dark:border-violet-500/20 px-3 py-2">
- <Timer className="h-3.5 w-3.5 text-violet-500 shrink-0" />
- <p className="text-[11px] font-semibold text-violet-600 dark:text-violet-400">
+ <div className="flex items-start gap-2 rounded-xl bg-violet-50 dark:bg-violet-500/10 border border-violet-200/60 dark:border-violet-500/20 px-2.5 py-2">
+ <Timer className="h-3.5 w-3.5 text-violet-500 shrink-0 mt-0.5" />
+ <p className="text-[10px] font-semibold text-violet-600 dark:text-violet-400 truncate">
  Expires {new Date(expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
  </p>
  </div>
@@ -379,20 +379,20 @@ export function VipStatusWidget() {
  {!isPro && (status === "EXPIRED" || status === "REVOKED") && (
  <Link
  href="/dashboard/accounts?action=add&intent=unlock-pro"
- className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"
+ className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"
  >
- Re-apply for Pro
- <ArrowRight className="h-3 w-3" />
+ <span className="truncate">Re-apply for Pro</span>
+ <ArrowRight className="h-3 w-3 shrink-0" />
  </Link>
  )}
 
  {status === "GRACE" && (
  <Link
  href="/dashboard/accounts?action=add&intent=unlock-pro"
- className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 px-4 py-2.5 text-[11px] font-bold text-white shadow-sm shadow-violet-500/20 transition-all duration-300 hover:from-violet-600 hover:to-purple-600 hover:shadow-md hover:shadow-violet-500/25 hover:-translate-y-px active:translate-y-0"
+ className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-violet-500/20 transition-all duration-300 hover:from-violet-600 hover:to-purple-600 hover:shadow-md hover:shadow-violet-500/25 hover:-translate-y-px active:translate-y-0"
  >
- Complete Verification
- <ArrowRight className="h-3 w-3" />
+ <span className="truncate">Complete Verification</span>
+ <ArrowRight className="h-3 w-3 shrink-0" />
  </Link>
  )}
  </div>

@@ -36,7 +36,9 @@ import {
   HeartPulse,
   FileBarChart,
   Database,
+  Mail,
 } from "lucide-react";
+
 
 export const menuItems = [
   {
@@ -227,6 +229,7 @@ export const adminMenuItems = [
       { name: "Users", href: "/admin/users" },
       { name: "Feedback", href: "/admin/feedback" },
       { name: "Settings", href: "/admin/settings" },
+      { name: "Email Lab", href: "/admin/email-lab" },
     ],
   },
 ];
@@ -316,6 +319,7 @@ export const adminMenuGroups = [
       { name: "EA Management", href: "/admin/ea", icon: Bot },
       { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
       { name: "Settings", href: "/admin/settings", icon: Settings },
+      { name: "Email Lab", href: "/admin/email-lab", icon: Mail },
     ],
   },
 ];

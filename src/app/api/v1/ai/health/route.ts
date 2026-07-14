@@ -1,22 +1,29 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { resolveExecutionPlan } from "@/lib/ai-gateway/execution-resolver";
 
-// We can periodically check the connection to the DB and DeepSeek
 export async function GET() {
   try {
     // Basic DB check
     await prisma.$queryRaw`SELECT 1`;
 
-    // DeepSeek status (just checking if key exists, or we could ping models)
-    const hasKey = !!process.env.DEEPSEEK_API_KEY;
+    const plan = await resolveExecutionPlan();
+    const candidates = plan.steps.filter(s => s.kind === "candidate");
+    const skipped = plan.steps.filter(s => s.kind === "skipped");
+    const isProviderReady = Boolean(plan.policy && candidates.length > 0);
 
     return NextResponse.json({
-      status: "online",
+      status: isProviderReady ? "online" : "degraded",
       database: "online",
-      provider: hasKey ? "online" : "offline",
+      provider: isProviderReady ? "online" : "offline",
+      routing: {
+        policy_configured: Boolean(plan.policy),
+        routable_models: candidates.length,
+        skipped_models: skipped.map((item) => ({ code: item.diagnostic.errorCode, reason: item.diagnostic.reason })),
+      },
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({
       status: "degraded",
       database: "offline",

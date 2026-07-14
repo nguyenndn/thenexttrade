@@ -63,7 +63,7 @@ function LoginSuccessOverlay({ name, redirectTo }: { name: string; redirectTo?: 
  <div className="w-64 animate-in fade-in duration-500 delay-400 fill-mode-both">
  <div className="h-1.5 bg-amber-900/10 dark:bg-white/[0.08] rounded-full overflow-hidden">
  <div
- className="h-full rounded-full bg-gradient-to-r from-amber-500 via-primary to-emerald-400 dark:from-primary dark:via-emerald-400 dark:to-primary shadow-[0_0_16px_rgba(0,200,136,0.45),0_0_4px_rgba(0,200,136,0.7)] transition-all duration-[2200ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+ className="h-full rounded-full bg-gradient-to-r from-amber-500 via-primary to-emerald-400 dark:from-primary dark:via-emerald-400 dark:to-primary shadow-[0_0_16px_rgba(0,200,136,0.45),0_0_4px_rgba(0,200,136,0.7)] transition-all duration-2200 ease-login"
  style={{ width: `${progress}%` }}
  />
  </div>

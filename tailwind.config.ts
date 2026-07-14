@@ -77,6 +77,18 @@ const config: Config = {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
+			transitionDuration: {
+				'2000': '2000ms',
+				'2200': '2200ms',
+				'3000': '3000ms',
+				'5000': '5000ms',
+				'8000': '8000ms',
+			},
+			transitionTimingFunction: {
+				'ease-header': 'cubic-bezier(0.23, 1, 0.32, 1)',
+				'ease-login': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+				'ease-tabbar': 'cubic-bezier(0.32, 0.72, 0, 1)',
+			},
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',

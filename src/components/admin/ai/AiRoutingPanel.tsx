@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Activity, Route, ServerCrash, Power, Plus } from "lucide-react";
+import { Route, Power } from "lucide-react";
 import { format } from "date-fns";
 import { createAiRoutingPolicy } from "@/actions/admin/ai-gateway";
 import { toast } from "sonner";
 
-export function AiRoutingPanel({ policies }: { policies: any[] }) {
+export function AiRoutingPanel({ policies, models = [] }: { policies: any[], models?: any[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const isAdding = searchParams.get("add") === "true";
@@ -24,9 +24,16 @@ export function AiRoutingPanel({ policies }: { policies: any[] }) {
     name: "",
     mode: "FIXED",
     primaryModelId: "",
+    fallbackConfigJson: [] as string[],
     timeoutMs: 30000,
     maxAttempts: 3
   });
+
+  // Handle multiple select for fallbacks
+  const handleFallbackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = Array.from(e.target.selectedOptions, option => option.value);
+    setForm({ ...form, fallbackConfigJson: selected });
+  };
 
   const handleCreate = async () => {
     try {
@@ -34,7 +41,7 @@ export function AiRoutingPanel({ policies }: { policies: any[] }) {
       toast.success("Routing Policy created successfully");
       setIsAdding(false);
       window.location.reload();
-    } catch (e) {
+    } catch {
       toast.error("Failed to create routing policy");
     }
   };
@@ -55,7 +62,7 @@ export function AiRoutingPanel({ policies }: { policies: any[] }) {
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Routing Mode</label>
-              <select 
+              <select
                 className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
                 value={form.mode} onChange={e => setForm({...form, mode: e.target.value})}
               >
@@ -64,12 +71,16 @@ export function AiRoutingPanel({ policies }: { policies: any[] }) {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Primary Model ID</label>
-              <input 
-                placeholder="e.g. gpt-4o-mini" 
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Primary Model</label>
+              <select 
                 className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
                 value={form.primaryModelId} onChange={e => setForm({...form, primaryModelId: e.target.value})}
-              />
+              >
+                <option value="">Select a Model</option>
+                {models.map(m => (
+                  <option key={m.id} value={m.id}>{m.provider.displayName} - {m.displayName}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Timeout (ms)</label>
@@ -80,14 +91,28 @@ export function AiRoutingPanel({ policies }: { policies: any[] }) {
               />
             </div>
             {form.mode === 'AUTO_FAILOVER' && (
-              <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Max Attempts</label>
-                <input 
-                  type="number"
-                  className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                  value={form.maxAttempts} onChange={e => setForm({...form, maxAttempts: parseInt(e.target.value)})}
-                />
-              </div>
+              <>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Fallback Models</label>
+                  <select
+                    multiple
+                    className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary min-h-[100px]"
+                    value={form.fallbackConfigJson} onChange={handleFallbackChange}
+                  >
+                    {models.filter(m => m.id !== form.primaryModelId).map(m => (
+                      <option key={m.id} value={m.id}>{m.provider.displayName} - {m.displayName}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Max Attempts</label>
+                  <input
+                    type="number"
+                    className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                    value={form.maxAttempts} onChange={e => setForm({...form, maxAttempts: parseInt(e.target.value)})}
+                  />
+                </div>
+              </>
             )}
           </div>
           <div className="flex justify-end gap-2">
@@ -121,10 +146,22 @@ export function AiRoutingPanel({ policies }: { policies: any[] }) {
               </span>
             </div>
             
-            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <p className="text-xs text-gray-500 mb-1">Primary Model ID</p>
-                <p className="text-sm text-gray-900 dark:text-white font-mono">{policy.primaryModelId || 'Default'}</p>
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="col-span-2">
+                <p className="text-xs text-gray-500 mb-1">Models</p>
+                <div className="text-sm text-gray-900 dark:text-white flex flex-wrap gap-1">
+                  <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20">
+                    {models.find(m => m.id === policy.primaryModelId)?.displayName || 'Unknown Model'}
+                  </span>
+                  {policy.mode === 'AUTO_FAILOVER' && Array.isArray(policy.fallbackConfigJson) && policy.fallbackConfigJson.map((id: string, idx: number) => {
+                    const fallbackModel = models.find(m => m.id === id);
+                    return (
+                      <span key={idx} className="bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded text-gray-600 dark:text-gray-300">
+                        {fallbackModel ? fallbackModel.displayName : 'Unknown'}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Timeout</p>
@@ -150,4 +187,3 @@ export function AiRoutingPanel({ policies }: { policies: any[] }) {
     </div>
   );
 }
-
