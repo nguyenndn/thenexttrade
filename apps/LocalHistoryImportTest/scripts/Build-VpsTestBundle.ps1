@@ -32,7 +32,7 @@ Copy-Item -Path (Join-Path $bootstrapSource "*") -Destination $output -Recurse -
 
 $workerDestination = Join-Path $output "worker-package"
 New-Item -ItemType Directory -Path $workerDestination -Force | Out-Null
-foreach ($file in @("worker.py", "token_store.py", "requirements.txt", "Enroll-GSNWorker.ps1")) {
+foreach ($file in @("worker.py", "token_store.py", "requirements.txt", "Enroll-GSNWorker.ps1", "start_local_worker.py", "START_LOCAL_WORKER.bat", "UPDATE_LOCAL_WORKER.bat", "Update-ControlledWorker.ps1")) {
     Copy-Item -LiteralPath (Join-Path $workerSource $file) -Destination $workerDestination -Force
 }
 

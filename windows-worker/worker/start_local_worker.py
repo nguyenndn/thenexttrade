@@ -24,7 +24,6 @@ def resolve_config_path(value: str | None) -> Path:
 
 
 def token_path_for(config_path: Path) -> Path:
-    # worker.py stores the DPAPI credential beside the active config file.
     return config_path.parent / "worker-token.dpapi"
 
 
@@ -103,7 +102,6 @@ def main() -> int:
 
     config_path = resolve_config_path(args.config)
     token_file = token_path_for(config_path)
-
     if not WORKER.exists():
         raise RuntimeError(f"Worker file not found: {WORKER}")
     if not config_path.exists():

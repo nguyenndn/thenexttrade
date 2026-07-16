@@ -18,7 +18,7 @@ import requests
 from token_store import load_token, save_token
 
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 UTC = timezone.utc
 LOG = logging.getLogger("gsn-worker")
 
@@ -134,12 +134,13 @@ def ensure_terminal_is_portable(terminal_path: Path, allow_nonportable: bool) ->
 class ApiClient:
     def __init__(self, base_url: str, worker_id: str, token_path: Path) -> None:
         self.base_url = base_url.rstrip("/")
-        self.worker_id = worker_id
+        self.worker_id = worker_id.strip()
         self.token_path = token_path
         self.session = requests.Session()
         self.session.headers.update({"User-Agent": f"GSN-Windows-Worker/{VERSION}"})
 
     def enroll(self, enrollment_token: str) -> None:
+        enrollment_token = enrollment_token.strip().strip('"').strip("'")
         response = self.session.post(
             self.base_url + "/internal/v1/mt5-workers/enroll",
             json={"worker_id": self.worker_id, "enrollment_token": enrollment_token},
@@ -423,7 +424,14 @@ def main() -> int:
     if args.enroll or args.enroll_token:
         enrollment_token = args.enroll_token or os.environ.pop("GSN_ENROLLMENT_TOKEN", "")
         if not enrollment_token:
-            raise WorkerError("ENROLLMENT_TOKEN_MISSING", "Provide --enroll-token or set GSN_ENROLLMENT_TOKEN")
+            print("Paste enrollment token (input is visible for verification): ", end="", flush=True)
+            enrollment_token = input().strip().strip('"').strip("'")
+        if not enrollment_token:
+            raise WorkerError("ENROLLMENT_TOKEN_MISSING", "Enrollment token cannot be empty")
+        print(f"Token received (verify before sending, {len(enrollment_token)} characters): {enrollment_token}")
+        confirmation = input("Use this token? [Y/n]: ").strip().lower()
+        if confirmation not in ("", "y", "yes"):
+            raise WorkerError("ENROLLMENT_CANCELLED", "Enrollment cancelled")
         worker.enroll(enrollment_token)
         return 0
     if args.once:

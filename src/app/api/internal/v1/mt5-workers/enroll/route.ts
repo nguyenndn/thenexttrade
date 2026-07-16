@@ -5,7 +5,9 @@ import { hashToken } from "@/lib/mt5/worker-auth";
 
 export async function POST(request: NextRequest) {
   try {
-    const { worker_id, enrollment_token } = await request.json();
+    const body = await request.json();
+    const worker_id = typeof body.worker_id === "string" ? body.worker_id.trim() : "";
+    const enrollment_token = typeof body.enrollment_token === "string" ? body.enrollment_token.trim() : "";
     if (!worker_id || !enrollment_token) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
@@ -17,8 +19,16 @@ export async function POST(request: NextRequest) {
         where: { tokenHash },
       });
 
-      if (!tokenRecord || tokenRecord.workerId !== worker_id || tokenRecord.usedAt !== null) {
+      if (!tokenRecord) {
         throw new Error("INVALID_TOKEN");
+      }
+
+      if (tokenRecord.workerId !== worker_id) {
+        throw new Error("WORKER_MISMATCH");
+      }
+
+      if (tokenRecord.usedAt !== null) {
+        throw new Error("TOKEN_USED");
       }
 
       if (tokenRecord.expiresAt < new Date()) {
@@ -52,7 +62,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ worker_id, worker_token: result });
   } catch (error: any) {
     if (error.message === "INVALID_TOKEN") {
-      return NextResponse.json({ error: "Invalid enrollment token" }, { status: 401 });
+      return NextResponse.json({ error: "Enrollment token is invalid or was not found" }, { status: 401 });
+    }
+    if (error.message === "WORKER_MISMATCH") {
+      return NextResponse.json({ error: "Enrollment token was issued for a different Worker ID" }, { status: 401 });
+    }
+    if (error.message === "TOKEN_USED") {
+      return NextResponse.json({ error: "Enrollment token was already used; generate a fresh token" }, { status: 401 });
     }
     if (error.message === "EXPIRED_TOKEN") {
       return NextResponse.json({ error: "Enrollment token expired" }, { status: 401 });

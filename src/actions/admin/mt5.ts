@@ -60,6 +60,10 @@ export async function deleteEnrollmentToken(tokenHash: string) {
 
 export async function createMt5EnrollmentToken(workerId: string, ttlMinutes = 15) {
   await requireAdminAuth();
+  const normalizedWorkerId = workerId.trim();
+  if (!normalizedWorkerId) {
+    throw new Error("Worker ID is required");
+  }
   const enrollmentToken = crypto.randomBytes(24).toString("base64url");
   const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000);
 
@@ -67,10 +71,10 @@ export async function createMt5EnrollmentToken(workerId: string, ttlMinutes = 15
     data: {
       tokenHash: hashToken(enrollmentToken),
       rawToken: enrollmentToken,
-      workerId,
+      workerId: normalizedWorkerId,
       expiresAt,
     },
   });
   revalidatePath("/admin/mt5/tokens");
-  return { enrollmentToken, expiresAt };
+  return { enrollmentToken, expiresAt, workerId: normalizedWorkerId };
 }

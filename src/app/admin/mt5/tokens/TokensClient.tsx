@@ -26,6 +26,7 @@ export function TokensClient({ initialTokens }: TokensClientProps) {
   const [targetWorkerId, setTargetWorkerId] = useState("");
   const [ttlMinutes, setTtlMinutes] = useState("15");
   const [generatedToken, setGeneratedToken] = useState<string | null>(null);
+  const [generatedExpiresAt, setGeneratedExpiresAt] = useState<Date | null>(null);
   const [copied, setCopied] = useState(false);
   const [viewToken, setViewToken] = useState<any>(null);
 
@@ -33,15 +34,18 @@ export function TokensClient({ initialTokens }: TokensClientProps) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleGenerate = () => {
-    if (!targetWorkerId) {
+    const normalizedWorkerId = targetWorkerId.trim();
+    if (!normalizedWorkerId) {
       toast.error("Please enter a target Worker ID");
       return;
     }
 
     setIsPending(true);
-    createMt5EnrollmentToken(targetWorkerId, ttlMinutes ? parseInt(ttlMinutes) : 15)
+    createMt5EnrollmentToken(normalizedWorkerId, ttlMinutes ? parseInt(ttlMinutes) : 15)
       .then((res) => {
         setGeneratedToken(res.enrollmentToken);
+        setGeneratedExpiresAt(new Date(res.expiresAt));
+        setTargetWorkerId(res.workerId);
         toast.success("Enrollment token generated successfully!");
         // Refresh token list by window reload or updating state
         router.refresh();
@@ -135,6 +139,16 @@ export function TokensClient({ initialTokens }: TokensClientProps) {
             <p className="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">
               Generated Token (Copy immediately!)
             </p>
+            <div className="grid grid-cols-1 gap-2 text-xs text-emerald-800/80 dark:text-emerald-300/80 sm:grid-cols-2">
+              <div>
+                <span className="font-bold uppercase tracking-wider">Worker ID:</span>{" "}
+                <code className="font-mono">{targetWorkerId}</code>
+              </div>
+              <div>
+                <span className="font-bold uppercase tracking-wider">Expires:</span>{" "}
+                {generatedExpiresAt ? format(generatedExpiresAt, "yyyy-MM-dd HH:mm") : "--"}
+              </div>
+            </div>
             <div className="flex gap-2">
               <code className="flex-1 p-3 bg-white dark:bg-[#151925] border border-dashboard rounded-lg font-mono text-sm text-primary break-all select-all">
                 {generatedToken}
