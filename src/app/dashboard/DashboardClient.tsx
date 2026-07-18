@@ -90,6 +90,7 @@ export default function DashboardClient(data: DashboardPageData) {
  activationState,
  daysSinceLastReport,
  nextBestAction,
+ coachPlan,
  learningRecommendations,
  firstSessionState,
  tradingGoal,
@@ -99,6 +100,17 @@ export default function DashboardClient(data: DashboardPageData) {
  } = data;
  const { theme } = useTheme();
  const isDark = theme === "dark";
+
+ // MOCK NUDGE CARD FOR TESTING
+ const mockNextBestAction = nextBestAction || {
+   id: "WEAK_SESSION",
+   title: "Asian Session Warning",
+   description: "Your win rate drops below 40% during the Asian session. Consider reducing your lot size or avoiding trades during this time.",
+   ctaLabel: "Review Session Performance",
+   ctaHref: "#",
+   priority: 10,
+   sourceSignalType: "SESSION",
+ };
 
  // Modal State
  const [selectedTrade, setSelectedTrade] = useState<any>(null);
@@ -255,15 +267,27 @@ export default function DashboardClient(data: DashboardPageData) {
  {!hasNoData && <MobileProStatusBanner />}
 
  {/* Headless Coach Nudge Dialog state provider */}
-  {nextBestAction && !shouldSuppressCoachNudge && !suppress?.coachNudge && (
+  {mockNextBestAction && !shouldSuppressCoachNudge && !suppress?.coachNudge && (
   <DashboardCoachNudge 
-  nextBestAction={nextBestAction} 
+  nextBestAction={mockNextBestAction} 
+  coachPlan={coachPlan}
   learningRecommendations={learningRecommendations || []} 
   open={isCoachNudgeOpen}
   onOpenChange={setIsCoachNudgeOpen}
   hideTrigger={true}
   />
   )}
+
+  {/* Nudge Space - Only visible if action exists */}
+         {!suppress?.coachNudge && !shouldSuppressCoachNudge && mockNextBestAction && (
+           <div className="mb-8">
+             <DashboardCoachNudge
+               nextBestAction={mockNextBestAction}
+               learningRecommendations={learningRecommendations || []}
+               coachPlan={coachPlan}
+             />
+           </div>
+         )}
 
  {/* First Session Onboarding Wizard & Launcher */}
  {firstSessionState && !firstSessionState.isCompleted && (

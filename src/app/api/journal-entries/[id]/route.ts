@@ -52,10 +52,14 @@ export async function GET(
  try {
   const entry = await prisma.journalEntry.findUnique({
    where: { id: params.id },
-   include: {
-    ruleChecks: true,
-    tradePlan: true,
-   }
+    include: {
+     ruleChecks: true,
+     tradePlan: {
+      include: {
+       tradeCheckSnapshot: true
+      }
+     },
+    }
   });
 
  if (!entry) return NextResponse.json({ error: "Not found" }, { status: 404 });

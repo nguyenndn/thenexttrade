@@ -43,6 +43,8 @@ export interface IntelligenceData {
  planComplianceRate: number;
  revengeCount: number;
  bestSession: string | null;
+ netPnL: number;
+ avgHoldMinutes: number;
  };
  scoreFactors: Array<{
  name: string;
@@ -638,6 +640,7 @@ export async function getIntelligenceData(
  quickStats: {
  winRate: 0, avgRR: 0, slUsageRate: 0,
  planComplianceRate: -1, revengeCount: 0, bestSession: null,
+ netPnL: 0, avgHoldMinutes: 0,
  },
  scoreFactors: [],
  };
@@ -708,6 +711,8 @@ export async function getIntelligenceData(
  planComplianceRate: planCompliance.planComplianceRate,
  revengeCount: revenge.count,
  bestSession,
+ netPnL: stats.totalPnL ?? 0,
+ avgHoldMinutes: stats.avgHoldMinutes ?? 0,
  },
  scoreFactors,
  };

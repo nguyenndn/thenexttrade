@@ -244,6 +244,19 @@ Reporting "no schema found" based solely on `web_fetch` or `curl` leads to false
 - Important pages buried
 - Excessive footer/sidebar links
 
+### Affiliate & Outbound Links
+
+**Check for:**
+- Affiliate links have `rel="nofollow sponsored"` attributes
+- Affiliate links open in a new tab (`target="_blank"`)
+- Clear FTC / affiliate disclosure at the top of the page (before the first affiliate link)
+- Outbound links to untrusted sites have `rel="nofollow"`
+
+**Common issues:**
+- Missing affiliate disclosures
+- Missing `sponsored` attribute on affiliate links (can trigger Google penalties)
+- Disclosure hidden at the bottom of the page
+
 ### Keyword Targeting
 
 **Per Page**

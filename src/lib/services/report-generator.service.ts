@@ -317,11 +317,23 @@ async function getPsychologyStats(userId: string, accountId: string | undefined,
  ? withConfidence.reduce((sum, t) => sum + (t.confidenceLevel || 0), 0) / withConfidence.length
  : null;
 
- // Plan compliance
- const withPlan = trades.filter(t => t.followedPlan != null);
- const planCompliance = withPlan.length > 0
- ? (withPlan.filter(t => t.followedPlan === true).length / withPlan.length) * 100
- : null;
+// Plan compliance
+ const withPlanSnapshot = trades.filter(t => {
+  const snap = (t as any).tradePlan?.tradeCheckSnapshot;
+  if (!snap) return false;
+  const data = snap.snapshotData as any;
+  return data && data.skipped !== true;
+ });
+
+ let planCompliance: number | null = null;
+ if (withPlanSnapshot.length > 0) {
+  planCompliance = (withPlanSnapshot.filter(t => (t as any).tradePlan!.tradeCheckSnapshot!.passed).length / withPlanSnapshot.length) * 100;
+ } else {
+  const withLegacyPlan = trades.filter(t => t.followedPlan != null);
+  if (withLegacyPlan.length > 0) {
+   planCompliance = (withLegacyPlan.filter(t => t.followedPlan === true).length / withLegacyPlan.length) * 100;
+  }
+ }
 
  // Top emotions
  const emotionMap = new Map<string, number>();
@@ -573,3 +585,4 @@ export async function generateMonthlyReportForUser(
  const period = getMonthlyPeriod(now, timezone, current);
  return generateReport(userId, accountId, period);
 }
+

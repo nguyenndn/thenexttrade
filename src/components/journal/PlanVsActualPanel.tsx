@@ -15,6 +15,11 @@ interface PlanVsActualPanelProps {
     setupName: string | null;
     thesis: string | null;
     invalidation: string | null;
+    tradeCheckSnapshot?: {
+      snapshotData: any;
+      passed: boolean;
+      createdAt: Date | string;
+    } | null;
   };
   entry: {
     symbol: string;
@@ -247,6 +252,54 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Pre-Trade Checklist Snapshot */}
+      {plan.tradeCheckSnapshot && (
+        <div className="p-4 rounded-xl border border-dashboard bg-white dark:bg-black/10 space-y-3">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-black uppercase text-gray-400 tracking-wider flex items-center gap-1.5">
+              <CheckCircle size={14} className={plan.tradeCheckSnapshot.passed ? "text-emerald-500" : "text-amber-500"} />
+              Pre-Trade Checklist Snapshot
+            </h4>
+            <span className={cn(
+              "text-[9px] font-black uppercase px-2 py-0.5 rounded",
+              plan.tradeCheckSnapshot.snapshotData?.skipped
+                ? "bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400"
+                : plan.tradeCheckSnapshot.passed
+                  ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
+                  : "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
+            )}>
+              {plan.tradeCheckSnapshot.snapshotData?.skipped ? "SKIPPED" : (plan.tradeCheckSnapshot.passed ? "PASSED" : "FAILED")}
+            </span>
+          </div>
+
+          {!plan.tradeCheckSnapshot.snapshotData?.skipped && plan.tradeCheckSnapshot.snapshotData?.checks && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
+              {[
+                { id: 'setupSelected', label: 'Setup Selected' },
+                { id: 'riskDefined', label: 'Risk Defined' },
+                { id: 'sizeReviewed', label: 'Size Reviewed' },
+                { id: 'sessionAcceptable', label: 'Session OK' },
+                { id: 'emotionAcknowledged', label: 'Emotion OK' },
+                { id: 'rulebookAcknowledged', label: 'Rules OK' }
+              ].map(check => {
+                const isChecked = !!plan.tradeCheckSnapshot?.snapshotData.checks[check.id];
+                return (
+                  <div key={check.id} className="flex items-center gap-2 text-[10px] font-bold text-gray-600 dark:text-gray-400">
+                    <div className={cn(
+                      "w-3 h-3 rounded-sm flex items-center justify-center",
+                      isChecked ? "bg-emerald-500 text-white" : "bg-gray-200 dark:bg-white/10 text-transparent"
+                    )}>
+                      {isChecked && <CheckCircle size={8} strokeWidth={4} />}
+                    </div>
+                    {check.label}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 

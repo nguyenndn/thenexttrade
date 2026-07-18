@@ -17,7 +17,11 @@ export type SignalType =
  | "BE_HEAVY"
  | "WEAK_SYMBOL"
  | "WEAK_SESSION"
- | "RECURRING_MISTAKE";
+ | "RECURRING_MISTAKE"
+ // Edge Cases
+ | "INSUFFICIENT_DATA";
+
+import { InsightEvidence } from "@/lib/insights/types";
 
 export interface TraderSignalInput {
  signalType: SignalType;
@@ -30,4 +34,5 @@ export interface TraderSignalInput {
  actionLabel?: string;
  actionHref?: string;
  metadata?: any;
+ evidence?: InsightEvidence[];
 }

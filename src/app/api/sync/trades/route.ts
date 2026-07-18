@@ -1,3 +1,4 @@
+import { classifyTradeResult } from "@/lib/utils/trade-classification";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
@@ -161,12 +162,10 @@ export async function POST(request: NextRequest) {
  const pnl = (trade.profit || 0) + (trade.commission || 0) + (trade.swap || 0);
  const status = isClosed ? "CLOSED" : "OPEN";
 
- let result: "WIN" | "LOSS" | "BREAK_EVEN" | null = null;
- if (isClosed) {
- if (pnl > 0.01) result = "WIN";
- else if (pnl < -0.01) result = "LOSS";
- else result = "BREAK_EVEN";
- }
+ let result: any = null;
+  if (isClosed) {
+    result = classifyTradeResult({ pnl });
+  }
 
  // Check existing
  const existing = await prisma.journalEntry.findFirst({

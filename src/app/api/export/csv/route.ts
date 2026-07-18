@@ -1,162 +1,73 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import { format, parseISO, startOfYear, endOfYear } from "date-fns";
-import { utcTime } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
- try {
- const user = await getAuthUser();
- if (!user) {
- return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
- }
+  try {
+    const user = await getAuthUser();
+    
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
- const searchParams = request.nextUrl.searchParams;
- const type = searchParams.get("type") || "trades"; // trades | tax
- const startDateParam = searchParams.get("startDate");
- const endDateParam = searchParams.get("endDate");
+    const trades = await prisma.journalEntry.findMany({
+      where: { userId: user.id },
+      orderBy: { entryDate: "desc" },
+    });
 
- const now = new Date();
- const startDate = startDateParam ? parseISO(startDateParam) : startOfYear(now);
- const endDate = endDateParam ? parseISO(endDateParam) : endOfYear(now);
+    const headers = [
+      "Ticket",
+      "Symbol",
+      "Type",
+      "Open Time",
+      "Close Time",
+      "Entry Price",
+      "Exit Price",
+      "Lot Size",
+      "PnL",
+      "Setup",
+      "Mistakes",
+      "Status",
+    ];
 
- // Fetch trades
- const trades = await prisma.journalEntry.findMany({
- where: {
- userId: user.id,
- status: "CLOSED",
- entryDate: { gte: startDate, lte: endDate },
- },
- select: {
- entryDate: true,
- symbol: true,
- type: true,
- entryPrice: true,
- exitPrice: true,
- lotSize: true,
- pnl: true,
- result: true,
- strategy: true,
- stopLoss: true,
- takeProfit: true,
- notes: true,
- emotionBefore: true,
- emotionAfter: true,
- followedPlan: true,
- },
- orderBy: { entryDate: "desc" },
- });
+    const rows = trades.map((trade) => {
+      const openTime = trade.entryDate.toISOString();
+      const closeTime = trade.exitDate ? trade.exitDate.toISOString() : "";
+      const pnl = trade.pnl !== null ? trade.pnl.toFixed(2) : "";
+      const mistakes = Array.isArray(trade.mistakes) ? trade.mistakes.join(";") : "";
+      
+      return [
+        trade.externalTicket || trade.id,
+        trade.symbol,
+        trade.type,
+        openTime,
+        closeTime,
+        trade.entryPrice.toString(),
+        trade.exitPrice?.toString() || "",
+        trade.lotSize.toString(),
+        pnl,
+        trade.entryReason || "",
+        mistakes,
+        trade.status,
+      ].map(val => `"${String(val).replace(/"/g, '""')}"`).join(",");
+    });
 
- let csv = "";
- let filename = "";
+    const csvContent = [headers.join(","), ...rows].join("\n");
 
- if (type === "tax") {
- // Tax report format
- filename = `tax_report_${format(startDate, "yyyy")}.csv`;
- csv = generateTaxCSV(trades);
- } else {
- // Full trades export
- filename = `trades_${format(startDate, "yyyy-MM-dd")}_${format(endDate, "yyyy-MM-dd")}.csv`;
- csv = generateTradesCSV(trades);
- }
-
- return new NextResponse(csv, {
- status: 200,
- headers: {
- "Content-Type": "text/csv",
- "Content-Disposition": `attachment; filename="${filename}"`,
- },
- });
- } catch (error) {
- console.error("CSV export error:", error);
- return NextResponse.json(
- { error: "Failed to generate CSV" },
- { status: 500 }
- );
- }
-}
-
-function generateTradesCSV(trades: any[]): string {
- const headers = [
- "Date",
- "Symbol",
- "Type",
- "Entry Price",
- "Exit Price",
- "Size",
- "P/L",
- "Result",
- "Strategy",
- "SL",
- "TP",
- "Emotion Before",
- "Emotion After",
- "Followed Plan",
- "Notes",
- ];
-
- const rows = trades.map((t: any) => [
- utcTime(new Date(t.entryDate), "yyyy-MM-dd HH:mm"),
- t.symbol,
- t.type,
- t.entryPrice?.toString() || "",
- t.exitPrice?.toString() || "",
- t.lotSize || "",
- t.pnl?.toFixed(2) || "",
- t.result,
- t.strategy || "",
- t.stopLoss?.toString() || "",
- t.takeProfit?.toString() || "",
- t.emotionBefore || "",
- t.emotionAfter || "",
- t.followedPlan ? "Yes" : "No",
- (t.notes || "").replace(/"/g, '""'),
- ]);
-
- const csv = [
- headers.join(","),
- ...rows.map((row: any) =>
- row.map((cell: any) => `"${cell}"`).join(",")
- ),
- ].join("\n");
-
- return csv;
-}
-
-function generateTaxCSV(trades: any[]): string {
- const headers = [
- "Date",
- "Description",
- "Proceeds (Exit Price x Size)",
- "Cost Basis (Entry Price x Size)",
- "Gain/Loss",
- "Short/Long Term",
- ];
-
- const rows = trades.map((t: any) => {
- const proceeds = (t.exitPrice || 0) * (t.lotSize || 0);
- const costBasis = (t.entryPrice || 0) * (t.lotSize || 0);
-
- return [
- utcTime(new Date(t.entryDate), "yyyy-MM-dd"),
- `${t.type} ${t.symbol}`,
- proceeds.toFixed(2),
- costBasis.toFixed(2),
- t.pnl?.toFixed(2) || "0.00",
- "Short Term", // Forex is always short term
- ];
- });
-
- // Add summary row
- const totalPnL = trades.reduce((sum: number, t: any) => sum + (t.pnl || 0), 0);
- rows.push([]);
- rows.push(["", "TOTAL", "", "", totalPnL.toFixed(2), ""]);
-
- const csv = [
- headers.join(","),
- ...rows.map((row: any) =>
- row.map((cell: any) => `"${cell}"`).join(",")
- ),
- ].join("\n");
-
- return csv;
+    return new NextResponse(csvContent, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="thenexttrade-trades-${new Date().toISOString().split("T")[0]}.csv"`,
+      },
+    });
+  } catch (error) {
+    console.error("Failed to generate CSV export:", error);
+    return NextResponse.json(
+      { error: "Internal server error during CSV generation." },
+      { status: 500 }
+    );
+  }
 }

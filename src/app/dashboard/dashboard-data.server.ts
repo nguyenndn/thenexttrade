@@ -81,6 +81,7 @@ export interface DashboardPageData {
  activationState: ActivationState;
  daysSinceLastReport?: number | null;
  nextBestAction?: any;
+ coachPlan?: any;
  learningRecommendations?: any[];
  firstSessionState?: FirstSessionComputedState;
  tradingGoal?: string | null;
@@ -476,10 +477,19 @@ export async function getFullDashboardData(
  const tradingGoal = (userSettings.onboarding as any)?.tradingGoal || null;
 
  // Coach & recommendations
- const [nextBestAction, signals, firstSessionState] = await Promise.all([
- getNextBestAction(userId, tradingGoal),
- computeTraderSignals(userId, { persist: true }),
- getFirstSessionState(userId),
+ const [nextBestAction, signals, firstSessionState, activeCoachPlan] = await Promise.all([
+  getNextBestAction(userId, tradingGoal),
+  computeTraderSignals(userId, { persist: true }),
+  getFirstSessionState(userId),
+  prisma.coachActionPlan.findFirst({
+   where: { userId, status: "ACTIVE" },
+   orderBy: { createdAt: "desc" },
+   include: {
+    items: {
+     orderBy: { position: "asc" },
+    },
+   },
+  }),
  ]);
 
  const learningRecommendations = await getLearningRecommendations(userId, signals, tradingGoal);
@@ -553,6 +563,7 @@ export async function getFullDashboardData(
  ? Math.floor((new Date().getTime() - latestReport.createdAt.getTime()) / (1000 * 60 * 60 * 24))
  : null,
  nextBestAction,
+ coachPlan: activeCoachPlan,
  learningRecommendations,
  firstSessionState,
  tradingGoal,

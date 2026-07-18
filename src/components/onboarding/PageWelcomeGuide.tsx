@@ -155,7 +155,8 @@ export function PageWelcomeGuide() {
  return (
  <div
  className={cn(
- "fixed bottom-6 right-6 z-[9999] w-[360px] max-w-[calc(100vw-2rem)]",
+ // Keep page guidance below application modals so it never captures modal actions.
+ "fixed bottom-6 right-6 z-[90] w-[360px] max-w-[calc(100vw-2rem)]",
  "transition-all duration-300 ease-out",
  dismissed
  ? "opacity-0 translate-y-4 scale-95"

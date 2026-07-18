@@ -38,6 +38,7 @@ const journalEntrySchema = z.object({
   note: z.string().optional().nullable(),
  })).optional(),
  tradePlanId: z.string().optional().nullable(),
+ syncSource: z.string().optional().default("MANUAL"),
 });
 
 export async function POST(request: Request) {

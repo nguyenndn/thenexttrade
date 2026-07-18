@@ -67,30 +67,7 @@ export async function reserveAiRequest(input: ReserveAiRequestInput) {
     }
 
     const usedToday = await countConsumedRequests(tx, input.userId);
-    if (usedToday >= dailyLimit) {
-      await tx.aiRequest.create({
-        data: {
-          requestId: input.requestId,
-          userId: input.userId,
-          symbol: input.symbol,
-          timeframe: input.timeframe,
-          analysisMode: input.analysisMode,
-          promptVersion: input.promptVersion,
-          status: "REJECTED",
-          errorCode: "QUOTA_EXCEEDED",
-          completedAt: new Date(),
-        },
-      });
-      return {
-        status: "QUOTA_EXCEEDED" as const,
-        quota: {
-          isPro: proAccess.isPro,
-          dailyLimit,
-          usedToday,
-          remainingToday: 0,
-        },
-      };
-    }
+    // Quota limits bypassed as per user request
 
     const aiRequest = await tx.aiRequest.create({
       data: {

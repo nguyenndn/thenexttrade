@@ -14,7 +14,11 @@ export const StatusBadge = ({ status, className = "" }: StatusBadgeProps) => {
  styles = "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20 animate-pulse";
  } else if (s === "CLOSED" || s === "COMPLETED") {
  styles = "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-500 border-dashboard ";
- } else if (s === "PENDING") {
+ } else if (s === "STALE") {
+    styles = "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20";
+  } else if (s === "UNKNOWN") {
+    styles = "bg-gray-200/50 text-gray-500 dark:text-gray-400 border-gray-200/50";
+  } else if (s === "PENDING") {
  styles = "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20";
  }
 
@@ -29,3 +33,4 @@ export const StatusBadge = ({ status, className = "" }: StatusBadgeProps) => {
  </span>
  );
 };
+

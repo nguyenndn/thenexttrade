@@ -4,7 +4,7 @@ import { TabBar } from "@/components/ui/TabBar";
 import { FileText, Clock } from "lucide-react";
 
 import { useState, useEffect, useMemo } from "react";
-import { Edit2, ArrowUpDown, Activity } from "lucide-react";
+import { Edit2, ArrowUpDown, Activity, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { utcTime, cn } from "@/lib/utils";
@@ -474,6 +474,21 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  <EmptyStateCTAs primaryLabel={hasTradeData ? "Log a New Trade" : "Log Your First Trade"} />
 
  <style jsx>{`
+          @keyframes slow-current {
+            0%, 100% { 
+              opacity: 0.6; 
+              filter: drop-shadow(0 0 2px theme('colors.primary.DEFAULT')); 
+              color: theme('colors.primary.DEFAULT'); 
+            }
+            50% { 
+              opacity: 1; 
+              filter: drop-shadow(0 0 6px theme('colors.blue.400')) drop-shadow(0 0 12px theme('colors.blue.400')); 
+              color: theme('colors.blue.300'); 
+            }
+          }
+          .animate-current {
+            animation: slow-current 3s ease-in-out infinite;
+          }
  @keyframes journal-float {
  0%, 100% { transform: translateY(0px); }
  50% { transform: translateY(-6px); }
@@ -489,6 +504,21 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  @keyframes journal-sparkle {
  0%, 100% { opacity: 0; transform: scale(0); }
  50% { opacity: 1; transform: scale(1); }
+ }
+ @keyframes slow-current {
+ 0%, 100% { 
+ opacity: 0.6; 
+ filter: drop-shadow(0 0 2px theme('colors.primary.DEFAULT')); 
+ color: theme('colors.primary.DEFAULT'); 
+ }
+ 50% { 
+ opacity: 1; 
+ filter: drop-shadow(0 0 6px theme('colors.blue.400')) drop-shadow(0 0 12px theme('colors.blue.400')); 
+ color: theme('colors.blue.300'); 
+ }
+ }
+ .animate-current {
+ animation: slow-current 3s ease-in-out infinite;
  }
  `}</style>
  </div>
@@ -538,9 +568,9 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  setSelectedDetailEntry(entry);
  setIsDetailOpen(true);
  }}
- className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all hover:scale-110 active:scale-95 group/detail"
+ className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all group/detail"
  >
- <Activity size={14} className="transition-all duration-300 group-hover/detail:scale-110 group-hover/detail:text-primary" />
+ <Zap size={14} className="animate-current transition-all duration-300 group-hover/detail:scale-110" />
  </Button>
  </TooltipTrigger>
  <TooltipContent side="bottom" className="bg-gray-700 dark:bg-gray-800 text-white border border-gray-600/20 shadow-md font-bold">
@@ -638,7 +668,7 @@ export default function JournalList({ initialEntries, meta, initialStats, strate
  }}
  className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all"
  >
- <Activity size={14} className="transition-all duration-300 hover:scale-110 hover:text-primary" />
+ <Zap size={14} className="animate-current transition-all duration-300 hover:scale-110" />
  </Button>
  </TooltipTrigger>
  <TooltipContent side="bottom" className="bg-gray-700 dark:bg-gray-800 text-white border border-gray-600/20 shadow-md font-bold">

@@ -1,5 +1,7 @@
 import { computeTraderSignals } from "./signal-engine.server";
 
+import { InsightEvidence } from "@/lib/insights/types";
+
 export interface NextBestAction {
  id: string;
  title: string;
@@ -9,6 +11,7 @@ export interface NextBestAction {
  priority: number;
  reason: string;
  sourceSignalType?: string;
+ evidence?: InsightEvidence[];
 }
 
 const PRIORITY_ORDER: Record<string, number> = {
@@ -26,6 +29,7 @@ const PRIORITY_ORDER: Record<string, number> = {
  WEAK_SYMBOL: 12,
  WEAK_SESSION: 13,
  RECURRING_MISTAKE: 14,
+ INSUFFICIENT_DATA: 15,
 };
 
 export async function getNextBestAction(userId: string, tradingGoal?: string | null): Promise<NextBestAction> {
@@ -75,6 +79,7 @@ export async function getNextBestAction(userId: string, tradingGoal?: string | n
  ctaHref: top.actionHref || "/dashboard",
  priority: PRIORITY_ORDER[top.signalType] ?? 99,
  reason: `Generated automatically from high-priority active signal: ${top.signalType}`,
- sourceSignalType: top.signalType
+ sourceSignalType: top.signalType,
+ evidence: top.metadata?.evidence || top.evidence || [],
  };
 }

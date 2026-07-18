@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/Dialog";
 import { LearningRecommendation } from "@/lib/coach/lesson-recommendations.server";
 
+import { InsightEvidence } from "@/lib/insights/types";
+
 interface DashboardCoachNudgeProps {
  nextBestAction: {
  id: string;
@@ -36,14 +38,16 @@ interface DashboardCoachNudgeProps {
  ctaHref: string;
  priority: number;
  sourceSignalType?: string;
+ evidence?: InsightEvidence[];
  };
  learningRecommendations: LearningRecommendation[];
+ coachPlan?: any;
  open?: boolean;
  onOpenChange?: (open: boolean) => void;
  hideTrigger?: boolean;
 }
 
-export function DashboardCoachNudge({ nextBestAction, learningRecommendations, open, onOpenChange, hideTrigger }: DashboardCoachNudgeProps) {
+export function DashboardCoachNudge({ nextBestAction, learningRecommendations, coachPlan, open, onOpenChange, hideTrigger }: DashboardCoachNudgeProps) {
  const [internalIsOpen, setInternalIsOpen] = useState(false);
 
  const isOpen = open !== undefined ? open : internalIsOpen;
@@ -142,6 +146,35 @@ export function DashboardCoachNudge({ nextBestAction, learningRecommendations, o
  </div>
  </div>
 
+ {/* Evidence Section */}
+ {nextBestAction.evidence && nextBestAction.evidence.length > 0 && (
+    <div className="w-full mt-3 border-t border-amber-500/10 dark:border-gold/10 pt-3 space-y-2">
+      <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-600/70 dark:text-gold/70">
+        Data Evidence
+      </h4>
+      <div className="space-y-2">
+        {nextBestAction.evidence.map((ev, i) => (
+          <div key={i} className="flex items-center justify-between text-xs p-2.5 bg-white/50 dark:bg-black/20 rounded-lg border border-amber-500/10 dark:border-gold/10">
+            <div className="flex flex-col">
+              <span className="font-bold text-gray-700 dark:text-gray-300">{ev.label}</span>
+              {ev.description && <span className="text-gray-500 text-[10px] mt-0.5">{ev.description}</span>}
+            </div>
+            <div className="text-right flex flex-col items-end shrink-0 pl-2">
+              {ev.count !== undefined && (
+                <span className="font-bold text-amber-600 dark:text-gold">
+                  {ev.count}{ev.kind === "METRIC" && ev.sampleSize === undefined ? "%" : ""} {ev.kind !== "METRIC" && ev.sampleSize === undefined ? "times" : ""}
+                </span>
+              )}
+              {ev.sampleSize !== undefined && (
+                <span className="text-[9px] text-gray-400 mt-0.5">out of {ev.sampleSize}</span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
  <div className="flex justify-end pt-1 w-full">
  <Link href={nextBestAction.ctaHref} onClick={() => setIsOpen(false)}>
  <Button className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-extrabold text-xs h-9 px-4 rounded-lg shadow-sm shadow-amber-500/15 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group">
@@ -151,6 +184,45 @@ export function DashboardCoachNudge({ nextBestAction, learningRecommendations, o
  </Link>
  </div>
  </div>
+
+  {/* AI Generated Weekly Insights */}
+  {coachPlan && (coachPlan.keepDoing?.length > 0 || coachPlan.fixNext?.length > 0) && (
+    <div className="w-full space-y-4 border-t border-dashboard pt-4">
+      <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">
+        AI Weekly Insights
+      </h4>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+        {coachPlan.keepDoing?.length > 0 && (
+          <div className="space-y-2 p-3 bg-emerald-500/[0.03] border border-emerald-500/20 rounded-xl">
+            <h5 className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+              <UserCheck size={14} /> What's Working
+            </h5>
+            <ul className="space-y-1.5">
+              {(Array.isArray(coachPlan.keepDoing) ? coachPlan.keepDoing : [coachPlan.keepDoing]).filter(Boolean).map((item: string, i: number) => (
+                <li key={i} className="text-xs text-gray-600 dark:text-gray-300 flex items-start gap-1.5">
+                  <span className="text-emerald-500 font-bold mt-px">•</span> {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {coachPlan.fixNext?.length > 0 && (
+          <div className="space-y-2 p-3 bg-red-500/[0.03] border border-red-500/20 rounded-xl">
+            <h5 className="text-xs font-bold text-red-700 dark:text-red-400 flex items-center gap-1.5">
+              <AlertTriangle size={14} /> Needs Fix
+            </h5>
+            <ul className="space-y-1.5">
+              {(Array.isArray(coachPlan.fixNext) ? coachPlan.fixNext : [coachPlan.fixNext]).filter(Boolean).map((item: string, i: number) => (
+                <li key={i} className="text-xs text-gray-600 dark:text-gray-300 flex items-start gap-1.5">
+                  <span className="text-red-500 font-bold mt-px">•</span> {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  )}
 
  {/* Mixed Lesson & Article Recommendations */}
  {learningRecommendations && learningRecommendations.length > 0 && (

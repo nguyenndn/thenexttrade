@@ -414,10 +414,19 @@ export default function JournalForm({ initialData, isEditMode = false, onSuccess
       )}
 
       {isSynced && (
-        <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-100 dark:border-blue-500/20 text-sm font-medium">
-          <AlertCircle size={16} />
-          This trade was synced from MT5. Core data is locked. You can edit notes and psychology.
-        </div>
+        <>
+          <div className="hidden md:flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-100 dark:border-blue-500/20 text-sm font-medium">
+            <AlertCircle size={16} className="shrink-0" />
+            This trade was synced from MT5. Core data is locked. You can edit notes and psychology.
+          </div>
+          <div className="md:hidden flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-100 dark:border-blue-500/20 text-sm font-medium">
+            <AlertCircle size={16} className="shrink-0 mt-0.5" />
+            <div className="flex flex-col gap-1">
+              <span className="font-bold">Synced from MT5</span>
+              <span className="font-normal opacity-90 text-xs">For detailed strategy and chart tracking, import your trades from a desktop browser. You can still quick-review your psychology here.</span>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Guided Journal Template Selector */}

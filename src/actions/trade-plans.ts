@@ -20,6 +20,8 @@ const tradePlanSchema = z.object({
   confidenceLevel: z.number().int().min(1).max(5).nullable().optional(),
   ruleChecklist: z.any().optional(),
   accountId: z.string().nullable().optional(),
+  snapshotData: z.any().optional(),
+  snapshotPassed: z.boolean().optional(),
 });
 
 export async function getTradePlans() {
@@ -62,7 +64,20 @@ export async function createTradePlan(data: z.infer<typeof tradePlanSchema>) {
         ruleChecklist: parsed.data.ruleChecklist || null,
         accountId: parsed.data.accountId || null,
         status: "PLANNED",
+        ...(parsed.data.snapshotData && {
+          tradeCheckSnapshot: {
+            create: {
+              userId: user.id,
+              snapshotData: parsed.data.snapshotData,
+              passed: parsed.data.snapshotPassed || false,
+              accountId: parsed.data.accountId || null,
+            }
+          }
+        })
       },
+      include: {
+        tradeCheckSnapshot: true
+      }
     });
 
     revalidatePath("/dashboard/journal");

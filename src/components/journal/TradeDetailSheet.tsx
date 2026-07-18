@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { utcTime } from "@/lib/utils"
 import { ShareTradeModal } from "./ShareTradeModal"
 import { Share2, ArrowLeft, ArrowRight, TrendingUp, TrendingDown, Clock, DollarSign, Tag, Brain, BarChart3, MessageSquare, X, Medal, Target, ShieldAlert, Scale } from "lucide-react"
@@ -55,6 +55,19 @@ interface TradeDetailSheetProps {
 
 export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNext, onPrev, hasNext, hasPrev }: TradeDetailSheetProps) {
  const [showShareModal, setShowShareModal] = useState(false);
+ const [activeCoachPlan, setActiveCoachPlan] = useState<any>(null);
+
+ useEffect(() => {
+ if (isOpen && entry) {
+ import("@/actions/ai-coach").then(({ getActiveCoachPlan }) => {
+ getActiveCoachPlan().then((res) => {
+ if (res && res.success && res.data) {
+ setActiveCoachPlan(res.data);
+ }
+ });
+ });
+ }
+ }, [isOpen, entry?.id]);
 
  if (!entry) return null;
 
@@ -201,9 +214,55 @@ export function TradeDetailSheet({ entry, strategies = [], isOpen, onClose, onNe
   Plan vs Actual
   </TabsTrigger>
  )}
+  <TabsTrigger
+  value="ai-insights"
+  className="rounded-lg px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 border whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:border-dashboard dark:data-[state=active]:border-white/10 text-gray-600 dark:text-gray-300 border-transparent"
+  >
+  <Brain size={16} />
+  AI Insights
+  </TabsTrigger>
  </TabsList>
 
- <TabsContent value="metrics" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+  <TabsContent value="ai-insights" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
+  {activeCoachPlan ? (
+  <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-6 shadow-xl pt-2">
+  <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4 flex items-center gap-2">
+  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+  Trader's Current Focus
+  </h3>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {(activeCoachPlan.keepDoing?.length ?? 0) > 0 && (
+  <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+  <h4 className="text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-3 flex items-center gap-2">
+  What's Working
+  </h4>
+  <p className="text-sm text-gray-600 dark:text-gray-300">
+  {activeCoachPlan.keepDoing}
+  </p>
+  </div>
+  )}
+  {(activeCoachPlan.fixNext?.length ?? 0) > 0 && (
+  <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
+  <h4 className="text-sm font-bold text-red-700 dark:text-red-400 mb-3 flex items-center gap-2">
+  Needs Fix
+  </h4>
+  <p className="text-sm text-gray-600 dark:text-gray-300">
+  {activeCoachPlan.fixNext}
+  </p>
+  </div>
+  )}
+  </div>
+  </div>
+  ) : (
+  <div className="p-8 text-center text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl">
+  <Brain size={48} className="mx-auto mb-4 opacity-20 text-gray-400" />
+  <p className="font-bold text-gray-600 dark:text-gray-300">No AI Insights Available</p>
+  <p className="text-sm mt-2">Log more trades and generate a Weekly Review to unlock personalized AI coaching.</p>
+  </div>
+  )}
+  </TabsContent>
+
+  <TabsContent value="metrics" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  {/* Unified Performance Card - Premium Grid Layout */}
  <div className="space-y-6 pt-2">
  <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-6 flex items-center gap-2 pl-2">

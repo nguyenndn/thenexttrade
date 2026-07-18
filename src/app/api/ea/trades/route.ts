@@ -1,3 +1,4 @@
+import { classifyTradeResult } from "@/lib/utils/trade-classification";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { parseEATrade } from "@/lib/ea/utils";
@@ -145,7 +146,7 @@ export async function POST(request: NextRequest) {
  commission: trade.commission,
  swap: trade.swap,
  status: "CLOSED" as const,
- result: trade.profit > 0 ? ("WIN" as const) : trade.profit < 0 ? ("LOSS" as const) : ("BREAK_EVEN" as const),
+ result: classifyTradeResult({ pnl: trade.profit }),
  externalTicket: trade.ticket,
  syncSource: "EA_SYNC",
  syncedAt: new Date(),

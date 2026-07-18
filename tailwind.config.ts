@@ -65,12 +65,49 @@ const config: Config = {
 						transform: 'translate(30px, 50px)',
 						opacity: '0'
 					}
+				},
+				'electric-zap': {
+					'0%, 100%': { opacity: '0.6', filter: 'drop-shadow(0 0 2px rgba(234,179,8,0.3))', transform: 'scale(1)' },
+					'50%': { opacity: '1', filter: 'drop-shadow(0 0 12px rgba(234,179,8,1))', transform: 'scale(1.05)' },
+				},
+				'electric-slow-blink': {
+					'0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%': {
+						opacity: '0.92',
+						filter: 'drop-shadow(0 0 2px rgba(234,179,8,0.45))',
+					},
+					'20%, 21.999%, 63%, 63.999%, 65%, 69.999%': {
+						opacity: '0.38',
+						filter: 'drop-shadow(0 0 0 rgba(234,179,8,0))',
+					},
+				},
+				'electric-flow': {
+					'0%': {
+						strokeDasharray: '2 42',
+						strokeDashoffset: '44',
+						opacity: '0.72',
+						filter: 'drop-shadow(0 0 1px rgba(234,179,8,0.35))',
+					},
+					'45%': {
+						strokeDasharray: '16 28',
+						strokeDashoffset: '0',
+						opacity: '1',
+						filter: 'drop-shadow(0 0 5px rgba(234,179,8,0.75))',
+					},
+					'100%': {
+						strokeDasharray: '2 42',
+						strokeDashoffset: '-44',
+						opacity: '0.72',
+						filter: 'drop-shadow(0 0 1px rgba(234,179,8,0.35))',
+					},
 				}
 			},
 			animation: {
 				'firefly-1': 'firefly-1 10s infinite',
 				'firefly-2': 'firefly-2 15s infinite',
-				'firefly-3': 'firefly-3 12s infinite'
+				'firefly-3': 'firefly-3 12s infinite',
+				'electric': 'electric-zap 8s ease-in-out infinite',
+				'electric-flow': 'electric-flow 9s ease-in-out infinite',
+				'electric-slow-blink': 'electric-slow-blink 8s ease-in-out infinite',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

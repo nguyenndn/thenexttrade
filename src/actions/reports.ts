@@ -25,7 +25,12 @@ export async function getReports(type: ReportType, page = 1, limit = 10) {
  // Fetch corresponding coach plans
  const reportIds = reports.map(r => `plan-${r.id}`);
  const plans = await prisma.coachActionPlan.findMany({
- where: { id: { in: reportIds } }
+ where: { id: { in: reportIds } },
+ include: {
+  items: {
+   orderBy: { position: "asc" },
+  },
+ },
  });
  
  const planMap = new Map(plans.map(p => [p.id, p]));

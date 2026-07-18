@@ -24,6 +24,9 @@ const journalSchema = z.object({
  mistakes: z.array(z.string()).optional(), // JSON in DB
  accountId: z.string().min(1),
  strategy: z.string().optional(), // String field
+ thesis: z.string().optional().nullable(),
+ invalidation: z.string().optional().nullable(),
+ postTradeLesson: z.string().optional().nullable(),
 });
 
 export async function getJournalEntries(
@@ -97,7 +100,11 @@ export async function getJournalEntries(
  orderBy,
  include: {
  account: { select: { name: true, color: true, accountType: true, timezone: true } },
- tradePlan: true,
+ tradePlan: {
+   include: {
+     tradeCheckSnapshot: true
+   }
+ },
  ruleChecks: {
   include: {
    tradingRule: true

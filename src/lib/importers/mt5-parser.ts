@@ -1,5 +1,6 @@
 import { ParsedTrade, ParseResult, TradeParser, ParseError } from "./types";
 import { parse as parseHTML } from "node-html-parser";
+import { classifyTradeResult } from "../utils/trade-classification";
 
 export class MT5Parser implements TradeParser {
  name = "MetaTrader 5";
@@ -134,12 +135,12 @@ export class MT5Parser implements TradeParser {
  const exitDate = isClosed ? entryDate : undefined; // Fallback if no exit time found
 
  const pnl = profit + commission + swap;
- let result: "WIN" | "LOSS" | "BREAKEVEN" | undefined;
+ let result: "WIN" | "LOSS" | "BREAK_EVEN" | "BE_PLUS" | undefined;
 
  if (isClosed) {
  if (pnl > 0) result = "WIN";
  else if (pnl < 0) result = "LOSS";
- else result = "BREAKEVEN";
+ else result = "BREAK_EVEN";
  }
 
  return {
@@ -173,3 +174,5 @@ export class MT5Parser implements TradeParser {
  return date;
  }
 }
+
+

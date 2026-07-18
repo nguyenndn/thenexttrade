@@ -2,15 +2,8 @@
 
 import {
  AlertTriangle,
- TrendingDown,
  TrendingUp,
- BarChart3,
- Frown,
- Clock,
- Calendar,
- ClipboardCheck,
  ClipboardX as ClipboardXIcon,
- Shield,
  ShieldOff,
  Brain,
  ChevronRight,
@@ -35,20 +28,11 @@ import {
  AreaChart,
  ReferenceLine,
 } from "recharts";
-import type { IntelligenceData, Insight, InsightSeverity, ScoreHistoryPoint } from "@/lib/smart-analytics";
+import type { IntelligenceData, ScoreHistoryPoint } from "@/lib/smart-analytics";
 import { format, parseISO } from "date-fns";
 import { BehavioralRadarChart } from "./BehavioralRadarChart";
 import { DeepSeekCoachCard } from "./DeepSeekCoachCard";
 import { BiasProfileWidget } from "@/components/dashboard/BiasProfileWidget";
-
-// ============================================================================
-// ICON MAP
-// ============================================================================
-const iconMap: Record<string, React.ElementType> = {
- AlertTriangle, TrendingDown, BarChart3, Frown,
- Clock, Calendar, ClipboardCheck,
- ClipboardX: ClipboardXIcon, Shield, ShieldOff,
-};
 
 // ============================================================================
 // PERIOD COMPARISON BANNER
@@ -487,7 +471,6 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 function AIRecommendation({ data }: { data: IntelligenceData }) {
  const score = data.tradeScore.score;
  const { winRate, avgRR } = data.quickStats;
- const issueCount = data.issues.length;
  const strengthCount = data.strengths.length;
 
  // Dynamic score assessment
@@ -589,65 +572,6 @@ function AIRecommendation({ data }: { data: IntelligenceData }) {
 }
 
 // ============================================================================
-// INSIGHT CARD
-// ============================================================================
-function InsightCard({ insight }: { insight: Insight }) {
- const Icon = iconMap[insight.icon] || AlertTriangle;
-
- const severityStyles: Record<InsightSeverity, { border: string; iconBg: string; iconColor: string; badge: string; barColor: string }> = {
- critical: {
- border: "border-red-200 dark:border-red-500/20",
- iconBg: "bg-red-500/10", iconColor: "text-red-500",
- badge: "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400",
- barColor: "bg-red-500",
- },
- warning: {
- border: "border-yellow-200 dark:border-yellow-500/20",
- iconBg: "bg-yellow-500/10", iconColor: "text-yellow-500",
- badge: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400",
- barColor: "bg-yellow-500",
- },
- strength: {
- border: "border-emerald-200 dark:border-emerald-500/20",
- iconBg: "bg-emerald-500/10", iconColor: "text-emerald-500",
- badge: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
- barColor: "bg-emerald-500",
- },
- };
-
- const s = severityStyles[insight.severity];
- const severityLabel: Record<InsightSeverity, string> = { critical: "Critical", warning: "Warning", strength: "Strength" };
-
- return (
- <div className={`bg-white dark:bg-[#1E2028] rounded-xl border ${s.border} shadow-sm hover:shadow-md transition-all group`}>
- <div className={`h-0.5 ${s.barColor} rounded-t-xl`} />
- <div className="px-4 py-3">
- <div className="flex items-start gap-3">
- <div className={`p-2 rounded-lg ${s.iconBg} shrink-0 mt-0.5`}>
- <Icon size={16} className={s.iconColor} />
- </div>
- <div className="flex-1 min-w-0">
- <div className="flex items-center gap-2">
- <h3 className="font-bold text-gray-700 dark:text-white text-[13px]">{insight.title}</h3>
- <span className={`px-1.5 py-px rounded-full text-[9px] font-bold uppercase ${s.badge}`}>{severityLabel[insight.severity]}</span>
- </div>
- <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed line-clamp-2">{insight.description}</p>
- <div className="flex items-center justify-between mt-1.5">
- <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{insight.metric}</span>
- {insight.filterUrl && (
- <Link href={insight.filterUrl} className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
- View Trades <ChevronRight size={11} />
- </Link>
- )}
- </div>
- </div>
- </div>
- </div>
- </div>
- );
-}
-
-// ============================================================================
 // EMPTY STATE
 // ============================================================================
 function EmptyState({ totalTrades }: { totalTrades: number }) {
@@ -718,6 +642,8 @@ export function IntelligenceDashboard({
  data,
  previousData,
  scoreHistory,
+ accountId,
+ timezone,
  dateFrom,
  dateTo,
  prevDateFrom,
@@ -726,6 +652,8 @@ export function IntelligenceDashboard({
  data: IntelligenceData;
  previousData?: IntelligenceData | null;
  scoreHistory?: ScoreHistoryPoint[];
+ accountId?: string;
+ timezone?: string;
  dateFrom?: string;
  dateTo?: string;
  prevDateFrom?: string;
@@ -768,44 +696,23 @@ export function IntelligenceDashboard({
  {/* DeepSeek AI Coach */}
  <div className="mb-6">
  <DeepSeekCoachCard
- accountId={previousData ? undefined : undefined} // Not explicitly required, but we can pass date/timezone if needed later
+ accountId={accountId}
+ timezone={timezone}
+ dateFrom={dateFrom}
+ dateTo={dateTo}
  />
  </div>
 
  {/* AI Recommendation — top priority, full width */}
  <AIRecommendation data={data} />
 
- {/* Insights Grid — Issues + Strengths (moved up for visibility) */}
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
- {data.issues.length > 0 && (
- <div className={data.strengths.length === 0 ? "lg:col-span-2" : ""}>
- <div className="flex items-center gap-2 mb-3">
- <AlertTriangle size={16} className="text-red-500" />
- <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Issues Detected ({data.issues.length})</h3>
- </div>
- <div className="space-y-3">
- {data.issues.map((insight) => <InsightCard key={insight.id} insight={insight} />)}
- </div>
- </div>
- )}
- {data.strengths.length > 0 && (
- <div className={data.issues.length === 0 ? "lg:col-span-2" : ""}>
- <div className="flex items-center gap-2 mb-3">
- <Sparkles size={16} className="text-emerald-500" />
- <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Your Strengths ({data.strengths.length})</h3>
- </div>
- <div className="space-y-3">
- {data.strengths.map((insight) => <InsightCard key={insight.id} insight={insight} />)}
- </div>
- </div>
- )}
+ {/* Insights Grid — Issues + Strengths removed to avoid duplication with EdgeLeakDetector */}
  {data.issues.length === 0 && data.strengths.length === 0 && (
- <div className="lg:col-span-2 bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-dashboard shadow-sm text-center">
+ <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-dashboard shadow-sm text-center">
  <Sparkles size={24} className="text-primary mx-auto mb-3" />
  <p className="text-gray-600 dark:text-gray-300">No significant patterns detected yet.</p>
  </div>
  )}
- </div>
 
  {/* Period Comparison — only when previous data available */}
  {previousData && previousData.hasEnoughData && (

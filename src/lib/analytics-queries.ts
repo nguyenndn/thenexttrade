@@ -103,14 +103,15 @@ export async function getKeyStats(userId: string, accountId?: string, startDate?
   SELECT 
   COUNT(*) as "totalTrades",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "totalPnL",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "wins",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "losses",
+  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins",
+  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "losses",
   SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
   SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN ABS(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossLoss",
   SUM(COALESCE("commission", 0)) as "commission",
   SUM(COALESCE("swap", 0)) as "swap",
   MAX(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "maxWin",
-  MIN(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "maxLoss"
+  MIN(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "maxLoss",
+  AVG(EXTRACT(EPOCH FROM ("exitDate" - "entryDate"))/60) as "avgHoldMinutes"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
@@ -141,7 +142,8 @@ export async function getKeyStats(userId: string, accountId?: string, startDate?
   commission: Number(stats.commission || 0),
   swap: Number(stats.swap || 0),
   maxWin: Number(stats.maxWin || 0),
-  maxLoss: Number(stats.maxLoss || 0)
+  maxLoss: Number(stats.maxLoss || 0),
+  avgHoldMinutes: Number(stats.avgHoldMinutes || 0)
   };
 }
 
@@ -184,8 +186,8 @@ export async function getDailyPerformance(userId: string, accountId?: string, st
   TO_CHAR("exitDate" AT TIME ZONE ${tz}, 'YYYY-MM-DD') as "date",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "profit",
   COUNT(*) as "tradeCount",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount"
+  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
+  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
@@ -253,8 +255,8 @@ export async function getSymbolPerformance(userId: string, accountId?: string, s
   COUNT(*) as "tradeCount",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
   SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount"
+  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
+  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
@@ -384,8 +386,8 @@ export async function getDayOfWeekPerformance(userId: string, accountId?: string
   EXTRACT(DOW FROM "exitDate" AT TIME ZONE ${tz}) as "dayIndex",
   COUNT(*) as "tradeCount",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount"
+  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
+  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
@@ -467,8 +469,8 @@ export async function getSessionPerformance(userId: string, accountId?: string, 
   END as "session",
   COUNT(*) as "tradeCount",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount"
+  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
+  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'

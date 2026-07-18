@@ -3,6 +3,7 @@ import { TraderSignalInput } from "./signal-types";
 import { getMistakeByCode } from "@/lib/mistakes";
 import { subDays } from "date-fns";
 import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
+import { classifyTradeOutcome, isConfirmedStopLossExit } from "@/lib/journal/trade-outcomes";
 
 export async function computeTraderSignals(
  userId: string,
@@ -103,7 +104,31 @@ export async function computeTraderSignals(
  });
  }
  
- // 5. NO_WEEKLY_REVIEW
+ // 5. INSUFFICIENT_DATA
+ if (countAccounts > 0 && trades.length > 0 && trades.length < 5) {
+ signals.push({
+ signalType: "INSUFFICIENT_DATA",
+ severity: "INFO",
+ title: "Need more data for analysis",
+ summary: `You have logged ${trades.length} trades. We need at least 5 trades to unlock AI weakness detection and edge analysis.`,
+ actionLabel: "Log More Trades",
+ actionHref: "/dashboard/journal",
+ metadata: {
+    evidence: [
+      {
+        id: `insuf-${Date.now()}`,
+        kind: "METRIC",
+        label: "Trades Logged",
+        description: "Number of trades currently available for AI analysis.",
+        count: trades.length,
+        sampleSize: 5
+      }
+    ]
+ }
+ });
+ }
+
+ // 6. NO_WEEKLY_REVIEW
  const weeklyReviewEligibility = await getWeeklyReviewEligibility({ userId });
  const showFirstWeeklyReview = weeklyReviewEligibility.ready && weeklyReviewEligibility.isFirstWeeklyReview;
  if (showFirstWeeklyReview) {
@@ -140,10 +165,11 @@ export async function computeTraderSignals(
  let consecutiveLosses = 0;
  let maxStreak = 0;
  for (const t of chronologicalTrades) {
- if (t.pnl && t.pnl < 0) {
+ const outcome = classifyTradeOutcome(t);
+ if (outcome === "LOSS") {
  consecutiveLosses++;
  maxStreak = Math.max(maxStreak, consecutiveLosses);
- } else if (t.pnl && t.pnl > 0) {
+ } else if (outcome === "WIN" || outcome === "BREAK_EVEN") {
  consecutiveLosses = 0;
  }
  }
@@ -155,14 +181,25 @@ export async function computeTraderSignals(
  summary: `You recently hit a streak of ${maxStreak} consecutive losses. Focus on cooling down and resetting emotional bias.`,
  actionLabel: "Review Loss Streak Lesson",
  actionHref: "/dashboard/academy",
- metadata: { maxStreak }
+ metadata: { 
+   maxStreak,
+   evidence: [
+     {
+       id: `streak-${Date.now()}`,
+       kind: "TRADE_SET",
+       label: "Consecutive Losses",
+       description: "Number of losing trades in a row without a win.",
+       count: maxStreak,
+     }
+   ]
+ }
  });
  }
  
  // 8. SL_CLUSTER (3+ losses in same day)
  const lossesByDay: Record<string, number> = {};
  for (const t of trades) {
- if (t.pnl && t.pnl < 0) {
+ if (isConfirmedStopLossExit(t)) {
  const dayStr = new Date(t.entryDate).toISOString().split("T")[0];
  lossesByDay[dayStr] = (lossesByDay[dayStr] || 0) + 1;
  }
@@ -175,7 +212,19 @@ export async function computeTraderSignals(
  title: "Frequent Stop-Loss Clustered Exits",
  summary: `You had up to ${maxLossesInDay} stop-loss triggers within a single trading session/day. Consider reducing size or taking a step back on heavy volatility days.`,
  actionLabel: "Study SL Placement",
- actionHref: "/dashboard/academy"
+ actionHref: "/dashboard/academy",
+ metadata: {
+   maxLossesInDay,
+   evidence: [
+     {
+       id: `sl-cluster-${Date.now()}`,
+       kind: "TRADE_SET",
+       label: "Clustered Stops",
+       description: "Maximum number of stop-loss hits in a single day.",
+       count: maxLossesInDay,
+     }
+   ]
+ }
  });
  }
  
@@ -184,7 +233,7 @@ export async function computeTraderSignals(
  for (let i = 0; i < chronologicalTrades.length - 1; i++) {
  const current = chronologicalTrades[i];
  const next = chronologicalTrades[i + 1];
- if (current.pnl && current.pnl < 0) {
+ if (classifyTradeOutcome(current) === "LOSS") {
  const timeDiff = next.entryDate.getTime() - (current.exitDate || current.entryDate).getTime();
  const oneDayMs = 24 * 60 * 60 * 1000;
  if (timeDiff > 0 && timeDiff <= oneDayMs && next.lotSize >= current.lotSize * 1.5) {
@@ -200,7 +249,17 @@ export async function computeTraderSignals(
  title: "Revenge Size-Up Pattern Detected",
  summary: "Your data shows you significantly increased lot size shortly after a losing trade. This is a common revenge-trading trap.",
  actionLabel: "Review Psychology Lesson",
- actionHref: "/dashboard/academy"
+ actionHref: "/dashboard/academy",
+ metadata: {
+   evidence: [
+     {
+       id: `revenge-${Date.now()}`,
+       kind: "PSYCHOLOGY",
+       label: "Lot Size Increased",
+       description: "You sized up significantly (>1.5x) immediately following a loss.",
+     }
+   ]
+ }
  });
  }
  
@@ -216,14 +275,26 @@ export async function computeTraderSignals(
  title: `Low Plan Compliance (${Math.round(ratio * 100)}%)`,
  summary: `You marked ${nonCompliant} out of ${reviewedTrades.length} reviewed trades as 'Did Not Follow Plan'. Discipline is your primary edge.`,
  actionLabel: "Build Trading Plan",
- actionHref: "/dashboard/academy"
+ actionHref: "/dashboard/academy",
+ metadata: {
+   ratio,
+   evidence: [
+     {
+       id: `compliance-${Date.now()}`,
+       kind: "RULE",
+       label: "Trades NOT following plan",
+       count: nonCompliant,
+       sampleSize: reviewedTrades.length,
+     }
+   ]
+ }
  });
  }
  }
  
  // 11. BE_HEAVY (>40% break-even exits in last 15 trades)
  const last15 = trades.slice(0, 15);
- const breakEvens = last15.filter(t => t.pnl !== null && Math.abs(t.pnl) <= 5.0 && t.pnl !== 0).length;
+ const breakEvens = last15.filter(t => classifyTradeOutcome(t) === "BREAK_EVEN").length;
  const beRatio = breakEvens / last15.length;
  if (beRatio > 0.40) {
  signals.push({
@@ -232,7 +303,20 @@ export async function computeTraderSignals(
  title: `Heavy Break-Even Exits (${Math.round(beRatio * 100)}%)`,
  summary: `Over 40% of your recent exits resulted in near break-even. Review whether you are moving stop-loss to entry too defensively.`,
  actionLabel: "Study Exit Management",
- actionHref: "/dashboard/academy"
+ actionHref: "/dashboard/academy",
+ metadata: {
+   beRatio,
+   evidence: [
+     {
+       id: `be-${Date.now()}`,
+       kind: "TRADE_SET",
+       label: "Break-Even Trades",
+       description: "Trades exited with near $0 profit/loss out of the last 15.",
+       count: breakEvens,
+       sampleSize: last15.length,
+     }
+   ]
+ }
  });
  }
  
@@ -255,7 +339,19 @@ export async function computeTraderSignals(
  title: `Underperforming Asset: ${weakSymbol[0]}`,
  summary: `You have negative net P/L ($${Math.round(Math.abs(weakSymbol[1].pnl))}) across ${weakSymbol[1].count} trades on ${weakSymbol[0]}. Consider pausing to study its price behavior.`,
  actionLabel: "Review Symbol Analytics",
- actionHref: "/dashboard/journal"
+ actionHref: "/dashboard/journal",
+ metadata: {
+   symbol: weakSymbol[0],
+   evidence: [
+     {
+       id: `weak-sym-${Date.now()}`,
+       kind: "METRIC",
+       label: `Net Loss on ${weakSymbol[0]}`,
+       description: `Total loss amount across ${weakSymbol[1].count} trades.`,
+       count: Math.round(weakSymbol[1].pnl),
+     }
+   ]
+ }
  });
  }
  
@@ -278,7 +374,19 @@ export async function computeTraderSignals(
  title: `Weak Trading Session: ${weakSession[0]}`,
  summary: `Your results are weakest during the ${weakSession[0]} session. Restricting activity to your high-win session could instantly boost edge.`,
  actionLabel: "Analyze Sessions",
- actionHref: "/dashboard/reports"
+ actionHref: "/dashboard/reports",
+ metadata: {
+   session: weakSession[0],
+   evidence: [
+     {
+       id: `weak-sess-${Date.now()}`,
+       kind: "SESSION",
+       label: `Net Loss in ${weakSession[0]}`,
+       description: `Total loss amount across ${weakSession[1].count} trades in this session.`,
+       count: Math.round(weakSession[1].pnl),
+     }
+   ]
+ }
  });
  }
  
@@ -303,7 +411,18 @@ export async function computeTraderSignals(
  summary: `You logged the mistake "${details?.name || topMistake[0]}" ${topMistake[1]} times in recent trades. Address this leak immediately.`,
  actionLabel: "Target Mistake Lesson",
  actionHref: "/dashboard/academy",
- metadata: { mistakeCode: topMistake[0] }
+ metadata: { 
+   mistakeCode: topMistake[0],
+   evidence: [
+     {
+       id: `mistake-${Date.now()}`,
+       kind: "PSYCHOLOGY",
+       label: `Logged: ${details?.name || topMistake[0]}`,
+       description: "Number of recent trades tagged with this specific mistake.",
+       count: topMistake[1],
+     }
+   ]
+ }
  });
  }
  }

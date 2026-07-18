@@ -1,3 +1,4 @@
+import { classifyTradeResult } from "@/lib/utils/trade-classification";
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
@@ -105,7 +106,7 @@ export async function POST(request: NextRequest) {
  stopLoss: trade.stopLoss,
  takeProfit: trade.takeProfit,
  status: "CLOSED",
- result: trade.profit > 0 ? "WIN" : trade.profit < 0 ? "LOSS" : "BREAK_EVEN",
+ result: classifyTradeResult({ pnl: trade.profit }),
  externalTicket: trade.ticket,
  syncSource: "EA_HISTORY",
  syncedAt: new Date(),

@@ -19,6 +19,7 @@ import {
 import { ReportPreview } from "./ReportPreview";
 import { ReportView } from "./ReportView";
 import { GenerateReportButton } from "./GenerateReportButton";
+import { DraggablePreviewTable } from "./DraggablePreviewTable";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import type { GenerateReportResult } from "./report-generate-types";
@@ -27,7 +28,7 @@ interface ReportType {
  id: string;
  name: string;
  description: string;
- format: "pdf" | "csv" | "auto";
+ format: "pdf" | "csv" | "auto" | "json";
  icon: any;
 }
 
@@ -116,7 +117,7 @@ export function ReportsDashboard() {
  const [lastGenerateResult, setLastGenerateResult] = useState<GenerateReportResult | null>(null);
 
  const isReviewType = selectedType === "weekly-review" || selectedType === "monthly-review";
- const isExportType = selectedType === "monthly" || selectedType === "trades" || selectedType === "tax";
+ const isExportType = selectedType === "monthly" || selectedType === "trades" || selectedType === "tax" || selectedType === "backup";
 
  // Auto-load weekly review on mount
  useEffect(() => {
@@ -266,51 +267,53 @@ export function ReportsDashboard() {
  const isSelected = selectedType === report.id;
 
  return (
- <Button
- variant="ghost"
- key={report.id}
- onClick={() => handleSelectType(report.id)}
- className={`
- relative text-left p-3 sm:p-5 h-auto rounded-xl border-2 transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal
- ${isSelected
- ? "border-primary bg-primary/5 shadow-md shadow-primary/10 hover:bg-primary/5"
- : "border-dashboard bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-md transition-shadow"
- }
- `}
- >
- <div className="flex items-start justify-between mb-2 sm:mb-4 w-full">
- <div
- className={`
- p-2 sm:p-3 rounded-xl transition-all duration-300 shadow-sm
- ${isSelected
- ? "bg-primary text-white shadow-primary/20"
- : "bg-gray-50 dark:bg-white/5 text-gray-600 group-hover:bg-primary/10 group-hover:text-primary"
- }
- `}
- >
- <report.icon size={16} strokeWidth={2.5} className="sm:w-5 sm:h-5" />
- </div>
- <span
- className={`
- text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg border
- ${report.format === "pdf"
- ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
- : report.format === "auto"
- ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
- : "bg-primary/10 text-primary dark:text-primary border-primary/20"
- }
- `}
- >
- {report.format}
- </span>
- </div>
- <h3 className="font-black text-sm sm:text-base text-gray-700 dark:text-white mb-1 sm:mb-1.5 tracking-tight">
- {report.name}
- </h3>
- <p className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 leading-relaxed text-left w-full">
- {report.description}
- </p>
- </Button>
+              <Button
+                variant="ghost"
+                key={report.id}
+                onClick={() => handleSelectType(report.id)}
+                className={`
+                  relative text-left p-3 sm:p-4 lg:p-3 h-[110px] rounded-xl border transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal overflow-hidden
+                  ${isSelected
+                    ? "border-primary bg-primary/5 shadow-sm hover:bg-primary/5"
+                    : "border-dashboard bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-sm"
+                  }
+                `}
+              >
+                <div className="flex items-start justify-between mb-2 w-full">
+                  <div
+                    className={`
+                      p-2 rounded-lg transition-all duration-300 shadow-sm
+                      ${isSelected
+                        ? "bg-primary text-white"
+                        : "bg-gray-50 dark:bg-white/5 text-gray-600 group-hover:bg-primary/10 group-hover:text-primary"
+                      }
+                    `}
+                  >
+                    <report.icon size={16} strokeWidth={2.5} className="w-4 h-4" />
+                  </div>
+                  <span
+                    className={`
+                      text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border
+                      ${report.format === "pdf"
+                        ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+                        : report.format === "auto"
+                        ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+                        : report.format === "json"
+                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                        : "bg-primary/10 text-primary dark:text-primary border-primary/20"
+                      }
+                    `}
+                  >
+                    {report.format}
+                  </span>
+                </div>
+                <h3 className="font-bold text-xs sm:text-sm text-gray-700 dark:text-white mb-0.5 tracking-tight truncate w-full">
+                  {report.name}
+                </h3>
+                <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 leading-snug text-left w-full line-clamp-2">
+                  {report.description}
+                </p>
+              </Button>
  );
  })}
  </div>
@@ -486,48 +489,7 @@ export function ReportsDashboard() {
  </Button>
  </div>
 
- <div className="overflow-x-auto rounded-xl border border-dashboard custom-scrollbar">
- <table className="w-full text-left border-collapse">
- <thead>
- <tr className="bg-gray-50 dark:bg-white/5 border-b border-dashboard">
- {csvPreview.headers.map((header, index) => (
- <th key={index} className="p-4 text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 whitespace-nowrap min-w-[120px] group">
- <div className="flex items-center justify-between gap-2">
- <span>{header}</span>
- <Button
- variant="ghost"
- size="icon"
- onClick={() => removeColumn(index)}
- className="h-7 w-7 text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10"
- title="Remove Column"
- >
- <Trash2 size={14} />
- </Button>
- </div>
- </th>
- ))}
- </tr>
- </thead>
- <tbody>
- {csvPreview.rows.slice(0, 50).map((row, rowIndex) => (
- <tr key={rowIndex} className="border-b border-dashboard hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
- {row.map((cell, cellIndex) => (
- <td key={cellIndex} className="p-4 text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap truncate max-w-[200px]" title={cell}>
- {cell}
- </td>
- ))}
- </tr>
- ))}
- {csvPreview.rows.length > 50 && (
- <tr>
- <td colSpan={csvPreview.headers.length} className="p-4 text-center text-sm font-medium text-gray-600 dark:text-gray-300 italic bg-gray-50/50 dark:bg-white/5">
- Showing first 50 rows of {csvPreview.rows.length} total rows.
- </td>
- </tr>
- )}
- </tbody>
- </table>
- </div>
+ <DraggablePreviewTable initialData={csvPreview} onChange={setCsvPreview} />
  </div>
  )}
  </>

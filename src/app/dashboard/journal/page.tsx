@@ -28,7 +28,9 @@ export default async function JournalPage({
  redirect("/auth/login");
  }
 
- const tradingDataState = await getUserTradingDataState(user.id);
+ // Start independent account-state work before parsing the filters so it can
+ // run in parallel with the account timezone lookup below.
+ const tradingDataStatePromise = getUserTradingDataState(user.id);
 
  // Parse Pagination
  const page = typeof resolvedParams.page === "string" ? parseInt(resolvedParams.page) : 1;
@@ -45,38 +47,32 @@ export default async function JournalPage({
  let dateFrom = typeof resolvedParams.from === "string" ? resolvedParams.from : undefined;
  let dateTo = typeof resolvedParams.to === "string" ? resolvedParams.to : undefined;
 
-  // Auto-inject default date range (Start of Month to Today) if missing
-  if (tradingDataState.hasTradeData && (!dateFrom || !dateTo)) {
+  // Use the default range in this request. Redirecting here made Journal fetch
+  // its auth/state/query stack twice on a cold navigation.
+  if (!dateFrom || !dateTo) {
     const now = new Date();
     const startMonthStr = format(startOfMonth(now), 'yyyy-MM-dd');
     const todayStr = format(now, 'yyyy-MM-dd');
     dateFrom = dateFrom || startMonthStr;
     dateTo = dateTo || todayStr;
-
-    const newParams = new URLSearchParams();
-    Object.entries(resolvedParams).forEach(([key, val]) => {
-      if (val !== undefined && key !== 'from' && key !== 'to') {
-        newParams.append(key, String(val));
-      }
-    });
-    newParams.append('from', dateFrom);
-    newParams.append('to', dateTo);
-
-    redirect(`/dashboard/journal?${newParams.toString()}`);
   }
 
  const sortBy = typeof resolvedParams.sort === "string" ? resolvedParams.sort : undefined;
  const sortOrder = typeof resolvedParams.dir === "string" && (resolvedParams.dir === "asc" || resolvedParams.dir === "desc") ? resolvedParams.dir : undefined;
 
- // Fetch account timezone for broker-aligned day boundaries
- let accountTimezone: string | undefined;
- if (user && accountId) {
- const acc = await prisma.tradingAccount.findFirst({
- where: { id: accountId, userId: user.id },
- select: { timezone: true }
- });
- accountTimezone = acc?.timezone || undefined;
- }
+ // Fetch account timezone for broker-aligned day boundaries in parallel with
+ // the user data-state check. The journal query starts once both are ready.
+ const accountTimezonePromise = accountId
+   ? prisma.tradingAccount.findFirst({
+       where: { id: accountId, userId: user.id },
+       select: { timezone: true },
+     }).then((account) => account?.timezone || undefined)
+   : Promise.resolve(undefined);
+
+ const [tradingDataState, accountTimezone] = await Promise.all([
+   tradingDataStatePromise,
+   accountTimezonePromise,
+ ]);
 
  const [{ entries, meta, stats }, { strategies }, userTags, tradePlans] = await Promise.all([
  getJournalEntries(page, limit, {

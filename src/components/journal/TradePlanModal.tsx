@@ -35,6 +35,16 @@ export function TradePlanModal({ onSuccess, onCancel, initialData }: TradePlanMo
   const [rules, setRules] = useState<any[]>([]);
   const [selectedRules, setSelectedRules] = useState<Record<string, boolean>>({});
 
+  const [preTradeChecks, setPreTradeChecks] = useState({
+    setupSelected: false,
+    riskDefined: false,
+    sizeReviewed: false,
+    sessionAcceptable: false,
+    emotionAcknowledged: false,
+    rulebookAcknowledged: false,
+  });
+  const [skipChecklist, setSkipChecklist] = useState(false);
+
   const [formData, setFormData] = useState({
     symbol: initialData?.symbol || "",
     type: initialData?.type || "BUY",
@@ -135,6 +145,19 @@ export function TradePlanModal({ onSuccess, onCancel, initialData }: TradePlanMo
         ruleChecklist: selectedRules,
         confidenceLevel: formData.confidenceLevel,
       };
+
+      if (skipChecklist) {
+        payload.snapshotData = { skipped: true };
+        payload.snapshotPassed = false;
+      } else {
+        const passed = Object.values(preTradeChecks).every(Boolean);
+        payload.snapshotData = {
+          checks: preTradeChecks,
+          rulesChecked: selectedRules,
+          skipped: false
+        };
+        payload.snapshotPassed = passed;
+      }
 
       const result = await createTradePlan(payload);
       if (result.error) throw new Error(result.error);
@@ -393,6 +416,56 @@ export function TradePlanModal({ onSuccess, onCancel, initialData }: TradePlanMo
           </div>
         </div>
       )}
+
+      {/* Pre-Trade Checklist */}
+      <div className="space-y-3 pt-4 border-t border-dashboard">
+        <div className="flex items-center justify-between">
+          <h4 className="text-xs font-black uppercase text-gray-400 dark:text-gray-500 flex items-center gap-1.5">
+            <Check size={14} className="text-primary" />
+            Pre-Trade Checklist
+          </h4>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={skipChecklist}
+              onChange={(e) => setSkipChecklist(e.target.checked)}
+              className="w-3.5 h-3.5 rounded border-gray-300 text-primary focus:ring-primary dark:border-white/10 dark:bg-black/20"
+            />
+            <span className="text-[10px] font-bold text-gray-400">Skip Checklist</span>
+          </label>
+        </div>
+        
+        {!skipChecklist && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {[
+              { id: 'setupSelected', label: 'Setup selected & clear' },
+              { id: 'riskDefined', label: 'Risk and stop-loss defined' },
+              { id: 'sizeReviewed', label: 'Position size reviewed' },
+              { id: 'sessionAcceptable', label: 'Session/time window acceptable' },
+              { id: 'emotionAcknowledged', label: 'Emotional state acknowledged' },
+              { id: 'rulebookAcknowledged', label: 'Active rulebook acknowledged' }
+            ].map((check) => (
+              <button
+                key={check.id}
+                type="button"
+                onClick={() => setPreTradeChecks(p => ({ ...p, [check.id]: !p[check.id as keyof typeof p] }))}
+                className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${preTradeChecks[check.id as keyof typeof preTradeChecks]
+                  ? "bg-primary/5 border-primary text-gray-800 dark:text-white"
+                  : "bg-white dark:bg-black/10 border-dashboard text-gray-500 hover:border-gray-400"
+                  }`}
+              >
+                <div className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${preTradeChecks[check.id as keyof typeof preTradeChecks]
+                  ? "bg-primary border-primary text-white"
+                  : "border-gray-300 dark:border-white/10"
+                  }`}>
+                  {preTradeChecks[check.id as keyof typeof preTradeChecks] && <Check size={10} strokeWidth={3} />}
+                </div>
+                <span className="text-xs font-bold truncate">{check.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Form Buttons */}
       <div className="flex justify-end gap-3 pt-4 border-t border-dashboard">

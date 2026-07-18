@@ -164,6 +164,8 @@ async function IntelligenceDataLoader({
  data={data}
  previousData={previousData}
  scoreHistory={scoreHistory}
+ accountId={accountId}
+ timezone={timezone}
  dateFrom={dateFrom}
  dateTo={dateTo}
  prevDateFrom={prevStartDate?.toISOString().split("T")[0]}

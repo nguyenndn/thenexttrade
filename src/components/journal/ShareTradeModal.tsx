@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useState, useRef } from "react";
 import { TradeShareCard } from "./TradeShareCard";
-import { Copy, Check, ChevronDown, CheckCircle2, Download, Loader2 } from "lucide-react";
+import { Copy, Check, ChevronDown, CheckCircle2, Download, Loader2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 
@@ -222,15 +222,24 @@ export function ShareTradeModal({ open, onClose, entry }: ShareTradeModalProps) 
               <input
                 readOnly
                 value={shareUrl}
-                className="w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl pl-4 pr-14 py-3 text-sm text-gray-600 font-mono focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl pl-4 pr-24 py-3 text-sm text-gray-600 font-mono focus:outline-none focus:border-blue-500 transition-colors"
               />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2">
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
                 <Button
                   onClick={handleCopy}
                   variant="outline"
                   className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300"
+                  title="Copy link"
                 >
                   {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                </Button>
+                <Button
+                  onClick={() => window.open(shareUrl, "_blank")}
+                  variant="outline"
+                  className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300"
+                  title="Preview"
+                >
+                  <ExternalLink size={16} />
                 </Button>
               </div>
             </div>

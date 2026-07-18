@@ -4,6 +4,7 @@ import { useState, useTransition, useEffect, useRef } from "react";
 import { X, Copy, Check, Loader2, Wallet, UserPlus, ArrowRight, ArrowLeft, RefreshCw, AlertCircle, ExternalLink, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import { CountrySelect } from "@/components/ui/CountrySelect";
 import { Button } from "@/components/ui/Button";
 import { createTradingAccount } from "@/actions/accounts";
 import { createPartnerProAccount, upgradeToPartnerPro } from "@/actions/account-pro";
@@ -721,7 +722,16 @@ export function AddAccountModal({
  <PremiumInput label="Telegram ID *" value={telegramId} onChange={(e) => setTelegramId(e.target.value)} placeholder="@yourusername" />
  <PremiumInput label="Email *" value={userEmail} disabled />
  {brokerInfo.requiresFullName && <PremiumInput label="Full Name *" value={fullName} onChange={(e) => setFullName(e.target.value)} />}
- {brokerInfo.requiresCountry && <PremiumInput label="Country *" value={country} onChange={(e) => setCountry(e.target.value)} />}
+ {brokerInfo.requiresCountry && (
+ <div className="space-y-1">
+ <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 pl-1">Country *</label>
+ <CountrySelect
+ value={country}
+ onChange={setCountry}
+ className="h-11 bg-white/80 border-amber-900/10 text-slate-900 focus:bg-white focus:border-amber-400 dark:bg-black/20 dark:text-white dark:focus:bg-black/25 dark:focus:border-amber-300/60 rounded-xl"
+ />
+ </div>
+ )}
  </div>
  {/* Screenshot proof — optional but shown to admin */}
  <PremiumInput
@@ -821,29 +831,13 @@ export function AddAccountModal({
  Your VIP request is under review. The account has been added to your dashboard. We will upgrade its status once verified.
  </p>
  
- {createdAccount?.apiKey && (
  <div className="text-left mt-6">
- <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-dashboard">
- <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
- Your Sync API Key
+ <div className="p-4 bg-emerald-500/10 dark:bg-emerald-500/5 rounded-xl border border-emerald-500/20 text-center">
+ <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
+ Use your global <strong className="font-bold">Sync API Key</strong> (found in Settings) to connect this account to EA Trade Manager.
  </p>
- <div className="flex items-center gap-2">
- <code className="flex-1 p-3 bg-white dark:bg-[#1E2028] rounded-lg text-sm font-mono text-primary break-all border border-dashboard">
- {createdAccount.apiKey}
- </code>
- <Button
- variant="primary"
- size="icon"
- onClick={() => copyToClipboard(createdAccount.apiKey)}
- className="h-11 w-11 rounded-lg shrink-0"
- >
- {copied ? <Check size={18} /> : <Copy size={18} />}
- </Button>
- </div>
- <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Save this key now — you can find it later in Settings → Sync Settings.</p>
  </div>
  </div>
- )}
 
  <div className="pt-4">
  <Button variant="primary" size="smd" onClick={() => { handleClose(); onSuccess(createdAccount); }} className="w-full font-bold">

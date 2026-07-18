@@ -51,20 +51,7 @@ export async function POST(request: NextRequest) {
     if (reservation.status === "DUPLICATE") {
       return NextResponse.json({ ok: false, error_code: "DUPLICATE_REQUEST", message: "Request ID already processed." }, { status: 409 });
     }
-    if (reservation.status === "QUOTA_EXCEEDED") {
-      return NextResponse.json({
-        ok: false,
-        error_code: "QUOTA_EXCEEDED",
-        message: "Daily AI analysis quota exceeded.",
-        usage: {
-          plan: reservation.quota.isPro ? "pro" : "free",
-          daily_limit: reservation.quota.dailyLimit,
-          used_today: reservation.quota.usedToday,
-          remaining_today: reservation.quota.remainingToday,
-        },
-      }, { status: 429 });
-    }
-
+    // QUOTA_EXCEEDED check removed as per user request
     const aiRequest = reservation.aiRequest;
     activeRequestId = aiRequest.id;
     const gatewayStart = Date.now();
