@@ -5,41 +5,43 @@ import SettingsPageClient from "./SettingsPageClient";
 export const dynamic = "force-dynamic";
 
 export default async function AdminSettingsPage() {
- const user = await getAuthUser();
+    const user = await getAuthUser();
 
- // OPTIMIZED: Fetch user profile and system config in parallel
- const [dbUser, systemConfigRecord] = await Promise.all([
- user ? prisma.user.findUnique({
- where: { id: user.id },
- select: { name: true, email: true, image: true }
- }) : Promise.resolve(null),
- prisma.systemSetting.findUnique({
- where: { key: 'site_config' }
- })
- ]);
- // const systemConfigRecord = null;
+    // OPTIMIZED: Fetch user profile and system config in parallel
+    const [dbUser, systemConfigRecord] = await Promise.all([
+        user
+            ? prisma.user.findUnique({
+                  where: { id: user.id },
+                  select: { name: true, email: true, image: true },
+              })
+            : Promise.resolve(null),
+        prisma.systemSetting.findUnique({
+            where: { key: "site_config" },
+        }),
+    ]);
+    // const systemConfigRecord = null;
 
- const savedConfig = (systemConfigRecord?.value as any) || {};
+    const savedConfig = (systemConfigRecord?.value as any) || {};
 
- const systemConfig = {
- maintenanceMode: savedConfig.maintenanceMode ?? false,
- feedbackEnabled: savedConfig.feedbackEnabled ?? true,
- siteTitle: savedConfig.siteTitle || "TheNextTrade",
- siteDescription: savedConfig.siteDescription || "",
- supportEmail: savedConfig.supportEmail || "",
- socialTelegram: savedConfig.socialTelegram || "",
- socialFacebook: savedConfig.socialFacebook || "",
- socialYoutube: savedConfig.socialYoutube || "",
- socialInstagram: savedConfig.socialInstagram || "",
- welcomeEmail: savedConfig.welcomeEmail ?? true,
- newArticleAlert: savedConfig.newArticleAlert ?? true,
- systemAnnouncement: savedConfig.systemAnnouncement || "",
- };
+    const systemConfig = {
+        maintenanceMode: savedConfig.maintenanceMode ?? false,
+        feedbackEnabled: savedConfig.feedbackEnabled ?? true,
+        siteTitle: savedConfig.siteTitle || "TheNextTrade",
+        siteDescription: savedConfig.siteDescription || "",
+        supportEmail: savedConfig.supportEmail || "",
+        socialTelegram: savedConfig.socialTelegram || "",
+        socialFacebook: savedConfig.socialFacebook || "",
+        socialYoutube: savedConfig.socialYoutube || "",
+        socialInstagram: savedConfig.socialInstagram || "",
+        welcomeEmail: savedConfig.welcomeEmail ?? true,
+        newArticleAlert: savedConfig.newArticleAlert ?? true,
+        systemAnnouncement: savedConfig.systemAnnouncement || "",
+    };
 
- return (
- <SettingsPageClient
- user={dbUser || { name: "", email: "", image: null }}
- initialConfig={systemConfig}
- />
- );
+    return (
+        <SettingsPageClient
+            user={dbUser || { name: "", email: "", image: null }}
+            initialConfig={systemConfig}
+        />
+    );
 }

@@ -4,23 +4,23 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
- try {
- const record = await prisma.systemSetting.findUnique({
- where: { key: "site_config" },
- });
+    try {
+        const record = await prisma.systemSetting.findUnique({
+            where: { key: "site_config" },
+        });
 
- const config = (record?.value as Record<string, unknown>) || {};
+        const config = (record?.value as Record<string, unknown>) || {};
 
- return NextResponse.json({
- feedbackEnabled: config.feedbackEnabled ?? true,
- maintenanceMode: config.maintenanceMode ?? false,
- systemAnnouncement: (config.systemAnnouncement as string) || "",
- });
- } catch {
- return NextResponse.json({
- feedbackEnabled: true,
- maintenanceMode: false,
- systemAnnouncement: "",
- });
- }
+        return NextResponse.json({
+            feedbackEnabled: config.feedbackEnabled ?? true,
+            maintenanceMode: config.maintenanceMode ?? false,
+            systemAnnouncement: (config.systemAnnouncement as string) || "",
+        });
+    } catch {
+        return NextResponse.json({
+            feedbackEnabled: true,
+            maintenanceMode: false,
+            systemAnnouncement: "",
+        });
+    }
 }

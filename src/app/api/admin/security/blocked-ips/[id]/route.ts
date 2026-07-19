@@ -10,39 +10,39 @@ export const dynamic = "force-dynamic";
  * Unblock an IP address by record ID.
  */
 export async function DELETE(
- _request: NextRequest,
- { params }: { params: Promise<{ id: string }> }
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ) {
- const auth = await requireSuperAdmin();
- if (auth instanceof NextResponse) return auth;
+    const auth = await requireSuperAdmin();
+    if (auth instanceof NextResponse) return auth;
 
- const { id } = await params;
+    const { id } = await params;
 
- try {
- // Find the blocked IP record
- const record = await prisma.blockedIP.findUnique({
- where: { id },
- select: { ip: true },
- });
+    try {
+        // Find the blocked IP record
+        const record = await prisma.blockedIP.findUnique({
+            where: { id },
+            select: { ip: true },
+        });
 
- if (!record) {
- return NextResponse.json(
- { error: "Blocked IP not found" },
- { status: 404 }
- );
- }
+        if (!record) {
+            return NextResponse.json(
+                { error: "Blocked IP not found" },
+                { status: 404 }
+            );
+        }
 
- await unblockIP(record.ip, auth.user.id);
+        await unblockIP(record.ip, auth.user.id);
 
- return NextResponse.json({
- ok: true,
- message: `IP ${record.ip} unblocked`,
- });
- } catch (error) {
- console.error("[Unblock IP] Error:", error);
- return NextResponse.json(
- { error: "Failed to unblock IP" },
- { status: 500 }
- );
- }
+        return NextResponse.json({
+            ok: true,
+            message: `IP ${record.ip} unblocked`,
+        });
+    } catch (error) {
+        console.error("[Unblock IP] Error:", error);
+        return NextResponse.json(
+            { error: "Failed to unblock IP" },
+            { status: 500 }
+        );
+    }
 }

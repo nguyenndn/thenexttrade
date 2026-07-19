@@ -5,90 +5,101 @@ import { Prisma } from "@prisma/client";
 import { createClient } from "@/lib/supabase/server";
 import { getTier, getPercentile, getTierProgress } from "@/lib/gamification";
 
-export type LeaderboardType = "xp" | "streak" | "academy" | "trading" | "mystats";
+export type LeaderboardType =
+    "xp" | "streak" | "academy" | "trading" | "mystats";
 
 export interface LeaderboardEntry {
- rank: number;
- userId: string;
- name: string;
- avatar: string | null;
- tier: ReturnType<typeof getTier>;
- value: number;
- label: string;
- level: number;
- lessonsCompleted: number;
- studyTimeMinutes: number;
- percentile: number;
- totalTrades: number;
- pnl: number;
- winRate?: number;
+    rank: number;
+    userId: string;
+    name: string;
+    avatar: string | null;
+    tier: ReturnType<typeof getTier>;
+    value: number;
+    label: string;
+    level: number;
+    lessonsCompleted: number;
+    studyTimeMinutes: number;
+    percentile: number;
+    totalTrades: number;
+    pnl: number;
+    winRate?: number;
 }
 
 export interface UserBadgeInfo {
- code: string;
- name: string;
- description: string;
- icon: string;
- earnedAt: string | null;
+    code: string;
+    name: string;
+    description: string;
+    icon: string;
+    earnedAt: string | null;
 }
 
 export interface LeaderboardResponse {
- data: LeaderboardEntry[];
- myRank: {
- rank: number;
- value: number;
- percentile: number;
- tierProgress: ReturnType<typeof getTierProgress>;
- streak?: number;
- level?: number;
- lessonsCompleted?: number;
- studyTimeMinutes?: number;
- totalTrades?: number;
- badges?: UserBadgeInfo[];
- memberSince?: string;
- } | null;
- total: number;
- rivals: {
- above: LeaderboardEntry | null;
- below: LeaderboardEntry | null;
- } | null;
- hasLeaderboardAccount: boolean;
+    data: LeaderboardEntry[];
+    myRank: {
+        rank: number;
+        value: number;
+        percentile: number;
+        tierProgress: ReturnType<typeof getTierProgress>;
+        streak?: number;
+        level?: number;
+        lessonsCompleted?: number;
+        studyTimeMinutes?: number;
+        totalTrades?: number;
+        badges?: UserBadgeInfo[];
+        memberSince?: string;
+    } | null;
+    total: number;
+    rivals: {
+        above: LeaderboardEntry | null;
+        below: LeaderboardEntry | null;
+    } | null;
+    hasLeaderboardAccount: boolean;
 }
 
 async function getCurrentUserId(): Promise<string | null> {
- const supabase = await createClient();
- const { data: { user } } = await supabase.auth.getUser();
- return user?.id ?? null;
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    return user?.id ?? null;
 }
 
 export async function getLeaderboard(
- type: LeaderboardType = "xp",
- limit: number = 50,
- sortBy: "percentage" | "currency" = "currency"
+    type: LeaderboardType = "xp",
+    limit: number = 50,
+    sortBy: "percentage" | "currency" = "currency"
 ): Promise<LeaderboardResponse> {
- const userId = await getCurrentUserId();
+    const userId = await getCurrentUserId();
 
- switch (type) {
- case "xp":
- return getXpLeaderboard(userId, limit);
- case "streak":
- return getStreakLeaderboard(userId, limit);
- case "academy":
- return getAcademyLeaderboard(userId, limit);
- case "trading":
- return getTradingLeaderboard(userId, limit, sortBy);
- default:
- return getXpLeaderboard(userId, limit);
- }
+    switch (type) {
+        case "xp":
+            return getXpLeaderboard(userId, limit);
+        case "streak":
+            return getStreakLeaderboard(userId, limit);
+        case "academy":
+            return getAcademyLeaderboard(userId, limit);
+        case "trading":
+            return getTradingLeaderboard(userId, limit, sortBy);
+        default:
+            return getXpLeaderboard(userId, limit);
+    }
 }
 
 // Batch fetch lessons + study time for enriched leaderboard entries
-async function getEnrichedStats(userIds: string[]): Promise<Record<string, { lessonsCompleted: number; studyTimeMinutes: number }>> {
- if (userIds.length === 0) return {};
+async function getEnrichedStats(
+    userIds: string[]
+): Promise<
+    Record<string, { lessonsCompleted: number; studyTimeMinutes: number }>
+> {
+    if (userIds.length === 0) return {};
 
- const stats = await prisma.$queryRaw<
- Array<{ userId: string; lessonsCompleted: bigint; studyTimeMinutes: bigint | null }>
- >`
+    const stats = await prisma.$queryRaw<
+        Array<{
+            userId: string;
+            lessonsCompleted: bigint;
+            studyTimeMinutes: bigint | null;
+        }>
+    >`
  SELECT up."userId",
  COUNT(up.id) AS "lessonsCompleted",
  COALESCE(SUM(l.duration), 0) AS "studyTimeMinutes"
@@ -98,186 +109,211 @@ async function getEnrichedStats(userIds: string[]): Promise<Record<string, { les
  GROUP BY up."userId"
  `;
 
- const result: Record<string, { lessonsCompleted: number; studyTimeMinutes: number }> = {};
- for (const s of stats) {
- result[s.userId] = {
- lessonsCompleted: Number(s.lessonsCompleted),
- studyTimeMinutes: Number(s.studyTimeMinutes ?? 0),
- };
- }
- return result;
+    const result: Record<
+        string,
+        { lessonsCompleted: number; studyTimeMinutes: number }
+    > = {};
+    for (const s of stats) {
+        result[s.userId] = {
+            lessonsCompleted: Number(s.lessonsCompleted),
+            studyTimeMinutes: Number(s.studyTimeMinutes ?? 0),
+        };
+    }
+    return result;
 }
 
 async function getXpLeaderboard(
- userId: string | null,
- limit: number
+    userId: string | null,
+    limit: number
 ): Promise<LeaderboardResponse> {
- const users = await prisma.user.findMany({
- where: { showOnLeaderboard: true, xp: { gt: 0 } },
- orderBy: { xp: "desc" },
- take: limit,
- select: { id: true, name: true, image: true, xp: true, level: true },
- });
+    const users = await prisma.user.findMany({
+        where: { showOnLeaderboard: true, xp: { gt: 0 } },
+        orderBy: { xp: "desc" },
+        take: limit,
+        select: { id: true, name: true, image: true, xp: true, level: true },
+    });
 
- const total = await prisma.user.count({
- where: { xp: { gt: 0 } },
- });
+    const total = await prisma.user.count({
+        where: { xp: { gt: 0 } },
+    });
 
- const userIds = users.map((u) => u.id);
- const enriched = await getEnrichedStats(userIds);
+    const userIds = users.map((u) => u.id);
+    const enriched = await getEnrichedStats(userIds);
 
- const data: LeaderboardEntry[] = users.map((u, i) => ({
- rank: i + 1,
- userId: u.id,
- name: u.name || "Unknown",
- avatar: u.image,
- tier: getTier(u.xp),
- value: u.xp,
- label: "Edge",
- level: u.level,
- lessonsCompleted: enriched[u.id]?.lessonsCompleted ?? 0,
- studyTimeMinutes: enriched[u.id]?.studyTimeMinutes ?? 0,
- percentile: getPercentile(i + 1, total),
- totalTrades: 0,
- pnl: 0,
- }));
+    const data: LeaderboardEntry[] = users.map((u, i) => ({
+        rank: i + 1,
+        userId: u.id,
+        name: u.name || "Unknown",
+        avatar: u.image,
+        tier: getTier(u.xp),
+        value: u.xp,
+        label: "Edge",
+        level: u.level,
+        lessonsCompleted: enriched[u.id]?.lessonsCompleted ?? 0,
+        studyTimeMinutes: enriched[u.id]?.studyTimeMinutes ?? 0,
+        percentile: getPercentile(i + 1, total),
+        totalTrades: 0,
+        pnl: 0,
+    }));
 
- let myRank: LeaderboardResponse["myRank"] = null;
- let rivals = null;
+    let myRank: LeaderboardResponse["myRank"] = null;
+    let rivals = null;
 
- if (userId) {
- const currentUser = await prisma.user.findUnique({
- where: { id: userId },
- select: {
- xp: true,
- streak: true,
- level: true,
- createdAt: true,
- badges: {
- include: { badge: true },
- orderBy: { earnedAt: "desc" },
- },
- },
- });
+    if (userId) {
+        const currentUser = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                xp: true,
+                streak: true,
+                level: true,
+                createdAt: true,
+                badges: {
+                    include: { badge: true },
+                    orderBy: { earnedAt: "desc" },
+                },
+            },
+        });
 
- if (currentUser) {
- const rank = await prisma.user.count({
- where: { xp: { gt: currentUser.xp } },
- }) + 1;
+        if (currentUser) {
+            const rank =
+                (await prisma.user.count({
+                    where: { xp: { gt: currentUser.xp } },
+                })) + 1;
 
- // Fetch lessons + study time
- const myEnriched = await getEnrichedStats([userId]);
- const myStats = myEnriched[userId];
+            // Fetch lessons + study time
+            const myEnriched = await getEnrichedStats([userId]);
+            const myStats = myEnriched[userId];
 
- // Fetch trade count
- const tradeCount = await prisma.journalEntry.count({
- where: { userId, status: "CLOSED" },
- });
+            // Fetch trade count
+            const tradeCount = await prisma.journalEntry.count({
+                where: { userId, status: "CLOSED" },
+            });
 
- // Map badges: show all BADGES from gamification, mark earned ones
- const { BADGES } = await import("@/lib/gamification");
- const earnedMap = new Map(
- currentUser.badges.map((ub) => [ub.badge.code, ub.earnedAt.toISOString()])
- );
- const allBadges: UserBadgeInfo[] = Object.values(BADGES).map((b) => ({
- code: b.code,
- name: b.name,
- description: b.description,
- icon: b.icon,
- earnedAt: earnedMap.get(b.code) ?? null,
- }));
+            // Map badges: show all BADGES from gamification, mark earned ones
+            const { BADGES } = await import("@/lib/gamification");
+            const earnedMap = new Map(
+                currentUser.badges.map((ub) => [
+                    ub.badge.code,
+                    ub.earnedAt.toISOString(),
+                ])
+            );
+            const allBadges: UserBadgeInfo[] = Object.values(BADGES).map(
+                (b) => ({
+                    code: b.code,
+                    name: b.name,
+                    description: b.description,
+                    icon: b.icon,
+                    earnedAt: earnedMap.get(b.code) ?? null,
+                })
+            );
 
- myRank = {
- rank,
- value: currentUser.xp,
- percentile: getPercentile(rank, total),
- tierProgress: getTierProgress(currentUser.xp),
- streak: currentUser.streak,
- level: currentUser.level,
- lessonsCompleted: myStats?.lessonsCompleted ?? 0,
- studyTimeMinutes: myStats?.studyTimeMinutes ?? 0,
- totalTrades: tradeCount,
- badges: allBadges,
- memberSince: currentUser.createdAt.toISOString(),
- };
+            myRank = {
+                rank,
+                value: currentUser.xp,
+                percentile: getPercentile(rank, total),
+                tierProgress: getTierProgress(currentUser.xp),
+                streak: currentUser.streak,
+                level: currentUser.level,
+                lessonsCompleted: myStats?.lessonsCompleted ?? 0,
+                studyTimeMinutes: myStats?.studyTimeMinutes ?? 0,
+                totalTrades: tradeCount,
+                badges: allBadges,
+                memberSince: currentUser.createdAt.toISOString(),
+            };
 
- rivals = await getRivals(userId, "xp", currentUser.xp);
- }
- }
+            rivals = await getRivals(userId, "xp", currentUser.xp);
+        }
+    }
 
- return { data, myRank, total, rivals, hasLeaderboardAccount: true };
+    return { data, myRank, total, rivals, hasLeaderboardAccount: true };
 }
 
 async function getStreakLeaderboard(
- userId: string | null,
- limit: number
+    userId: string | null,
+    limit: number
 ): Promise<LeaderboardResponse> {
- const users = await prisma.user.findMany({
- where: { showOnLeaderboard: true, streak: { gt: 0 } },
- orderBy: { streak: "desc" },
- take: limit,
- select: { id: true, name: true, image: true, streak: true, xp: true, level: true },
- });
+    const users = await prisma.user.findMany({
+        where: { showOnLeaderboard: true, streak: { gt: 0 } },
+        orderBy: { streak: "desc" },
+        take: limit,
+        select: {
+            id: true,
+            name: true,
+            image: true,
+            streak: true,
+            xp: true,
+            level: true,
+        },
+    });
 
- const total = await prisma.user.count({
- where: { streak: { gt: 0 } },
- });
+    const total = await prisma.user.count({
+        where: { streak: { gt: 0 } },
+    });
 
- const userIds = users.map((u) => u.id);
- const enriched = await getEnrichedStats(userIds);
+    const userIds = users.map((u) => u.id);
+    const enriched = await getEnrichedStats(userIds);
 
- const data: LeaderboardEntry[] = users.map((u, i) => ({
- rank: i + 1,
- userId: u.id,
- name: u.name || "Unknown",
- avatar: u.image,
- tier: getTier(u.xp),
- value: u.streak,
- label: "days",
- level: u.level,
- lessonsCompleted: enriched[u.id]?.lessonsCompleted ?? 0,
- studyTimeMinutes: enriched[u.id]?.studyTimeMinutes ?? 0,
- percentile: getPercentile(i + 1, total),
- totalTrades: 0,
- pnl: 0,
- }));
+    const data: LeaderboardEntry[] = users.map((u, i) => ({
+        rank: i + 1,
+        userId: u.id,
+        name: u.name || "Unknown",
+        avatar: u.image,
+        tier: getTier(u.xp),
+        value: u.streak,
+        label: "days",
+        level: u.level,
+        lessonsCompleted: enriched[u.id]?.lessonsCompleted ?? 0,
+        studyTimeMinutes: enriched[u.id]?.studyTimeMinutes ?? 0,
+        percentile: getPercentile(i + 1, total),
+        totalTrades: 0,
+        pnl: 0,
+    }));
 
- let myRank = null;
- let rivals = null;
+    let myRank = null;
+    let rivals = null;
 
- if (userId) {
- const currentUser = await prisma.user.findUnique({
- where: { id: userId },
- select: { streak: true, xp: true },
- });
+    if (userId) {
+        const currentUser = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { streak: true, xp: true },
+        });
 
- if (currentUser) {
- const rank = await prisma.user.count({
- where: { streak: { gt: currentUser.streak } },
- }) + 1;
+        if (currentUser) {
+            const rank =
+                (await prisma.user.count({
+                    where: { streak: { gt: currentUser.streak } },
+                })) + 1;
 
- myRank = {
- rank,
- value: currentUser.streak,
- percentile: getPercentile(rank, total),
- tierProgress: getTierProgress(currentUser.xp),
- };
+            myRank = {
+                rank,
+                value: currentUser.streak,
+                percentile: getPercentile(rank, total),
+                tierProgress: getTierProgress(currentUser.xp),
+            };
 
- rivals = await getRivals(userId, "streak", currentUser.streak);
- }
- }
+            rivals = await getRivals(userId, "streak", currentUser.streak);
+        }
+    }
 
- return { data, myRank, total, rivals, hasLeaderboardAccount: true };
+    return { data, myRank, total, rivals, hasLeaderboardAccount: true };
 }
 
 async function getAcademyLeaderboard(
- userId: string | null,
- limit: number
+    userId: string | null,
+    limit: number
 ): Promise<LeaderboardResponse> {
- // Raw query to count completed lessons per user
- const results = await prisma.$queryRaw<
- Array<{ userId: string; name: string; image: string | null; xp: number; level: number; count: bigint; studyMinutes: bigint | null }>
- >`
+    // Raw query to count completed lessons per user
+    const results = await prisma.$queryRaw<
+        Array<{
+            userId: string;
+            name: string;
+            image: string | null;
+            xp: number;
+            level: number;
+            count: bigint;
+            studyMinutes: bigint | null;
+        }>
+    >`
  SELECT u.id AS "userId", u.name, u.image, u.xp, u.level,
  COUNT(up.id) AS count,
  COALESCE(SUM(l.duration), 0) AS "studyMinutes"
@@ -290,80 +326,82 @@ async function getAcademyLeaderboard(
  LIMIT ${limit}
  `;
 
- const total = results.length;
+    const total = results.length;
 
- const data: LeaderboardEntry[] = results.map((r, i) => ({
- rank: i + 1,
- userId: r.userId,
- name: r.name || "Unknown",
- avatar: r.image,
- tier: getTier(r.xp),
- value: Number(r.count),
- label: "lessons",
- level: r.level,
- lessonsCompleted: Number(r.count),
- studyTimeMinutes: Number(r.studyMinutes ?? 0),
- percentile: getPercentile(i + 1, total),
- totalTrades: 0,
- pnl: 0,
- }));
+    const data: LeaderboardEntry[] = results.map((r, i) => ({
+        rank: i + 1,
+        userId: r.userId,
+        name: r.name || "Unknown",
+        avatar: r.image,
+        tier: getTier(r.xp),
+        value: Number(r.count),
+        label: "lessons",
+        level: r.level,
+        lessonsCompleted: Number(r.count),
+        studyTimeMinutes: Number(r.studyMinutes ?? 0),
+        percentile: getPercentile(i + 1, total),
+        totalTrades: 0,
+        pnl: 0,
+    }));
 
- let myRank = null;
- let rivals = null;
+    let myRank = null;
+    let rivals = null;
 
- if (userId) {
- const myCount = await prisma.userProgress.count({
- where: { userId, isCompleted: true },
- });
+    if (userId) {
+        const myCount = await prisma.userProgress.count({
+            where: { userId, isCompleted: true },
+        });
 
- const usersAbove = results.filter((r) => Number(r.count) > myCount).length;
- const rank = usersAbove + 1;
+        const usersAbove = results.filter(
+            (r) => Number(r.count) > myCount
+        ).length;
+        const rank = usersAbove + 1;
 
- const currentUser = await prisma.user.findUnique({
- where: { id: userId },
- select: { xp: true },
- });
+        const currentUser = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { xp: true },
+        });
 
- myRank = {
- rank,
- value: myCount,
- percentile: getPercentile(rank, total || 1),
- tierProgress: getTierProgress(currentUser?.xp ?? 0),
- };
- }
+        myRank = {
+            rank,
+            value: myCount,
+            percentile: getPercentile(rank, total || 1),
+            tierProgress: getTierProgress(currentUser?.xp ?? 0),
+        };
+    }
 
- return { data, myRank, total, rivals, hasLeaderboardAccount: true };
+    return { data, myRank, total, rivals, hasLeaderboardAccount: true };
 }
 
 async function getTradingLeaderboard(
- userId: string | null,
- limit: number,
- sortBy: "percentage" | "currency" = "currency"
+    userId: string | null,
+    limit: number,
+    sortBy: "percentage" | "currency" = "currency"
 ): Promise<LeaderboardResponse> {
- const sevenDaysAgo = new Date();
- sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
- // Check if current user has a leaderboard account
- let hasLeaderboardAccount = true;
- if (userId) {
- const lbAccount = await prisma.tradingAccount.findFirst({
- where: { userId, useForLeaderboard: true },
- select: { id: true },
- });
- hasLeaderboardAccount = !!lbAccount;
- }
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    // Check if current user has a leaderboard account
+    let hasLeaderboardAccount = true;
+    if (userId) {
+        const lbAccount = await prisma.tradingAccount.findFirst({
+            where: { userId, useForLeaderboard: true },
+            select: { id: true },
+        });
+        hasLeaderboardAccount = !!lbAccount;
+    }
 
- const results = await prisma.$queryRaw<
- Array<{
- userId: string;
- name: string;
- image: string | null;
- xp: number;
- level: number;
- winRate: number;
- totalTrades: bigint;
- totalPnl: number | null;
- }>
- >`
+    const results = await prisma.$queryRaw<
+        Array<{
+            userId: string;
+            name: string;
+            image: string | null;
+            xp: number;
+            level: number;
+            winRate: number;
+            totalTrades: bigint;
+            totalPnl: number | null;
+        }>
+    >`
  SELECT u.id AS "userId", u.name, u.image, u.xp, u.level,
  ROUND(COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0 / COUNT(*), 1) AS "winRate",
  COUNT(*) AS "totalTrades",
@@ -380,230 +418,252 @@ async function getTradingLeaderboard(
  LIMIT ${limit}
  `;
 
- const total = results.length;
+    const total = results.length;
 
- const enrichedUserIds = results.map((r) => r.userId);
- const enriched = await getEnrichedStats(enrichedUserIds);
+    const enrichedUserIds = results.map((r) => r.userId);
+    const enriched = await getEnrichedStats(enrichedUserIds);
 
- const data: LeaderboardEntry[] = results.map((r, i) => ({
- rank: i + 1,
- userId: r.userId,
- name: r.name || "Unknown",
- avatar: r.image,
- tier: getTier(r.xp),
- value: sortBy === "percentage" ? Number(r.winRate) : Number(r.totalPnl ?? 0),
- label: sortBy === "percentage" ? "%" : "$",
- level: r.level,
- lessonsCompleted: enriched[r.userId]?.lessonsCompleted ?? 0,
- studyTimeMinutes: enriched[r.userId]?.studyTimeMinutes ?? 0,
- percentile: getPercentile(i + 1, total),
- totalTrades: Number(r.totalTrades),
- pnl: Number(r.totalPnl ?? 0),
- winRate: Number(r.winRate),
- }));
+    const data: LeaderboardEntry[] = results.map((r, i) => ({
+        rank: i + 1,
+        userId: r.userId,
+        name: r.name || "Unknown",
+        avatar: r.image,
+        tier: getTier(r.xp),
+        value:
+            sortBy === "percentage"
+                ? Number(r.winRate)
+                : Number(r.totalPnl ?? 0),
+        label: sortBy === "percentage" ? "%" : "$",
+        level: r.level,
+        lessonsCompleted: enriched[r.userId]?.lessonsCompleted ?? 0,
+        studyTimeMinutes: enriched[r.userId]?.studyTimeMinutes ?? 0,
+        percentile: getPercentile(i + 1, total),
+        totalTrades: Number(r.totalTrades),
+        pnl: Number(r.totalPnl ?? 0),
+        winRate: Number(r.winRate),
+    }));
 
- let myRank = null;
- let rivals = null;
+    let myRank = null;
+    let rivals = null;
 
- if (userId) {
- const myStats = results.find((r) => r.userId === userId);
- if (myStats) {
- const rank = results.findIndex((r) => r.userId === userId) + 1;
- const currentUser = await prisma.user.findUnique({
- where: { id: userId },
- select: { xp: true },
- });
+    if (userId) {
+        const myStats = results.find((r) => r.userId === userId);
+        if (myStats) {
+            const rank = results.findIndex((r) => r.userId === userId) + 1;
+            const currentUser = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { xp: true },
+            });
 
- myRank = {
- rank,
- value: sortBy === "percentage" ? Number(myStats.winRate) : Number(myStats.totalPnl ?? 0),
- percentile: getPercentile(rank, total),
- tierProgress: getTierProgress(currentUser?.xp ?? 0),
- };
- }
- }
+            myRank = {
+                rank,
+                value:
+                    sortBy === "percentage"
+                        ? Number(myStats.winRate)
+                        : Number(myStats.totalPnl ?? 0),
+                percentile: getPercentile(rank, total),
+                tierProgress: getTierProgress(currentUser?.xp ?? 0),
+            };
+        }
+    }
 
- return { data, myRank, total, rivals, hasLeaderboardAccount };
+    return { data, myRank, total, rivals, hasLeaderboardAccount };
 }
 
 // Get users directly above and below the current user
 async function getRivals(
- userId: string,
- field: "xp" | "streak",
- currentValue: number
+    userId: string,
+    field: "xp" | "streak",
+    currentValue: number
 ): Promise<{ above: LeaderboardEntry | null; below: LeaderboardEntry | null }> {
- const aboveUser = await prisma.user.findFirst({
- where: {
- [field]: { gt: currentValue },
- showOnLeaderboard: true,
- id: { not: userId },
- },
- orderBy: { [field]: "asc" },
- select: { id: true, name: true, image: true, xp: true, [field]: true },
- });
+    const aboveUser = await prisma.user.findFirst({
+        where: {
+            [field]: { gt: currentValue },
+            showOnLeaderboard: true,
+            id: { not: userId },
+        },
+        orderBy: { [field]: "asc" },
+        select: { id: true, name: true, image: true, xp: true, [field]: true },
+    });
 
- const belowUser = await prisma.user.findFirst({
- where: {
- [field]: { lt: currentValue },
- showOnLeaderboard: true,
- id: { not: userId },
- },
- orderBy: { [field]: "desc" },
- select: { id: true, name: true, image: true, xp: true, [field]: true },
- });
+    const belowUser = await prisma.user.findFirst({
+        where: {
+            [field]: { lt: currentValue },
+            showOnLeaderboard: true,
+            id: { not: userId },
+        },
+        orderBy: { [field]: "desc" },
+        select: { id: true, name: true, image: true, xp: true, [field]: true },
+    });
 
- const mapToEntry = (
- u: { id: string; name: string | null; image: string | null; xp: number; [key: string]: unknown } | null,
- rank: number
- ): LeaderboardEntry | null => {
- if (!u) return null;
- return {
- rank,
- userId: u.id,
- name: u.name || "Unknown",
- avatar: u.image,
- tier: getTier(u.xp),
- value: (u[field] as number) ?? 0,
- label: field === "xp" ? "Edge" : "days",
- level: 0,
- lessonsCompleted: 0,
- studyTimeMinutes: 0,
- percentile: 0,
- totalTrades: 0,
- pnl: 0,
- };
- };
+    const mapToEntry = (
+        u: {
+            id: string;
+            name: string | null;
+            image: string | null;
+            xp: number;
+            [key: string]: unknown;
+        } | null,
+        rank: number
+    ): LeaderboardEntry | null => {
+        if (!u) return null;
+        return {
+            rank,
+            userId: u.id,
+            name: u.name || "Unknown",
+            avatar: u.image,
+            tier: getTier(u.xp),
+            value: (u[field] as number) ?? 0,
+            label: field === "xp" ? "Edge" : "days",
+            level: 0,
+            lessonsCompleted: 0,
+            studyTimeMinutes: 0,
+            percentile: 0,
+            totalTrades: 0,
+            pnl: 0,
+        };
+    };
 
- const myRank = await prisma.user.count({
- where: { [field]: { gt: currentValue } },
- }) + 1;
+    const myRank =
+        (await prisma.user.count({
+            where: { [field]: { gt: currentValue } },
+        })) + 1;
 
- return {
- above: mapToEntry(aboveUser as Parameters<typeof mapToEntry>[0], myRank - 1),
- below: mapToEntry(belowUser as Parameters<typeof mapToEntry>[0], myRank + 1),
- };
+    return {
+        above: mapToEntry(
+            aboveUser as Parameters<typeof mapToEntry>[0],
+            myRank - 1
+        ),
+        below: mapToEntry(
+            belowUser as Parameters<typeof mapToEntry>[0],
+            myRank + 1
+        ),
+    };
 }
 
 // Toggle leaderboard visibility
 export async function toggleLeaderboardVisibility(): Promise<boolean> {
- const userId = await getCurrentUserId();
- if (!userId) throw new Error("Unauthorized");
+    const userId = await getCurrentUserId();
+    if (!userId) throw new Error("Unauthorized");
 
- const user = await prisma.user.findUnique({
- where: { id: userId },
- select: { showOnLeaderboard: true },
- });
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { showOnLeaderboard: true },
+    });
 
- const newValue = !(user?.showOnLeaderboard ?? true);
+    const newValue = !(user?.showOnLeaderboard ?? true);
 
- await prisma.user.update({
- where: { id: userId },
- data: { showOnLeaderboard: newValue },
- });
+    await prisma.user.update({
+        where: { id: userId },
+        data: { showOnLeaderboard: newValue },
+    });
 
- return newValue;
+    return newValue;
 }
 
 export interface UserTradingAccountInfo {
- id: string;
- name: string;
- accountNumber: string | null;
- broker: string | null;
- useForLeaderboard: boolean;
- pnl: {
- daily: number;
- weekly: number;
- monthly: number;
- };
- hasData: boolean;
+    id: string;
+    name: string;
+    accountNumber: string | null;
+    broker: string | null;
+    useForLeaderboard: boolean;
+    pnl: {
+        daily: number;
+        weekly: number;
+        monthly: number;
+    };
+    hasData: boolean;
 }
 
 export interface SidebarDataResponse {
- showOnLeaderboard: boolean;
- accounts: UserTradingAccountInfo[];
+    showOnLeaderboard: boolean;
+    accounts: UserTradingAccountInfo[];
 }
 
 export async function getLeaderboardSidebarData(): Promise<SidebarDataResponse> {
- const userId = await getCurrentUserId();
- if (!userId) {
- return { showOnLeaderboard: false, accounts: [] };
- }
+    const userId = await getCurrentUserId();
+    if (!userId) {
+        return { showOnLeaderboard: false, accounts: [] };
+    }
 
- const user = await prisma.user.findUnique({
- where: { id: userId },
- select: { showOnLeaderboard: true },
- });
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { showOnLeaderboard: true },
+    });
 
- const accounts = await prisma.tradingAccount.findMany({
- where: { userId },
- select: {
- id: true,
- name: true,
- accountNumber: true,
- broker: true,
- useForLeaderboard: true,
- journalEntries: {
- where: { status: "CLOSED" },
- select: { pnl: true, entryDate: true },
- },
- },
- });
+    const accounts = await prisma.tradingAccount.findMany({
+        where: { userId },
+        select: {
+            id: true,
+            name: true,
+            accountNumber: true,
+            broker: true,
+            useForLeaderboard: true,
+            journalEntries: {
+                where: { status: "CLOSED" },
+                select: { pnl: true, entryDate: true },
+            },
+        },
+    });
 
- const now = new Date();
- const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
- const startOfWeek = new Date(now);
- startOfWeek.setDate(now.getDate() - now.getDay());
- startOfWeek.setHours(0, 0, 0, 0);
- const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const now = new Date();
+    const startOfDay = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+    );
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
- const enrichedAccounts: UserTradingAccountInfo[] = accounts.map((acc) => {
- let daily = 0;
- let weekly = 0;
- let monthly = 0;
- let hasData = false;
+    const enrichedAccounts: UserTradingAccountInfo[] = accounts.map((acc) => {
+        let daily = 0;
+        let weekly = 0;
+        let monthly = 0;
+        let hasData = false;
 
- acc.journalEntries.forEach((je) => {
- const pnl = je.pnl ?? 0;
- const date = new Date(je.entryDate);
- if (date >= startOfDay) daily += pnl;
- if (date >= startOfWeek) weekly += pnl;
- if (date >= startOfMonth) monthly += pnl;
- hasData = true;
- });
+        acc.journalEntries.forEach((je) => {
+            const pnl = je.pnl ?? 0;
+            const date = new Date(je.entryDate);
+            if (date >= startOfDay) daily += pnl;
+            if (date >= startOfWeek) weekly += pnl;
+            if (date >= startOfMonth) monthly += pnl;
+            hasData = true;
+        });
 
- return {
- id: acc.id,
- name: acc.name,
- accountNumber: acc.accountNumber,
- broker: acc.broker,
- useForLeaderboard: acc.useForLeaderboard,
- pnl: {
- daily,
- weekly,
- monthly,
- },
- hasData,
- };
- });
+        return {
+            id: acc.id,
+            name: acc.name,
+            accountNumber: acc.accountNumber,
+            broker: acc.broker,
+            useForLeaderboard: acc.useForLeaderboard,
+            pnl: {
+                daily,
+                weekly,
+                monthly,
+            },
+            hasData,
+        };
+    });
 
- return {
- showOnLeaderboard: user?.showOnLeaderboard ?? true,
- accounts: enrichedAccounts,
- };
+    return {
+        showOnLeaderboard: user?.showOnLeaderboard ?? true,
+        accounts: enrichedAccounts,
+    };
 }
 
 export async function toggleAccountLeaderboardVisibility(
- accountId: string,
- useForLeaderboard: boolean
+    accountId: string,
+    useForLeaderboard: boolean
 ): Promise<boolean> {
- const userId = await getCurrentUserId();
- if (!userId) throw new Error("Unauthorized");
+    const userId = await getCurrentUserId();
+    if (!userId) throw new Error("Unauthorized");
 
- await prisma.tradingAccount.update({
- where: { id: accountId, userId },
- data: { useForLeaderboard },
- });
+    await prisma.tradingAccount.update({
+        where: { id: accountId, userId },
+        data: { useForLeaderboard },
+    });
 
- return useForLeaderboard;
+    return useForLeaderboard;
 }
-

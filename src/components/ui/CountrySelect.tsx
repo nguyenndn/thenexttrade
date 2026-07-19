@@ -7,138 +7,179 @@ import { countries as countryData } from "@/lib/data/countries";
 import { Button } from "@/components/ui/Button";
 
 interface Country {
- code: string;
- name: string;
+    code: string;
+    name: string;
 }
 
 interface CountrySelectProps {
- value?: string;
- onChange?: (value: string) => void;
- className?: string;
- error?: boolean;
- required?: boolean;
+    value?: string;
+    onChange?: (value: string) => void;
+    className?: string;
+    error?: boolean;
+    required?: boolean;
 }
 
-export function CountrySelect({ value, onChange, className, error, required = true }: CountrySelectProps) {
- const [isOpen, setIsOpen] = useState(false);
- const [search, setSearch] = useState("");
- const [countries, setCountries] = useState<Country[]>([]);
- const [loading, setLoading] = useState(true);
- const dropdownRef = useRef<HTMLDivElement>(null);
+export function CountrySelect({
+    value,
+    onChange,
+    className,
+    error,
+    required = true,
+}: CountrySelectProps) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [search, setSearch] = useState("");
+    const [countries, setCountries] = useState<Country[]>([]);
+    const [loading, setLoading] = useState(true);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
- // Use local data
- useEffect(() => {
- setCountries(countryData);
- setLoading(false);
- }, []);
+    // Use local data
+    useEffect(() => {
+        setCountries(countryData);
+        setLoading(false);
+    }, []);
 
- // Close dropdown when clicking outside
- useEffect(() => {
- function handleClickOutside(event: MouseEvent) {
- if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
- setIsOpen(false);
- }
- }
- document.addEventListener("mousedown", handleClickOutside);
- return () => document.removeEventListener("mousedown", handleClickOutside);
- }, []);
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
+                setIsOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () =>
+            document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
- const selectedCountry = countries.find((c) => c.code === value);
+    const selectedCountry = countries.find((c) => c.code === value);
 
- const filteredCountries = countries.filter((country) =>
- country.name.toLowerCase().includes(search.toLowerCase())
- );
+    const filteredCountries = countries.filter((country) =>
+        country.name.toLowerCase().includes(search.toLowerCase())
+    );
 
- return (
- <div className="relative w-full" ref={dropdownRef}>
- {/* Trigger Button */}
- <Button
- variant="ghost"
- type="button"
- onClick={() => !loading && setIsOpen(!isOpen)}
- className={cn(
- "flex items-center justify-between w-full h-12 px-4 rounded-xl border bg-gray-50 dark:bg-[#0B0E14] text-left transition-all font-normal hover:bg-gray-50 dark:hover:bg-[#0B0E14]",
- "border-dashboard hover:border-gray-300 dark:hover:border-white/20 focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:ring-1 focus:ring-[#2F80ED]/50 dark:focus:ring-[#2F80ED]/50",
- error ? "border-red-500/50" : "",
- loading ? "opacity-70 cursor-wait" : "",
- className
- )}
- disabled={loading}
- >
- {loading ? (
- <span className="text-gray-600 text-sm">Loading countries...</span>
- ) : selectedCountry ? (
- <div className="flex items-center gap-3">
- <img
- src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${selectedCountry.code.toLowerCase()}.svg`}
- alt={selectedCountry.name}
- className="w-6 h-4 rounded-sm object-cover shadow-sm shrink-0"
- />
- <span className="text-gray-700 dark:text-white text-base truncate pr-2">{selectedCountry.name}</span>
- </div>
- ) : (
- <span className="text-gray-600 text-base">Select Country</span>
- )}
- <ChevronDown size={20} className={cn("text-gray-500 transition-transform shrink-0", isOpen ? "rotate-180" : "")} />
- </Button>
+    return (
+        <div className="relative w-full" ref={dropdownRef}>
+            {/* Trigger Button */}
+            <Button
+                variant="ghost"
+                type="button"
+                onClick={() => !loading && setIsOpen(!isOpen)}
+                className={cn(
+                    "flex items-center justify-between w-full h-12 px-4 rounded-xl border bg-gray-50 dark:bg-[#0B0E14] text-left transition-all font-normal hover:bg-gray-50 dark:hover:bg-[#0B0E14]",
+                    "border-dashboard hover:border-gray-300 dark:hover:border-white/20 focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:ring-1 focus:ring-[#2F80ED]/50 dark:focus:ring-[#2F80ED]/50",
+                    error ? "border-red-500/50" : "",
+                    loading ? "opacity-70 cursor-wait" : "",
+                    className
+                )}
+                disabled={loading}
+            >
+                {loading ? (
+                    <span className="text-gray-600 text-sm">
+                        Loading countries...
+                    </span>
+                ) : selectedCountry ? (
+                    <div className="flex items-center gap-3">
+                        <img
+                            src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${selectedCountry.code.toLowerCase()}.svg`}
+                            alt={selectedCountry.name}
+                            className="w-6 h-4 rounded-sm object-cover shadow-sm shrink-0"
+                        />
+                        <span className="text-gray-700 dark:text-white text-base truncate pr-2">
+                            {selectedCountry.name}
+                        </span>
+                    </div>
+                ) : (
+                    <span className="text-gray-600 text-base">
+                        Select Country
+                    </span>
+                )}
+                <ChevronDown
+                    size={20}
+                    className={cn(
+                        "text-gray-500 transition-transform shrink-0",
+                        isOpen ? "rotate-180" : ""
+                    )}
+                />
+            </Button>
 
- {/* Hidden Input for Form Submission */}
- <input type="hidden" name="country" value={value || ""} required={required} />
+            {/* Hidden Input for Form Submission */}
+            <input
+                type="hidden"
+                name="country"
+                value={value || ""}
+                required={required}
+            />
 
- {/* Dropdown Menu */}
- {isOpen && (
- <div className="absolute z-50 w-full mt-2 bg-white dark:bg-[#1C1F2E] border border-dashboard rounded-xl shadow-2xl max-h-80 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
- {/* Search Bar */}
- <div className="p-3 border-b border-dashboard sticky top-0 bg-white dark:bg-[#1C1F2E] z-10">
- <div className="relative">
- <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
- <input
- type="text"
- placeholder="Search country..."
- className="w-full bg-gray-50 dark:bg-[#0B0E14] text-gray-700 dark:text-white text-sm rounded-lg pl-9 pr-3 py-2 border border-dashboard focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50"
- value={search}
- onChange={(e) => setSearch(e.target.value)}
- autoFocus
- />
- </div>
- </div>
+            {/* Dropdown Menu */}
+            {isOpen && (
+                <div className="absolute z-50 w-full mt-2 bg-white dark:bg-[#1C1F2E] border border-dashboard rounded-xl shadow-2xl max-h-80 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+                    {/* Search Bar */}
+                    <div className="p-3 border-b border-dashboard sticky top-0 bg-white dark:bg-[#1C1F2E] z-10">
+                        <div className="relative">
+                            <Search
+                                size={16}
+                                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Search country..."
+                                className="w-full bg-gray-50 dark:bg-[#0B0E14] text-gray-700 dark:text-white text-sm rounded-lg pl-9 pr-3 py-2 border border-dashboard focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                autoFocus
+                            />
+                        </div>
+                    </div>
 
- {/* Country List */}
- <div className="overflow-y-auto flex-1 p-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
- {filteredCountries.length > 0 ? (
- filteredCountries.map((country) => (
- <Button
- variant="ghost"
- key={country.code}
- type="button"
- onClick={() => {
- onChange?.(country.code);
- setIsOpen(false);
- setSearch("");
- }}
- className={cn(
- "flex items-center w-full px-3 py-2.5 h-auto rounded-lg text-left transition-colors font-normal justify-start",
- "hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-white/5 dark:active:bg-white/10",
- value === country.code ? "bg-[#2F80ED]/10 text-[#2F80ED]" : "text-gray-700 dark:text-gray-300"
- )}
- >
- <div className="flex items-center gap-3 flex-1">
- <img
- src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${country.code.toLowerCase()}.svg`}
- alt={country.name}
- className="w-6 h-4 rounded-sm object-cover shadow-sm shrink-0"
- />
- <span className="text-sm font-medium truncate">{country.name}</span>
- </div>
- {value === country.code && <Check size={16} className="text-[#2F80ED] shrink-0" />}
- </Button>
- ))
- ) : (
- <div className="p-4 text-center text-sm text-gray-600">No country found</div>
- )}
- </div>
- </div>
- )}
- </div>
- );
+                    {/* Country List */}
+                    <div className="overflow-y-auto flex-1 p-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                        {filteredCountries.length > 0 ? (
+                            filteredCountries.map((country) => (
+                                <Button
+                                    variant="ghost"
+                                    key={country.code}
+                                    type="button"
+                                    onClick={() => {
+                                        onChange?.(country.code);
+                                        setIsOpen(false);
+                                        setSearch("");
+                                    }}
+                                    className={cn(
+                                        "flex items-center w-full px-3 py-2.5 h-auto rounded-lg text-left transition-colors font-normal justify-start",
+                                        "hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-white/5 dark:active:bg-white/10",
+                                        value === country.code
+                                            ? "bg-[#2F80ED]/10 text-[#2F80ED]"
+                                            : "text-gray-700 dark:text-gray-300"
+                                    )}
+                                >
+                                    <div className="flex items-center gap-3 flex-1">
+                                        <img
+                                            src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${country.code.toLowerCase()}.svg`}
+                                            alt={country.name}
+                                            className="w-6 h-4 rounded-sm object-cover shadow-sm shrink-0"
+                                        />
+                                        <span className="text-sm font-medium truncate">
+                                            {country.name}
+                                        </span>
+                                    </div>
+                                    {value === country.code && (
+                                        <Check
+                                            size={16}
+                                            className="text-[#2F80ED] shrink-0"
+                                        />
+                                    )}
+                                </Button>
+                            ))
+                        ) : (
+                            <div className="p-4 text-center text-sm text-gray-600">
+                                No country found
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 }

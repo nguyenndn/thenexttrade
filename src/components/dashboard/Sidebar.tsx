@@ -1,19 +1,15 @@
 "use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Logo } from '@/components/ui/Logo';
-import { cn } from '@/lib/utils';
-import { dashboardMenuItems } from '@/config/navigation';
-import {
-    Menu,
-    LogOut,
-    ChevronDown
-} from 'lucide-react';
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { useClaimableCount } from '@/hooks/useClaimableCount';
-import { signout } from '@/app/auth/actions';
-import { useFeatureFlags } from '@/lib/dashboard-context';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Logo } from "@/components/ui/Logo";
+import { cn } from "@/lib/utils";
+import { dashboardMenuItems } from "@/config/navigation";
+import { Menu, LogOut, ChevronDown } from "lucide-react";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useClaimableCount } from "@/hooks/useClaimableCount";
+import { signout } from "@/app/auth/actions";
+import { useFeatureFlags } from "@/lib/dashboard-context";
 import { Button } from "@/components/ui/Button";
 import { VipStatusWidget } from "@/components/dashboard/VipStatusWidget";
 
@@ -43,7 +39,16 @@ interface SidebarItemComponentProps {
 }
 
 // Extracted component to follow Rules of Hooks
-function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpanded, onToggle, activeHref, claimableCount }: SidebarItemComponentProps) {
+function SidebarItemComponent({
+    item,
+    pathname,
+    collapsed,
+    setCollapsed,
+    isExpanded,
+    onToggle,
+    activeHref,
+    claimableCount,
+}: SidebarItemComponentProps) {
     const Icon = item.icon;
     const hasSubItems = item.items && item.items.length > 0;
 
@@ -52,7 +57,8 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
     const isSelfActive = item.href !== "#" && item.href === activeHref;
 
     // Check if any child is precisely the active one
-    const isChildActive = item.items && item.items.some(sub => sub.href === activeHref);
+    const isChildActive =
+        item.items && item.items.some((sub) => sub.href === activeHref);
 
     const isBranchActive = isSelfActive || isChildActive;
 
@@ -85,9 +91,14 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                             ? "text-primary font-semibold shadow-sm"
                             : "text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
                     )}
-                    style={isActiveStyle ? {
-                        background: 'linear-gradient(to right, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.02))',
-                    } : undefined}
+                    style={
+                        isActiveStyle
+                            ? {
+                                  background:
+                                      "linear-gradient(to right, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.02))",
+                              }
+                            : undefined
+                    }
                     onClick={handleMainClick}
                 >
                     {item.href !== "#" && (
@@ -97,19 +108,26 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                         />
                     )}
 
-                    <Icon size={20} className={cn(
-                        "transition-colors relative z-10 pointer-events-none min-w-[20px]",
-                        isActiveStyle ? "text-primary" : "text-gray-600 dark:text-gray-300 group-hover:text-gray-600 dark:group-hover:text-gray-300"
-                    )} />
+                    <Icon
+                        size={20}
+                        className={cn(
+                            "transition-colors relative z-10 pointer-events-none min-w-[20px]",
+                            isActiveStyle
+                                ? "text-primary"
+                                : "text-gray-600 dark:text-gray-300 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+                        )}
+                    />
 
                     {!collapsed && (
                         <span className="flex-1 text-sm nav-menu-text relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-between">
                             {item.name}
-                            {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
-                                <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
-                                    {claimableCount}
-                                </span>
-                            )}
+                            {item.name === "Missions" &&
+                                claimableCount !== undefined &&
+                                claimableCount > 0 && (
+                                    <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                                        {claimableCount}
+                                    </span>
+                                )}
                         </span>
                     )}
 
@@ -118,23 +136,29 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                             size={16}
                             className={cn(
                                 "transition-transform duration-200 text-gray-400 relative z-10 pointer-events-none",
-                                isExpanded ? "transform rotate-0" : "transform -rotate-90"
+                                isExpanded
+                                    ? "transform rotate-0"
+                                    : "transform -rotate-90"
                             )}
                         />
                     )}
 
                     {collapsed && (
                         <>
-                            {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
-                                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#1E2028]" />
-                            )}
+                            {item.name === "Missions" &&
+                                claimableCount !== undefined &&
+                                claimableCount > 0 && (
+                                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#1E2028]" />
+                                )}
                             <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10 flex items-center gap-2">
                                 {item.name}
-                                {item.name === "Missions" && claimableCount !== undefined && claimableCount > 0 && (
-                                    <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                                        {claimableCount}
-                                    </span>
-                                )}
+                                {item.name === "Missions" &&
+                                    claimableCount !== undefined &&
+                                    claimableCount > 0 && (
+                                        <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                                            {claimableCount}
+                                        </span>
+                                    )}
                             </div>
                         </>
                     )}
@@ -160,10 +184,14 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
                                 )}
                             >
                                 {/* Bullet point dot */}
-                                <span className={cn(
-                                    "w-1.5 h-1.5 rounded-full shrink-0 transition-colors",
-                                    isSubActive ? "bg-primary" : "bg-gray-300 dark:bg-gray-700"
-                                )} />
+                                <span
+                                    className={cn(
+                                        "w-1.5 h-1.5 rounded-full shrink-0 transition-colors",
+                                        isSubActive
+                                            ? "bg-primary"
+                                            : "bg-gray-300 dark:bg-gray-700"
+                                    )}
+                                />
                                 <span className="truncate">{subItem.name}</span>
                             </Link>
                         );
@@ -174,7 +202,12 @@ function SidebarItemComponent({ item, pathname, collapsed, setCollapsed, isExpan
     );
 }
 
-export function Sidebar({ items = dashboardMenuItems, className, collapsed, setCollapsed }: SidebarProps) {
+export function Sidebar({
+    items = dashboardMenuItems,
+    className,
+    collapsed,
+    setCollapsed,
+}: SidebarProps) {
     const pathname = usePathname();
     const isCollapsed = collapsed ?? false;
     // const [collapsed, setCollapsed] = useState(false); // Removed local state
@@ -184,12 +217,13 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
     const claimableCount = useClaimableCount();
 
     // Filter out items with disabled feature flags (hide flagged items until loaded)
-    const visibleItems = useMemo(() =>
-        items.filter((item: any) => {
-            if (!item.featureFlag) return true;
-            if (!flagsLoaded) return false;
-            return !disabledFlags.has(item.featureFlag);
-        }),
+    const visibleItems = useMemo(
+        () =>
+            items.filter((item: any) => {
+                if (!item.featureFlag) return true;
+                if (!flagsLoaded) return false;
+                return !disabledFlags.has(item.featureFlag);
+            }),
         [items, disabledFlags, flagsLoaded]
     );
 
@@ -214,12 +248,16 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
         let bestMatch = "";
 
         const checkMatch = (href: string) => {
-            if (href && href !== "#" && (effectivePath === href || effectivePath.startsWith(`${href}/`))) {
+            if (
+                href &&
+                href !== "#" &&
+                (effectivePath === href || effectivePath.startsWith(`${href}/`))
+            ) {
                 if (href.length > bestMatch.length) {
                     bestMatch = href;
                 }
             }
-        }
+        };
 
         visibleItems.forEach((item: any) => {
             checkMatch(item.href);
@@ -238,7 +276,11 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
         const activeGroup = visibleItems.find((item: any) => {
             if (item.href !== "#" && pathname === item.href) return true;
             if (item.items) {
-                return item.items.some((sub: any) => pathname === sub.href || pathname.startsWith(`${sub.href}/`));
+                return item.items.some(
+                    (sub: any) =>
+                        pathname === sub.href ||
+                        pathname.startsWith(`${sub.href}/`)
+                );
             }
             return false;
         });
@@ -254,32 +296,34 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
 
     const sectionNames: Record<string, string> = isAdmin
         ? {
-            // Admin groups
-            "Monitoring": "MONITORING",
-            "Content": "CONTENT",
-            "Academy": "EDUCATION",
-            "IB & VIP": "IB & VIP",
-            "Copy Trading": "INVESTING",
-            "System": "SYSTEM",
-        }
+              // Admin groups
+              Monitoring: "MONITORING",
+              Content: "CONTENT",
+              Academy: "EDUCATION",
+              "IB & VIP": "IB & VIP",
+              "Copy Trading": "INVESTING",
+              System: "SYSTEM",
+          }
         : {
-            // User Dashboard groups
-            "Dashboard": "OPERATIONS",
-            "Trading Journal": "EXECUTION",
-            "Analytics Hub": "REVIEW",
-            "Academy": "RESOURCES",
-            "Copy Trading": "INVESTING",
-        };
+              // User Dashboard groups
+              Dashboard: "OPERATIONS",
+              "Trading Journal": "EXECUTION",
+              "Analytics Hub": "REVIEW",
+              Academy: "RESOURCES",
+              "Copy Trading": "INVESTING",
+          };
 
     return (
-        <aside id="onborda-sidebar" className={cn(
-            "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-dashboard h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30 shrink-0",
-            isCollapsed ? "w-20" : "w-[230px]",
-            className
-        )}>
+        <aside
+            id="onborda-sidebar"
+            className={cn(
+                "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-dashboard h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30 shrink-0",
+                isCollapsed ? "w-20" : "w-[230px]",
+                className
+            )}
+        >
             {/* Navigation Items */}
             <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
-
                 {visibleItems.map((item: any, index: number) => {
                     const sectionLabel = sectionNames[item.name];
 
@@ -288,7 +332,9 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                             {/* Section Label */}
                             {sectionLabel && !isCollapsed && (
                                 <div className="px-5 py-2 mt-2">
-                                    <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 tracking-widest uppercase">{sectionLabel}</span>
+                                    <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 tracking-widest uppercase">
+                                        {sectionLabel}
+                                    </span>
                                 </div>
                             )}
 
@@ -301,13 +347,19 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                                 item={item}
                                 pathname={pathname}
                                 collapsed={isCollapsed}
-                                setCollapsed={setCollapsed || (() => { })}
+                                setCollapsed={setCollapsed || (() => {})}
                                 isExpanded={expandedGroup === item.name}
                                 onToggle={() => {
-                                    setExpandedGroup(prev => prev === item.name ? null : item.name);
+                                    setExpandedGroup((prev) =>
+                                        prev === item.name ? null : item.name
+                                    );
                                 }}
                                 activeHref={activeHref}
-                                claimableCount={item.name === "Missions" ? claimableCount : undefined}
+                                claimableCount={
+                                    item.name === "Missions"
+                                        ? claimableCount
+                                        : undefined
+                                }
                             />
                         </div>
                     );
@@ -329,9 +381,15 @@ export function Sidebar({ items = dashboardMenuItems, className, collapsed, setC
                     className={cn(
                         "flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group justify-start font-normal",
                         isCollapsed && "justify-center px-0"
-                    )}>
-                    <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
-                    {!isCollapsed && <span className="nav-menu-text text-sm">Logout</span>}
+                    )}
+                >
+                    <LogOut
+                        size={20}
+                        className="group-hover:translate-x-1 transition-transform"
+                    />
+                    {!isCollapsed && (
+                        <span className="nav-menu-text text-sm">Logout</span>
+                    )}
                 </Button>
             </div>
         </aside>

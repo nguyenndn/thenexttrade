@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { deleteTradingAccount } from "@/actions/accounts";
@@ -13,7 +20,12 @@ interface DeleteAccountModalProps {
     onSuccess: () => void;
 }
 
-export function DeleteAccountModal({ isOpen, onClose, accountId, onSuccess }: DeleteAccountModalProps) {
+export function DeleteAccountModal({
+    isOpen,
+    onClose,
+    accountId,
+    onSuccess,
+}: DeleteAccountModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     async function handleDelete() {
@@ -26,7 +38,11 @@ export function DeleteAccountModal({ isOpen, onClose, accountId, onSuccess }: De
             onSuccess();
             onClose();
         } catch (e: any) {
-            toast.error(e instanceof Error ? e.message : (e?.message || "Failed to delete account"));
+            toast.error(
+                e instanceof Error
+                    ? e.message
+                    : e?.message || "Failed to delete account"
+            );
         } finally {
             setIsDeleting(false);
         }
@@ -38,7 +54,9 @@ export function DeleteAccountModal({ isOpen, onClose, accountId, onSuccess }: De
                 <DialogHeader>
                     <DialogTitle>Delete Trading Account?</DialogTitle>
                     <DialogDescription>
-                        Are you sure you want to delete this account? All associated synced trades will be unlinked (or deleted depending on policy). This action cannot be undone.
+                        Are you sure you want to delete this account? All
+                        associated synced trades will be unlinked (or deleted
+                        depending on policy). This action cannot be undone.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>

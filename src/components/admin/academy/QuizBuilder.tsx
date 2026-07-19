@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -40,7 +39,9 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState<any>(null);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [questionToDelete, setQuestionToDelete] = useState<string | null>(null);
+    const [questionToDelete, setQuestionToDelete] = useState<string | null>(
+        null
+    );
     const [isDeleting, setIsDeleting] = useState(false);
 
     const sensors = useSensors(
@@ -69,12 +70,15 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                 const newItems = arrayMove(items, oldIndex, newIndex);
 
                 // API Reorder
-                const reorderData = newItems.map((item, index) => ({ id: item.id, order: index }));
+                const reorderData = newItems.map((item, index) => ({
+                    id: item.id,
+                    order: index,
+                }));
                 fetch("/api/academy/questions/reorder", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ items: reorderData }),
-                }).catch(_err => toast.error("Failed to save order"));
+                }).catch((_err) => toast.error("Failed to save order"));
 
                 return newItems;
             });
@@ -91,11 +95,19 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
 
         setIsDeleting(true);
         try {
-            await fetch(`/api/academy/questions/${questionToDelete}`, { method: "DELETE" });
-            setQuestions(questions.filter((q: any) => q.id !== questionToDelete));
+            await fetch(`/api/academy/questions/${questionToDelete}`, {
+                method: "DELETE",
+            });
+            setQuestions(
+                questions.filter((q: any) => q.id !== questionToDelete)
+            );
             toast.success("Question deleted");
         } catch (error: any) {
-            toast.error(error instanceof Error ? error.message : (error?.message || "Failed to delete question"));
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : error?.message || "Failed to delete question"
+            );
         } finally {
             setIsDeleting(false);
             setIsConfirmOpen(false);
@@ -104,7 +116,9 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
     };
 
     // Determine default back link
-    const defaultBackLink = quiz.module?.id ? `/admin/academy#module-${quiz.module.id}` : '/admin/academy';
+    const defaultBackLink = quiz.module?.id
+        ? `/admin/academy#module-${quiz.module.id}`
+        : "/admin/academy";
     const finalBackLink = backLink || defaultBackLink;
 
     return (
@@ -112,23 +126,41 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <Link href={finalBackLink} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-600">
+                    <Link
+                        href={finalBackLink}
+                        className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-600"
+                    >
                         <ArrowLeft size={20} />
                     </Link>
                     <div>
                         <div className="flex items-center gap-3">
-                            <h1 className="text-xl font-bold text-gray-700 dark:text-white">{quiz.title}</h1>
+                            <h1 className="text-xl font-bold text-gray-700 dark:text-white">
+                                {quiz.title}
+                            </h1>
                             <Button
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setIsSettingsModalOpen(true)}
                                 className="p-1.5 h-auto w-auto text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" /></svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                </svg>
                             </Button>
                         </div>
                         <p className="text-gray-600 dark:text-gray-300 mt-1 text-sm">
-                            {quiz.description || "No description"} • {questions.length} Questions
+                            {quiz.description || "No description"} ï¿½{" "}
+                            {questions.length} Questions
                         </p>
                     </div>
                 </div>
@@ -139,11 +171,29 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                             onClick={() => setIsImportModalOpen(true)}
                             className="bg-primary hover:bg-[#00B078] text-white border-none shadow-lg shadow-primary/40 rounded-xl px-4 flex items-center gap-2"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m16 6 4 14" /><path d="M12 6v14" /><path d="M8 8v12" /><path d="M4 4v16" /></svg>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="m16 6 4 14" />
+                                <path d="M12 6v14" />
+                                <path d="M8 8v12" />
+                                <path d="M4 4v16" />
+                            </svg>
                             Select from Bank
                         </Button>
                         <Button
-                            onClick={() => { setEditingQuestion(null); setIsModalOpen(true); }}
+                            onClick={() => {
+                                setEditingQuestion(null);
+                                setIsModalOpen(true);
+                            }}
                             className="bg-blue-500 hover:bg-blue-600 text-white border-none shadow-lg shadow-blue-500/40 rounded-xl px-6 flex items-center gap-2"
                         >
                             <Plus size={20} />
@@ -168,8 +218,13 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                             <SortableQuestion
                                 key={question.id}
                                 question={question}
-                                onEdit={() => { setEditingQuestion(question); setIsModalOpen(true); }}
-                                onDelete={() => confirmDeleteQuestion(question.id)}
+                                onEdit={() => {
+                                    setEditingQuestion(question);
+                                    setIsModalOpen(true);
+                                }}
+                                onDelete={() =>
+                                    confirmDeleteQuestion(question.id)
+                                }
                             />
                         ))}
                     </div>
@@ -178,7 +233,9 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
 
             {questions.length === 0 && (
                 <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 w-full mx-auto">
-                    <p className="text-gray-600 mb-4">No questions added yet.</p>
+                    <p className="text-gray-600 mb-4">
+                        No questions added yet.
+                    </p>
                     <div className="flex justify-center gap-3">
                         <Button
                             onClick={() => setIsImportModalOpen(true)}
@@ -198,7 +255,10 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
 
             <QuestionModal
                 isOpen={isModalOpen}
-                onClose={() => { setIsModalOpen(false); setEditingQuestion(null); }}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setEditingQuestion(null);
+                }}
                 quizId={quiz.id}
                 question={editingQuestion}
                 onSaved={refreshQuiz}
@@ -226,7 +286,10 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                 cancelText="Cancel"
                 isLoading={isDeleting}
                 onConfirm={handleDeleteQuestion}
-                onCancel={() => { setIsConfirmOpen(false); setQuestionToDelete(null); }}
+                onCancel={() => {
+                    setIsConfirmOpen(false);
+                    setQuestionToDelete(null);
+                }}
                 variant="danger"
             />
         </div>

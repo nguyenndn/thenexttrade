@@ -5,109 +5,116 @@
 /* ===== Dashboard Background ===== */
 /* Edit these hex values to change the dashboard background color */
 :root {
-  --dashboard-bg: #f5f3ef8c;
-  /* Light mode: gray-50 */
-  /* --dashboard-bg: #f9fafb; */
-  --tooltip-bg: rgba(255, 255, 255, 0.95);
-  --tooltip-text: #111827;
-  --tooltip-border: rgba(0, 0, 0, 0.05);
-  --text-secondary: #6B7280; /* gray-500 */
-  --border-color: #E5E7EB; /* gray-200 */
-  --hover-bg: rgba(0, 0, 0, 0.05);
+    --dashboard-bg: #f5f3ef8c;
+    /* Light mode: gray-50 */
+    /* --dashboard-bg: #f9fafb; */
+    --tooltip-bg: rgba(255, 255, 255, 0.95);
+    --tooltip-text: #111827;
+    --tooltip-border: rgba(0, 0, 0, 0.05);
+    --text-secondary: #6b7280; /* gray-500 */
+    --border-color: #e5e7eb; /* gray-200 */
+    --hover-bg: rgba(0, 0, 0, 0.05);
 
-  /* ===== Navigation Menu Font Weight =====
+    /* ===== Navigation Menu Font Weight =====
      Controls font-weight for all navigation/menu items site-wide.
      Change to 400 or 500 to revert to lighter text.
      600 = semi-bold, 700 = bold */
-  --nav-menu-weight: 600;
+    --nav-menu-weight: 600;
 }
 
 .dark {
-  --dashboard-bg: transparent;
-  /* Dark mode: transparent to reveal body gradient */
-  --tooltip-bg: rgba(18, 23, 42, 0.95);
-  --tooltip-text: #f3f4f6;
-  --tooltip-border: rgba(255, 255, 255, 0.1);
-  --text-secondary: #9CA3AF; /* gray-400 */
-  --border-color: rgba(255, 255, 255, 0.08);
-  --hover-bg: rgba(255, 255, 255, 0.05);
+    --dashboard-bg: transparent;
+    /* Dark mode: transparent to reveal body gradient */
+    --tooltip-bg: rgba(18, 23, 42, 0.95);
+    --tooltip-text: #f3f4f6;
+    --tooltip-border: rgba(255, 255, 255, 0.1);
+    --text-secondary: #9ca3af; /* gray-400 */
+    --border-color: rgba(255, 255, 255, 0.08);
+    --hover-bg: rgba(255, 255, 255, 0.05);
 }
 
 body {
-  font-family: var(--font-source-sans), system-ui, sans-serif;
-  @apply bg-base-100 text-base-content antialiased;
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-  padding-bottom: env(safe-area-inset-bottom);
-  line-height: 1.65;
+    font-family: var(--font-source-sans), system-ui, sans-serif;
+    @apply bg-base-100 text-base-content antialiased;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    line-height: 1.65;
 }
 
 .dark body {
-  background: linear-gradient(135deg, #2b2344 0%, #193451 50%, #06454f 100%) no-repeat fixed;
-  background-size: cover;
+    background: linear-gradient(135deg, #2b2344 0%, #193451 50%, #06454f 100%)
+        no-repeat fixed;
+    background-size: cover;
 }
 
 /* ── Lexend for headings (inspired by goclaw.sh) ── */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-lexend), system-ui, sans-serif;
-  letter-spacing: -0.025em;
-  line-height: 1.15;
-  font-weight: 700;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-lexend), system-ui, sans-serif;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    font-weight: 700;
 }
 
-h4, h5, h6 {
-  letter-spacing: -0.015em;
-  line-height: 1.3;
-  font-weight: 600;
+h4,
+h5,
+h6 {
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    font-weight: 600;
 }
 
 /* Tailwind heading class */
 .font-heading {
-  font-family: var(--font-lexend), system-ui, sans-serif;
-  letter-spacing: -0.02em;
+    font-family: var(--font-lexend), system-ui, sans-serif;
+    letter-spacing: -0.02em;
 }
 
 @layer components {
-  .glass-panel {
-    @apply bg-base-100 bg-opacity-70 backdrop-blur-xl border border-white/10 shadow-xl;
-  }
+    .glass-panel {
+        @apply bg-base-100 bg-opacity-70 backdrop-blur-xl border border-white/10 shadow-xl;
+    }
 
-  .glass-input {
-    @apply bg-base-200 bg-opacity-50 border-transparent focus:border-primary focus:bg-base-100 transition-all duration-300;
-  }
+    .glass-input {
+        @apply bg-base-200 bg-opacity-50 border-transparent focus:border-primary focus:bg-base-100 transition-all duration-300;
+    }
 
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
-  }
+    .gradient-text {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+    }
 
-  .noise-bg {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 128px 128px;
-  }
+    .noise-bg {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 128px 128px;
+    }
 
-  /* Navigation menu item text — controlled by --nav-menu-weight variable.
+    /* Navigation menu item text — controlled by --nav-menu-weight variable.
      Applied to all nav links (public, dashboard sidebar, mobile nav, bottom tab bar).
      To revert: change --nav-menu-weight in :root to 400 or 500. */
-  .nav-menu-text {
-    font-weight: var(--nav-menu-weight, 500);
-  }
-
+    .nav-menu-text {
+        font-weight: var(--nav-menu-weight, 500);
+    }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+    .text-balance {
+        text-wrap: balance;
+    }
 
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 /* ===== Browser Autofill Override ===== */
@@ -124,12 +131,14 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  /* Light mode: white/light background */
-  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-  box-shadow: 0 0 0 1000px #ffffff inset !important;
-  -webkit-text-fill-color: #111827 !important;
-  caret-color: #111827;
-  transition: background-color 0s 600000s, color 0s 600000s !important;
+    /* Light mode: white/light background */
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #111827 !important;
+    caret-color: #111827;
+    transition:
+        background-color 0s 600000s,
+        color 0s 600000s !important;
 }
 
 /* Dark mode autofill */
@@ -143,192 +152,189 @@ select:-webkit-autofill:focus {
 .dark select:-webkit-autofill,
 .dark select:-webkit-autofill:hover,
 .dark select:-webkit-autofill:focus {
-  /* Dark mode: dark background */
-  -webkit-box-shadow: 0 0 0 1000px #1e2028 inset !important;
-  box-shadow: 0 0 0 1000px #1e2028 inset !important;
-  -webkit-text-fill-color: #f9fafb !important;
-  caret-color: #f9fafb;
-  transition: background-color 0s 600000s, color 0s 600000s !important;
+    /* Dark mode: dark background */
+    -webkit-box-shadow: 0 0 0 1000px #1e2028 inset !important;
+    box-shadow: 0 0 0 1000px #1e2028 inset !important;
+    -webkit-text-fill-color: #f9fafb !important;
+    caret-color: #f9fafb;
+    transition:
+        background-color 0s 600000s,
+        color 0s 600000s !important;
 }
 
-
-
 .custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+    width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 20px;
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 20px;
 }
 
 /* Custom Animations */
 @keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
+    0% {
+        transform: translateY(0px);
+    }
 
-  50% {
-    transform: translateY(-10px);
-  }
+    50% {
+        transform: translateY(-10px);
+    }
 
-  100% {
-    transform: translateY(0px);
-  }
+    100% {
+        transform: translateY(0px);
+    }
 }
 
-
 @keyframes slide-in-left {
-  0% {
-    transform: translateX(-100%);
-  }
+    0% {
+        transform: translateX(-100%);
+    }
 
-  100% {
-    transform: translateX(0);
-  }
+    100% {
+        transform: translateX(0);
+    }
 }
 
 .animate-slide-in-left {
-  animation: slide-in-left 0.3s ease-out forwards;
+    animation: slide-in-left 0.3s ease-out forwards;
 }
 
 @keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
+    0% {
+        transform: translateX(0);
+    }
 
-  100% {
-    transform: translateX(-50%);
-  }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+    animation: marquee 30s linear infinite;
 }
 
 /* Premium CTA Button Shimmer/Shine Sweep Effect */
 @keyframes btn-shine-sweep {
-  0% {
-    left: -150%;
-  }
-  25%, 100% {
-    left: 200%;
-  }
+    0% {
+        left: -150%;
+    }
+    25%,
+    100% {
+        left: 200%;
+    }
 }
 
 .animate-btn-shine {
-  position: relative;
-  overflow: hidden;
+    position: relative;
+    overflow: hidden;
 }
 
 .animate-btn-shine::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: 80px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0) 20%,
-    rgba(255, 255, 255, 0.35) 50%,
-    rgba(255, 255, 255, 0) 80%,
-    transparent 100%
-  );
-  transform: skewX(-25deg);
-  left: -150%;
-  animation: btn-shine-sweep 4.5s infinite ease-in-out;
-  pointer-events: none;
-}
-
-
-
-
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 161 100% 39%;
-    /* #00C888 */
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --gold: 38 92% 50%;
-    /* #F59E0B — amber-500, Premium/Pro accent */
-  }
-
-  .dark {
-    --background: 227 38% 8%;
-    --foreground: 0 0% 98%;
-    --card: 227 38% 12%;
-    --card-foreground: 0 0% 98%;
-    --popover: 227 38% 10%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 161 100% 39%;
-    /* #00C888 */
-    --primary-foreground: 0 0% 9%;
-    --secondary: 227 30% 18%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 227 30% 16%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 227 30% 18%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 227 30% 18%;
-    --input: 227 30% 18%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --gold: 38 92% 50%;
-    /* #F59E0B — amber-500, Premium/Pro accent */
-  }
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 80px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0) 20%,
+        rgba(255, 255, 255, 0.35) 50%,
+        rgba(255, 255, 255, 0) 80%,
+        transparent 100%
+    );
+    transform: skewX(-25deg);
+    left: -150%;
+    animation: btn-shine-sweep 4.5s infinite ease-in-out;
+    pointer-events: none;
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 3.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 3.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 3.9%;
+        --primary: 161 100% 39%;
+        /* #00C888 */
+        --primary-foreground: 0 0% 98%;
+        --secondary: 0 0% 96.1%;
+        --secondary-foreground: 0 0% 9%;
+        --muted: 0 0% 96.1%;
+        --muted-foreground: 0 0% 45.1%;
+        --accent: 0 0% 96.1%;
+        --accent-foreground: 0 0% 9%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 89.8%;
+        --input: 0 0% 89.8%;
+        --ring: 0 0% 3.9%;
+        --chart-1: 12 76% 61%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
+        --radius: 0.5rem;
+        --gold: 38 92% 50%;
+        /* #F59E0B — amber-500, Premium/Pro accent */
+    }
 
-  body {
-    @apply bg-background text-foreground;
-  }
+    .dark {
+        --background: 227 38% 8%;
+        --foreground: 0 0% 98%;
+        --card: 227 38% 12%;
+        --card-foreground: 0 0% 98%;
+        --popover: 227 38% 10%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 161 100% 39%;
+        /* #00C888 */
+        --primary-foreground: 0 0% 9%;
+        --secondary: 227 30% 18%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 227 30% 16%;
+        --muted-foreground: 0 0% 63.9%;
+        --accent: 227 30% 18%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 227 30% 18%;
+        --input: 227 30% 18%;
+        --ring: 0 0% 83.1%;
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
+        --gold: 38 92% 50%;
+        /* #F59E0B — amber-500, Premium/Pro accent */
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
 }
 
 /* === Global Cursor Policy (Unlayered = beats browser defaults) === */
 * {
-  cursor: default !important;
+    cursor: default !important;
 }
 
 a,
@@ -344,14 +350,16 @@ input[type="submit"],
 input[type="reset"],
 input[type="range"],
 label[for] {
-  cursor: pointer !important;
+    cursor: pointer !important;
 }
 
-input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="submit"]):not([type="reset"]):not([type="range"]),
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(
+        [type="submit"]
+    ):not([type="reset"]):not([type="range"]),
 textarea,
 [contenteditable="true"],
 [class*="cursor-text"] {
-  cursor: text !important;
+    cursor: text !important;
 }
 
 /* Disable all transitions during theme switch */
@@ -359,109 +367,114 @@ textarea,
 .disable-transitions *,
 .disable-transitions *::before,
 .disable-transitions *::after {
-  transition-duration: 0s !important;
+    transition-duration: 0s !important;
 }
 
 /* Disable Recharts outline globally on click */
 .recharts-wrapper,
 .recharts-surface,
 .recharts-responsive-container {
-  outline: none !important;
+    outline: none !important;
 }
 
 .recharts-cartesian-axis-tick-value {
-  fill: var(--text-secondary) !important;
+    fill: var(--text-secondary) !important;
 }
 
 /* Keep rich article tables readable on small screens without widening the page. */
 .article-content table {
-  display: block;
-  width: max-content;
-  max-width: 100%;
-  overflow-x: auto;
-  border-collapse: collapse;
-  white-space: nowrap;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    white-space: nowrap;
 }
 
 .article-content th,
 .article-content td {
-  white-space: nowrap;
+    white-space: nowrap;
 }
 
 /* ===== Academy Lesson Footer (Action Step + Next Lesson) ===== */
 .lesson-footer-compact .lesson-footer {
-  margin-top: 1.5rem;
-  padding: 1rem 1.25rem;
-  border-radius: 0.75rem;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
 }
 
 .dark .lesson-footer-compact .lesson-footer {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 .lesson-footer-compact .lesson-footer h4 {
-  font-size: 0.875rem !important;
-  font-weight: 700 !important;
-  margin: 0 0 0.25rem 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  letter-spacing: 0;
-  line-height: 1.4;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    margin: 0 0 0.25rem 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    letter-spacing: 0;
+    line-height: 1.4;
 }
 
 .lesson-footer-compact .lesson-footer p {
-  font-size: 0.8125rem !important;
-  margin: 0 !important;
-  line-height: 1.5;
-  opacity: 0.8;
+    font-size: 0.8125rem !important;
+    margin: 0 !important;
+    line-height: 1.5;
+    opacity: 0.8;
 }
 
 .lesson-footer-compact .lesson-footer p strong {
-  font-weight: 600;
+    font-weight: 600;
 }
 
 /* ===== System-wide Dark Mode Overrides ===== */
 .dark {
-  /* Set variables to correct navy shades matching the gradient */
-  --background: 227 38% 8%; /* Deeper navy #0c0f1b */
-  --card: 227 38% 12%;       /* Lighter navy #12172a */
-  --popover: 227 38% 10%;
-  --border: 227 30% 18%;
-  --input: 227 30% 18%;
+    /* Set variables to correct navy shades matching the gradient */
+    --background: 227 38% 8%; /* Deeper navy #0c0f1b */
+    --card: 227 38% 12%; /* Lighter navy #12172a */
+    --popover: 227 38% 10%;
+    --border: 227 30% 18%;
+    --input: 227 30% 18%;
 }
 
 /* Ensure the body gradient is applied fixed and cover in dark mode */
 .dark body {
-  background-image: linear-gradient(135deg, #2b2344 0%, #193451 50%, #06454f 100%) !important;
-  background-repeat: no-repeat !important;
-  background-attachment: fixed !important;
-  background-size: cover !important;
+    background-image: linear-gradient(
+        135deg,
+        #2b2344 0%,
+        #193451 50%,
+        #06454f 100%
+    ) !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    background-size: cover !important;
 }
 
 /* 1. Alternative section/dashboard backgrounds (#0B0E14) */
 .dark [class*="bg-[#0B0E14]"] {
-  background-color: hsl(var(--background) / 0.5) !important;
+    background-color: hsl(var(--background) / 0.5) !important;
 }
 
 /* 2. Main body/layout overrides (#0F1117) */
 .dark [class*="bg-[#0F1117]"] {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 /* 3. Floating cards and panels (#1E2028 and #1A1D27) */
 .dark [class*="bg-[#1E2028]"],
 .dark [class*="bg-[#1A1D27]"] {
-  background-color: hsl(var(--card) / 0.75) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+    background-color: hsl(var(--card) / 0.75) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
 }
 
 /* 4. Form inputs, dropdowns, and select boxes (#151925) */
 .dark [class*="bg-[#151925]"] {
-  background-color: hsl(var(--card) / 0.95) !important;
+    background-color: hsl(var(--card) / 0.95) !important;
 }
 
 /* 5. Standard Tailwind gray/slate dark backgrounds override */
@@ -474,7 +487,7 @@ textarea,
 .dark [class*="bg-slate-950"],
 .dark [class*="bg-zinc-950"],
 .dark [class*="bg-neutral-950"] {
-  background-color: hsl(var(--background) / 0.7) !important;
+    background-color: hsl(var(--background) / 0.7) !important;
 }
 
 .dark [class*="bg-gray-800"],
@@ -482,9 +495,9 @@ textarea,
 .dark [class*="bg-zinc-800"],
 .dark [class*="bg-neutral-800"],
 .dark [class*="bg-stone-800"] {
-  background-color: hsl(var(--card) / 0.75) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+    background-color: hsl(var(--card) / 0.75) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
 }
 
 /* 6. Text and icon contrast safety net */
@@ -494,7 +507,7 @@ textarea,
 .dark h4,
 .dark h5,
 .dark h6 {
-  color: #ffffff !important;
+    color: #ffffff !important;
 }
 
 .dark .text-gray-900,
@@ -504,7 +517,7 @@ textarea,
 .dark .text-stone-900,
 .dark .dark\:text-gray-900,
 .dark .dark\:text-slate-900 {
-  color: #ffffff !important;
+    color: #ffffff !important;
 }
 
 .dark .text-gray-800,
@@ -515,7 +528,7 @@ textarea,
 .dark .dark\:text-gray-150,
 .dark .dark\:text-slate-150,
 .dark .dark\:text-white {
-  color: #f3f4f6 !important;
+    color: #f3f4f6 !important;
 }
 
 .dark .text-gray-700,
@@ -525,7 +538,7 @@ textarea,
 .dark .text-stone-700,
 .dark .dark\:text-gray-300,
 .dark .dark\:text-slate-300 {
-  color: #e5e7eb !important;
+    color: #e5e7eb !important;
 }
 
 .dark .text-gray-600,
@@ -535,95 +548,95 @@ textarea,
 .dark .text-stone-600,
 .dark .dark\:text-gray-400,
 .dark .dark\:text-slate-400 {
-  color: #d1d5db !important;
+    color: #d1d5db !important;
 }
 
 /* ===== React Grid Layout Custom Resize Handles ===== */
 .react-resizable-handle-se,
 .react-resizable-handle-sw {
-  position: absolute;
-  width: 16px !important;
-  height: 16px !important;
-  bottom: 12px !important; /* Inset from card bottom border (compensated for py-2 grid item padding) */
-  background-color: rgba(245, 158, 11, 0.08) !important;
-  border: 1px solid #f59e0b !important;
-  border-radius: 6px !important;
-  z-index: 20 !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s;
-  padding: 0 !important;
-  box-sizing: border-box !important;
-  background-image: none !important;
-  opacity: 1 !important; /* Force resize handles to always show in edit mode */
-  transform: none !important; /* Override default react-grid-layout sw rotate(90deg) */
+    position: absolute;
+    width: 16px !important;
+    height: 16px !important;
+    bottom: 12px !important; /* Inset from card bottom border (compensated for py-2 grid item padding) */
+    background-color: rgba(245, 158, 11, 0.08) !important;
+    border: 1px solid #f59e0b !important;
+    border-radius: 6px !important;
+    z-index: 20 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    background-image: none !important;
+    opacity: 1 !important; /* Force resize handles to always show in edit mode */
+    transform: none !important; /* Override default react-grid-layout sw rotate(90deg) */
 }
 
 .dark .react-resizable-handle-se,
 .dark .react-resizable-handle-sw {
-  background-color: rgba(245, 158, 11, 0.15) !important;
-  border-color: rgba(245, 158, 11, 0.5) !important;
+    background-color: rgba(245, 158, 11, 0.15) !important;
+    border-color: rgba(245, 158, 11, 0.5) !important;
 }
 
 .react-resizable-handle-se:hover,
 .react-resizable-handle-sw:hover {
-  transform: scale(1.1) !important;
-  background-color: rgba(245, 158, 11, 0.2) !important;
-  border-color: #d97706 !important;
+    transform: scale(1.1) !important;
+    background-color: rgba(245, 158, 11, 0.2) !important;
+    border-color: #d97706 !important;
 }
 
 .dark .react-resizable-handle-se:hover,
 .dark .react-resizable-handle-sw:hover {
-  background-color: rgba(245, 158, 11, 0.3) !important;
-  border-color: #f59e0b !important;
+    background-color: rgba(245, 158, 11, 0.3) !important;
+    border-color: #f59e0b !important;
 }
 
 /* Southeast Handle (Bottom-Right) */
 .react-resizable-handle-se {
-  right: 12px !important; /* Inset from card right border */
-  cursor: se-resize !important;
+    right: 12px !important; /* Inset from card right border */
+    cursor: se-resize !important;
 }
 
 /* Southwest Handle (Bottom-Left) */
 .react-resizable-handle-sw {
-  left: 12px !important; /* Inset from card left border */
-  cursor: sw-resize !important;
+    left: 12px !important; /* Inset from card left border */
+    cursor: sw-resize !important;
 }
 
 /* Create the L-shape pointing bottom-right for Southeast handle and bottom-left for Southwest handle */
 .react-resizable-handle-se::after {
-  content: "" !important;
-  position: absolute !important;
-  width: 5px !important;
-  height: 5px !important;
-  right: 4px !important;
-  left: auto !important;
-  bottom: 4px !important;
-  border-right: 2px solid #d97706 !important;
-  border-bottom: 2px solid #d97706 !important;
-  border-left: none !important;
-  border-top: none !important;
+    content: "" !important;
+    position: absolute !important;
+    width: 5px !important;
+    height: 5px !important;
+    right: 4px !important;
+    left: auto !important;
+    bottom: 4px !important;
+    border-right: 2px solid #d97706 !important;
+    border-bottom: 2px solid #d97706 !important;
+    border-left: none !important;
+    border-top: none !important;
 }
 
 .dark .react-resizable-handle-se::after {
-  border-color: #f59e0b !important;
+    border-color: #f59e0b !important;
 }
 
 .react-resizable-handle-sw::after {
-  content: "" !important;
-  position: absolute !important;
-  width: 5px !important;
-  height: 5px !important;
-  left: 4px !important;
-  right: auto !important;
-  bottom: 4px !important;
-  border-left: 2px solid #d97706 !important;
-  border-bottom: 2px solid #d97706 !important;
-  border-right: none !important;
-  border-top: none !important;
+    content: "" !important;
+    position: absolute !important;
+    width: 5px !important;
+    height: 5px !important;
+    left: 4px !important;
+    right: auto !important;
+    bottom: 4px !important;
+    border-left: 2px solid #d97706 !important;
+    border-bottom: 2px solid #d97706 !important;
+    border-right: none !important;
+    border-top: none !important;
 }
 
 .dark .react-resizable-handle-sw::after {
-  border-color: #f59e0b !important;
+    border-color: #f59e0b !important;
 }
 
 /* Force disable transitions during grid editing/resizing/dragging to ensure pixel-perfect smooth dragging */
@@ -631,13 +644,13 @@ textarea,
 .react-grid-item.react-draggable-dragging,
 .react-grid-item.resizing *,
 .react-grid-item.react-draggable-dragging * {
-  transition: none !important;
+    transition: none !important;
 }
 
 /* Fix trackpad/mouse wheel scrolling being blocked on dashboard grid items */
 .react-grid-item {
-  touch-action: auto !important;
+    touch-action: auto !important;
 }
 .react-grid-item.react-draggable-dragging {
-  touch-action: none !important;
+    touch-action: none !important;
 }

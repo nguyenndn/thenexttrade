@@ -11,147 +11,162 @@ import { VipTabSummary } from "./VipTabSummary";
 import type { VipRequest } from "@prisma/client";
 
 interface TradingSystemsClientProps {
- licenses: any[];
- products: any[];
- hasApprovedLicense: boolean;
- hasAccount?: boolean;
- hasDownloaded: boolean;
- vipRequest?: VipRequest | null;
- vipLink?: string | null;
- userEmail?: string;
- userName?: string;
+    licenses: any[];
+    products: any[];
+    hasApprovedLicense: boolean;
+    hasAccount?: boolean;
+    hasDownloaded: boolean;
+    vipRequest?: VipRequest | null;
+    vipLink?: string | null;
+    userEmail?: string;
+    userName?: string;
 }
 
 export function TradingSystemsClient({
- licenses,
- products,
- hasApprovedLicense,
- hasAccount,
- hasDownloaded,
- vipRequest = null,
- vipLink = null,
- userEmail = "",
- userName,
+    licenses,
+    products,
+    hasApprovedLicense,
+    hasAccount,
+    hasDownloaded,
+    vipRequest = null,
+    vipLink = null,
+    userEmail = "",
+    userName,
 }: TradingSystemsClientProps) {
- const searchParams = useSearchParams();
- const defaultTab = searchParams.get("tab") || "MT5_EA";
- // Product counts for tab badges
- const eaCount = products.filter(p =>
- (p.platform === "MT5" || p.platform === "BOTH") &&
- (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST")
- ).length;
+    const searchParams = useSearchParams();
+    const defaultTab = searchParams.get("tab") || "MT5_EA";
+    // Product counts for tab badges
+    const eaCount = products.filter(
+        (p) =>
+            (p.platform === "MT5" || p.platform === "BOTH") &&
+            (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST")
+    ).length;
 
- const indicatorCount = products.filter(p =>
- (p.platform === "MT5" || p.platform === "BOTH") &&
- p.type === "INDICATOR"
- ).length;
+    const indicatorCount = products.filter(
+        (p) =>
+            (p.platform === "MT5" || p.platform === "BOTH") &&
+            p.type === "INDICATOR"
+    ).length;
 
- const eaProducts = products.filter(p =>
- (p.platform === "MT5" || p.platform === "BOTH") &&
- (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST")
- );
+    const eaProducts = products.filter(
+        (p) =>
+            (p.platform === "MT5" || p.platform === "BOTH") &&
+            (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST")
+    );
 
- const indicatorProducts = products.filter(p =>
- (p.platform === "MT5" || p.platform === "BOTH") &&
- p.type === "INDICATOR"
- );
+    const indicatorProducts = products.filter(
+        (p) =>
+            (p.platform === "MT5" || p.platform === "BOTH") &&
+            p.type === "INDICATOR"
+    );
 
- // VIP status badge
- const vipBadge = vipRequest?.status === "APPROVED"
- ? "✓"
- : vipRequest?.status === "PENDING"
- ? "⏳"
- : null;
+    // VIP status badge
+    const vipBadge =
+        vipRequest?.status === "APPROVED"
+            ? "✓"
+            : vipRequest?.status === "PENDING"
+              ? "⏳"
+              : null;
 
- const tabTriggerClass = "rounded-lg px-4 py-1.5 text-sm font-bold whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-600 dark:text-gray-300 flex items-center gap-2 border border-transparent data-[state=active]:border-dashboard dark:data-[state=active]:border-white/10";
+    const tabTriggerClass =
+        "rounded-lg px-4 py-1.5 text-sm font-bold whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 text-gray-600 dark:text-gray-300 flex items-center gap-2 border border-transparent data-[state=active]:border-dashboard dark:data-[state=active]:border-white/10";
 
- return (
- <>
- {/* Header */}
- <PageHeader
- title="Trading System"
- description="Manage EA, indicators & VIP access."
- />
+    return (
+        <>
+            {/* Header */}
+            <PageHeader
+                title="Trading System"
+                description="Manage EA, indicators & VIP access."
+            />
 
- {/* Account Setup Progress */}
- <AccountSetupWidget
- hasAccount={hasAccount ?? licenses.length > 0}
- hasApprovedLicense={hasApprovedLicense}
- hasDownloaded={hasDownloaded}
- />
+            {/* Account Setup Progress */}
+            <AccountSetupWidget
+                hasAccount={hasAccount ?? licenses.length > 0}
+                hasApprovedLicense={hasApprovedLicense}
+                hasDownloaded={hasDownloaded}
+            />
 
- {/* Unified Tabs */}
- <Tabs defaultValue={defaultTab} className="w-full">
- <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
- <TabsList className="bg-gray-50 dark:bg-white/5 p-1 gap-1 rounded-xl border border-dashboard w-auto inline-flex h-auto shrink-0">
- <TabsTrigger 
- value="MT5_EA" 
- className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- <CustomBotIcon size={15} />
- <span>Expert Advisor</span>
- {eaCount > 0 && (
- <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
- {eaCount}
- </span>
- )}
- </TabsTrigger>
- <TabsTrigger 
- value="MT5_INDICATOR" 
- className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- <BarChart2 size={15} />
- <span>Indicators</span>
- {indicatorCount > 0 && (
- <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
- {indicatorCount}
- </span>
- )}
- </TabsTrigger>
- <TabsTrigger 
- value="VIP" 
- className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
- activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
- activeTextClassName="!text-white"
- >
- <Crown size={15} />
- <span>VIP</span>
- {vipBadge && (
- <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
- {vipBadge}
- </span>
- )}
- </TabsTrigger>
- </TabsList>
- </div>
+            {/* Unified Tabs */}
+            <Tabs defaultValue={defaultTab} className="w-full">
+                <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
+                    <TabsList className="bg-gray-50 dark:bg-white/5 p-1 gap-1 rounded-xl border border-dashboard w-auto inline-flex h-auto shrink-0">
+                        <TabsTrigger
+                            value="MT5_EA"
+                            className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeTextClassName="!text-white"
+                        >
+                            <CustomBotIcon size={15} />
+                            <span>Expert Advisor</span>
+                            {eaCount > 0 && (
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
+                                    {eaCount}
+                                </span>
+                            )}
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="MT5_INDICATOR"
+                            className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeTextClassName="!text-white"
+                        >
+                            <BarChart2 size={15} />
+                            <span>Indicators</span>
+                            {indicatorCount > 0 && (
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
+                                    {indicatorCount}
+                                </span>
+                            )}
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="VIP"
+                            className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeTextClassName="!text-white"
+                        >
+                            <Crown size={15} />
+                            <span>VIP</span>
+                            {vipBadge && (
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
+                                    {vipBadge}
+                                </span>
+                            )}
+                        </TabsTrigger>
+                    </TabsList>
+                </div>
 
- {/* Content Area */}
- <div className="min-h-[500px] mt-6">
- <TabsContent value="MT5_EA" className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0">
- <SystemsList
- products={eaProducts}
- isLocked={!hasApprovedLicense}
- />
- </TabsContent>
+                {/* Content Area */}
+                <div className="min-h-[500px] mt-6">
+                    <TabsContent
+                        value="MT5_EA"
+                        className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0"
+                    >
+                        <SystemsList
+                            products={eaProducts}
+                            isLocked={!hasApprovedLicense}
+                        />
+                    </TabsContent>
 
- <TabsContent value="MT5_INDICATOR" className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0">
- <SystemsList
- products={indicatorProducts}
- isLocked={!hasApprovedLicense}
- />
- </TabsContent>
+                    <TabsContent
+                        value="MT5_INDICATOR"
+                        className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0"
+                    >
+                        <SystemsList
+                            products={indicatorProducts}
+                            isLocked={!hasApprovedLicense}
+                        />
+                    </TabsContent>
 
- <TabsContent value="VIP" className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0">
- <div className="w-full bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-dashboard">
- <VipTabSummary vipRequest={vipRequest} />
- </div>
- </TabsContent>
- </div>
- </Tabs>
- </>
- );
+                    <TabsContent
+                        value="VIP"
+                        className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0"
+                    >
+                        <div className="w-full bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-dashboard">
+                            <VipTabSummary vipRequest={vipRequest} />
+                        </div>
+                    </TabsContent>
+                </div>
+            </Tabs>
+        </>
+    );
 }

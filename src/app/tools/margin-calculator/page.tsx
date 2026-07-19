@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("margin-calculator")!;
 
 export const metadata: Metadata = {
- title: `${tool.title} | TheNextTrade`,
- description: tool.description,
+    title: `${tool.title} | TheNextTrade`,
+    description: tool.description,
 };
 
 export default function MarginCalculatorPage() {
- return (
- <ToolPageLayout tool={tool}>
- <MarginCalc />
- </ToolPageLayout>
- );
+    return (
+        <ToolPageLayout tool={tool}>
+            <MarginCalc />
+        </ToolPageLayout>
+    );
 }

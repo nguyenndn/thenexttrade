@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("live-market-rates")!;
 
 export const metadata: Metadata = {
- title: tool.title,
- description: tool.description,
+    title: tool.title,
+    description: tool.description,
 };
 
 export default function LiveMarketRatesPage() {
- return (
- <ToolPageLayout tool={tool}>
- <LiveMarketRates />
- </ToolPageLayout>
- );
+    return (
+        <ToolPageLayout tool={tool}>
+            <LiveMarketRates />
+        </ToolPageLayout>
+    );
 }

@@ -9,73 +9,76 @@ import { AuthUser } from "@/lib/auth-types";
 import { FloatingQuickActions } from "@/components/dashboard/FloatingQuickActions";
 import { DashboardProvider } from "@/lib/dashboard-context";
 import { PageWelcomeGuide } from "@/components/onboarding/PageWelcomeGuide";
-import { ProProvider, type InitialProStatus } from "@/components/pro/ProProvider";
+import {
+    ProProvider,
+    type InitialProStatus,
+} from "@/components/pro/ProProvider";
 import { LevelUpModal } from "@/components/dashboard/LevelUpModal";
 import { MilestoneCelebrationModal } from "@/components/dashboard/MilestoneCelebrationModal";
 
-
 interface DashboardLayoutClientProps {
- children: React.ReactNode;
- user: AuthUser | null;
- initialProStatus?: InitialProStatus | null;
+    children: React.ReactNode;
+    user: AuthUser | null;
+    initialProStatus?: InitialProStatus | null;
 }
 
 export function DashboardLayoutClient({
- children,
- user,
- initialProStatus,
+    children,
+    user,
+    initialProStatus,
 }: DashboardLayoutClientProps) {
- const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
- const [collapsed, setCollapsed] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
- return (
- <DashboardProvider>
- <ProProvider initialProStatus={initialProStatus}>
- <div className="h-screen font-sans flex flex-col overflow-hidden" style={{ backgroundColor: 'var(--dashboard-bg)' }}>
- {/* Top Header - Full Width */}
- <Header
- onMobileMenuClick={() => setMobileMenuOpen(true)}
- user={user}
- collapsed={collapsed}
- setCollapsed={setCollapsed}
- />
+    return (
+        <DashboardProvider>
+            <ProProvider initialProStatus={initialProStatus}>
+                <div
+                    className="h-screen font-sans flex flex-col overflow-hidden"
+                    style={{ backgroundColor: "var(--dashboard-bg)" }}
+                >
+                    {/* Top Header - Full Width */}
+                    <Header
+                        onMobileMenuClick={() => setMobileMenuOpen(true)}
+                        user={user}
+                        collapsed={collapsed}
+                        setCollapsed={setCollapsed}
+                    />
 
- <div className="flex flex-1 overflow-hidden">
- {/* Sidebar for Desktop */}
- <Sidebar
- collapsed={collapsed}
- setCollapsed={setCollapsed}
- />
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* Sidebar for Desktop */}
+                        <Sidebar
+                            collapsed={collapsed}
+                            setCollapsed={setCollapsed}
+                        />
 
- {/* Main Content Area */}
- <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pt-0 pb-20 lg:pb-4 w-full custom-scrollbar">
- <div className="w-full max-w-full">
- {children}
- </div>
- </main>
- </div>
+                        {/* Main Content Area */}
+                        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pt-0 pb-20 lg:pb-4 w-full custom-scrollbar">
+                            <div className="w-full max-w-full">{children}</div>
+                        </main>
+                    </div>
 
- {/* Mobile Sidebar — with section labels */}
- <MobileSidebar
- isOpen={mobileMenuOpen}
- onClose={() => setMobileMenuOpen(false)}
- />
+                    {/* Mobile Sidebar — with section labels */}
+                    <MobileSidebar
+                        isOpen={mobileMenuOpen}
+                        onClose={() => setMobileMenuOpen(false)}
+                    />
 
- <FloatingQuickActions />
+                    <FloatingQuickActions />
 
- {/* Mobile Bottom Tab Bar */}
- <MobileBottomTabBar />
+                    {/* Mobile Bottom Tab Bar */}
+                    <MobileBottomTabBar />
 
- {/* Page Welcome Guide — shows once per page */}
- <PageWelcomeGuide />
+                    {/* Page Welcome Guide — shows once per page */}
+                    <PageWelcomeGuide />
 
- {/* Level Up Celebration Modal */}
- <LevelUpModal />
+                    {/* Level Up Celebration Modal */}
+                    <LevelUpModal />
 
- {/* Milestone Celebration Modal */}
- <MilestoneCelebrationModal />
- </div>
- </ProProvider>
- </DashboardProvider>
- );
+                    {/* Milestone Celebration Modal */}
+                    <MilestoneCelebrationModal />
+                </div>
+            </ProProvider>
+        </DashboardProvider>
+    );
 }

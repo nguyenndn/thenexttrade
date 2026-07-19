@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("currency-heat-map")!;
 
 export const metadata: Metadata = {
- title: tool.title,
- description: tool.description,
+    title: tool.title,
+    description: tool.description,
 };
 
 export default function CurrencyHeatMapPage() {
- return (
- <ToolPageLayout tool={tool}>
- <CurrencyHeatMap />
- </ToolPageLayout>
- );
+    return (
+        <ToolPageLayout tool={tool}>
+            <CurrencyHeatMap />
+        </ToolPageLayout>
+    );
 }

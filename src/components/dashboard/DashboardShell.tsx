@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -11,48 +10,57 @@ import { adminMenuItems } from "@/config/navigation";
 
 import { AuthUser } from "@/lib/auth-types";
 
-export function DashboardShell({ children, user, bell }: { children: React.ReactNode; user?: AuthUser | null; bell?: React.ReactNode }) {
- const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
- const [collapsed, setCollapsed] = useState(false);
+export function DashboardShell({
+    children,
+    user,
+    bell,
+}: {
+    children: React.ReactNode;
+    user?: AuthUser | null;
+    bell?: React.ReactNode;
+}) {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
- return (
- <div className="h-screen font-sans flex flex-col overflow-hidden" style={{ backgroundColor: 'var(--dashboard-bg)' }}>
- {/* Top Header - Full Width */}
- <Header
- onMobileMenuClick={() => setIsMobileMenuOpen(true)}
- searchRoute="/admin/search" // Specifically for Admin
- showAccountSelector={false}
- user={user}
- bell={bell}
- collapsed={collapsed}
- setCollapsed={setCollapsed}
- />
+    return (
+        <div
+            className="h-screen font-sans flex flex-col overflow-hidden"
+            style={{ backgroundColor: "var(--dashboard-bg)" }}
+        >
+            {/* Top Header - Full Width */}
+            <Header
+                onMobileMenuClick={() => setIsMobileMenuOpen(true)}
+                searchRoute="/admin/search" // Specifically for Admin
+                showAccountSelector={false}
+                user={user}
+                bell={bell}
+                collapsed={collapsed}
+                setCollapsed={setCollapsed}
+            />
 
- <div className="flex flex-1 overflow-hidden">
- {/* Desktop Sidebar */}
- <Sidebar
- items={adminMenuItems}
- collapsed={collapsed}
- setCollapsed={setCollapsed}
- />
+            <div className="flex flex-1 overflow-hidden">
+                {/* Desktop Sidebar */}
+                <Sidebar
+                    items={adminMenuItems}
+                    collapsed={collapsed}
+                    setCollapsed={setCollapsed}
+                />
 
- {/* Main Content Area */}
- <main className="flex-1 overflow-y-auto overflow-x-hidden pt-0 p-4 pb-20 lg:pb-4 w-full custom-scrollbar">
- <div className="w-full max-w-full">
- {children}
- </div>
- </main>
- </div>
+                {/* Main Content Area */}
+                <main className="flex-1 overflow-y-auto overflow-x-hidden pt-0 p-4 pb-20 lg:pb-4 w-full custom-scrollbar">
+                    <div className="w-full max-w-full">{children}</div>
+                </main>
+            </div>
 
- {/* Mobile Sidebar */}
- <MobileSidebar
- isOpen={isMobileMenuOpen}
- onClose={() => setIsMobileMenuOpen(false)}
- items={adminMenuItems}
- />
+            {/* Mobile Sidebar */}
+            <MobileSidebar
+                isOpen={isMobileMenuOpen}
+                onClose={() => setIsMobileMenuOpen(false)}
+                items={adminMenuItems}
+            />
 
- {/* Mobile Bottom Tab Bar */}
- <MobileBottomTabBar />
- </div>
- );
+            {/* Mobile Bottom Tab Bar */}
+            <MobileBottomTabBar />
+        </div>
+    );
 }

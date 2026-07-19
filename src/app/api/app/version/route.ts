@@ -15,31 +15,32 @@ import path from "path";
  * Done! All users see the update.
  */
 export async function GET(request: NextRequest) {
- try {
- const releasePath = path.join(
- process.cwd(),
- "public",
- "downloads",
- "app-release.json"
- );
- const raw = await readFile(releasePath, "utf-8");
- const release = JSON.parse(raw);
+    try {
+        const releasePath = path.join(
+            process.cwd(),
+            "public",
+            "downloads",
+            "app-release.json"
+        );
+        const raw = await readFile(releasePath, "utf-8");
+        const release = JSON.parse(raw);
 
- // Derive base URL from the incoming request
- const origin = request.nextUrl.origin;
+        // Derive base URL from the incoming request
+        const origin = request.nextUrl.origin;
 
- const downloadPath = release.downloadPath || "/downloads/TheNextTradeConnect.exe";
+        const downloadPath =
+            release.downloadPath || "/downloads/TheNextTradeConnect.exe";
 
- return NextResponse.json({
- version: release.version,
- downloadUrl: `${origin}${downloadPath}`,
- changelog: release.changelog || "",
- mandatory: release.mandatory || false,
- });
- } catch {
- return NextResponse.json(
- { error: "Release info not found" },
- { status: 500 }
- );
- }
+        return NextResponse.json({
+            version: release.version,
+            downloadUrl: `${origin}${downloadPath}`,
+            changelog: release.changelog || "",
+            mandatory: release.mandatory || false,
+        });
+    } catch {
+        return NextResponse.json(
+            { error: "Release info not found" },
+            { status: 500 }
+        );
+    }
 }

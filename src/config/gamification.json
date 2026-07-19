@@ -1,31 +1,67 @@
 {
-  "tiers": [
-    { "name": "bronze",   "label": "Apprentice",   "minXp": 0,     "icon": "Shield",      "color": "#CD7F32" },
-    { "name": "silver",   "label": "Builder",      "minXp": 1000,  "icon": "Shield",      "color": "#C0C0C0" },
-    { "name": "gold",     "label": "Analyst",      "minXp": 5000,  "icon": "ShieldCheck", "color": "#FFD700" },
-    { "name": "platinum", "label": "Strategist",   "minXp": 15000, "icon": "Gem",         "color": "#E5E4E2" },
-    { "name": "diamond",  "label": "Risk Manager", "minXp": 30000, "icon": "Diamond",     "color": "#06B6D4" },
-    { "name": "master",   "label": "Operator",     "minXp": 50000, "icon": "Crown",       "color": "#FF6B35" }
-  ],
-  "xpAwards": {
-    "LESSON_COMPLETE": 50,
-    "QUIZ_PASS": 100,
-    "JOURNAL_ENTRY": 25,
-    "DAILY_CHECKIN": 10,
-    "STREAK_MILESTONE_7": 200,
-    "STREAK_MILESTONE_30": 500,
-    "STREAK_MILESTONE_100": 1500,
-    "CHALLENGE_WIN": 300,
-    "FIRST_TRADE": 100
-  },
-  "streakMilestones": [
-    { "days": 3,   "xp": 30,   "badge": null },
-    { "days": 7,   "xp": 60,   "badge": "Week Warrior" },
-    { "days": 14,  "xp": 110,  "badge": null },
-    { "days": 30,  "xp": 310,  "badge": "Monthly Master" },
-    { "days": 60,  "xp": 510,  "badge": null },
-    { "days": 90,  "xp": 1010, "badge": "Quarterly King" },
-    { "days": 100, "xp": 1510, "badge": "Century Club" },
-    { "days": 365, "xp": 5010, "badge": "Legendary" }
-  ]
+    "tiers": [
+        {
+            "name": "bronze",
+            "label": "Apprentice",
+            "minXp": 0,
+            "icon": "Shield",
+            "color": "#CD7F32"
+        },
+        {
+            "name": "silver",
+            "label": "Builder",
+            "minXp": 1000,
+            "icon": "Shield",
+            "color": "#C0C0C0"
+        },
+        {
+            "name": "gold",
+            "label": "Analyst",
+            "minXp": 5000,
+            "icon": "ShieldCheck",
+            "color": "#FFD700"
+        },
+        {
+            "name": "platinum",
+            "label": "Strategist",
+            "minXp": 15000,
+            "icon": "Gem",
+            "color": "#E5E4E2"
+        },
+        {
+            "name": "diamond",
+            "label": "Risk Manager",
+            "minXp": 30000,
+            "icon": "Diamond",
+            "color": "#06B6D4"
+        },
+        {
+            "name": "master",
+            "label": "Operator",
+            "minXp": 50000,
+            "icon": "Crown",
+            "color": "#FF6B35"
+        }
+    ],
+    "xpAwards": {
+        "LESSON_COMPLETE": 50,
+        "QUIZ_PASS": 100,
+        "JOURNAL_ENTRY": 25,
+        "DAILY_CHECKIN": 10,
+        "STREAK_MILESTONE_7": 200,
+        "STREAK_MILESTONE_30": 500,
+        "STREAK_MILESTONE_100": 1500,
+        "CHALLENGE_WIN": 300,
+        "FIRST_TRADE": 100
+    },
+    "streakMilestones": [
+        { "days": 3, "xp": 30, "badge": null },
+        { "days": 7, "xp": 60, "badge": "Week Warrior" },
+        { "days": 14, "xp": 110, "badge": null },
+        { "days": 30, "xp": 310, "badge": "Monthly Master" },
+        { "days": 60, "xp": 510, "badge": null },
+        { "days": 90, "xp": 1010, "badge": "Quarterly King" },
+        { "days": 100, "xp": 1510, "badge": "Century Club" },
+        { "days": 365, "xp": 5010, "badge": "Legendary" }
+    ]
 }

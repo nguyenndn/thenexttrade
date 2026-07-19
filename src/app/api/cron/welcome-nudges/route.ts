@@ -14,18 +14,18 @@ export const dynamic = "force-dynamic";
  * Auth: Bearer CRON_SECRET
  */
 export async function GET(request: NextRequest) {
-  const cronAuth = requireCronSecret(request);
-  if (cronAuth instanceof NextResponse) return cronAuth;
+    const cronAuth = requireCronSecret(request);
+    if (cronAuth instanceof NextResponse) return cronAuth;
 
-  try {
-    const result = await processWelcomeNudges();
+    try {
+        const result = await processWelcomeNudges();
 
-    return NextResponse.json({
-      success: true,
-      ...result,
-    });
-  } catch (error) {
-    console.error("[Cron] Welcome Nudges Error:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
-  }
+        return NextResponse.json({
+            success: true,
+            ...result,
+        });
+    } catch (error) {
+        console.error("[Cron] Welcome Nudges Error:", error);
+        return new NextResponse("Internal Server Error", { status: 500 });
+    }
 }

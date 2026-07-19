@@ -29,7 +29,8 @@ export const EDGE_MISSIONS: MissionDef[] = [
         id: "FIRST_JOURNAL",
         title: "Log Your First Trade",
         description: "Add one trade to start building your trading journal.",
-        whyItMatters: "Your first trade unlocks performance stats, weekly reviews, and pattern detection.",
+        whyItMatters:
+            "Your first trade unlocks performance stats, weekly reviews, and pattern detection.",
         icon: "file-text",
         category: "ONBOARDING",
         target: 1,
@@ -45,7 +46,8 @@ export const EDGE_MISSIONS: MissionDef[] = [
         id: "FIRST_LESSON",
         title: "Complete Your First Lesson",
         description: "Finish one Academy lesson to build your foundation.",
-        whyItMatters: "Lessons help turn random trading activity into a repeatable process.",
+        whyItMatters:
+            "Lessons help turn random trading activity into a repeatable process.",
         icon: "graduation-cap",
         category: "ONBOARDING",
         target: 1,
@@ -61,8 +63,10 @@ export const EDGE_MISSIONS: MissionDef[] = [
     {
         id: "DAILY_CHECKIN",
         title: "Daily Check-in",
-        description: "Check in once today to keep your consistency streak alive.",
-        whyItMatters: "Daily check-ins keep your trading rhythm visible and turn discipline into a measurable habit.",
+        description:
+            "Check in once today to keep your consistency streak alive.",
+        whyItMatters:
+            "Daily check-ins keep your trading rhythm visible and turn discipline into a measurable habit.",
         icon: "calendar-check",
         category: "DAILY",
         target: 1,
@@ -79,7 +83,8 @@ export const EDGE_MISSIONS: MissionDef[] = [
         id: "FIRST_WEEKLY_REVIEW",
         title: "Generate Your First Weekly Review",
         description: "Create your first weekly review from your trading data.",
-        whyItMatters: "Weekly reviews turn your trades into one strength, one leak, and one next focus.",
+        whyItMatters:
+            "Weekly reviews turn your trades into one strength, one leak, and one next focus.",
         icon: "bar-chart-3",
         category: "ONBOARDING",
         target: 1,
@@ -97,7 +102,8 @@ export const EDGE_MISSIONS: MissionDef[] = [
         id: "WEEKLY_5_TRADES",
         title: "Build This Week's Journal",
         description: "Log 5 trades this week.",
-        whyItMatters: "A weekly sample gives your reports enough data to find your strongest setup and biggest leak.",
+        whyItMatters:
+            "A weekly sample gives your reports enough data to find your strongest setup and biggest leak.",
         icon: "trending-up",
         category: "WEEKLY",
         target: 5,
@@ -113,7 +119,8 @@ export const EDGE_MISSIONS: MissionDef[] = [
         id: "WEEKLY_REVIEW",
         title: "Run This Week's Review",
         description: "Generate a weekly review for the current week.",
-        whyItMatters: "A weekly review keeps your focus specific instead of letting mistakes blur together.",
+        whyItMatters:
+            "A weekly review keeps your focus specific instead of letting mistakes blur together.",
         icon: "clipboard-check",
         category: "WEEKLY",
         target: 1,
@@ -129,7 +136,8 @@ export const EDGE_MISSIONS: MissionDef[] = [
         id: "WEEKLY_3_LESSONS",
         title: "Study Week",
         description: "Complete 3 Academy lessons this week.",
-        whyItMatters: "Short study streaks keep your execution rules fresh before the next trading session.",
+        whyItMatters:
+            "Short study streaks keep your execution rules fresh before the next trading session.",
         icon: "book-open",
         category: "WEEKLY",
         target: 3,
@@ -147,7 +155,8 @@ export const EDGE_MISSIONS: MissionDef[] = [
         id: "QUIZ_MASTER",
         title: "Prove Your Playbook",
         description: "Pass 5 Academy quizzes with a score above 80%.",
-        whyItMatters: "Quizzes confirm you understand the rules before risking capital.",
+        whyItMatters:
+            "Quizzes confirm you understand the rules before risking capital.",
         icon: "brain",
         category: "MASTERY",
         target: 5,
@@ -165,8 +174,6 @@ export function getMissionDef(missionId: string): MissionDef | undefined {
     return EDGE_MISSIONS.find((m) => m.id === missionId);
 }
 
-export function getMissionsByCategory(
-    category: MissionCategory
-): MissionDef[] {
+export function getMissionsByCategory(category: MissionCategory): MissionDef[] {
     return EDGE_MISSIONS.filter((m) => m.category === category);
 }

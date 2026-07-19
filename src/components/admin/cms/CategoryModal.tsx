@@ -37,14 +37,19 @@ function generateSlug(text: string): string {
         .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
 }
 
-export function CategoryModal({ isOpen, onClose, onSuccess, category }: CategoryModalProps) {
+export function CategoryModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    category,
+}: CategoryModalProps) {
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors, isSubmitting },
         setValue,
-        watch
+        watch,
     } = useForm<FormData>({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -113,30 +118,46 @@ export function CategoryModal({ isOpen, onClose, onSuccess, category }: Category
         >
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div className="group">
-                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Name</label>
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                        Name
+                    </label>
                     <input
                         {...register("name")}
                         className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                         placeholder="Market Analysis"
                     />
-                    {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
+                    {errors.name && (
+                        <p className="text-red-500 text-xs">
+                            {errors.name.message}
+                        </p>
+                    )}
                 </div>
 
                 <div className="group">
                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                        Slug <span className="font-normal text-gray-500">(Optional)</span>
+                        Slug{" "}
+                        <span className="font-normal text-gray-500">
+                            (Optional)
+                        </span>
                     </label>
                     <input
                         {...register("slug")}
                         className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                         placeholder="market-analysis"
                     />
-                    {errors.slug && <p className="text-red-500 text-xs">{errors.slug.message}</p>}
+                    {errors.slug && (
+                        <p className="text-red-500 text-xs">
+                            {errors.slug.message}
+                        </p>
+                    )}
                 </div>
 
                 <div className="group">
                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                        Description <span className="font-normal text-gray-500">(Optional)</span>
+                        Description{" "}
+                        <span className="font-normal text-gray-500">
+                            (Optional)
+                        </span>
                     </label>
                     <textarea
                         {...register("description")}

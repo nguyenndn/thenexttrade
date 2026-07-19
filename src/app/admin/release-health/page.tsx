@@ -9,28 +9,28 @@ import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 async function requireAdminPageAccess() {
- const user = await getAuthUser();
- if (!user) redirect("/auth/login");
+    const user = await getAuthUser();
+    if (!user) redirect("/auth/login");
 
- const profile = await prisma.profile.findUnique({
- where: { userId: user.id },
- select: { role: true },
- });
+    const profile = await prisma.profile.findUnique({
+        where: { userId: user.id },
+        select: { role: true },
+    });
 
- if (!profile || !isAdminRole(profile.role)) redirect("/forbidden");
+    if (!profile || !isAdminRole(profile.role)) redirect("/forbidden");
 }
 
 export default async function ReleaseHealthPage() {
- await requireAdminPageAccess();
- const data = await getReleaseHealthData();
+    await requireAdminPageAccess();
+    const data = await getReleaseHealthData();
 
- return (
- <div className="space-y-4 pb-10">
- <AdminPageHeader
- title="Platform Health"
- description="Quick health check — is the platform operating normally?"
- />
- <ReleaseHealthDashboard data={data} />
- </div>
- );
+    return (
+        <div className="space-y-4 pb-10">
+            <AdminPageHeader
+                title="Platform Health"
+                description="Quick health check — is the platform operating normally?"
+            />
+            <ReleaseHealthDashboard data={data} />
+        </div>
+    );
 }

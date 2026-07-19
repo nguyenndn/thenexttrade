@@ -19,7 +19,17 @@ interface FilterModalProps {
     initialFilters: CalendarFilters;
 }
 
-const ALL_CURRENCIES = ["USD", "EUR", "JPY", "GBP", "CHF", "CAD", "AUD", "NZD", "CNY"];
+const ALL_CURRENCIES = [
+    "USD",
+    "EUR",
+    "JPY",
+    "GBP",
+    "CHF",
+    "CAD",
+    "AUD",
+    "NZD",
+    "CNY",
+];
 const ALL_IMPACTS = [
     { label: "High", value: "HIGH", color: "bg-red-500" },
     { label: "Medium", value: "MEDIUM", color: "bg-orange-500" }, // or blue/yellow depending on theme ref
@@ -27,14 +37,19 @@ const ALL_IMPACTS = [
 ];
 // Adjust Impact colors to match site style if needed (Site uses Red for High, Blue for Med, Gray for Low likely)
 const IMPACT_COLORS: Record<string, string> = {
-    "HIGH": "bg-red-500",
-    "MEDIUM": "bg-cyan-500",
-    "LOW": "bg-gray-400"
+    HIGH: "bg-red-500",
+    MEDIUM: "bg-cyan-500",
+    LOW: "bg-gray-400",
 };
 
 const ALL_SESSIONS = ["Sydney", "Tokyo", "London", "New York"];
 
-export function FilterModal({ isOpen, onClose, onApply, initialFilters }: FilterModalProps) {
+export function FilterModal({
+    isOpen,
+    onClose,
+    onApply,
+    initialFilters,
+}: FilterModalProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
@@ -50,95 +65,134 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
     if (!isOpen) return null;
 
     const toggleCurrency = (currency: string) => {
-        setFilters(prev => {
+        setFilters((prev) => {
             const exists = prev.currencies.includes(currency);
             return {
                 ...prev,
                 currencies: exists
-                    ? prev.currencies.filter(c => c !== currency)
-                    : [...prev.currencies, currency]
+                    ? prev.currencies.filter((c) => c !== currency)
+                    : [...prev.currencies, currency],
             };
         });
     };
 
     const toggleImpact = (impact: string) => {
-        setFilters(prev => {
+        setFilters((prev) => {
             const exists = prev.impact.includes(impact);
             return {
                 ...prev,
                 impact: exists
-                    ? prev.impact.filter(i => i !== impact)
-                    : [...prev.impact, impact]
+                    ? prev.impact.filter((i) => i !== impact)
+                    : [...prev.impact, impact],
             };
         });
     };
 
     const toggleSession = (session: string) => {
-        setFilters(prev => {
+        setFilters((prev) => {
             const exists = prev.sessions.includes(session);
             return {
                 ...prev,
                 sessions: exists
-                    ? prev.sessions.filter(s => s !== session)
-                    : [...prev.sessions, session]
+                    ? prev.sessions.filter((s) => s !== session)
+                    : [...prev.sessions, session],
             };
         });
     };
 
     const handleSelectAllCurrencies = () => {
-        setFilters(prev => ({ ...prev, currencies: ALL_CURRENCIES }));
+        setFilters((prev) => ({ ...prev, currencies: ALL_CURRENCIES }));
     };
 
     const handleClearAllCurrencies = () => {
-        setFilters(prev => ({ ...prev, currencies: [] }));
+        setFilters((prev) => ({ ...prev, currencies: [] }));
     };
 
     return (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
-            <div className={`relative z-10 w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? 'bg-slate-800 text-white' : 'bg-white text-gray-700'}`}>
+            <div
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+                onClick={onClose}
+            />
+            <div
+                className={`relative z-10 w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? "bg-slate-800 text-white" : "bg-white text-gray-700"}`}
+            >
                 {/* Header */}
-                <div className={`px-6 py-4 flex items-center justify-between border-b ${isDark ? 'border-slate-700 bg-slate-900' : 'border-dashboard bg-gray-50'}`}>
+                <div
+                    className={`px-6 py-4 flex items-center justify-between border-b ${isDark ? "border-slate-700 bg-slate-900" : "border-dashboard bg-gray-50"}`}
+                >
                     <h3 className="text-lg font-bold flex items-center gap-2">
                         <Filter size={20} className="text-cyan-500" />
                         Filters
                     </h3>
-                    <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close Filters">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={onClose}
+                        aria-label="Close Filters"
+                    >
                         <X size={20} />
                     </Button>
                 </div>
 
                 {/* Content - Scrollable */}
                 <div className="flex-1 overflow-y-auto p-6 space-y-8">
-
                     {/* Remember Filters */}
                     <div className="flex items-center justify-between">
-                        <span className="font-medium text-sm">Remember Filters</span>
+                        <span className="font-medium text-sm">
+                            Remember Filters
+                        </span>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input
                                 type="checkbox"
                                 className="sr-only peer"
                                 checked={filters.remember}
-                                onChange={(e) => setFilters(prev => ({ ...prev, remember: e.target.checked }))}
+                                onChange={(e) =>
+                                    setFilters((prev) => ({
+                                        ...prev,
+                                        remember: e.target.checked,
+                                    }))
+                                }
                             />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-cyan-500"></div>
                         </label>
                     </div>
 
-                    <hr className={isDark ? 'border-slate-700' : 'border-dashboard'} />
+                    <hr
+                        className={
+                            isDark ? "border-slate-700" : "border-dashboard"
+                        }
+                    />
 
                     {/* Currencies */}
                     <div>
                         <div className="flex items-center justify-between mb-4">
-                            <h4 className="font-semibold text-sm opacity-80">Currencies</h4>
+                            <h4 className="font-semibold text-sm opacity-80">
+                                Currencies
+                            </h4>
                             <div className="flex gap-2">
-                                <Button variant="secondary" size="sm" onClick={handleSelectAllCurrencies} className="h-6 px-3 text-xs">All</Button>
-                                <Button variant="secondary" size="sm" onClick={handleClearAllCurrencies} className="h-6 px-3 text-xs">None</Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={handleSelectAllCurrencies}
+                                    className="h-6 px-3 text-xs"
+                                >
+                                    All
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={handleClearAllCurrencies}
+                                    className="h-6 px-3 text-xs"
+                                >
+                                    None
+                                </Button>
                             </div>
                         </div>
                         <div className="grid grid-cols-3 gap-3">
-                            {ALL_CURRENCIES.map(curr => {
-                                const isChecked = filters.currencies.includes(curr);
+                            {ALL_CURRENCIES.map((curr) => {
+                                const isChecked =
+                                    filters.currencies.includes(curr);
                                 return (
                                     <Button
                                         type="button"
@@ -147,27 +201,53 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                                         onClick={() => toggleCurrency(curr)}
                                         className={`flex items-center gap-2 text-sm transition-all h-auto p-2 justify-start font-normal`}
                                     >
-                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors shrink-0 ${isChecked
-                                            ? 'bg-slate-700 border-slate-700 text-white'
-                                            : isDark ? 'border-slate-600 bg-slate-800' : 'border-gray-300 bg-white'
-                                            }`}>
-                                            {isChecked && <Check size={12} strokeWidth={3} />}
+                                        <div
+                                            className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors shrink-0 ${
+                                                isChecked
+                                                    ? "bg-slate-700 border-slate-700 text-white"
+                                                    : isDark
+                                                      ? "border-slate-600 bg-slate-800"
+                                                      : "border-gray-300 bg-white"
+                                            }`}
+                                        >
+                                            {isChecked && (
+                                                <Check
+                                                    size={12}
+                                                    strokeWidth={3}
+                                                />
+                                            )}
                                         </div>
-                                        <span className={isChecked ? 'font-bold' : 'opacity-80'}>{curr}</span>
+                                        <span
+                                            className={
+                                                isChecked
+                                                    ? "font-bold"
+                                                    : "opacity-80"
+                                            }
+                                        >
+                                            {curr}
+                                        </span>
                                     </Button>
                                 );
                             })}
                         </div>
                     </div>
 
-                    <hr className={isDark ? 'border-slate-700' : 'border-dashboard'} />
+                    <hr
+                        className={
+                            isDark ? "border-slate-700" : "border-dashboard"
+                        }
+                    />
 
                     {/* Impact */}
                     <div>
-                        <h4 className="font-semibold text-sm opacity-80 mb-4">Impact</h4>
+                        <h4 className="font-semibold text-sm opacity-80 mb-4">
+                            Impact
+                        </h4>
                         <div className="flex justify-around">
-                            {ALL_IMPACTS.map(imp => {
-                                const isChecked = filters.impact.includes(imp.value);
+                            {ALL_IMPACTS.map((imp) => {
+                                const isChecked = filters.impact.includes(
+                                    imp.value
+                                );
                                 return (
                                     <Button
                                         type="button"
@@ -176,32 +256,52 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                                         onClick={() => toggleImpact(imp.value)}
                                         className="flex flex-col items-center gap-2 group h-auto p-2 w-full max-w-[80px]"
                                     >
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors shrink-0 ${isChecked
-                                            ? 'bg-slate-700 border-slate-700 text-white'
-                                            : isDark ? 'border-slate-600 bg-slate-800' : 'border-gray-300 bg-white'
-                                            }`}>
-                                            {isChecked && <Check size={14} strokeWidth={3} />}
+                                        <div
+                                            className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors shrink-0 ${
+                                                isChecked
+                                                    ? "bg-slate-700 border-slate-700 text-white"
+                                                    : isDark
+                                                      ? "border-slate-600 bg-slate-800"
+                                                      : "border-gray-300 bg-white"
+                                            }`}
+                                        >
+                                            {isChecked && (
+                                                <Check
+                                                    size={14}
+                                                    strokeWidth={3}
+                                                />
+                                            )}
                                         </div>
-                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase ${isChecked
-                                            ? IMPACT_COLORS[imp.value]
-                                            : 'bg-gray-300 dark:bg-slate-700'
-                                            }`}>
+                                        <span
+                                            className={`px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase ${
+                                                isChecked
+                                                    ? IMPACT_COLORS[imp.value]
+                                                    : "bg-gray-300 dark:bg-slate-700"
+                                            }`}
+                                        >
                                             {imp.label}
                                         </span>
                                     </Button>
-                                )
+                                );
                             })}
                         </div>
                     </div>
 
-                    <hr className={isDark ? 'border-slate-700' : 'border-dashboard'} />
+                    <hr
+                        className={
+                            isDark ? "border-slate-700" : "border-dashboard"
+                        }
+                    />
 
                     {/* Sessions */}
                     <div>
-                        <h4 className="font-semibold text-sm opacity-80 mb-4">Sessions</h4>
+                        <h4 className="font-semibold text-sm opacity-80 mb-4">
+                            Sessions
+                        </h4>
                         <div className="grid grid-cols-2 gap-4">
-                            {ALL_SESSIONS.map(session => {
-                                const isChecked = filters.sessions.includes(session);
+                            {ALL_SESSIONS.map((session) => {
+                                const isChecked =
+                                    filters.sessions.includes(session);
                                 return (
                                     <Button
                                         type="button"
@@ -210,13 +310,31 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                                         onClick={() => toggleSession(session)}
                                         className={`flex items-center justify-start gap-2 text-sm transition-all h-auto p-2 font-normal w-full`}
                                     >
-                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors shrink-0 ${isChecked
-                                            ? 'bg-slate-700 border-slate-700 text-white'
-                                            : isDark ? 'border-slate-600 bg-slate-800' : 'border-gray-300 bg-white'
-                                            }`}>
-                                            {isChecked && <Check size={12} strokeWidth={3} />}
+                                        <div
+                                            className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors shrink-0 ${
+                                                isChecked
+                                                    ? "bg-slate-700 border-slate-700 text-white"
+                                                    : isDark
+                                                      ? "border-slate-600 bg-slate-800"
+                                                      : "border-gray-300 bg-white"
+                                            }`}
+                                        >
+                                            {isChecked && (
+                                                <Check
+                                                    size={12}
+                                                    strokeWidth={3}
+                                                />
+                                            )}
                                         </div>
-                                        <span className={isChecked ? 'font-bold' : 'opacity-80'}>{session}</span>
+                                        <span
+                                            className={
+                                                isChecked
+                                                    ? "font-bold"
+                                                    : "opacity-80"
+                                            }
+                                        >
+                                            {session}
+                                        </span>
                                     </Button>
                                 );
                             })}
@@ -225,12 +343,14 @@ export function FilterModal({ isOpen, onClose, onApply, initialFilters }: Filter
                 </div>
 
                 {/* Footer */}
-                <div className={`px-6 py-4 border-t flex justify-end gap-3 ${isDark ? 'border-slate-700 bg-slate-900' : 'border-dashboard bg-gray-50'}`}>
+                <div
+                    className={`px-6 py-4 border-t flex justify-end gap-3 ${isDark ? "border-slate-700 bg-slate-900" : "border-dashboard bg-gray-50"}`}
+                >
                     <Button
                         onClick={onClose}
                         variant="outline"
                         size="smd"
-                        className={`font-bold transition-colors ${isDark ? 'text-gray-500 hover:text-white hover:bg-slate-700' : 'text-gray-600 hover:text-gray-700 hover:bg-gray-100'}`}
+                        className={`font-bold transition-colors ${isDark ? "text-gray-500 hover:text-white hover:bg-slate-700" : "text-gray-600 hover:text-gray-700 hover:bg-gray-100"}`}
                     >
                         Cancel
                     </Button>

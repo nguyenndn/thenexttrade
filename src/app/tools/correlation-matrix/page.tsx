@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("correlation-matrix")!;
 
 export const metadata: Metadata = {
- title: tool.title,
- description: tool.description,
+    title: tool.title,
+    description: tool.description,
 };
 
 export default function CorrelationMatrixPage() {
- return (
- <ToolPageLayout tool={tool}>
- <CorrelationMatrix />
- </ToolPageLayout>
- );
+    return (
+        <ToolPageLayout tool={tool}>
+            <CorrelationMatrix />
+        </ToolPageLayout>
+    );
 }

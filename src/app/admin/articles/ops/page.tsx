@@ -12,36 +12,36 @@ import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 async function requireAdminPageAccess() {
- const user = await getAuthUser();
- if (!user) redirect("/auth/login");
+    const user = await getAuthUser();
+    if (!user) redirect("/auth/login");
 
- const profile = await prisma.profile.findUnique({
- where: { userId: user.id },
- select: { role: true },
- });
+    const profile = await prisma.profile.findUnique({
+        where: { userId: user.id },
+        select: { role: true },
+    });
 
- if (!profile || !isAdminRole(profile.role)) redirect("/forbidden");
+    if (!profile || !isAdminRole(profile.role)) redirect("/forbidden");
 }
 
 export default async function ArticleOpsPage() {
- await requireAdminPageAccess();
- const { rows, summary } = await getArticleOpsData("all");
+    await requireAdminPageAccess();
+    const { rows, summary } = await getArticleOpsData("all");
 
- return (
- <div className="space-y-4 pb-10">
- <AdminPageHeader
- title="Article Ops"
- description="Find articles that need images, SEO fields, or publishing cleanup before they go live."
- >
- <Link href="/admin/articles">
- <Button variant="outline">
- <ArrowLeft size={16} />
- Back to Articles
- </Button>
- </Link>
- </AdminPageHeader>
+    return (
+        <div className="space-y-4 pb-10">
+            <AdminPageHeader
+                title="Article Ops"
+                description="Find articles that need images, SEO fields, or publishing cleanup before they go live."
+            >
+                <Link href="/admin/articles">
+                    <Button variant="outline">
+                        <ArrowLeft size={16} />
+                        Back to Articles
+                    </Button>
+                </Link>
+            </AdminPageHeader>
 
- <ArticleOpsDashboard initialRows={rows} initialSummary={summary} />
- </div>
- );
+            <ArticleOpsDashboard initialRows={rows} initialSummary={summary} />
+        </div>
+    );
 }

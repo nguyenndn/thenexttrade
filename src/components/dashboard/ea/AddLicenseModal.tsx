@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { toast } from "sonner";
@@ -39,7 +44,11 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                 toast.error(res.error || "Failed to submit");
             }
         } catch (error: any) {
-            toast.error(error instanceof Error ? error.message : (error?.message || "Something went wrong"));
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : error?.message || "Something went wrong"
+            );
         } finally {
             setIsLoading(false);
         }
@@ -55,14 +64,23 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                 <div className="space-y-6 py-4">
                     <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl flex gap-3 text-sm text-blue-600 dark:text-blue-400">
                         <Info className="shrink-0 mt-0.5" size={18} />
-                        <p>Register your trading account number to get access to our EAs. Accounts must be under our IB to be approved.</p>
+                        <p>
+                            Register your trading account number to get access
+                            to our EAs. Accounts must be under our IB to be
+                            approved.
+                        </p>
                     </div>
 
                     <div className="space-y-3">
-                        <label className="text-sm font-medium text-gray-700 dark:text-white">Select Broker</label>
+                        <label className="text-sm font-medium text-gray-700 dark:text-white">
+                            Select Broker
+                        </label>
                         <div className="grid grid-cols-1 gap-2">
                             {["EXNESS", "VANTAGE", "VTMARKETS"].map((b) => (
-                                <label key={b} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${broker === b ? 'border-primary bg-primary/5' : 'border-dashboard hover:bg-gray-50 dark:hover:bg-white/5'}`}>
+                                <label
+                                    key={b}
+                                    className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${broker === b ? "border-primary bg-primary/5" : "border-dashboard hover:bg-gray-50 dark:hover:bg-white/5"}`}
+                                >
                                     <input
                                         type="radio"
                                         name="broker"
@@ -70,7 +88,9 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                                         onChange={() => setBroker(b)}
                                         className="w-4 h-4 text-primary focus:ring-primary"
                                     />
-                                    <span className="font-bold text-gray-700 dark:text-gray-200">{b}</span>
+                                    <span className="font-bold text-gray-700 dark:text-gray-200">
+                                        {b}
+                                    </span>
                                 </label>
                             ))}
                         </div>

@@ -1,7 +1,7 @@
 export const PROMPT_VERSION = "1.1";
 
 export function buildSystemPrompt(): string {
-  return `You are an elite, no-nonsense GoldScalperNinja AI Analyst for MT5.
+    return `You are an elite, no-nonsense GoldScalperNinja AI Analyst for MT5.
 You must analyze the provided trading snapshot and output a JSON response matching the EXACT schema required.
 
 CRITICAL RULES:

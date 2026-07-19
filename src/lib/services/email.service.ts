@@ -5,54 +5,57 @@ import nodemailer from "nodemailer";
 // ============================================================================
 
 const transporter = nodemailer.createTransport({
- host: process.env.SMTP_HOST || "smtp-relay.brevo.com",
- port: parseInt(process.env.SMTP_PORT || "587"),
- secure: process.env.SMTP_SECURE === "true",
- auth: {
- user: process.env.SMTP_USER,
- pass: process.env.SMTP_PASS,
- },
+    host: process.env.SMTP_HOST || "smtp-relay.brevo.com",
+    port: parseInt(process.env.SMTP_PORT || "587"),
+    secure: process.env.SMTP_SECURE === "true",
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+    },
 });
 
 interface EmailOptions {
- to: string;
- subject: string;
- html: string;
- text?: string;
+    to: string;
+    subject: string;
+    html: string;
+    text?: string;
 }
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
- try {
- await transporter.sendMail({
- from: `"${process.env.SMTP_FROM_NAME || "The Next Trade"}" <${process.env.SMTP_FROM_EMAIL || "noreply@thenexttrade.com"}>`,
- to: options.to,
- subject: options.subject,
- html: options.html,
- text: options.text,
- });
- return true;
- } catch (error) {
- console.error("Email send failed:", error);
- return false;
- }
+    try {
+        await transporter.sendMail({
+            from: `"${process.env.SMTP_FROM_NAME || "The Next Trade"}" <${process.env.SMTP_FROM_EMAIL || "noreply@thenexttrade.com"}>`,
+            to: options.to,
+            subject: options.subject,
+            html: options.html,
+            text: options.text,
+        });
+        return true;
+    } catch (error) {
+        console.error("Email send failed:", error);
+        return false;
+    }
 }
 
 // ─── Unified Email Layout Wrapper ──────────────────────────────────────────
 
 export interface UnifiedEmailOptions {
- subject: string;
- preheader?: string;
- bodyHtml: string;
- appUrl?: string;
+    subject: string;
+    preheader?: string;
+    bodyHtml: string;
+    appUrl?: string;
 }
 
 export function buildUnifiedEmailHtml(options: UnifiedEmailOptions): string {
- const appUrl = options.appUrl || process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
- const preheaderHtml = options.preheader
- ? `<span style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${options.preheader}</span>`
- : "";
+    const appUrl =
+        options.appUrl ||
+        process.env.NEXT_PUBLIC_APP_URL ||
+        "https://thenexttrade.vercel.app";
+    const preheaderHtml = options.preheader
+        ? `<span style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${options.preheader}</span>`
+        : "";
 
- return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html>
 <head>
  <meta charset="utf-8">
@@ -93,51 +96,67 @@ export function buildUnifiedEmailHtml(options: UnifiedEmailOptions): string {
 // ─── Report Email Templates ─────────────────────────────────────────────────
 
 interface ReportEmailData {
- userName: string;
- periodLabel: string;
- type: "WEEKLY" | "MONTHLY";
- netPnL: number;
- winRate: number;
- totalTrades: number;
- profitFactor: number;
- avgWin: number;
- avgLoss: number;
- largestWin: number;
- largestLoss: number;
- prevPnL: number | null;
- prevWinRate: number | null;
- topSymbols: { name: string; pnl: number }[];
- topMistakes: { name: string; count: number }[];
- reportUrl: string;
+    userName: string;
+    periodLabel: string;
+    type: "WEEKLY" | "MONTHLY";
+    netPnL: number;
+    winRate: number;
+    totalTrades: number;
+    profitFactor: number;
+    avgWin: number;
+    avgLoss: number;
+    largestWin: number;
+    largestLoss: number;
+    prevPnL: number | null;
+    prevWinRate: number | null;
+    topSymbols: { name: string; pnl: number }[];
+    topMistakes: { name: string; count: number }[];
+    reportUrl: string;
 }
 
-function getDeltaHtml(current: number, previous: number | null, isPercent = false): string {
- if (previous === null) return "";
- const delta = current - previous;
- const color = delta >= 0 ? "#10b981" : "#ef4444";
- const arrow = delta >= 0 ? "↑" : "↓";
- const formatted = isPercent ? `${Math.abs(delta).toFixed(1)}%` : `$${Math.abs(delta).toFixed(0)}`;
- return `<span style="color:${color};font-size:12px;font-weight:600">${arrow} ${formatted} vs prev</span>`;
+function getDeltaHtml(
+    current: number,
+    previous: number | null,
+    isPercent = false
+): string {
+    if (previous === null) return "";
+    const delta = current - previous;
+    const color = delta >= 0 ? "#10b981" : "#ef4444";
+    const arrow = delta >= 0 ? "↑" : "↓";
+    const formatted = isPercent
+        ? `${Math.abs(delta).toFixed(1)}%`
+        : `$${Math.abs(delta).toFixed(0)}`;
+    return `<span style="color:${color};font-size:12px;font-weight:600">${arrow} ${formatted} vs prev</span>`;
 }
 
 export function buildReportEmailHtml(data: ReportEmailData): string {
- const isPositive = data.netPnL >= 0;
- const pnlColor = isPositive ? "#10b981" : "#ef4444";
- const pnlSign = isPositive ? "+" : "";
- const typeLabel = data.type === "WEEKLY" ? "Weekly" : "Monthly";
+    const isPositive = data.netPnL >= 0;
+    const pnlColor = isPositive ? "#10b981" : "#ef4444";
+    const pnlSign = isPositive ? "+" : "";
+    const typeLabel = data.type === "WEEKLY" ? "Weekly" : "Monthly";
 
- const topSymbolsHtml = data.topSymbols.slice(0, 3).map(s => `
+    const topSymbolsHtml = data.topSymbols
+        .slice(0, 3)
+        .map(
+            (s) => `
  <tr>
  <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;font-size:14px;color:#374151">${s.name}</td>
- <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;font-size:14px;font-weight:700;color:${s.pnl >= 0 ? '#10b981' : '#ef4444'};text-align:right">${s.pnl >= 0 ? '+' : ''}$${s.pnl.toFixed(2)}</td>
+ <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;font-size:14px;font-weight:700;color:${s.pnl >= 0 ? "#10b981" : "#ef4444"};text-align:right">${s.pnl >= 0 ? "+" : ""}$${s.pnl.toFixed(2)}</td>
  </tr>
- `).join("");
+ `
+        )
+        .join("");
 
- const topMistakesHtml = data.topMistakes.slice(0, 3).map(m => `
+    const topMistakesHtml = data.topMistakes
+        .slice(0, 3)
+        .map(
+            (m) => `
  <div style="display:inline-block;background:#fef2f2;color:#ef4444;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;margin:2px">${m.name} ×${m.count}</div>
- `).join("");
+ `
+        )
+        .join("");
 
- const bodyHtml = `
+    const bodyHtml = `
  <div style="text-align:center; margin-bottom: 24px;">
  <h1 style="margin:0;font-size:22px;font-weight:800;color:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">📈 Your ${typeLabel} Report</h1>
  <p style="color:#64748b;margin:6px 0 0;font-size:14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">${data.periodLabel}</p>
@@ -147,7 +166,7 @@ export function buildReportEmailHtml(data: ReportEmailData): string {
  <p style="font-size:14px;color:#6b7280;margin:0 0 24px">Here's your ${typeLabel.toLowerCase()} trading performance summary.</p>
 
  <!-- P/L Hero -->
- <div style="background:${isPositive ? '#f0fdf4' : '#fef2f2'};border-radius:12px;padding:24px;text-align:center;margin-bottom:24px;border:1px solid ${isPositive ? '#bbf7d0' : '#fecaca'}">
+ <div style="background:${isPositive ? "#f0fdf4" : "#fef2f2"};border-radius:12px;padding:24px;text-align:center;margin-bottom:24px;border:1px solid ${isPositive ? "#bbf7d0" : "#fecaca"}">
  <p style="margin:0;font-size:13px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;font-weight:700">Net P/L</p>
  <p style="margin:8px 0 4px;font-size:36px;font-weight:900;color:${pnlColor}">${pnlSign}$${data.netPnL.toFixed(2)}</p>
  ${getDeltaHtml(data.netPnL, data.prevPnL)}
@@ -185,19 +204,27 @@ export function buildReportEmailHtml(data: ReportEmailData): string {
  </tr>
  </table>
 
- ${data.topSymbols.length > 0 ? `
+ ${
+     data.topSymbols.length > 0
+         ? `
  <!-- Top Symbols -->
  <h3 style="font-size:14px;font-weight:700;color:#1f2937;margin:0 0 12px">📊 Top Symbols</h3>
  <table style="width:100%;border-collapse:collapse;margin-bottom:24px;background:#f9fafb;border-radius:8px;overflow:hidden">
  ${topSymbolsHtml}
  </table>
- ` : ""}
+ `
+         : ""
+ }
 
- ${data.topMistakes.length > 0 ? `
+ ${
+     data.topMistakes.length > 0
+         ? `
  <!-- Top Mistakes -->
  <h3 style="font-size:14px;font-weight:700;color:#1f2937;margin:0 0 8px">⚠️ Recurring Mistakes</h3>
  <div style="margin-bottom:24px">${topMistakesHtml}</div>
- ` : ""}
+ `
+         : ""
+ }
 
  <!-- CTA -->
  <div style="text-align:center;margin:32px 0 16px">
@@ -205,20 +232,24 @@ export function buildReportEmailHtml(data: ReportEmailData): string {
  </div>
  `;
 
- return buildUnifiedEmailHtml({
- subject: `Your ${typeLabel} Report 📈`,
- preheader: `${typeLabel} trading performance summary.`,
- bodyHtml
- });
+    return buildUnifiedEmailHtml({
+        subject: `Your ${typeLabel} Report 📈`,
+        preheader: `${typeLabel} trading performance summary.`,
+        bodyHtml,
+    });
 }
 
 // ─── No-Trades Nudge Email ──────────────────────────────────────────────────
 
-export function buildNudgeEmailHtml(userName: string, type: "WEEKLY" | "MONTHLY"): string {
- const typeLabel = type === "WEEKLY" ? "week" : "month";
- const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
- 
- const bodyHtml = `
+export function buildNudgeEmailHtml(
+    userName: string,
+    type: "WEEKLY" | "MONTHLY"
+): string {
+    const typeLabel = type === "WEEKLY" ? "week" : "month";
+    const appUrl =
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+
+    const bodyHtml = `
  <div style="text-align:center; padding: 12px 0;">
  <div style="font-size:48px;margin-bottom:16px">📊</div>
  <h2 style="margin:0 0 12px;font-size:22px;font-weight:800;color:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">No Trades This ${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)}</h2>
@@ -235,9 +266,9 @@ export function buildNudgeEmailHtml(userName: string, type: "WEEKLY" | "MONTHLY"
  </div>
  `;
 
- return buildUnifiedEmailHtml({
- subject: `No Trades This ${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)} 📊`,
- preheader: `Consistency is the foundation of trading success.`,
- bodyHtml
- });
+    return buildUnifiedEmailHtml({
+        subject: `No Trades This ${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)} 📊`,
+        preheader: `Consistency is the foundation of trading success.`,
+        bodyHtml,
+    });
 }

@@ -6,164 +6,183 @@ import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 
 interface Tag {
- id: string;
- name: string;
- slug: string;
+    id: string;
+    name: string;
+    slug: string;
 }
 
 interface TagInputProps {
- value: string[]; // Array of Tag IDs
- onChange: (ids: string[]) => void;
+    value: string[]; // Array of Tag IDs
+    onChange: (ids: string[]) => void;
 }
 
 export function TagInput({ value, onChange }: TagInputProps) {
- const [input, setInput] = useState("");
- const [suggestions, setSuggestions] = useState<Tag[]>([]);
- const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
- const [isLoading, setIsLoading] = useState(false);
- const [isCreating, setIsCreating] = useState(false);
- const containerRef = useRef<HTMLDivElement>(null);
+    const [input, setInput] = useState("");
+    const [suggestions, setSuggestions] = useState<Tag[]>([]);
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
- // Fetch full tag objects for the selected IDs when value changes
- useEffect(() => {
- if (!value || value.length === 0) {
- setSelectedTags([]);
- return;
- }
- // Avoid refetching if selectedTags already match
- const currentIds = selectedTags.map(t => t.id).sort().join(',');
- const newIds = [...value].sort().join(',');
- if (currentIds === newIds) return;
+    // Fetch full tag objects for the selected IDs when value changes
+    useEffect(() => {
+        if (!value || value.length === 0) {
+            setSelectedTags([]);
+            return;
+        }
+        // Avoid refetching if selectedTags already match
+        const currentIds = selectedTags
+            .map((t) => t.id)
+            .sort()
+            .join(",");
+        const newIds = [...value].sort().join(",");
+        if (currentIds === newIds) return;
 
- const fetchTags = async () => {
- try {
- const res = await fetch(`/api/tags?ids=${value.join(',')}`);
- if (res.ok) {
- const data = await res.json();
- setSelectedTags(data);
- }
- } catch (error) {
- console.error('Failed to fetch tags:', error);
- }
- };
- fetchTags();
- }, [value]); // Re-run when value changes
+        const fetchTags = async () => {
+            try {
+                const res = await fetch(`/api/tags?ids=${value.join(",")}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setSelectedTags(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch tags:", error);
+            }
+        };
+        fetchTags();
+    }, [value]); // Re-run when value changes
 
- const searchTags = async (query: string) => {
- if (!query) {
- setSuggestions([]);
- return;
- }
- setIsLoading(true);
- try {
- const res = await fetch(`/api/tags?query=${query}`);
- if (res.ok) {
- const data = await res.json();
- setSuggestions(data);
- }
- } catch (error) {
- console.error(error);
- } finally {
- setIsLoading(false);
- }
- };
+    const searchTags = async (query: string) => {
+        if (!query) {
+            setSuggestions([]);
+            return;
+        }
+        setIsLoading(true);
+        try {
+            const res = await fetch(`/api/tags?query=${query}`);
+            if (res.ok) {
+                const data = await res.json();
+                setSuggestions(data);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
- useEffect(() => {
- const timeout = setTimeout(() => {
- searchTags(input);
- }, 300);
- return () => clearTimeout(timeout);
- }, [input]);
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            searchTags(input);
+        }, 300);
+        return () => clearTimeout(timeout);
+    }, [input]);
 
- const addTag = (tag: Tag) => {
- if (!selectedTags.find(t => t.id === tag.id)) {
- const newTags = [...selectedTags, tag];
- setSelectedTags(newTags);
- onChange(newTags.map(t => t.id));
- }
- setInput("");
- setSuggestions([]);
- };
+    const addTag = (tag: Tag) => {
+        if (!selectedTags.find((t) => t.id === tag.id)) {
+            const newTags = [...selectedTags, tag];
+            setSelectedTags(newTags);
+            onChange(newTags.map((t) => t.id));
+        }
+        setInput("");
+        setSuggestions([]);
+    };
 
- const removeTag = (id: string) => {
- const newTags = selectedTags.filter(t => t.id !== id);
- setSelectedTags(newTags);
- onChange(newTags.map(t => t.id));
- };
+    const removeTag = (id: string) => {
+        const newTags = selectedTags.filter((t) => t.id !== id);
+        setSelectedTags(newTags);
+        onChange(newTags.map((t) => t.id));
+    };
 
- const createTag = async () => {
- if (!input) return;
- setIsCreating(true);
- try {
- const res = await fetch("/api/tags", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({ name: input }),
- });
- if (res.ok) {
- const tag = await res.json();
- addTag(tag);
- }
- } catch (error: any) {
- toast.error(error instanceof Error ? error.message : (error?.message || "Failed to create tag"));
- } finally {
- setIsCreating(false);
- }
- };
+    const createTag = async () => {
+        if (!input) return;
+        setIsCreating(true);
+        try {
+            const res = await fetch("/api/tags", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: input }),
+            });
+            if (res.ok) {
+                const tag = await res.json();
+                addTag(tag);
+            }
+        } catch (error: any) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : error?.message || "Failed to create tag"
+            );
+        } finally {
+            setIsCreating(false);
+        }
+    };
 
- return (
- <div className="space-y-2" ref={containerRef}>
- <div className="flex flex-wrap gap-2 mb-2">
- {selectedTags.map(tag => (
- <div key={tag.id} className="flex items-center gap-1 bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-md text-sm">
- <span>{tag.name}</span>
- <Button variant="ghost" size="icon" aria-label="Remove Tag" onClick={() => removeTag(tag.id)} className="h-auto w-auto p-0 text-gray-500 hover:text-red-500 hover:bg-transparent">
- <X size={14} />
- </Button>
- </div>
- ))}
- </div>
+    return (
+        <div className="space-y-2" ref={containerRef}>
+            <div className="flex flex-wrap gap-2 mb-2">
+                {selectedTags.map((tag) => (
+                    <div
+                        key={tag.id}
+                        className="flex items-center gap-1 bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-md text-sm"
+                    >
+                        <span>{tag.name}</span>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Remove Tag"
+                            onClick={() => removeTag(tag.id)}
+                            className="h-auto w-auto p-0 text-gray-500 hover:text-red-500 hover:bg-transparent"
+                        >
+                            <X size={14} />
+                        </Button>
+                    </div>
+                ))}
+            </div>
 
- <div className="relative">
- <input
- type="text"
- value={input}
- onChange={e => setInput(e.target.value)}
- onKeyDown={e => {
- if (e.key === 'Enter') {
- e.preventDefault();
- if (suggestions.length > 0) {
- addTag(suggestions[0]);
- } else {
- createTag();
- }
- }
- }}
- placeholder="Add a tag..."
- className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
- />
+            <div className="relative">
+                <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            if (suggestions.length > 0) {
+                                addTag(suggestions[0]);
+                            } else {
+                                createTag();
+                            }
+                        }
+                    }}
+                    placeholder="Add a tag..."
+                    className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
+                />
 
- {(isLoading || isCreating) && (
- <div className="absolute right-3 top-2.5">
- <Loader2 size={16} className="animate-spin text-gray-500" />
- </div>
- )}
+                {(isLoading || isCreating) && (
+                    <div className="absolute right-3 top-2.5">
+                        <Loader2
+                            size={16}
+                            className="animate-spin text-gray-500"
+                        />
+                    </div>
+                )}
 
- {suggestions.length > 0 && (
- <div className="absolute z-10 w-full mt-1 bg-white dark:bg-[#1A1D24] border border-gray-200 dark:border-white/10 rounded-lg shadow-lg max-h-48 overflow-y-auto">
- {suggestions.map(tag => (
- <Button
- key={tag.id}
- variant="ghost"
- onClick={() => addTag(tag)}
- className="w-full text-left justify-start px-4 py-2 h-auto text-sm hover:bg-gray-50 dark:hover:bg-white/5 font-normal rounded-none"
- >
- {tag.name}
- </Button>
- ))}
- </div>
- )}
- </div>
- </div>
- );
+                {suggestions.length > 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-white dark:bg-[#1A1D24] border border-gray-200 dark:border-white/10 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                        {suggestions.map((tag) => (
+                            <Button
+                                key={tag.id}
+                                variant="ghost"
+                                onClick={() => addTag(tag)}
+                                className="w-full text-left justify-start px-4 py-2 h-auto text-sm hover:bg-gray-50 dark:hover:bg-white/5 font-normal rounded-none"
+                            >
+                                {tag.name}
+                            </Button>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 }

@@ -2,47 +2,62 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/api-auth";
 
-export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
- const params = await props.params;
- const auth = await requireAdmin();
- if (auth instanceof NextResponse) return auth;
+export async function DELETE(
+    request: Request,
+    props: { params: Promise<{ id: string }> }
+) {
+    const params = await props.params;
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
- try {
- await prisma.contentShortcut.delete({
- where: { id: params.id }
- });
- return NextResponse.json({ success: true });
- } catch (error) {
- console.error("Failed to delete shortcut", error);
- return NextResponse.json({ error: "Failed to delete shortcut" }, { status: 500 });
- }
+    try {
+        await prisma.contentShortcut.delete({
+            where: { id: params.id },
+        });
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Failed to delete shortcut", error);
+        return NextResponse.json(
+            { error: "Failed to delete shortcut" },
+            { status: 500 }
+        );
+    }
 }
 
-export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
- const params = await props.params;
- const auth = await requireAdmin();
- if (auth instanceof NextResponse) return auth;
+export async function PUT(
+    request: Request,
+    props: { params: Promise<{ id: string }> }
+) {
+    const params = await props.params;
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
 
- try {
- const body = await request.json();
- const { name, description, content } = body;
+    try {
+        const body = await request.json();
+        const { name, description, content } = body;
 
- if (!name || !content) {
- return NextResponse.json({ error: "Name and content are required" }, { status: 400 });
- }
+        if (!name || !content) {
+            return NextResponse.json(
+                { error: "Name and content are required" },
+                { status: 400 }
+            );
+        }
 
- const updatedShortcut = await prisma.contentShortcut.update({
- where: { id: params.id },
- data: {
- name,
- description,
- content
- }
- });
+        const updatedShortcut = await prisma.contentShortcut.update({
+            where: { id: params.id },
+            data: {
+                name,
+                description,
+                content,
+            },
+        });
 
- return NextResponse.json(updatedShortcut);
- } catch (error) {
- console.error("Failed to update shortcut", error);
- return NextResponse.json({ error: "Failed to update shortcut" }, { status: 500 });
- }
+        return NextResponse.json(updatedShortcut);
+    } catch (error) {
+        console.error("Failed to update shortcut", error);
+        return NextResponse.json(
+            { error: "Failed to update shortcut" },
+            { status: 500 }
+        );
+    }
 }

@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("risk-of-ruin-calculator")!;
 
 export const metadata: Metadata = {
- title: `${tool.title} | TheNextTrade`,
- description: tool.description,
+    title: `${tool.title} | TheNextTrade`,
+    description: tool.description,
 };
 
 export default function RiskOfRuinCalculatorPage() {
- return (
- <ToolPageLayout tool={tool}>
- <RiskOfRuinCalc />
- </ToolPageLayout>
- );
+    return (
+        <ToolPageLayout tool={tool}>
+            <RiskOfRuinCalc />
+        </ToolPageLayout>
+    );
 }

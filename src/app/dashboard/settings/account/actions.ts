@@ -7,152 +7,157 @@ import { revalidatePath } from "next/cache";
 import { sanitizeInput } from "@/lib/sanitize";
 
 export async function updateSettings(formData: FormData) {
- const supabase = await createClient();
+    const supabase = await createClient();
 
- // 1. Check Auth
- const {
- data: { user },
- } = await supabase.auth.getUser();
+    // 1. Check Auth
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
- if (!user) {
- return { error: "Unauthorized" };
- }
+    if (!user) {
+        return { error: "Unauthorized" };
+    }
 
- const usernameRaw = formData.get("username") as string;
- const bioRaw = formData.get("bio") as string;
+    const usernameRaw = formData.get("username") as string;
+    const bioRaw = formData.get("bio") as string;
 
- // Sanitize inputs
- const username = sanitizeInput(usernameRaw);
- const bio = sanitizeInput(bioRaw);
+    // Sanitize inputs
+    const username = sanitizeInput(usernameRaw);
+    const bio = sanitizeInput(bioRaw);
 
- const avatarFile = formData.get("avatar") as File;
+    const avatarFile = formData.get("avatar") as File;
 
- let avatarUrl = null;
+    let avatarUrl = null;
 
- // 2. Handle Image Upload
- if (avatarFile && avatarFile.size === 0 && avatarFile.name && avatarFile.name !== "undefined") {
- return { error: "File cannot be empty." };
- }
+    // 2. Handle Image Upload
+    if (
+        avatarFile &&
+        avatarFile.size === 0 &&
+        avatarFile.name &&
+        avatarFile.name !== "undefined"
+    ) {
+        return { error: "File cannot be empty." };
+    }
 
- if (avatarFile && avatarFile.size > 0) {
- const fileExt = avatarFile.name.split(".").pop();
- const fileName = `${Date.now()}.${fileExt}`;
- const filePath = `${user.id}/${fileName}`;
+    if (avatarFile && avatarFile.size > 0) {
+        const fileExt = avatarFile.name.split(".").pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `${user.id}/${fileName}`;
 
- const { error: uploadError } = await supabase.storage
- .from("avatars")
- .upload(filePath, avatarFile, {
- upsert: true,
- });
+        const { error: uploadError } = await supabase.storage
+            .from("avatars")
+            .upload(filePath, avatarFile, {
+                upsert: true,
+            });
 
- if (uploadError) {
- console.error("Upload Error:", uploadError);
- return { error: "Failed to upload avatar" };
- }
+        if (uploadError) {
+            console.error("Upload Error:", uploadError);
+            return { error: "Failed to upload avatar" };
+        }
 
- // Get Public URL
- const { data: { publicUrl } } = supabase.storage
- .from("avatars")
- .getPublicUrl(filePath);
+        // Get Public URL
+        const {
+            data: { publicUrl },
+        } = supabase.storage.from("avatars").getPublicUrl(filePath);
 
- avatarUrl = publicUrl;
- }
+        avatarUrl = publicUrl;
+    }
 
- // 3. Update User Table (Avatar) — Use Prisma to bypass RLS
- if (avatarUrl) {
- // Sync with Auth Metadata (Important for Header/Session)
- await supabase.auth.updateUser({
- data: { avatar_url: avatarUrl }
- });
+    // 3. Update User Table (Avatar) — Use Prisma to bypass RLS
+    if (avatarUrl) {
+        // Sync with Auth Metadata (Important for Header/Session)
+        await supabase.auth.updateUser({
+            data: { avatar_url: avatarUrl },
+        });
 
- try {
- await prisma.user.update({
- where: { id: user.id },
- data: { image: avatarUrl },
- });
- } catch (err) {
- console.error("User Update Error:", err);
- return { error: "Failed to update user avatar" };
- }
- }
+        try {
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { image: avatarUrl },
+            });
+        } catch (err) {
+            console.error("User Update Error:", err);
+            return { error: "Failed to update user avatar" };
+        }
+    }
 
- // 4. Update Profile Table (Bio, Username) — Use Prisma to bypass RLS
- try {
- await prisma.profile.upsert({
- where: { userId: user.id },
- update: {
- username: username,
- bio: bio,
- updatedAt: new Date(),
- },
- create: {
- userId: user.id,
- username: username,
- bio: bio,
- updatedAt: new Date(),
- },
- });
- } catch (err) {
- console.error("Profile Update Error:", err);
- return { error: "Failed to update profile details" };
- }
+    // 4. Update Profile Table (Bio, Username) — Use Prisma to bypass RLS
+    try {
+        await prisma.profile.upsert({
+            where: { userId: user.id },
+            update: {
+                username: username,
+                bio: bio,
+                updatedAt: new Date(),
+            },
+            create: {
+                userId: user.id,
+                username: username,
+                bio: bio,
+                updatedAt: new Date(),
+            },
+        });
+    } catch (err) {
+        console.error("Profile Update Error:", err);
+        return { error: "Failed to update profile details" };
+    }
 
- // 5. Revalidate
- revalidatePath("/dashboard/settings");
- revalidatePath("/dashboard/settings/account");
- revalidatePath("/dashboard", "layout"); // Update header everywhere
+    // 5. Revalidate
+    revalidatePath("/dashboard/settings");
+    revalidatePath("/dashboard/settings/account");
+    revalidatePath("/dashboard", "layout"); // Update header everywhere
 
- return { success: true, message: "Profile updated successfully!" };
+    return { success: true, message: "Profile updated successfully!" };
 }
 
 export async function updatePassword(formData: FormData) {
- const supabase = await createClient();
+    const supabase = await createClient();
 
- // 1. Check Auth
- const {
- data: { user },
- } = await supabase.auth.getUser();
+    // 1. Check Auth
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
- if (!user || !user.email) {
- return { error: "Unauthorized" };
- }
+    if (!user || !user.email) {
+        return { error: "Unauthorized" };
+    }
 
- const currentPassword = formData.get("currentPassword") as string;
- const newPassword = formData.get("newPassword") as string;
- const confirmPassword = formData.get("confirmPassword") as string;
+    const currentPassword = formData.get("currentPassword") as string;
+    const newPassword = formData.get("newPassword") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
 
- if (!currentPassword || !newPassword || !confirmPassword) {
- return { error: "All fields are required" };
- }
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        return { error: "All fields are required" };
+    }
 
- if (newPassword !== confirmPassword) {
- return { error: "New passwords do not match" };
- }
+    if (newPassword !== confirmPassword) {
+        return { error: "New passwords do not match" };
+    }
 
- if (newPassword.length < 6) {
- return { error: "Password must be at least 6 characters" };
- }
+    if (newPassword.length < 6) {
+        return { error: "Password must be at least 6 characters" };
+    }
 
- // 2. Verify Current Password
- const { error: signInError } = await supabase.auth.signInWithPassword({
- email: user.email,
- password: currentPassword,
- });
+    // 2. Verify Current Password
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+    });
 
- if (signInError) {
- return { error: "Current password is incorrect" };
- }
+    if (signInError) {
+        return { error: "Current password is incorrect" };
+    }
 
- // 3. Update Password
- const { error: updateError } = await supabase.auth.updateUser({
- password: newPassword,
- });
+    // 3. Update Password
+    const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword,
+    });
 
- if (updateError) {
- return { error: updateError.message };
- }
+    if (updateError) {
+        return { error: updateError.message };
+    }
 
- return { success: true, message: "Password updated successfully!" };
+    return { success: true, message: "Password updated successfully!" };
 }
 
 // ==========================================
@@ -162,27 +167,27 @@ export async function updatePassword(formData: FormData) {
 import { getActiveSessions, revokeSession } from "@/lib/session";
 
 export async function fetchUserSessions() {
- const supabase = await createClient();
- const {
- data: { user },
- } = await supabase.auth.getUser();
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
- if (!user) return [];
+    if (!user) return [];
 
- return await getActiveSessions(user.id);
+    return await getActiveSessions(user.id);
 }
 
 export async function deleteSession(sessionId: string) {
- const supabase = await createClient();
- const {
- data: { user },
- } = await supabase.auth.getUser();
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
- if (!user) return { error: "Unauthorized" };
+    if (!user) return { error: "Unauthorized" };
 
- await revokeSession(sessionId, user.id);
- revalidatePath("/dashboard/settings");
- return { success: true, message: "Session revoked" };
+    await revokeSession(sessionId, user.id);
+    revalidatePath("/dashboard/settings");
+    return { success: true, message: "Session revoked" };
 }
 
 // ==========================================
@@ -190,92 +195,107 @@ export async function deleteSession(sessionId: string) {
 // ==========================================
 
 export async function getTwoFactorStatus() {
- const supabase = await createClient();
- const { data: { user } } = await supabase.auth.getUser();
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
- if (!user) return { isEnabled: false };
+    if (!user) return { isEnabled: false };
 
- const factors = user.factors || [];
- const totp = factors.find(f => f.factor_type === 'totp' && f.status === 'verified');
+    const factors = user.factors || [];
+    const totp = factors.find(
+        (f) => f.factor_type === "totp" && f.status === "verified"
+    );
 
- return { isEnabled: !!totp };
+    return { isEnabled: !!totp };
 }
 
 export async function startTwoFactorSetup() {
- const supabase = await createClient();
- const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors();
- if (factorsError) return { error: factorsError.message };
+    const supabase = await createClient();
+    const { data: factorsData, error: factorsError } =
+        await supabase.auth.mfa.listFactors();
+    if (factorsError) return { error: factorsError.message };
 
- const factors = factorsData?.all || [];
- const verifiedTotp = factors.find(f => f.factor_type === 'totp' && f.status === 'verified');
- if (verifiedTotp) return { error: "2FA is already enabled" };
+    const factors = factorsData?.all || [];
+    const verifiedTotp = factors.find(
+        (f) => f.factor_type === "totp" && f.status === "verified"
+    );
+    if (verifiedTotp) return { error: "2FA is already enabled" };
 
- const staleTotpFactors = factors.filter(f => f.factor_type === 'totp' && f.status !== 'verified');
- for (const factor of staleTotpFactors) {
- await supabase.auth.mfa.unenroll({ factorId: factor.id });
- }
+    const staleTotpFactors = factors.filter(
+        (f) => f.factor_type === "totp" && f.status !== "verified"
+    );
+    for (const factor of staleTotpFactors) {
+        await supabase.auth.mfa.unenroll({ factorId: factor.id });
+    }
 
- const { data, error } = await supabase.auth.mfa.enroll({
- factorType: 'totp',
- friendlyName: 'TheNextTrade'
- });
+    const { data, error } = await supabase.auth.mfa.enroll({
+        factorType: "totp",
+        friendlyName: "TheNextTrade",
+    });
 
- if (error) return { error: error.message };
+    if (error) return { error: error.message };
 
- return {
- success: true,
- data: {
- id: data.id,
- secret: data.totp.secret,
- qr: data.totp.qr_code
- }
- };
+    return {
+        success: true,
+        data: {
+            id: data.id,
+            secret: data.totp.secret,
+            qr: data.totp.qr_code,
+        },
+    };
 }
 
 export async function verifyTwoFactorSetup(factorId: string, code: string) {
- const supabase = await createClient();
+    const supabase = await createClient();
 
- const { data: challenge, error: challengeErr } = await supabase.auth.mfa.challenge({ factorId });
- if (challengeErr) return { error: challengeErr.message };
+    const { data: challenge, error: challengeErr } =
+        await supabase.auth.mfa.challenge({ factorId });
+    if (challengeErr) return { error: challengeErr.message };
 
- const { data, error } = await supabase.auth.mfa.verify({
- factorId,
- challengeId: challenge.id,
- code
- });
+    const { data, error } = await supabase.auth.mfa.verify({
+        factorId,
+        challengeId: challenge.id,
+        code,
+    });
 
- if (error) return { error: error.message };
+    if (error) return { error: error.message };
 
- revalidatePath("/dashboard/settings");
- return { success: true };
+    revalidatePath("/dashboard/settings");
+    return { success: true };
 }
 
 export async function disableTwoFactor(code?: string) {
- const supabase = await createClient();
- const { data: { user } } = await supabase.auth.getUser();
- if (!user) return { error: "Unauthorized" };
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { error: "Unauthorized" };
 
- const factors = user.factors || [];
- const totpFactor = factors.find(f => f.factor_type === 'totp' && f.status === 'verified');
+    const factors = user.factors || [];
+    const totpFactor = factors.find(
+        (f) => f.factor_type === "totp" && f.status === "verified"
+    );
 
- if (!totpFactor) return { error: "2FA is not enabled" };
+    if (!totpFactor) return { error: "2FA is not enabled" };
 
- if (!code) return { error: "Verification code required" };
+    if (!code) return { error: "Verification code required" };
 
- // Verify code before disabling
- const { data: challenge, error: challengeErr } = await supabase.auth.mfa.challenge({ factorId: totpFactor.id });
- if (challengeErr) return { error: challengeErr.message };
+    // Verify code before disabling
+    const { data: challenge, error: challengeErr } =
+        await supabase.auth.mfa.challenge({ factorId: totpFactor.id });
+    if (challengeErr) return { error: challengeErr.message };
 
- const { error: verifyErr } = await supabase.auth.mfa.verify({
- factorId: totpFactor.id,
- challengeId: challenge.id,
- code
- });
+    const { error: verifyErr } = await supabase.auth.mfa.verify({
+        factorId: totpFactor.id,
+        challengeId: challenge.id,
+        code,
+    });
 
- if (verifyErr) return { error: "Invalid code" };
+    if (verifyErr) return { error: "Invalid code" };
 
- await supabase.auth.mfa.unenroll({ factorId: totpFactor.id });
+    await supabase.auth.mfa.unenroll({ factorId: totpFactor.id });
 
- revalidatePath("/dashboard/settings");
- return { success: true };
+    revalidatePath("/dashboard/settings");
+    return { success: true };
 }

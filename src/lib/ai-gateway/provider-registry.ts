@@ -6,13 +6,15 @@ import { OpenAIAdapter } from "./providers/openai";
 import { XAIAdapter } from "./providers/xai";
 
 const adapters: Record<string, AiGatewayProviderAdapter> = {
-  anthropic: AnthropicAdapter,
-  deepseek: DeepSeekAdapter,
-  google: GoogleAdapter,
-  openai: OpenAIAdapter,
-  xai: XAIAdapter,
+    anthropic: AnthropicAdapter,
+    deepseek: DeepSeekAdapter,
+    google: GoogleAdapter,
+    openai: OpenAIAdapter,
+    xai: XAIAdapter,
 };
 
-export function getAdapter(providerCode: string): AiGatewayProviderAdapter | undefined {
-  return adapters[providerCode];
+export function getAdapter(
+    providerCode: string
+): AiGatewayProviderAdapter | undefined {
+    return adapters[providerCode];
 }

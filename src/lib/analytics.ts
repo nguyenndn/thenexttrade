@@ -7,35 +7,38 @@
  * Lightweight — no external dependency needed.
  */
 export function parseUserAgent(ua: string | null): {
- device: string;
- browser: string;
- os: string;
+    device: string;
+    browser: string;
+    os: string;
 } {
- if (!ua) return { device: 'unknown', browser: 'unknown', os: 'unknown' };
+    if (!ua) return { device: "unknown", browser: "unknown", os: "unknown" };
 
- // Device
- const device = /mobile|android|iphone|ipad|ipod/i.test(ua)
- ? (/ipad|tablet/i.test(ua) ? 'tablet' : 'mobile')
- : 'desktop';
+    // Device
+    const device = /mobile|android|iphone|ipad|ipod/i.test(ua)
+        ? /ipad|tablet/i.test(ua)
+            ? "tablet"
+            : "mobile"
+        : "desktop";
 
- // Browser (order matters — check specific first)
- let browser = 'other';
- if (/edg\//i.test(ua)) browser = 'Edge';
- else if (/opr\//i.test(ua) || /opera/i.test(ua)) browser = 'Opera';
- else if (/brave/i.test(ua)) browser = 'Brave';
- else if (/firefox|fxios/i.test(ua)) browser = 'Firefox';
- else if (/crios/i.test(ua) || (/chrome/i.test(ua) && !/edg/i.test(ua))) browser = 'Chrome';
- else if (/safari/i.test(ua) && !/chrome/i.test(ua)) browser = 'Safari';
+    // Browser (order matters — check specific first)
+    let browser = "other";
+    if (/edg\//i.test(ua)) browser = "Edge";
+    else if (/opr\//i.test(ua) || /opera/i.test(ua)) browser = "Opera";
+    else if (/brave/i.test(ua)) browser = "Brave";
+    else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
+    else if (/crios/i.test(ua) || (/chrome/i.test(ua) && !/edg/i.test(ua)))
+        browser = "Chrome";
+    else if (/safari/i.test(ua) && !/chrome/i.test(ua)) browser = "Safari";
 
- // OS
- let os = 'other';
- if (/windows/i.test(ua)) os = 'Windows';
- else if (/macintosh|mac os/i.test(ua)) os = 'macOS';
- else if (/iphone|ipad|ipod/i.test(ua)) os = 'iOS';
- else if (/android/i.test(ua)) os = 'Android';
- else if (/linux/i.test(ua)) os = 'Linux';
+    // OS
+    let os = "other";
+    if (/windows/i.test(ua)) os = "Windows";
+    else if (/macintosh|mac os/i.test(ua)) os = "macOS";
+    else if (/iphone|ipad|ipod/i.test(ua)) os = "iOS";
+    else if (/android/i.test(ua)) os = "Android";
+    else if (/linux/i.test(ua)) os = "Linux";
 
- return { device, browser, os };
+    return { device, browser, os };
 }
 
 /**
@@ -44,17 +47,17 @@ export function parseUserAgent(ua: string | null): {
  * Uses simple hash (not crypto) for performance in edge runtime.
  */
 export function generateSessionId(ip: string, ua: string): string {
- const date = new Date().toISOString().split('T')[0]; // Daily rotation
- const input = `${ip}:${ua}:${date}`;
+    const date = new Date().toISOString().split("T")[0]; // Daily rotation
+    const input = `${ip}:${ua}:${date}`;
 
- // Simple FNV-1a hash
- let hash = 2166136261;
- for (let i = 0; i < input.length; i++) {
- hash ^= input.charCodeAt(i);
- hash = Math.imul(hash, 16777619);
- }
+    // Simple FNV-1a hash
+    let hash = 2166136261;
+    for (let i = 0; i < input.length; i++) {
+        hash ^= input.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
 
- return Math.abs(hash).toString(36).padStart(8, '0');
+    return Math.abs(hash).toString(36).padStart(8, "0");
 }
 
 /**
@@ -62,19 +65,24 @@ export function generateSessionId(ip: string, ua: string): string {
  * Skip: API routes, static assets, admin pages, Next.js internals.
  */
 export function isTrackablePath(pathname: string): boolean {
- // Skip patterns
- if (pathname.startsWith('/api/')) return false;
- if (pathname.startsWith('/_next/')) return false;
- if (pathname.startsWith('/admin')) return false;
- if (pathname.startsWith('/auth/')) return false;
- if (pathname === '/favicon.ico') return false;
- if (pathname === '/robots.txt') return false;
- if (pathname === '/sitemap.xml') return false;
- if (pathname === '/manifest.json') return false;
- if (pathname === '/sw.js') return false;
- if (/\.(svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|json)$/i.test(pathname)) return false;
+    // Skip patterns
+    if (pathname.startsWith("/api/")) return false;
+    if (pathname.startsWith("/_next/")) return false;
+    if (pathname.startsWith("/admin")) return false;
+    if (pathname.startsWith("/auth/")) return false;
+    if (pathname === "/favicon.ico") return false;
+    if (pathname === "/robots.txt") return false;
+    if (pathname === "/sitemap.xml") return false;
+    if (pathname === "/manifest.json") return false;
+    if (pathname === "/sw.js") return false;
+    if (
+        /\.(svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|json)$/i.test(
+            pathname
+        )
+    )
+        return false;
 
- return true;
+    return true;
 }
 
 /**
@@ -82,25 +90,26 @@ export function isTrackablePath(pathname: string): boolean {
  * Supports Vercel, Cloudflare, and standard headers — platform agnostic.
  */
 export function getGeoFromHeaders(headers: Headers): {
- country: string | null;
- city: string | null;
- region: string | null;
+    country: string | null;
+    city: string | null;
+    region: string | null;
 } {
- return {
- // Vercel
- country: headers.get('x-vercel-ip-country')
- // Cloudflare
- || headers.get('cf-ipcountry')
- // Standard
- || headers.get('x-country-code')
- || null,
- city: headers.get('x-vercel-ip-city')
- || headers.get('cf-ipcity')
- || null,
- region: headers.get('x-vercel-ip-country-region')
- || headers.get('cf-region')
- || null,
- };
+    return {
+        // Vercel
+        country:
+            headers.get("x-vercel-ip-country") ||
+            // Cloudflare
+            headers.get("cf-ipcountry") ||
+            // Standard
+            headers.get("x-country-code") ||
+            null,
+        city:
+            headers.get("x-vercel-ip-city") || headers.get("cf-ipcity") || null,
+        region:
+            headers.get("x-vercel-ip-country-region") ||
+            headers.get("cf-region") ||
+            null,
+    };
 }
 
 /**
@@ -109,39 +118,39 @@ export function getGeoFromHeaders(headers: Headers): {
  * Filters out: RSC requests, prefetches, API/asset requests, non-HTML fetches.
  */
 export function shouldTrackPageviewRequest(input: {
- pathname: string;
- searchParams: URLSearchParams;
- headers: Headers;
+    pathname: string;
+    searchParams: URLSearchParams;
+    headers: Headers;
 }): boolean {
- const { pathname, searchParams, headers } = input;
+    const { pathname, searchParams, headers } = input;
 
- // Broad pathname filter first
- if (!isTrackablePath(pathname)) return false;
+    // Broad pathname filter first
+    if (!isTrackablePath(pathname)) return false;
 
- // Skip RSC data requests (Next.js App Router)
- if (searchParams.has('_rsc')) return false;
+    // Skip RSC data requests (Next.js App Router)
+    if (searchParams.has("_rsc")) return false;
 
- const rsc = headers.get('rsc');
- if (rsc === '1') return false;
+    const rsc = headers.get("rsc");
+    if (rsc === "1") return false;
 
- // Skip Next.js router prefetches
- const nextRouterPrefetch = headers.get('next-router-prefetch');
- if (nextRouterPrefetch) return false;
+    // Skip Next.js router prefetches
+    const nextRouterPrefetch = headers.get("next-router-prefetch");
+    if (nextRouterPrefetch) return false;
 
- // Skip browser prefetches
- const purpose = headers.get('purpose');
- if (purpose?.toLowerCase() === 'prefetch') return false;
+    // Skip browser prefetches
+    const purpose = headers.get("purpose");
+    if (purpose?.toLowerCase() === "prefetch") return false;
 
- const secPurpose = headers.get('sec-purpose');
- if (secPurpose?.toLowerCase().includes('prefetch')) return false;
+    const secPurpose = headers.get("sec-purpose");
+    if (secPurpose?.toLowerCase().includes("prefetch")) return false;
 
- // Skip non-document fetches (XHR, fetch, etc.)
- const secFetchDest = headers.get('sec-fetch-dest');
- if (secFetchDest && secFetchDest !== 'document') return false;
+    // Skip non-document fetches (XHR, fetch, etc.)
+    const secFetchDest = headers.get("sec-fetch-dest");
+    if (secFetchDest && secFetchDest !== "document") return false;
 
- // Skip non-HTML requests (text/x-component = RSC, application/json = API)
- const accept = headers.get('accept') || '';
- if (!accept.includes('text/html')) return false;
+    // Skip non-HTML requests (text/x-component = RSC, application/json = API)
+    const accept = headers.get("accept") || "";
+    if (!accept.includes("text/html")) return false;
 
- return true;
+    return true;
 }

@@ -11,247 +11,297 @@ import { cn } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 interface SharePageProps {
- params: Promise<{
- id: string;
- }>;
+    params: Promise<{
+        id: string;
+    }>;
 }
 
 export default async function SharePage({ params }: SharePageProps) {
- const { id } = await params;
+    const { id } = await params;
 
- const trade = await prisma.journalEntry.findUnique({
- where: { id },
- include: {
- user: {
- select: {
- name: true,
- image: true,
- profile: {
- select: {
- isPublicProfile: true,
- username: true,
- showRealName: true,
- showMoney: true,
- showBroker: true,
- showAccountNumber: true,
- showPercentMetrics: true,
- }
- }
- }
- },
- account: {
- select: {
- accountType: true,
- name: true,
- accountNumber: true,
- }
- }
- }
- });
+    const trade = await prisma.journalEntry.findUnique({
+        where: { id },
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    image: true,
+                    profile: {
+                        select: {
+                            isPublicProfile: true,
+                            username: true,
+                            showRealName: true,
+                            showMoney: true,
+                            showBroker: true,
+                            showAccountNumber: true,
+                            showPercentMetrics: true,
+                        },
+                    },
+                },
+            },
+            account: {
+                select: {
+                    accountType: true,
+                    name: true,
+                    accountNumber: true,
+                },
+            },
+        },
+    });
 
- if (!trade) {
- return notFound();
- }
+    if (!trade) {
+        return notFound();
+    }
 
- // Fetch active coach plan for the user
- const activeCoachPlan = await prisma.coachActionPlan.findFirst({
-   where: { userId: trade.userId, status: "ACTIVE" },
-   orderBy: { createdAt: "desc" },
- });
+    // Fetch active coach plan for the user
+    const activeCoachPlan = await prisma.coachActionPlan.findFirst({
+        where: { userId: trade.userId, status: "ACTIVE" },
+        orderBy: { createdAt: "desc" },
+    });
 
- // Enforce profile privacy settings on the shared trade data
- const profile = trade.user?.profile;
- const showRealName = profile?.showRealName ?? false;
- const showMoney = profile?.showMoney ?? false;
- const showBroker = profile?.showBroker ?? false;
- const showAccountNumber = profile?.showAccountNumber ?? false;
+    // Enforce profile privacy settings on the shared trade data
+    const profile = trade.user?.profile;
+    const showRealName = profile?.showRealName ?? false;
+    const showMoney = profile?.showMoney ?? false;
+    const showBroker = profile?.showBroker ?? false;
+    const showAccountNumber = profile?.showAccountNumber ?? false;
 
- // Sanitize name
- const displayName = showRealName 
- ? (trade.user.name || "Trader") 
- : (profile?.username ? `@${profile.username}` : "Trader");
+    // Sanitize name
+    const displayName = showRealName
+        ? trade.user.name || "Trader"
+        : profile?.username
+          ? `@${profile.username}`
+          : "Trader";
 
- // Sanitize account info
- if (trade.account) {
- if (!showBroker) {
- trade.account.name = trade.account.accountType === "DEMO" ? "Demo Account" : "Trading Account";
- }
- }
+    // Sanitize account info
+    if (trade.account) {
+        if (!showBroker) {
+            trade.account.name =
+                trade.account.accountType === "DEMO"
+                    ? "Demo Account"
+                    : "Trading Account";
+        }
+    }
 
- // Attach sanitized fields / overrides
- const sanitizedTrade = {
- ...trade,
- showMoney,
- showRealName,
- showBroker,
- showAccountNumber,
- user: {
- ...trade.user,
- name: displayName,
- }
- };
+    // Attach sanitized fields / overrides
+    const sanitizedTrade = {
+        ...trade,
+        showMoney,
+        showRealName,
+        showBroker,
+        showAccountNumber,
+        user: {
+            ...trade.user,
+            name: displayName,
+        },
+    };
 
- return (
- <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 text-gray-900 flex flex-col font-sans selection:bg-primary/20">
- {/* Ambient background decoration */}
- <div className="fixed inset-0 pointer-events-none overflow-hidden">
- <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
- <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
- </div>
+    return (
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 text-gray-900 flex flex-col font-sans selection:bg-primary/20">
+            {/* Ambient background decoration */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+                <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
+            </div>
 
- <main className="relative flex-1 container mx-auto px-4 py-6 md:py-10 flex flex-col items-center justify-center gap-6 md:gap-8">
+            <main className="relative flex-1 container mx-auto px-4 py-6 md:py-10 flex flex-col items-center justify-center gap-6 md:gap-8">
+                {/* User Profile Section */}
+                <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-emerald-500 to-teal-600 p-5 md:p-6 shadow-2xl shadow-primary/15">
+                        {/* Decorative elements */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
+                        <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/4 blur-2xl"></div>
 
- {/* User Profile Section */}
- <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-4 duration-700">
- <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-emerald-500 to-teal-600 p-5 md:p-6 shadow-2xl shadow-primary/15">
- {/* Decorative elements */}
- <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
- <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/4 blur-2xl"></div>
+                        <div className="relative z-10 flex flex-col items-center text-center gap-5">
+                            {/* Avatar */}
+                            <div className="relative">
+                                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] border-white/50 overflow-hidden bg-white shadow-2xl ring-4 ring-white/10">
+                                    {sanitizedTrade.user.image ? (
+                                        <Image
+                                            src={sanitizedTrade.user.image}
+                                            alt={
+                                                sanitizedTrade.user.name ||
+                                                "User"
+                                            }
+                                            width={96}
+                                            height={96}
+                                            className="object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-2xl md:text-3xl font-bold text-primary bg-primary/10">
+                                            {(
+                                                sanitizedTrade.user.name?.[0] ||
+                                                "U"
+                                            ).toUpperCase()}
+                                        </div>
+                                    )}
+                                </div>
+                                <div
+                                    className="absolute -bottom-1 -right-1 bg-blue-500 text-white p-1.5 rounded-full border-[3px] border-emerald-500 shadow-lg"
+                                    title="Verified Trader"
+                                >
+                                    <CheckCircle2
+                                        size={14}
+                                        strokeWidth={3}
+                                        className="md:w-4 md:h-4"
+                                    />
+                                </div>
+                            </div>
 
- <div className="relative z-10 flex flex-col items-center text-center gap-5">
- {/* Avatar */}
- <div className="relative">
- <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] border-white/50 overflow-hidden bg-white shadow-2xl ring-4 ring-white/10">
- {sanitizedTrade.user.image ? (
- <Image
- src={sanitizedTrade.user.image}
- alt={sanitizedTrade.user.name || "User"}
- width={96}
- height={96}
- className="object-cover"
- />
- ) : (
- <div className="w-full h-full flex items-center justify-center text-2xl md:text-3xl font-bold text-primary bg-primary/10">
- {(sanitizedTrade.user.name?.[0] || "U").toUpperCase()}
- </div>
- )}
- </div>
- <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white p-1.5 rounded-full border-[3px] border-emerald-500 shadow-lg" title="Verified Trader">
- <CheckCircle2 size={14} strokeWidth={3} className="md:w-4 md:h-4" />
- </div>
- </div>
+                            {/* Name + Badge */}
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-center gap-2.5 flex-wrap">
+                                    <h1 className="text-xl md:text-2xl font-black text-white drop-shadow-md">
+                                        {sanitizedTrade.user.name ||
+                                            "Unknown Trader"}
+                                    </h1>
+                                    <span className="px-2.5 py-1 rounded-full bg-white/15 text-white/95 text-[10px] md:text-xs font-bold uppercase tracking-wider border border-white/25 flex items-center gap-1.5 backdrop-blur-md">
+                                        <Medal size={11} />
+                                        Verified
+                                    </span>
+                                </div>
 
- {/* Name + Badge */}
- <div className="space-y-3">
- <div className="flex items-center justify-center gap-2.5 flex-wrap">
- <h1 className="text-xl md:text-2xl font-black text-white drop-shadow-md">
- {sanitizedTrade.user.name || "Unknown Trader"}
- </h1>
- <span className="px-2.5 py-1 rounded-full bg-white/15 text-white/95 text-[10px] md:text-xs font-bold uppercase tracking-wider border border-white/25 flex items-center gap-1.5 backdrop-blur-md">
- <Medal size={11} />
- Verified
- </span>
- </div>
+                                {/* Quote - Premium styling */}
+                                <div className="relative max-w-md mx-auto">
+                                    <div className="absolute -top-2 -left-1 text-white/20 text-3xl font-serif leading-none">
+                                        &ldquo;
+                                    </div>
+                                    <p className="text-white/85 text-sm leading-relaxed italic px-4">
+                                        {sanitizedTrade.shareDescription ||
+                                            "A disciplined approach to the markets. Tracking every trade to master the craft of scalping."}
+                                    </p>
+                                    <div className="absolute -bottom-3 -right-1 text-white/20 text-3xl font-serif leading-none">
+                                        &rdquo;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
- {/* Quote - Premium styling */}
- <div className="relative max-w-md mx-auto">
- <div className="absolute -top-2 -left-1 text-white/20 text-3xl font-serif leading-none">&ldquo;</div>
- <p className="text-white/85 text-sm leading-relaxed italic px-4">
- {sanitizedTrade.shareDescription || "A disciplined approach to the markets. Tracking every trade to master the craft of scalping."}
- </p>
- <div className="absolute -bottom-3 -right-1 text-white/20 text-3xl font-serif leading-none">&rdquo;</div>
- </div>
- </div>
- </div>
- </div>
- </div>
+                {/* Trade Card Section */}
+                <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
+                    <TradeShareCard
+                        entry={sanitizedTrade}
+                        variant={
+                            (sanitizedTrade.shareMode as "basic" | "full") ||
+                            "full"
+                        }
+                        className="max-w-none"
+                    />
+                </div>
 
- {/* Trade Card Section */}
- <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
- <TradeShareCard entry={sanitizedTrade} variant={sanitizedTrade.shareMode as "basic" | "full" || "full"} className="max-w-none" />
- </div>
+                {/* AI Insights Section - Only shown in FULL mode and if plan exists */}
+                {sanitizedTrade.shareMode === "full" &&
+                    activeCoachPlan &&
+                    ((activeCoachPlan.keepDoing?.length ?? 0) > 0 ||
+                        (activeCoachPlan.fixNext?.length ?? 0) > 0) && (
+                        <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-10 duration-700 delay-150">
+                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-6 shadow-xl">
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4 flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                    Trader's Current Focus (AI Insights)
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {(activeCoachPlan.keepDoing?.length ?? 0) >
+                                        0 && (
+                                        <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                                            <h4 className="text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-3 flex items-center gap-2">
+                                                What's Working
+                                            </h4>
+                                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                                                {activeCoachPlan.keepDoing}
+                                            </p>
+                                        </div>
+                                    )}
+                                    {(activeCoachPlan.fixNext?.length ?? 0) >
+                                        0 && (
+                                        <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
+                                            <h4 className="text-sm font-bold text-red-700 dark:text-red-400 mb-3 flex items-center gap-2">
+                                                Needs Fix
+                                            </h4>
+                                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                                                {activeCoachPlan.fixNext}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
- {/* AI Insights Section - Only shown in FULL mode and if plan exists */}
- {sanitizedTrade.shareMode === "full" && activeCoachPlan && ((activeCoachPlan.keepDoing?.length ?? 0) > 0 || (activeCoachPlan.fixNext?.length ?? 0) > 0) && (
-   <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-10 duration-700 delay-150">
-     <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-6 shadow-xl">
-       <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4 flex items-center gap-2">
-         <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-         Trader's Current Focus (AI Insights)
-       </h3>
-       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-         {(activeCoachPlan.keepDoing?.length ?? 0) > 0 && (
-           <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
-             <h4 className="text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-3 flex items-center gap-2">
-               What's Working
-             </h4>
-             <p className="text-sm text-gray-600 dark:text-gray-300">
-               {activeCoachPlan.keepDoing}
-             </p>
-           </div>
-         )}
-         {(activeCoachPlan.fixNext?.length ?? 0) > 0 && (
-           <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
-             <h4 className="text-sm font-bold text-red-700 dark:text-red-400 mb-3 flex items-center gap-2">
-               Needs Fix
-             </h4>
-             <p className="text-sm text-gray-600 dark:text-gray-300">
-               {activeCoachPlan.fixNext}
-             </p>
-           </div>
-         )}
-       </div>
-     </div>
-   </div>
- )}
+                {/* CTA Block - Premium */}
+                <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
+                    <div className="relative overflow-hidden rounded-2xl bg-white border border-dashboard p-5 md:p-8 text-center group hover:border-primary/20 transition-all duration-500 shadow-xl shadow-gray-200/50">
+                        {/* Top accent line */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent"></div>
+                        {/* Radial glow */}
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,189,114,0.03),transparent_50%)]"></div>
 
- {/* CTA Block - Premium */}
- <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
- <div className="relative overflow-hidden rounded-2xl bg-white border border-dashboard p-5 md:p-8 text-center group hover:border-primary/20 transition-all duration-500 shadow-xl shadow-gray-200/50">
- {/* Top accent line */}
- <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent"></div>
- {/* Radial glow */}
- <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,189,114,0.03),transparent_50%)]"></div>
+                        <div className="relative z-10 flex flex-col items-center gap-5 md:gap-7">
+                            <div className="space-y-3 md:space-y-4">
+                                <p className="text-primary/80 text-xs font-bold uppercase tracking-[0.2em]">
+                                    Free Forever
+                                </p>
+                                <h2 className="text-2xl md:text-4xl font-black text-gray-800 tracking-tight">
+                                    Start Your Trading Journal
+                                </h2>
+                                <p className="text-gray-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
+                                    Join traders who are mastering their
+                                    psychology and strategy with TheNextTrade.
+                                </p>
+                            </div>
 
- <div className="relative z-10 flex flex-col items-center gap-5 md:gap-7">
- <div className="space-y-3 md:space-y-4">
- <p className="text-primary/80 text-xs font-bold uppercase tracking-[0.2em]">Free Forever</p>
- <h2 className="text-2xl md:text-4xl font-black text-gray-800 tracking-tight">
- Start Your Trading Journal
- </h2>
- <p className="text-gray-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
- Join traders who are mastering their psychology and strategy with TheNextTrade.
- </p>
- </div>
+                            <Link href="/auth/signup">
+                                <Button className="h-12 md:h-14 px-8 md:px-10 rounded-xl font-bold text-base md:text-lg bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                                    Get Started Free
+                                    <ArrowRight
+                                        size={18}
+                                        className="md:w-5 md:h-5 ml-2"
+                                    />
+                                </Button>
+                            </Link>
 
- <Link href="/auth/signup">
- <Button className="h-12 md:h-14 px-8 md:px-10 rounded-xl font-bold text-base md:text-lg bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
- Get Started Free
- <ArrowRight size={18} className="md:w-5 md:h-5 ml-2" />
- </Button>
- </Link>
+                            {/* Social proof */}
+                            <div className="flex items-center gap-6 text-xs text-gray-400 pt-2">
+                                <span className="flex items-center gap-1.5">
+                                    <CheckCircle2
+                                        size={13}
+                                        className="text-primary/60"
+                                    />
+                                    No credit card
+                                </span>
+                                <span className="flex items-center gap-1.5">
+                                    <CheckCircle2
+                                        size={13}
+                                        className="text-primary/60"
+                                    />
+                                    MT5 Auto-Sync
+                                </span>
+                                <span className="flex items-center gap-1.5">
+                                    <CheckCircle2
+                                        size={13}
+                                        className="text-primary/60"
+                                    />
+                                    AI Analytics
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
 
- {/* Social proof */}
- <div className="flex items-center gap-6 text-xs text-gray-400 pt-2">
- <span className="flex items-center gap-1.5">
- <CheckCircle2 size={13} className="text-primary/60" />
- No credit card
- </span>
- <span className="flex items-center gap-1.5">
- <CheckCircle2 size={13} className="text-primary/60" />
- MT5 Auto-Sync
- </span>
- <span className="flex items-center gap-1.5">
- <CheckCircle2 size={13} className="text-primary/60" />
- AI Analytics
- </span>
- </div>
- </div>
- </div>
- </div>
-
- </main>
-
- {/* Footer */}
- <footer className="py-4 text-center">
- <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400">
- <span className="font-black text-gray-500 tracking-tight">
- <span>TheNext</span><span className="text-primary">Trade</span>
- </span>
- <span>&middot;</span>
- <span>&copy; {new Date().getFullYear()}</span>
- </div>
- </footer>
- </div>
- );
+            {/* Footer */}
+            <footer className="py-4 text-center">
+                <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400">
+                    <span className="font-black text-gray-500 tracking-tight">
+                        <span>TheNext</span>
+                        <span className="text-primary">Trade</span>
+                    </span>
+                    <span>&middot;</span>
+                    <span>&copy; {new Date().getFullYear()}</span>
+                </div>
+            </footer>
+        </div>
+    );
 }

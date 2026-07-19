@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("currency-converter")!;
 
 export const metadata: Metadata = {
- title: tool.title,
- description: tool.description,
+    title: tool.title,
+    description: tool.description,
 };
 
 export default function CurrencyConverterPage() {
- return (
- <ToolPageLayout tool={tool}>
- <CurrencyConverter />
- </ToolPageLayout>
- );
+    return (
+        <ToolPageLayout tool={tool}>
+            <CurrencyConverter />
+        </ToolPageLayout>
+    );
 }

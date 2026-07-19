@@ -6,14 +6,14 @@ import type { Metadata } from "next";
 const tool = getToolBySlug("compounding-calculator")!;
 
 export const metadata: Metadata = {
- title: `${tool.title} | TheNextTrade`,
- description: tool.description,
+    title: `${tool.title} | TheNextTrade`,
+    description: tool.description,
 };
 
 export default function CompoundingCalculatorPage() {
- return (
- <ToolPageLayout tool={tool}>
- <CompoundingCalc />
- </ToolPageLayout>
- );
+    return (
+        <ToolPageLayout tool={tool}>
+            <CompoundingCalc />
+        </ToolPageLayout>
+    );
 }
