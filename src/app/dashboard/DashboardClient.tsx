@@ -163,17 +163,8 @@ export default function DashboardClient(data: DashboardPageData) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
-    // MOCK NUDGE CARD FOR TESTING
-    const mockNextBestAction = nextBestAction || {
-        id: "WEAK_SESSION",
-        title: "Asian Session Warning",
-        description:
-            "Your win rate drops below 40% during the Asian session. Consider reducing your lot size or avoiding trades during this time.",
-        ctaLabel: "Review Session Performance",
-        ctaHref: "#",
-        priority: 10,
-        sourceSignalType: "SESSION",
-    };
+    // Remove mock nudge card
+    const actualNextBestAction = nextBestAction;
 
     // Modal State
     const [selectedTrade, setSelectedTrade] = useState<any>(null);
@@ -365,11 +356,11 @@ export default function DashboardClient(data: DashboardPageData) {
                 {!hasNoData && <MobileProStatusBanner />}
 
                 {/* Headless Coach Nudge Dialog state provider */}
-                {mockNextBestAction &&
+                {actualNextBestAction &&
                     !shouldSuppressCoachNudge &&
                     !suppress?.coachNudge && (
                         <DashboardCoachNudge
-                            nextBestAction={mockNextBestAction}
+                            nextBestAction={actualNextBestAction}
                             coachPlan={coachPlan}
                             learningRecommendations={
                                 learningRecommendations || []
@@ -383,10 +374,10 @@ export default function DashboardClient(data: DashboardPageData) {
                 {/* Nudge Space - Only visible if action exists */}
                 {!suppress?.coachNudge &&
                     !shouldSuppressCoachNudge &&
-                    mockNextBestAction && (
+                    actualNextBestAction && (
                         <div className="mb-8">
                             <DashboardCoachNudge
-                                nextBestAction={mockNextBestAction}
+                                nextBestAction={actualNextBestAction}
                                 learningRecommendations={
                                     learningRecommendations || []
                                 }

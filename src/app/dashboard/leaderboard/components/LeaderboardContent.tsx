@@ -6,7 +6,8 @@ import { TopMedalStrip } from "./TopMedalStrip";
 import { LeaderboardTable } from "./LeaderboardTable";
 import { UserProfileCard } from "./UserProfileCard";
 import { LeaderboardFilter } from "./LeaderboardFilter";
-import type { LeaderboardEntry, LeaderboardType } from "../actions";
+import { LeaderboardMethodologyModal } from "./LeaderboardMethodologyModal";
+import type { LeaderboardEntry, LeaderboardType, PeriodFilter } from "../actions";
 
 const TAB_TITLES: Record<string, string> = {
     xp: "Edge Ranking",
@@ -21,6 +22,7 @@ interface LeaderboardContentProps {
     myEntry?: LeaderboardEntry | null;
     type: LeaderboardType;
     sortBy?: "percentage" | "currency";
+    period?: PeriodFilter;
 }
 
 export function LeaderboardContent({
@@ -29,10 +31,12 @@ export function LeaderboardContent({
     myEntry,
     type,
     sortBy = "currency",
+    period = "30D",
 }: LeaderboardContentProps) {
     const [selectedUser, setSelectedUser] = useState<LeaderboardEntry | null>(
         null
     );
+    const [isMethodologyOpen, setIsMethodologyOpen] = useState(false);
 
     const top3 = entries.slice(0, 3);
     const rest = entries.slice(3);
@@ -51,13 +55,17 @@ export function LeaderboardContent({
                                 Top Performers
                             </h3>
                             <p className="text-xs text-gray-500">
-                                The current leaders in this ranking.
+                                The current leaders in this ranking ({period}).
                             </p>
                         </div>
                     </div>
                     {type === "trading" && (
                         <div className="shrink-0">
-                            <LeaderboardFilter currentSortBy={sortBy} />
+                            <LeaderboardFilter
+                                currentSortBy={sortBy}
+                                currentPeriod={period}
+                                onOpenMethodology={() => setIsMethodologyOpen(true)}
+                            />
                         </div>
                     )}
                 </div>
@@ -74,18 +82,28 @@ export function LeaderboardContent({
 
             {/* Rankings Table Section */}
             <div className="bg-white dark:bg-[#151925] rounded-2xl border border-dashboard shadow-sm overflow-hidden">
-                <div className="flex items-center gap-3 px-6 py-4 border-b border-dashboard">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center">
-                        <Medal size={16} className="text-emerald-500" />
+                <div className="flex items-center justify-between px-6 py-4 border-b border-dashboard flex-wrap gap-3">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center">
+                            <Medal size={16} className="text-emerald-500" />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-bold text-gray-700 dark:text-white">
+                                {TAB_TITLES[type] || "Rankings"}
+                            </h3>
+                            <p className="text-xs text-gray-500">
+                                All participants with min. 10 closed trades ({period})
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 className="text-sm font-bold text-gray-700 dark:text-white">
-                            {TAB_TITLES[type] || "Rankings"}
-                        </h3>
-                        <p className="text-xs text-gray-500">
-                            All participants ranked by performance
-                        </p>
-                    </div>
+                    {type !== "trading" && (
+                        <button
+                            onClick={() => setIsMethodologyOpen(true)}
+                            className="text-xs text-gray-400 hover:text-amber-500 font-semibold transition-colors"
+                        >
+                            Methodology & Rules
+                        </button>
+                    )}
                 </div>
                 <div className="p-0">
                     <LeaderboardTable
@@ -109,6 +127,11 @@ export function LeaderboardContent({
                     onClose={() => setSelectedUser(null)}
                 />
             )}
+
+            <LeaderboardMethodologyModal
+                isOpen={isMethodologyOpen}
+                onClose={() => setIsMethodologyOpen(false)}
+            />
         </div>
     );
 }

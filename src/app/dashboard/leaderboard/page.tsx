@@ -5,6 +5,7 @@ import {
     getLeaderboard,
     getLeaderboardSidebarData,
     type LeaderboardType,
+    type PeriodFilter,
 } from "./actions";
 import { LeaderboardTabs } from "./components/LeaderboardTabs";
 import { LeaderboardContent } from "./components/LeaderboardContent";
@@ -31,7 +32,7 @@ export const metadata = {
 };
 
 interface PageProps {
-    searchParams: Promise<{ type?: string; sortBy?: string }>;
+    searchParams: Promise<{ type?: string; sortBy?: string; period?: string }>;
 }
 
 export default async function LeaderboardPage({ searchParams }: PageProps) {
@@ -40,6 +41,11 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
     const rawSortBy = params.sortBy || "currency";
     const sortBy = (rawSortBy === "percentage" ? "percentage" : "currency") as
         "percentage" | "currency";
+
+    const rawPeriod = (params.period || "30D").toUpperCase();
+    const period: PeriodFilter = ["7D", "30D", "90D", "ALL"].includes(rawPeriod)
+        ? (rawPeriod as PeriodFilter)
+        : "30D";
 
     if (!VALID_TYPES.includes(rawType as LeaderboardType)) {
         redirect("/dashboard/leaderboard?type=trading");
@@ -53,7 +59,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
 
     // For mystats, fetch XP leaderboard data to get rank info
     const fetchType = type === "mystats" ? "xp" : type;
-    const leaderboard = await getLeaderboard(fetchType, 50, sortBy);
+    const leaderboard = await getLeaderboard(fetchType, 50, sortBy, period);
     const sidebarData = await getLeaderboardSidebarData();
 
     // Build myEntry for table display when user is not in top list
@@ -131,6 +137,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                             myEntry={myEntry}
                             type={type}
                             sortBy={sortBy}
+                            period={period}
                         />
                     )}
                 </div>

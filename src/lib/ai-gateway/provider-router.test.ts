@@ -1,9 +1,31 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { executeAiGateway } from "./provider-router";
 import { resolveExecutionPlan } from "./execution-resolver";
+import { prisma } from "@/lib/prisma";
 
 vi.mock("./execution-resolver", () => ({
     resolveExecutionPlan: vi.fn(),
+}));
+
+vi.mock("@/lib/prisma", () => ({
+    prisma: {
+        aiRequest: {
+            findUnique: vi.fn().mockResolvedValue({
+                id: "audit-request-1",
+                userId: null,
+                taskKey: null,
+                routingPolicyId: null,
+                routingPolicyVersion: null,
+            }),
+            update: vi.fn().mockResolvedValue({}),
+            updateMany: vi.fn().mockResolvedValue({ count: 1 }),
+            create: vi.fn().mockResolvedValue({ id: "audit-request-1" }),
+        },
+        aiRequestAttempt: {
+            findMany: vi.fn().mockResolvedValue([]),
+            createMany: vi.fn().mockResolvedValue({ count: 1 }),
+        },
+    },
 }));
 
 const validResult = {
@@ -75,6 +97,7 @@ describe("AI gateway provider router", () => {
             requestId: "request-1",
             snapshot: {},
             systemPrompt: "Analyze",
+            taskKey: "TRADE_ANALYSIS",
         });
 
         expect(result.ok).toBe(true);
@@ -82,6 +105,14 @@ describe("AI gateway provider router", () => {
         expect(result.attempts).toHaveLength(2);
         expect(result.attempts[0].error_code).toBe("MODEL_RESPONSE_INVALID");
         expect(fallbackExecute).toHaveBeenCalledOnce();
+        expect(resolveExecutionPlan).toHaveBeenCalledWith("TRADE_ANALYSIS");
+        expect(prisma.aiRequestAttempt.createMany).toHaveBeenCalledOnce();
+        expect(prisma.aiRequestAttempt.createMany).toHaveBeenCalledWith({
+            data: expect.arrayContaining([
+                expect.objectContaining({ attemptNumber: 1 }),
+                expect.objectContaining({ attemptNumber: 2 }),
+            ]),
+        });
     });
 
     it("redacts a credential if an adapter includes it in an error", async () => {
@@ -132,5 +163,34 @@ describe("AI gateway provider router", () => {
         expect(result.attempts[0].errorMessageRedacted).not.toContain(
             "secret-primary"
         );
+    });
+
+    it("fails the execution when audit persistence fails", async () => {
+        const execute = vi.fn().mockResolvedValue({
+            ok: true,
+            data: validResult,
+        });
+        (resolveExecutionPlan as any).mockResolvedValue({
+            policy: { id: "policy-audit", version: 1, timeoutMs: 30000 },
+            steps: [{ kind: "candidate", candidate: candidate("primary", execute) }],
+        });
+        (prisma.aiRequestAttempt.createMany as any).mockRejectedValueOnce(
+            new Error("audit write failed")
+        );
+
+        await expect(
+            executeAiGateway({
+                requestId: "request-audit-failure",
+                snapshot: {},
+                systemPrompt: "Analyze",
+            })
+        ).rejects.toThrow("AI_AUDIT_PERSISTENCE_FAILED");
+        expect(prisma.aiRequest.updateMany).toHaveBeenCalledWith({
+            where: { requestId: "request-audit-failure" },
+            data: expect.objectContaining({
+                status: "FAILED",
+                errorCode: "AI_AUDIT_PERSISTENCE_FAILED",
+            }),
+        });
     });
 });

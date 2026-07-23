@@ -127,7 +127,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                 <PublicHeader />
 
                 {/* Hero Section - Glass Effect */}
-                <div className="pt-32 pb-10 sm:pb-16 relative z-10">
+                <div className="pt-32 pb-10 sm:pb-6 relative z-10">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
                             <div className="flex-1 text-center md:text-left">
@@ -157,11 +157,10 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={cat.id}
                                         href={`/knowledge?category=${cat.slug}`}
-                                        className={`px-5 py-2.5 rounded-xl backdrop-blur-md border cursor-pointer text-sm font-bold transition-all duration-300 shadow-sm hover:-translate-y-0.5 ${
-                                            categorySlug === cat.slug
-                                                ? "bg-gradient-to-r from-amber-500 to-yellow-500 dark:from-amber-500/90 dark:to-yellow-500/90 border-amber-500 text-white shadow-md shadow-amber-500/20 dark:shadow-amber-500/10"
-                                                : "bg-white/40 dark:bg-white/5 border-amber-500/20 dark:border-amber-500/10 text-gray-700 dark:text-gray-200 hover:bg-white/60 dark:hover:bg-white/10 hover:border-amber-500/45 dark:hover:border-amber-500/35 hover:shadow-md hover:shadow-amber-500/[0.03]"
-                                        }`}
+                                        className={`px-5 py-2.5 rounded-xl backdrop-blur-md border cursor-pointer text-sm font-bold transition-all duration-300 shadow-sm hover:-translate-y-0.5 ${categorySlug === cat.slug
+                                            ? "bg-gradient-to-r from-amber-500 to-yellow-500 dark:from-amber-500/90 dark:to-yellow-500/90 border-amber-500 text-white shadow-md shadow-amber-500/20 dark:shadow-amber-500/10"
+                                            : "bg-white/40 dark:bg-white/5 border-amber-500/20 dark:border-amber-500/10 text-gray-700 dark:text-gray-200 hover:bg-white/60 dark:hover:bg-white/10 hover:border-amber-500/45 dark:hover:border-amber-500/35 hover:shadow-md hover:shadow-amber-500/[0.03]"
+                                            }`}
                                     >
                                         {cat.name}
                                     </Link>
@@ -172,17 +171,17 @@ export default async function LibraryPage(props: LibraryPageProps) {
                 </div>
 
                 {/* Content Section */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
-                    <div className="flex items-center justify-between mb-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-6 relative z-10">
+                    <div className="flex items-center justify-between">
                         <SectionHeader
                             title={
                                 query
                                     ? `Search: "${query}"`
                                     : categorySlug
-                                      ? `Category: ${categories.find((c) => c.slug === categorySlug)?.name || categorySlug}`
-                                      : tagSlug
-                                        ? `Tag: ${tagSlug}`
-                                        : "Latest Publications"
+                                        ? `Category: ${categories.find((c) => c.slug === categorySlug)?.name || categorySlug}`
+                                        : tagSlug
+                                            ? `Tag: ${tagSlug}`
+                                            : "Latest Publications"
                             }
                             align="left"
                         />
@@ -234,11 +233,10 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={chip.key}
                                         href={chipHref}
-                                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${
-                                            isActive
-                                                ? "bg-primary text-white shadow-md shadow-primary/20"
-                                                : "bg-white/80 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-dashboard hover:border-primary hover:text-primary backdrop-blur-md shadow-sm"
-                                        }`}
+                                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${isActive
+                                            ? "bg-primary text-white shadow-md shadow-primary/20"
+                                            : "bg-white/80 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-dashboard hover:border-primary hover:text-primary backdrop-blur-md shadow-sm"
+                                            }`}
                                     >
                                         <chip.icon size={14} />
                                         {chip.label}

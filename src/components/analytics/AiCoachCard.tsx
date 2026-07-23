@@ -13,31 +13,31 @@ import {
     ChevronUp,
     CheckCircle2,
 } from "lucide-react";
-import { generateDeepSeekInsights } from "@/actions/ai-coach";
+import { generateAiCoachInsights } from "@/actions/ai-coach";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { AI_COACH_PROMPT_VERSION, type DeepSeekInsight } from "@/lib/ai-coach";
+import { AI_COACH_PROMPT_VERSION, type AiCoachInsight } from "@/lib/ai-coach";
 
-interface DeepSeekCoachCardProps {
+interface AiCoachCardProps {
     accountId?: string;
     timezone?: string;
     dateFrom?: string;
     dateTo?: string;
 }
 
-export function DeepSeekCoachCard({
+export function AiCoachCard({
     accountId,
     timezone,
     dateFrom,
     dateTo,
-}: DeepSeekCoachCardProps) {
+}: AiCoachCardProps) {
     const [isLoading, setIsLoading] = useState(false);
-    const [insight, setInsight] = useState<DeepSeekInsight | null>(null);
+    const [insight, setInsight] = useState<AiCoachInsight | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
-        const stored = localStorage.getItem("deepseek_coach_collapsed");
+        const stored = localStorage.getItem("ai_coach_collapsed");
         if (stored === "true") {
             setIsCollapsed(true);
         }
@@ -46,11 +46,11 @@ export function DeepSeekCoachCard({
     const toggleCollapse = () => {
         const nextState = !isCollapsed;
         setIsCollapsed(nextState);
-        localStorage.setItem("deepseek_coach_collapsed", String(nextState));
+        localStorage.setItem("ai_coach_collapsed", String(nextState));
     };
 
     // Generate a unique cache key based on the parameters
-    const cacheKey = `deepseek_insight_v${AI_COACH_PROMPT_VERSION}_${accountId || "all"}_${dateFrom || "all"}_${dateTo || "all"}_${timezone || "UTC"}`;
+    const cacheKey = `ai_coach_insight_v${AI_COACH_PROMPT_VERSION}_${accountId || "all"}_${dateFrom || "all"}_${dateTo || "all"}_${timezone || "UTC"}`;
 
     useEffect(() => {
         // Load from cache on mount
@@ -69,16 +69,21 @@ export function DeepSeekCoachCard({
         }
     }, [cacheKey]);
 
-    const handleGenerate = async () => {
+    const handleGenerate = async (forceRefresh = false) => {
         setIsLoading(true);
         setError(null);
 
+        if (forceRefresh) {
+            localStorage.removeItem(cacheKey);
+        }
+
         try {
-            const res = await generateDeepSeekInsights(
+            const res = await generateAiCoachInsights(
                 accountId,
                 timezone,
                 dateFrom,
-                dateTo
+                dateTo,
+                forceRefresh
             );
 
             if (res.error) {
@@ -90,7 +95,7 @@ export function DeepSeekCoachCard({
                 setInsight(res.insight);
                 localStorage.setItem(cacheKey, JSON.stringify(res.insight));
                 setIsCollapsed(false);
-                localStorage.setItem("deepseek_coach_collapsed", "false");
+                localStorage.setItem("ai_coach_collapsed", "false");
             }
         } catch (err: any) {
             setError(err.message || "Something went wrong.");
@@ -128,7 +133,7 @@ export function DeepSeekCoachCard({
                         </div>
                     </div>
                     <Button
-                        onClick={handleGenerate}
+                        onClick={() => handleGenerate(true)}
                         className="shrink-0 min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap animate-btn-shine border-0"
                     >
                         <Brain size={16} className="mr-2" />
@@ -173,7 +178,7 @@ export function DeepSeekCoachCard({
                                 size="sm"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleGenerate();
+                                    handleGenerate(true);
                                 }}
                                 className="h-7 px-2.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 transition-colors"
                             >
@@ -222,7 +227,7 @@ export function DeepSeekCoachCard({
                             <Button
                                 variant="outline"
                                 size="smd"
-                                onClick={handleGenerate}
+                                onClick={() => handleGenerate(true)}
                                 className="ml-auto"
                             >
                                 Retry

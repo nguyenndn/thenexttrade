@@ -5,8 +5,6 @@ import {
     BadgeCheck,
     Bot,
     CheckCircle2,
-    Download,
-    KeyRound,
     ShieldCheck,
     Sparkles,
     Wrench,
@@ -232,9 +230,9 @@ export default async function TradingSystemsIndexPage() {
                                                         size={13}
                                                         className="text-gold shrink-0"
                                                     />
-                                                    <h4 className="text-xs font-black text-gray-800 dark:text-white leading-none truncate">
+                                                    <span className="text-xs font-black text-gray-800 dark:text-white leading-none truncate">
                                                         {tool.title}
-                                                    </h4>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500">

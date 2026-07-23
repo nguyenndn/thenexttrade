@@ -9,7 +9,7 @@ export interface CoachEvidence {
     detail: string;
 }
 
-export interface DeepSeekInsight {
+export interface AiCoachInsight {
     summary: string;
     primaryIssue: CoachEvidence | null;
     evidence: CoachEvidence[];
@@ -19,3 +19,5 @@ export interface DeepSeekInsight {
     confidence: CoachConfidence;
     generatedAt: string;
 }
+
+export type DeepSeekInsight = AiCoachInsight;

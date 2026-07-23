@@ -1,8 +1,9 @@
 "use server";
 
 import { getAuthUser } from "@/lib/auth-cache";
-
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
+import { reserveAiRequest } from "@/lib/ai-gateway/quota-service";
+import { randomUUID } from "node:crypto";
 
 export async function getQuizAIExplanation(
     questionText: string,
@@ -11,10 +12,6 @@ export async function getQuizAIExplanation(
 ) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
-
-    if (!DEEPSEEK_API_KEY) {
-        return { error: "DEEPSEEK_API_KEY is not configured" };
-    }
 
     const systemPrompt = `You are a Senior Trading Psychology and Technical Coach at TheNextTrade.
 The student has just answered INCORRECTLY to a multiple-choice question in their trading training module.
@@ -29,42 +26,44 @@ Write a response strictly adhering to the following rules:
 2. Keep it extremely concise, between 2 to maximum 3 sentences (do not write long paragraphs or use fluff).
 3. Do NOT use double quotes (") anywhere in the text to prevent JSON string formatting errors. Use single quotes (') instead if needed for emphasis.
 
-Respond with your explanation directly. Do not include any title, introductory phrases, or markdown formatting.`;
+    Respond with your explanation directly. Do not include any title, introductory phrases, or markdown formatting.`;
 
     try {
-        const res = await fetch("https://api.deepseek.com/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-            },
-            body: JSON.stringify({
-                model: "deepseek-v4-flash",
-                messages: [
-                    {
-                        role: "system",
-                        content:
-                            "You are a professional trading mentor. Respond with a concise, sharp explanation in English.",
-                    },
-                    { role: "user", content: systemPrompt },
-                ],
-                temperature: 0.5,
-                max_tokens: 300,
-            }),
-            signal: AbortSignal.timeout(15000), // 15 seconds timeout
+        const requestId = `quiz_${randomUUID()}`;
+        const reservation = await reserveAiRequest({
+            requestId,
+            userId: user.id,
+            symbol: "MULTI",
+            timeframe: "ACADEMY",
+            analysisMode: "QUIZ_EXPLANATION",
+            promptVersion: "quiz-explanation-v1",
+            taskKey: "QUIZ_EXPLANATION",
         });
 
-        if (!res.ok) {
-            const errBody = await res.text();
-            console.error("DeepSeek Quiz Coach Error:", errBody);
-            throw new Error(`DeepSeek API failed (${res.status})`);
+        if (reservation.status === "QUOTA_EXCEEDED") {
+            return {
+                error: "Daily AI Quiz Coach quota reached for your plan. Please try again tomorrow.",
+            };
+        }
+        if (reservation.status !== "RESERVED") {
+            return { error: "This AI Quiz Coach request could not be started." };
         }
 
-        const aiData = await res.json();
-        const explanation = aiData.choices[0]?.message?.content?.trim();
-        if (!explanation) {
-            throw new Error("No explanation returned from DeepSeek");
+        const gatewayResult = await executeAiGateway({
+            requestId,
+            userId: user.id,
+            snapshot: { questionText, selectedOptionText, correctOptionText },
+            systemPrompt,
+            taskKey: "QUIZ_EXPLANATION",
+            skipTradingSchemaValidation: true,
+        });
+
+        if (!gatewayResult.ok || !gatewayResult.rawResult) {
+            throw new Error(gatewayResult.message || "AI Gateway execution failed.");
         }
+
+        const rawContent = gatewayResult.rawResult;
+        let explanation = typeof rawContent === "string" ? rawContent.trim() : JSON.stringify(rawContent);
 
         return { explanation };
     } catch (error) {
@@ -115,7 +114,9 @@ export async function checkQuestionAnswer(
                 correctOption.text
             );
             explanation =
-                aiRes && "explanation" in aiRes ? aiRes.explanation : "";
+                aiRes && "explanation" in aiRes && aiRes.explanation
+                    ? aiRes.explanation
+                    : "";
         }
 
         return {

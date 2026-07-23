@@ -54,6 +54,7 @@ export interface ReserveAiRequestInput {
     timeframe?: string;
     analysisMode: string;
     promptVersion: string;
+    taskKey?: string;
 }
 
 export async function reserveAiRequest(input: ReserveAiRequestInput) {
@@ -73,7 +74,17 @@ export async function reserveAiRequest(input: ReserveAiRequestInput) {
             }
 
             const usedToday = await countConsumedRequests(tx, input.userId);
-            // Quota limits bypassed as per user request
+            if (usedToday >= dailyLimit) {
+                return {
+                    status: "QUOTA_EXCEEDED" as const,
+                    quota: {
+                        isPro: proAccess.isPro,
+                        dailyLimit,
+                        usedToday,
+                        remainingToday: 0,
+                    },
+                };
+            }
 
             const aiRequest = await tx.aiRequest.create({
                 data: {
@@ -83,6 +94,7 @@ export async function reserveAiRequest(input: ReserveAiRequestInput) {
                     timeframe: input.timeframe,
                     analysisMode: input.analysisMode,
                     promptVersion: input.promptVersion,
+                    taskKey: input.taskKey || "TRADE_ANALYSIS",
                     status: "ROUTING",
                 },
             });

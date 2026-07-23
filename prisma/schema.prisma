@@ -969,6 +969,7 @@ model TradingReport {
   byStrategy     Json?
   bySession      Json?
   byDay          Json?
+  byDirection    Json?
   avgConfidence  Float?
   planCompliance Float?
   topEmotions    Json?
@@ -1649,6 +1650,7 @@ model AiRequest {
   riskProfile            String?   @map("risk_profile")
   routingPolicyId        String?   @map("routing_policy_id")
   routingPolicyVersion   Int?      @map("routing_policy_version")
+  taskKey                String?   @map("task_key")
   promptVersion          String?   @map("prompt_version")
   status                 String    @default("RECEIVED")
   action                 String?
@@ -1667,6 +1669,7 @@ model AiRequest {
   attempts AiRequestAttempt[]
 
   @@index([userId])
+  @@index([taskKey])
   @@index([status])
   @@index([createdAt])
   @@map("ai_requests")

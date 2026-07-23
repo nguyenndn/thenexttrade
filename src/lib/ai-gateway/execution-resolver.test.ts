@@ -22,7 +22,7 @@ vi.mock("./provider-registry", () => ({
 
 describe("Execution Resolver", () => {
     beforeEach(() => {
-        vi.clearAllMocks();
+        vi.resetAllMocks();
     });
 
     it("resolves FIXED policy correctly", async () => {
@@ -64,6 +64,41 @@ describe("Execution Resolver", () => {
         expect(res.policy).toBeNull();
     });
 
+    it("prefers a task policy before the global policy", async () => {
+        (prisma.aiRoutingPolicy.findFirst as any)
+            .mockResolvedValueOnce({
+                id: "task-policy",
+                mode: "FIXED",
+                primaryModelId: "task-model",
+            })
+            .mockResolvedValueOnce({
+                id: "global-policy",
+                mode: "FIXED",
+                primaryModelId: "global-model",
+            });
+
+        const res = await resolveModelsToTry("TRADE_ANALYSIS");
+
+        expect(res.policy?.id).toBe("task-policy");
+        expect(res.modelsToTry).toEqual(["task-model"]);
+        expect(prisma.aiRoutingPolicy.findFirst).toHaveBeenCalledWith(
+            expect.objectContaining({
+                where: expect.objectContaining({
+                    scopeType: "TASK",
+                    scopeValue: "TRADE_ANALYSIS",
+                }),
+            })
+        );
+    });
+
+    it("fails closed for an unknown task key", async () => {
+        const res = await resolveModelsToTry("UNKNOWN_TASK");
+
+        expect(res.policy).toBeNull();
+        expect(res.modelsToTry).toEqual([]);
+        expect(prisma.aiRoutingPolicy.findFirst).not.toHaveBeenCalled();
+    });
+
     it("returns a candidate only when provider, credential and adapter are ready", async () => {
         const adapter = {
             providerCode: "deepseek",
@@ -102,7 +137,6 @@ describe("Execution Resolver", () => {
         (getAdapter as any).mockReturnValue(adapter);
 
         const plan = await resolveExecutionPlan();
-
         expect(plan.steps).toHaveLength(1);
         expect(plan.steps[0].kind).toBe("candidate");
         if (plan.steps[0].kind === "candidate") {

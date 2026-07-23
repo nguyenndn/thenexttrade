@@ -324,6 +324,42 @@ async function getSessionBreakdown(
     }));
 }
 
+async function getDirectionBreakdown(
+    userId: string,
+    accountId: string | undefined,
+    start: Date,
+    end: Date
+): Promise<BreakdownItem[]> {
+    const accountFilter = accountId
+        ? Prisma.sql`AND "accountId" = ${accountId}`
+        : Prisma.empty;
+
+    const result = await prisma.$queryRaw`
+ SELECT 
+ "type" as "name",
+ COUNT(*) as "trades",
+ SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl",
+ SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
+ FROM "JournalEntry"
+ WHERE "userId" = ${userId}::uuid
+ AND "status" = 'CLOSED'
+ AND "exitDate" >= ${start} AND "exitDate" <= ${end}
+ ${accountFilter}
+ GROUP BY "type"
+ ORDER BY "pnl" DESC
+ `;
+
+    return (result as any[]).map((r) => ({
+        name: r.name || "Unknown",
+        trades: Number(r.trades),
+        pnl: Number(r.pnl || 0),
+        winRate:
+            Number(r.trades) > 0
+                ? (Number(r.wins) / Number(r.trades)) * 100
+                : 0,
+    }));
+}
+
 async function getDailyBreakdown(
     userId: string,
     accountId: string | undefined,
@@ -566,7 +602,7 @@ export async function generateReport(
     }
 
     // Parallel fetch all breakdowns + psychology
-    const [bySymbol, byStrategy, bySession, byDay, psychology, bestWorst] =
+    const [bySymbol, byStrategy, bySession, byDay, byDirection, psychology, bestWorst] =
         await Promise.all([
             getSymbolBreakdown(userId, accountId, period.start, period.end),
             getStrategyBreakdown(userId, accountId, period.start, period.end),
@@ -578,6 +614,7 @@ export async function generateReport(
                 period.end,
                 "Etc/UTC"
             ),
+            getDirectionBreakdown(userId, accountId, period.start, period.end),
             getPsychologyStats(userId, accountId, period.start, period.end),
             getBestWorstTrades(userId, accountId, period.start, period.end),
         ]);
@@ -622,6 +659,7 @@ export async function generateReport(
             byStrategy: byStrategy as any,
             bySession: bySession as any,
             byDay: byDay as any,
+            byDirection: byDirection as any,
             // Psychology
             avgConfidence: psychology.avgConfidence,
             planCompliance: psychology.planCompliance,

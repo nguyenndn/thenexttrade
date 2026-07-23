@@ -41,16 +41,25 @@ export function testOpenAiCompatibleCredential(
     input: CredentialTestInput,
     defaultUrl: string
 ): Promise<CredentialTestResult> {
+    const fallbackModel =
+        input.modelId && input.modelId.trim() !== ""
+            ? input.modelId
+            : defaultUrl.includes("openrouter")
+            ? "deepseek/deepseek-chat"
+            : "gpt-4o-mini";
+
     return runCredentialProbe(
         input.baseUrl || defaultUrl,
         {
             "Content-Type": "application/json",
             Authorization: `Bearer ${input.decryptedSecret}`,
+            "HTTP-Referer": "https://thenexttrade.com",
+            "X-Title": "TheNextTrade AI Gateway",
         },
         {
-            model: input.modelId,
+            model: fallbackModel,
             messages: [{ role: "user", content: "Reply OK" }],
-            max_tokens: 1,
+            max_tokens: 5,
             temperature: 0,
         },
         input.timeoutMs ?? 10000

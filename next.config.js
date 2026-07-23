@@ -24,7 +24,7 @@ if (assetHostname) {
 
 const nextConfig = {
   reactStrictMode: true,
-  allowedDevOrigins: ['192.168.1.14'],
+  allowedDevOrigins: ['192.168.1.14', '127.0.0.1'],
   experimental: {
     serverActions: {
       bodySizeLimit: '1mb',

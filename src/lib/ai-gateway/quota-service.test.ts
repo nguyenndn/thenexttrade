@@ -114,6 +114,7 @@ describe("Quota Service", () => {
         expect(tx.aiRequest.create).toHaveBeenCalledWith({
             data: expect.objectContaining({
                 requestId: "request-lock",
+                taskKey: "TRADE_ANALYSIS",
                 status: "ROUTING",
             }),
         });
@@ -121,5 +122,36 @@ describe("Quota Service", () => {
             status: "RESERVED",
             quota: { usedToday: 10, remainingToday: 0 },
         });
+    });
+
+    it("returns QUOTA_EXCEEDED when daily limit is reached", async () => {
+        (getUserProAccess as any).mockResolvedValue({ isPro: false });
+        const tx = {
+            $executeRaw: vi.fn().mockResolvedValue(1),
+            aiRequest: {
+                findUnique: vi.fn().mockResolvedValue(null),
+                count: vi.fn().mockResolvedValue(10),
+                create: vi.fn(),
+            },
+        };
+        (prisma.$transaction as any).mockImplementation(async (callback: any) =>
+            callback(tx)
+        );
+
+        const result = await reserveAiRequest({
+            requestId: "request-over-limit",
+            userId: "user-limit",
+            symbol: "XAUUSD",
+            timeframe: "M15",
+            analysisMode: "SCALPING",
+            promptVersion: "1.0",
+            taskKey: "TRADE_ANALYSIS",
+        });
+
+        expect(result).toMatchObject({
+            status: "QUOTA_EXCEEDED",
+            quota: { isPro: false, dailyLimit: 10, usedToday: 10, remainingToday: 0 },
+        });
+        expect(tx.aiRequest.create).not.toHaveBeenCalled();
     });
 });

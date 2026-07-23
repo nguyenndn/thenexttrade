@@ -307,7 +307,7 @@ export function ReportsDashboard() {
                             key={report.id}
                             onClick={() => handleSelectType(report.id)}
                             className={`
-                  relative text-left p-3 sm:p-4 lg:p-3 h-[110px] rounded-xl border transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal overflow-hidden
+                  relative text-left p-3 sm:p-4 lg:p-3 h-full min-h-[120px] rounded-xl border transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal overflow-hidden
                   ${
                       isSelected
                           ? "border-primary bg-primary/5 shadow-sm hover:bg-primary/5"

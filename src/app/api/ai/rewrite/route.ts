@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "node:crypto";
 import { requireAdmin } from "@/lib/api-auth";
+import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
 import { YoutubeTranscript } from "youtube-transcript";
 import { readFile } from "fs/promises";
 import path from "path";
 
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 
 // ============================================================================
@@ -422,13 +423,6 @@ export async function POST(req: NextRequest) {
     const auth = await requireAdmin();
     if (auth instanceof NextResponse) return auth;
 
-    if (!DEEPSEEK_API_KEY) {
-        return NextResponse.json(
-            { error: "DEEPSEEK_API_KEY is not configured" },
-            { status: 500 }
-        );
-    }
-
     try {
         const body = await req.json();
         const {
@@ -509,29 +503,24 @@ export async function POST(req: NextRequest) {
             focusKeyword: focusKeyword || undefined,
         });
 
-        // 4. Call DeepSeek with JSON mode
-        const aiRes = await fetch("https://api.deepseek.com/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-            },
-            body: JSON.stringify({
-                model: "deepseek-chat",
-                messages: [{ role: "user", content: prompt }],
-                response_format: { type: "json_object" },
-            }),
+        // 4. Call AI Gateway with JSON mode
+        const gatewayResult = await executeAiGateway({
+            requestId: `rewrite_${randomUUID()}`,
+            userId: auth.user.id,
+            snapshot: { tone, focusKeyword },
+            systemPrompt: prompt,
+            taskKey: "ARTICLE_REWRITE",
+            skipTradingSchemaValidation: true,
         });
 
-        if (!aiRes.ok) {
-            const errBody = await aiRes.text();
+        if (!gatewayResult.ok || !gatewayResult.rawResult) {
             throw new Error(
-                `DeepSeek API failed (${aiRes.status}): ${errBody}`
+                `AI Gateway failed: ${gatewayResult.message || "Unknown error"}`
             );
         }
 
-        const aiData = await aiRes.json();
-        const responseText = aiData.choices?.[0]?.message?.content || "";
+        const gatewayRaw = gatewayResult.rawResult;
+        const responseText = typeof gatewayRaw === "string" ? gatewayRaw : JSON.stringify(gatewayRaw);
 
         // 5. Parse JSON response (with robust fallbacks)
         let parsed: {

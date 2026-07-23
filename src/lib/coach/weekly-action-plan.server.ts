@@ -259,7 +259,7 @@ export async function generateWeeklyActionPlan(
         mostFollowedRule,
         mostBrokenRule,
         topWeaknessTitle,
-    });
+    }, userId);
 
     if (aiReview) {
         keepDoing = aiReview.keepDoing || keepDoing;

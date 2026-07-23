@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, Cpu, Route, Activity, History, Plus } from "lucide-react";
+import { BarChart3, Cpu, Route, Activity, History, Plus, Box } from "lucide-react";
 import { TabBar } from "@/components/ui/TabBar";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { usePathname, useRouter } from "next/navigation";
@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 const tabs = [
     { label: "Overview", href: "/admin/ai", icon: BarChart3 },
     { label: "Providers & Keys", href: "/admin/ai/providers", icon: Cpu },
+    { label: "Model Catalog", href: "/admin/ai/models", icon: Box },
     { label: "Routing Policies", href: "/admin/ai/routes", icon: Route },
     { label: "Requests Explorer", href: "/admin/ai/requests", icon: Activity },
     { label: "Audit Log", href: "/admin/ai/audit", icon: History },
@@ -27,16 +28,6 @@ export default function AiGatewayLayout({
                 title="AI Gateway Control Panel"
                 description="Configure models, rotate API keys, design routing rules, and monitor requests."
             >
-                {pathname === "/admin/ai/providers" && (
-                    <button
-                        onClick={() =>
-                            router.push("/admin/ai/providers?add=true")
-                        }
-                        className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl flex items-center text-sm font-semibold transition-colors shadow-sm"
-                    >
-                        <Plus className="w-4 h-4 mr-2" /> Add Provider
-                    </button>
-                )}
                 {pathname === "/admin/ai/routes" && (
                     <button
                         onClick={() => router.push("/admin/ai/routes?add=true")}

@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Route, Power } from "lucide-react";
 import { format } from "date-fns";
 import { createAiRoutingPolicy } from "@/actions/admin/ai-gateway";
+import { AI_TASK_KEYS } from "@/lib/ai-gateway/task-keys";
 import { toast } from "sonner";
 
 export function AiRoutingPanel({
@@ -29,6 +30,8 @@ export function AiRoutingPanel({
     const [form, setForm] = useState({
         name: "",
         mode: "FIXED",
+        scopeType: "GLOBAL",
+        scopeValue: "",
         primaryModelId: "",
         fallbackConfigJson: [] as string[],
         timeoutMs: 30000,
@@ -76,6 +79,42 @@ export function AiRoutingPanel({
                                 }
                             />
                         </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                                Scope Type
+                            </label>
+                            <select
+                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                value={form.scopeType}
+                                onChange={(e) =>
+                                    setForm({ ...form, scopeType: e.target.value })
+                                }
+                            >
+                                <option value="GLOBAL">Global (Default for all tasks)</option>
+                                <option value="TASK">Task Specific</option>
+                            </select>
+                        </div>
+                        {form.scopeType === "TASK" && (
+                            <div>
+                                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                                    Task Key
+                                </label>
+                                <select
+                                    className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                    value={form.scopeValue}
+                                    onChange={(e) =>
+                                        setForm({ ...form, scopeValue: e.target.value })
+                                    }
+                                >
+                                    <option value="">Select Task Key...</option>
+                                    {AI_TASK_KEYS.map((task) => (
+                                        <option key={task.key} value={task.key}>
+                                            {task.key} ({task.label})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                         <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                 Routing Mode
@@ -217,11 +256,13 @@ export function AiRoutingPanel({
                                             v{policy.version}
                                         </span>
                                         <span>•</span>
-                                        <span className="bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-lg text-xs">
+                                        <span className="bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-lg text-xs font-semibold">
                                             {policy.mode}
                                         </span>
                                         <span>•</span>
-                                        <span>Scope: {policy.scopeType}</span>
+                                        <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-lg text-xs font-bold">
+                                            {policy.scopeType === "TASK" && policy.scopeValue ? `TASK: ${policy.scopeValue}` : "GLOBAL"}
+                                        </span>
                                     </div>
                                 </div>
                             </div>

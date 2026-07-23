@@ -29,7 +29,7 @@ import type {
 } from "@/lib/smart-analytics";
 import { format, parseISO } from "date-fns";
 import { BehavioralRadarChart } from "./BehavioralRadarChart";
-import { DeepSeekCoachCard } from "./DeepSeekCoachCard";
+import { AiCoachCard } from "./AiCoachCard";
 import { BiasProfileWidget } from "@/components/dashboard/BiasProfileWidget";
 
 // ============================================================================
@@ -816,9 +816,9 @@ export function IntelligenceDashboard({
                 </div>
             </div>
 
-            {/* DeepSeek AI Coach */}
+            {/* TheNextTrade AI Coach */}
             <div className="mb-6">
-                <DeepSeekCoachCard
+                <AiCoachCard
                     accountId={accountId}
                     timezone={timezone}
                     dateFrom={dateFrom}

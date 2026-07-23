@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import {
     executeAiGateway,
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
         }
 
         const clientRequestId =
-            body.analysis?.request_id || `srv_${Date.now()}`;
+            body.analysis?.request_id || `srv_${randomUUID()}`;
         const reservation = await reserveAiRequest({
             requestId: clientRequestId,
             userId: user.id,
@@ -80,6 +81,7 @@ export async function POST(request: NextRequest) {
             timeframe: snapshot.chart_timeframe || snapshot.timeframe,
             analysisMode: body.analysis?.mode === "AUTO" ? "AUTO" : "MANUAL",
             promptVersion: PROMPT_VERSION,
+            taskKey: "TRADE_ANALYSIS",
         });
 
         if (reservation.status === "DUPLICATE") {
@@ -92,7 +94,18 @@ export async function POST(request: NextRequest) {
                 { status: 409 }
             );
         }
-        // QUOTA_EXCEEDED check removed as per user request
+        if (reservation.status === "QUOTA_EXCEEDED") {
+            const quota = await getUserQuotaUsage(user.id);
+            return NextResponse.json(
+                {
+                    ok: false,
+                    error_code: "AI_QUOTA_EXCEEDED",
+                    message: "Daily AI quota limit reached for your plan.",
+                    usage: usagePayload(quota),
+                },
+                { status: 429 }
+            );
+        }
         const aiRequest = reservation.aiRequest;
         activeRequestId = aiRequest.id;
         const gatewayStart = Date.now();
@@ -100,8 +113,10 @@ export async function POST(request: NextRequest) {
         try {
             gatewayResult = await executeAiGateway({
                 requestId: clientRequestId,
+                userId: user.id,
                 snapshot,
                 systemPrompt: buildSystemPrompt(),
+                taskKey: "TRADE_ANALYSIS",
             });
         } catch {
             gatewayResult = {
@@ -115,30 +130,9 @@ export async function POST(request: NextRequest) {
 
         let totalInputTokens = 0;
         let totalOutputTokens = 0;
-        if (gatewayResult.attempts.length > 0) {
-            await prisma.aiRequestAttempt.createMany({
-                data: gatewayResult.attempts.map((attempt, index) => {
-                    totalInputTokens += attempt.inputTokens || 0;
-                    totalOutputTokens += attempt.outputTokens || 0;
-                    return {
-                        aiRequestId: aiRequest.id,
-                        attemptNumber: index + 1,
-                        providerId: attempt.providerId,
-                        modelId: attempt.modelId,
-                        credentialId: attempt.credentialId,
-                        status: attempt.error_code ? "FAILED" : "SUCCESS",
-                        latencyMs: attempt.latencyMs,
-                        httpStatus: attempt.httpStatus,
-                        inputTokens: attempt.inputTokens,
-                        outputTokens: attempt.outputTokens,
-                        errorCode: attempt.error_code,
-                        errorMessageRedacted: attempt.errorMessageRedacted,
-                        providerRequestId: attempt.providerRequestId,
-                        finishReason: attempt.finishReason,
-                        completedAt: attempt.completedAt,
-                    };
-                }),
-            });
+        for (const attempt of gatewayResult.attempts) {
+            totalInputTokens += attempt.inputTokens || 0;
+            totalOutputTokens += attempt.outputTokens || 0;
         }
 
         if (!gatewayResult.ok || !gatewayResult.normalizedResult) {

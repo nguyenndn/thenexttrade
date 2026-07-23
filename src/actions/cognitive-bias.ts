@@ -3,8 +3,9 @@
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { getUserProAccess } from "@/lib/pro-access";
-
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
+import { reserveAiRequest } from "@/lib/ai-gateway/quota-service";
+import { randomUUID } from "node:crypto";
 
 // Map biases to lessons in the academy (fallback default values)
 const BIAS_LESSON_MAP = {
@@ -227,10 +228,6 @@ export async function analyzeCognitiveBiases(accountId?: string) {
             error: "Cognitive Bias Profiler is a Pro feature.",
             isProUpgradeCTA: true,
         };
-    }
-
-    if (!DEEPSEEK_API_KEY) {
-        return { error: "DEEPSEEK_API_KEY is not configured" };
     }
 
     // Check cache in User settings to avoid redundant DeepSeek calls
@@ -463,40 +460,42 @@ Example JSON output format:
 
 Ensure your response is valid raw JSON, with no markdown code blocks (\`\`\`json).`;
 
-        const res = await fetch("https://api.deepseek.com/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-            },
-            body: JSON.stringify({
-                model: "deepseek-v4-flash",
-                messages: [
-                    {
-                        role: "system",
-                        content:
-                            "You are a JSON-only API. You must return valid JSON.",
-                    },
-                    { role: "user", content: systemPrompt },
-                ],
-                response_format: { type: "json_object" },
-                temperature: 0.5,
-                max_tokens: 600,
-            }),
-            signal: AbortSignal.timeout(30000), // Protect against latency spikes, standard 30s timeout
+        const requestId = `bias_${randomUUID()}`;
+        const reservation = await reserveAiRequest({
+            requestId,
+            userId: user.id,
+            symbol: accountId || "MULTI",
+            timeframe: "ANALYSIS",
+            analysisMode: "COGNITIVE_BIAS",
+            promptVersion: "cognitive-bias-v1",
+            taskKey: "COGNITIVE_BIAS",
         });
 
-        if (!res.ok) {
-            const errBody = await res.text();
-            console.error("DeepSeek Bias Profiler Error:", errBody);
-            throw new Error(`DeepSeek API failed (${res.status})`);
+        if (reservation.status === "QUOTA_EXCEEDED") {
+            return {
+                error: "Daily AI Cognitive Bias quota reached for your plan. Please try again tomorrow.",
+            };
+        }
+        if (reservation.status !== "RESERVED") {
+            return { error: "This AI Cognitive Bias request could not be started." };
         }
 
-        const aiData = await res.json();
-        const content = aiData.choices[0]?.message?.content;
-        if (!content) {
-            throw new Error("No content returned from DeepSeek");
+        const gatewayResult = await executeAiGateway({
+            requestId,
+            userId: user.id,
+            snapshot: prepData,
+            systemPrompt,
+            taskKey: "COGNITIVE_BIAS",
+            skipTradingSchemaValidation: true,
+        });
+
+        if (!gatewayResult.ok || !gatewayResult.rawResult) {
+            console.error("Cognitive Bias Gateway Error:", gatewayResult.message);
+            throw new Error(gatewayResult.message || "AI Gateway execution failed.");
         }
+
+        const rawContent = gatewayResult.rawResult;
+        const content = typeof rawContent === "string" ? rawContent : JSON.stringify(rawContent);
 
         const parsed = cleanAndParseAIResponse(content);
         const dominant: keyof typeof BIAS_LESSON_MAP =

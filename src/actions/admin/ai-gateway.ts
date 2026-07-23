@@ -6,6 +6,7 @@ import { encrypt, decrypt } from "@/lib/encryption";
 import { revalidatePath } from "next/cache";
 import { getAdapter } from "@/lib/ai-gateway/provider-registry";
 import { statusAfterSuccessfulCredentialTest } from "@/lib/ai-gateway/credential-lifecycle";
+import { isAiTaskKey } from "@/lib/ai-gateway/task-keys";
 
 async function requireAiGatewayAdmin() {
     const user = await getAuthUser();
@@ -45,7 +46,7 @@ async function logAudit(
 export async function getAiProviders() {
     await requireAiGatewayAdmin();
 
-    return prisma.aiProvider.findMany({
+    const providers = await prisma.aiProvider.findMany({
         include: {
             credentials: {
                 select: {
@@ -61,10 +62,45 @@ export async function getAiProviders() {
                 },
                 orderBy: { createdAt: "desc" },
             },
-            models: true,
+            models: {
+                orderBy: { displayName: "asc" },
+            },
         },
         orderBy: { createdAt: "asc" },
     });
+
+    return providers.sort((a, b) => {
+        // 1. OpenRouter is ALWAYS at position #1
+        if (a.providerCode === "openrouter") return -1;
+        if (b.providerCode === "openrouter") return 1;
+
+        // 2. Enabled providers come before Disabled providers
+        if (a.enabled && !b.enabled) return -1;
+        if (!a.enabled && b.enabled) return 1;
+
+        // 3. Secondary sort by providerEnum
+        return a.providerEnum - b.providerEnum;
+    });
+}
+
+export async function getProviderActiveKey(providerId: string) {
+    await requireAiGatewayAdmin();
+
+    const cred = await prisma.aiProviderCredential.findFirst({
+        where: {
+            providerId,
+            status: { in: ["ACTIVE", "TESTED", "DRAFT"] },
+        },
+        orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+    });
+
+    if (!cred) return "";
+
+    try {
+        return decrypt(cred.encryptedSecret) || "";
+    } catch {
+        return "";
+    }
 }
 
 export async function createAiProvider(data: {
@@ -250,9 +286,6 @@ export async function activateAiCredential(id: string) {
         where: { id },
     });
     if (!cred) throw new Error("Credential not found");
-    if (cred.status !== "TESTED") {
-        throw new Error("Credential must be TESTED before activation.");
-    }
 
     const activatedAt = new Date();
     await prisma.$transaction(async (tx) => {
@@ -336,6 +369,8 @@ export async function getAiRoutingPolicies() {
 export async function createAiRoutingPolicy(data: {
     name: string;
     mode: string;
+    scopeType?: string;
+    scopeValue?: string;
     primaryModelId?: string;
     fallbackConfigJson?: any;
     timeoutMs?: number;
@@ -347,6 +382,15 @@ export async function createAiRoutingPolicy(data: {
     if (!name) throw new Error("Policy name is required");
     if (data.mode !== "FIXED" && data.mode !== "AUTO_FAILOVER") {
         throw new Error("Routing mode must be FIXED or AUTO_FAILOVER");
+    }
+    const scopeType = data.scopeType || "GLOBAL";
+    if (scopeType !== "GLOBAL" && scopeType !== "TASK") {
+        throw new Error("Routing scope must be GLOBAL or TASK");
+    }
+
+    const scopeValue = data.scopeValue?.trim() || null;
+    if (scopeType === "TASK" && (!scopeValue || !isAiTaskKey(scopeValue))) {
+        throw new Error("A valid task key is required for task routing");
     }
     if (!data.primaryModelId) {
         throw new Error("Primary model is required");
@@ -415,10 +459,27 @@ export async function createAiRoutingPolicy(data: {
         );
     }
 
+    const existingPolicy = await prisma.aiRoutingPolicy.findFirst({
+        where: {
+            enabled: true,
+            publishedAt: { not: null },
+            scopeType,
+            scopeValue: scopeType === "TASK" ? scopeValue : null,
+        },
+        select: { id: true },
+    });
+    if (existingPolicy) {
+        throw new Error(
+            `An active ${scopeType === "TASK" ? `policy for ${scopeValue}` : "global policy"} already exists`
+        );
+    }
+
     const policy = await prisma.aiRoutingPolicy.create({
         data: {
             name,
             mode: data.mode,
+            scopeType,
+            scopeValue: scopeType === "TASK" ? scopeValue : null,
             primaryModelId: data.primaryModelId,
             fallbackConfigJson: fallbacks,
             timeoutMs,
@@ -436,19 +497,60 @@ export async function createAiRoutingPolicy(data: {
 export async function getAiRequests(limit = 50) {
     await requireAiGatewayAdmin();
 
-    return prisma.aiRequest.findMany({
-        take: limit,
-        orderBy: { createdAt: "desc" },
-        include: {
-            user: {
-                select: {
-                    id: true,
-                    email: true,
+    const [requests, providers, models] = await Promise.all([
+        prisma.aiRequest.findMany({
+            take: limit,
+            orderBy: { createdAt: "desc" },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        email: true,
+                    },
+                },
+                attempts: {
+                    orderBy: { attemptNumber: "asc" },
                 },
             },
-            attempts: true,
-        },
-    });
+        }),
+        prisma.aiProvider.findMany({
+            select: { id: true, providerCode: true, displayName: true },
+        }),
+        prisma.aiModel.findMany({
+            select: { id: true, modelCode: true, displayName: true },
+        }),
+    ]);
+
+    const providerMap = new Map(
+        providers.map((p) => [p.id, p.displayName || p.providerCode])
+    );
+    const providerCodeMap = new Map(
+        providers.map((p) => [p.providerCode, p.displayName || p.providerCode])
+    );
+
+    const modelMap = new Map(
+        models.map((m) => [m.id, m.displayName || m.modelCode])
+    );
+    const modelCodeMap = new Map(
+        models.map((m) => [m.modelCode, m.displayName || m.modelCode])
+    );
+
+    return requests.map((req) => ({
+        ...req,
+        attempts: req.attempts.map((att) => ({
+            ...att,
+            providerName: att.providerId
+                ? providerMap.get(att.providerId) ||
+                  providerCodeMap.get(att.providerId) ||
+                  att.providerId
+                : "Unknown Provider",
+            modelName: att.modelId
+                ? modelMap.get(att.modelId) ||
+                  modelCodeMap.get(att.modelId) ||
+                  att.modelId
+                : "Unknown Model",
+        })),
+    }));
 }
 
 export async function getAiGatewayStats() {
@@ -539,4 +641,152 @@ export async function getAiModels() {
         },
         orderBy: [{ provider: { displayName: "asc" } }, { displayName: "asc" }],
     });
+}
+
+export async function getAllAiModels() {
+    await requireAiGatewayAdmin();
+
+    return prisma.aiModel.findMany({
+        include: {
+            provider: {
+                select: {
+                    providerCode: true,
+                    displayName: true,
+                },
+            },
+        },
+        orderBy: [{ provider: { displayName: "asc" } }, { enabled: "desc" }, { displayName: "asc" }],
+    });
+}
+
+export async function toggleAiModel(id: string, enabled: boolean) {
+    await requireAiGatewayAdmin();
+
+    await prisma.aiModel.update({
+        where: { id },
+        data: { enabled },
+    });
+    await logAudit("TOGGLE_MODEL", "AiModel", id, { enabled });
+    revalidatePath("/admin/ai/routes");
+    revalidatePath("/admin/ai/providers");
+    return { success: true };
+}
+
+export async function createCustomAiModel(data: {
+    providerId: string;
+    modelCode: string;
+    displayName: string;
+    contextLimit?: number;
+    supportsJsonMode?: boolean;
+}) {
+    await requireAiGatewayAdmin();
+
+    const existing = await prisma.aiModel.findFirst({
+        where: { providerId: data.providerId, modelCode: data.modelCode.trim() },
+    });
+
+    if (existing) {
+        throw new Error(`Model ${data.modelCode} already exists for this provider.`);
+    }
+
+    const model = await prisma.aiModel.create({
+        data: {
+            providerId: data.providerId,
+            modelCode: data.modelCode.trim(),
+            displayName: data.displayName.trim(),
+            contextLimit: data.contextLimit || 64000,
+            supportsJsonMode: data.supportsJsonMode ?? true,
+            enabled: true,
+        },
+    });
+
+    await logAudit("CREATE_CUSTOM_MODEL", "AiModel", model.id, data);
+    revalidatePath("/admin/ai/routes");
+    revalidatePath("/admin/ai/providers");
+    return model;
+}
+
+export async function syncOpenRouterModels() {
+    await requireAiGatewayAdmin();
+
+    const openrouterProvider = await prisma.aiProvider.findUnique({
+        where: { providerCode: "openrouter" },
+    });
+
+    if (!openrouterProvider) {
+        throw new Error("OpenRouter provider record not found in database.");
+    }
+
+    try {
+        const response = await fetch("https://openrouter.ai/api/v1/models", {
+            method: "GET",
+            headers: {
+                "HTTP-Referer": "https://thenexttrade.com",
+                "X-Title": "TheNextTrade AI Gateway",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`OpenRouter API returned HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const modelsList = data.data || [];
+        let createdCount = 0;
+        let updatedCount = 0;
+
+        for (const item of modelsList) {
+            if (!item.id || !item.name) continue;
+
+            const existing = await prisma.aiModel.findFirst({
+                where: {
+                    providerId: openrouterProvider.id,
+                    modelCode: item.id,
+                },
+            });
+
+            const contextLimit = item.context_length || 64000;
+            const promptCost = item.pricing?.prompt ? parseFloat(item.pricing.prompt) * 1000000 : null;
+            const completionCost = item.pricing?.completion ? parseFloat(item.pricing.completion) * 1000000 : null;
+
+            if (existing) {
+                await prisma.aiModel.update({
+                    where: { id: existing.id },
+                    data: {
+                        displayName: item.name,
+                        contextLimit,
+                        inputCostPerMillion: promptCost,
+                        outputCostPerMillion: completionCost,
+                    },
+                });
+                updatedCount++;
+            } else {
+                await prisma.aiModel.create({
+                    data: {
+                        providerId: openrouterProvider.id,
+                        modelCode: item.id,
+                        displayName: item.name,
+                        supportsJsonMode: true,
+                        contextLimit,
+                        inputCostPerMillion: promptCost,
+                        outputCostPerMillion: completionCost,
+                        enabled: false,
+                    },
+                });
+                createdCount++;
+            }
+        }
+
+        await logAudit("SYNC_OPENROUTER_MODELS", "AiProvider", openrouterProvider.id, {
+            totalSynced: modelsList.length,
+            createdCount,
+            updatedCount,
+        });
+
+        revalidatePath("/admin/ai/routes");
+        revalidatePath("/admin/ai/providers");
+        return { success: true, totalSynced: modelsList.length, createdCount, updatedCount };
+    } catch (error: any) {
+        throw new Error("Failed to sync OpenRouter models: " + (error.message || "Unknown error"));
+    }
 }

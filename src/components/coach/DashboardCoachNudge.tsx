@@ -179,8 +179,6 @@ export function DashboardCoachNudge({
                             wordBreak: "break-word",
                         }}
                     >
-                        <div className="absolute top-0 right-0 h-1.5 w-16 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-bl-md" />
-
                         <div className="flex items-start gap-3 w-full">
                             <div className="p-2 bg-white dark:bg-[#0B0E14] border border-amber-500/20 dark:border-gold/20 rounded-lg shrink-0">
                                 {getDialogIcon()}
@@ -235,7 +233,7 @@ export function DashboardCoachNudge({
                                                             {ev.label}
                                                         </span>
                                                         {ev.description && (
-                                                            <span className="text-gray-500 text-[10px] mt-0.5">
+                                                            <span className="text-gray-500 text-[12px] mt-0.5">
                                                                 {ev.description}
                                                             </span>
                                                         )}
@@ -243,29 +241,29 @@ export function DashboardCoachNudge({
                                                     <div className="text-right flex flex-col items-end shrink-0 pl-2">
                                                         {ev.count !==
                                                             undefined && (
-                                                            <span className="font-bold text-amber-600 dark:text-gold">
-                                                                {ev.count}
-                                                                {ev.kind ===
-                                                                    "METRIC" &&
-                                                                ev.sampleSize ===
-                                                                    undefined
-                                                                    ? "%"
-                                                                    : ""}{" "}
-                                                                {ev.kind !==
-                                                                    "METRIC" &&
-                                                                ev.sampleSize ===
-                                                                    undefined
-                                                                    ? "times"
-                                                                    : ""}
-                                                            </span>
-                                                        )}
+                                                                <span className="font-bold text-amber-600 dark:text-gold">
+                                                                    {ev.count}
+                                                                    {ev.kind ===
+                                                                        "METRIC" &&
+                                                                        ev.sampleSize ===
+                                                                        undefined
+                                                                        ? "%"
+                                                                        : ""}{" "}
+                                                                    {ev.kind !==
+                                                                        "METRIC" &&
+                                                                        ev.sampleSize ===
+                                                                        undefined
+                                                                        ? "times"
+                                                                        : ""}
+                                                                </span>
+                                                            )}
                                                         {ev.sampleSize !==
                                                             undefined && (
-                                                            <span className="text-[9px] text-gray-400 mt-0.5">
-                                                                out of{" "}
-                                                                {ev.sampleSize}
-                                                            </span>
-                                                        )}
+                                                                <span className="text-[9px] text-gray-400 mt-0.5">
+                                                                    out of{" "}
+                                                                    {ev.sampleSize}
+                                                                </span>
+                                                            )}
                                                     </div>
                                                 </div>
                                             )

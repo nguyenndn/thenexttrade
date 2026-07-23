@@ -157,15 +157,14 @@ describe("AI Gateway Admin Actions - Credential Lifecycle", () => {
         );
     });
 
-    it("throws if trying to activate a non-TESTED credential", async () => {
+    it("allows activating a credential directly", async () => {
         vi.mocked(prisma.aiProviderCredential.findUnique).mockResolvedValue({
             id: "cred_3",
             providerId: "provider_1",
             status: "DRAFT",
         } as any);
 
-        await expect(activateAiCredential("cred_3")).rejects.toThrow(
-            "Credential must be TESTED before activation"
-        );
+        const res = await activateAiCredential("cred_3");
+        expect(res).toEqual({ success: true });
     });
 });

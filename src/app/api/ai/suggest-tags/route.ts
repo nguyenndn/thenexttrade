@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
-
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
 
 export async function POST(req: NextRequest) {
     const auth = await requireAdmin();
     if (auth instanceof NextResponse) return auth;
-
-    if (!DEEPSEEK_API_KEY) {
-        return NextResponse.json(
-            { error: "DEEPSEEK_API_KEY is not configured" },
-            { status: 500 }
-        );
-    }
 
     try {
         const { title, content } = await req.json();
@@ -65,26 +58,21 @@ Content: ${plainContent || "(no content yet)"}
 
 IMPORTANT: existingTagIds must contain actual IDs from the existing tags list. Output ONLY valid JSON.`;
 
-        const res = await fetch("https://api.deepseek.com/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-            },
-            body: JSON.stringify({
-                model: "deepseek-chat",
-                messages: [{ role: "user", content: prompt }],
-                response_format: { type: "json_object" },
-            }),
+        const gatewayResult = await executeAiGateway({
+            requestId: `tag_${randomUUID()}`,
+            userId: auth.user.id,
+            snapshot: { title, content: plainContent },
+            systemPrompt: prompt,
+            taskKey: "SUGGEST_TAGS",
+            skipTradingSchemaValidation: true,
         });
 
-        if (!res.ok) {
-            const errBody = await res.text();
-            throw new Error(`DeepSeek API failed (${res.status}): ${errBody}`);
+        if (!gatewayResult.ok || !gatewayResult.rawResult) {
+            throw new Error(gatewayResult.message || "AI Gateway execution failed.");
         }
 
-        const data = await res.json();
-        const responseText = data.choices?.[0]?.message?.content || "";
+        const rawContent = gatewayResult.rawResult;
+        const responseText = typeof rawContent === "string" ? rawContent : JSON.stringify(rawContent);
 
         let parsed: { existingTagIds: string[]; newTagNames: string[] };
         try {

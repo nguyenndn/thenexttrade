@@ -4,12 +4,14 @@ import { DeepSeekAdapter } from "./providers/deepseek";
 import { GoogleAdapter } from "./providers/google";
 import { OpenAIAdapter } from "./providers/openai";
 import { XAIAdapter } from "./providers/xai";
+import { OpenRouterAdapter } from "./providers/openrouter";
 
 const adapters: Record<string, AiGatewayProviderAdapter> = {
     anthropic: AnthropicAdapter,
     deepseek: DeepSeekAdapter,
     google: GoogleAdapter,
     openai: OpenAIAdapter,
+    openrouter: OpenRouterAdapter,
     xai: XAIAdapter,
 };
 

@@ -4,11 +4,12 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding AI Gateway models and providers...");
   const defaults = [
-    { providerEnum: 1, providerCode: "anthropic", displayName: "Anthropic (Claude)", defaultModelId: "claude-3-5-sonnet-latest", baseUrl: "https://api.anthropic.com/v1/messages" },
-    { providerEnum: 2, providerCode: "openai", displayName: "OpenAI (GPT)", defaultModelId: "gpt-4o", baseUrl: "https://api.openai.com/v1/chat/completions" },
-    { providerEnum: 3, providerCode: "google", displayName: "Google (Gemini)", defaultModelId: "gemini-1.5-pro", baseUrl: "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={secret}" },
-    { providerEnum: 4, providerCode: "deepseek", displayName: "DeepSeek", defaultModelId: "deepseek-chat", baseUrl: "https://api.deepseek.com/v1/chat/completions" },
-    { providerEnum: 5, providerCode: "xai", displayName: "xAI (Grok)", defaultModelId: "grok-beta", baseUrl: "https://api.x.ai/v1/chat/completions" },
+    { providerEnum: 1, providerCode: "openrouter", displayName: "OpenRouter", defaultModelId: "deepseek/deepseek-chat", baseUrl: "https://openrouter.ai/api/v1/chat/completions", enabled: true },
+    { providerEnum: 2, providerCode: "anthropic", displayName: "Anthropic (Claude)", defaultModelId: "claude-3-5-sonnet-latest", baseUrl: "https://api.anthropic.com/v1/messages", enabled: false },
+    { providerEnum: 3, providerCode: "openai", displayName: "OpenAI (GPT)", defaultModelId: "gpt-4o", baseUrl: "https://api.openai.com/v1/chat/completions", enabled: false },
+    { providerEnum: 4, providerCode: "google", displayName: "Google (Gemini)", defaultModelId: "gemini-1.5-pro", baseUrl: "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={secret}", enabled: false },
+    { providerEnum: 5, providerCode: "deepseek", displayName: "DeepSeek", defaultModelId: "deepseek-chat", baseUrl: "https://api.deepseek.com/v1/chat/completions", enabled: false },
+    { providerEnum: 6, providerCode: "xai", displayName: "xAI (Grok)", defaultModelId: "grok-beta", baseUrl: "https://api.x.ai/v1/chat/completions", enabled: false },
   ];
 
   for (const d of defaults) {
@@ -24,7 +25,7 @@ async function main() {
           displayName: d.displayName,
           defaultModelId: d.defaultModelId,
           baseUrl: d.baseUrl,
-          enabled: true,
+          enabled: d.enabled,
           healthStatus: "UNKNOWN",
         }
       });
@@ -48,7 +49,13 @@ async function main() {
     { providerCode: "deepseek", modelCode: "deepseek-chat", displayName: "DeepSeek Chat (V3)", supportsJsonMode: true, contextLimit: 64000 },
     { providerCode: "deepseek", modelCode: "deepseek-reasoner", displayName: "DeepSeek Reasoner (R1)", supportsJsonMode: false, contextLimit: 64000 },
     { providerCode: "xai", modelCode: "grok-beta", displayName: "Grok Beta", supportsJsonMode: true, contextLimit: 131072 },
-    { providerCode: "xai", modelCode: "grok-2-latest", displayName: "Grok 2", supportsJsonMode: true, contextLimit: 131072 }
+    { providerCode: "xai", modelCode: "grok-2-latest", displayName: "Grok 2", supportsJsonMode: true, contextLimit: 131072 },
+    { providerCode: "openrouter", modelCode: "deepseek/deepseek-chat", displayName: "OpenRouter: DeepSeek Chat (V3)", supportsJsonMode: true, contextLimit: 64000 },
+    { providerCode: "openrouter", modelCode: "deepseek/deepseek-r1", displayName: "OpenRouter: DeepSeek R1", supportsJsonMode: true, contextLimit: 64000 },
+    { providerCode: "openrouter", modelCode: "google/gemini-2.5-flash", displayName: "OpenRouter: Gemini 2.5 Flash", supportsJsonMode: true, contextLimit: 1000000 },
+    { providerCode: "openrouter", modelCode: "anthropic/claude-3.5-sonnet", displayName: "OpenRouter: Claude 3.5 Sonnet", supportsJsonMode: true, contextLimit: 200000 },
+    { providerCode: "openrouter", modelCode: "openai/gpt-4o-mini", displayName: "OpenRouter: GPT-4o Mini", supportsJsonMode: true, contextLimit: 128000 },
+    { providerCode: "openrouter", modelCode: "x-ai/grok-2", displayName: "OpenRouter: Grok 2", supportsJsonMode: true, contextLimit: 131072 }
   ];
 
   for (const m of defaultModels) {

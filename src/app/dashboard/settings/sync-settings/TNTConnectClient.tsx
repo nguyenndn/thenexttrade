@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 export default function TNTConnectClient() {
     const [isLoading, setIsLoading] = useState(true);
@@ -203,21 +204,21 @@ export default function TNTConnectClient() {
                             ({ icon: Icon, label, desc, color, bg }) => (
                                 <div
                                     key={label}
-                                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-dashboard transition-colors hover:bg-gray-100/80 dark:hover:bg-white/[0.05]"
+                                    className="group flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-white dark:bg-[#252731] border border-gray-100 dark:border-white/5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-200 dark:hover:border-white/10"
                                 >
                                     <div
                                         className={cn(
-                                            "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                                            "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110",
                                             bg
                                         )}
                                     >
-                                        <Icon size={16} className={color} />
+                                        <Icon size={18} className={color} />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-xs font-bold text-gray-700 dark:text-white">
+                                        <p className="text-sm font-black tracking-tight text-gray-800 dark:text-white group-hover:text-primary transition-colors">
                                             {label}
                                         </p>
-                                        <p className="text-[10px] text-gray-400 dark:text-gray-500">
+                                        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
                                             {desc}
                                         </p>
                                     </div>
@@ -233,13 +234,53 @@ export default function TNTConnectClient() {
  ═══════════════════════════════════════════════════════════════════ */}
             <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden shadow-sm">
                 <div className="px-6 py-5">
-                    <div className="flex items-center gap-2.5 mb-5">
-                        <div className="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 flex items-center justify-center ring-1 ring-amber-200/50 dark:ring-amber-500/20">
-                            <Key size={15} className="text-amber-500" />
+                    <div className="flex items-center justify-between mb-5">
+                        <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 flex items-center justify-center ring-1 ring-amber-200/50 dark:ring-amber-500/20">
+                                <Key size={15} className="text-amber-500" />
+                            </div>
+                            <h2 className="text-sm font-black tracking-tight text-gray-700 dark:text-white">
+                                Sync API Key
+                            </h2>
                         </div>
-                        <h2 className="text-sm font-black tracking-tight text-gray-700 dark:text-white">
-                            Sync API Key
-                        </h2>
+                        {keyData.hasKey && (
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    onClick={generateKey}
+                                    variant="outline"
+                                    size="smd"
+                                    disabled={isGenerating}
+                                    className="font-bold border-dashboard hover:border-primary/40 hover:text-primary dark:hover:text-primary"
+                                >
+                                    {isGenerating ? (
+                                        <Loader2
+                                            size={16}
+                                            className="animate-spin mr-2"
+                                        />
+                                    ) : (
+                                        <RefreshCw size={16} className="mr-2" />
+                                    )}
+                                    Regenerate
+                                </Button>
+                                <Button
+                                    onClick={handleRevokeClick}
+                                    variant="outline"
+                                    size="smd"
+                                    disabled={isRevoking}
+                                    className="font-bold text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 dark:border-red-500/20 dark:hover:bg-red-500/10 dark:hover:border-red-500/40"
+                                >
+                                    {isRevoking ? (
+                                        <Loader2
+                                            size={16}
+                                            className="animate-spin mr-2"
+                                        />
+                                    ) : (
+                                        <Trash2 size={16} className="mr-2" />
+                                    )}
+                                    Revoke Key
+                                </Button>
+                            </div>
+                        )}
                     </div>
 
                     {!keyData.hasKey ? (
@@ -355,44 +396,6 @@ export default function TNTConnectClient() {
                                     })}
                                 </p>
                             )}
-
-                            {/* Actions */}
-                            <div className="flex items-center gap-3 pt-4 border-t border-dashboard">
-                                <Button
-                                    onClick={generateKey}
-                                    variant="outline"
-                                    size="smd"
-                                    disabled={isGenerating}
-                                    className="font-bold border-dashboard hover:border-primary/40 hover:text-primary dark:hover:text-primary"
-                                >
-                                    {isGenerating ? (
-                                        <Loader2
-                                            size={16}
-                                            className="animate-spin mr-2"
-                                        />
-                                    ) : (
-                                        <RefreshCw size={16} className="mr-2" />
-                                    )}
-                                    Regenerate
-                                </Button>
-                                <Button
-                                    onClick={handleRevokeClick}
-                                    variant="outline"
-                                    size="smd"
-                                    disabled={isRevoking}
-                                    className="font-bold text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 dark:border-red-500/20 dark:hover:bg-red-500/10 dark:hover:border-red-500/40"
-                                >
-                                    {isRevoking ? (
-                                        <Loader2
-                                            size={16}
-                                            className="animate-spin mr-2"
-                                        />
-                                    ) : (
-                                        <Trash2 size={16} className="mr-2" />
-                                    )}
-                                    Revoke Key
-                                </Button>
-                            </div>
                         </div>
                     )}
                 </div>
@@ -447,7 +450,10 @@ export default function TNTConnectClient() {
                         <div className="flex flex-wrap gap-3">
                             <a
                                 href="/dashboard/trading-systems"
-                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-colors shadow-sm shadow-primary/20"
+                                className={buttonVariants({
+                                    variant: "primary",
+                                    size: "smd",
+                                })}
                             >
                                 <Download size={15} />
                                 Go to Trading Systems to get Trade Manager
@@ -455,7 +461,10 @@ export default function TNTConnectClient() {
                             <a
                                 href="/downloads/TheNextTrade_TradeSync.ex5"
                                 download
-                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-dashboard hover:bg-gray-50 dark:hover:bg-white/[0.02] text-gray-700 dark:text-gray-300 font-bold text-xs transition-colors"
+                                className={buttonVariants({
+                                    variant: "outline",
+                                    size: "smd",
+                                })}
                             >
                                 <Download size={13} />
                                 Download Trade Manager EA (.ex5)

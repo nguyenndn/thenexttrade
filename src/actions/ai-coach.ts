@@ -15,7 +15,11 @@ import {
     type DeepSeekInsight,
 } from "@/lib/ai-coach";
 
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
+import { reserveAiRequest } from "@/lib/ai-gateway/quota-service";
+import { randomUUID } from "node:crypto";
+
+// Remove direct DEEPSEEK_API_KEY dependency - routed via central AI Gateway
 
 type RawCoachResponse = {
     summary?: unknown;
@@ -233,11 +237,12 @@ function resolveCoachInsight(
     };
 }
 
-export async function generateDeepSeekInsights(
+export async function generateAiCoachInsights(
     accountId?: string,
     timezone?: string,
     dateFrom?: string,
-    dateTo?: string
+    dateTo?: string,
+    forceRefresh = false
 ) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
@@ -250,15 +255,11 @@ export async function generateDeepSeekInsights(
         };
     }
 
-    if (!DEEPSEEK_API_KEY) {
-        return { error: "DEEPSEEK_API_KEY is not configured" };
-    }
-
     try {
         const startDate = parseLocalStartOfDay(dateFrom, timezone);
         const endDate = parseLocalEndOfDay(dateTo, timezone);
 
-        // Check cache in User settings to avoid redundant DeepSeek calls
+        // Check cache in User settings to avoid redundant AI calls
         const dbUser = await prisma.user.findUnique({
             where: { id: user.id },
             select: { settings: true },
@@ -298,7 +299,7 @@ export async function generateDeepSeekInsights(
               }
             | undefined;
 
-        if (cachedData?.cacheKey === currentCacheKey && cachedData.insight) {
+        if (!forceRefresh && cachedData?.cacheKey === currentCacheKey && cachedData.insight) {
             return {
                 success: true,
                 insight: cachedData.insight,
@@ -321,7 +322,7 @@ export async function generateDeepSeekInsights(
             };
         }
 
-        // Format data for DeepSeek prompt
+        // Format data for prompt
         const catalog = buildEvidenceCatalog(data);
         const tradingGoal =
             existingSettings.tradingGoal ||
@@ -389,51 +390,42 @@ VERIFIED_DATA
 ${JSON.stringify(promptData, null, 2)}
 END_VERIFIED_DATA`;
 
-        const res = await fetch("https://api.deepseek.com/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-            },
-            body: JSON.stringify({
-                model: "deepseek-chat",
-                messages: [
-                    {
-                        role: "system",
-                        content:
-                            "You are a JSON-only API. You must return valid JSON.",
-                    },
-                    { role: "user", content: systemPrompt },
-                ],
-                response_format: { type: "json_object" },
-                temperature: 0.3,
-                max_tokens: 700,
-            }),
+        const requestId = `coach_${randomUUID()}`;
+        const reservation = await reserveAiRequest({
+            requestId,
+            userId: user.id,
+            symbol: "MULTI",
+            timeframe: "ANALYSIS",
+            analysisMode: "COACH_INSIGHTS",
+            promptVersion: AI_COACH_PROMPT_VERSION,
+            taskKey: "COACH_INSIGHTS",
         });
 
-        if (!res.ok) {
-            const errBody = await res.text();
-            console.error("DeepSeek Error:", errBody);
-            throw new Error(`DeepSeek API failed (${res.status})`);
+        if (reservation.status === "QUOTA_EXCEEDED") {
+            return {
+                error: "Daily AI Coach quota reached for your plan. Please try again tomorrow.",
+            };
+        }
+        if (reservation.status !== "RESERVED") {
+            return { error: "This AI Coach request could not be started." };
         }
 
-        const aiData = await res.json();
+        const gatewayResult = await executeAiGateway({
+            requestId,
+            userId: user.id,
+            snapshot: promptData,
+            systemPrompt,
+            taskKey: "COACH_INSIGHTS",
+            skipTradingSchemaValidation: true,
+        });
 
-        if (aiData.error) {
-            console.error("DeepSeek API Payload Error:", aiData.error);
-            throw new Error(
-                `DeepSeek API Payload Error: ${aiData.error.message || JSON.stringify(aiData.error)}`
-            );
+        if (!gatewayResult.ok || !gatewayResult.rawResult) {
+            console.error("AI Coach Gateway Error:", gatewayResult.message);
+            throw new Error(gatewayResult.message || "AI Gateway execution failed.");
         }
 
-        const content = aiData.choices?.[0]?.message?.content;
-        if (!content) {
-            console.error(
-                "DeepSeek Missing Content. Full Response:",
-                JSON.stringify(aiData, null, 2)
-            );
-            throw new Error("No content returned from DeepSeek");
-        }
+        const rawContent = gatewayResult.rawResult;
+        const content = typeof rawContent === "string" ? rawContent : JSON.stringify(rawContent);
 
         const finalInsight = resolveCoachInsight(
             parseCoachResponse(content),
@@ -463,7 +455,7 @@ END_VERIFIED_DATA`;
             insight: finalInsight,
         };
     } catch (error: any) {
-        console.error("[DeepSeek Insight Error]:", error);
+        console.error("[AI Coach Insight Error]:", error);
         return { error: "Failed to generate AI insights. Please try again." };
     }
 }
@@ -483,3 +475,5 @@ export async function getActiveCoachPlan() {
         return { error: "Failed to fetch coach plan" };
     }
 }
+
+export const generateDeepSeekInsights = generateAiCoachInsights;

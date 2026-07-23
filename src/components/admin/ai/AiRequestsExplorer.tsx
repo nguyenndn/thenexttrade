@@ -1,37 +1,74 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Filter, ChevronDown, ChevronUp, RotateCw } from "lucide-react";
 import { format } from "date-fns";
+import { getAiRequests } from "@/actions/admin/ai-gateway";
 
-export function AiRequestsExplorer({ requests }: { requests: any[] }) {
+function formatRequestId(requestId: string): string {
+    if (!requestId) return "-";
+    if (requestId.length <= 45) return requestId;
+    return `${requestId.slice(0, 38)}...`;
+}
+
+export function AiRequestsExplorer({ requests: initialRequests }: { requests: any[] }) {
+    const [requestsList, setRequestsList] = useState(initialRequests);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
     const [searchTerm, setSearchTerm] = useState("");
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
-    const filtered = requests.filter(
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            const fresh = await getAiRequests(100);
+            setRequestsList(fresh);
+            setLastUpdated(new Date());
+        } catch (err) {
+            console.error("Failed to refresh requests:", err);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
+    const filtered = requestsList.filter(
         (req) =>
             req.requestId.includes(searchTerm) ||
-            req.user?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+            (req.taskKey && req.taskKey.includes(searchTerm)) ||
+            (req.user?.email && req.user.email.includes(searchTerm))
     );
 
     return (
-        <div className="space-y-4">
-            {/* Toolbar Card */}
-            <div className="bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
-                    <Search size={18} className="text-gray-500" />
+        <div className="space-y-6">
+            {/* Top Toolbar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="relative w-full sm:w-80">
+                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                         type="text"
-                        placeholder="Search request ID or user..."
-                        className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
+                        placeholder="Search request ID, task key, or user..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary text-gray-900 dark:text-white"
                     />
                 </div>
-                <button className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm text-sm font-medium h-[38px]">
-                    <Filter className="w-4 h-4" />
-                    <span>Filters</span>
-                </button>
+                <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                    <span className="text-xs text-gray-500 font-medium">
+                        Updated {format(lastUpdated, "HH:mm:ss")}
+                    </span>
+                    <button
+                        onClick={handleRefresh}
+                        disabled={isRefreshing}
+                        className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 px-3.5 py-2 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm text-sm font-medium h-[38px] disabled:opacity-50"
+                    >
+                        <RotateCw className={`w-4 h-4 ${isRefreshing ? "animate-spin text-primary" : ""}`} />
+                        <span>Refresh</span>
+                    </button>
+                    <button className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm text-sm font-medium h-[38px]">
+                        <Filter className="w-4 h-4" />
+                        <span>Filters</span>
+                    </button>
+                </div>
             </div>
 
             {/* Data Table Card */}
@@ -42,6 +79,9 @@ export function AiRequestsExplorer({ requests }: { requests: any[] }) {
                             <tr>
                                 <th className="px-6 py-4 border-b border-gray-100 dark:border-white/10">
                                     Request ID
+                                </th>
+                                <th className="px-6 py-4 border-b border-gray-100 dark:border-white/10">
+                                    Task Key
                                 </th>
                                 <th className="px-6 py-4 border-b border-gray-100 dark:border-white/10">
                                     User
@@ -64,8 +104,14 @@ export function AiRequestsExplorer({ requests }: { requests: any[] }) {
                             {filtered.map((req) => (
                                 <React.Fragment key={req.id}>
                                     <tr className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors">
-                                        <td className="px-6 py-4 font-mono text-xs text-gray-500 dark:text-gray-400">
-                                            {req.requestId.split("-")[0]}...
+                                        <td
+                                            className="px-6 py-4 font-mono text-xs text-gray-700 dark:text-gray-300 font-medium"
+                                            title={req.requestId}
+                                        >
+                                            {formatRequestId(req.requestId)}
+                                        </td>
+                                        <td className="px-6 py-4 text-xs font-semibold text-primary">
+                                            {req.taskKey || "TRADE_ANALYSIS"}
                                         </td>
                                         <td className="px-6 py-4 text-gray-900 dark:text-gray-300 font-medium">
                                             {req.user?.email || (
@@ -212,11 +258,13 @@ export function AiRequestsExplorer({ requests }: { requests: any[] }) {
                                                                                     </div>
                                                                                     <div>
                                                                                         <p className="text-sm font-bold text-gray-900 dark:text-white">
-                                                                                            {attempt.providerId ||
+                                                                                            {attempt.providerName ||
+                                                                                                attempt.providerId ||
                                                                                                 "Unknown Provider"}
                                                                                         </p>
                                                                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
-                                                                                            {attempt.modelId ||
+                                                                                            {attempt.modelName ||
+                                                                                                attempt.modelId ||
                                                                                                 "Unknown Model"}{" "}
                                                                                             •{" "}
                                                                                             {

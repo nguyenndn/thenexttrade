@@ -139,6 +139,7 @@ export function SecuritySettings() {
                                 type="submit"
                                 isLoading={isLoading}
                                 variant="primary"
+                                size="smd"
                             >
                                 Update Password
                             </Button>

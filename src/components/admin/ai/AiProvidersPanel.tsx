@@ -2,44 +2,44 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Power, Cpu, Settings } from "lucide-react";
+import { Power, Cpu, Settings, RefreshCw, Eye, EyeOff } from "lucide-react";
 import {
     createAiProvider,
     toggleAiProvider,
     updateAiProvider,
     addAiCredential,
     testAiCredential,
+    activateAiCredential,
+    syncOpenRouterModels,
+    getProviderActiveKey,
 } from "@/actions/admin/ai-gateway";
 import { toast } from "sonner";
 import { format } from "date-fns";
+
+function sortProviders(list: any[]) {
+    return [...list].sort((a, b) => {
+        if (a.providerCode === "openrouter") return -1;
+        if (b.providerCode === "openrouter") return 1;
+        if (a.enabled && !b.enabled) return -1;
+        if (!a.enabled && b.enabled) return 1;
+        return a.providerEnum - b.providerEnum;
+    });
+}
 
 export function AiProvidersPanel({
     initialProviders,
 }: {
     initialProviders: any[];
 }) {
-    const searchParams = useSearchParams();
     const router = useRouter();
-    const isAddingProvider = searchParams.get("add") === "true";
-
-    const setIsAddingProvider = (val: boolean) => {
-        if (val) {
-            router.push("/admin/ai/providers?add=true");
-        } else {
-            router.push("/admin/ai/providers");
-        }
-    };
-
-    const [providers, setProviders] = useState(initialProviders);
-    const [newProvider, setNewProvider] = useState({
-        providerCode: "",
-        displayName: "",
-        providerEnum: 1,
-    });
+    const [providers, setProviders] = useState(() => sortProviders(initialProviders));
 
     const [editingProviderId, setEditingProviderId] = useState<string | null>(
         null
     );
+    const [showApiKey, setShowApiKey] = useState(false);
+    const [initialApiKey, setInitialApiKey] = useState("");
+
     const [editProviderForm, setEditProviderForm] = useState({
         baseUrl: "",
         defaultModelId: "",
@@ -47,30 +47,42 @@ export function AiProvidersPanel({
         apiKey: "",
     });
 
-    const handleAddProvider = async () => {
+    const handleOpenConfig = async (provider: any) => {
+        if (editingProviderId === provider.id) {
+            setEditingProviderId(null);
+            return;
+        }
+
+        setEditingProviderId(provider.id);
+        setShowApiKey(false);
+        setEditProviderForm({
+            baseUrl: provider.baseUrl || "",
+            defaultModelId: provider.defaultModelId || "",
+            timeoutMs: provider.timeoutMs || 30000,
+            apiKey: "Loading...",
+        });
+
         try {
-            await createAiProvider({
-                providerCode: newProvider.providerCode,
-                displayName: newProvider.displayName,
-                providerEnum: newProvider.providerEnum,
-            });
-            toast.success("Provider added successfully");
-            setIsAddingProvider(false);
-            window.location.reload();
+            const activeKey = await getProviderActiveKey(provider.id);
+            setEditProviderForm((prev) => ({
+                ...prev,
+                apiKey: activeKey || "",
+            }));
+            setInitialApiKey(activeKey || "");
         } catch {
-            toast.error("Failed to add provider");
+            setEditProviderForm((prev) => ({
+                ...prev,
+                apiKey: "",
+            }));
+            setInitialApiKey("");
         }
     };
 
-    const handleToggle = async (id: string, enabled: boolean) => {
+    const handleToggle = async (id: string, currentEnabled: boolean) => {
         try {
-            await toggleAiProvider(id, !enabled);
-            setProviders(
-                providers.map((p) =>
-                    p.id === id ? { ...p, enabled: !enabled } : p
-                )
-            );
+            await toggleAiProvider(id, !currentEnabled);
             toast.success("Provider status updated");
+            window.location.reload();
         } catch {
             toast.error("Failed to update status");
         }
@@ -84,20 +96,41 @@ export function AiProvidersPanel({
                 timeoutMs: editProviderForm.timeoutMs,
             });
 
-            if (editProviderForm.apiKey) {
+            if (
+                editProviderForm.apiKey &&
+                editProviderForm.apiKey.trim() !== "" &&
+                editProviderForm.apiKey !== initialApiKey &&
+                editProviderForm.apiKey !== "Loading..."
+            ) {
                 const dateStr = format(new Date(), "yyyy-MM-dd HH:mm");
-                await addAiCredential(
+                const credResult = await addAiCredential(
                     id,
                     `API Key (${dateStr})`,
                     editProviderForm.apiKey
                 );
+                if (credResult?.id) {
+                    try {
+                        await testAiCredential(credResult.id);
+                        await activateAiCredential(credResult.id);
+                        toast.success("API Key saved & activated successfully!");
+                    } catch (testErr: any) {
+                        toast.error(
+                            "Key saved, but validation failed: " +
+                                (testErr.message || "Invalid API Key")
+                        );
+                    }
+                }
+            } else {
+                toast.success("Provider configuration updated");
             }
 
-            toast.success("Provider configuration updated");
             setEditingProviderId(null);
             window.location.reload();
-        } catch {
-            toast.error("Failed to update provider");
+        } catch (err: any) {
+            toast.error(
+                "Failed to update provider: " +
+                    (err.message || "Unknown error")
+            );
         }
     };
 
@@ -111,66 +144,34 @@ export function AiProvidersPanel({
         }
     };
 
+    const handleTestAndActivateKey = async (credentialId: string) => {
+        try {
+            await testAiCredential(credentialId);
+            await activateAiCredential(credentialId);
+            toast.success("API Key tested & activated successfully!");
+            window.location.reload();
+        } catch (err: any) {
+            toast.error("Failed to test and activate key: " + (err.message || "Invalid Key"));
+        }
+    };
+
+    const [isSyncingModels, setIsSyncingModels] = useState(false);
+
+    const handleSyncCatalog = async () => {
+        setIsSyncingModels(true);
+        try {
+            const res = await syncOpenRouterModels();
+            toast.success(`OpenRouter models synced: ${res.totalSynced} total (${res.createdCount} new)`);
+            window.location.reload();
+        } catch (error: any) {
+            toast.error(error.message || "Failed to sync OpenRouter models");
+        } finally {
+            setIsSyncingModels(false);
+        }
+    };
+
     return (
         <div className="space-y-4">
-            {isAddingProvider && (
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 mb-6 space-y-4 shadow-sm">
-                    <h3 className="text-gray-900 dark:text-white font-medium">
-                        New AI Provider
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input
-                            placeholder="Display Name (e.g. OpenAI)"
-                            className="bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                            value={newProvider.displayName}
-                            onChange={(e) =>
-                                setNewProvider({
-                                    ...newProvider,
-                                    displayName: e.target.value,
-                                })
-                            }
-                        />
-                        <input
-                            placeholder="Provider Code (e.g. openai)"
-                            className="bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                            value={newProvider.providerCode}
-                            onChange={(e) =>
-                                setNewProvider({
-                                    ...newProvider,
-                                    providerCode: e.target.value,
-                                })
-                            }
-                        />
-                        <input
-                            type="number"
-                            placeholder="Enum Value (e.g. 1)"
-                            className="bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                            value={newProvider.providerEnum}
-                            onChange={(e) =>
-                                setNewProvider({
-                                    ...newProvider,
-                                    providerEnum: parseInt(e.target.value),
-                                })
-                            }
-                        />
-                    </div>
-                    <div className="flex justify-end gap-3">
-                        <button
-                            onClick={() => setIsAddingProvider(false)}
-                            className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleAddProvider}
-                            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors shadow-sm"
-                        >
-                            Save Provider
-                        </button>
-                    </div>
-                </div>
-            )}
-
             <div className="grid grid-cols-1 gap-4">
                 {providers.map((provider) => {
                     const activeCred = provider.credentials.find(
@@ -211,30 +212,18 @@ export function AiProvidersPanel({
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
+                                    {provider.providerCode === "openrouter" && (
+                                        <button
+                                            onClick={handleSyncCatalog}
+                                            disabled={isSyncingModels}
+                                            className="px-3 py-1.5 rounded-lg flex items-center text-xs font-semibold bg-primary/10 text-primary hover:bg-primary/20 transition-all disabled:opacity-50"
+                                        >
+                                            <RefreshCw className={`w-3.5 h-3.5 mr-1 ${isSyncingModels ? "animate-spin" : ""}`} />
+                                            {isSyncingModels ? "Syncing..." : "Sync Catalog"}
+                                        </button>
+                                    )}
                                     <button
-                                        onClick={() => {
-                                            if (
-                                                editingProviderId ===
-                                                provider.id
-                                            ) {
-                                                setEditingProviderId(null);
-                                            } else {
-                                                setEditingProviderId(
-                                                    provider.id
-                                                );
-                                                setEditProviderForm({
-                                                    baseUrl:
-                                                        provider.baseUrl || "",
-                                                    defaultModelId:
-                                                        provider.defaultModelId ||
-                                                        "",
-                                                    timeoutMs:
-                                                        provider.timeoutMs ||
-                                                        30000,
-                                                    apiKey: "",
-                                                });
-                                            }
-                                        }}
+                                        onClick={() => handleOpenConfig(provider)}
                                         className={`px-3 py-1.5 rounded-lg flex items-center text-xs font-semibold transition-all ${editingProviderId === provider.id ? "bg-primary text-white shadow-sm shadow-primary/20" : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10"}`}
                                     >
                                         <Settings className="w-3.5 h-3.5 mr-1" />
@@ -290,20 +279,39 @@ export function AiProvidersPanel({
                                                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">
                                                     Default Model ID
                                                 </label>
-                                                <input
-                                                    placeholder="e.g. gpt-4o"
-                                                    className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                                                    value={
-                                                        editProviderForm.defaultModelId
-                                                    }
+                                                <select
+                                                    className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary font-mono"
+                                                    value={editProviderForm.defaultModelId}
                                                     onChange={(e) =>
                                                         setEditProviderForm({
                                                             ...editProviderForm,
-                                                            defaultModelId:
-                                                                e.target.value,
+                                                            defaultModelId: e.target.value,
                                                         })
                                                     }
-                                                />
+                                                >
+                                                    <option value="">-- Select Default Model --</option>
+                                                    {editProviderForm.defaultModelId && provider.models && !provider.models.some((m: any) => m.modelCode === editProviderForm.defaultModelId) && (
+                                                        <option value={editProviderForm.defaultModelId}>
+                                                            Current: {editProviderForm.defaultModelId}
+                                                        </option>
+                                                    )}
+                                                    {provider.models && provider.models.length > 0 ? (
+                                                        provider.models.map((m: any) => (
+                                                            <option key={m.id} value={m.modelCode}>
+                                                                {m.displayName} ({m.modelCode})
+                                                            </option>
+                                                        ))
+                                                    ) : (
+                                                        <>
+                                                            <option value="deepseek/deepseek-chat">DeepSeek Chat (deepseek/deepseek-chat)</option>
+                                                            <option value="deepseek/deepseek-r1">DeepSeek R1 (deepseek/deepseek-r1)</option>
+                                                            <option value="google/gemini-2.5-flash">Google Gemini 2.5 Flash (google/gemini-2.5-flash)</option>
+                                                            <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet (anthropic/claude-3.5-sonnet)</option>
+                                                            <option value="openai/gpt-4o-mini">GPT-4o Mini (openai/gpt-4o-mini)</option>
+                                                            <option value="x-ai/grok-2">Grok 2 (x-ai/grok-2)</option>
+                                                        </>
+                                                    )}
+                                                </select>
                                             </div>
                                             <div>
                                                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">
@@ -329,21 +337,35 @@ export function AiProvidersPanel({
                                                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">
                                                     API Key (Secret)
                                                 </label>
-                                                <input
-                                                    type="password"
-                                                    placeholder="Enter new key to update"
-                                                    className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                                                    value={
-                                                        editProviderForm.apiKey
-                                                    }
-                                                    onChange={(e) =>
-                                                        setEditProviderForm({
-                                                            ...editProviderForm,
-                                                            apiKey: e.target
-                                                                .value,
-                                                        })
-                                                    }
-                                                />
+                                                <div className="relative">
+                                                    <input
+                                                        type={showApiKey ? "text" : "password"}
+                                                        placeholder="Enter key to save/update"
+                                                        className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl pl-3 pr-10 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary font-mono"
+                                                        value={
+                                                            editProviderForm.apiKey
+                                                        }
+                                                        onChange={(e) =>
+                                                            setEditProviderForm({
+                                                                ...editProviderForm,
+                                                                apiKey: e.target
+                                                                    .value,
+                                                            })
+                                                        }
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowApiKey(!showApiKey)}
+                                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+                                                        title={showApiKey ? "Hide API Key" : "Show API Key"}
+                                                    >
+                                                        {showApiKey ? (
+                                                            <EyeOff className="w-4 h-4" />
+                                                        ) : (
+                                                            <Eye className="w-4 h-4" />
+                                                        )}
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="flex justify-end gap-2">
@@ -423,6 +445,22 @@ export function AiProvidersPanel({
                                                         className="text-[10px] text-primary hover:underline font-bold transition-colors"
                                                     >
                                                         Test Key
+                                                    </button>
+                                                </div>
+                                            ) : provider.credentials && provider.credentials.length > 0 ? (
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span className="text-xs font-mono text-yellow-600 dark:text-yellow-400">
+                                                        •••• {provider.credentials[0].lastFour} ({provider.credentials[0].status})
+                                                    </span>
+                                                    <button
+                                                        onClick={() =>
+                                                            handleTestAndActivateKey(
+                                                                provider.credentials[0].id
+                                                            )
+                                                        }
+                                                        className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded hover:bg-primary/20 font-bold transition-colors"
+                                                    >
+                                                        Test & Activate
                                                     </button>
                                                 </div>
                                             ) : (

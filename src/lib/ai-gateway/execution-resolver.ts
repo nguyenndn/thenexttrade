@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { decrypt } from "@/lib/encryption";
 import { getAdapter } from "./provider-registry";
 import { AiGatewayProviderAdapter } from "./providers/types";
+import { isAiTaskKey } from "./task-keys";
 
 export interface ResolvedExecutionCandidate {
     model: AiModel;
@@ -35,14 +36,35 @@ export interface ExecutionPlan {
     steps: ExecutionStep[];
 }
 
-export async function resolveModelsToTry() {
-    const policy = await prisma.aiRoutingPolicy.findFirst({
-        where: {
-            enabled: true,
-            publishedAt: { not: null },
-        },
-        orderBy: { publishedAt: "desc" },
-    });
+export async function resolveModelsToTry(taskKey?: string) {
+    let policy = null;
+
+    if (taskKey && !isAiTaskKey(taskKey)) {
+        return { policy: null, modelsToTry: [] as string[] };
+    }
+
+    if (taskKey) {
+        policy = await prisma.aiRoutingPolicy.findFirst({
+            where: {
+                enabled: true,
+                publishedAt: { not: null },
+                scopeType: "TASK",
+                scopeValue: taskKey,
+            },
+            orderBy: { publishedAt: "desc" },
+        });
+    }
+
+    if (!policy) {
+        policy = await prisma.aiRoutingPolicy.findFirst({
+            where: {
+                enabled: true,
+                publishedAt: { not: null },
+                scopeType: "GLOBAL",
+            },
+            orderBy: { publishedAt: "desc" },
+        });
+    }
 
     if (!policy?.primaryModelId)
         return { policy: null, modelsToTry: [] as string[] };
@@ -88,8 +110,10 @@ function isValidProviderUrl(baseUrl: string | null): boolean {
     }
 }
 
-export async function resolveExecutionPlan(): Promise<ExecutionPlan> {
-    const { policy, modelsToTry } = await resolveModelsToTry();
+export async function resolveExecutionPlan(
+    taskKey?: string
+): Promise<ExecutionPlan> {
+    const { policy, modelsToTry } = await resolveModelsToTry(taskKey);
     if (!policy) return { policy: null, modelIds: [], steps: [] };
 
     const modelIds = modelsToTry.slice(0, Math.max(1, policy.maxAttempts));

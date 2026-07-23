@@ -18,6 +18,7 @@ import { StrategyEmptyState } from "./StrategyEmptyState";
 import { StrategiesLoadingSkeleton } from "./StrategiesLoadingSkeleton";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { PremiumInput } from "@/components/ui/PremiumInput";
 import { useRouter } from "next/navigation";
 import {
     deleteStrategy,
@@ -256,66 +257,61 @@ export function StrategyManager({
 
             {/* Toolbar */}
             {allStrategies.length > 0 && (
-                <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mt-6">
-                    <div className="relative w-full sm:w-64 group">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Search
-                                size={16}
-                                className="text-gray-500 group-focus-within:text-primary transition-colors"
+                <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm mt-6">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+                        <div className="w-full sm:max-w-md">
+                            <PremiumInput
+                                icon={Search}
+                                placeholder="Search strategies..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <input
-                            type="text"
-                            placeholder="Search strategies..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
-                        />
-                    </div>
 
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="smd"
-                                className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#151925] text-gray-700 dark:text-gray-300"
-                            >
-                                <ArrowUpDown
-                                    size={16}
-                                    className="text-gray-500"
-                                />
-                                <span>{currentSortLabel}</span>
-                                <ChevronDown
-                                    size={14}
-                                    className="text-gray-500"
-                                />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                            align="end"
-                            className="min-w-[180px]"
-                        >
-                            {sortOptions.map((option) => (
-                                <DropdownMenuItem
-                                    key={option.value}
-                                    onClick={() => setSortBy(option.value)}
-                                    className={cn(
-                                        "flex items-center justify-between gap-2",
-                                        sortBy === option.value &&
-                                            "text-primary font-semibold"
-                                    )}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="smd"
+                                    className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#151925] text-gray-700 dark:text-gray-300"
                                 >
-                                    {option.label}
-                                    {sortBy === option.value && (
-                                        <Check
-                                            size={14}
-                                            className="text-primary"
-                                        />
-                                    )}
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                                    <ArrowUpDown
+                                        size={16}
+                                        className="text-gray-500"
+                                    />
+                                    <span>{currentSortLabel}</span>
+                                    <ChevronDown
+                                        size={14}
+                                        className="text-gray-500"
+                                    />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="end"
+                                className="min-w-[180px]"
+                            >
+                                {sortOptions.map((option) => (
+                                    <DropdownMenuItem
+                                        key={option.value}
+                                        onClick={() => setSortBy(option.value)}
+                                        className={cn(
+                                            "flex items-center justify-between gap-2",
+                                            sortBy === option.value &&
+                                                "text-primary font-semibold"
+                                        )}
+                                    >
+                                        {option.label}
+                                        {sortBy === option.value && (
+                                            <Check
+                                                size={14}
+                                                className="text-primary"
+                                            />
+                                        )}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             )}
 

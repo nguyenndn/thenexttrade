@@ -152,7 +152,7 @@ export function NextBestActionCard({
                     )}
                 </div>
 
-                <div className="w-full lg:w-auto shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <div className="w-full lg:w-auto shrink-0 flex flex-col sm:flex-row items-stretch sm:items-start gap-4 pt-1">
                     {/* Reward Box */}
                     <div className="flex items-center gap-3 px-4 rounded-2xl bg-amber-500/10 dark:bg-amber-400/5 border border-amber-500/25 dark:border-amber-400/10 shrink-0 h-[46px]">
                         <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md shadow-orange-500/20">

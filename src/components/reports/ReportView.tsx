@@ -44,6 +44,7 @@ interface ReportData {
     bySymbol: any[] | null;
     byStrategy: any[] | null;
     bySession: any[] | null;
+    byDirection: any[] | null;
     byDay: any[] | null;
     avgConfidence: number | null;
     planCompliance: number | null;
@@ -631,6 +632,12 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     title="Performance by Session"
                     icon={Clock}
                     iconColor="bg-indigo-500/10 text-indigo-500"
+                />
+                <BreakdownTable
+                    data={report.byDirection}
+                    title="Performance by Direction"
+                    icon={Target}
+                    iconColor="bg-orange-500/10 text-orange-500"
                 />
                 <PsychologySection
                     confidence={report.avgConfidence}

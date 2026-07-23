@@ -64,10 +64,13 @@ async function getCurrentUserId(): Promise<string | null> {
     return user?.id ?? null;
 }
 
+export type PeriodFilter = "7D" | "30D" | "90D" | "ALL";
+
 export async function getLeaderboard(
-    type: LeaderboardType = "xp",
+    type: LeaderboardType = "trading",
     limit: number = 50,
-    sortBy: "percentage" | "currency" = "currency"
+    sortBy: "percentage" | "currency" = "currency",
+    period: PeriodFilter = "30D"
 ): Promise<LeaderboardResponse> {
     const userId = await getCurrentUserId();
 
@@ -79,7 +82,7 @@ export async function getLeaderboard(
         case "academy":
             return getAcademyLeaderboard(userId, limit);
         case "trading":
-            return getTradingLeaderboard(userId, limit, sortBy);
+            return getTradingLeaderboard(userId, limit, sortBy, period);
         default:
             return getXpLeaderboard(userId, limit);
     }
@@ -376,10 +379,19 @@ async function getAcademyLeaderboard(
 async function getTradingLeaderboard(
     userId: string | null,
     limit: number,
-    sortBy: "percentage" | "currency" = "currency"
+    sortBy: "percentage" | "currency" = "currency",
+    period: PeriodFilter = "30D"
 ): Promise<LeaderboardResponse> {
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    let cutoffDate = new Date(0);
+    const now = Date.now();
+    if (period === "7D") {
+        cutoffDate = new Date(now - 7 * 24 * 60 * 60 * 1000);
+    } else if (period === "30D") {
+        cutoffDate = new Date(now - 30 * 24 * 60 * 60 * 1000);
+    } else if (period === "90D") {
+        cutoffDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
+    }
+
     // Check if current user has a leaderboard account
     let hasLeaderboardAccount = true;
     if (userId) {
@@ -403,18 +415,18 @@ async function getTradingLeaderboard(
         }>
     >`
  SELECT u.id AS "userId", u.name, u.image, u.xp, u.level,
- ROUND(COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0 / COUNT(*), 1) AS "winRate",
+ ROUND(COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0 / NULLIF(COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END), 0), 1) AS "winRate",
  COUNT(*) AS "totalTrades",
  COALESCE(SUM(je.pnl), 0) AS "totalPnl"
  FROM "User" u
  INNER JOIN "trading_accounts" ta ON ta."userId" = u.id AND ta.use_for_leaderboard = true
  INNER JOIN "JournalEntry" je ON je."accountId" = ta.id
  WHERE u."showOnLeaderboard" = true
- AND je."entryDate" >= ${sevenDaysAgo}
+ AND je."entryDate" >= ${cutoffDate}
  AND je.status = 'CLOSED'
  GROUP BY u.id, u.name, u.image, u.xp, u.level
- HAVING COUNT(*) >= 5 AND COALESCE(SUM(je.pnl), 0) > 0
- ORDER BY ${sortBy === "percentage" ? Prisma.raw('"winRate"') : Prisma.raw('"totalPnl"')} DESC
+ HAVING COUNT(*) >= 10
+ ORDER BY ${sortBy === "percentage" ? Prisma.raw('"winRate"') : Prisma.raw('"totalPnl"')} DESC, "totalTrades" DESC, u."updatedAt" DESC
  LIMIT ${limit}
  `;
 

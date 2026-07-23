@@ -1,4 +1,6 @@
 import { executeCoachGateway } from "@/lib/ai-gateway/provider-router";
+import { reserveAiRequest } from "@/lib/ai-gateway/quota-service";
+import { randomUUID } from "node:crypto";
 
 export interface WeeklyAIReviewResult {
     keepDoing: string;
@@ -16,7 +18,7 @@ export async function generateWeeklyAIReview(metrics: {
     mostFollowedRule: { title: string; count: number } | null;
     mostBrokenRule: { title: string; count: number } | null;
     topWeaknessTitle: string | null;
-}): Promise<WeeklyAIReviewResult | null> {
+}, userId: string): Promise<WeeklyAIReviewResult | null> {
     // If no trades, we can't generate a meaningful review
     if (metrics.totalTrades === 0) {
         return null;
@@ -55,14 +57,34 @@ Generate a structured JSON response containing:
   ]
 }
 
-Respond ONLY with valid JSON. Keep the tone professional, encouraging, and direct.`;
+    Respond ONLY with valid JSON. Keep the tone professional, encouraging, and direct.`;
 
     try {
+        const requestId = `coach_weekly_${randomUUID()}`;
+        const reservation = await reserveAiRequest({
+            requestId,
+            userId,
+            symbol: "MULTI",
+            timeframe: "WEEKLY",
+            analysisMode: "WEEKLY_COACH",
+            promptVersion: "weekly-coach-v1",
+            taskKey: "WEEKLY_COACH",
+        });
+
+        if (reservation.status !== "RESERVED") {
+            console.warn(
+                `[AI Coach] Weekly request was not reserved: ${reservation.status}`
+            );
+            return null;
+        }
+
         const gatewayResult = await executeCoachGateway({
-            requestId: `coach_weekly_${Date.now()}`,
+            requestId,
+            userId,
+            taskKey: "WEEKLY_COACH",
             systemPrompt:
                 "You are a professional forex trading coach. Always respond in valid JSON format matching the instructions exactly.",
-            snapshot: { prompt }, // Pass as snapshot or just combine in systemPrompt. Actually, executeCoachGateway expects snapshot to be stringified by the adapter if it's an object, but we can just use systemPrompt and snapshot as needed.
+            snapshot: { prompt },
         });
 
         if (!gatewayResult.ok || !gatewayResult.result) {

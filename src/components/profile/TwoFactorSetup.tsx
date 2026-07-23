@@ -117,9 +117,10 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                     <div className="mt-6 flex justify-end">
                         <Button
                             variant="outline"
+                            size="smd"
                             onClick={handleDisableClick}
                             disabled={loading}
-                            className="px-6 py-2 border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+                            className="border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
                         >
                             Disable 2FA
                         </Button>
@@ -147,9 +148,9 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                             />
                             <Button
                                 variant="destructive"
+                                size="smd"
                                 onClick={confirmDisable}
                                 disabled={loading || disableCode.length < 6}
-                                className="px-6 py-2"
                             >
                                 {loading && (
                                     <Loader2
@@ -199,9 +200,10 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
             {step === "idle" && (
                 <div className="mt-6 flex justify-end">
                     <Button
+                        size="smd"
                         onClick={handleStart}
                         isLoading={loading}
-                        className="px-6 py-2 w-auto"
+                        className="w-auto"
                     >
                         Setup 2FA
                     </Button>
@@ -278,9 +280,9 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                         className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-black/20 border border-dashboard rounded-xl focus:outline-none focus:border-primary font-mono text-center tracking-widest text-lg"
                                     />
                                     <Button
+                                        size="smd"
                                         onClick={handleVerify}
                                         disabled={loading || code.length < 6}
-                                        className="px-6 py-2"
                                     >
                                         {loading && (
                                             <Loader2

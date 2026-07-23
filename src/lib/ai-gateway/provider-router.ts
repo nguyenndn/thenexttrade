@@ -1,12 +1,16 @@
 import { validateAndCleanResult, AiTradingResult } from "./result-schema";
 import { resolveExecutionPlan } from "./execution-resolver";
+import { prisma } from "@/lib/prisma";
 
 export { getAdapter } from "./provider-registry";
 
 export interface GatewayExecutionInput {
     requestId: string;
+    userId?: string;
     snapshot: unknown;
     systemPrompt: string;
+    taskKey?: string;
+    skipTradingSchemaValidation?: boolean;
 }
 
 export interface ProviderAttemptResult {
@@ -19,14 +23,37 @@ export interface ProviderAttemptResult {
     errorMessageRedacted?: string;
     inputTokens?: number;
     outputTokens?: number;
+    estimatedCostUsd?: number;
     providerRequestId?: string;
     finishReason?: string;
     completedAt: Date;
 }
 
+function estimateModelCost(
+    model: {
+        inputCostPerMillion: number | null;
+        outputCostPerMillion: number | null;
+    },
+    inputTokens?: number,
+    outputTokens?: number
+) {
+    if (
+        model.inputCostPerMillion == null ||
+        model.outputCostPerMillion == null
+    ) {
+        return undefined;
+    }
+
+    return (
+        ((inputTokens || 0) / 1_000_000) * model.inputCostPerMillion +
+        ((outputTokens || 0) / 1_000_000) * model.outputCostPerMillion
+    );
+}
+
 export interface GatewayExecutionResult {
     ok: boolean;
     normalizedResult?: AiTradingResult;
+    rawResult?: any;
     attempts: ProviderAttemptResult[];
     selectedProviderId?: string;
     selectedModelId?: string;
@@ -50,22 +77,187 @@ function redactProviderError(
     return redacted.slice(0, 500);
 }
 
+function isAuditPersistenceError(error: unknown): boolean {
+    return (
+        error instanceof Error &&
+        error.message === "AI_AUDIT_PERSISTENCE_FAILED"
+    );
+}
+
+async function saveGatewayAuditRecord(
+    input: GatewayExecutionInput,
+    ok: boolean,
+    attempts: ProviderAttemptResult[],
+    startedAt: number,
+    errorCode?: string,
+    policyId?: string,
+    policyVersion?: number
+) {
+    try {
+        const totalLatencyMs = Date.now() - startedAt;
+        const totalInputTokens = attempts.reduce(
+            (sum, a) => sum + (a.inputTokens || 0),
+            0
+        );
+        const totalOutputTokens = attempts.reduce(
+            (sum, a) => sum + (a.outputTokens || 0),
+            0
+        );
+        const pricedAttempts = attempts.filter(
+            (attempt) => attempt.estimatedCostUsd !== undefined
+        );
+        const estimatedCostUsd =
+            pricedAttempts.length === 0
+                ? null
+                : pricedAttempts.reduce(
+                      (sum, attempt) => sum + (attempt.estimatedCostUsd || 0),
+                      0
+                  );
+
+        const existing = await prisma.aiRequest.findUnique({
+            where: { requestId: input.requestId },
+        });
+
+        const status = ok
+            ? "COMPLETED"
+            : errorCode === "SAFETY_REJECTED"
+              ? "REJECTED"
+              : "FAILED";
+
+        let aiRequestId = existing?.id;
+
+        if (existing) {
+            await prisma.aiRequest.update({
+                where: { id: existing.id },
+                data: {
+                    status,
+                    userId: input.userId || existing.userId,
+                    taskKey: input.taskKey || existing.taskKey,
+                    routingPolicyId: policyId || existing.routingPolicyId,
+                    routingPolicyVersion:
+                        policyVersion || existing.routingPolicyVersion,
+                    inputTokens: totalInputTokens,
+                    outputTokens: totalOutputTokens,
+                    totalLatencyMs,
+                    estimatedCostUsd,
+                    errorCode: errorCode || null,
+                    completedAt: new Date(),
+                },
+            });
+        } else {
+            const created = await prisma.aiRequest.create({
+                data: {
+                    requestId: input.requestId,
+                    userId: input.userId || null,
+                    taskKey: input.taskKey || "TRADE_ANALYSIS",
+                    status,
+                    routingPolicyId: policyId || null,
+                    routingPolicyVersion: policyVersion || null,
+                    inputTokens: totalInputTokens,
+                    outputTokens: totalOutputTokens,
+                    totalLatencyMs,
+                    estimatedCostUsd,
+                    errorCode: errorCode || null,
+                    completedAt: new Date(),
+                },
+            });
+            aiRequestId = created.id;
+        }
+
+        if (aiRequestId && attempts.length > 0) {
+            const existingAttempts = await prisma.aiRequestAttempt.findMany({
+                where: { aiRequestId },
+                select: { attemptNumber: true },
+            });
+            const existingAttemptNumbers = new Set(
+                existingAttempts.map((attempt) => attempt.attemptNumber)
+            );
+            const attemptsToPersist = attempts
+                .map((attempt, index) => ({ attempt, attemptNumber: index + 1 }))
+                .filter(({ attemptNumber }) => !existingAttemptNumbers.has(attemptNumber));
+
+            if (attemptsToPersist.length > 0) {
+                await prisma.aiRequestAttempt.createMany({
+                    data: attemptsToPersist.map(({ attempt, attemptNumber }) => ({
+                        aiRequestId: aiRequestId!,
+                        attemptNumber,
+                        providerId: attempt.providerId || null,
+                        modelId: attempt.modelId || null,
+                        credentialId: attempt.credentialId || null,
+                        status: attempt.error_code ? "FAILED" : "COMPLETED",
+                        latencyMs: attempt.latencyMs,
+                        httpStatus: attempt.httpStatus || null,
+                        errorCode: attempt.error_code || null,
+                        errorMessageRedacted:
+                            attempt.errorMessageRedacted || null,
+                        inputTokens: attempt.inputTokens || 0,
+                        outputTokens: attempt.outputTokens || 0,
+                        estimatedCostUsd: attempt.estimatedCostUsd ?? null,
+                        providerRequestId: attempt.providerRequestId || null,
+                        finishReason: attempt.finishReason || null,
+                        completedAt: attempt.completedAt || new Date(),
+                    })),
+                });
+            }
+        }
+    } catch (err) {
+        console.error("[AI Gateway Audit Log Error]:", err);
+        try {
+            await prisma.aiRequest.updateMany({
+                where: { requestId: input.requestId },
+                data: {
+                    status: "FAILED",
+                    errorCode: "AI_AUDIT_PERSISTENCE_FAILED",
+                    completedAt: new Date(),
+                },
+            });
+        } catch (finalizeError) {
+            console.error(
+                "[AI Gateway Audit Finalization Error]:",
+                finalizeError
+            );
+        }
+        throw new Error("AI_AUDIT_PERSISTENCE_FAILED");
+    }
+}
+
 export async function executeAiGateway(
     input: GatewayExecutionInput
 ): Promise<GatewayExecutionResult> {
-    const plan = await resolveExecutionPlan();
+    const gatewayStartedAt = Date.now();
     const attempts: ProviderAttemptResult[] = [];
+    let plan;
+    try {
+        plan = await resolveExecutionPlan(input.taskKey);
+    } catch {
+        const res = {
+            ok: false,
+            attempts,
+            error_code: "ROUTING_RESOLUTION_FAILED",
+            message: "AI routing plan could not be resolved.",
+        };
+        await saveGatewayAuditRecord(
+            input,
+            res.ok,
+            res.attempts,
+            gatewayStartedAt,
+            res.error_code
+        );
+        return res;
+    }
 
     if (!plan.policy) {
-        return {
+        const res = {
             ok: false,
             attempts,
             error_code: "NO_ROUTING_POLICY",
             message: "No active AI routing policy found.",
         };
+        await saveGatewayAuditRecord(input, res.ok, res.attempts, gatewayStartedAt, res.error_code);
+        return res;
     }
     if (plan.steps.length === 0) {
-        return {
+        const res = {
             ok: false,
             attempts,
             error_code: "NO_ROUTABLE_MODEL",
@@ -73,6 +265,8 @@ export async function executeAiGateway(
             policyId: plan.policy.id,
             policyVersion: plan.policy.version,
         };
+        await saveGatewayAuditRecord(input, res.ok, res.attempts, gatewayStartedAt, res.error_code, res.policyId, res.policyVersion);
+        return res;
     }
 
     let lastError: { error_code: string; message: string } | undefined;
@@ -114,6 +308,36 @@ export async function executeAiGateway(
             let errorMessage = providerResult.message;
             let normalizedResult: AiTradingResult | undefined;
             if (providerResult.ok) {
+                if (input.skipTradingSchemaValidation) {
+                    attempts.push({
+                        providerId: provider.id,
+                        modelId: model.id,
+                        credentialId: credential.id,
+                        latencyMs: Date.now() - startedAt,
+                        httpStatus: providerResult.httpStatus,
+                        inputTokens: providerResult.inputTokens,
+                        outputTokens: providerResult.outputTokens,
+                        estimatedCostUsd: estimateModelCost(
+                            model,
+                            providerResult.inputTokens,
+                            providerResult.outputTokens
+                        ),
+                        providerRequestId: providerResult.providerRequestId,
+                        finishReason: providerResult.finishReason,
+                        completedAt: new Date(),
+                    });
+                    const res = {
+                        ok: true,
+                        attempts,
+                        selectedProviderId: provider.id,
+                        selectedModelId: model.id,
+                        rawResult: providerResult.data,
+                        policyId: plan.policy.id,
+                        policyVersion: plan.policy.version,
+                    };
+                    await saveGatewayAuditRecord(input, res.ok, res.attempts, gatewayStartedAt, undefined, res.policyId, res.policyVersion);
+                    return res;
+                }
                 const validation = validateAndCleanResult(providerResult.data);
                 if (validation.ok) normalizedResult = validation.data;
                 else {
@@ -135,13 +359,18 @@ export async function executeAiGateway(
                 ),
                 inputTokens: providerResult.inputTokens,
                 outputTokens: providerResult.outputTokens,
+                estimatedCostUsd: estimateModelCost(
+                    model,
+                    providerResult.inputTokens,
+                    providerResult.outputTokens
+                ),
                 providerRequestId: providerResult.providerRequestId,
                 finishReason: providerResult.finishReason,
                 completedAt: new Date(),
             });
 
             if (normalizedResult) {
-                return {
+                const res = {
                     ok: true,
                     attempts,
                     selectedProviderId: provider.id,
@@ -150,6 +379,8 @@ export async function executeAiGateway(
                     policyId: plan.policy.id,
                     policyVersion: plan.policy.version,
                 };
+                await saveGatewayAuditRecord(input, res.ok, res.attempts, gatewayStartedAt, undefined, res.policyId, res.policyVersion);
+                return res;
             }
 
             lastError = {
@@ -165,6 +396,9 @@ export async function executeAiGateway(
             )
                 break;
         } catch (error) {
+            if (isAuditPersistenceError(error)) {
+                throw error;
+            }
             const message =
                 error instanceof Error
                     ? error.message
@@ -188,7 +422,7 @@ export async function executeAiGateway(
         }
     }
 
-    return {
+    const res = {
         ok: false,
         attempts,
         error_code: lastError?.error_code || "ALL_PROVIDERS_FAILED",
@@ -196,6 +430,8 @@ export async function executeAiGateway(
         policyId: plan.policy.id,
         policyVersion: plan.policy.version,
     };
+    await saveGatewayAuditRecord(input, res.ok, res.attempts, gatewayStartedAt, res.error_code, res.policyId, res.policyVersion);
+    return res;
 }
 
 export interface CoachGatewayExecutionResult {
@@ -213,19 +449,40 @@ export interface CoachGatewayExecutionResult {
 export async function executeCoachGateway(
     input: GatewayExecutionInput
 ): Promise<CoachGatewayExecutionResult> {
-    const plan = await resolveExecutionPlan();
+    const gatewayStartedAt = Date.now();
     const attempts: ProviderAttemptResult[] = [];
+    let plan;
+    try {
+        plan = await resolveExecutionPlan(input.taskKey);
+    } catch {
+        const res = {
+            ok: false,
+            attempts,
+            error_code: "ROUTING_RESOLUTION_FAILED",
+            message: "AI routing plan could not be resolved.",
+        };
+        await saveGatewayAuditRecord(
+            input,
+            res.ok,
+            res.attempts,
+            gatewayStartedAt,
+            res.error_code
+        );
+        return res;
+    }
 
     if (!plan.policy) {
-        return {
+        const res = {
             ok: false,
             attempts,
             error_code: "NO_ROUTING_POLICY",
             message: "No active AI routing policy found.",
         };
+        await saveGatewayAuditRecord(input, res.ok, res.attempts, gatewayStartedAt, res.error_code);
+        return res;
     }
     if (plan.steps.length === 0) {
-        return {
+        const res = {
             ok: false,
             attempts,
             error_code: "NO_ROUTABLE_MODEL",
@@ -233,6 +490,8 @@ export async function executeCoachGateway(
             policyId: plan.policy.id,
             policyVersion: plan.policy.version,
         };
+        await saveGatewayAuditRecord(input, res.ok, res.attempts, gatewayStartedAt, res.error_code, res.policyId, res.policyVersion);
+        return res;
     }
 
     let lastError: { error_code: string; message: string } | undefined;
@@ -283,13 +542,18 @@ export async function executeCoachGateway(
                 ),
                 inputTokens: providerResult.inputTokens,
                 outputTokens: providerResult.outputTokens,
+                estimatedCostUsd: estimateModelCost(
+                    model,
+                    providerResult.inputTokens,
+                    providerResult.outputTokens
+                ),
                 providerRequestId: providerResult.providerRequestId,
                 finishReason: providerResult.finishReason,
                 completedAt: new Date(),
             });
 
             if (providerResult.ok && providerResult.data) {
-                return {
+                const res = {
                     ok: true,
                     attempts,
                     selectedProviderId: provider.id,
@@ -298,6 +562,8 @@ export async function executeCoachGateway(
                     policyId: plan.policy.id,
                     policyVersion: plan.policy.version,
                 };
+                await saveGatewayAuditRecord(input, res.ok, res.attempts, gatewayStartedAt, undefined, res.policyId, res.policyVersion);
+                return res;
             }
 
             lastError = {
@@ -315,6 +581,9 @@ export async function executeCoachGateway(
             )
                 break;
         } catch (error) {
+            if (isAuditPersistenceError(error)) {
+                throw error;
+            }
             const message =
                 error instanceof Error
                     ? error.message
@@ -338,7 +607,7 @@ export async function executeCoachGateway(
         }
     }
 
-    return {
+    const res = {
         ok: false,
         attempts,
         error_code: lastError?.error_code || "ALL_PROVIDERS_FAILED",
@@ -346,4 +615,6 @@ export async function executeCoachGateway(
         policyId: plan.policy.id,
         policyVersion: plan.policy.version,
     };
+    await saveGatewayAuditRecord(input, res.ok, res.attempts, gatewayStartedAt, res.error_code, res.policyId, res.policyVersion);
+    return res;
 }

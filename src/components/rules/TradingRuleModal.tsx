@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -12,6 +12,13 @@ import {
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { createTradingRule, updateTradingRule } from "@/actions/rulebook";
 import { toast } from "sonner";
 import { useEffect, useTransition } from "react";
@@ -59,6 +66,7 @@ export function TradingRuleModal({
         register,
         handleSubmit,
         reset,
+        control,
         formState: { errors },
     } = useForm<RuleFormValues>({
         resolver: zodResolver(ruleFormSchema),
@@ -67,8 +75,8 @@ export function TradingRuleModal({
             description: "",
             category: "RISK",
             severity: "MEDIUM",
-            accountId: "",
-            strategyId: "",
+            accountId: "all",
+            strategyId: "all",
             isActive: true,
         },
     });
@@ -81,8 +89,8 @@ export function TradingRuleModal({
                 description: ruleToEdit.description || "",
                 category: ruleToEdit.category,
                 severity: ruleToEdit.severity,
-                accountId: ruleToEdit.accountId || "",
-                strategyId: ruleToEdit.strategyId || "",
+                accountId: ruleToEdit.accountId || "all",
+                strategyId: ruleToEdit.strategyId || "all",
                 isActive: ruleToEdit.isActive !== false,
             });
         } else {
@@ -91,8 +99,8 @@ export function TradingRuleModal({
                 description: "",
                 category: "RISK",
                 severity: "MEDIUM",
-                accountId: "",
-                strategyId: "",
+                accountId: "all",
+                strategyId: "all",
                 isActive: true,
             });
         }
@@ -103,8 +111,8 @@ export function TradingRuleModal({
             const formattedValues = {
                 ...values,
                 description: values.description || null,
-                accountId: values.accountId || null,
-                strategyId: values.strategyId || null,
+                accountId: values.accountId === "all" ? null : values.accountId || null,
+                strategyId: values.strategyId === "all" ? null : values.strategyId || null,
             };
 
             let res;
@@ -176,33 +184,53 @@ export function TradingRuleModal({
                             <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
                                 Category
                             </label>
-                            <select
-                                {...register("category")}
-                                className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none"
-                            >
-                                <option value="RISK">Risk Management</option>
-                                <option value="ENTRY">Entry Criteria</option>
-                                <option value="EXIT">Exit Criteria</option>
-                                <option value="PSYCHOLOGY">Psychology</option>
-                                <option value="SESSION">Session Rules</option>
-                                <option value="MANAGEMENT">
-                                    Trade Management
-                                </option>
-                            </select>
+                            <Controller
+                                control={control}
+                                name="category"
+                                render={({ field }) => (
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                            <SelectValue placeholder="Select Category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="RISK">Risk Management</SelectItem>
+                                            <SelectItem value="ENTRY">Entry Criteria</SelectItem>
+                                            <SelectItem value="EXIT">Exit Criteria</SelectItem>
+                                            <SelectItem value="PSYCHOLOGY">Psychology</SelectItem>
+                                            <SelectItem value="SESSION">Session Rules</SelectItem>
+                                            <SelectItem value="MANAGEMENT">Trade Management</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
                         </div>
 
                         <div>
                             <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
                                 Severity
                             </label>
-                            <select
-                                {...register("severity")}
-                                className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none"
-                            >
-                                <option value="LOW">Low</option>
-                                <option value="MEDIUM">Medium</option>
-                                <option value="HIGH">High</option>
-                            </select>
+                            <Controller
+                                control={control}
+                                name="severity"
+                                render={({ field }) => (
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                            <SelectValue placeholder="Select Severity" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="LOW">Low</SelectItem>
+                                            <SelectItem value="MEDIUM">Medium</SelectItem>
+                                            <SelectItem value="HIGH">High</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
                         </div>
                     </div>
 
@@ -212,39 +240,59 @@ export function TradingRuleModal({
                             <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
                                 Limit to Account
                             </label>
-                            <select
-                                {...register("accountId")}
-                                className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none"
-                            >
-                                <option value="">Global (All Accounts)</option>
-                                {accounts.map((acc) => (
-                                    <option key={acc.id} value={acc.id}>
-                                        {acc.name}{" "}
-                                        {acc.accountNumber
-                                            ? `(#${acc.accountNumber})`
-                                            : ""}
-                                    </option>
-                                ))}
-                            </select>
+                            <Controller
+                                control={control}
+                                name="accountId"
+                                render={({ field }) => (
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                            <SelectValue placeholder="Select Account" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">Global (All Accounts)</SelectItem>
+                                            {accounts.map((acc) => (
+                                                <SelectItem key={acc.id} value={acc.id}>
+                                                    {acc.name}{" "}
+                                                    {acc.accountNumber
+                                                        ? `(#${acc.accountNumber})`
+                                                        : ""}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
                         </div>
 
                         <div>
                             <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
                                 Limit to Strategy
                             </label>
-                            <select
-                                {...register("strategyId")}
-                                className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none"
-                            >
-                                <option value="">
-                                    Global (All Strategies)
-                                </option>
-                                {strategies.map((strat) => (
-                                    <option key={strat.id} value={strat.id}>
-                                        {strat.name}
-                                    </option>
-                                ))}
-                            </select>
+                            <Controller
+                                control={control}
+                                name="strategyId"
+                                render={({ field }) => (
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                            <SelectValue placeholder="Select Strategy" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">Global (All Strategies)</SelectItem>
+                                            {strategies.map((strat) => (
+                                                <SelectItem key={strat.id} value={strat.id}>
+                                                    {strat.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
                         </div>
                     </div>
 
