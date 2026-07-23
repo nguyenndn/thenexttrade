@@ -120,3 +120,34 @@ export async function syncEconomicEvents() {
     );
     return { success: true, created: createdCount, updated: updatedCount };
 }
+
+export function extractCurrenciesFromSymbol(symbol: string): string[] {
+    const clean = (symbol || "").toUpperCase();
+    const knownCurrencies = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "NZD", "CHF", "CNY"];
+    const matched = knownCurrencies.filter((c) => clean.includes(c));
+    return matched.length > 0 ? matched : ["USD"];
+}
+
+export async function getMatchingEconomicEventsForTrade(
+    symbol: string,
+    tradeDate: Date | string,
+    windowHours: number = 4
+) {
+    const targetDate = typeof tradeDate === "string" ? new Date(tradeDate) : tradeDate;
+    if (isNaN(targetDate.getTime())) return [];
+
+    const minDate = new Date(targetDate.getTime() - windowHours * 60 * 60 * 1000);
+    const maxDate = new Date(targetDate.getTime() + windowHours * 60 * 60 * 1000);
+    const currencies = extractCurrenciesFromSymbol(symbol);
+
+    return await prisma.economicEvent.findMany({
+        where: {
+            currency: { in: currencies },
+            date: { gte: minDate, lte: maxDate },
+            impact: { in: ["HIGH", "MEDIUM"] },
+        },
+        orderBy: { date: "asc" },
+        take: 5,
+    });
+}
+

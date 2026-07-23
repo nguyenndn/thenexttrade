@@ -21,6 +21,7 @@ import {
     Target,
     ShieldAlert,
     Scale,
+    Calendar,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -88,6 +89,7 @@ export function TradeDetailSheet({
 }: TradeDetailSheetProps) {
     const [showShareModal, setShowShareModal] = useState(false);
     const [activeCoachPlan, setActiveCoachPlan] = useState<any>(null);
+    const [marketEvents, setMarketEvents] = useState<any[]>([]);
 
     useEffect(() => {
         if (isOpen && entry) {
@@ -95,6 +97,14 @@ export function TradeDetailSheet({
                 getActiveCoachPlan().then((res) => {
                     if (res && res.success && res.data) {
                         setActiveCoachPlan(res.data);
+                    }
+                });
+            });
+
+            import("@/actions/journal").then(({ getTradeMarketContext }) => {
+                getTradeMarketContext(entry.symbol, entry.entryDate).then((res) => {
+                    if (res && res.success) {
+                        setMarketEvents(res.events || []);
                     }
                 });
             });
@@ -647,6 +657,38 @@ export function TradeDetailSheet({
                                 </h3>
 
                                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl p-5 space-y-5">
+                                    {/* Market Context - Economic Events */}
+                                    <div className="bg-amber-50/50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-200/50 dark:border-amber-500/20">
+                                        <h4 className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                            <Calendar size={13} className="text-amber-500" />
+                                            Market Context (Economic Calendar)
+                                        </h4>
+                                        {marketEvents.length > 0 ? (
+                                            <div className="space-y-2">
+                                                {marketEvents.map((ev) => (
+                                                    <div key={ev.id} className="flex items-center justify-between bg-white dark:bg-[#151925] p-2.5 rounded-lg border border-dashboard text-xs">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className={cn(
+                                                                "px-1.5 py-0.5 rounded text-[10px] font-bold uppercase",
+                                                                ev.impact === "HIGH" ? "bg-red-500/20 text-red-500" : "bg-amber-500/20 text-amber-500"
+                                                            )}>
+                                                                {ev.currency} • {ev.impact}
+                                                            </span>
+                                                            <span className="font-semibold text-gray-800 dark:text-gray-200">{ev.title}</span>
+                                                        </div>
+                                                        <span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">
+                                                            {new Date(ev.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                                                No high-impact economic news scheduled near trade execution time.
+                                            </p>
+                                        )}
+                                    </div>
+
                                     {/* Strategy - Compact Inline Row */}
                                     <div className="flex items-center gap-3 bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-dashboard">
                                         <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2 shrink-0">

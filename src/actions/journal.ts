@@ -606,3 +606,32 @@ export async function getDayDetails(date: string, accountId?: string) {
         return { error: "Failed to load day details" };
     }
 }
+
+export async function getTradeMarketContext(symbol: string, entryDate: string) {
+    try {
+        const { getMatchingEconomicEventsForTrade } = await import(
+            "@/lib/services/economic-calendar"
+        );
+        const events = await getMatchingEconomicEventsForTrade(
+            symbol,
+            new Date(entryDate),
+            4
+        );
+        return {
+            success: true,
+            events: events.map((e) => ({
+                id: e.id,
+                title: e.title,
+                currency: e.currency,
+                impact: e.impact,
+                date: e.date.toISOString(),
+                forecast: e.forecast || null,
+                previous: e.previous || null,
+                actual: e.actual || null,
+            })),
+        };
+    } catch (error) {
+        console.error("Failed to fetch market context for trade:", error);
+        return { success: false, events: [] };
+    }
+}
