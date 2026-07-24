@@ -334,7 +334,7 @@ export function EconomicCalendarClient() {
                 </div>
             </div>
 
-            {metadata && (
+            {metadata?.status === ("__removed__" as CalendarMetadata["status"]) && (
                 <div
                     className={`mb-6 rounded-xl border px-4 py-3 text-xs ${
                         metadata.status === "FALLBACK" || metadata.status === "UNAVAILABLE"

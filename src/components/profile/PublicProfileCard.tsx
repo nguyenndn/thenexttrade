@@ -160,6 +160,28 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                                     {profile.headline}
                                 </p>
                             )}
+
+                            <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50/55 px-3 py-2.5">
+                                <div className="flex items-center justify-between gap-3">
+                                    <span className="text-[9px] font-black uppercase tracking-[0.18em] text-amber-800">
+                                        Public data window
+                                    </span>
+                                    <span className="text-[10px] font-bold text-amber-700">
+                                        {profile.performanceWindow.label}
+                                    </span>
+                                </div>
+                                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-slate-600">
+                                    <span>
+                                        {profile.performanceWindow.qualifyingClosedTrades.toLocaleString()} closed trades
+                                    </span>
+                                    <span aria-hidden="true" className="text-amber-400">
+                                        |
+                                    </span>
+                                    <span>
+                                        Updated {format(profile.performanceWindow.calculatedAt, "MMM d, yyyy")}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="mx-6 h-[1px] bg-gradient-to-r from-amber-500 via-yellow-300 to-orange-600 opacity-40" />
