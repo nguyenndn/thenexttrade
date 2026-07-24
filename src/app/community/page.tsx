@@ -447,16 +447,7 @@ export default async function CommunityPage() {
                                     </div>
 
                                     {/* Action Button */}
-                                    {feature.title === "Daily Market Analysis" ? (
-                                        <a
-                                            href={feature.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#2AABEE] px-5 py-3 text-xs sm:text-sm font-black text-white shadow-md shadow-sky-500/15 transition-all hover:scale-[1.01] active:scale-[0.99] hover:bg-[#229ed9]"
-                                        >
-                                            See today&apos;s analysis <ArrowRight size={16} />
-                                        </a>
-                                    ) : feature.external ? (
+                                    {feature.external ? (
                                         <a
                                             href={feature.href}
                                             target="_blank"
