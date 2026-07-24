@@ -349,7 +349,7 @@ export default async function CommunityPage() {
                     </ScrollReveal>
                 </section>
 
-                {/* ═══════ 2. WHAT YOU'LL FIND INSIDE ═══════ */}
+                {/* ═══════ 2. WHAT YOU'LL FIND INSIDE (BALANCED 2x2 GRID) ═══════ */}
                 <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-10 sm:mb-12 space-y-3">
@@ -362,149 +362,120 @@ export default async function CommunityPage() {
                         </div>
                     </ScrollReveal>
 
-                    <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] items-stretch">
-                        {/* LEFT FEATURED CARD: Daily Market Analysis */}
-                        <ScrollReveal direction="up" className="h-full">
-                            <div className="group flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-amber-300/80 bg-white/95 p-6 sm:p-8 shadow-[0_18px_45px_rgba(245,158,11,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 dark:border-gold/25 dark:bg-[#131622]/90 dark:hover:border-gold/45">
-                                <div>
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div className="flex items-center gap-3.5">
-                                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-100/80 text-amber-600 dark:bg-gold/15 dark:text-gold shadow-sm">
-                                                <BarChart3 size={24} />
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-600 dark:text-gold">
-                                                    {freeFeatures[0].eyebrow}
-                                                </p>
-                                                <h3 className="mt-1 text-2xl sm:text-3xl font-black tracking-tight text-gray-900 dark:text-white">
-                                                    {freeFeatures[0].title}
-                                                </h3>
-                                            </div>
-                                        </div>
-                                        <span className="rounded-full border border-amber-300/80 bg-amber-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-700 dark:border-gold/20 dark:bg-gold/10 dark:text-gold shrink-0">
-                                            Daily brief
-                                        </span>
-                                    </div>
-
-                                    <p className="mt-5 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                                        {freeFeatures[0].description}
-                                    </p>
-
-                                    {/* Mockup Box */}
-                                    <div className="mt-6 rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/90 to-white p-5 dark:border-gold/20 dark:from-gold/[0.08] dark:to-transparent">
-                                        <div className="mb-3.5 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.16em] text-gray-400 dark:text-gray-400">
-                                            <span>Example format</span>
-                                            <span className="text-amber-600 dark:text-gold font-bold">XAUUSD</span>
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            <div className="rounded-xl bg-white/90 p-3 shadow-sm border border-amber-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
-                                                <span className="block text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Bias</span>
-                                                <span className="mt-1 block text-sm sm:text-base font-black text-gray-900 dark:text-white">Bullish</span>
-                                            </div>
-                                            <div className="rounded-xl bg-white/90 p-3 shadow-sm border border-amber-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
-                                                <span className="block text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Zones</span>
-                                                <span className="mt-1 block text-sm sm:text-base font-black text-gray-900 dark:text-white">Entry / TP</span>
-                                            </div>
-                                            <div className="rounded-xl bg-white/90 p-3 shadow-sm border border-amber-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
-                                                <span className="block text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Context</span>
-                                                <span className="mt-1 block text-sm sm:text-base font-black text-gray-900 dark:text-white">Levels</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Highlights */}
-                                    <ul className="mt-6 grid gap-2.5 sm:grid-cols-3">
-                                        {freeFeatures[0].highlights.map((h) => (
-                                            <li key={h} className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
-                                                <CheckCircle2 size={15} className="shrink-0 text-emerald-500" />
-                                                <span>{h}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                {/* Prominent Featured CTA Button */}
-                                <a
-                                    href={TELEGRAM_URL}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="mt-8 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#2AABEE] px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-sky-500/20 transition-all hover:scale-[1.01] active:scale-[0.99] hover:bg-[#229ed9]"
-                                >
-                                    See today&apos;s analysis <ArrowRight size={18} />
-                                </a>
-                            </div>
-                        </ScrollReveal>
-
-                        {/* RIGHT STACKED CARDS (3 Cards) */}
-                        <div className="flex flex-col gap-4">
-                            {freeFeatures.slice(1).map((feature, i) => (
-                                <ScrollReveal key={feature.title} delay={0.08 * i} direction="up" className="flex-1">
-                                    <div className="group flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-5 sm:p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-300 hover:shadow-[0_14px_30px_rgba(15,23,42,0.06)] dark:border-white/[0.06] dark:bg-[#131622]/80 dark:hover:border-gold/30">
-                                        <div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                        {freeFeatures.map((feature, i) => (
+                            <ScrollReveal key={feature.title} delay={0.08 * i} direction="up" className="h-full">
+                                <div className="group flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-6 sm:p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-300 hover:shadow-[0_14px_35px_rgba(15,23,42,0.07)] dark:border-white/[0.06] dark:bg-[#131622]/85 dark:hover:border-gold/35">
+                                    <div>
+                                        <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-start gap-3.5">
-                                                <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${feature.bg} ${feature.color} shadow-sm`}>
-                                                    <feature.icon size={20} />
+                                                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${feature.bg} ${feature.color} shadow-sm`}>
+                                                    <feature.icon size={22} />
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-400">
+                                                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">
                                                         {feature.eyebrow}
                                                     </p>
-                                                    <h3 className="mt-0.5 text-lg font-black tracking-tight text-gray-900 dark:text-white">
+                                                    <h3 className="mt-1 text-xl sm:text-2xl font-black tracking-tight text-gray-900 dark:text-white">
                                                         {feature.title}
                                                     </h3>
                                                 </div>
                                             </div>
-
-                                            <p className="mt-3 text-xs sm:text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                                                {feature.description}
-                                            </p>
-
-                                            {/* Feature Mockup Box */}
-                                            <div className="mt-3.5 rounded-xl border border-slate-200/80 bg-slate-50/90 px-3.5 py-2.5 dark:border-white/[0.06] dark:bg-white/[0.04]">
-                                                {feature.title === "Free Trading Signals" ? (
-                                                    <div className="flex items-center justify-between gap-3 text-xs">
-                                                        <span className="font-bold text-gray-900 dark:text-white">XAUUSD <span className="font-semibold text-emerald-600 dark:text-primary">BUY</span></span>
-                                                        <span className="text-emerald-600 dark:text-primary font-bold">TP / SL set</span>
-                                                    </div>
-                                                ) : feature.title === "Education & Experience" ? (
-                                                    <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
-                                                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 dark:bg-gold/15 dark:text-gold text-[10px] font-black">01</span>
-                                                        <span>Price action</span>
-                                                        <ArrowRight size={12} className="text-gray-400" />
-                                                        <span>Risk</span>
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex items-center justify-between gap-3 text-xs">
-                                                        <span className="font-bold text-gray-900 dark:text-white">GoldScalperNinja v3.0</span>
-                                                        <span className="text-emerald-600 dark:text-primary font-bold">MT5</span>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Highlights */}
-                                            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
-                                                {feature.highlights.map((h) => (
-                                                    <span key={h} className="flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-400">
-                                                        <CheckCircle2 size={13} className="shrink-0 text-emerald-500" />
-                                                        {h}
-                                                    </span>
-                                                ))}
-                                            </div>
+                                            {feature.title === "Daily Market Analysis" && (
+                                                <span className="rounded-full border border-amber-300/80 bg-amber-50 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-amber-700 dark:border-gold/20 dark:bg-gold/10 dark:text-gold shrink-0">
+                                                    Daily brief
+                                                </span>
+                                            )}
                                         </div>
 
-                                        {feature.external ? (
-                                            <a href={feature.href} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-600 transition-colors hover:text-amber-700 dark:text-gold dark:hover:text-amber-300">
-                                                {feature.cta} <ChevronRight size={14} />
-                                            </a>
-                                        ) : (
-                                            <Link href={feature.href} className="mt-4 inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-600 transition-colors hover:text-amber-700 dark:text-gold dark:hover:text-amber-300">
-                                                {feature.cta} <ChevronRight size={14} />
-                                            </Link>
-                                        )}
+                                        <p className="mt-4 text-xs sm:text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                                            {feature.description}
+                                        </p>
+
+                                        {/* Mockup Box */}
+                                        <div className="mt-4 rounded-xl border border-slate-200/80 bg-slate-50/90 p-4 dark:border-white/[0.06] dark:bg-white/[0.04]">
+                                            {feature.title === "Daily Market Analysis" ? (
+                                                <div>
+                                                    <div className="mb-2 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.16em] text-gray-400">
+                                                        <span>Example format</span>
+                                                        <span className="text-amber-600 dark:text-gold font-bold">XAUUSD</span>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 gap-2 text-center">
+                                                        <div className="rounded-lg bg-white/90 p-2 shadow-xs border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
+                                                            <span className="block text-[9px] text-gray-400 uppercase font-semibold">Bias</span>
+                                                            <span className="mt-0.5 block text-xs font-black text-gray-900 dark:text-white">Bullish</span>
+                                                        </div>
+                                                        <div className="rounded-lg bg-white/90 p-2 shadow-xs border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
+                                                            <span className="block text-[9px] text-gray-400 uppercase font-semibold">Zones</span>
+                                                            <span className="mt-0.5 block text-xs font-black text-gray-900 dark:text-white">Entry / TP</span>
+                                                        </div>
+                                                        <div className="rounded-lg bg-white/90 p-2 shadow-xs border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
+                                                            <span className="block text-[9px] text-gray-400 uppercase font-semibold">Context</span>
+                                                            <span className="mt-0.5 block text-xs font-black text-gray-900 dark:text-white">Levels</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : feature.title === "Free Trading Signals" ? (
+                                                <div className="flex items-center justify-between gap-3 text-xs py-1">
+                                                    <span className="font-bold text-gray-900 dark:text-white">XAUUSD <span className="font-bold text-emerald-600 dark:text-primary">BUY</span></span>
+                                                    <span className="text-emerald-600 dark:text-primary font-bold">TP / SL set</span>
+                                                </div>
+                                            ) : feature.title === "Education & Experience" ? (
+                                                <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 py-1">
+                                                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 dark:bg-gold/15 dark:text-gold text-[10px] font-black">01</span>
+                                                    <span>Price action</span>
+                                                    <ArrowRight size={12} className="text-gray-400" />
+                                                    <span>Risk</span>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center justify-between gap-3 text-xs py-1">
+                                                    <span className="font-bold text-gray-900 dark:text-white">GoldScalperNinja v3.0</span>
+                                                    <span className="text-emerald-600 dark:text-primary font-bold">MT5</span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Highlights */}
+                                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                            {feature.highlights.map((h) => (
+                                                <span key={h} className="flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-400">
+                                                    <CheckCircle2 size={13} className="shrink-0 text-emerald-500" />
+                                                    <span className="truncate">{h}</span>
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
-                                </ScrollReveal>
-                            ))}
-                        </div>
+
+                                    {/* Action Button */}
+                                    {feature.title === "Daily Market Analysis" ? (
+                                        <a
+                                            href={feature.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#2AABEE] px-5 py-3 text-xs sm:text-sm font-black text-white shadow-md shadow-sky-500/15 transition-all hover:scale-[1.01] active:scale-[0.99] hover:bg-[#229ed9]"
+                                        >
+                                            See today&apos;s analysis <ArrowRight size={16} />
+                                        </a>
+                                    ) : feature.external ? (
+                                        <a
+                                            href={feature.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="mt-4 inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-600 transition-colors hover:text-amber-700 dark:text-gold dark:hover:text-amber-300"
+                                        >
+                                            {feature.cta} <ChevronRight size={14} />
+                                        </a>
+                                    ) : (
+                                        <Link
+                                            href={feature.href}
+                                            className="mt-4 inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-600 transition-colors hover:text-amber-700 dark:text-gold dark:hover:text-amber-300"
+                                        >
+                                            {feature.cta} <ChevronRight size={14} />
+                                        </Link>
+                                    )}
+                                </div>
+                            </ScrollReveal>
+                        ))}
                     </div>
                 </section>
 
