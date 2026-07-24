@@ -20,7 +20,10 @@ import {
     FilterModal,
     CalendarFilters,
 } from "@/components/tools/economic-calendar/FilterModal";
-import { TimezoneSelector } from "@/components/tools/economic-calendar/TimezoneSelector";
+import {
+    ALL_TIMEZONES,
+    TimezoneSelector,
+} from "@/components/tools/economic-calendar/TimezoneSelector";
 import { ToolsPageShell } from "@/components/tools/ToolsPageShell";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
@@ -32,10 +35,27 @@ const DEFAULT_FILTERS: CalendarFilters = {
     remember: false,
 };
 
+type CalendarMetadata = {
+    status: "LIVE" | "CACHED" | "FALLBACK" | "UNAVAILABLE";
+    source: { provider: string; name: string; url: string } | null;
+    lastSyncedAt: string | null;
+    message: string;
+};
+
+function getBrowserTimezone() {
+    if (typeof Intl === "undefined") return "Asia/Bangkok";
+    const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (browserTimezone === "Asia/Saigon") return "Asia/Saigon";
+    return ALL_TIMEZONES.some((zone) => zone.value === browserTimezone)
+        ? browserTimezone
+        : "Asia/Bangkok";
+}
+
 export function EconomicCalendarClient() {
     const { theme } = useTheme();
     const isDark = theme === "dark";
     const [events, setEvents] = useState<EconomicEvent[]>([]);
+    const [metadata, setMetadata] = useState<CalendarMetadata | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTimezone, setSelectedTimezone] = useState("Asia/Bangkok");
@@ -47,9 +67,29 @@ export function EconomicCalendarClient() {
         try {
             const res = await fetch("/api/economic-events");
             const data = await res.json();
-            setEvents(data);
+            if (!res.ok) throw new Error(data?.error || "Failed to fetch events");
+            setEvents(Array.isArray(data) ? data : data.events || []);
+            setMetadata(
+                Array.isArray(data)
+                    ? null
+                    : {
+                          status: data.metadata?.status || "UNAVAILABLE",
+                          source: data.metadata?.source || null,
+                          lastSyncedAt: data.metadata?.lastSyncedAt || null,
+                          message:
+                              data.metadata?.message ||
+                              "Calendar data is currently unavailable.",
+                      }
+            );
         } catch (error) {
             console.error("Failed to fetch events", error);
+            setEvents([]);
+            setMetadata({
+                status: "UNAVAILABLE",
+                source: null,
+                lastSyncedAt: null,
+                message: "Calendar data is currently unavailable.",
+            });
         } finally {
             setIsLoading(false);
         }
@@ -57,16 +97,16 @@ export function EconomicCalendarClient() {
 
     useEffect(() => {
         fetchEvents();
-        // Determine user settings
         async function loadSettings() {
             const { getCalendarSettings } = await import("./actions");
             const savedSettings = await getCalendarSettings();
             if (savedSettings) {
-                setFilters(savedSettings as CalendarFilters);
+                setFilters({ ...DEFAULT_FILTERS, ...savedSettings });
             }
+            setSelectedTimezone(savedSettings?.timezone || getBrowserTimezone());
         }
         loadSettings();
-    }, [selectedDate]);
+    }, []);
 
     const handleApplyFilters = async (newFilters: CalendarFilters) => {
         setFilters(newFilters);
@@ -79,8 +119,26 @@ export function EconomicCalendarClient() {
                 data: { session },
             } = await supabase.auth.getSession();
             if (session) {
-                await saveCalendarSettings(newFilters);
+                await saveCalendarSettings({
+                    ...newFilters,
+                    timezone: selectedTimezone,
+                });
             }
+        }
+    };
+
+    const handleTimezoneChange = async (timezone: string) => {
+        setSelectedTimezone(timezone);
+        const { saveCalendarSettings } = await import("./actions");
+        const supabase = createClient();
+        const {
+            data: { session },
+        } = await supabase.auth.getSession();
+        if (session) {
+            await saveCalendarSettings({
+                ...filters,
+                timezone,
+            });
         }
     };
 
@@ -194,11 +252,11 @@ export function EconomicCalendarClient() {
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between border-b border-dashboard pb-2">
                                     <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        Live Sync
+                                        <span className={`w-1.5 h-1.5 rounded-full ${metadata?.status === "FALLBACK" || metadata?.status === "UNAVAILABLE" ? "bg-amber-500" : "bg-emerald-500"}`} />
+                                        Provider
                                     </span>
                                     <span className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider">
-                                        Active
+                                        {metadata?.status || "Loading"}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between border-b border-dashboard pb-2">
@@ -206,7 +264,7 @@ export function EconomicCalendarClient() {
                                         Timezone
                                     </span>
                                     <span className="text-xs font-black text-gold">
-                                        Auto-Detect
+                                        {selectedTimezone}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between">
@@ -228,7 +286,7 @@ export function EconomicCalendarClient() {
                 <div className="flex items-center gap-2">
                     <TimezoneSelector
                         value={selectedTimezone}
-                        onChange={setSelectedTimezone}
+                        onChange={handleTimezoneChange}
                     />
 
                     <Button
@@ -275,6 +333,37 @@ export function EconomicCalendarClient() {
                     </Button>
                 </div>
             </div>
+
+            {metadata && (
+                <div
+                    className={`mb-6 rounded-xl border px-4 py-3 text-xs ${
+                        metadata.status === "FALLBACK" || metadata.status === "UNAVAILABLE"
+                            ? "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200"
+                            : "border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200"
+                    }`}
+                >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="font-semibold">{metadata.message}</span>
+                        <span className="text-[11px] opacity-80">
+                            {metadata.source?.url ? (
+                                <a
+                                    href={metadata.source.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="underline underline-offset-2 hover:opacity-100"
+                                >
+                                    {metadata.source.name}
+                                </a>
+                            ) : (
+                                metadata.source?.name || "No provider"
+                            )}
+                            {metadata.lastSyncedAt
+                                ? ` · Synced ${format(new Date(metadata.lastSyncedAt), "MMM d, HH:mm")}`
+                                : ""}
+                        </span>
+                    </div>
+                </div>
+            )}
 
             {/* Toolbar with Week View */}
             <div className="mb-6 space-y-4">
@@ -382,9 +471,10 @@ export function EconomicCalendarClient() {
                     </div>
                     <div className="col-span-6 md:col-span-5">Event</div>
                     <div className="hidden md:block col-span-4">
-                        <div className="grid grid-cols-2 text-center">
+                        <div className="grid grid-cols-3 text-center">
                             <span>Forecast</span>
                             <span>Previous</span>
+                            <span>Actual</span>
                         </div>
                     </div>
                 </div>

@@ -165,10 +165,13 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                         <div className="mx-6 h-[1px] bg-gradient-to-r from-amber-500 via-yellow-300 to-orange-600 opacity-40" />
 
                         <div className="relative z-20 px-6 py-5">
-                            <div className="mb-4 flex items-center gap-1">
+                            <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
                                 <Shield size={10} className="text-amber-700" />
                                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-800">
-                                    Verified / 90d
+                                    {profile.performanceWindow.verificationLabel} · {profile.performanceWindow.label}
+                                </span>
+                                <span className="text-[10px] font-semibold text-slate-500">
+                                    {profile.performanceWindow.qualifyingClosedTrades.toLocaleString()} closed trades
                                 </span>
                             </div>
 
@@ -353,6 +356,22 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                             )}
 
                         <div className="relative z-20 px-6 py-4">
+                            <div className="mb-3 space-y-1 text-[10px] leading-relaxed text-slate-500">
+                                <p>
+                                    {profile.dataSource}. Calculated as of{" "}
+                                    {format(profile.performanceWindow.calculatedAt, "MMM d, yyyy HH:mm")}.
+                                </p>
+                                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                    <Link
+                                        href={profile.methodologyHref}
+                                        className="font-bold text-amber-700 underline-offset-2 hover:underline"
+                                    >
+                                        How this is calculated
+                                    </Link>
+                                    <span aria-hidden="true">·</span>
+                                    <span>Historical information only. Not financial advice.</span>
+                                </div>
+                            </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-[10px] font-bold tracking-wider text-slate-500">
                                     Est. {joinDate}

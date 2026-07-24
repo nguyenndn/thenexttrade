@@ -23,7 +23,7 @@ export async function generateMetadata({
     const statsLine = profile.visibility.showPercentMetrics
         ? `${profile.stats.totalTrades} trades, ${Math.round(profile.stats.winRate)}% win rate.`
         : `${profile.stats.totalTrades} trades logged.`;
-    const description = `${displayName}'s verified trading profile. ${statsLine}`;
+    const description = `${displayName}'s public trading profile for the last 90 days, based on ${profile.performanceWindow.qualifyingClosedTrades} synced closed trades. ${statsLine}`;
 
     return {
         title: `${displayName} (@${username}) | TheNextTrade`,

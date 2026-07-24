@@ -39,12 +39,16 @@ export async function GET(request: Request) {
         },
     });
 
+    let syncResult: Awaited<
+        ReturnType<typeof import("@/lib/services/economic-calendar").syncEconomicEvents>
+    > | null = null;
+
     if (futureEventsCount === 0) {
         console.log("Lazy Sync Triggered: No future events found. Syncing...");
         try {
             const { syncEconomicEvents } =
                 await import("@/lib/services/economic-calendar");
-            await syncEconomicEvents();
+            syncResult = await syncEconomicEvents();
         } catch (syncError) {
             console.error("Lazy Sync Failed:", syncError);
             // Continue to serve whatever old data we might have (or empty) to avoid breaking the page
@@ -59,7 +63,39 @@ export async function GET(request: Request) {
             },
         });
 
-        return NextResponse.json(events);
+        const fallbackCount = events.filter((event) => event.isFallback).length;
+        const lastSyncedAt = events.reduce<Date | null>((latest, event) => {
+            if (!latest || event.lastSyncedAt > latest) return event.lastSyncedAt;
+            return latest;
+        }, null);
+        const status =
+            events.length === 0
+                ? "UNAVAILABLE"
+                : fallbackCount === events.length
+                  ? "FALLBACK"
+                  : "CACHED";
+        const source = events[0]
+            ? {
+                  provider: events[0].provider,
+                  name: events[0].sourceName,
+                  url: events[0].sourceUrl,
+              }
+            : syncResult?.source || null;
+
+        return NextResponse.json({
+            events,
+            metadata: {
+                status,
+                source,
+                lastSyncedAt,
+                message:
+                    status === "FALLBACK"
+                        ? "The provider could not be reached. These records are fallback data and may be stale."
+                        : status === "UNAVAILABLE"
+                          ? "Calendar data is currently unavailable."
+                          : "Calendar data is stored from the configured provider.",
+            },
+        });
     } catch (error) {
         console.error("Error fetching economic events:", error);
         return NextResponse.json(

@@ -20,6 +20,18 @@ export interface PublicProfileData {
     xp: number;
     streak: number;
 
+    performanceWindow: {
+        label: string;
+        days: number;
+        qualifyingClosedTrades: number;
+        calculatedAt: Date;
+        latestTradeAt: Date | null;
+        verificationLabel: string;
+    };
+
+    dataSource: string;
+    methodologyHref: string;
+
     stats: {
         totalTrades: number;
         winRate: number;
@@ -144,7 +156,7 @@ export async function getPublicProfileData(
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-    const [stats, symbols, _streak, sessionPref] = await Promise.all([
+    const [stats, symbols, _streak, sessionPref, latestTrade] = await Promise.all([
         getKeyStats(userId, undefined, ninetyDaysAgo, new Date()),
         profile.showPairStats
             ? getSymbolPerformance(userId, undefined, ninetyDaysAgo, new Date())
@@ -153,7 +165,20 @@ export async function getPublicProfileData(
         profile.showSessionStats
             ? getSessionPreference(userId)
             : Promise.resolve(null),
+        prisma.journalEntry.findFirst({
+            where: {
+                userId,
+                status: "CLOSED",
+                exitDate: { gte: ninetyDaysAgo, lte: new Date() },
+            },
+            select: { exitDate: true },
+            orderBy: { exitDate: "desc" },
+        }),
     ]);
+
+    const calculatedAt = new Date();
+    const qualifyingClosedTrades = stats.totalTrades;
+    const hasVerificationSample = qualifyingClosedTrades >= 10;
 
     // Trade Score (only if toggled on AND enough data)
     let tradeScore: number | null = null;
@@ -187,6 +212,20 @@ export async function getPublicProfileData(
         level: profile.user.level,
         xp: profile.user.xp,
         streak: profile.user.streak,
+
+        performanceWindow: {
+            label: "Last 90 days",
+            days: 90,
+            qualifyingClosedTrades,
+            calculatedAt,
+            latestTradeAt: latestTrade?.exitDate ?? null,
+            verificationLabel: hasVerificationSample
+                ? "Verified sample"
+                : "Early sample",
+        },
+
+        dataSource: "Based on synced closed trades",
+        methodologyHref: "/faq",
 
         stats: {
             totalTrades: stats.totalTrades,

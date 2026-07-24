@@ -2,7 +2,11 @@ import { prisma } from "@/lib/prisma";
 import { ImpactLevel } from "@prisma/client";
 import fallbackEvents from "./fallback-economic-events.json";
 
-const FF_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json";
+const FF_URL =
+    process.env.ECONOMIC_CALENDAR_PROVIDER_URL ||
+    "https://nfs.faireconomy.media/ff_calendar_thisweek.json";
+const PROVIDER_ID = "forexfactory";
+const SOURCE_NAME = "Forex Factory Calendar";
 
 interface FFEvent {
     title: string;
@@ -11,6 +15,13 @@ interface FFEvent {
     impact: string; // "High", "Medium", "Low", "Holiday"
     forecast: string;
     previous: string;
+    actual?: string;
+}
+
+interface ProviderFetchResult {
+    events: FFEvent[];
+    isFallback: boolean;
+    fetchedAt: Date;
 }
 
 // Map country codes to currencies
@@ -35,23 +46,51 @@ const IMPACT_MAP: Record<string, ImpactLevel> = {
     Holiday: "LOW", // Treat holidays as low impact or handle separately? Schema only has H/M/L
 };
 
-export async function fetchForexFactoryEvents() {
+async function fetchProviderEvents(): Promise<ProviderFetchResult> {
     try {
         const res = await fetch(FF_URL, { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch from ForexFactory");
 
         const data: FFEvent[] = await res.json();
-        return data;
+        if (!Array.isArray(data)) throw new Error("Invalid provider response");
+        return { events: data, isFallback: false, fetchedAt: new Date() };
     } catch (error) {
         console.error("Error fetching FF events from network:", error);
         console.warn("Using local fallback events instead.");
-        return fallbackEvents as FFEvent[];
+        return {
+            events: fallbackEvents as FFEvent[],
+            isFallback: true,
+            fetchedAt: new Date(),
+        };
     }
+}
+
+export async function fetchForexFactoryEvents() {
+    return (await fetchProviderEvents()).events;
+}
+
+function normalizeValue(value?: string | null) {
+    const normalized = value?.trim();
+    return normalized ? normalized : null;
+}
+
+function getEventStatus(eventDate: Date, actual: string | null) {
+    if (actual) return "RELEASED";
+    return eventDate.getTime() < Date.now() ? "UNAVAILABLE" : "SCHEDULED";
+}
+
+function getExternalId(title: string, currency: string, date: Date) {
+    return `${PROVIDER_ID}:${currency}:${date.toISOString()}:${title
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")}`;
 }
 
 export async function syncEconomicEvents() {
     console.log("Starting Economic Event Sync...");
-    const events = await fetchForexFactoryEvents();
+    const providerResult = await fetchProviderEvents();
+    const events = providerResult.events;
+    const syncedAt = providerResult.fetchedAt;
 
     if (events.length === 0) {
         console.log("No events found to sync.");
@@ -74,12 +113,28 @@ export async function syncEconomicEvents() {
         const impact = IMPACT_MAP[event.impact] || "LOW";
 
         const eventDate = new Date(event.date);
+        if (Number.isNaN(eventDate.getTime())) continue;
+
+        const actual = normalizeValue(event.actual);
+        const eventStatus = getEventStatus(eventDate, actual);
+        const externalId = getExternalId(event.title, currency, eventDate);
 
         // We need a way to identify uniqueness.
         // Title + Date + Currency seems reasonable.
 
         // Create unique identifier for upsert if needed, or rely on composite constraint
         // Since we have @@unique([title, currency, date]), we can use it in 'where' for upsert.
+
+        const existing = await prisma.economicEvent.findUnique({
+            where: {
+                title_currency_date: {
+                    title: event.title,
+                    currency: currency,
+                    date: eventDate,
+                },
+            },
+            select: { id: true },
+        });
 
         await prisma.economicEvent.upsert({
             where: {
@@ -93,11 +148,14 @@ export async function syncEconomicEvents() {
                 impact: impact,
                 forecast: event.forecast,
                 previous: event.previous,
-                // Only update actual if it has a value, otherwise keep existing?
-                // actually FF might clear it or update it. Let's trust the feed.
-                // But wait, if feed has empty actual, and we have one, should we overwrite?
-                // Ideally yes, trust the feed.
-                // actual: event.actual
+                ...(actual ? { actual } : {}),
+                provider: PROVIDER_ID,
+                sourceName: SOURCE_NAME,
+                sourceUrl: FF_URL,
+                externalId,
+                eventStatus,
+                isFallback: providerResult.isFallback,
+                lastSyncedAt: syncedAt,
             },
             create: {
                 title: event.title,
@@ -106,19 +164,36 @@ export async function syncEconomicEvents() {
                 date: eventDate,
                 forecast: event.forecast,
                 previous: event.previous,
-                actual: "",
+                actual,
+                provider: PROVIDER_ID,
+                sourceName: SOURCE_NAME,
+                sourceUrl: FF_URL,
+                externalId,
+                eventStatus,
+                isFallback: providerResult.isFallback,
+                lastSyncedAt: syncedAt,
             },
         });
 
-        // Count represents processed, distinction between created/updated is harder with bulk upsert loop
-        // but for now we just count processed.
-        updatedCount++;
+        if (existing) updatedCount++;
+        else createdCount++;
     }
 
     console.log(
         `Sync Complete. Created: ${createdCount}, Updated: ${updatedCount}`
     );
-    return { success: true, created: createdCount, updated: updatedCount };
+    return {
+        success: true,
+        created: createdCount,
+        updated: updatedCount,
+        source: {
+            provider: PROVIDER_ID,
+            name: SOURCE_NAME,
+            url: FF_URL,
+            status: providerResult.isFallback ? "FALLBACK" : "LIVE",
+            syncedAt,
+        },
+    };
 }
 
 export function extractCurrenciesFromSymbol(symbol: string): string[] {
@@ -150,4 +225,3 @@ export async function getMatchingEconomicEventsForTrade(
         take: 5,
     });
 }
-

@@ -2,9 +2,10 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma"; // Assuming you have a prisma client instance exported
+import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-export async function saveCalendarSettings(settings: any) {
+export async function saveCalendarSettings(settings: Record<string, unknown>) {
     const supabase = await createClient();
     const {
         data: { user },
@@ -35,7 +36,7 @@ export async function saveCalendarSettings(settings: any) {
         await prisma.user.update({
             where: { id: user.id },
             data: {
-                settings: newSettings,
+                settings: newSettings as Prisma.InputJsonValue,
             },
         });
 

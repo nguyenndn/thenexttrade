@@ -70,6 +70,8 @@ export function LeaderboardTabs({
     activeType,
     equalWidth = true,
 }: LeaderboardTabsProps) {
+    const searchParams = useSearchParams();
+
     return (
         <div
             className={cn(
@@ -82,11 +84,13 @@ export function LeaderboardTabs({
             {TABS.map((tab) => {
                 const isActive = activeType === tab.type;
                 const Icon = tab.icon;
+                const tabParams = new URLSearchParams(searchParams.toString());
+                tabParams.set("type", tab.type);
 
                 return (
                     <Link
                         key={tab.type}
-                        href={`/dashboard/leaderboard?type=${tab.type}`}
+                        href={`/dashboard/leaderboard?${tabParams.toString()}`}
                         className={cn(
                             "rounded-lg px-4 py-2 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 border whitespace-nowrap relative",
                             equalWidth && "flex-1 text-center lg:flex-none",

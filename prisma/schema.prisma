@@ -512,10 +512,18 @@ model EconomicEvent {
   forecast  String?
   previous  String?
   actual    String?
+  provider  String      @default("forexfactory")
+  sourceName String     @default("Forex Factory Calendar")
+  sourceUrl String
+  externalId String?
+  eventStatus String    @default("SCHEDULED")
+  isFallback Boolean     @default(false)
+  lastSyncedAt DateTime  @default(now()) @db.Timestamptz(6)
   createdAt DateTime    @default(now()) @db.Timestamptz(6)
   updatedAt DateTime    @updatedAt @db.Timestamptz(6)
 
   @@unique([title, currency, date])
+  @@index([date, impact])
 }
 
 model Quiz {

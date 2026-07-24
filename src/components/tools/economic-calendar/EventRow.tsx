@@ -78,12 +78,15 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                 </div>
 
                 <div className="hidden md:block col-span-4">
-                    <div className="grid grid-cols-2 gap-2 text-sm font-mono font-semibold">
+                    <div className="grid grid-cols-3 gap-2 text-sm font-mono font-semibold">
                         <div className="text-center text-gray-700 dark:text-gray-300">
                             {event.forecast || "--"}
                         </div>
                         <div className="text-center text-gray-500 dark:text-gray-400">
                             {event.previous || "--"}
+                        </div>
+                        <div className="text-center text-gray-700 dark:text-gray-300">
+                            {event.actual || "--"}
                         </div>
                     </div>
                 </div>
@@ -124,7 +127,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                         </h3>
 
                         {/* Figures */}
-                        <div className="grid grid-cols-2 gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] border border-dashboard rounded-xl mb-5 text-center font-mono">
+                        <div className="grid grid-cols-3 gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] border border-dashboard rounded-xl mb-5 text-center font-mono">
                             <div>
                                 <span className="text-[10px] text-gray-400 uppercase tracking-wider block font-sans font-bold">Forecast</span>
                                 <span className="text-sm font-bold text-gray-900 dark:text-white">{event.forecast || "N/A"}</span>
@@ -132,6 +135,10 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                             <div>
                                 <span className="text-[10px] text-gray-400 uppercase tracking-wider block font-sans font-bold">Previous</span>
                                 <span className="text-sm font-bold text-gray-600 dark:text-gray-300">{event.previous || "N/A"}</span>
+                            </div>
+                            <div>
+                                <span className="text-[10px] text-gray-400 uppercase tracking-wider block font-sans font-bold">Actual</span>
+                                <span className="text-sm font-bold text-gray-900 dark:text-white">{event.actual || "N/A"}</span>
                             </div>
                         </div>
 

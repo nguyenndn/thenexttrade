@@ -645,6 +645,16 @@ export default function ProfileClient({
                                 joinedDate: userJoinedDate || new Date(),
                                 headline: settings.profileHeadline,
                                 streak: 3,
+                                performanceWindow: {
+                                    label: "Last 90 days",
+                                    days: 90,
+                                    qualifyingClosedTrades: 124,
+                                    calculatedAt: new Date(),
+                                    latestTradeAt: new Date(),
+                                    verificationLabel: "Preview sample",
+                                },
+                                dataSource: "Preview data only",
+                                methodologyHref: "/faq",
                                 badges: [
                                     {
                                         name: "Trader",

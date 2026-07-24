@@ -117,6 +117,16 @@ export const ALL_TIMEZONES: TimezoneOption[] = [
         offsetDisplay: "GMT +7",
     },
     {
+        label: "Ho Chi Minh City (GMT +7)",
+        value: "Asia/Ho_Chi_Minh",
+        offsetDisplay: "GMT +7",
+    },
+    {
+        label: "Saigon (GMT +7)",
+        value: "Asia/Saigon",
+        offsetDisplay: "GMT +7",
+    },
+    {
         label: "Singapore (GMT +8)",
         value: "Asia/Singapore",
         offsetDisplay: "GMT +8",
