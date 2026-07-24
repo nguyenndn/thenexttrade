@@ -11,10 +11,10 @@ interface FadeInProps {
 }
 
 const OFFSETS: Record<string, string> = {
-    up: "translate3d(0, 40px, 0)",
-    down: "translate3d(0, -40px, 0)",
-    left: "translate3d(40px, 0, 0)",
-    right: "translate3d(-40px, 0, 0)",
+    up: "translate3d(0, 24px, 0)",
+    down: "translate3d(0, -24px, 0)",
+    left: "translate3d(24px, 0, 0)",
+    right: "translate3d(-24px, 0, 0)",
     none: "translate3d(0, 0, 0)",
 };
 
@@ -22,7 +22,7 @@ export function FadeIn({
     children,
     delay = 0,
     direction = "up",
-    duration = 0.5,
+    duration = 0.4,
     className,
 }: FadeInProps) {
     const ref = useRef<HTMLDivElement>(null);
@@ -32,18 +32,36 @@ export function FadeIn({
         const el = ref.current;
         if (!el) return;
 
+        const reducedMotion =
+            typeof window !== "undefined" &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        if (reducedMotion || !("IntersectionObserver" in window)) {
+            setIsVisible(true);
+            return;
+        }
+
+        // Fast fallback timer (600ms) ensures content is never hidden on full-page screenshots or rapid scrolling
+        const fallbackTimer = window.setTimeout(() => {
+            setIsVisible(true);
+        }, 600);
+
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
                     setIsVisible(true);
+                    window.clearTimeout(fallbackTimer);
                     observer.unobserve(el);
                 }
             },
-            { rootMargin: "-10% 0px", threshold: 0 }
+            { rootMargin: "120px 0px 120px 0px", threshold: 0 }
         );
 
         observer.observe(el);
-        return () => observer.disconnect();
+        return () => {
+            window.clearTimeout(fallbackTimer);
+            observer.disconnect();
+        };
     }, []);
 
     return (
@@ -63,3 +81,4 @@ export function FadeIn({
         </div>
     );
 }
+

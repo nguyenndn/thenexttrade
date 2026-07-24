@@ -3,7 +3,6 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { buttonVariants } from "@/components/ui/button-variants";
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import Link from "next/link";
 import { FeedbackCarousel } from "@/components/community/FeedbackCarousel";
@@ -14,8 +13,6 @@ import {
     Users,
     Crown,
     CheckCircle2,
-    Star,
-    MessageCircle,
     TrendingUp,
     ArrowRight,
     ChevronRight,
@@ -27,8 +24,10 @@ import {
     Bot,
     Sparkles,
     HelpCircle,
-    Compass,
+    ExternalLink,
 } from "lucide-react";
+import fs from "fs";
+import path from "path";
 
 export const metadata: Metadata = {
     title: "Community — Gold Scalper Ninja | Free XAUUSD Signals & Analysis",
@@ -52,14 +51,15 @@ export const metadata: Metadata = {
     ],
 };
 
-const TELEGRAM_URL = "https://t.me/GoldScalperNinja";
-const BROKER_URL = "#"; // TODO: Replace with actual broker affiliate link
+const TELEGRAM_URL = process.env.NEXT_PUBLIC_TELEGRAM_URL || "https://t.me/GoldScalperNinja";
+const BROKER_REGISTER_URL = process.env.NEXT_PUBLIC_BROKER_REGISTER_URL || TELEGRAM_URL;
 
 // ═══════ DATA ═══════
 
 const freeFeatures = [
     {
         icon: BarChart3,
+        eyebrow: "START THE DAY WITH CONTEXT",
         title: "Daily Market Analysis",
         description:
             "Fresh XAUUSD analysis every morning — buy/sell zones, key levels, and market context. All mapped out so you can start your day prepared.",
@@ -68,12 +68,16 @@ const freeFeatures = [
             "Buy & Sell potential zones",
             "Key support & resistance",
         ],
+        cta: "See today's analysis",
+        href: TELEGRAM_URL,
+        external: true,
         color: "text-amber-600 dark:text-gold",
         bg: "bg-gradient-to-br from-amber-100 to-orange-50 dark:from-gold/15 dark:to-orange-500/5",
         border: "border-amber-200/60 dark:border-gold/15",
     },
     {
         icon: Send,
+        eyebrow: "CLEAR SETUPS, SHARED DAILY",
         title: "Free Trading Signals",
         description:
             "No paywall for the basics. Free signals with clear entry, TP, and SL levels shared daily in the channel.",
@@ -82,12 +86,16 @@ const freeFeatures = [
             "Risk management included",
             "Real-time updates",
         ],
+        cta: "Join Telegram free",
+        href: TELEGRAM_URL,
+        external: true,
         color: "text-emerald-600 dark:text-primary",
         bg: "bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-primary/15 dark:to-teal-500/5",
         border: "border-emerald-200/60 dark:border-primary/15",
     },
     {
         icon: BookOpen,
+        eyebrow: "LEARN THE WHY",
         title: "Education & Experience",
         description:
             "Real trading experience, not textbook theory. Price action, momentum trading, and the psychology behind every trade.",
@@ -96,12 +104,16 @@ const freeFeatures = [
             "Trading psychology",
             "Real experience sharing",
         ],
+        cta: "Explore Academy",
+        href: "/academy",
+        external: false,
         color: "text-amber-600 dark:text-gold",
         bg: "bg-gradient-to-br from-amber-100 to-orange-50 dark:from-gold/15 dark:to-orange-500/5",
         border: "border-amber-200/60 dark:border-gold/15",
     },
     {
         icon: Bot,
+        eyebrow: "MT5 EXECUTION SUPPORT",
         title: "EA GoldScalperNinja",
         description:
             "Use the GoldScalperNinja EA to support your MT5 workflow with trade management, clearer execution, and a more disciplined setup.",
@@ -110,6 +122,9 @@ const freeFeatures = [
             "Trade management tools",
             "Built for XAUUSD workflows",
         ],
+        cta: "View the EA",
+        href: "/trading-systems",
+        external: false,
         color: "text-emerald-600 dark:text-primary",
         bg: "bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-primary/15 dark:to-teal-500/5",
         border: "border-emerald-200/60 dark:border-primary/15",
@@ -131,7 +146,8 @@ const platformLinks = [
         description:
             "Learn trading from scratch with structured courses — from basics to advanced strategies.",
         icon: GraduationCap,
-        href: "/dashboard/academy",
+        href: "/academy",
+        ctaText: "Explore Courses",
         color: "text-amber-600 dark:text-gold",
         bg: "bg-amber-500/10 dark:bg-gold/15",
     },
@@ -140,16 +156,18 @@ const platformLinks = [
         description:
             "Download EA GoldScalperNinja, indicators, and setup guides for your MT5 workflow.",
         icon: Bot,
-        href: "/dashboard/trading-systems",
+        href: "/trading-systems",
+        ctaText: "View Trading Systems",
         color: "text-emerald-600 dark:text-primary",
         bg: "bg-emerald-500/10 dark:bg-primary/15",
     },
     {
-        title: "Leaderboard",
+        title: "Leaderboard & Trader Performance",
         description:
-            "See top traders, compare performance, and find the best strategies to follow.",
+            "See top traders, compare verified win rates, and find transparent performance proof.",
         icon: Trophy,
-        href: "/dashboard/leaderboard",
+        href: "/auth/login?next=/dashboard/leaderboard",
+        ctaText: "Sign In to View Rankings",
         color: "text-amber-600 dark:text-gold",
         bg: "bg-amber-500/10 dark:bg-gold/15",
     },
@@ -177,11 +195,11 @@ const COMMUNITY_FAQ = [
 const VIP_FAQ = [
     {
         question: "Is VIP really free?",
-        answer: "Yes! VIP access is 100% free. You just need to open a trading account with our partner broker using our referral link. No hidden fees, no subscription.",
+        answer: "VIP access is free after partner-account verification. Follow the 3-step path: open a partner account, send your account ID to admin, and receive instant access. No subscription fee required.",
     },
     {
         question: "Which broker do I need to use?",
-        answer: "We partner with a regulated, reputable broker. Click the 'Open Account' button to sign up. Your funds stay in your own account — we never touch your money.",
+        answer: "We partner with a regulated, reputable broker. Click the 'Open Partner Account' button to sign up. Your funds stay in your own account — we never touch your money.",
     },
     {
         question: "What if I already have a broker account?",
@@ -193,12 +211,8 @@ const VIP_FAQ = [
     },
 ];
 
-import fs from "fs";
-import path from "path";
-
 export default async function CommunityPage() {
     const user = await getAuthUser();
-    const vipUrl = user ? "/dashboard" : "/auth/signup";
 
     // Dynamically read all feedback images in public/images/feedbacks
     let feedbackImages: string[] = [];
@@ -246,17 +260,17 @@ export default async function CommunityPage() {
                                 </span>
                             </div>
 
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-gray-800 dark:text-white leading-tight lg:whitespace-nowrap">
-                                Trade Gold with{" "}
-                                <span className="text-gold">
-                                    Up to 90% Win Rate
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-gray-800 dark:text-white leading-tight">
+                                Daily Gold Analysis.{" "}
+                                <span className="text-gold block sm:inline">
+                                    Clear Setups. Real Trader Community.
                                 </span>
                             </h1>
 
                             <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed px-2 sm:px-0">
-                                Free daily analysis, trading signals, and real
-                                experience. No fluff, no fake promises. Just
-                                honest trading, every day.
+                                Daily XAUUSD context, transparent setups, and
+                                practical education for traders who want a
+                                calmer, more disciplined process.
                             </p>
 
                             {/* Community proof strip */}
@@ -309,7 +323,7 @@ export default async function CommunityPage() {
                                 </div>
                             </div>
 
-                            {/* CTA */}
+                            {/* Hero Dual CTAs */}
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 pt-4 px-2 sm:px-0">
                                 <a
                                     href={TELEGRAM_URL}
@@ -321,13 +335,13 @@ export default async function CommunityPage() {
                                     }}
                                     className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-sky-500/10 hover:shadow-sky-500/20 active:scale-95 hover:scale-[1.03] transition-all duration-300 hover:opacity-95"
                                 >
-                                    <Send size={16} /> Join Telegram
+                                    <Send size={16} /> Join Telegram Free
                                 </a>
                                 <a
-                                    href={vipUrl}
+                                    href="#vip-access"
                                     className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 hover:scale-[1.03] active:scale-95 hover:from-amber-600 hover:to-orange-600 text-white"
                                 >
-                                    <Crown size={16} /> Get VIP Free{" "}
+                                    <Crown size={16} /> See VIP Access{" "}
                                     <ArrowRight size={14} />
                                 </a>
                             </div>
@@ -349,52 +363,131 @@ export default async function CommunityPage() {
                         </div>
                     </ScrollReveal>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {freeFeatures.map((feature, i) => (
-                            <ScrollReveal
-                                key={i}
-                                delay={0.1 * i}
-                                direction="up"
-                            >
-                                <div className="bg-white/80 dark:bg-[#131622]/80 border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-[0_12px_30px_rgba(245,158,11,0.05)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.02)] hover:-translate-y-1 transition-all duration-300 group h-full">
-                                    <div className="flex items-start gap-5">
-                                        <div
-                                            className={`w-14 h-14 rounded-xl ${feature.bg} ${feature.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300`}
-                                        >
-                                            <feature.icon size={28} />
+                    <div className="grid gap-4 lg:grid-cols-[1.08fr_0.92fr]">
+                        <ScrollReveal direction="up" className="h-full">
+                            <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-amber-300/70 bg-white/90 p-5 shadow-[0_18px_45px_rgba(245,158,11,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 dark:border-gold/20 dark:bg-[#131622]/80 dark:hover:border-gold/40 sm:p-7">
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="flex items-start gap-4">
+                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-600 dark:bg-gold/15 dark:text-gold">
+                                            <BarChart3 size={24} />
                                         </div>
-                                        <div className="flex-1">
-                                            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                                                {feature.title}
-                                            </h3>
-                                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-                                                {feature.description}
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-600 dark:text-gold">
+                                                {freeFeatures[0].eyebrow}
                                             </p>
-                                            <ul className="space-y-2">
-                                                {feature.highlights.map((h) => (
-                                                    <li
-                                                        key={h}
-                                                        className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
-                                                    >
-                                                        <CheckCircle2
-                                                            size={14}
-                                                            className="text-primary shrink-0"
-                                                        />
-                                                        {h}
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                            <h3 className="mt-1 text-xl font-black tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+                                                {freeFeatures[0].title}
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <span className="hidden rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-700 sm:inline-flex dark:border-gold/20 dark:bg-gold/10 dark:text-gold">
+                                        Daily brief
+                                    </span>
+                                </div>
+                                <p className="mt-5 max-w-xl text-sm leading-7 text-gray-600 dark:text-gray-300">
+                                    {freeFeatures[0].description}
+                                </p>
+                                <div className="mt-5 rounded-xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-4 dark:border-gold/15 dark:from-gold/[0.08] dark:to-transparent">
+                                    <div className="mb-3 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
+                                        <span>Example format</span>
+                                        <span className="text-emerald-600 dark:text-primary">XAUUSD</span>
+                                    </div>
+                                    <div className="grid gap-2 sm:grid-cols-3">
+                                        <div className="rounded-lg bg-white/80 px-3 py-2 dark:bg-white/[0.06]">
+                                            <span className="block text-[10px] text-gray-500 dark:text-gray-400">Bias</span>
+                                            <span className="mt-1 block text-sm font-bold text-gray-900 dark:text-white">Bullish</span>
+                                        </div>
+                                        <div className="rounded-lg bg-white/80 px-3 py-2 dark:bg-white/[0.06]">
+                                            <span className="block text-[10px] text-gray-500 dark:text-gray-400">Zones</span>
+                                            <span className="mt-1 block text-sm font-bold text-gray-900 dark:text-white">Entry / TP</span>
+                                        </div>
+                                        <div className="rounded-lg bg-white/80 px-3 py-2 dark:bg-white/[0.06]">
+                                            <span className="block text-[10px] text-gray-500 dark:text-gray-400">Context</span>
+                                            <span className="mt-1 block text-sm font-bold text-gray-900 dark:text-white">Levels</span>
                                         </div>
                                     </div>
                                 </div>
-                            </ScrollReveal>
-                        ))}
+                                <ul className="mt-5 grid gap-2 sm:grid-cols-3">
+                                    {freeFeatures[0].highlights.map((h) => (
+                                        <li key={h} className="flex items-start gap-2 text-xs leading-5 text-gray-700 dark:text-gray-300">
+                                            <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-primary" />
+                                            {h}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#2AABEE] px-5 py-3 text-sm font-black text-white shadow-lg shadow-sky-500/15 transition-all hover:-translate-y-0.5 hover:bg-[#229ed9]">
+                                    See today&apos;s analysis <ArrowRight size={16} />
+                                </a>
+                            </div>
+                        </ScrollReveal>
+
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                            {freeFeatures.slice(1).map((feature, i) => (
+                                <ScrollReveal key={feature.title} delay={0.1 * i} direction="up" className="h-full">
+                                    <div className="group flex h-full flex-col rounded-2xl border border-slate-200/90 bg-white/85 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-300 hover:shadow-[0_14px_30px_rgba(15,23,42,0.06)] dark:border-white/[0.06] dark:bg-[#131622]/75 dark:hover:border-gold/30 sm:p-6">
+                                        <div className="flex items-start gap-3">
+                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${feature.bg} ${feature.color}`}>
+                                                <feature.icon size={21} />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
+                                                    {feature.eyebrow}
+                                                </p>
+                                                <h3 className="mt-1 text-lg font-black tracking-tight text-gray-900 dark:text-white">
+                                                    {feature.title}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <p className="mt-4 text-sm leading-6 text-gray-600 dark:text-gray-300">
+                                            {feature.description}
+                                        </p>
+                                        <div className="mt-4 rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-2.5 dark:border-white/[0.06] dark:bg-white/[0.04]">
+                                            {feature.title === "Free Trading Signals" ? (
+                                                <div className="flex items-center justify-between gap-3 text-xs">
+                                                    <span className="font-bold text-gray-900 dark:text-white">XAUUSD <span className="font-normal text-gray-500">BUY</span></span>
+                                                    <span className="text-emerald-600 dark:text-primary">TP / SL set</span>
+                                                </div>
+                                            ) : feature.title === "Education & Experience" ? (
+                                                <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                                                    <span className="rounded-full bg-amber-100 px-2 py-1 text-amber-700 dark:bg-gold/15 dark:text-gold">01</span>
+                                                    <span>Price action</span>
+                                                    <ArrowRight size={13} className="text-gray-400" />
+                                                    <span>Risk</span>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center justify-between gap-3 text-xs">
+                                                    <span className="font-bold text-gray-900 dark:text-white">GoldScalperNinja v3.0</span>
+                                                    <span className="text-emerald-600 dark:text-primary">MT5</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+                                            {feature.highlights.map((h) => (
+                                                <span key={h} className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                                                    <CheckCircle2 size={13} className="shrink-0 text-primary" />
+                                                    {h}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        {feature.external ? (
+                                            <a href={feature.href} target="_blank" rel="noopener noreferrer" className="mt-auto inline-flex items-center gap-1 pt-5 text-xs font-black uppercase tracking-wider text-amber-600 transition-colors hover:text-amber-700 dark:text-gold dark:hover:text-amber-300">
+                                                {feature.cta} <ChevronRight size={14} />
+                                            </a>
+                                        ) : (
+                                            <Link href={feature.href} className="mt-auto inline-flex items-center gap-1 pt-5 text-xs font-black uppercase tracking-wider text-amber-600 transition-colors hover:text-amber-700 dark:text-gold dark:hover:text-amber-300">
+                                                {feature.cta} <ChevronRight size={14} />
+                                            </Link>
+                                        )}
+                                    </div>
+                                </ScrollReveal>
+                            ))}
+                        </div>
                     </div>
                 </section>
 
-                {/* ═══════ 4. VIP UPGRADE ═══════ */}
+                {/* ═══════ 3. VIP ACCESS SECTION & 3-STEP FLOW ═══════ */}
                 <section
-                    id="vip-section"
+                    id="vip-access"
                     className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto scroll-mt-16 md:scroll-mt-24"
                 >
                     <ScrollReveal>
@@ -407,32 +500,41 @@ export default async function CommunityPage() {
                             <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-amber-400/[0.15] dark:bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
 
                             <div className="relative z-10">
-                                <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 rounded-xl bg-gold/15 flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.15)]">
-                                        <Crown
-                                            size={24}
-                                            className="text-gold"
-                                        />
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-xl bg-gold/15 flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+                                            <Crown
+                                                size={24}
+                                                className="text-gold"
+                                            />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-amber-800 to-amber-950 dark:from-white dark:via-amber-100 dark:to-amber-400">
+                                                VIP Access & Benefits
+                                            </h2>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                Premium trading access —{" "}
+                                                <span className="text-gold font-bold">
+                                                    free with verification
+                                                </span>{" "}
+                                                through our partner-account path
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h2 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-amber-800 to-amber-950 dark:from-white dark:via-amber-100 dark:to-amber-400">
-                                            VIP Group
-                                        </h2>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            Premium trading access —{" "}
-                                            <span className="text-gold font-bold">
-                                                completely free
-                                            </span>{" "}
-                                            with our partner broker
-                                        </p>
-                                    </div>
+                                    <a
+                                        href={BROKER_REGISTER_URL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all hover:scale-[1.02] shrink-0"
+                                    >
+                                        <Crown size={15} /> Unlock VIP Access
+                                    </a>
                                 </div>
 
                                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/25 mb-5 shadow-[0_0_10px_rgba(245,158,11,0.05)]">
                                     <Shield size={14} className="text-gold" />
                                     <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
-                                        No subscription • No hidden fees • Free
-                                        forever
+                                        No subscription • No hidden fees • Free forever
                                     </span>
                                 </div>
 
@@ -441,7 +543,7 @@ export default async function CommunityPage() {
                                     {vipBenefits.map((b) => (
                                         <div
                                             key={b.text}
-                                            className="flex items-center gap-3 bg-white/80 dark:bg-[#111625]/60 hover:bg-white/95 dark:hover:bg-[#151C30]/80 rounded-xl border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 p-3.5 shadow-[0_4px_12px_rgba(245,158,11,0.02)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)] hover:shadow-[0_10px_25px_rgba(245,158,11,0.06)] dark:hover:shadow-[0_0_20px_rgba(245,158,11,0.05)] hover:-translate-y-0.5 dark:hover:-translate-y-0 text-gray-800 dark:text-gray-200 transition-all duration-300"
+                                            className="flex items-center gap-3 bg-white/80 dark:bg-[#111625]/60 hover:bg-white/95 dark:hover:bg-[#151C30]/80 rounded-xl border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 p-3.5 shadow-[0_4px_12px_rgba(245,158,11,0.02)] transition-all duration-300"
                                         >
                                             <div className="w-9 h-9 rounded-lg bg-gold/10 flex items-center justify-center shrink-0">
                                                 <b.icon
@@ -455,17 +557,105 @@ export default async function CommunityPage() {
                                         </div>
                                     ))}
                                 </div>
+
+                                {/* 3-Step VIP Activation Flow */}
+                                <div className="mt-8 border-t border-amber-500/15 pt-6 dark:border-white/[0.08]">
+                                    <div className="mb-4 flex items-center justify-between gap-3">
+                                        <h3 className="text-sm font-black uppercase tracking-[0.16em] text-amber-700 dark:text-gold">
+                                            3-Step VIP Activation Path
+                                        </h3>
+                                        <span className="text-xs font-semibold text-emerald-600 dark:text-primary flex items-center gap-1">
+                                            <Clock size={12} /> Same day access
+                                        </span>
+                                    </div>
+                                    <div className="grid gap-3 md:grid-cols-3">
+                                        <div className="flex flex-col justify-between rounded-xl border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
+                                            <div>
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/15 text-xs font-black text-amber-700 dark:text-gold">
+                                                        01
+                                                    </span>
+                                                    <span className="text-[10px] uppercase font-bold text-amber-600 dark:text-gold">Step 1</span>
+                                                </div>
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">Open partner account</p>
+                                                <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-400">
+                                                    Sign up via our official partner broker link. Your trading capital remains 100% under your control.
+                                                </p>
+                                            </div>
+                                            <a
+                                                href={BROKER_REGISTER_URL}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="mt-3 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-amber-600 hover:text-amber-700 dark:text-gold dark:hover:text-amber-300"
+                                            >
+                                                <span>Open Partner Account</span>
+                                                <ExternalLink size={12} />
+                                            </a>
+                                        </div>
+
+                                        <div className="flex flex-col justify-between rounded-xl border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
+                                            <div>
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/15 text-xs font-black text-amber-700 dark:text-gold">
+                                                        02
+                                                    </span>
+                                                    <span className="text-[10px] uppercase font-bold text-amber-600 dark:text-gold">Step 2</span>
+                                                </div>
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">Send account ID</p>
+                                                <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-400">
+                                                    Send your newly registered account number to our Telegram admin for instant verification.
+                                                </p>
+                                            </div>
+                                            <a
+                                                href={TELEGRAM_URL}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="mt-3 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-sky-600 hover:text-sky-700 dark:text-sky-400"
+                                            >
+                                                <span>Send ID to Admin</span>
+                                                <Send size={12} />
+                                            </a>
+                                        </div>
+
+                                        <div className="flex flex-col justify-between rounded-xl border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
+                                            <div>
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/15 text-xs font-black text-emerald-600 dark:text-primary">
+                                                        03
+                                                    </span>
+                                                    <span className="text-[10px] uppercase font-bold text-emerald-600 dark:text-primary">Step 3</span>
+                                                </div>
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">Receive VIP access</p>
+                                                <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-400">
+                                                    Once verified, you will be invited directly to the VIP Signals Channel & TraderRoom.
+                                                </p>
+                                            </div>
+                                            <span className="mt-3 inline-flex items-center justify-center gap-1 text-xs font-bold text-emerald-600 dark:text-primary">
+                                                <CheckCircle2 size={13} />
+                                                <span>Access Unlocked</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <p className="text-xs leading-5 text-gray-600 dark:text-gray-400">
+                                            Need assistance? Contact our Telegram support team anytime.
+                                        </p>
+                                        <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-500/20 transition-all hover:-translate-y-0.5 hover:from-amber-600 hover:to-orange-600">
+                                            Request VIP Access <Send size={15} />
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </ScrollReveal>
                 </section>
 
-                {/* ═══════ 5. VIP FEEDBACK SCREENSHOT CAROUSEL ═══════ */}
+                {/* ═══════ 4. VIP FEEDBACK SCREENSHOT CAROUSEL ═══════ */}
                 <ScrollReveal>
                     <FeedbackCarousel images={feedbackImages} />
                 </ScrollReveal>
 
-                {/* ═══════ 6. PLATFORM LINKS ═══════ */}
+                {/* ═══════ 5. PLATFORM LINKS ═══════ */}
                 <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-12 space-y-4">
@@ -473,8 +663,7 @@ export default async function CommunityPage() {
                                 Explore the Platform
                             </h2>
                             <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
-                                More than just a Telegram channel — a full
-                                trading ecosystem.
+                                More than just a Telegram channel — a full trading ecosystem.
                             </p>
                         </div>
                     </ScrollReveal>
@@ -488,7 +677,7 @@ export default async function CommunityPage() {
                             >
                                 <Link
                                     href={p.href}
-                                    className="bg-white/80 dark:bg-[#131622]/60 rounded-2xl border border-amber-500/15 dark:border-white/[0.06] p-4 sm:p-5 hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)] hover:-translate-y-0.5 transition-all duration-300 group flex flex-col h-full backdrop-blur-md"
+                                    className="bg-white/80 dark:bg-[#131622]/60 rounded-2xl border border-amber-500/15 dark:border-white/[0.06] p-4 sm:p-5 hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] hover:-translate-y-0.5 transition-all duration-300 group flex flex-col h-full backdrop-blur-md"
                                 >
                                     <div className="flex items-center gap-3 mb-3">
                                         <div
@@ -511,7 +700,7 @@ export default async function CommunityPage() {
                                         {p.description}
                                     </p>
                                     <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-600 dark:text-gold mt-3">
-                                        Explore{" "}
+                                        {p.ctaText}{" "}
                                         <ChevronRight
                                             size={14}
                                             className="group-hover:translate-x-0.5 transition-transform duration-300"
@@ -523,53 +712,7 @@ export default async function CommunityPage() {
                     </div>
                 </section>
 
-                {/* ═══════ 6.5 GET STARTED CALLOUT ═══════ */}
-                <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
-                    <ScrollReveal>
-                        {/* Premium Breek-style Callout Card */}
-                        <div className="relative p-5 sm:p-6 rounded-2xl border border-gold/25 dark:border-gold/15 bg-gradient-to-r from-gold/[0.04] to-amber-500/[0.02] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md shadow-md shadow-gold/[0.01] overflow-hidden group hover:border-gold/45 dark:hover:border-gold/30 hover:shadow-lg hover:shadow-gold/8 transition-all duration-500">
-                            {/* Soft decorative glow spot at the right */}
-                            <div className="absolute top-1/2 -right-4 -translate-y-1/2 w-40 h-40 bg-gradient-to-br from-gold/15 to-amber-500/5 dark:from-gold/5 dark:to-transparent rounded-full blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-500" />
-
-                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between relative z-10">
-                                <div className="flex items-start gap-3">
-                                    <div className="mt-1 p-2 rounded-xl bg-gold/10 dark:bg-gold/15 text-gold group-hover:rotate-45 transition-transform duration-500">
-                                        <Compass
-                                            size={18}
-                                            className="animate-pulse"
-                                        />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-base font-extrabold text-gray-800 dark:text-white flex items-center gap-2">
-                                            New here?{" "}
-                                            <span className="text-gold">
-                                                Start with the setup path
-                                            </span>
-                                        </h4>
-                                        <p className="mt-1 text-sm text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
-                                            Create workspace, sync your trades,
-                                            and review your edge. Follow our
-                                            guided setup checklist to get
-                                            started.
-                                        </p>
-                                    </div>
-                                </div>
-                                <Link
-                                    href="/get-started"
-                                    className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black px-6 py-2.5 shadow-[0_4px_12px_rgba(245,158,11,0.25)] dark:shadow-[0_4px_12px_rgba(245,158,11,0.15)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.4)] dark:hover:shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group/btn"
-                                >
-                                    <span>Start Here</span>
-                                    <ArrowRight
-                                        size={16}
-                                        className="group-hover/btn:translate-x-1 transition-transform duration-300"
-                                    />
-                                </Link>
-                            </div>
-                        </div>
-                    </ScrollReveal>
-                </section>
-
-                {/* ═══════ 7. FAQ ═══════ */}
+                {/* ═══════ 6. FAQ ═══════ */}
                 <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-12">
@@ -621,7 +764,7 @@ export default async function CommunityPage() {
                     </ScrollReveal>
                 </section>
 
-                {/* ═══════ 8. BOTTOM CTA ═══════ */}
+                {/* ═══════ 7. BOTTOM CTA ═══════ */}
                 <section className="px-4 sm:px-6 mb-6 sm:mb-10 max-w-4xl mx-auto">
                     <ScrollReveal>
                         <div className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center border border-amber-500/35 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-white/[0.04] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_60px_rgba(245,158,11,0.06)] relative overflow-hidden backdrop-blur-md">
@@ -652,13 +795,15 @@ export default async function CommunityPage() {
                                         }}
                                         className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-sky-500/10 hover:shadow-sky-500/20 active:scale-95 hover:scale-[1.03] transition-all duration-300 hover:opacity-95"
                                     >
-                                        <Send size={16} /> Join Telegram
+                                        <Send size={16} /> Join Telegram Free
                                     </a>
                                     <a
-                                        href={vipUrl}
+                                        href={BROKER_REGISTER_URL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 hover:scale-[1.03] active:scale-95 hover:from-amber-600 hover:to-orange-600 text-white"
                                     >
-                                        <Crown size={16} /> Get VIP Free{" "}
+                                        <Crown size={16} /> Unlock VIP Access{" "}
                                         <ArrowRight size={14} />
                                     </a>
                                 </div>
