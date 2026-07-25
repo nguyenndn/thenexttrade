@@ -22,6 +22,7 @@ import {
     Clock,
     Headphones,
     Bot,
+    Cpu,
     Sparkles,
     HelpCircle,
     ExternalLink,
@@ -112,17 +113,17 @@ const freeFeatures = [
         border: "border-amber-200/60 dark:border-gold/15",
     },
     {
-        icon: Bot,
-        eyebrow: "MT5 EXECUTION SUPPORT",
-        title: "EA GoldScalperNinja",
+        icon: Cpu,
+        eyebrow: "SYSTEMATIC & AUTOMATED TRADING",
+        title: "Trading Systems & EAs",
         description:
-            "Use the GoldScalperNinja EA to support your MT5 workflow with trade management, clearer execution, and a more disciplined setup.",
+            "Explore automated MT5 EAs, strategy suites, and custom execution tools built for disciplined risk management and systematic trading.",
         highlights: [
-            "MT5 Expert Advisor",
-            "Trade management tools",
-            "Built for XAUUSD workflows",
+            "Automated EAs & Systems",
+            "MT5 Execution Tools",
+            "Risk & Trade Management",
         ],
-        cta: "View the EA",
+        cta: "Explore Trading Systems",
         href: "/trading-systems",
         external: false,
         color: "text-emerald-600 dark:text-primary",
@@ -429,8 +430,8 @@ export default async function CommunityPage() {
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center justify-between gap-3 text-xs py-1">
-                                                    <span className="font-bold text-gray-900 dark:text-white">GoldScalperNinja v3.0</span>
-                                                    <span className="text-emerald-600 dark:text-primary font-bold">MT5</span>
+                                                    <span className="font-bold text-gray-900 dark:text-white">GoldScalperNinja EA <span className="font-medium text-gray-500">& Systems</span></span>
+                                                    <span className="text-emerald-600 dark:text-primary font-bold">MT5 Systems</span>
                                                 </div>
                                             )}
                                         </div>
