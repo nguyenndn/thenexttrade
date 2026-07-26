@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { redirect } from "next/navigation";
-import { TraderMonitorClient } from "./client";
+import { TraderMonitorClient, TraderUser, TraderAccount } from "./client";
 
 export const metadata = {
     title: "Trader Monitor — Admin",
@@ -17,156 +17,143 @@ export default async function TraderMonitorPage() {
     });
     if (profile?.role !== "ADMIN") redirect("/dashboard");
 
-    // Fetch all Pro users with their trading accounts and recent activity
-    const proUsers = await prisma.proEntitlement.findMany({
+    // Fetch all users who have trading accounts OR pro entitlements OR licenses
+    const users = await prisma.user.findMany({
         where: {
-            status: { in: ["ACTIVE", "GRACE"] },
+            OR: [
+                { tradingAccounts: { some: {} } },
+                { proEntitlements: { some: {} } },
+                { EALicenses: { some: {} } },
+            ],
         },
-        include: {
-            tradingAccount: {
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            createdAt: true,
+            tradingAccounts: {
+                select: {
+                    id: true,
+                    broker: true,
+                    accountNumber: true,
+                    balance: true,
+                    equity: true,
+                    status: true,
+                    platform: true,
+                    lastSync: true,
+                    lastHeartbeat: true,
+                    totalTrades: true,
+                },
+                orderBy: { updatedAt: "desc" },
+            },
+            proEntitlements: {
+                select: {
+                    id: true,
+                    status: true,
+                    source: true,
+                    startsAt: true,
+                    expiresAt: true,
+                },
+                orderBy: { createdAt: "desc" },
+                take: 1,
+            },
+            EALicenses: {
                 select: {
                     id: true,
                     broker: true,
                     accountNumber: true,
                     status: true,
-                    lastHeartbeat: true,
-                    lastSync: true,
-                    totalTrades: true,
-                    balance: true,
-                    equity: true,
-                },
-            },
-            user: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    tradingAccounts: {
-                        select: {
-                            id: true,
-                            broker: true,
-                            accountNumber: true,
-                            status: true,
-                            lastHeartbeat: true,
-                            lastSync: true,
-                            totalTrades: true,
-                            balance: true,
-                            equity: true,
-                        },
-                        orderBy: { lastHeartbeat: "desc" },
-                    },
                 },
             },
         },
-        orderBy: { updatedAt: "desc" },
+        orderBy: { createdAt: "desc" },
     });
 
-    // Enrich with recent trade stats
-    const enrichedUsers = await Promise.all(
-        proUsers.map(async (pe) => {
-            const thirtyDaysAgo = new Date(
-                Date.now() - 30 * 24 * 60 * 60 * 1000
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+    // Enrich users with calculations
+    const enrichedTraders: TraderUser[] = await Promise.all(
+        users.map(async (u) => {
+            const latestPro = u.proEntitlements[0];
+            const proStatus = latestPro ? latestPro.status : "FREE";
+
+            const tradingAccounts: TraderAccount[] = u.tradingAccounts.map((a) => ({
+                id: a.id,
+                broker: a.broker || "Unknown",
+                accountNumber: a.accountNumber || "N/A",
+                balance: a.balance || 0,
+                equity: a.equity || 0,
+                status: a.status,
+                platform: a.platform || "MT4/MT5",
+                lastSync: (a.lastSync || a.lastHeartbeat)?.toISOString() || null,
+                totalTrades: a.totalTrades || 0,
+            }));
+
+            // Calculate aggregated balance and equity
+            const totalBalance = tradingAccounts.reduce(
+                (sum: number, acc: TraderAccount) => sum + acc.balance,
+                0
+            );
+            const totalEquity = tradingAccounts.reduce(
+                (sum: number, acc: TraderAccount) => sum + acc.equity,
+                0
             );
 
-            const entitlementAccountNumber =
-                pe.accountNumber || pe.accountNumberMasked?.replace(/\*/g, "");
-            const normalizedEntitlementBroker = pe.broker?.toLowerCase();
-            const account =
-                pe.tradingAccount ||
-                pe.user.tradingAccounts.find((a) => {
-                    const accountNumberMatches =
-                        !!entitlementAccountNumber &&
-                        (a.accountNumber === pe.accountNumber ||
-                            a.accountNumber?.endsWith(
-                                entitlementAccountNumber
-                            ));
-                    const brokerMatches =
-                        !normalizedEntitlementBroker ||
-                        a.broker?.toLowerCase() === normalizedEntitlementBroker;
-                    return accountNumberMatches && brokerMatches;
-                }) ||
-                null;
+            // Extract unique brokers list
+            const brokerSet = new Set<string>();
+            tradingAccounts.forEach((acc: TraderAccount) => {
+                if (acc.broker && acc.broker !== "Unknown")
+                    brokerSet.add(acc.broker);
+            });
+            u.EALicenses.forEach((lic) => {
+                if (lic.broker) brokerSet.add(lic.broker);
+            });
 
-            const [trades30d, lotVolume30d, lastTrade] = account
-                ? await Promise.all([
-                      prisma.journalEntry.count({
-                          where: {
-                              userId: pe.userId,
-                              accountId: account.id,
-                              status: "CLOSED",
-                              exitDate: { gte: thirtyDaysAgo },
-                          },
-                      }),
-                      prisma.journalEntry.aggregate({
-                          where: {
-                              userId: pe.userId,
-                              accountId: account.id,
-                              status: "CLOSED",
-                              exitDate: { gte: thirtyDaysAgo },
-                          },
-                          _sum: { lotSize: true },
-                      }),
-                      prisma.journalEntry.findFirst({
-                          where: {
-                              userId: pe.userId,
-                              accountId: account.id,
-                              status: "CLOSED",
-                          },
-                          orderBy: { exitDate: "desc" },
-                          select: { exitDate: true },
-                      }),
-                  ])
-                : [0, { _sum: { lotSize: null } }, null];
+            // 30-day trading metrics
+            const [trades30d, lotVolume30d] = await Promise.all([
+                prisma.journalEntry.count({
+                    where: {
+                        userId: u.id,
+                        status: "CLOSED",
+                        exitDate: { gte: thirtyDaysAgo },
+                    },
+                }),
+                prisma.journalEntry.aggregate({
+                    where: {
+                        userId: u.id,
+                        status: "CLOSED",
+                        exitDate: { gte: thirtyDaysAgo },
+                    },
+                    _sum: { lotSize: true },
+                }),
+            ]);
 
-            // Determine activity status
-            const daysSinceLastTrade = lastTrade?.exitDate
-                ? Math.floor(
-                      (Date.now() - new Date(lastTrade.exitDate).getTime()) /
-                          (1000 * 60 * 60 * 24)
-                  )
-                : null;
-
-            let activityStatus = "SIGNED_UP";
-            if (!account) activityStatus = "VERIFIED_INACTIVE";
-            else if (
-                trades30d === 0 &&
-                daysSinceLastTrade !== null &&
-                daysSinceLastTrade > 30
-            )
-                activityStatus = "DORMANT";
-            else if (
-                trades30d === 0 &&
-                daysSinceLastTrade !== null &&
-                daysSinceLastTrade > 14
-            )
-                activityStatus = "AT_RISK";
-            else if (trades30d === 0) activityStatus = "CONNECTED_NO_TRADES";
-            else if (trades30d >= 30) activityStatus = "HIGH_VALUE_ACTIVE";
-            else activityStatus = "ACTIVE_TRADER";
+            // Find last active sync date
+            const lastActive = tradingAccounts.reduce((latest: string | null, acc: TraderAccount) => {
+                if (!acc.lastSync) return latest;
+                if (!latest) return acc.lastSync;
+                return new Date(acc.lastSync) > new Date(latest)
+                    ? acc.lastSync
+                    : latest;
+            }, null as string | null);
 
             return {
-                entitlementId: pe.id,
-                userId: pe.userId,
-                tradingAccountId: pe.tradingAccountId,
-                userName: pe.user.name || pe.user.email || "Unknown",
-                proStatus: pe.status,
-                proSource: pe.source,
-                broker: pe.broker || account?.broker || "—",
-                accountNumber:
-                    account?.accountNumber ||
-                    pe.accountNumber ||
-                    pe.accountNumberMasked ||
-                    "—",
-                lastHeartbeat: account?.lastHeartbeat?.toISOString() || null,
-                lastTrade: lastTrade?.exitDate?.toISOString() || null,
-                trades30d,
-                lotVolume30d: lotVolume30d._sum.lotSize || 0,
-                activityStatus,
-                startsAt: pe.startsAt?.toISOString() || null,
-                expiresAt: pe.expiresAt?.toISOString() || null,
+                userId: u.id,
+                userName: u.name || "Unnamed Trader",
+                userEmail: u.email || "No Email",
+                proStatus,
+                proSource: latestPro?.source || null,
+                expiresAt: latestPro?.expiresAt?.toISOString() || null,
+                tradingAccounts,
+                totalBalance,
+                totalEquity,
+                brokers: Array.from(brokerSet),
+                totalTrades30d: trades30d,
+                totalLotVolume30d: lotVolume30d._sum.lotSize || 0,
+                lastActiveAt: lastActive,
             };
         })
     );
 
-    return <TraderMonitorClient traders={enrichedUsers} />;
+    return <TraderMonitorClient traders={enrichedTraders} />;
 }

@@ -211,7 +211,7 @@ export const adminMenuItems = [
         items: [
             { name: "IB Overview", href: "/admin/ib" },
             { name: "VIP Pipeline", href: "/admin/ib/pipeline" },
-            { name: "Trader Monitor", href: "/admin/ib/traders" },
+            { name: "Trader Monitor (CRM)", href: "/admin/ib/traders" },
         ],
     },
 
@@ -351,7 +351,7 @@ export const adminMenuGroups = [
             { name: "IB Overview", href: "/admin/ib", icon: TrendingUp },
             { name: "VIP Pipeline", href: "/admin/ib/pipeline", icon: Crown },
             {
-                name: "Trader Monitor",
+                name: "Trader Monitor (CRM)",
                 href: "/admin/ib/traders",
                 icon: UserCheck,
             },

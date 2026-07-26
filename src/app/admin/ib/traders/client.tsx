@@ -1,23 +1,27 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useMemo } from "react";
+import Link from "next/link";
 import {
     Activity,
-    AlertTriangle,
-    Clock,
-    UserCheck,
-    Zap,
-    XCircle,
+    Users,
     Crown,
-    Timer,
-    ChevronDown,
     Search,
+    ChevronDown,
+    ChevronUp,
+    ExternalLink,
+    Wallet,
+    DollarSign,
+    Briefcase,
     MoreHorizontal,
-    Trash2,
+    XCircle,
+    UserCheck,
+    CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { BrokerLogo } from "@/components/ui/BrokerLogo";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -26,485 +30,482 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { revokeProAccess } from "@/actions/vip-request";
 import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
+import { enUS } from "date-fns/locale";
 
-interface Trader {
-    entitlementId: string;
-    userId: string;
-    tradingAccountId: string | null;
-    userName: string;
-    proStatus: string;
-    proSource: string | null;
+export interface TraderAccount {
+    id: string;
     broker: string;
     accountNumber: string;
-    lastHeartbeat: string | null;
-    lastTrade: string | null;
-    trades30d: number;
-    lotVolume30d: number;
-    activityStatus: string;
-    startsAt: string | null;
+    balance: number;
+    equity: number;
+    status: string;
+    platform: string;
+    lastSync: string | null;
+    totalTrades: number;
+}
+
+export interface TraderUser {
+    userId: string;
+    userName: string;
+    userEmail: string;
+    proStatus: string;
+    proSource: string | null;
     expiresAt: string | null;
+    tradingAccounts: TraderAccount[];
+    totalBalance: number;
+    totalEquity: number;
+    brokers: string[];
+    totalTrades30d: number;
+    totalLotVolume30d: number;
+    lastActiveAt: string | null;
 }
 
-const activityStatusConfig: Record<
-    string,
-    { label: string; badgeClass: string; icon: any }
-> = {
-    HIGH_VALUE_ACTIVE: {
-        label: "High Value",
-        badgeClass:
-            "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20",
-        icon: Zap,
-    },
-    ACTIVE_TRADER: {
-        label: "Active",
-        badgeClass:
-            "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20",
-        icon: Activity,
-    },
-    CONNECTED_NO_TRADES: {
-        label: "No Trades",
-        badgeClass:
-            "bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10",
-        icon: Clock,
-    },
-    AT_RISK: {
-        label: "At Risk",
-        badgeClass:
-            "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20",
-        icon: AlertTriangle,
-    },
-    DORMANT: {
-        label: "Dormant",
-        badgeClass:
-            "bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20",
-        icon: XCircle,
-    },
-    VERIFIED_INACTIVE: {
-        label: "Inactive",
-        badgeClass:
-            "bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-500 border-gray-200 dark:border-white/10",
-        icon: UserCheck,
-    },
-    SIGNED_UP: {
-        label: "Signed Up",
-        badgeClass:
-            "bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-500 border-gray-200 dark:border-white/10",
-        icon: UserCheck,
-    },
-};
-
-function timeAgo(dateStr: string | null): string {
-    if (!dateStr) return "Never";
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins}m ago`;
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h ago`;
-    const days = Math.floor(hours / 24);
-    return `${days}d ago`;
+interface Props {
+    traders: TraderUser[];
 }
 
-export function TraderMonitorClient({
-    traders: initialTraders,
-}: {
-    traders: Trader[];
-}) {
-    const [traders, setTraders] = useState(initialTraders);
-    const [statusFilter, setStatusFilter] = useState<string>("ALL");
-    const [brokerFilter, setBrokerFilter] = useState<string>("ALL");
-    const [sortBy, setSortBy] = useState<string>("trades30d");
-    const [searchQuery, setSearchQuery] = useState("");
-    const [deleteTarget, setDeleteTarget] = useState<Trader | null>(null);
-    const [isPending, startTransition] = useTransition();
+export function TraderMonitorClient({ traders }: Props) {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedBroker, setSelectedBroker] = useState<string>("ALL");
+    const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
+    const [expandedUserIds, setExpandedUserIds] = useState<Set<string>>(
+        new Set()
+    );
 
-    const handleDelete = () => {
-        if (!deleteTarget) return;
+    // Extract list of all unique brokers available
+    const availableBrokers = useMemo(() => {
+        const set = new Set<string>();
+        traders.forEach((t) => t.brokers.forEach((b) => set.add(b)));
+        return Array.from(set).sort();
+    }, [traders]);
 
-        startTransition(async () => {
-            const result = await revokeProAccess(
-                deleteTarget.userId,
-                "Removed from Active Trader Monitor by admin.",
-                deleteTarget.tradingAccountId || undefined
-            );
+    // Calculate aggregated overview stats
+    const stats = useMemo(() => {
+        const totalTraders = traders.length;
+        const activeProCount = traders.filter(
+            (t) => t.proStatus === "ACTIVE" || t.proStatus === "GRACE"
+        ).length;
+        const totalBalance = traders.reduce(
+            (sum, t) => sum + t.totalBalance,
+            0
+        );
+        const totalAccounts = traders.reduce(
+            (sum, t) => sum + t.tradingAccounts.length,
+            0
+        );
 
-            if (result.success) {
-                setTraders((prev) =>
-                    prev.filter(
-                        (trader) =>
-                            trader.entitlementId !== deleteTarget.entitlementId
-                    )
-                );
-                toast.success("Trader removed from monitor");
-                setDeleteTarget(null);
+        return {
+            totalTraders,
+            activeProCount,
+            totalBalance,
+            totalAccounts,
+        };
+    }, [traders]);
+
+    // Toggle expand/collapse user row
+    const toggleExpand = (userId: string) => {
+        setExpandedUserIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(userId)) {
+                next.delete(userId);
             } else {
-                toast.error(result.error || "Failed to remove trader");
+                next.add(userId);
             }
+            return next;
         });
     };
 
-    const brokers = useMemo(() => {
-        const set = new Set(traders.map((t) => t.broker));
-        return ["ALL", ...Array.from(set).filter((b) => b !== "—")];
-    }, [traders]);
-
-    const filtered = useMemo(() => {
-        let result = traders;
-        if (statusFilter !== "ALL")
-            result = result.filter((t) => t.activityStatus === statusFilter);
-        if (brokerFilter !== "ALL")
-            result = result.filter((t) => t.broker === brokerFilter);
-        if (searchQuery) {
-            const q = searchQuery.toLowerCase();
-            result = result.filter((t) => t.userName.toLowerCase().includes(q));
-        }
-        return result.sort((a, b) => {
-            if (sortBy === "trades30d") return b.trades30d - a.trades30d;
-            if (sortBy === "lotVolume30d")
-                return b.lotVolume30d - a.lotVolume30d;
-            if (sortBy === "lastTrade") {
-                if (!a.lastTrade) return 1;
-                if (!b.lastTrade) return -1;
-                return (
-                    new Date(b.lastTrade).getTime() -
-                    new Date(a.lastTrade).getTime()
-                );
+    // Revoke VIP action handler
+    const handleRevokePro = async (userId: string) => {
+        try {
+            const res = await revokeProAccess(userId);
+            if (res.success) {
+                toast.success("VIP Access revoked successfully");
+            } else {
+                toast.error(res.error || "Failed to revoke VIP access");
             }
-            return 0;
-        });
-    }, [traders, statusFilter, brokerFilter, sortBy, searchQuery]);
+        } catch (error: any) {
+            toast.error(error?.message || "An error occurred");
+        }
+    };
 
-    const activeCount = traders.filter((t) =>
-        ["ACTIVE_TRADER", "HIGH_VALUE_ACTIVE"].includes(t.activityStatus)
-    ).length;
-    const atRiskCount = traders.filter(
-        (t) => t.activityStatus === "AT_RISK"
-    ).length;
-    const dormantCount = traders.filter(
-        (t) => t.activityStatus === "DORMANT"
-    ).length;
+    // Filter logic
+    const filteredTraders = useMemo(() => {
+        return traders.filter((t) => {
+            // Search filter
+            const query = searchTerm.toLowerCase().trim();
+            const matchesSearch =
+                !query ||
+                t.userName.toLowerCase().includes(query) ||
+                t.userEmail.toLowerCase().includes(query) ||
+                t.tradingAccounts.some((acc) =>
+                    acc.accountNumber.toLowerCase().includes(query)
+                );
+
+            // Broker filter
+            const matchesBroker =
+                selectedBroker === "ALL" ||
+                t.brokers.some(
+                    (b) => b.toLowerCase() === selectedBroker.toLowerCase()
+                );
+
+            // Status filter
+            const matchesStatus =
+                selectedStatus === "ALL" ||
+                (selectedStatus === "PRO" &&
+                    (t.proStatus === "ACTIVE" || t.proStatus === "GRACE")) ||
+                (selectedStatus === "FREE" && t.proStatus === "FREE");
+
+            return matchesSearch && matchesBroker && matchesStatus;
+        });
+    }, [traders, searchTerm, selectedBroker, selectedStatus]);
 
     return (
         <div className="space-y-6 pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 dark:border-white/10 pb-8">
-                <div className="flex flex-col gap-2">
+            <AdminPageHeader
+                title="Trader Monitor (CRM)"
+                description="Monitor connected trading accounts, balances, and VIP status per trader."
+                backHref="/admin/ib"
+            >
+                <Link href="/admin/ib/pipeline">
+                    <Button variant="outline" className="rounded-xl font-bold">
+                        <Crown size={16} className="text-amber-500 mr-1.5" />
+                        VIP Pipeline
+                    </Button>
+                </Link>
+            </AdminPageHeader>
+
+            {/* Summary Stat Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full" />
-                        <h1 className="text-xl font-black text-gray-700 dark:text-white tracking-tighter">
-                            Active Trader Monitor
-                        </h1>
+                        <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-500">
+                            <Users size={20} />
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+                                Total Traders
+                            </p>
+                            <p className="text-xl font-black text-gray-900 dark:text-white mt-0.5">
+                                {stats.totalTraders}
+                            </p>
+                        </div>
                     </div>
-                    <p className="text-base text-gray-600 dark:text-gray-300 font-medium pl-4.5">
-                        {traders.length} Pro users · {activeCount} active ·{" "}
-                        {atRiskCount} at risk · {dormantCount} dormant
-                    </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500">
+                            <DollarSign size={20} />
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+                                Combined Balance
+                            </p>
+                            <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5 font-mono">
+                                ${stats.totalBalance.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-500">
+                            <Crown size={20} />
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+                                Active VIP Traders
+                            </p>
+                            <p className="text-xl font-black text-gray-900 dark:text-white mt-0.5">
+                                {stats.activeProCount}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 text-cyan-500">
+                            <Briefcase size={20} />
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+                                Linked Accounts
+                            </p>
+                            <p className="text-xl font-black text-gray-900 dark:text-white mt-0.5">
+                                {stats.totalAccounts}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Toolbar */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-wrap items-center gap-3">
-                {/* Status Filter */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="outline"
-                            size="md"
-                            className="flex items-center gap-2 h-[42px] text-xs font-medium text-gray-700 dark:text-gray-300 shrink-0 justify-between"
-                        >
-                            <span>
-                                Activity:{" "}
-                                <span className="text-primary">
-                                    {statusFilter === "ALL"
-                                        ? "All"
-                                        : activityStatusConfig[statusFilter]
-                                              ?.label || statusFilter}
-                                </span>
-                            </span>
-                            <ChevronDown size={14} />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        align="start"
-                        className="w-44 rounded-xl border-gray-200 dark:border-white/10"
-                    >
-                        <DropdownMenuItem
-                            onClick={() => setStatusFilter("ALL")}
-                            className="font-medium cursor-pointer rounded-lg mx-1 my-0.5"
-                        >
-                            All
-                        </DropdownMenuItem>
-                        {Object.entries(activityStatusConfig).map(
-                            ([key, config]) => (
-                                <DropdownMenuItem
-                                    key={key}
-                                    onClick={() => setStatusFilter(key)}
-                                    className="font-medium cursor-pointer rounded-lg mx-1 my-0.5"
-                                >
-                                    {config.label}
-                                </DropdownMenuItem>
-                            )
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Broker Filter */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="outline"
-                            size="md"
-                            className="flex items-center gap-2 h-[42px] text-xs font-medium text-gray-700 dark:text-gray-300 shrink-0 justify-between"
-                        >
-                            <span>
-                                Broker:{" "}
-                                <span className="text-primary">
-                                    {brokerFilter === "ALL"
-                                        ? "All"
-                                        : brokerFilter}
-                                </span>
-                            </span>
-                            <ChevronDown size={14} />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        align="start"
-                        className="w-40 rounded-xl border-gray-200 dark:border-white/10"
-                    >
-                        {brokers.map((b) => (
-                            <DropdownMenuItem
-                                key={b}
-                                onClick={() => setBrokerFilter(b)}
-                                className="font-medium cursor-pointer rounded-lg mx-1 my-0.5"
-                            >
-                                {b === "ALL" ? "All Brokers" : b}
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Sort */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="outline"
-                            size="md"
-                            className="flex items-center gap-2 h-[42px] text-xs font-medium text-gray-700 dark:text-gray-300 shrink-0 justify-between"
-                        >
-                            <span>
-                                Sort:{" "}
-                                <span className="text-primary">
-                                    {sortBy === "trades30d"
-                                        ? "Trades"
-                                        : sortBy === "lotVolume30d"
-                                          ? "Lots"
-                                          : "Last Trade"}
-                                </span>
-                            </span>
-                            <ChevronDown size={14} />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        align="start"
-                        className="w-40 rounded-xl border-gray-200 dark:border-white/10"
-                    >
-                        <DropdownMenuItem
-                            onClick={() => setSortBy("trades30d")}
-                            className="font-medium cursor-pointer rounded-lg mx-1 my-0.5"
-                        >
-                            Trades 30d
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => setSortBy("lotVolume30d")}
-                            className="font-medium cursor-pointer rounded-lg mx-1 my-0.5"
-                        >
-                            Lot Volume
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => setSortBy("lastTrade")}
-                            className="font-medium cursor-pointer rounded-lg mx-1 my-0.5"
-                        >
-                            Last Trade
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Search */}
-                <div className="flex-1 w-full sm:max-w-sm">
+            {/* Filter & Controls Bar */}
+            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div className="w-full md:w-80">
                     <PremiumInput
+                        placeholder="Search trader, email or account #..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         icon={Search}
-                        placeholder="Search user..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full"
                     />
                 </div>
 
-                <div className="text-xs text-gray-500 dark:text-gray-400 ml-auto">
-                    {filtered.length} trader{filtered.length !== 1 ? "s" : ""}
+                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    {/* Status Filter Tabs */}
+                    <div className="flex items-center bg-gray-100 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10 text-xs font-bold">
+                        <button
+                            onClick={() => setSelectedStatus("ALL")}
+                            className={`px-3 py-1.5 rounded-lg transition-colors ${
+                                selectedStatus === "ALL"
+                                    ? "bg-white dark:bg-[#151925] text-gray-900 dark:text-white shadow-sm"
+                                    : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                            }`}
+                        >
+                            All Status
+                        </button>
+                        <button
+                            onClick={() => setSelectedStatus("PRO")}
+                            className={`px-3 py-1.5 rounded-lg transition-colors ${
+                                selectedStatus === "PRO"
+                                    ? "bg-white dark:bg-[#151925] text-amber-600 dark:text-amber-400 shadow-sm"
+                                    : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                            }`}
+                        >
+                            VIP / Pro Only
+                        </button>
+                        <button
+                            onClick={() => setSelectedStatus("FREE")}
+                            className={`px-3 py-1.5 rounded-lg transition-colors ${
+                                selectedStatus === "FREE"
+                                    ? "bg-white dark:bg-[#151925] text-gray-900 dark:text-white shadow-sm"
+                                    : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                            }`}
+                        >
+                            Free Users
+                        </button>
+                    </div>
+
+                    {/* Broker Select Dropdown */}
+                    <select
+                        value={selectedBroker}
+                        onChange={(e) => setSelectedBroker(e.target.value)}
+                        className="px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer"
+                    >
+                        <option value="ALL">All Brokers</option>
+                        {availableBrokers.map((b) => (
+                            <option key={b} value={b}>
+                                {b}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
-            {/* Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
-                {filtered.length === 0 ? (
-                    <div className="text-center py-16">
-                        <AlertTriangle
-                            size={32}
-                            className="text-gray-300 dark:text-gray-600 mx-auto mb-3"
-                        />
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            No traders match the current filters
+            {/* Traders Table / List */}
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+                {filteredTraders.length === 0 ? (
+                    <div className="text-center py-16 text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-xl m-4">
+                        <Users size={36} className="mx-auto mb-3 text-gray-400" />
+                        <p className="text-base font-bold text-gray-700 dark:text-white">
+                            No traders found
+                        </p>
+                        <p className="text-xs mt-1 text-gray-500">
+                            Try adjusting your search criteria or broker filters.
                         </p>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto custom-scrollbar">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 dark:text-gray-400 font-bold tracking-wider">
-                                    <th className="px-6 py-4">User</th>
-                                    <th className="px-6 py-4">Broker</th>
-                                    <th className="px-6 py-4">Account</th>
-                                    <th className="px-6 py-4">Activity</th>
-                                    <th className="px-6 py-4 text-right">
-                                        Trades 30d
-                                    </th>
-                                    <th className="px-6 py-4 text-right">
-                                        Lots 30d
-                                    </th>
-                                    <th className="px-6 py-4">
-                                        Last Heartbeat
-                                    </th>
-                                    <th className="px-6 py-4">Last Trade</th>
-                                    <th className="px-6 py-4">Pro</th>
-                                    <th className="px-6 py-4 text-right">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200 dark:divide-white/10">
-                                {filtered.map((t) => {
-                                    const status =
-                                        activityStatusConfig[
-                                            t.activityStatus
-                                        ] || activityStatusConfig.SIGNED_UP;
-                                    const StatusIcon = status.icon;
-                                    return (
-                                        <tr
-                                            key={t.entitlementId}
-                                            className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors"
-                                        >
-                                            <td className="px-6 py-4">
-                                                <p className="font-bold text-sm text-gray-700 dark:text-white truncate max-w-[160px]">
-                                                    {t.userName}
+                    <div className="divide-y divide-gray-200 dark:divide-white/10">
+                        {filteredTraders.map((trader) => {
+                            const isExpanded = expandedUserIds.has(trader.userId);
+                            const isPro =
+                                trader.proStatus === "ACTIVE" ||
+                                trader.proStatus === "GRACE";
+
+                            return (
+                                <div key={trader.userId} className="group/row transition-colors">
+                                    {/* Main Row Header */}
+                                    <div className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
+                                        <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                                            <button
+                                                onClick={() => toggleExpand(trader.userId)}
+                                                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-colors shrink-0"
+                                            >
+                                                {isExpanded ? (
+                                                    <ChevronUp size={18} />
+                                                ) : (
+                                                    <ChevronDown size={18} />
+                                                )}
+                                            </button>
+
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span className="font-bold text-base text-gray-900 dark:text-white truncate">
+                                                        {trader.userName}
+                                                    </span>
+                                                    {isPro ? (
+                                                        <span className="px-2 py-0.5 text-[10px] font-bold rounded-md uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
+                                                            <Crown size={12} /> VIP Pro
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-2 py-0.5 text-[10px] font-bold rounded-md uppercase bg-gray-100 text-gray-600 dark:bg-white/5 dark:text-gray-400">
+                                                            Free Trader
+                                                        </span>
+                                                    )}
+                                                    <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                                                        {trader.tradingAccounts.length} Account{trader.tradingAccounts.length !== 1 ? "s" : ""}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-1 flex-wrap">
+                                                    <span className="truncate">{trader.userEmail}</span>
+                                                    <span>•</span>
+                                                    <div className="flex items-center gap-1.5">
+                                                        {trader.brokers.map((b) => (
+                                                            <span
+                                                                key={b}
+                                                                className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300"
+                                                            >
+                                                                {b}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Financial & Activity Summary */}
+                                        <div className="flex items-center justify-between md:justify-end gap-6 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-gray-100 dark:border-white/5">
+                                            <div className="text-right">
+                                                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                                                    Combined Balance
                                                 </p>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 uppercase">
-                                                    {t.broker}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className="text-sm font-mono text-gray-500 dark:text-gray-400">
-                                                    {t.accountNumber}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span
-                                                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${status.badgeClass}`}
-                                                >
-                                                    <StatusIcon size={10} />
-                                                    {status.label}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <span className="text-sm font-bold text-gray-700 dark:text-white tabular-nums">
-                                                    {t.trades30d}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <span className="text-sm font-medium text-gray-600 dark:text-gray-300 tabular-nums">
-                                                    {t.lotVolume30d.toFixed(2)}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                                                {timeAgo(t.lastHeartbeat)}
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                                                {timeAgo(t.lastTrade)}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {t.proStatus === "ACTIVE" && (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
-                                                        <Crown size={10} /> Pro
-                                                    </span>
-                                                )}
-                                                {t.proStatus === "GRACE" && (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20">
-                                                        <Timer size={10} />{" "}
-                                                        Grace
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger
-                                                        asChild
-                                                    >
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="h-8 w-8 rounded-lg text-gray-500 hover:text-gray-700 dark:hover:text-gray-200"
-                                                            aria-label={`Actions for ${t.userName}`}
-                                                        >
-                                                            <MoreHorizontal
-                                                                size={16}
-                                                            />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent
-                                                        align="end"
-                                                        className="w-48 rounded-xl border-gray-200 dark:border-white/10"
-                                                    >
+                                                <p className="font-mono font-bold text-base text-emerald-600 dark:text-emerald-400">
+                                                    ${trader.totalBalance.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                </p>
+                                            </div>
+
+                                            <div className="text-right hidden sm:block">
+                                                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                                                    Combined Equity
+                                                </p>
+                                                <p className="font-mono font-bold text-sm text-gray-700 dark:text-gray-300">
+                                                    ${trader.totalEquity.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                </p>
+                                            </div>
+
+                                            <div className="text-right hidden lg:block">
+                                                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                                                    30d Volume
+                                                </p>
+                                                <p className="font-mono font-bold text-sm text-gray-700 dark:text-gray-300">
+                                                    {trader.totalLotVolume30d.toFixed(2)} Lots
+                                                </p>
+                                            </div>
+
+                                            {/* Action Menu */}
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg">
+                                                        <MoreHorizontal size={16} />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end" className="w-48">
+                                                    <DropdownMenuItem>
+                                                        <Link href={`/admin/users/${trader.userId}`} className="flex items-center gap-2 w-full cursor-pointer">
+                                                            <ExternalLink size={14} /> View User Profile
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                    {isPro && (
                                                         <DropdownMenuItem
-                                                            onClick={() =>
-                                                                setDeleteTarget(
-                                                                    t
-                                                                )
-                                                            }
-                                                            className="font-medium cursor-pointer rounded-lg mx-1 my-0.5 text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+                                                            onClick={() => handleRevokePro(trader.userId)}
+                                                            className="text-red-600 dark:text-red-400 focus:text-red-600 cursor-pointer"
                                                         >
-                                                            <Trash2
-                                                                size={14}
-                                                                className="mr-2"
-                                                            />
-                                                            Delete from monitor
+                                                            <XCircle size={14} className="mr-2" /> Revoke VIP Access
                                                         </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                    </div>
+
+                                    {/* Expandable Account Breakdown Table */}
+                                    {isExpanded && (
+                                        <div className="bg-gray-50/70 dark:bg-white/[0.015] border-t border-gray-100 dark:border-white/5 p-4 pl-8 md:pl-12">
+                                            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-2">
+                                                <Wallet size={14} className="text-primary" />
+                                                Trading Accounts Breakdown ({trader.tradingAccounts.length})
+                                            </h4>
+
+                                            {trader.tradingAccounts.length === 0 ? (
+                                                <p className="text-xs text-gray-500 italic py-2">
+                                                    No connected trading accounts registered yet.
+                                                </p>
+                                            ) : (
+                                                <div className="overflow-x-auto rounded-xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-[#151925]">
+                                                    <table className="w-full text-xs">
+                                                        <thead className="bg-gray-100/70 dark:bg-white/5 text-gray-500 font-bold uppercase text-[10px]">
+                                                            <tr>
+                                                                <th className="p-3 text-left">Account #</th>
+                                                                <th className="p-3 text-left">Broker</th>
+                                                                <th className="p-3 text-right">Balance ($)</th>
+                                                                <th className="p-3 text-right">Equity ($)</th>
+                                                                <th className="p-3 text-center">Platform</th>
+                                                                <th className="p-3 text-center">Sync Source</th>
+                                                                <th className="p-3 text-right">Last Sync</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                                            {trader.tradingAccounts.map((acc) => (
+                                                                <tr key={acc.id} className="hover:bg-gray-50 dark:hover:bg-white/5">
+                                                                    <td className="p-3 font-mono font-bold text-gray-900 dark:text-white">
+                                                                        #{acc.accountNumber}
+                                                                    </td>
+                                                                    <td className="p-3">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <BrokerLogo broker={acc.broker} size={20} />
+                                                                            <span className="font-bold text-gray-800 dark:text-gray-200 capitalize">
+                                                                                {acc.broker.toLowerCase()}
+                                                                            </span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td className="p-3 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                                                                        ${acc.balance.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                                    </td>
+                                                                    <td className="p-3 text-right font-mono text-gray-700 dark:text-gray-300">
+                                                                        ${acc.equity.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                                    </td>
+                                                                    <td className="p-3 text-center">
+                                                                        <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300">
+                                                                            {acc.platform}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="p-3 text-center">
+                                                                        <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                                                                            EA Trade Manager
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="p-3 text-right text-gray-400">
+                                                                        {acc.lastSync ? formatDistanceToNow(new Date(acc.lastSync), { addSuffix: true, locale: enUS }) : "Never"}
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </div>
-
-            <ConfirmDialog
-                isOpen={!!deleteTarget}
-                title="Delete trader from monitor?"
-                description={
-                    deleteTarget
-                        ? `This will revoke Pro access for ${deleteTarget.userName} (${deleteTarget.broker} ${deleteTarget.accountNumber}) and remove this row from Active Trader Monitor. It will not delete the user or trading account.`
-                        : ""
-                }
-                confirmText="Delete from monitor"
-                cancelText="Cancel"
-                onConfirm={handleDelete}
-                onCancel={() => setDeleteTarget(null)}
-                isLoading={isPending}
-                variant="danger"
-            />
         </div>
     );
 }
