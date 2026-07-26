@@ -150,6 +150,11 @@ const nextConfig = {
         destination: '/tools/position-size-calculator',
         permanent: true,
       },
+      {
+        source: '/admin/ea/:path*',
+        destination: '/admin/trading-systems/:path*',
+        permanent: true,
+      },
     ];
   },
 }

@@ -69,7 +69,7 @@ export function AdminNotificationBell() {
                         });
 
                         // If we are already on the pending page, update viewed count to match current pending
-                        if (pathname === "/admin/ea/accounts/pending") {
+                        if (pathname === "/admin/trading-systems/accounts/pending") {
                             const current = data.data.pendingLicenses;
                             setViewedPendingCount(current);
                             localStorage.setItem(
@@ -141,7 +141,7 @@ export function AdminNotificationBell() {
                         onClick={() => {
                             markAsViewed();
                             setIsOpen(false);
-                            router.push("/admin/ea/accounts/pending");
+                            router.push("/admin/trading-systems/accounts/pending");
                         }}
                     >
                         <div className="flex items-center gap-3">
@@ -241,7 +241,7 @@ export function AdminNotificationBell() {
                         onClick={() => {
                             markAsViewed();
                             setIsOpen(false);
-                            router.push("/admin/ea/accounts/pending");
+                            router.push("/admin/trading-systems/accounts/pending");
                         }}
                     >
                         View Pending

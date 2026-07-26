@@ -94,7 +94,7 @@ export async function getFrictionReport(
             affectedUsers: staleAccounts,
             severity: staleAccounts > 10 ? "high" : "medium",
             recommendedFix: "Check EA connectivity and notify users",
-            href: "/admin/ea/accounts",
+            href: "/admin/trading-systems/accounts",
         });
     }
 

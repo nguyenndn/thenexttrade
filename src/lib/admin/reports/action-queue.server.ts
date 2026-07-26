@@ -104,7 +104,7 @@ export async function getActionQueueReport(
             title: "Accounts Offline > 24h",
             description: `${staleAccounts} active account(s) haven't synced in over 24 hours`,
             count: staleAccounts,
-            href: "/admin/ea/accounts",
+            href: "/admin/trading-systems/accounts",
             cta: "View Accounts",
         });
     }
@@ -116,7 +116,7 @@ export async function getActionQueueReport(
             title: "Accounts Never Synced",
             description: `${neverSyncedAccounts} account(s) created but never synced`,
             count: neverSyncedAccounts,
-            href: "/admin/ea/accounts",
+            href: "/admin/trading-systems/accounts",
             cta: "View Accounts",
         });
     }
@@ -140,7 +140,7 @@ export async function getActionQueueReport(
             title: "Connected Accounts Without Trades",
             description: `${usersNoTrades} account(s) synced but zero trades`,
             count: usersNoTrades,
-            href: "/admin/ea/accounts",
+            href: "/admin/trading-systems/accounts",
             cta: "View Accounts",
         });
     }

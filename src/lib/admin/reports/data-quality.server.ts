@@ -65,7 +65,7 @@ export async function getDataQualityReport(): Promise<DataQualityReport> {
             count: accountsNoBroker,
             severity: "medium",
             suggestedFix: "Review account creation flow",
-            href: "/admin/ea/accounts",
+            href: "/admin/trading-systems/accounts",
         });
     if (accountsNoServer > 0)
         issues.push({
@@ -74,7 +74,7 @@ export async function getDataQualityReport(): Promise<DataQualityReport> {
             count: accountsNoServer,
             severity: "low",
             suggestedFix: "Check Trade Manager EA sync data",
-            href: "/admin/ea/accounts",
+            href: "/admin/trading-systems/accounts",
         });
     if (proNoAccount > 0)
         issues.push({

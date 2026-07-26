@@ -115,3 +115,46 @@ export async function deletePublicAsset(url: string): Promise<boolean> {
 export function getPublicAssetUrl(key: string): string {
     return `${ASSET_PUBLIC_BASE_URL.replace(/\/$/, "")}/${key}`;
 }
+export async function uploadProtectedAsset(
+    buffer: Buffer,
+    key: string,
+    contentType: string
+): Promise<boolean> {
+    if (!isR2Configured || !r2Client) {
+        return false;
+    }
+    try {
+        await r2Client.send(
+            new PutObjectCommand({
+                Bucket: R2_BUCKET,
+                Key: key,
+                Body: buffer,
+                ContentType: contentType,
+                CacheControl: "no-cache",
+            })
+        );
+        return true;
+    } catch (error) {
+        console.error("[ObjectStorage] Failed to upload protected asset:", error);
+        return false;
+    }
+}
+
+export async function getProtectedAssetStream(key: string) {
+    if (!isR2Configured || !r2Client) {
+        return null;
+    }
+    try {
+        const { GetObjectCommand } = await import("@aws-sdk/client-s3");
+        const response = await r2Client.send(
+            new GetObjectCommand({
+                Bucket: R2_BUCKET,
+                Key: key,
+            })
+        );
+        return response.Body;
+    } catch (error) {
+        console.error("[ObjectStorage] Failed to get protected asset:", error);
+        return null;
+    }
+}

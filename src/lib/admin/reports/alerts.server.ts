@@ -73,7 +73,7 @@ export async function getAlertReport(range: DateRange): Promise<AlertReport> {
             metric: "stale_accounts",
             currentValue: staleAccounts,
             threshold: 10,
-            href: "/admin/ea/accounts",
+            href: "/admin/trading-systems/accounts",
         });
     }
     if (highValueOffline > 0) {
@@ -85,7 +85,7 @@ export async function getAlertReport(range: DateRange): Promise<AlertReport> {
             metric: "high_value_offline",
             currentValue: highValueOffline,
             threshold: 0,
-            href: "/admin/ea/accounts",
+            href: "/admin/trading-systems/accounts",
         });
     }
     if (pendingVipOld > 0) {

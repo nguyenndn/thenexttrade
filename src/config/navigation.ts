@@ -224,7 +224,7 @@ export const adminMenuItems = [
         href: "#",
         icon: Settings,
         items: [
-            { name: "EA Management", href: "/admin/ea" },
+            { name: "Trading Systems", href: "/admin/trading-systems" },
             { name: "Users", href: "/admin/users" },
             { name: "Feedback", href: "/admin/feedback" },
             { name: "Settings", href: "/admin/settings" },
@@ -364,7 +364,7 @@ export const adminMenuGroups = [
         items: [
             { name: "Academy", href: "/admin/academy", icon: GraduationCap },
             { name: "Copy Trading", href: "/admin/copy-trading", icon: Copy },
-            { name: "EA Management", href: "/admin/ea", icon: Bot },
+            { name: "Trading Systems", href: "/admin/trading-systems", icon: Bot },
             { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
             { name: "Settings", href: "/admin/settings", icon: Settings },
             { name: "Email Lab", href: "/admin/email-lab", icon: Mail },

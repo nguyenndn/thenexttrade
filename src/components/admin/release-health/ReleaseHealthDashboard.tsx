@@ -144,7 +144,7 @@ export function ReleaseHealthDashboard({ data }: Props) {
             title="Account Sync"
             status={accountStatus}
             icon={Activity}
-            href="/admin/ea"
+            href="/admin/trading-systems"
         >
             <StatRow label="Total Accounts" value={data.accounts.total} />
             <StatRow label="Connected" value={data.accounts.connected} />
