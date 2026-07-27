@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
         const auth = await resolveSyncAuth({
             request,
             accountNumber,
-            requireAccount: true,
+            requireAccount: false,
         });
 
         if (!auth.success) {
@@ -21,7 +21,12 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const account = auth.data.account!;
+        const account = auth.data.account;
+
+        // If no trading account found for this accountNumber, return empty commands array (200 OK)
+        if (!account) {
+            return NextResponse.json({ commands: [] });
+        }
 
         // Get pending commands for this account
         // Must be PENDING and NOT expired
