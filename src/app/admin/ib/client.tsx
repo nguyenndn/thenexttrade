@@ -107,20 +107,8 @@ export function IbOverviewClient({
     ];
 
     return (
-        <div className="space-y-6 pb-10">
-            <div className="flex flex-col gap-5 border-b border-gray-200 dark:border-white/10 pb-8 lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <div className="h-8 w-1.5 rounded-full bg-primary" />
-                        <h1 className="text-xl font-black tracking-tighter text-gray-700 dark:text-white">
-                            Partner Pro Operations
-                        </h1>
-                    </div>
-                    <p className="pl-4.5 text-base font-medium text-gray-600 dark:text-gray-300">
-                        Control the partner funnel from broker click to approved
-                        Pro user and real trading activity.
-                    </p>
-                </div>
+        <div className="space-y-6">
+            <div className="flex justify-end">
                 <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-1 shadow-sm">
                     {rangeOptions.map((option) => (
                         <Link

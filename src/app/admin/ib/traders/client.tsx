@@ -21,7 +21,6 @@ import {
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { BrokerLogo } from "@/components/ui/BrokerLogo";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -162,20 +161,7 @@ export function TraderMonitorClient({ traders }: Props) {
     }, [traders, searchTerm, selectedBroker, selectedStatus]);
 
     return (
-        <div className="space-y-6 pb-10">
-            <AdminPageHeader
-                title="Trader Monitor (CRM)"
-                description="Monitor connected trading accounts, balances, and VIP status per trader."
-                backHref="/admin/ib"
-            >
-                <Link href="/admin/ib/pipeline">
-                    <Button variant="outline" className="rounded-xl font-bold">
-                        <Crown size={16} className="text-amber-500 mr-1.5" />
-                        VIP Pipeline
-                    </Button>
-                </Link>
-            </AdminPageHeader>
-
+        <div className="space-y-6">
             {/* Summary Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">

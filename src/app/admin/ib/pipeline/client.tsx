@@ -219,22 +219,7 @@ export function VipPipelineClient({
     };
 
     return (
-        <div className="space-y-6 pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 dark:border-white/10 pb-8">
-                <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full" />
-                        <h1 className="text-xl font-black text-gray-700 dark:text-white tracking-tighter">
-                            VIP Pipeline
-                        </h1>
-                    </div>
-                    <p className="text-base text-gray-600 dark:text-gray-300 font-medium pl-4.5">
-                        Review and manage VIP verification requests
-                    </p>
-                </div>
-            </div>
-
+        <div className="space-y-6">
             {/* Stats Cards */}
             {stats && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
